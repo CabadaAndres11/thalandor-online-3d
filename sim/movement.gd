@@ -5,6 +5,9 @@ extends RefCounted
 const MIN_AIM_DISTANCE := 0.01
 ## Tolerance for "was outside this face before the step" (float rounding).
 const FACE_EPSILON := 0.001
+## A circle touching a cell side within this distance only grazes it: it does not
+## block movement along that side (float rounding leaves tiny overlaps when sliding).
+const CONTACT_EPSILON := 0.001
 
 
 static func apply(state: PlayerState, input: PlayerInput, dt: float, balance: Balance, map: CollisionMap) -> void:
@@ -37,7 +40,7 @@ static func _resolve_x(x: float, z: float, dx: float, r: float, map: CollisionMa
 			if not map.is_solid(Vector2i(cx, cz)):
 				continue
 			var off_z := z - clampf(z, cz, cz + 1)
-			if absf(off_z) >= r:
+			if absf(off_z) >= r - CONTACT_EPSILON:
 				continue
 			var reach := sqrt(r * r - off_z * off_z)
 			if dx > 0.0 and x + reach > cx and prev + reach <= cx + FACE_EPSILON:
@@ -54,7 +57,7 @@ static func _resolve_z(x: float, z: float, dz: float, r: float, map: CollisionMa
 			if not map.is_solid(Vector2i(cx, cz)):
 				continue
 			var off_x := x - clampf(x, cx, cx + 1)
-			if absf(off_x) >= r:
+			if absf(off_x) >= r - CONTACT_EPSILON:
 				continue
 			var reach := sqrt(r * r - off_x * off_x)
 			if dz > 0.0 and z + reach > cz and prev + reach <= cz + FACE_EPSILON:

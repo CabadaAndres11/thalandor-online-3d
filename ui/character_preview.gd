@@ -3,7 +3,7 @@ extends SubViewportContainer
 ## A character turning slowly in its own little 3D world; drag with the mouse to turn
 ## it by hand (it resumes turning when released).
 
-const TURN_DEG_PER_S := 20.0
+const TURN_DEG_PER_S := 6.0 # slow enough to look at the details
 const DRAG_DEG_PER_PX := 0.6
 
 var rig: CharacterRig

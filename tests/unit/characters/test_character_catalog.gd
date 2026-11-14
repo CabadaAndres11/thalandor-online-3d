@@ -8,7 +8,7 @@ func before_each() -> void:
 
 
 func test_all_kinds_have_expected_counts() -> void:
-	var expected := {"body": 2, "skin": 8, "eyes": 6, "hair_style": 8, "hair_color": 10, "beard": 5}
+	var expected := {"body": 2, "skin": 8, "eyes": 7, "hair_style": 8, "hair_color": 11, "beard": 5}
 	for kind: String in expected:
 		assert_eq(catalog.options(kind).size(), expected[kind], kind)
 
@@ -111,3 +111,8 @@ func test_resolve_gives_colors_layers_and_pieces() -> void:
 	var ids := (look.pieces as Array).map(func(p: Dictionary) -> String: return p.id)
 	assert_has(ids, "hat_mage")
 	assert_does_not_have(ids, "hair_long", "the mage hat hides long hair")
+
+
+func test_red_hair_and_eyes_are_options() -> void:
+	assert_false(catalog.option("hair_color", "crimson").is_empty())
+	assert_false(catalog.option("eyes", "red").is_empty())

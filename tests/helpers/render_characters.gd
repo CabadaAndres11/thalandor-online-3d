@@ -90,6 +90,13 @@ func _looks(set_name: String) -> Array:
 				["warrior", {"skin": "skin_2", "hair_style": "bald", "beard": "mustache", "hair_color": "red"}, 90.0],
 				["warrior", {"skin": "skin_4", "hair_style": "hair_long", "hair_color": "blond"}, 180.0],
 			])
+		"red":
+			return _resolved([
+				["mage", {"hair_style": "bob", "hair_color": "crimson", "eyes": "red", "skin": "skin_1"}],
+				["assassin", {"hair_style": "hair_mohawk", "hair_color": "crimson", "eyes": "red", "skin": "skin_7"}],
+				["warrior", {"hair_style": "hair_long", "hair_color": "crimson", "eyes": "red", "skin": "skin_3"}],
+				["archer", {"hair_style": "swept", "hair_color": "red", "eyes": "red", "skin": "skin_2"}],
+			])
 		"variety":
 			return _resolved([
 				["warrior", {"hair_style": "hair_long", "hair_color": "red", "skin": "skin_1"}],

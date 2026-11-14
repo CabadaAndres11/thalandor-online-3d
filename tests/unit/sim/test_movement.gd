@@ -101,6 +101,34 @@ func test_grazing_a_wall_side_keeps_moving_along_it() -> void:
 		assert_true(s.position.z <= before_z, "never pushed backwards (tick %d: %f -> %f)" % [i, before_z, s.position.z])
 
 
+## Regression: walking diagonally against a straight wall (it looks diagonal under the
+## isometric camera) must slide along it. Touching the wall, float rounding left a
+## tiny overlap with the next wall cell, so the player stopped at every block joint.
+## Tried from many start offsets (different roundings), all four wall sides.
+func test_slides_along_walls_from_any_start() -> void:
+	var cells := []
+	for i in 40:
+		cells.append([20, i, 1]) # wall perpendicular to X (column x = 20)
+		cells.append([i, 20, 1]) # wall perpendicular to Z (row z = 20)
+	var map := CollisionMap.from_layout({"size": [40, 40], "spawn": [0, 0], "blocks": cells})
+	var cases := [
+		# start (before the wall), diagonal move into it, axis that must advance
+		[Vector3(17.0, 0, 3.0), Vector2(1, 1), "z"], # left of column, sliding +z
+		[Vector3(17.0, 0, 15.0), Vector2(1, -1), "z"], # sliding -z
+		[Vector3(23.0, 0, 3.0), Vector2(-1, 1), "z"], # right of column
+		[Vector3(3.0, 0, 17.0), Vector2(1, 1), "x"], # above row, sliding +x
+		[Vector3(15.0, 0, 23.0), Vector2(-1, -1), "x"], # below row, sliding -x
+	]
+	for c: Array in cases:
+		for k in 25:
+			var start: Vector3 = c[0] + Vector3(k * 0.0137, 0, k * 0.0071)
+			var s := _state_at(start)
+			_run(s, (c[1] as Vector2).normalized(), 1.5, map)
+			var advanced := absf(s.position.z - start.z) if c[2] == "z" else absf(s.position.x - start.x)
+			# Free sliding covers 5 m/s * 0.707 * 1.5 s ≈ 5.3 m; stuck stops near the first joint.
+			assert_gt(advanced, 4.5, "slid along the wall from %s moving %s" % [start, c[1]])
+
+
 func test_large_step_does_not_tunnel() -> void:
 	var map := CollisionMap.from_layout({"size": [40, 40], "spawn": [0, 0], "blocks": [[15, 20, 1]]})
 	var s := _state_at(Vector3(14.0, 0, 20.5))
