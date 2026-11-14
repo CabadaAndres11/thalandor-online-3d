@@ -146,3 +146,18 @@ func test_export_to_unwritable_path_returns_error() -> void:
 	var c := store.create("Sin Sitio", "warrior", {})
 	assert_ne(store.export_to(c.id, "user://no/such/dir/x.json"), OK)
 	assert_ne(store.export_to("unknown-id", EXPORT_DIR.path_join("x.json")), OK)
+
+
+## Windows "copy here" makes "<id> - copia.json" with the same character inside: it
+## must not show up as a character that can never be deleted.
+func test_file_name_must_match_the_character_id() -> void:
+	var c := store.create("Original", "warrior", {})
+	DirAccess.copy_absolute(ProjectSettings.globalize_path(DIR.path_join(c.id + ".json")),
+		ProjectSettings.globalize_path(DIR.path_join(c.id + " - copia.json")))
+	var s := CharacterStore.new(DIR)
+	var list := s.load_all()
+	assert_eq(list.size(), 1, "the copy is not a second character")
+	assert_eq(s.skipped_files, [c.id + " - copia.json"] as Array[String], "the copy is reported")
+	assert_true(s.delete(c.id))
+	assert_eq(s.load_all().size(), 0, "deleting really removes it from the list")
+	assert_true(FileAccess.file_exists(DIR.path_join(c.id + " - copia.json")), "the copy is left alone")

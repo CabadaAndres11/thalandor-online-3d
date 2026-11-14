@@ -89,3 +89,4 @@ ERR_IMPORT_INVALID,Ese archivo no es un personaje de Thalandor Online.
 ERR_SAVE,"No se ha podido guardar el personaje. Revisa que haya espacio en el disco."
 ERR_EXPORT,"No se ha podido exportar el personaje a esa carpeta."
 ERR_CHAR_SKIPPED,"%d archivos de personaje no se han podido leer. Se han dejado como estaban."
+ERR_DELETE,"No se ha podido borrar el personaje. Revisa que el archivo no esté abierto en otro programa."

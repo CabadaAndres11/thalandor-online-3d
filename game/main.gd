@@ -250,8 +250,10 @@ func _on_dialog_answered(yes: bool) -> void:
 	var pending := _pending
 	_pending = {}
 	if pending.get("action", "") == "delete" and yes:
-		store.delete(pending.id)
+		var deleted := store.delete(pending.id)
 		_show_select()
+		if not deleted:
+			dialog.show_message(tr("ERR_DELETE"))
 
 
 func _on_dialog_text(text: String) -> void:

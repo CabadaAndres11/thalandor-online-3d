@@ -31,7 +31,9 @@ func load_all() -> Array[CharacterData]:
 		if not file.ends_with(".json"):
 			continue
 		var c := _read(_dir.path_join(file))
-		if c == null:
+		# Only "<id>.json" is that character: a copy under another name (Windows
+		# "copy here") could never be deleted or exported, so it is reported instead.
+		if c == null or file.get_basename() != c.id or not _is_safe_id(c.id):
 			skipped_files.append(file)
 		else:
 			list.append(c)

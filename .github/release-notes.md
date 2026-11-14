@@ -12,7 +12,7 @@
 - **Aspecto:** cuerpo, piel, ojos, peinado, color de pelo y barba, con vista previa que se puede girar arrastrando.
 - **Animaciones** de reposo y andar. Tus amigos ven tu personaje tal como lo creaste.
 - **Exportar e importar:** sirve para copias de seguridad o para jugar con el mismo personaje en otro PC. Los personajes se guardan en `%APPDATA%\Godot\app_userdata\Thalandor Online\saves\characters`.
-- **Todo el grupo tiene que usar la 0.2.0:** con la 0.1.x, el juego avisa de que las versiones no coinciden.
+- **Todo el grupo tiene que usar la 0.2.0.** Si un amigo sigue con la 0.1.x, actualizad todos: según quién abra el grupo, saldrá "versión distinta" o un error de conexión.
 
 ### Jugar con amigos: dos redes para probar
 Esta versión trae **dos formas de conectarse**. Todos los del grupo tienen que usar la misma, y también **la misma versión** del juego.
