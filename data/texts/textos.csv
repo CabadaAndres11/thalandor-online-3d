@@ -1,2 +1,4 @@
 keys,es
 GAME_TITLE,Thalandor Online
+CHAT_JOINED,"%s se ha unido al grupo"
+CHAT_LEFT,"%s ha salido del grupo"

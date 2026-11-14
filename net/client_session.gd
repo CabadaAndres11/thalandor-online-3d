@@ -1,0 +1,244 @@
+class_name ClientSession
+extends RefCounted
+## A player's view of the game: predicts its own movement, reconciles with the host's
+## snapshots and interpolates everybody else ~100 ms in the past.
+
+signal welcomed(my_id: int)
+signal rejected(reason: String, host_version: String)
+signal disconnected(reason: String)
+signal roster_changed()
+signal chat_received(author: String, text: String, is_system: bool)
+
+enum Status { CONNECTING, IN_GAME, CLOSED }
+
+const SNAP_DISTANCE := 2.0
+const RENDER_SNAP_TICKS := 10.0
+const RENDER_CATCH_UP := 0.1
+## Upper bound for unacknowledged inputs kept for replay (2 s at 30 ticks/s).
+const MAX_REPLAY := 60
+
+var status: Status = Status.CONNECTING
+var my_id: int = 0
+var roster: Dictionary = {} # id -> {"name": String, "slot": int}
+var last_correction: float = 0.0
+var render_tick: float = 0.0
+
+var balance: Balance
+var map: CollisionMap
+var game_version: String
+var player_name: String
+
+var _transport: Transport
+var _seq: int = 0
+var _pending: Array = [] # PlayerInput not yet acknowledged by the host
+var _predicted: PlayerState = null
+var _offset: Vector3 = Vector3.ZERO
+var _offset_speed: float = 0.0
+var _buffers: Dictionary = {} # id -> InterpolationBuffer
+var _latest_tick: int = -1
+var _silence: float = 0.0
+var _clock_ms: float = 0.0
+var _sent_at: Dictionary = {} # seq -> _clock_ms when sent
+var _ping_ms: float = 0.0
+
+
+func _init(p_balance: Balance, p_map: CollisionMap, p_game_version: String, p_name: String) -> void:
+	balance = p_balance
+	map = p_map
+	game_version = p_game_version
+	player_name = p_name
+
+
+func connect_to(t: Transport) -> void:
+	_transport = t
+	t.peer_connected.connect(_on_peer_connected)
+	t.peer_disconnected.connect(_on_peer_disconnected)
+	t.connection_failed.connect(_close.bind("failed"))
+
+
+## Called once per physics tick with this tick's movement (world XZ) and aim point.
+func tick(move: Vector2, aim: Vector3) -> void:
+	if _transport == null or status == Status.CLOSED:
+		return
+	for packet: Dictionary in _transport.poll():
+		_silence = 0.0
+		_handle(Protocol.decode(packet.data))
+		if status == Status.CLOSED:
+			return
+	if status != Status.IN_GAME or _predicted == null:
+		return
+	_seq += 1
+	var input := PlayerInput.new(_seq, move.limit_length(1.0), aim)
+	Movement.apply(_predicted, input, balance.dt(), balance, map)
+	_pending.append(input)
+	while _pending.size() > MAX_REPLAY:
+		_pending.pop_front()
+	_sent_at[_seq] = _clock_ms
+	var rows := []
+	for i in range(maxi(0, _pending.size() - balance.input_redundancy), _pending.size()):
+		var p: PlayerInput = _pending[i]
+		rows.append([p.seq, p.move, p.aim])
+	_transport.send(Transport.HOST_PEER, Protocol.input(rows), false)
+
+
+## Called once per rendered frame.
+func update(delta: float) -> void:
+	if status == Status.CLOSED:
+		return
+	_clock_ms += delta * 1000.0
+	_silence += delta
+	if _silence > balance.timeout_s:
+		_close("timeout")
+		return
+	if _latest_tick >= 0:
+		render_tick += delta * balance.tick_rate
+		var diff := target_render_tick() - render_tick
+		if absf(diff) > RENDER_SNAP_TICKS:
+			render_tick = target_render_tick()
+		else:
+			render_tick += diff * RENDER_CATCH_UP
+	_offset = _offset.move_toward(Vector3.ZERO, _offset_speed * delta)
+
+
+func target_render_tick() -> float:
+	return float(_latest_tick) - balance.interp_delay_ms * balance.tick_rate / 1000.0
+
+
+func send_chat(text: String) -> void:
+	var t := text.strip_edges().left(balance.chat_max_len)
+	if status == Status.IN_GAME and t != "":
+		_transport.send(Transport.HOST_PEER, Protocol.chat(0, t), true)
+
+
+func leave() -> void:
+	if status == Status.CLOSED:
+		return
+	status = Status.CLOSED
+	if _transport != null:
+		_transport.close()
+
+
+## {"position", "aim", "facing"} for drawing; {} when unknown.
+func render_state(id: int) -> Dictionary:
+	if id == my_id and _predicted != null:
+		return {"position": _predicted.position + _offset, "aim": _predicted.aim, "facing": _predicted.facing}
+	if _buffers.has(id):
+		return (_buffers[id] as InterpolationBuffer).sample(render_tick)
+	return {}
+
+
+func pending_count() -> int:
+	return _pending.size()
+
+
+func ping_ms() -> float:
+	return _ping_ms
+
+
+func latest_tick() -> int:
+	return _latest_tick
+
+
+func _on_peer_connected(peer: int) -> void:
+	if peer == Transport.HOST_PEER:
+		_transport.send(Transport.HOST_PEER, Protocol.hello(game_version, Protocol.VERSION, player_name), true)
+
+
+func _on_peer_disconnected(peer: int) -> void:
+	if peer == Transport.HOST_PEER:
+		_close("host_left")
+
+
+func _close(reason: String) -> void:
+	if status == Status.CLOSED:
+		return
+	status = Status.CLOSED
+	if _transport != null:
+		_transport.close()
+	disconnected.emit(reason)
+
+
+func _handle(msg: Dictionary) -> void:
+	if msg.is_empty():
+		return
+	match msg.type:
+		Protocol.Msg.WELCOME:
+			if status != Status.CONNECTING:
+				return
+			my_id = msg.player_id
+			status = Status.IN_GAME
+			for row: Array in msg.roster:
+				roster[row[0]] = {"name": row[1], "slot": row[2]}
+			welcomed.emit(my_id)
+			roster_changed.emit()
+		Protocol.Msg.REJECT:
+			status = Status.CLOSED
+			_transport.close()
+			rejected.emit(msg.reason, msg.host_version)
+		Protocol.Msg.SNAPSHOT:
+			_on_snapshot(msg.tick, msg.players)
+		Protocol.Msg.PLAYER_JOINED:
+			roster[msg.id] = {"name": msg.name, "slot": msg.slot}
+			roster_changed.emit()
+			chat_received.emit("", tr_text("CHAT_JOINED") % msg.name, true)
+		Protocol.Msg.PLAYER_LEFT:
+			var name: String = roster[msg.id].name if roster.has(msg.id) else "?"
+			roster.erase(msg.id)
+			_buffers.erase(msg.id)
+			roster_changed.emit()
+			chat_received.emit("", tr_text("CHAT_LEFT") % name, true)
+		Protocol.Msg.CHAT:
+			var author: String = roster[msg.from_id].name if roster.has(msg.from_id) else "?"
+			chat_received.emit(author, msg.text, false)
+
+
+func _on_snapshot(tick: int, rows: Array) -> void:
+	if status != Status.IN_GAME or tick <= _latest_tick:
+		return
+	var first := _latest_tick < 0
+	_latest_tick = tick
+	if first:
+		render_tick = target_render_tick()
+	for row: Array in rows:
+		var id: int = row[0]
+		if id == my_id:
+			_reconcile(row[1], row[2], row[3], row[4])
+		else:
+			if not _buffers.has(id):
+				_buffers[id] = InterpolationBuffer.new()
+			(_buffers[id] as InterpolationBuffer).push(tick, row[1], row[2], row[3])
+
+
+func _reconcile(position: Vector3, aim: Vector3, facing: float, acked: int) -> void:
+	while not _pending.is_empty() and (_pending[0] as PlayerInput).seq <= acked:
+		_pending.pop_front()
+	if _sent_at.has(acked):
+		_ping_ms = _clock_ms - float(_sent_at[acked])
+	for seq: int in _sent_at.keys():
+		if seq <= acked:
+			_sent_at.erase(seq)
+	if _predicted == null:
+		_predicted = PlayerState.new()
+		_predicted.id = my_id
+		_predicted.position = position
+		_predicted.aim = aim
+		_predicted.facing = facing
+		_seq = maxi(_seq, acked)
+		return
+	var old_predicted := _predicted.position
+	var old_visual := old_predicted + _offset
+	_predicted.position = position
+	_predicted.aim = aim
+	_predicted.facing = facing
+	for p: PlayerInput in _pending:
+		Movement.apply(_predicted, p, balance.dt(), balance, map)
+	last_correction = old_predicted.distance_to(_predicted.position)
+	_offset = old_visual - _predicted.position
+	if _offset.length() > SNAP_DISTANCE:
+		_offset = Vector3.ZERO
+	_offset_speed = _offset.length() / (balance.correction_ms / 1000.0)
+
+
+## Translation lookup usable from a RefCounted (tr() needs an Object; TranslationServer works anywhere).
+static func tr_text(key: String) -> String:
+	return TranslationServer.translate(key)

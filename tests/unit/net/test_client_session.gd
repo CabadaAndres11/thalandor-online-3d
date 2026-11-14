@@ -1,0 +1,190 @@
+extends GutTest
+
+const VERSION := "0.1.0"
+
+var balance: Balance
+var map: CollisionMap
+var net: MemoryNetwork
+var host_t: MemoryTransport
+var host: HostSession
+var clients: Array = []
+
+
+func before_each() -> void:
+	balance = Balance.load_from()
+	map = CollisionMap.from_layout({"size": [40, 40], "spawn": [20, 20], "blocks": []})
+	net = MemoryNetwork.new(3)
+	host_t = net.create_host()
+	host = HostSession.new(balance, map, VERSION)
+	host.add_transport(host_t)
+	clients = []
+
+
+func _client(name: String, version := VERSION) -> ClientSession:
+	var c := ClientSession.new(balance, map, version, name)
+	c.connect_to(net.connect_client(host_t))
+	clients.append(c)
+	return c
+
+
+## One simulation tick for everyone. `moves` maps ClientSession -> Vector2.
+func _step(moves := {}) -> void:
+	var dt := balance.dt()
+	net.advance(dt * 1000.0)
+	for c: ClientSession in clients:
+		c.tick(moves.get(c, Vector2.ZERO), Vector3(20.5, 0, 30))
+	host.tick()
+	for c: ClientSession in clients:
+		c.update(dt)
+
+
+func _steps(n: int, moves := {}) -> void:
+	for i in n:
+		_step(moves)
+
+
+func _own_pos(c: ClientSession) -> Vector3:
+	return c.render_state(c.my_id).position
+
+
+func test_welcome_sets_status_and_id() -> void:
+	var a := _client("Ana")
+	watch_signals(a)
+	_steps(2)
+	assert_eq(a.status, ClientSession.Status.IN_GAME)
+	assert_eq(a.my_id, 1)
+	assert_signal_emitted_with_parameters(a, "welcomed", [1])
+	assert_eq(a.roster[1].name, "Ana")
+
+
+func test_rejected_signal_carries_reason() -> void:
+	var a := _client("Ana", "0.0.1")
+	watch_signals(a)
+	_steps(2)
+	assert_signal_emitted_with_parameters(a, "rejected", ["version", VERSION])
+	assert_eq(a.status, ClientSession.Status.CLOSED)
+
+
+func test_prediction_moves_immediately() -> void:
+	net.latency_ms = 100
+	var a := _client("Ana")
+	_steps(20)
+	var before := _own_pos(a)
+	a.tick(Vector2(1, 0), Vector3.ZERO)
+	assert_gt(_own_pos(a).x, before.x)
+
+
+func test_zero_latency_matches_host() -> void:
+	var a := _client("Ana")
+	_steps(3)
+	_steps(30, {a: Vector2(1, 0.5)})
+	_steps(2)
+	assert_almost_eq(_own_pos(a).distance_to(host.world.players[1].position), 0.0, 0.001)
+
+
+func test_reconcile_replays_pending() -> void:
+	net.latency_ms = 100
+	var a := _client("Ana")
+	_steps(15)
+	_steps(30, {a: Vector2(1, 0)})
+	_steps(30)
+	assert_almost_eq(_own_pos(a).distance_to(host.world.players[1].position), 0.0, 0.001)
+	assert_gt(host.world.players[1].position.x, 22.0)
+	# Only inputs still in flight (~200 ms round trip = 6-7 ticks) remain pending.
+	assert_lte(a.pending_count(), 8)
+
+
+func test_small_error_is_smoothed() -> void:
+	var a := _client("Ana")
+	_steps(5)
+	var before := _own_pos(a)
+	host.world.players[1].position.x += 0.5
+	_steps(2)
+	assert_almost_eq(a.last_correction, 0.5, 0.01)
+	assert_lt(_own_pos(a).distance_to(before), 0.5)
+	assert_gt(_own_pos(a).distance_to(before), 0.0)
+	a.update(0.1)
+	assert_almost_eq(_own_pos(a).distance_to(host.world.players[1].position), 0.0, 0.001)
+
+
+func test_large_error_snaps() -> void:
+	var a := _client("Ana")
+	_steps(5)
+	host.world.players[1].position.x += 5.0
+	_steps(2)
+	assert_almost_eq(_own_pos(a).distance_to(host.world.players[1].position), 0.0, 0.001)
+
+
+func test_others_are_interpolated_between_snapshots() -> void:
+	var a := _client("Ana")
+	var b := _client("Bea")
+	_steps(15)
+	var start: Vector3 = host.world.players[2].position
+	_steps(30, {b: Vector2(1, 0)})
+	var seen: Vector3 = a.render_state(2).position
+	var now: Vector3 = host.world.players[2].position
+	assert_gt(seen.x, start.x)
+	assert_lt(seen.x, now.x, "drawn in the past")
+	var delay_m := balance.move_speed * balance.interp_delay_ms / 1000.0
+	assert_almost_eq(now.x - seen.x, delay_m, balance.move_speed * 2.0 * balance.dt())
+
+
+func test_slow_frames_do_not_break_render_clock() -> void:
+	var a := _client("Ana")
+	_steps(10)
+	a.update(2.0)
+	var elapsed := 0.0
+	while elapsed < 1.0:
+		net.advance(100)
+		for i in 3:
+			a.tick(Vector2.ZERO, Vector3.ZERO)
+			host.tick()
+		a.update(0.1)
+		elapsed += 0.1
+	assert_almost_eq(a.render_tick, a.target_render_tick(), 1.0)
+
+
+func test_timeout_disconnects() -> void:
+	var a := _client("Ana")
+	_steps(3)
+	watch_signals(a)
+	for i in 52:
+		a.update(0.1)
+	assert_signal_emitted_with_parameters(a, "disconnected", ["timeout"])
+	assert_eq(a.status, ClientSession.Status.CLOSED)
+
+
+func test_host_close_disconnects_with_host_left() -> void:
+	var a := _client("Ana")
+	_steps(3)
+	watch_signals(a)
+	host.close()
+	a.tick(Vector2.ZERO, Vector3.ZERO)
+	assert_signal_emitted_with_parameters(a, "disconnected", ["host_left"])
+
+
+func test_chat_roundtrip() -> void:
+	var a := _client("Ana")
+	var b := _client("Bea")
+	_steps(3)
+	watch_signals(b)
+	a.send_chat("  ¡hola!  ")
+	_steps(2)
+	assert_signal_emitted_with_parameters(b, "chat_received", ["Ana", "¡hola!", false])
+
+
+func test_system_messages_on_join_and_leave() -> void:
+	var a := _client("Ana")
+	_steps(3)
+	watch_signals(a)
+	var b := _client("Bea")
+	_steps(3)
+	var params: Array = get_signal_parameters(a, "chat_received")
+	assert_true(String(params[1]).contains("Bea"))
+	assert_true(params[2])
+	b.leave()
+	clients.erase(b)
+	_steps(3)
+	params = get_signal_parameters(a, "chat_received")
+	assert_true(String(params[1]).contains("Bea"))
+	assert_false(a.roster.has(2))
