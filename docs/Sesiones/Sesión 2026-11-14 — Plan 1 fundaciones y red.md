@@ -37,9 +37,11 @@ Arrancar el proyecto 3D desde cero: leer el GDD, preparar el entorno, diseñar e
 - Paquete de la 0.1.1 preparado: zip con el `.dll` y `Jugar con ENet y Tailscale.bat`, notas de la versión e instrucciones en [[Plan 1 — Prueba entre casas]].
 - Problemas: el servidor leía mal la ruta de la sala; los códigos aleatorios podían salirse del rango que acepta el juego (ahora son de 32 bits, como una IP). Ejecutar un solo archivo de tests avisa de recursos sin liberar al salir, incluso con el test de ENet de antes; con la suite completa no pasa.
 
+- **Servidor desplegado** en `wss://thalandor-signaling.thalandor-signaling.workers.dev` (plan gratuito de Cloudflare) y puesto en `data/balance.json`. Pasa la prueba de humo, y la prueba de dos procesos por WebRTC pasa a través de él (ping ~34 ms en el mismo PC).
+- Fallo encontrado con el servidor real: a veces el anfitrión expulsaba al invitado mientras se unía. El invitado cierra la señalización en cuanto ve la conexión abierta, y si el anfitrión aún no la veía abierta, la daba por fallida. Ahora el anfitrión espera hasta el tiempo límite de conexión antes de soltarlo. Hay dos tests nuevos (160 en verde).
+
 ## Siguiente paso
-- El usuario crea una cuenta de Cloudflare e inicia sesión con `npx wrangler login` en `tools/signaling` (desde el PC).
-- Claude despliega, pone la URL en `data/balance.json` (`signaling_url`, ahora apunta a `ws://127.0.0.1:8787`), sube los cambios y publica la 0.1.1.
+- Subir los cambios y publicar la 0.1.1 (con permiso del usuario).
 - Prueba entre casas con la plantilla y decisión D-010.
 - Pendientes: las pruebas de juego de la 0.1.0 y revisar por qué el ping de ENet en local sale de ~100 ms.
 

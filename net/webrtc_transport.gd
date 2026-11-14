@@ -20,6 +20,7 @@ var _is_server: bool
 var _peer := WebRTCMultiplayerPeer.new()
 var _peer_ready: bool = false
 var _connections: Dictionary = {} # peer id -> WebRTCPeerConnection
+var _left_signaling: Dictionary = {} # host: guest id -> msec its signaling left while connecting
 var _started_ms: int = 0
 var _was_connected: bool = false
 var _room_open: bool = false
@@ -78,7 +79,9 @@ func poll() -> Array:
 	_peer.poll()
 	if _closed:
 		return []
-	if not _is_server and not _was_connected:
+	if _is_server:
+		_drop_stalled_guests()
+	elif not _was_connected:
 		if is_connected_to_host():
 			_was_connected = true
 			# The game no longer needs the server; frees the room slot.
@@ -109,6 +112,7 @@ func close() -> void:
 	_signaling.close()
 	_peer.close() # also closes every peer connection
 	_connections.clear()
+	_left_signaling.clear()
 
 
 func _check_timeout() -> void:
@@ -147,13 +151,26 @@ func _on_peer_arrived(id: int) -> void:
 		_new_connection(id).create_offer()
 
 
+## Host: a guest whose signaling left while still connecting gets until the connect
+## timeout to finish, then is dropped.
+func _drop_stalled_guests() -> void:
+	var now := Time.get_ticks_msec()
+	for id: int in _left_signaling.keys():
+		if not _peer.has_peer(id) or bool(_peer.get_peer(id).connected):
+			_left_signaling.erase(id)
+		elif now - int(_left_signaling[id]) > connect_timeout_ms:
+			_left_signaling.erase(id)
+			_peer.remove_peer(id)
+			_connections.erase(id)
+
+
 func _on_signaling_peer_left(id: int) -> void:
-	# A guest closes its signaling once connected; only drop guests still connecting.
+	# A guest closes its signaling as soon as it sees the connection open, which can be
+	# a moment before the host does; don't drop it yet (see _drop_stalled_guests).
 	if not _is_server or not _connections.has(id) or not _peer.has_peer(id):
 		return
 	if not bool(_peer.get_peer(id).connected):
-		_peer.remove_peer(id)
-		_connections.erase(id)
+		_left_signaling[id] = Time.get_ticks_msec()
 
 
 func _on_relayed(from: int, msg: Dictionary) -> void:
@@ -202,4 +219,5 @@ func _on_peer_connected(id: int) -> void:
 
 func _on_peer_disconnected(id: int) -> void:
 	_connections.erase(id)
+	_left_signaling.erase(id)
 	peer_disconnected.emit(id)

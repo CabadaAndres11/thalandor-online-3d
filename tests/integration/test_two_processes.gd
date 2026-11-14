@@ -48,13 +48,18 @@ func test_guest_process_with_lag_and_loss() -> void:
 
 
 ## Only when a signaling server is running, e.g. `npm run dev` in tools/signaling and
-## THALANDOR_SIGNALING=ws://127.0.0.1:8787 (CI has none, so it is skipped there).
+## THALANDOR_SIGNALING=ws://127.0.0.1:8787, or the deployed wss:// URL (CI has none, so
+## it is skipped there).
 func test_guest_process_over_webrtc() -> void:
 	var url := OS.get_environment("THALANDOR_SIGNALING")
 	if url == "":
 		pass_test("skipped: set THALANDOR_SIGNALING to a running signaling server")
 		return
 	await _run_session([], 0.0, url)
+	# libdatachannel may warn that it could not reset a channel the guest already closed.
+	for err: Variant in get_errors():
+		if err.contains_text("SctpTransport::sendReset"):
+			err.handled = true
 
 
 func _run_session(extra_args: Array, min_ping_ms: float, signaling_url: String = "") -> void:
@@ -124,7 +129,7 @@ func _run_session(extra_args: Array, min_ping_ms: float, signaling_url: String =
 	if not FileAccess.file_exists(report_path):
 		return
 	var report: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(report_path))
-	assert_eq(report.get("result"), "ok", "guest result")
+	assert_eq(report.get("result"), "ok", "guest result (phase %s, reason %s)" % [report.get("phase", ""), report.get("end_reason", "")])
 	assert_eq(report.get("errors", ["missing"]), [], "guest process logged no errors")
 	if report.get("result") != "ok":
 		return

@@ -131,6 +131,32 @@ func test_guest_closes_signaling_once_connected() -> void:
 	assert_eq(gone, [], "the game connection stays up")
 
 
+## The guest closes its signaling as soon as it sees the connection open, which can be
+## before the host does; the host must not drop a guest that is still connecting.
+func test_host_keeps_connecting_guest_whose_signaling_left() -> void:
+	var host_sig := hub.open_host(CODE)
+	var host: WebRtcTransport = _track(WebRtcTransport.host(host_sig, []))
+	var guest: WebRtcTransport = _track(WebRtcTransport.join(hub.open_guest(CODE), []))
+	await _poll_until(func() -> bool: return host._connections.has(2), 2.0)
+	host_sig.inbox.append({"type": "peer_left", "id": 2})
+	var seen := []
+	host.peer_connected.connect(func(p: int) -> void: seen.append(p))
+	await _poll_until(func() -> bool: return not seen.is_empty() and guest.is_connected_to_host(), 10.0)
+	assert_eq(seen, [2], "host still completes the connection")
+	assert_true(guest.is_connected_to_host())
+
+
+func test_host_drops_guest_that_left_and_never_connects() -> void:
+	var host_sig := hub.open_host(CODE)
+	var host: WebRtcTransport = _track(WebRtcTransport.host(host_sig, []))
+	host.connect_timeout_ms = 300
+	var guest_sig := hub.open_guest(CODE) # a guest that never runs a transport
+	await _poll_until(func() -> bool: return host._connections.has(2), 2.0)
+	guest_sig.close()
+	await _poll_until(func() -> bool: return not host._connections.has(2), 3.0)
+	assert_false(host._connections.has(2), "dropped after the connect timeout")
+
+
 ## The library may warn that it could not reset a channel the other side already closed;
 ## that is expected when a peer leaves.
 func _accept_close_warnings() -> void:

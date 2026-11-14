@@ -45,6 +45,7 @@ var _phase: String = "booting"
 var _t: float = 0.0
 var _guest_start: Vector3 = Vector3.ZERO
 var _chat: Array = []
+var _end_reason: String = ""
 
 
 func _initialize() -> void:
@@ -68,6 +69,7 @@ func _process(delta: float) -> bool:
 				_finish("join_failed")
 			else:
 				_main.game.client.chat_received.connect(_on_chat)
+				_main.game.client.disconnected.connect(_on_disconnected)
 				_next("joining")
 		"joining":
 			if _main.game == null:
@@ -108,7 +110,8 @@ func _next(phase: String) -> void:
 
 
 func _finish(result: String) -> void:
-	var report := {"result": result, "errors": _recorder.take(), "chat": _chat}
+	var report := {"result": result, "errors": _recorder.take(), "chat": _chat,
+		"phase": _phase, "end_reason": _end_reason}
 	if _main.game != null and _main.game.client != null:
 		var client := _main.game.client
 		var positions := {}
@@ -138,3 +141,7 @@ func _on_chat(author: String, text: String, _is_system: bool) -> void:
 
 static func _arr(v: Vector3) -> Array:
 	return [v.x, v.y, v.z]
+
+
+func _on_disconnected(reason: String) -> void:
+	_end_reason = reason
