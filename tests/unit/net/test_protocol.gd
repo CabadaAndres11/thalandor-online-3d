@@ -1,0 +1,91 @@
+extends GutTest
+
+
+func test_roundtrip_hello() -> void:
+	var m := Protocol.decode(Protocol.hello("0.1.0", 1, "Andrés"))
+	assert_eq(m.type, Protocol.Msg.HELLO)
+	assert_eq(m.game_version, "0.1.0")
+	assert_eq(m.protocol, 1)
+	assert_eq(m.name, "Andrés")
+
+
+func test_roundtrip_welcome() -> void:
+	var roster := [[1, "Ana", 0], [2, "Bea", 1]]
+	var m := Protocol.decode(Protocol.welcome(2, 77, roster))
+	assert_eq(m.type, Protocol.Msg.WELCOME)
+	assert_eq(m.player_id, 2)
+	assert_eq(m.tick, 77)
+	assert_eq(m.roster, roster)
+
+
+func test_roundtrip_reject() -> void:
+	var m := Protocol.decode(Protocol.reject("version", "0.1.0"))
+	assert_eq(m.type, Protocol.Msg.REJECT)
+	assert_eq(m.reason, "version")
+	assert_eq(m.host_version, "0.1.0")
+
+
+func test_roundtrip_input() -> void:
+	var inputs := [[5, Vector2(1, 0), Vector3(3, 0, 4)], [6, Vector2(0, -1), Vector3(1, 0, 1)]]
+	var m := Protocol.decode(Protocol.input(inputs))
+	assert_eq(m.type, Protocol.Msg.INPUT)
+	assert_eq(m.inputs, inputs)
+
+
+func test_roundtrip_snapshot() -> void:
+	var players := [[1, Vector3(1.5, 0, 2.5), Vector3(4, 0, 4), 0.5, 12]]
+	var m := Protocol.decode(Protocol.snapshot(99, players))
+	assert_eq(m.type, Protocol.Msg.SNAPSHOT)
+	assert_eq(m.tick, 99)
+	assert_eq(m.players.size(), 1)
+	assert_eq(m.players[0][0], 1)
+	assert_eq(m.players[0][1], Vector3(1.5, 0, 2.5))
+	assert_almost_eq(float(m.players[0][3]), 0.5, 0.0001)
+	assert_eq(m.players[0][4], 12)
+
+
+func test_roundtrip_player_joined() -> void:
+	var m := Protocol.decode(Protocol.player_joined(3, "Carla", 2))
+	assert_eq(m.type, Protocol.Msg.PLAYER_JOINED)
+	assert_eq([m.id, m.name, m.slot], [3, "Carla", 2])
+
+
+func test_roundtrip_player_left() -> void:
+	var m := Protocol.decode(Protocol.player_left(3))
+	assert_eq(m.type, Protocol.Msg.PLAYER_LEFT)
+	assert_eq(m.id, 3)
+
+
+func test_roundtrip_chat() -> void:
+	var m := Protocol.decode(Protocol.chat(2, "¡Hola!"))
+	assert_eq(m.type, Protocol.Msg.CHAT)
+	assert_eq(m.from_id, 2)
+	assert_eq(m.text, "¡Hola!")
+
+
+func test_garbage_bytes_decode_to_empty() -> void:
+	assert_eq(Protocol.decode(PackedByteArray([1, 2, 3, 4, 5, 6, 7, 8, 9])), {})
+	assert_eq(Protocol.decode(var_to_bytes([Protocol.Msg.PLAYER_LEFT, 1])), {}, "missing header")
+
+
+func test_unknown_type_decodes_to_empty() -> void:
+	assert_eq(Protocol.decode(Protocol.pack([99, "x"])), {})
+
+
+func test_wrong_field_type_decodes_to_empty() -> void:
+	assert_eq(Protocol.decode(Protocol.pack([Protocol.Msg.HELLO, "0.1.0", "1", "Ana"])), {})
+	assert_eq(Protocol.decode(Protocol.pack([Protocol.Msg.INPUT, [[1, "up", Vector3.ZERO]]])), {})
+	assert_eq(Protocol.decode(Protocol.pack([Protocol.Msg.SNAPSHOT, 1, [[1, Vector3.ZERO]]])), {})
+
+
+func test_missing_fields_decode_to_empty() -> void:
+	assert_eq(Protocol.decode(Protocol.pack([Protocol.Msg.CHAT, 1])), {})
+
+
+func test_empty_bytes_decode_to_empty() -> void:
+	assert_eq(Protocol.decode(PackedByteArray()), {})
+
+
+func test_truncated_array_decodes_to_empty() -> void:
+	var full := Protocol.chat(2, "hola que tal")
+	assert_eq(Protocol.decode(full.slice(0, full.size() - 5)), {})
