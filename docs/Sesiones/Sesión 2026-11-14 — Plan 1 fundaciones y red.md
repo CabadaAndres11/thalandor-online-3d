@@ -40,8 +40,10 @@ Arrancar el proyecto 3D desde cero: leer el GDD, preparar el entorno, diseñar e
 - **Servidor desplegado** en `wss://thalandor-signaling.thalandor-signaling.workers.dev` (plan gratuito de Cloudflare) y puesto en `data/balance.json`. Pasa la prueba de humo, y la prueba de dos procesos por WebRTC pasa a través de él (ping ~34 ms en el mismo PC).
 - Fallo encontrado con el servidor real: a veces el anfitrión expulsaba al invitado mientras se unía. El invitado cierra la señalización en cuanto ve la conexión abierta, y si el anfitrión aún no la veía abierta, la daba por fallida. Ahora el anfitrión espera hasta el tiempo límite de conexión antes de soltarlo. Hay dos tests nuevos (160 en verde).
 
+- En GitHub Actions (Linux) salieron tres fallos que en Windows no se veían: un error de script al acabar la sesión por tiempo de espera (el juego ya había salido en el mismo fotograma), el invitado de ENet no llegaba a la IP de red del propio servidor de CI (ahora la prueba usa 127.0.0.1) y avisos inofensivos de la librería WebRTC al probar rutas sin red. Ya están corregidos y hay 161 tests en verde.
+- **Versión 0.1.1 publicada** en GitHub Releases. El zip lleva el `.exe`, el `.dll` de WebRTC y el `.bat` de ENet.
+
 ## Siguiente paso
-- Subir los cambios y publicar la 0.1.1 (con permiso del usuario).
 - Prueba entre casas con la plantilla y decisión D-010.
 - Pendientes: las pruebas de juego de la 0.1.0 y revisar por qué el ping de ENet en local sale de ~100 ms.
 
