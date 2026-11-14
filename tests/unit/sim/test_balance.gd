@@ -29,3 +29,12 @@ func test_missing_file_returns_defaults() -> void:
 	var b := Balance.load_from("user://does_not_exist.json")
 	assert_almost_eq(b.move_speed, 5.0, 0.0001)
 	assert_eq(b.chat_max_len, 120)
+
+
+func test_loads_string_values() -> void:
+	var f := FileAccess.open(TMP_PATH, FileAccess.WRITE)
+	f.store_string('{"signaling_url": "wss://example.test", "stun_url": "stun:x:1"}')
+	f.close()
+	var b := Balance.load_from(TMP_PATH)
+	assert_eq(b.signaling_url, "wss://example.test")
+	assert_eq(b.stun_url, "stun:x:1")

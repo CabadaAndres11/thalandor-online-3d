@@ -89,8 +89,20 @@ func show_code(code: String) -> void:
 	_hint.visible = true
 
 
+## While a WebRTC group is opening: the button waits with "Abriendo grupo…".
+func show_opening() -> void:
+	open_group_button.disabled = true
+	open_group_button.text = tr("MENU_OPENING_GROUP")
+
+
+func cancel_opening() -> void:
+	open_group_button.disabled = false
+	open_group_button.text = tr("MENU_OPEN_GROUP")
+
+
 func reset() -> void:
 	_code = ""
+	cancel_opening()
 	code_label.visible = false
 	copy_button.visible = false
 	visible = false

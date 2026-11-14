@@ -111,12 +111,23 @@ func _on_join(player_name: String, code: String) -> void:
 
 func _on_open_group() -> void:
 	var code := game.open_group()
-	if code == "":
-		dialog.show_message(tr(game.last_error))
-		return
+	if code != "":
+		_on_group_opened(code)
+	elif game.last_error == "":
+		pause_menu.show_opening() # WebRTC: the code arrives with group_opened
+	else:
+		_on_group_failed(game.last_error)
+
+
+func _on_group_opened(code: String) -> void:
 	settings.last_code = code
 	settings.save_to(settings_path)
 	pause_menu.show_code(code)
+
+
+func _on_group_failed(error_key: String) -> void:
+	pause_menu.cancel_opening()
+	dialog.show_message(tr(error_key))
 
 
 func _on_chat_submitted(text: String) -> void:
@@ -134,6 +145,8 @@ func _start_game() -> void:
 	game.name = "Game"
 	add_child(game)
 	game.session_ended.connect(_on_session_ended)
+	game.group_opened.connect(_on_group_opened)
+	game.group_failed.connect(_on_group_failed)
 	title.visible = false
 	chat.visible = true
 	pause_menu.reset()
@@ -145,6 +158,7 @@ func _attach_client() -> void:
 	client.rejected.connect(_on_rejected)
 	client.chat_received.connect(chat.add_message)
 	debug_overlay.client = client
+	debug_overlay.net_label = game.net_label()
 	pause_menu.set_can_open_group(game.is_hosting())
 
 

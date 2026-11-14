@@ -47,7 +47,17 @@ func test_guest_process_with_lag_and_loss() -> void:
 	await _run_session(["--lag=150", "--loss=5"], 250.0)
 
 
-func _run_session(extra_args: Array, min_ping_ms: float) -> void:
+## Only when a signaling server is running, e.g. `npm run dev` in tools/signaling and
+## THALANDOR_SIGNALING=ws://127.0.0.1:8787 (CI has none, so it is skipped there).
+func test_guest_process_over_webrtc() -> void:
+	var url := OS.get_environment("THALANDOR_SIGNALING")
+	if url == "":
+		pass_test("skipped: set THALANDOR_SIGNALING to a running signaling server")
+		return
+	await _run_session([], 0.0, url)
+
+
+func _run_session(extra_args: Array, min_ping_ms: float, signaling_url: String = "") -> void:
 	_main = load("res://game/main.tscn").instantiate()
 	_main.settings_path = SETTINGS
 	add_child_autofree(_main)
@@ -57,13 +67,26 @@ func _run_session(extra_args: Array, min_ping_ms: float) -> void:
 	var game := _main.game
 	game.client.chat_received.connect(_on_host_chat)
 
-	var code := game.open_group()
-	if code == "" and game.last_error == "ERR_NO_NETWORK":
-		# PC without LAN/Tailscale address: listen on the same port and join over loopback.
-		var t := EnetTransport.host(game.balance.port, game.balance.max_players - 1)
-		if t != null:
-			game.add_host_transport(t)
-			code = GroupCode.encode("127.0.0.1")
+	var code := ""
+	var net_args := ["--net=enet"]
+	if signaling_url != "":
+		game.net_mode = GameSession.NET_WEBRTC
+		game.balance.signaling_url = signaling_url
+		net_args = ["--net=webrtc", "--signaling=" + signaling_url]
+		game.open_group()
+		var wait_start := Time.get_ticks_msec()
+		while game.is_opening_group() and Time.get_ticks_msec() - wait_start < 10000:
+			await wait_physics_frames(1)
+		code = game.group_code()
+	else:
+		game.net_mode = GameSession.NET_ENET
+		code = game.open_group()
+		if code == "" and game.last_error == "ERR_NO_NETWORK":
+			# PC without LAN/Tailscale address: listen on the same port and join over loopback.
+			var t := EnetTransport.host(game.balance.port, game.balance.max_players - 1)
+			if t != null:
+				game.add_host_transport(t)
+				code = GroupCode.encode("127.0.0.1")
 	if code == "":
 		fail_test("cannot open the group (%s): is the game already running?" % game.last_error)
 		return
@@ -71,6 +94,7 @@ func _run_session(extra_args: Array, min_ping_ms: float) -> void:
 	var args := PackedStringArray([
 		"--headless", "--path", ProjectSettings.globalize_path("res://"), "-s", GUEST_SCRIPT,
 		"--", "--code=" + code, "--out=" + _report_name, "--name=" + GUEST_NAME])
+	args.append_array(PackedStringArray(net_args))
 	args.append_array(PackedStringArray(extra_args))
 	_pid = OS.create_process(OS.get_executable_path(), args)
 	assert_gt(_pid, 0, "guest process started")

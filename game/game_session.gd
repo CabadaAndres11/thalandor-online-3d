@@ -5,8 +5,13 @@ extends Node3D
 ## unless joining a friend, in which case there is no local HostSession.
 
 signal session_ended(reason: String)
+## WebRTC opens groups asynchronously: the code arrives from the signaling server.
+signal group_opened(code: String)
+signal group_failed(error_key: String)
 
 const GAME_VERSION_SETTING := "application/config/version"
+const NET_WEBRTC := "webrtc"
+const NET_ENET := "enet"
 
 var balance: Balance
 var map: CollisionMap
@@ -16,6 +21,8 @@ var host: HostSession
 var input_blocked: bool = false
 ## Text key of the last open_group()/join() error.
 var last_error: String = ""
+## Network used for groups: NET_WEBRTC (default) or NET_ENET; user argument --net=.
+var net_mode: String = NET_WEBRTC
 
 var arena: Arena
 var camera: IsoCamera
@@ -23,12 +30,17 @@ var _avatars: Dictionary = {} # id -> PlayerAvatar
 var _avatar_root: Node3D
 var _loopback: MemoryNetwork
 var _group_code: String = ""
+var _opening: bool = false
 var _aim: Vector3 = Vector3.ZERO
 
 
 func _init() -> void:
 	InputSetup.ensure_actions()
 	balance = Balance.load_from()
+	net_mode = NET_ENET if _user_arg("net") == NET_ENET else NET_WEBRTC
+	var signaling_override := _user_arg("signaling")
+	if signaling_override != "":
+		balance.signaling_url = signaling_override
 	arena = Arena.new()
 	arena.name = "Arena"
 	add_child(arena)
@@ -56,12 +68,22 @@ func start_host(player_name: String) -> void:
 	_start_client(player_name, _loopback.connect_client(host_t))
 
 
-## Opens the game to friends over ENet. Returns the group code or "" (see last_error).
+## Opens the game to friends. Returns the group code, or "" with last_error set, or ""
+## with last_error == "" while a WebRTC group is opening (then group_opened/group_failed).
 func open_group() -> String:
 	if _group_code != "":
 		return _group_code
 	if host == null:
 		last_error = "ERR_PORT"
+		return ""
+	if net_mode == NET_WEBRTC:
+		if _opening:
+			last_error = ""
+			return ""
+		if balance.signaling_url == "":
+			last_error = "ERR_SIGNALING"
+			return ""
+		open_group_with(WebSocketSignaling.host(balance.signaling_url))
 		return ""
 	var ip := GroupCode.pick_host_ip(IP.get_local_addresses())
 	if ip == "":
@@ -76,8 +98,27 @@ func open_group() -> String:
 	return _group_code
 
 
+## Opens a WebRTC group through the given signaling channel (tests pass a fake one).
+func open_group_with(signaling: Signaling) -> void:
+	var t := WebRtcTransport.host(signaling, WebRtcTransport.ice_from_url(balance.stun_url))
+	t.room_opened.connect(_on_room_opened)
+	t.connection_failed.connect(_on_group_failed)
+	_opening = true
+	last_error = ""
+	host.add_transport(t)
+
+
 func group_code() -> String:
 	return _group_code
+
+
+func is_opening_group() -> bool:
+	return _opening
+
+
+## "WebRTC" or "ENet", for the debug overlay.
+func net_label() -> String:
+	return "WebRTC" if net_mode == NET_WEBRTC else "ENet"
 
 
 ## Joins a friend's game by code.
@@ -86,15 +127,43 @@ func join(code: String, player_name: String) -> Error:
 	if ip == "":
 		last_error = "ERR_BAD_CODE"
 		return ERR_INVALID_PARAMETER
+	if net_mode == NET_WEBRTC:
+		if balance.signaling_url == "":
+			last_error = "ERR_SIGNALING"
+			return ERR_UNCONFIGURED
+		join_with(WebSocketSignaling.join(balance.signaling_url, code), player_name)
+		return OK
 	var t: Transport = EnetTransport.join(ip, balance.port)
 	if t == null:
 		last_error = "ERR_CONNECT"
 		return ERR_CANT_CONNECT
+	_start_client(player_name, _with_debug_lag(t))
+	return OK
+
+
+## Joins a WebRTC group through the given signaling channel (tests pass a fake one).
+func join_with(signaling: Signaling, player_name: String) -> void:
+	var t := WebRtcTransport.join(signaling, WebRtcTransport.ice_from_url(balance.stun_url))
+	_start_client(player_name, _with_debug_lag(t))
+
+
+func _with_debug_lag(t: Transport) -> Transport:
 	var lag := _debug_lag()
 	if lag.x > 0.0 or lag.y > 0.0:
-		t = LaggyTransport.new(t, lag.x, lag.y / 100.0, randi())
-	_start_client(player_name, t)
-	return OK
+		return LaggyTransport.new(t, lag.x, lag.y / 100.0, randi())
+	return t
+
+
+func _on_room_opened(code: String) -> void:
+	_opening = false
+	_group_code = code
+	group_opened.emit(code)
+
+
+func _on_group_failed() -> void:
+	_opening = false
+	last_error = "ERR_SIGNALING"
+	group_failed.emit(last_error)
 
 
 ## Attaches an extra transport to the host (used by tests to add in-memory guests).
@@ -111,6 +180,7 @@ func leave() -> void:
 	client = null
 	host = null
 	_group_code = ""
+	_opening = false
 	for id: int in _avatars.keys():
 		_remove_avatar(id)
 
@@ -189,10 +259,12 @@ func avatar_count() -> int:
 
 ## (latency_ms, loss_percent) from user arguments --lag=<ms> --loss=<pct>.
 static func _debug_lag() -> Vector2:
-	var lag := Vector2.ZERO
+	return Vector2(float(_user_arg("lag", "0")), float(_user_arg("loss", "0")))
+
+
+## Value of the user argument --<key>=<value> (after "--" on the command line).
+static func _user_arg(key: String, default: String = "") -> String:
 	for arg in OS.get_cmdline_user_args():
-		if arg.begins_with("--lag="):
-			lag.x = float(arg.trim_prefix("--lag="))
-		elif arg.begins_with("--loss="):
-			lag.y = float(arg.trim_prefix("--loss="))
-	return lag
+		if arg.begins_with("--" + key + "="):
+			return arg.trim_prefix("--" + key + "=")
+	return default

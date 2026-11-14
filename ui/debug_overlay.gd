@@ -3,6 +3,8 @@ extends Label
 ## F3 overlay: FPS, ping, tick, pending inputs and last correction.
 
 var client: ClientSession
+## Network in use ("WebRTC" or "ENet").
+var net_label: String = ""
 
 
 func _init() -> void:
@@ -26,6 +28,7 @@ func _process(_delta: float) -> void:
 		text = "FPS %d" % Engine.get_frames_per_second()
 		return
 	text = tr("DEBUG_LINE") % [
+		net_label,
 		Engine.get_frames_per_second(), roundi(client.ping_ms()), client.latest_tick(),
 		client.pending_count(), client.last_correction,
 	]

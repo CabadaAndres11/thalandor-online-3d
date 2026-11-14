@@ -15,6 +15,9 @@ var timeout_s: float = 5.0
 var chat_max_len: int = 120
 var port: int = 24680
 var max_players: int = 4
+## WebRTC: relay server that introduces players (tools/signaling) and STUN server.
+var signaling_url: String = ""
+var stun_url: String = ""
 
 
 static func load_from(path: String = DEFAULT_PATH) -> Balance:
@@ -32,6 +35,8 @@ static func load_from(path: String = DEFAULT_PATH) -> Balance:
 		match typeof(current):
 			TYPE_INT:
 				b.set(key, int(data[key]))
+			TYPE_STRING:
+				b.set(key, str(data[key]))
 			TYPE_FLOAT:
 				b.set(key, float(data[key]))
 	return b

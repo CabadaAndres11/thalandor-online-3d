@@ -9,5 +9,7 @@
 	"timeout_s": 5.0,
 	"chat_max_len": 120,
 	"port": 24680,
-	"max_players": 4
+	"max_players": 4,
+	"signaling_url": "ws://127.0.0.1:8787",
+	"stun_url": "stun:stun.l.google.com:19302"
 }

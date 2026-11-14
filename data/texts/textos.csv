@@ -15,12 +15,13 @@ BTN_COPIED,¡Copiado!
 MENU_TITLE,Menú
 MENU_RESUME,Volver al juego
 MENU_OPEN_GROUP,Abrir grupo
+MENU_OPENING_GROUP,Abriendo grupo…
 MENU_LEAVE,Salir al título
 MENU_CODE_HINT,Comparte este código con tus amigos
 MENU_GUEST_HINT,Estás en el grupo de un amigo
 CHAT_PLACEHOLDER,"Escribe un mensaje (Enter envía, Esc cancela)"
 CONNECTING,Conectando…
-DEBUG_LINE,"FPS %d · Ping %d ms · Tick %d · Pendientes %d · Corrección %.2f m"
+DEBUG_LINE,"%s · FPS %d · Ping %d ms · Tick %d · Pendientes %d · Corrección %.2f m"
 ERR_VERSION,"El grupo usa la versión %s y tú tienes la %s. Actualiza el juego para unirte."
 ERR_FULL,El grupo está lleno (máximo 4 jugadores).
 ERR_NAME,"El nombre no es válido: usa de 2 a 16 letras, números, espacios, guiones o apóstrofos."
@@ -30,3 +31,4 @@ ERR_CONNECT,"No se ha podido conectar. Revisa el código y que el anfitrión ten
 ERR_BAD_CODE,"El código no es válido. Tiene 8 caracteres, por ejemplo ABCD-EFGH."
 ERR_PORT,"No se ha podido abrir el grupo: el puerto 24680 está ocupado o bloqueado."
 ERR_NO_NETWORK,No se ha encontrado ninguna red a la que puedan conectarse tus amigos.
+ERR_SIGNALING,"No se ha podido contactar con el servidor de enlace. Revisa tu conexión a Internet e inténtalo de nuevo."
