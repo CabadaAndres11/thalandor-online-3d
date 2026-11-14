@@ -2,3 +2,4 @@
 exports/
 *.tmp
 .superpowers/
+docs/.obsidian/workspace*.json

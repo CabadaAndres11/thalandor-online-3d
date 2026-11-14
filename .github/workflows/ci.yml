@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+    tags: ["v*"]
+  pull_request:
+
+env:
+  GODOT_VERSION: 4.7.2
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download Godot
+        run: |
+          curl -sSL -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q godot.zip -d "$HOME/godot"
+          echo "GODOT=$HOME/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64" >> "$GITHUB_ENV"
+      - name: Import project
+        run: $GODOT --headless --path . --import || true
+      - name: Run GUT tests
+        run: ./run_tests.sh
