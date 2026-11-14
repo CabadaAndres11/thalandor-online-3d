@@ -2,7 +2,7 @@
 tags: [plan, spec]
 plan: 1
 fecha: 2026-11-14
-estado: en revisión
+estado: aprobada
 actualizado: 2026-11-14
 ---
 # Plan 1 — Fundaciones y red: diseño

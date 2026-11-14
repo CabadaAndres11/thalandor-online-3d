@@ -12,7 +12,7 @@ Estado de cada apartado: **[Diseñado]** acordado sin implementar · **[En curso
 |---|---|
 | Versión del documento | 2.0 |
 | Fecha | 2026-11-14 |
-| Versión del juego | — (desarrollo desde cero) |
+| Versión del juego | 0.1.0 (Plan 1: fundaciones y red) |
 
 ## Apartados
 - [[01 Visión]]

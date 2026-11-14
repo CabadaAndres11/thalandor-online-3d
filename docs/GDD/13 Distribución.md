@@ -1,10 +1,10 @@
 ---
 tags: [gdd]
-estado: diseñado
+estado: en curso
 actualizado: 2026-11-14
 ---
 
-# 13. Distribución **[Diseñado]**
+# 13. Distribución **[En curso]** (GitHub Releases y CI con GitHub Actions implementados; itch.io pendiente)
 
 - **Repositorio:** público en GitHub.
 - **Ejecutable para Windows** exportado desde Godot, publicado en **itch.io** (página gratuita; `butler` para subir versiones y que la app de itch actualice sola) y en **GitHub Releases**.

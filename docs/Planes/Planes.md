@@ -9,7 +9,7 @@ Cada plan de la [[14 Hoja de ruta]] tiene aquí su **spec** (diseño acordado) y
 
 | Plan | Spec | Plan | Estado |
 |---|---|---|---|
-| 1 · Fundaciones y red | [[Plan 1 — Fundaciones y red (spec)\|Spec]] | [[Plan 1 — Fundaciones y red (plan)\|Plan]] | Plan en revisión |
+| 1 · Fundaciones y red | [[Plan 1 — Fundaciones y red (spec)\|Spec]] | [[Plan 1 — Fundaciones y red (plan)\|Plan]] | En curso: 0.1.0 publicada; falta la prueba entre casas |
 | 2 · Personajes vóxel | — | — | Pendiente |
 | 3 · Combate y clases | — | — | Pendiente |
 | 4 · Progresión | — | — | Pendiente |

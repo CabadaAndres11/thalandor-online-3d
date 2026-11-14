@@ -1,10 +1,10 @@
 ---
 tags: [gdd]
-estado: diseñado
+estado: en curso
 actualizado: 2026-11-14
 ---
 
-# 12. Pruebas **[Diseñado]**
+# 12. Pruebas **[En curso]** (GUT, red simulada 1 host + 3 invitados y arranque sin ventana implementados)
 
 | Nivel | Herramienta | Qué cubre |
 |---|---|---|

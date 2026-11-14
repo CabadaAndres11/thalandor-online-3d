@@ -1,12 +1,12 @@
 ---
 tags: [gdd]
-estado: diseñado
+estado: en curso
 actualizado: 2026-11-14
 ---
 
 # 9. Interfaz y flujo
 
-## 9.1 Flujo **[Diseñado]**
+## 9.1 Flujo **[En curso]** (título, Jugar, Abrir grupo y Unirse implementados; falta selección de personaje)
 1. **Pantalla de título.**
 2. **Selección de personaje:** cada tarjeta muestra el **modelo 3D del personaje con su equipo**; opciones de crear, borrar, exportar e importar personajes.
 3. **Jugar:** entra al mundo como host de su propia partida.
@@ -33,7 +33,7 @@ actualizado: 2026-11-14
 - **Misiones (J), Mapa (M), Mercader** y **Menú (Esc)** (en solitario pausa el mundo; en grupo la partida sigue).
 - **Opciones:** controles, volumen, gráficos y pantalla completa.
 
-## 9.4 Social **[Diseñado]**
+## 9.4 Social **[Implementado]**
 - Chat de texto de grupo. Para la voz se usa Discord.
 
 ---

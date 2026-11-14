@@ -1,10 +1,10 @@
 ---
 tags: [gdd]
-estado: diseñado
+estado: en curso
 actualizado: 2026-11-14
 ---
 
-# 3. Cámara y controles **[Diseñado]**
+# 3. Cámara y controles **[En curso]** (cámara, WASD, ratón, Enter, Esc, F3 y F9 implementados; zoom con rueda; teclas aún no reasignables)
 
 ## 3.1 Cámara
 - **Isométrica/cenital** en perspectiva (o proyección ortográfica si se ve mejor), alta e inclinada unos 50–60°, siguiendo al personaje.

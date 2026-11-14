@@ -1,6 +1,6 @@
 ---
 tags: [gdd]
-estado: diseñado
+estado: en curso
 actualizado: 2026-11-14
 ---
 
@@ -9,7 +9,7 @@ actualizado: 2026-11-14
 ## 2.1 Stack **[Diseñado]**
 | Pieza | Tecnología | Coste |
 |---|---|---|
-| Motor | **Godot 4** (versión estable más reciente al empezar; 4.4 o superior) | Gratis (MIT) |
+| Motor | **Godot 4.7.2** estable (la más reciente al empezar) | Gratis (MIT) |
 | Lenguaje | **GDScript** con tipado estático (`:=`, tipos en firmas). C# solo si un caso concreto lo exige | Gratis |
 | Modelos vóxel | **MagicaVoxel** (modelado) y **Blockbench** (modelos por piezas y animaciones; exporta glTF) | Gratis |
 | Importación | glTF 2.0 (`.glb`) nativo de Godot; `.vox` mediante un importador libre si hace falta | Gratis |
@@ -20,7 +20,7 @@ actualizado: 2026-11-14
 | Control de versiones | Git + GitHub (repositorio público) | Gratis |
 | Distribución | Exportación de Godot para Windows, publicada en **itch.io** (con `butler` para actualizar) y/o **GitHub Releases** | Gratis |
 
-## 2.2 Modelo host-autoritativo **[Diseñado]** (probado en el prototipo 2D)
+## 2.2 Modelo host-autoritativo **[Implementado]** (movimiento; Plan 1)
 - **Siempre hay un host.** Al jugar solo, tu PC es el host y no hay invitados. En grupo, un jugador es el host y el resto se conecta a él. Hay un único camino de código para ambos casos.
 - **Simulación.** El host simula el mundo a **20–30 ticks/s** en `_physics_process`, separada del render.
 - **Invitados.** Envían solo **entradas** (movimiento, punto apuntado en el suelo, habilidad usada) y reciben **instantáneas del estado** del host.
@@ -35,7 +35,7 @@ actualizado: 2026-11-14
 - **El host comunica los cambios al momento** (experiencia, nivel, inventario, equipo) y el cliente los guarda.
 - **El estado del mundo es temporal:** monstruos vivos, objetos en el suelo y temporizadores de reaparición no se guardan.
 
-## 2.4 Organización del proyecto **[Diseñado]**
+## 2.4 Organización del proyecto **[Implementado]**
 | Carpeta | Responsabilidad |
 |---|---|
 | `sim/` | Reglas del juego **sin nodos visuales**: estadísticas, daño, amenaza, IA, habilidades, progresión, botín, misiones. Clases GDScript puras (`RefCounted`), testeables con GUT. |
@@ -49,14 +49,15 @@ actualizado: 2026-11-14
 
 Separar `sim/` de las escenas permite probar las reglas sin abrir el juego y cambiar el render sin tocar las reglas.
 
-## 2.5 Conexión **[Diseñado; validar en el Plan 1]**
+## 2.5 Conexión **[En curso]** (ENet + código hecho; falta la prueba entre casas)
 - **Objetivo:** el host pulsa **"Abrir grupo"** y obtiene un **código corto**; los invitados lo escriben en **"Unirse a un amigo"**. Topología en estrella (cada invitado conectado al host). Sin servidor de juego dedicado.
 - **Opción principal:** **WebRTC** con el plugin oficial `webrtc-native` de Godot (MIT).
   - Un **servidor de señalización** mínimo intercambia las ofertas de conexión usando el código como sala. Se aloja en un plan gratuito (por ejemplo Deno Deploy o Cloudflare Workers); no transporta partida, solo el saludo inicial.
   - Servidores **STUN** públicos y gratuitos para atravesar el router.
 - **Plan B:** **ENet** (nativo de Godot) con conexión directa, usando una VPN gratuita tipo **Tailscale** o **ZeroTier** cuando el router no deje conectar.
 - **El Plan 1 incluye una prueba real** (spike) entre dos casas para elegir la opción definitiva antes de construir encima.
-- **Control de versiones:** si el host y el invitado tienen versiones distintas del juego, se rechaza la conexión con un aviso para actualizar.
+- **Control de versiones:** si el host y el invitado tienen versiones distintas del juego, se rechaza la conexión con un aviso para actualizar. **[Implementado]**
+- **Implementado en el Plan 1 (0.1.0):** transporte intercambiable (`Transport`) con mensajes propios ([[D-008 Red con mensajes propios]]); ENet con código de 8 caracteres que lleva la IP del host (Tailscale o red local) y puerto fijo **24680**; hasta 4 jugadores; predicción, reconciliación suavizada e interpolación a 100 ms; chat de grupo.
 
 ## 2.6 Rendimiento y escalabilidad del contenido **[Diseñado]**
 - **Carga por zona:** cada zona es una escena; solo se carga la zona actual y la anterior se libera.
