@@ -23,3 +23,37 @@ jobs:
         run: $GODOT --headless --path . --import || true
       - name: Run GUT tests
         run: ./run_tests.sh
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download Godot and export templates
+        run: |
+          curl -sSL -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q godot.zip -d "$HOME/godot"
+          echo "GODOT=$HOME/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64" >> "$GITHUB_ENV"
+          curl -sSL -o templates.tpz "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          DEST="$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
+          mkdir -p "$DEST"
+          unzip -q -j templates.tpz 'templates/version.txt' 'templates/windows_release_x86_64*.exe' 'templates/windows_debug_x86_64*.exe' -d "$DEST"
+          rm templates.tpz
+      - name: Export Windows build
+        run: |
+          $GODOT --headless --path . --import || true
+          mkdir -p exports/windows
+          $GODOT --headless --path . --export-release "Windows Desktop" exports/windows/ThalandorOnline.exe
+          test -f exports/windows/ThalandorOnline.exe
+      - name: Package and publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          ZIP="ThalandorOnline-${VERSION}-windows.zip"
+          (cd exports/windows && zip -q "../../${ZIP}" ThalandorOnline.exe)
+          sed "s/{{VERSION}}/${VERSION}/g" .github/release-notes.md > notes.md
+          gh release create "$GITHUB_REF_NAME" "$ZIP" --title "Thalandor Online ${VERSION}" --notes-file notes.md
