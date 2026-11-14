@@ -45,6 +45,41 @@ func test_model_is_about_1_8_m_tall() -> void:
 	assert_almost_eq(2.7 * CharacterRig.MODEL_SCALE, 1.8, 0.01)
 
 
+func test_builds_every_class_body_and_hair_style_without_errors() -> void:
+	var catalog := CharacterCatalog.load_default()
+	for c: Dictionary in catalog.classes():
+		for body: Dictionary in catalog.options("body"):
+			for hair: Dictionary in catalog.options("hair_style"):
+				var rig := CharacterRig.create(c.id, {"body": body.id, "hair_style": hair.id}, catalog)
+				assert_not_null(rig.part("head"), "%s %s %s" % [c.id, body.id, hair.id])
+				rig.free()
+
+
+func test_hood_hides_long_hair() -> void:
+	var rig := CharacterRig.create("archer", {"hair_style": "hair_long"})
+	add_child_autofree(rig)
+	assert_has(rig.pieces(), "hood_archer")
+	assert_does_not_have(rig.pieces(), "hair_long")
+
+
+func test_warrior_shows_long_hair() -> void:
+	var rig := CharacterRig.create("warrior", {"hair_style": "hair_long"})
+	add_child_autofree(rig)
+	assert_eq(rig.pieces(), ["hair_long"])
+
+
+func test_robust_body_scales_torso_but_not_the_head() -> void:
+	var slim := CharacterRig.create("warrior", {"body": "slim"})
+	var robust := CharacterRig.create("warrior", {"body": "robust"})
+	add_child_autofree(slim)
+	add_child_autofree(robust)
+	assert_gt(robust.part("torso").scale.x, slim.part("torso").scale.x)
+	# The head and arms are children of the torso: their world size must not grow
+	# with the torso (only the arms' own factor applies).
+	assert_almost_eq(robust.part("head").global_transform.basis.get_scale().x,
+		slim.part("head").global_transform.basis.get_scale().x, 0.0001)
+
+
 ## A piece on the head (scale 0.1) must keep its real size: one voxel = 0.1 model units.
 func test_head_piece_compensates_head_scale() -> void:
 	var rig := CharacterRig.build(_mage_look())

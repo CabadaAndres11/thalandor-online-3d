@@ -1,0 +1,53 @@
+{
+	"body": [
+		{"id": "slim", "name": "BODY_SLIM", "scale": {"torso": [1, 1, 1], "arm": [1, 1, 1], "leg": [1, 1, 1]}},
+		{"id": "robust", "name": "BODY_ROBUST", "scale": {"torso": [1.15, 1, 1.12], "arm": [1.12, 1, 1.12], "leg": [1.08, 1, 1.08]}}
+	],
+	"skin": [
+		{"id": "skin_1", "color": "#f6d9c0"},
+		{"id": "skin_2", "color": "#f1c8a4"},
+		{"id": "skin_3", "color": "#e8b996"},
+		{"id": "skin_4", "color": "#d9a27a"},
+		{"id": "skin_5", "color": "#b97d55"},
+		{"id": "skin_6", "color": "#8d5a3b"},
+		{"id": "skin_7", "color": "#6b4229"},
+		{"id": "skin_8", "color": "#4a2e1e"}
+	],
+	"eyes": [
+		{"id": "brown", "color": "#5a3a22"},
+		{"id": "dark", "color": "#2b2420"},
+		{"id": "blue", "color": "#3d7cc9"},
+		{"id": "green", "color": "#3f8f4e"},
+		{"id": "grey", "color": "#7d8a96"},
+		{"id": "amber", "color": "#b07a2a"}
+	],
+	"hair_style": [
+		{"id": "short", "name": "HAIR_SHORT", "layer": "res://assets/characters/layers/hair_short.png", "piece": ""},
+		{"id": "bob", "name": "HAIR_BOB", "layer": "res://assets/characters/layers/hair_bob.png", "piece": ""},
+		{"id": "swept", "name": "HAIR_SWEPT", "layer": "res://assets/characters/layers/hair_swept.png", "piece": ""},
+		{"id": "bald", "name": "HAIR_BALD", "layer": "", "piece": ""},
+		{"id": "hair_long", "name": "HAIR_LONG", "layer": "res://assets/characters/layers/hair_bob.png", "piece": "hair_long"},
+		{"id": "hair_ponytail", "name": "HAIR_PONYTAIL", "layer": "res://assets/characters/layers/hair_short.png", "piece": "hair_ponytail"},
+		{"id": "hair_bun", "name": "HAIR_BUN", "layer": "res://assets/characters/layers/hair_swept.png", "piece": "hair_bun"},
+		{"id": "hair_mohawk", "name": "HAIR_MOHAWK", "layer": "", "piece": "hair_mohawk"}
+	],
+	"hair_color": [
+		{"id": "black", "color": "#1d1a19"},
+		{"id": "dark_brown", "color": "#3b2a20"},
+		{"id": "brown", "color": "#6b4428"},
+		{"id": "chestnut", "color": "#8a4b2a"},
+		{"id": "red", "color": "#c4542a"},
+		{"id": "blond", "color": "#d9b25e"},
+		{"id": "platinum", "color": "#e8dcb8"},
+		{"id": "grey", "color": "#8c8c8c"},
+		{"id": "white", "color": "#e9e9e9"},
+		{"id": "navy", "color": "#2f3a5a"}
+	],
+	"beard": [
+		{"id": "none", "name": "BEARD_NONE", "layer": ""},
+		{"id": "full", "name": "BEARD_FULL", "layer": "res://assets/characters/layers/beard_full.png"},
+		{"id": "mustache", "name": "BEARD_MUSTACHE", "layer": "res://assets/characters/layers/beard_mustache.png"},
+		{"id": "short", "name": "BEARD_SHORT", "layer": "res://assets/characters/layers/beard_short.png"},
+		{"id": "goatee", "name": "BEARD_GOATEE", "layer": "res://assets/characters/layers/beard_goatee.png"}
+	]
+}

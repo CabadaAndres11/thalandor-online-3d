@@ -70,5 +70,39 @@ func _looks(set_name: String) -> Array:
 			var e := d.duplicate(true)
 			e["rot"] = 160.0
 			return [a, b, c, d, e]
+		"classes":
+			return _resolved([
+				["warrior", {"skin": "skin_4", "hair_style": "short", "hair_color": "dark_brown", "beard": "full", "body": "robust"}],
+				["cleric", {"skin": "skin_2", "hair_style": "bald", "hair_color": "grey", "beard": "short", "eyes": "blue"}],
+				["mage", {"skin": "skin_6", "hair_style": "bob", "hair_color": "white", "beard": "goatee", "eyes": "amber"}],
+				["archer", {"skin": "skin_3", "hair_style": "swept", "hair_color": "blond", "eyes": "green"}],
+				["assassin", {"skin": "skin_7", "hair_style": "short", "hair_color": "black", "eyes": "grey"}],
+			])
+		"classes_back":
+			var looks := _looks("classes")
+			for l: Dictionary in looks:
+				l["rot"] = 180.0
+			return looks
+		"variety":
+			return _resolved([
+				["warrior", {"hair_style": "hair_long", "hair_color": "red", "skin": "skin_1"}],
+				["warrior", {"hair_style": "hair_ponytail", "hair_color": "chestnut", "skin": "skin_5", "body": "robust"}],
+				["warrior", {"hair_style": "hair_bun", "hair_color": "platinum", "skin": "skin_8"}],
+				["warrior", {"hair_style": "hair_mohawk", "hair_color": "navy", "skin": "skin_3", "beard": "mustache"}],
+				["warrior", {"hair_style": "hair_ponytail", "hair_color": "brown", "skin": "skin_2"}, 160.0],
+				["warrior", {"hair_style": "hair_bun", "hair_color": "black", "skin": "skin_6"}, 200.0],
+			])
 	push_error("unknown set " + set_name)
 	return []
+
+
+## [class_id, appearance(, rotation)] -> looks through the catalog.
+func _resolved(list: Array) -> Array:
+	var catalog := CharacterCatalog.load_default()
+	var looks := []
+	for entry: Array in list:
+		var look := catalog.resolve(entry[0], entry[1])
+		if entry.size() > 2:
+			look["rot"] = entry[2]
+		looks.append(look)
+	return looks

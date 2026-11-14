@@ -57,14 +57,14 @@ function skinLayer(letter, refXY) {
 
 // Hair or beard from `letter`: pixels like the reference color inside the head,
 // minus `exclude` rectangles (e.g. the eyebrows, which are drawn separately).
-function tintedFrom(letter, refXY, { lo = 0.45, hi = 1.3, exclude = [], areas = Object.values(L.HEAD), gain = 0.9 } = {}) {
+function tintedFrom(letter, refXY, { lo = 0.45, hi = 1.3, exclude = [], areas = Object.values(L.HEAD), gain = 0.9, tol = 0.12 } = {}) {
   const src = tex(letter);
   const ref = png.get(src, ...refXY);
   const out = png.create(L.SIZE, L.SIZE);
   for (const area of areas) {
     eachInArea(area, (x, y) => {
       if (exclude.some((r) => inRect(x, y, r))) return;
-      const r = likeness(png.get(src, x, y), ref, lo, hi);
+      const r = likeness(png.get(src, x, y), ref, lo, hi, tol);
       if (r > 0) png.set(out, x, y, grey(r * gain));
     });
   }
@@ -113,5 +113,16 @@ save(
     rects(L.EYES.map(([x, y]) => [x + 3, y + 3, 4, 4]), [255, 255, 255, 230]),
   ),
 );
-save("hair_short", tintedFrom("a", [192, 64], { exclude: brows }));
+// Hair never reaches the eyes or the lower middle of the face (freckles, mouths and
+// moustaches of the source characters live there).
+const notFace = [...brows, ...L.EYES, [140, 196, 104, 60]];
+save("hair_short", tintedFrom("a", [192, 64], { exclude: notFace }));
+save("hair_bob", tintedFrom("e", [192, 64], { exclude: notFace }));
+save("hair_swept", tintedFrom("f", [192, 64], { exclude: notFace }));
+
+const lowerFace = [L.HEAD.front[0], 200, 128, 56];
+const lowerSides = [[L.HEAD.left[0], 200, 128, 56], [L.HEAD.right[0], 200, 128, 56]];
 save("beard_full", tintedFrom("a", [192, 248], { lo: 0.6, hi: 1.3, exclude: brows }));
+save("beard_mustache", tintedFrom("j", [192, 212], { lo: 0.7, hi: 1.3, areas: [[L.HEAD.front[0], 196, 128, 40]] }));
+save("beard_short", tintedFrom("k", [192, 245], { lo: 0.85, hi: 1.15, tol: 0.06, areas: [lowerFace, ...lowerSides], gain: 0.75 }));
+save("beard_goatee", tintedFrom("a", [192, 248], { lo: 0.6, hi: 1.3, areas: [[166, 214, 54, 42]] }));

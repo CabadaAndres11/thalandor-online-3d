@@ -58,7 +58,80 @@ function torso(img, color) {
   fill(img, L.TORSO.bottom, shade(color, 0.8));
 }
 
+// Diagonal strap across the torso front (shoulder to opposite hip).
+function strap(img, color, width = 12, leftToRight = true) {
+  const f = L.TORSO.front;
+  for (let y = 0; y < f[3]; y++) {
+    const t = y / f[3];
+    const cx = leftToRight ? f[0] + 8 + t * (f[2] - 16) : f[0] + f[2] - 8 - t * (f[2] - 16);
+    for (let x = Math.round(cx - width / 2); x < Math.round(cx + width / 2); x++) png.set(img, x, f[1] + y, color);
+  }
+}
+
+// Horizontal quilting lines on a face (padded jacket).
+function quilt(img, r, color, step = 18) {
+  for (let y = r[1] + step; y < r[1] + r[3] - 10; y += step) fill(img, [r[0], y, r[2], 2], color);
+}
+
 const OUTFITS = {
+  // Padded gambeson in deep red with quilting, leather belt and bracers, grey trousers.
+  warrior(img) {
+    const coat = hex("#8e3b2e"), leather = hex("#5e3a22"), buckle = hex("#c9c9c9");
+    torso(img, coat);
+    for (const k of ["left", "front", "right", "back"]) quilt(img, L.TORSO[k], shade(coat, 0.78));
+    const f = L.TORSO.front;
+    fill(img, [f[0] + f[2] / 2 - 2, f[1], 4, f[3] - 40], shade(coat, 0.7)); // closure
+    torsoBand(img, 100, 14, leather);
+    fill(img, [f[0] + f[2] / 2 - 9, f[1] + 99, 18, 16], buckle);
+    fill(img, [f[0] + f[2] / 2 - 4, f[1] + 103, 8, 8], leather);
+    arms(img, coat, leather);
+    for (const o of Object.values(L.ARMS)) {
+      const s = off(o, L.ARM_SIDES);
+      fill(img, [s[0], s[1] + s[3] - L.HAND_PX - 34, s[2], 34], leather); // bracers
+    }
+    legs(img, hex("#5f5a55"), hex("#3a2a1e"), { shoePx: 28 });
+  },
+  // Cream habit with a blue stole down the front, rope belt, sandals.
+  cleric(img) {
+    const habit = hex("#e9e2cf"), stole = hex("#3a6fb0"), rope = hex("#b08a52");
+    torso(img, habit);
+    const f = L.TORSO.front;
+    fill(img, [f[0] + 30, f[1], 14, f[3]], stole);
+    fill(img, [f[0] + f[2] - 44, f[1], 14, f[3]], stole);
+    fill(img, [f[0] + 33, f[1] + 70, 8, 8], hex("#e8b23a")); // embroidered crosses
+    fill(img, [f[0] + f[2] - 41, f[1] + 70, 8, 8], hex("#e8b23a"));
+    torsoBand(img, 104, 8, rope);
+    arms(img, habit, shade(habit, 0.85));
+    legs(img, habit, hex("#7a5532"), { shoePx: 12, hem: stole, hemY: 132 });
+  },
+  // Leather jerkin over a green shirt, quiver strap across the chest and quiver on
+  // the back, dark trousers and tall boots.
+  archer(img) {
+    const jerkin = hex("#6b4a2b"), shirt = hex("#4f7a3a"), strapC = hex("#3b2717");
+    torso(img, jerkin);
+    const f = L.TORSO.front, b = L.TORSO.back;
+    fill(img, [f[0], f[1], f[2], 14], shirt); // shirt collar
+    strap(img, strapC, 12, true);
+    torsoBand(img, 110, 10, strapC);
+    // Quiver on the back with fletchings.
+    fill(img, [b[0] + 70, b[1] + 6, 30, 110], hex("#4a311c"));
+    for (const x of [74, 82, 90]) fill(img, [b[0] + x, b[1], 6, 10], hex("#e9e2cf"));
+    arms(img, shirt, jerkin);
+    legs(img, hex("#3f4a2e"), hex("#4a311c"), { shoePx: 40 });
+  },
+  // Close-fitting charcoal clothes, crossed straps, dark red sash, soft boots.
+  assassin(img) {
+    const cloth = hex("#2d2f3a"), sash = hex("#8a2433"), strapC = hex("#1b1c24");
+    torso(img, cloth);
+    strap(img, strapC, 8, true);
+    strap(img, strapC, 8, false);
+    torsoBand(img, 100, 14, sash);
+    const s = L.TORSO.right;
+    fill(img, [s[0] + 30, s[1] + 100, 16, 40], sash); // sash tails
+    arms(img, cloth, sash);
+    legs(img, shade(cloth, 1.1), hex("#1b1c24"), { shoePx: 30 });
+  },
+
   // Long robe in deep violet with golden trim, rope belt, wide cuffs.
   mage(img) {
     const robe = hex("#5b3f9e"), gold = hex("#e8b23a"), rope = hex("#8a5a2b");

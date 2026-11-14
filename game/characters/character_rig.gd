@@ -23,6 +23,12 @@ var animation_player: AnimationPlayer
 ## look: skin_color, eyes_color, hair_color, primary, secondary (Color);
 ## hair_layer, beard_layer, outfit_layer (res:// path or ""); body_scale
 ## ({"torso"|"arm"|"leg": [x, y, z]}); pieces ([{id, file, part, offset: [x, y, z]}]).
+## A character of a class with an appearance (ids; untrusted values are sanitized).
+static func create(class_id: String, appearance: Dictionary, catalog: CharacterCatalog = null) -> CharacterRig:
+	var cat := catalog if catalog != null else CharacterCatalog.load_default()
+	return build(cat.resolve(class_id, appearance))
+
+
 static func build(look: Dictionary) -> CharacterRig:
 	var rig := CharacterRig.new()
 	rig.name = "Character"
@@ -61,7 +67,6 @@ func _setup(look: Dictionary) -> void:
 	_material.set_shader_parameter("skin_color", look.get("skin_color", Color.WHITE))
 	_material.set_shader_parameter("eyes_color", look.get("eyes_color", Color.BLACK))
 	_material.set_shader_parameter("hair_color", look.get("hair_color", Color.BLACK))
-	var body_scale: Dictionary = look.get("body_scale", {})
 	for part_name: String in PARTS:
 		var mesh := model.find_child(part_name, true, false) as MeshInstance3D
 		if mesh == null:
@@ -70,12 +75,9 @@ func _setup(look: Dictionary) -> void:
 		_parts[part_name] = mesh
 		for s in mesh.get_surface_override_material_count():
 			mesh.set_surface_override_material(s, _material)
-		var group: String = SCALE_GROUP.get(part_name, "")
-		if body_scale.has(group):
-			var f: Array = body_scale[group]
-			mesh.scale *= Vector3(f[0], f[1], f[2])
+	_apply_body_scale(look.get("body_scale", {}))
 	var tints := {
-		VoxMesher.TINT_HAIR: look.get("hair_color", Color.BLACK),
+		VoxMesher.TINT_HAIR: look.get("voxel_hair_color", look.get("hair_color", Color.BLACK)),
 		VoxMesher.TINT_PRIMARY: look.get("primary", Color.GRAY),
 		VoxMesher.TINT_SECONDARY: look.get("secondary", Color.GRAY),
 	}
@@ -92,14 +94,43 @@ func _attach_piece(p: Dictionary, tints: Dictionary) -> void:
 	var node := MeshInstance3D.new()
 	node.name = str(p.id)
 	node.mesh = mesh
-	# One voxel is VoxMesher.VOXEL_SIZE model units whatever the part's own scale
-	# (the head is scaled by 0.1 in the model).
-	var inv := Vector3.ONE / host.scale
+	# One voxel is VoxMesher.VOXEL_SIZE model units whatever the scale the part has in
+	# the model (the head is scaled by 0.1, the torso by the body type).
+	var inv := Vector3.ONE / _scale_in_model(host)
 	node.scale = inv
 	var o: Array = p.get("offset", [0, 0, 0])
 	node.position = Vector3(o[0], o[1], o[2]) * VoxMesher.VOXEL_SIZE * inv
 	host.add_child(node)
 	_pieces[str(p.id)] = node
+
+
+## Widens parts by body type. The arms and the head hang from the torso, so they undo
+## the torso's factor and keep only their own.
+func _apply_body_scale(body_scale: Dictionary) -> void:
+	var factors := {}
+	for part_name: String in _parts:
+		var group: String = SCALE_GROUP.get(part_name, "")
+		var f: Array = body_scale.get(group, [1, 1, 1])
+		factors[part_name] = Vector3(f[0], f[1], f[2])
+	var torso := part("torso")
+	var torso_factor: Vector3 = factors.get("torso", Vector3.ONE)
+	for part_name: String in _parts:
+		var mesh: MeshInstance3D = _parts[part_name]
+		var factor: Vector3 = factors[part_name]
+		if torso != null and mesh.get_parent() == torso:
+			factor /= torso_factor
+		mesh.scale *= factor
+
+
+## Product of the scales from `node` up to (not including) this rig.
+func _scale_in_model(node: Node3D) -> Vector3:
+	var s := Vector3.ONE
+	var n: Node = node
+	while n != null and n != self:
+		if n is Node3D:
+			s *= (n as Node3D).scale
+		n = n.get_parent()
+	return s
 
 
 static func _texture(path: String) -> Texture2D:
