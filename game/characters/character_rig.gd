@@ -52,7 +52,7 @@ func set_moving_speed(speed_mps: float, move_speed: float) -> void:
 
 
 func current_animation() -> String:
-	return animation_player.current_animation if animation_player != null else ""
+	return str(animation_player.current_animation) if animation_player != null else ""
 
 
 func part(part_name: String) -> MeshInstance3D:

@@ -12,34 +12,12 @@ func _host(control: Control) -> Control:
 	return root
 
 
-func test_title_buttons_disabled_for_invalid_name() -> void:
+func test_play_opens_characters() -> void:
 	var title := TitleScreen.new()
 	_host(title)
-	title.set_defaults("", "")
-	assert_true(title.play_button.disabled)
-	assert_true(title.join_button.disabled)
-	title.name_edit.text = "Andrés"
-	title.name_edit.text_changed.emit("Andrés")
-	assert_false(title.play_button.disabled)
-	assert_false(title.join_button.disabled)
-
-
-func test_play_emits_trimmed_name() -> void:
-	var title := TitleScreen.new()
-	_host(title)
-	title.set_defaults("  Ana  ", "")
 	watch_signals(title)
 	title.play_button.pressed.emit()
-	assert_signal_emitted_with_parameters(title, "play_requested", ["Ana"])
-
-
-func test_join_emits_code() -> void:
-	var title := TitleScreen.new()
-	_host(title)
-	title.set_defaults("Ana", "abcd-efgh")
-	watch_signals(title)
-	title.join_button.pressed.emit()
-	assert_signal_emitted_with_parameters(title, "join_requested", ["Ana", "abcd-efgh"])
+	assert_signal_emitted(title, "play_requested")
 
 
 func test_shows_version() -> void:
@@ -79,6 +57,51 @@ func test_all_ui_fits_1280x720() -> void:
 	var debug := DebugOverlay.new()
 	var r5 := _host(debug)
 	debug.show()
+	var select := CharacterSelectScreen.new()
+	var r6 := _host(select)
+	var list: Array[CharacterData] = []
+	for i in CharacterStore.MAX_CHARACTERS:
+		var c := CharacterData.new()
+		c.id = "%016x" % (i + 1)
+		c.name = "Nombre-Largo-16c"
+		c.class_id = "assassin"
+		list.append(c)
+	select.set_characters(list, list[0].id)
+	var create := CharacterCreateScreen.new()
+	var r7 := _host(create)
+	create.reset("Nombre-Largo-16c")
+	create.select_class("cleric")
+	var asking := MessageDialog.new()
+	var r8 := _host(asking)
+	asking.ask_text(TranslationServer.translate("IMPORT_NEW_NAME") % "Nombre-Largo-16c", "Nombre-Largo-16c")
 	await wait_frames(3)
-	for r: Control in [r1, r2, r3, r4, r5]:
+	for r: Control in [r1, r2, r3, r4, r5, r6, r7, r8]:
 		_assert_fits(r)
+
+
+func test_dialog_ask_answers_yes_or_no() -> void:
+	var dialog := MessageDialog.new()
+	_host(dialog)
+	watch_signals(dialog)
+	dialog.ask("¿Seguro?")
+	assert_true(dialog.visible)
+	dialog.yes_button.pressed.emit()
+	assert_signal_emitted_with_parameters(dialog, "answered", [true])
+	assert_false(dialog.visible)
+	dialog.ask("¿Seguro?")
+	dialog.no_button.pressed.emit()
+	assert_signal_emitted_with_parameters(dialog, "answered", [false])
+
+
+func test_dialog_ask_text_returns_text_or_empty() -> void:
+	var dialog := MessageDialog.new()
+	_host(dialog)
+	watch_signals(dialog)
+	dialog.ask_text("Otro nombre", "Gemelo")
+	assert_eq(dialog.text_edit.text, "Gemelo")
+	dialog.text_edit.text = "Gemelo Dos"
+	dialog.accept_button.pressed.emit()
+	assert_signal_emitted_with_parameters(dialog, "text_answered", ["Gemelo Dos"])
+	dialog.ask_text("Otro nombre", "Gemelo")
+	dialog.cancel_button.pressed.emit()
+	assert_signal_emitted_with_parameters(dialog, "text_answered", [""])

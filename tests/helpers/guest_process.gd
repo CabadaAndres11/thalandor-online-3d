@@ -64,7 +64,8 @@ func _process(delta: float) -> bool:
 	_t += delta
 	match _phase:
 		"booting":
-			_main._on_join(str(_args.get("name", "Invitado")), str(_args.get("code", "")))
+			_main._on_join(str(_args.get("name", "Invitado")), str(_args.get("code", "")),
+				str(_args.get("class", "archer")), {"hair_style": "hair_ponytail"})
 			if _main.game == null:
 				_finish("join_failed")
 			else:
@@ -96,7 +97,7 @@ func _process(delta: float) -> bool:
 		"lingering":
 			if _t > LINGER_S:
 				if _main.game != null:
-					_main._leave_to_title()
+					_main._leave_game()
 				_next("quitting")
 		"quitting":
 			if _t > QUIT_DELAY_S:

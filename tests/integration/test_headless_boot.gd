@@ -47,10 +47,10 @@ func test_boot_play_join_move_chat_leave() -> void:
 		await wait_physics_frames(1)
 	assert_has(received, ["Prueba", "hola desde el host"])
 
-	main._leave_to_title()
+	main._leave_game()
 	for i in 3:
 		net.advance(1000.0 / 30.0)
 		guest.tick(Vector2.ZERO, Vector3.ZERO)
 	assert_eq(guest.status, ClientSession.Status.CLOSED, "guest notices the host left")
-	assert_true(main.title.visible)
+	assert_true(main.select_screen.visible)
 	guest.leave()

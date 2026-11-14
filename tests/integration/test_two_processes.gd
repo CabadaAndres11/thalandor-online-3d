@@ -144,6 +144,9 @@ func _run_session(extra_args: Array, min_ping_ms: float, signaling_url: String =
 	var names: Array = (report.roster as Dictionary).values()
 	names.sort()
 	assert_eq(names, [HOST_NAME, GUEST_NAME], "guest's roster")
+	var guest_entry: Dictionary = game.client.roster.get(guest_id, {})
+	assert_eq(guest_entry.get("class_id"), "archer", "the host sees the guest's class")
+	assert_eq(guest_entry.get("appearance", {}).get("hair_style"), "hair_ponytail")
 
 	# Both moved, and once standing still they see the same positions.
 	var host_id := game.client.my_id
@@ -171,7 +174,7 @@ func _run_session(extra_args: Array, min_ping_ms: float, signaling_url: String =
 	await wait_physics_frames(2)
 	assert_eq(game.host.player_count(), 1, "host noticed the guest left")
 	assert_eq(game.avatar_count(), 1, "guest avatar removed")
-	_main._leave_to_title()
+	_main._leave_game()
 
 
 func _on_host_chat(author: String, text: String, _is_system: bool) -> void:

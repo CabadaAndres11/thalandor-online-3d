@@ -5,7 +5,8 @@ import * as png from "./png.mjs";
 import * as L from "./layout.mjs";
 
 const hex = (h, a = 255) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16), a];
-const shade = (c, k) => [Math.round(c[0] * k), Math.round(c[1] * k), Math.round(c[2] * k), c[3]];
+const clamp8 = (v) => Math.min(255, Math.max(0, Math.round(v)));
+const shade = (c, k) => [clamp8(c[0] * k), clamp8(c[1] * k), clamp8(c[2] * k), c[3]];
 
 function fill(img, r, color) {
   for (let y = r[1]; y < r[1] + r[3]; y++) for (let x = r[0]; x < r[0] + r[2]; x++) png.set(img, x, y, color);

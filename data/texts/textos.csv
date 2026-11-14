@@ -57,3 +57,35 @@ CLASS_ARCHER,Arquero
 CLASS_ARCHER_DESC,"Dispara desde lejos, coloca trampas y esquiva con agilidad."
 CLASS_ASSASSIN,Asesino
 CLASS_ASSASSIN_DESC,"Se oculta en las sombras, envenena y remata con golpes críticos."
+CHARS_TITLE,Tus personajes
+CREATE_TITLE,Crear personaje
+CHAR_SLOT,"%s · %s · nivel %d"
+CHAR_EMPTY,(hueco libre)
+CHARS_NONE,"Todavía no tienes personajes. Crea uno o importa uno exportado."
+BTN_CREATE,Crear
+BTN_DELETE,Borrar
+BTN_EXPORT,Exportar
+BTN_IMPORT,Importar
+BTN_BACK,Volver
+BTN_RANDOM,Aleatorio
+BTN_YES,Sí
+BTN_NO,No
+BTN_CANCEL,Cancelar
+NAME_FIELD,Nombre
+CLASS_LABEL,Clase
+APPEAR_BODY,Cuerpo
+APPEAR_SKIN,Piel
+APPEAR_EYES,Ojos
+APPEAR_HAIR_STYLE,Peinado
+APPEAR_HAIR_COLOR,Color de pelo
+APPEAR_BEARD,Barba
+PREVIEW_HINT,Arrastra para girar
+CONFIRM_DELETE,"¿Borrar a %s? No se puede deshacer."
+IMPORT_NEW_NAME,"Ya tienes un personaje llamado %s. Escribe otro nombre:"
+EXPORT_DONE,Personaje exportado.
+ERR_CHAR_FULL,"Ya tienes 8 personajes. Borra uno para crear o importar otro."
+ERR_NAME_TAKEN,Ya tienes un personaje con ese nombre.
+ERR_IMPORT_INVALID,Ese archivo no es un personaje de Thalandor Online.
+ERR_SAVE,"No se ha podido guardar el personaje. Revisa que haya espacio en el disco."
+ERR_EXPORT,"No se ha podido exportar el personaje a esa carpeta."
+ERR_CHAR_SKIPPED,"%d archivos de personaje no se han podido leer. Se han dejado como estaban."

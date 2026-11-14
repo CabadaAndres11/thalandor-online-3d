@@ -24,10 +24,10 @@ func _init(dir: String = DEFAULT_DIR, catalog: CharacterCatalog = null) -> void:
 func load_all() -> Array[CharacterData]:
 	skipped_files.clear()
 	var list: Array[CharacterData] = []
-	var abs := ProjectSettings.globalize_path(_dir)
-	if not DirAccess.dir_exists_absolute(abs):
+	var abs_dir := ProjectSettings.globalize_path(_dir)
+	if not DirAccess.dir_exists_absolute(abs_dir):
 		return list
-	for file in DirAccess.get_files_at(abs):
+	for file in DirAccess.get_files_at(abs_dir):
 		if not file.ends_with(".json"):
 			continue
 		var c := _read(_dir.path_join(file))
@@ -96,6 +96,11 @@ func import_from(path: String, new_name: String = "") -> CharacterData:
 	c.id = _new_id()
 	c.created_at = int(Time.get_unix_time_from_system())
 	return c if save(c) == OK else null
+
+
+## The character in an exported file, without importing it (null if not one).
+func peek(path: String) -> CharacterData:
+	return _read(path)
 
 
 func _can_add(char_name: String) -> bool:
