@@ -21,6 +21,7 @@ Arrancar el proyecto 3D desde cero: leer el GDD, preparar el entorno, diseñar e
 
 ## Qué se probó
 - Automático: suite completa en local y en GitHub Actions; el ejecutable exportado arranca sin errores.
+- Añadida después de la 0.1.0: prueba con **dos procesos reales** del juego por ENet en el mismo PC (`tests/integration/test_two_processes.gd`). El anfitrión pulsa "Jugar" y "Abrir grupo"; otro proceso de Godot sin ventana se une con el código, ambos caminan y chatean, comparan posiciones (diferencia < 5 cm) y el invitado sale. Se repite con `--lag=150 --loss=5`. Ping medido: ~96 ms sin retraso y ~434 ms con él. 145 tests en verde.
 - Pruebas de juego: **pendientes del usuario** (ver Siguiente paso).
 
 ## Problemas encontrados
