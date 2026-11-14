@@ -46,6 +46,13 @@ Arrancar el proyecto 3D desde cero: leer el GDD, preparar el entorno, diseñar e
 - Primer informe del usuario jugando con la 0.1.1: al chocar con un muro en diagonal, el jugador "saltaba atrás". No era la red, sino la colisión. Al rozar el lateral de un bloque, un error de redondeo hacía que el otro eje creyera que estaba dentro y lo sacaba por la cara opuesta (saltos de 1-2 m, bloque tras bloque). Ahora solo se frena al jugador si cruza la cara del bloque viniendo desde fuera. Hay tests nuevos que recorren muchas posiciones y direcciones: ningún tick mueve más de un paso y el jugador nunca queda dentro de un bloque.
 - Al amigo del usuario el navegador le bloqueaba la descarga por "no segura": el juego no está firmado y es nuevo, así que el navegador no lo conoce.
 
+- **Cierre del Plan 1** (revisión final por un revisor independiente). Se corrigió:
+  - con WebRTC, el tercer jugador no podía entrar: el servidor reutilizaba el id del invitado ya conectado. Ahora los ids solo suben (hay que volver a desplegar el servidor);
+  - un invitado podía meter posiciones NaN o infinitas en la simulación (ahora se descartan).
+
+  Pendiente: con ENet, en el mismo PC, el ping sale de ~100 ms frente a ~34 ms de WebRTC. Medido aparte, ENet tarda un solo tick, así que el retraso extra viene del bucle del juego con dos procesos. Se investigará si ENet acaba siendo la red elegida.
+- La prueba entre casas queda **aplazada** hasta que el juego tenga más contenido. Se empieza el Plan 2 (personajes vóxel).
+
 ## Siguiente paso
 - Prueba entre casas con la plantilla y decisión D-010.
 - Pendientes: las pruebas de juego de la 0.1.0 y revisar por qué el ping de ENet en local sale de ~100 ms.

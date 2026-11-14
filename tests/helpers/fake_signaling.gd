@@ -9,6 +9,7 @@ extends Signaling
 class Hub:
 	extends RefCounted
 	var rooms: Dictionary = {} # code -> {id: FakeSignaling}
+	var next_ids: Dictionary = {} # code -> next guest id
 
 	func open_host(code: String) -> FakeSignaling:
 		var s := FakeSignaling.new(self, code, 1)
@@ -25,9 +26,10 @@ class Hub:
 		if not room.has(1):
 			s.inbox.append({"type": "error", "reason": "no_room"})
 			return s
-		var id := 2
-		while room.has(id):
-			id += 1
+		# Ids only go up (like the server): a guest that left signaling after connecting
+		# keeps its id in the game, so it must never be handed out again.
+		var id: int = next_ids.get(code, 2)
+		next_ids[code] = id + 1
 		s.id = id
 		room[id] = s
 		s.inbox.append({"type": "joined", "id": id})
@@ -50,10 +52,12 @@ class Hub:
 			other.inbox.append({"type": "host_left"} if id == 1 else {"type": "peer_left", "id": id})
 		if id == 1:
 			rooms.erase(code)
+			next_ids.erase(code)
 
 	## Drops every connection (breaks the hub <-> connection references).
 	func clear() -> void:
 		rooms.clear()
+		next_ids.clear()
 
 
 var inbox: Array = []

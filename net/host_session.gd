@@ -145,6 +145,9 @@ func _on_input(rec: Dictionary, rows: Array) -> void:
 		var seq: int = row[0]
 		if seq <= rec.last_received:
 			continue
+		# NaN or infinity would spread through the simulation to every player.
+		if not (row[1] as Vector2).is_finite() or not (row[2] as Vector3).is_finite():
+			continue
 		rec.last_received = seq
 		queue.append(PlayerInput.new(seq, (row[1] as Vector2).limit_length(1.0), row[2]))
 	queue.sort_custom(func(a: PlayerInput, b: PlayerInput) -> bool: return a.seq < b.seq)

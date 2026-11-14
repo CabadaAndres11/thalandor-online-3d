@@ -47,13 +47,22 @@ guest.send(JSON.stringify({ type: "answer", to: 1, sdp: "v=0 answer" }));
 const answer = await host.next();
 check(answer.type === "answer" && answer.from === 2, "answer relayed to host");
 
+// A guest leaves signaling once its game connection is up; the next one needs a new id.
+guest.close();
+const gone = await host.next();
+check(gone.type === "peer_left" && gone.id === 2, "host told the first guest left signaling");
+const guest2 = await open("/join/" + room.code);
+const joined2 = await guest2.next();
+check(joined2.type === "joined" && joined2.id === 3, "next guest gets a new id (3), not the freed 2");
+await host.next(); // its "peer" notice
+
 const bad = await open("/join/AAAA-AAAA");
 check((await bad.next()).reason === "bad_code", "bad check symbol rejected");
 const other = await open("/join/2222-2222"); // valid check symbol, no such room
 check((await other.next()).reason === "no_room", "unknown room rejected");
 
 host.close();
-const left = await guest.next();
+const left = await guest2.next();
 check(left.type === "host_left", "guest told the host left");
 console.log("ALL OK");
 process.exit(0);

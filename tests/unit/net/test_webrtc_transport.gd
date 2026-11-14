@@ -147,6 +147,25 @@ func test_host_keeps_connecting_guest_whose_signaling_left() -> void:
 	assert_true(guest.is_connected_to_host())
 
 
+## Guests close their signaling once connected; the next guest must not get the same id
+## (the host would think it already has that peer and never send an offer).
+func test_guests_joining_one_after_another_all_connect() -> void:
+	var host: WebRtcTransport = _track(WebRtcTransport.host(hub.open_host(CODE), []))
+	var seen := []
+	host.peer_connected.connect(func(p: int) -> void: seen.append(p))
+	var a: WebRtcTransport = _track(WebRtcTransport.join(hub.open_guest(CODE), []))
+	await _poll_until(func() -> bool: return a.is_connected_to_host() and seen.size() == 1, 10.0)
+	await _poll_until(func() -> bool: return false, 0.3) # a leaves the signaling room
+	var b: WebRtcTransport = _track(WebRtcTransport.join(hub.open_guest(CODE), []))
+	var c: WebRtcTransport = _track(WebRtcTransport.join(hub.open_guest(CODE), []))
+	await _poll_until(func() -> bool:
+		return b.is_connected_to_host() and c.is_connected_to_host() and seen.size() == 3, 10.0)
+	assert_true(b.is_connected_to_host(), "second guest connects")
+	assert_true(c.is_connected_to_host(), "third guest connects")
+	assert_eq(seen.size(), 3)
+	assert_eq(seen.size(), {seen[0]: 1, seen[1]: 1, seen[2]: 1}.size() if seen.size() == 3 else -1, "distinct ids")
+
+
 func test_host_drops_guest_that_left_and_never_connects() -> void:
 	var host_sig := hub.open_host(CODE)
 	var host: WebRtcTransport = _track(WebRtcTransport.host(host_sig, []))

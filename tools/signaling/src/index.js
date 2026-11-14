@@ -94,11 +94,12 @@ export class Room extends DurableObject {
       server.close(1000, error);
       return new Response(null, { status: 101, webSocket: client });
     }
-    const id = role === "host" ? 1 : this.nextId(sockets);
+    const id = role === "host" ? 1 : await this.nextGuestId();
     this.ctx.acceptWebSocket(server);
     server.serializeAttachment({ id });
     if (role === "host") {
       server.send(JSON.stringify({ type: "room", code, id }));
+      await this.ctx.storage.put("next_guest_id", 2); // a new room (code reused later)
       await this.ctx.storage.setAlarm(Date.now() + ROOM_TTL_MS);
     } else {
       server.send(JSON.stringify({ type: "joined", id }));
@@ -107,10 +108,12 @@ export class Room extends DurableObject {
     return new Response(null, { status: 101, webSocket: client });
   }
 
-  nextId(sockets) {
-    const used = new Set(sockets.map((ws) => ws.deserializeAttachment()?.id));
-    let id = 2;
-    while (used.has(id)) id++;
+  // Guest ids only go up: a guest closes its signaling once its game connection is up
+  // but keeps its id in the game, so a freed id must never be handed out again.
+  // Kept in storage so it survives the object hibernating between joins.
+  async nextGuestId() {
+    const id = (await this.ctx.storage.get("next_guest_id")) ?? 2;
+    await this.ctx.storage.put("next_guest_id", id + 1);
     return id;
   }
 

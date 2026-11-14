@@ -2,7 +2,7 @@
 tags: [plan]
 plan: 1
 fecha: 2026-11-14
-estado: en curso (tareas 1–17 hechas)
+estado: hecho (salvo la prueba entre casas, aplazada)
 actualizado: 2026-11-14
 ---
 # Plan 1 — Fundaciones y red: plan de implementación

@@ -104,6 +104,26 @@ func test_inputs_move_player() -> void:
 	assert_gt(host.world.players[1].position.x, start.x)
 
 
+## A guest must not be able to put NaN or infinity into the shared simulation.
+func test_non_finite_inputs_are_dropped() -> void:
+	var a := _guest("Ana")
+	host.tick()
+	var start: Vector3 = host.world.players[1].position
+	a.send(Transport.HOST_PEER, Protocol.input([
+		[1, Vector2(NAN, 0), start],
+		[2, Vector2(INF, 1), start],
+		[3, Vector2(1, 0), Vector3(NAN, 0, 0)],
+		[4, Vector2(1, 0), Vector3(0, -INF, 0)],
+	]), false)
+	for i in 6:
+		host.tick()
+	var s: PlayerState = host.world.players[1]
+	assert_true(s.position.is_finite(), "position stays finite")
+	assert_true(s.aim.is_finite(), "aim stays finite")
+	assert_true(is_finite(s.facing), "facing stays finite")
+	assert_eq(s.position, start, "rejected inputs do not move the player")
+
+
 func test_duplicate_inputs_ignored() -> void:
 	var a := _guest("Ana")
 	host.tick()
