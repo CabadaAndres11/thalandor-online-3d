@@ -25,7 +25,7 @@ func sample(render_tick: float) -> Dictionary:
 		var b: Dictionary = _samples[i]
 		if render_tick <= b.tick:
 			var a: Dictionary = _samples[i - 1]
-			var t := (render_tick - a.tick) / float(b.tick - a.tick)
+			var t: float = (render_tick - a.tick) / float(b.tick - a.tick)
 			return {
 				"position": (a.position as Vector3).lerp(b.position, t),
 				"aim": (a.aim as Vector3).lerp(b.aim, t),
