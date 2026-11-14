@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "type": "file",
+      "ctime": 0,
+      "path": "00 Inicio.md",
+      "title": "Inicio"
+    },
+    {
+      "type": "file",
+      "ctime": 0,
+      "path": "GDD/00 Índice del GDD.md",
+      "title": "GDD"
+    },
+    {
+      "type": "file",
+      "ctime": 0,
+      "path": "GDD/15 Decisiones abiertas.md",
+      "title": "Decisiones abiertas"
+    },
+    {
+      "type": "file",
+      "ctime": 0,
+      "path": "GDD/14 Hoja de ruta.md",
+      "title": "Hoja de ruta"
+    }
+  ]
+}

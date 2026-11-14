@@ -1,0 +1,13 @@
+{
+	"move_speed": 5.0,
+	"player_radius": 0.4,
+	"tick_rate": 30,
+	"interp_delay_ms": 100,
+	"correction_ms": 100,
+	"input_redundancy": 3,
+	"max_pending_inputs": 4,
+	"timeout_s": 5.0,
+	"chat_max_len": 120,
+	"port": 24680,
+	"max_players": 4
+}
