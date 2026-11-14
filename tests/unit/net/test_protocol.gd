@@ -2,7 +2,7 @@ extends GutTest
 
 
 func test_roundtrip_hello() -> void:
-	var m := Protocol.decode(Protocol.hello("0.1.0", 1, "Andrés"))
+	var m := Protocol.decode(Protocol.hello("0.1.0", 1, "Andrés", "warrior", {}))
 	assert_eq(m.type, Protocol.Msg.HELLO)
 	assert_eq(m.game_version, "0.1.0")
 	assert_eq(m.protocol, 1)
@@ -10,7 +10,7 @@ func test_roundtrip_hello() -> void:
 
 
 func test_roundtrip_welcome() -> void:
-	var roster := [[1, "Ana", 0], [2, "Bea", 1]]
+	var roster := [[1, "Ana", 0, "warrior", {}], [2, "Bea", 1, "mage", {"skin": "skin_2"}]]
 	var m := Protocol.decode(Protocol.welcome(2, 77, roster))
 	assert_eq(m.type, Protocol.Msg.WELCOME)
 	assert_eq(m.player_id, 2)
@@ -45,7 +45,7 @@ func test_roundtrip_snapshot() -> void:
 
 
 func test_roundtrip_player_joined() -> void:
-	var m := Protocol.decode(Protocol.player_joined(3, "Carla", 2))
+	var m := Protocol.decode(Protocol.player_joined(3, "Carla", 2, "warrior", {}))
 	assert_eq(m.type, Protocol.Msg.PLAYER_JOINED)
 	assert_eq([m.id, m.name, m.slot], [3, "Carla", 2])
 
@@ -89,3 +89,38 @@ func test_empty_bytes_decode_to_empty() -> void:
 func test_truncated_array_decodes_to_empty() -> void:
 	var full := Protocol.chat(2, "hola que tal")
 	assert_eq(Protocol.decode(full.slice(0, full.size() - 5)), {})
+
+
+func test_hello_carries_class_and_appearance() -> void:
+	var app := {"skin": "skin_3", "hair_style": "hair_bun"}
+	var m := Protocol.decode(Protocol.hello("0.2.0", Protocol.VERSION, "Lyra", "archer", app))
+	assert_eq(m.class_id, "archer")
+	assert_eq(m.appearance, app)
+
+
+func test_hello_with_wrong_types_is_rejected() -> void:
+	var bad := Protocol.pack([Protocol.Msg.HELLO, "0.2.0", Protocol.VERSION, "Lyra", "archer", [1, 2]])
+	assert_eq(Protocol.decode(bad), {})
+	var bad_class := Protocol.pack([Protocol.Msg.HELLO, "0.2.0", Protocol.VERSION, "Lyra", 7, {}])
+	assert_eq(Protocol.decode(bad_class), {})
+
+
+func test_player_joined_carries_class_and_appearance() -> void:
+	var m := Protocol.decode(Protocol.player_joined(3, "Carla", 2, "cleric", {"beard": "full"}))
+	assert_eq([m.class_id, m.appearance], ["cleric", {"beard": "full"}])
+
+
+func test_roster_rows_carry_class_and_appearance() -> void:
+	var rows := [[1, "Ana", 0, "mage", {"skin": "skin_2"}]]
+	var m := Protocol.decode(Protocol.welcome(1, 10, rows))
+	assert_eq(m.roster, rows)
+	var short_rows := Protocol.pack([Protocol.Msg.WELCOME, 1, 10, [[1, "Ana", 0]]])
+	assert_eq(Protocol.decode(short_rows), {}, "rows without class and appearance are invalid")
+
+
+func test_legacy_hello_decodes_without_character() -> void:
+	var m := Protocol.decode(Protocol.pack([Protocol.Msg.HELLO, "0.1.2", 1, "Ana"]))
+	assert_eq(m.type, Protocol.Msg.HELLO)
+	assert_eq(m.protocol, 1)
+	assert_eq(m.class_id, "")
+	assert_eq(m.appearance, {})

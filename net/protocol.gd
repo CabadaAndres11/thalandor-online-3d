@@ -2,30 +2,34 @@ class_name Protocol
 extends RefCounted
 ## Network messages: Arrays [type, fields...] encoded with var_to_bytes (never objects).
 
-const VERSION := 1
+const VERSION := 2
 
 enum Msg { HELLO = 1, WELCOME, REJECT, INPUT, SNAPSHOT, PLAYER_JOINED, PLAYER_LEFT, CHAT }
 
 ## Field names and Variant types per message type.
 const SCHEMAS := {
-	Msg.HELLO: [["game_version", TYPE_STRING], ["protocol", TYPE_INT], ["name", TYPE_STRING]],
+	Msg.HELLO: [["game_version", TYPE_STRING], ["protocol", TYPE_INT], ["name", TYPE_STRING],
+		["class_id", TYPE_STRING], ["appearance", TYPE_DICTIONARY]],
 	Msg.WELCOME: [["player_id", TYPE_INT], ["tick", TYPE_INT], ["roster", TYPE_ARRAY]],
 	Msg.REJECT: [["reason", TYPE_STRING], ["host_version", TYPE_STRING]],
 	Msg.INPUT: [["inputs", TYPE_ARRAY]],
 	Msg.SNAPSHOT: [["tick", TYPE_INT], ["players", TYPE_ARRAY]],
-	Msg.PLAYER_JOINED: [["id", TYPE_INT], ["name", TYPE_STRING], ["slot", TYPE_INT]],
+	Msg.PLAYER_JOINED: [["id", TYPE_INT], ["name", TYPE_STRING], ["slot", TYPE_INT],
+		["class_id", TYPE_STRING], ["appearance", TYPE_DICTIONARY]],
 	Msg.PLAYER_LEFT: [["id", TYPE_INT]],
 	Msg.CHAT: [["from_id", TYPE_INT], ["text", TYPE_STRING]],
 }
 
 ## Element types of the nested arrays.
 const ROW_SCHEMAS := {
-	"roster": [TYPE_INT, TYPE_STRING, TYPE_INT],
+	"roster": [TYPE_INT, TYPE_STRING, TYPE_INT, TYPE_STRING, TYPE_DICTIONARY],
 	"inputs": [TYPE_INT, TYPE_VECTOR2, TYPE_VECTOR3],
 	"players": [TYPE_INT, TYPE_VECTOR3, TYPE_VECTOR3, TYPE_FLOAT, TYPE_INT],
 }
 
 const MAX_PACKET_BYTES := 16384
+## [type, game_version, protocol, name]: HELLO of protocol 1 (game 0.1.x).
+const LEGACY_HELLO_SIZE := 4
 const MAGIC_0 := 0x54 # "T"
 const MAGIC_1 := 0x4F # "O"
 const HEADER_SIZE := 6
@@ -39,8 +43,9 @@ static func pack(message: Array) -> PackedByteArray:
 	return out
 
 
-static func hello(game_version: String, protocol: int, name: String) -> PackedByteArray:
-	return pack([Msg.HELLO, game_version, protocol, name])
+static func hello(game_version: String, protocol: int, name: String, class_id: String,
+		appearance: Dictionary) -> PackedByteArray:
+	return pack([Msg.HELLO, game_version, protocol, name, class_id, appearance])
 
 
 static func welcome(player_id: int, tick: int, roster: Array) -> PackedByteArray:
@@ -59,8 +64,9 @@ static func snapshot(tick: int, players: Array) -> PackedByteArray:
 	return pack([Msg.SNAPSHOT, tick, players])
 
 
-static func player_joined(id: int, name: String, slot: int) -> PackedByteArray:
-	return pack([Msg.PLAYER_JOINED, id, name, slot])
+static func player_joined(id: int, name: String, slot: int, class_id: String,
+		appearance: Dictionary) -> PackedByteArray:
+	return pack([Msg.PLAYER_JOINED, id, name, slot, class_id, appearance])
 
 
 static func player_left(id: int) -> PackedByteArray:
@@ -91,6 +97,9 @@ static func decode(data: PackedByteArray) -> Dictionary:
 	if arr.is_empty() or typeof(arr[0]) != TYPE_INT or not SCHEMAS.has(arr[0]):
 		return {}
 	var schema: Array = SCHEMAS[arr[0]]
+	# Protocol 1 HELLO had no character: decode it so the host can answer "version".
+	if arr[0] == Msg.HELLO and arr.size() == LEGACY_HELLO_SIZE:
+		arr = arr + ["", {}]
 	if arr.size() != schema.size() + 1:
 		return {}
 	var out := {"type": arr[0]}

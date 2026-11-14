@@ -60,12 +60,12 @@ static func game_version() -> String:
 
 
 ## Starts a game hosted on this PC (solo until open_group() is called).
-func start_host(player_name: String) -> void:
+func start_host(player_name: String, class_id: String = CharacterCatalog.DEFAULT_CLASS, appearance: Dictionary = {}) -> void:
 	host = HostSession.new(balance, map, game_version())
 	_loopback = MemoryNetwork.new()
 	var host_t := _loopback.create_host()
 	host.add_transport(host_t)
-	_start_client(player_name, _loopback.connect_client(host_t))
+	_start_client(player_name, class_id, appearance, _loopback.connect_client(host_t))
 
 
 ## Opens the game to friends. Returns the group code, or "" with last_error set, or ""
@@ -122,7 +122,7 @@ func net_label() -> String:
 
 
 ## Joins a friend's game by code.
-func join(code: String, player_name: String) -> Error:
+func join(code: String, player_name: String, class_id: String = CharacterCatalog.DEFAULT_CLASS, appearance: Dictionary = {}) -> Error:
 	var ip := GroupCode.decode(code)
 	if ip == "":
 		last_error = "ERR_BAD_CODE"
@@ -131,20 +131,21 @@ func join(code: String, player_name: String) -> Error:
 		if balance.signaling_url == "":
 			last_error = "ERR_SIGNALING"
 			return ERR_UNCONFIGURED
-		join_with(WebSocketSignaling.join(balance.signaling_url, code), player_name)
+		join_with(WebSocketSignaling.join(balance.signaling_url, code), player_name, class_id, appearance)
 		return OK
 	var t: Transport = EnetTransport.join(ip, balance.port)
 	if t == null:
 		last_error = "ERR_CONNECT"
 		return ERR_CANT_CONNECT
-	_start_client(player_name, _with_debug_lag(t))
+	_start_client(player_name, class_id, appearance, _with_debug_lag(t))
 	return OK
 
 
 ## Joins a WebRTC group through the given signaling channel (tests pass a fake one).
-func join_with(signaling: Signaling, player_name: String) -> void:
+func join_with(signaling: Signaling, player_name: String, class_id: String = CharacterCatalog.DEFAULT_CLASS,
+		appearance: Dictionary = {}) -> void:
 	var t := WebRtcTransport.join(signaling, WebRtcTransport.ice_from_url(balance.stun_url))
-	_start_client(player_name, _with_debug_lag(t))
+	_start_client(player_name, class_id, appearance, _with_debug_lag(t))
 
 
 func _with_debug_lag(t: Transport) -> Transport:
@@ -189,8 +190,8 @@ func is_hosting() -> bool:
 	return host != null
 
 
-func _start_client(player_name: String, t: Transport) -> void:
-	client = ClientSession.new(balance, map, game_version(), player_name)
+func _start_client(player_name: String, class_id: String, appearance: Dictionary, t: Transport) -> void:
+	client = ClientSession.new(balance, map, game_version(), player_name, class_id, appearance)
 	client.disconnected.connect(_on_client_disconnected)
 	client.connect_to(t)
 

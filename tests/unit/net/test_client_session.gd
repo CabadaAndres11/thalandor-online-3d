@@ -20,8 +20,8 @@ func before_each() -> void:
 	clients = []
 
 
-func _client(name: String, version := VERSION) -> ClientSession:
-	var c := ClientSession.new(balance, map, version, name)
+func _client(name: String, version := VERSION, class_id := "warrior", appearance := {}) -> ClientSession:
+	var c := ClientSession.new(balance, map, version, name, class_id, appearance)
 	c.connect_to(net.connect_client(host_t))
 	clients.append(c)
 	return c
@@ -188,3 +188,13 @@ func test_system_messages_on_join_and_leave() -> void:
 	params = get_signal_parameters(a, "chat_received")
 	assert_true(String(params[1]).contains("Bea"))
 	assert_false(a.roster.has(2))
+
+
+func test_player_joined_updates_roster_with_appearance() -> void:
+	var a := _client("Ana")
+	_steps(2)
+	var b := _client("Bea", VERSION, "mage", {"hair_style": "hair_bun"})
+	_steps(3)
+	assert_eq(a.roster[2].class_id, "mage")
+	assert_eq(a.roster[2].appearance.hair_style, "hair_bun")
+	assert_eq(b.roster[1].class_id, "warrior", "the welcome roster carries the others too")

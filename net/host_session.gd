@@ -10,6 +10,8 @@ const NAME_MAX := 16
 const SPAWN_SPACING := 1.5
 
 var world: SimWorld
+## Sanitizes the class and appearance guests bring (they may send anything).
+var catalog: CharacterCatalog = CharacterCatalog.load_default()
 var balance: Balance
 var map: CollisionMap
 var game_version: String
@@ -85,7 +87,8 @@ func pending_inputs(id: int) -> int:
 func roster() -> Array:
 	var rows := []
 	for id: int in _players:
-		rows.append([id, _players[id].name, _players[id].slot])
+		var p: Dictionary = _players[id]
+		rows.append([id, p.name, p.slot, p.class_id, p.appearance])
 	return rows
 
 
@@ -125,17 +128,20 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 	_next_id += 1
 	var slot := _free_slot()
 	var name: String = (msg.name as String).strip_edges()
+	var class_id := catalog.sanitize_class(msg.class_id)
+	var appearance := catalog.sanitize_appearance(msg.appearance)
 	var spawn := map.spawn_point() + Vector3(slot % 2, 0, slot / 2) * SPAWN_SPACING
 	world.add_player(id, spawn)
 	_players[id] = {
-		"id": id, "name": name, "slot": slot, "transport": index, "peer": peer,
+		"id": id, "name": name, "slot": slot, "class_id": class_id, "appearance": appearance,
+		"transport": index, "peer": peer,
 		"queue": [], "last_input": null, "last_seq": 0, "last_received": 0,
 	}
 	_by_conn[key] = id
 	t.send(peer, Protocol.welcome(id, world.tick, roster()), true)
 	for other: int in _players:
 		if other != id:
-			_send_to(other, Protocol.player_joined(id, name, slot), true)
+			_send_to(other, Protocol.player_joined(id, name, slot, class_id, appearance), true)
 	player_joined.emit(id, name)
 
 

@@ -75,6 +75,27 @@ func _leave_guest(_reason: String) -> void:
 	guest_game.leave()
 
 
+func test_guest_class_reaches_host_avatar() -> void:
+	host_game = _new_game()
+	host_game.start_host("Anfitriona", "cleric", {"beard": "full"})
+	host_game.open_group_with(hub.open_host(CODE))
+	await _wait_until(func() -> bool: return host_game.group_code() != "", 2.0)
+	guest_game = _new_game()
+	guest_game.join_with(hub.open_guest(CODE), "Invitado", "archer", {"hair_style": "hair_bun"})
+	await _wait_until(func() -> bool:
+		return guest_game.client.status == ClientSession.Status.IN_GAME and host_game.avatar_count() == 2, 10.0)
+	var guest_id := guest_game.client.my_id
+	var entry: Dictionary = host_game.client.roster.get(guest_id, {})
+	assert_eq(entry.get("class_id"), "archer")
+	assert_eq(entry.get("appearance", {}).get("hair_style"), "hair_bun")
+	await _wait_until(func() -> bool: return guest_game.avatar_count() == 2, 2.0)
+	var host_entry: Dictionary = guest_game.client.roster.get(host_game.client.my_id, {})
+	assert_eq(host_entry.get("class_id"), "cleric", "the guest sees the host's class")
+	var avatar := host_game.find_child("Player%d" % guest_id, true, false) as PlayerAvatar
+	assert_not_null(avatar)
+	assert_has(avatar.rig.pieces(), "hood_archer", "the host draws the guest as an archer")
+
+
 func test_signaling_failure_reports_error() -> void:
 	hub.open_host(CODE) # code already taken: the server answers "full"
 	host_game = _new_game()

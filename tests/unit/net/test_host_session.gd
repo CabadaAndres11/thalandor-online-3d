@@ -19,9 +19,9 @@ func before_each() -> void:
 
 
 ## A raw guest: returns the client transport after sending HELLO.
-func _guest(name: String, version := VERSION, protocol := Protocol.VERSION) -> MemoryTransport:
+func _guest(name: String, version := VERSION, protocol := Protocol.VERSION, class_id := "warrior", appearance := {}) -> MemoryTransport:
 	var c := net.connect_client(host_t)
-	c.send(Transport.HOST_PEER, Protocol.hello(version, protocol, name), true)
+	c.send(Transport.HOST_PEER, Protocol.hello(version, protocol, name, class_id, appearance), true)
 	return c
 
 
@@ -48,11 +48,11 @@ func test_hello_gets_welcome_with_roster() -> void:
 	host.tick()
 	var w := _first(a, Protocol.Msg.WELCOME)
 	assert_eq(w.player_id, 1)
-	assert_eq(w.roster, [[1, "Ana", 0]])
+	assert_eq(w.roster.map(_head3), [[1, "Ana", 0]])
 	var b := _guest("Bea")
 	host.tick()
 	var w2 := _first(b, Protocol.Msg.WELCOME)
-	assert_eq(w2.roster, [[1, "Ana", 0], [2, "Bea", 1]])
+	assert_eq(w2.roster.map(_head3), [[1, "Ana", 0], [2, "Bea", 1]])
 	var joined := _first(a, Protocol.Msg.PLAYER_JOINED)
 	assert_eq([joined.id, joined.name, joined.slot], [2, "Bea", 1])
 	assert_eq(host.player_count(), 2)
@@ -231,11 +231,51 @@ func test_slot_reuse_after_leave() -> void:
 	host.tick()
 	var w := _first(d, Protocol.Msg.WELCOME)
 	assert_eq(w.player_id, 4, "ids are never reused")
-	assert_true(w.roster.has([4, "Dani", 1]), "free slot 1 reused")
+	assert_true(w.roster.map(_head3).has([4, "Dani", 1]), "free slot 1 reused")
 
 
 func test_garbage_packet_ignored() -> void:
 	var c := net.connect_client(host_t)
 	c.send(Transport.HOST_PEER, PackedByteArray([1, 2, 3]), true)
 	host.tick()
+	assert_eq(host.player_count(), 0)
+
+
+func _head3(row: Array) -> Array:
+	return row.slice(0, 3)
+
+
+func test_roster_carries_class_and_appearance() -> void:
+	var a := _guest("Ana", VERSION, Protocol.VERSION, "mage", {"hair_style": "hair_long"})
+	host.tick()
+	var row: Array = _first(a, Protocol.Msg.WELCOME).roster[0]
+	assert_eq(row[3], "mage")
+	assert_eq(row[4].hair_style, "hair_long")
+	assert_eq((row[4] as Dictionary).size(), CharacterCatalog.KINDS.size(), "full sanitized appearance")
+
+
+## A modified or broken guest may send anything: the host cleans it up and lets the
+## player in with defaults.
+func test_host_sanitizes_invented_appearance() -> void:
+	var junk := {"skin": "glowing", "eyes": 3, "hair_style": ["x"]}
+	for i in 300:
+		junk["extra_%d" % i] = i
+	var a := _guest("Ana", VERSION, Protocol.VERSION, "", junk)
+	host.tick()
+	var w := _first(a, Protocol.Msg.WELCOME)
+	assert_eq(w.player_id, 1, "the player gets in")
+	var row: Array = w.roster[0]
+	var catalog := CharacterCatalog.load_default()
+	assert_eq(row[3], CharacterCatalog.DEFAULT_CLASS)
+	assert_eq(row[4], catalog.default_appearance())
+
+
+## A friend still on 0.1.x sends the old 3-field HELLO: they must get the clear
+## "different version" rejection (REJECT kept its layout), not a silent timeout.
+func test_old_client_hello_gets_version_reject() -> void:
+	var c := net.connect_client(host_t)
+	c.send(Transport.HOST_PEER, Protocol.pack([Protocol.Msg.HELLO, "0.1.2", 1, "Ana"]), true)
+	host.tick()
+	var r := _first(c, Protocol.Msg.REJECT)
+	assert_eq(r.get("reason"), "version")
 	assert_eq(host.player_count(), 0)

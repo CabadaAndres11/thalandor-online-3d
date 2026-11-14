@@ -27,6 +27,8 @@ var balance: Balance
 var map: CollisionMap
 var game_version: String
 var player_name: String
+var class_id: String
+var appearance: Dictionary
 
 var _transport: Transport
 var _seq: int = 0
@@ -42,11 +44,14 @@ var _sent_at: Dictionary = {} # seq -> _clock_ms when sent
 var _ping_ms: float = 0.0
 
 
-func _init(p_balance: Balance, p_map: CollisionMap, p_game_version: String, p_name: String) -> void:
+func _init(p_balance: Balance, p_map: CollisionMap, p_game_version: String, p_name: String,
+		p_class_id: String = CharacterCatalog.DEFAULT_CLASS, p_appearance: Dictionary = {}) -> void:
 	balance = p_balance
 	map = p_map
 	game_version = p_game_version
 	player_name = p_name
+	class_id = p_class_id
+	appearance = p_appearance
 
 
 func connect_to(t: Transport) -> void:
@@ -141,7 +146,8 @@ func latest_tick() -> int:
 
 func _on_peer_connected(peer: int) -> void:
 	if peer == Transport.HOST_PEER:
-		_transport.send(Transport.HOST_PEER, Protocol.hello(game_version, Protocol.VERSION, player_name), true)
+		_transport.send(Transport.HOST_PEER,
+			Protocol.hello(game_version, Protocol.VERSION, player_name, class_id, appearance), true)
 
 
 func _on_peer_disconnected(peer: int) -> void:
@@ -168,7 +174,7 @@ func _handle(msg: Dictionary) -> void:
 			my_id = msg.player_id
 			status = Status.IN_GAME
 			for row: Array in msg.roster:
-				roster[row[0]] = {"name": row[1], "slot": row[2]}
+				roster[row[0]] = {"name": row[1], "slot": row[2], "class_id": row[3], "appearance": row[4]}
 			welcomed.emit(my_id)
 			roster_changed.emit()
 		Protocol.Msg.REJECT:
@@ -178,7 +184,7 @@ func _handle(msg: Dictionary) -> void:
 		Protocol.Msg.SNAPSHOT:
 			_on_snapshot(msg.tick, msg.players)
 		Protocol.Msg.PLAYER_JOINED:
-			roster[msg.id] = {"name": msg.name, "slot": msg.slot}
+			roster[msg.id] = {"name": msg.name, "slot": msg.slot, "class_id": msg.class_id, "appearance": msg.appearance}
 			roster_changed.emit()
 			chat_received.emit("", tr_text("CHAT_JOINED") % msg.name, true)
 		Protocol.Msg.PLAYER_LEFT:
