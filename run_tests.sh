@@ -4,6 +4,7 @@
 GODOT="${GODOT:-/d/Tools/Godot/Godot_v4.7.2-stable_win64_console.exe}"
 EXTRA=()
 if [ -n "$1" ]; then EXTRA=("-gselect=$(basename "$1")"); fi
+"$GODOT" --headless --path . --import > /dev/null 2>&1
 OUT=$("$GODOT" --headless --path . -s addons/gut/gut_cmdln.gd -gconfig=.gutconfig.json "${EXTRA[@]}" 2>&1)
 CODE=$?
 echo "$OUT"
