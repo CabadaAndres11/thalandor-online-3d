@@ -43,8 +43,7 @@ func add_client(name: String, version: String = VERSION) -> ClientSession:
 		c.connect_to(remote.connect_client(_remote_host))
 	clients[name] = c
 	chats[name] = []
-	c.chat_received.connect(func(author: String, text: String, sys: bool) -> void:
-		chats[name].append([author, text, sys]))
+	c.chat_received.connect(_on_chat.bind(name))
 	return c
 
 
@@ -69,3 +68,7 @@ func run_ticks(n: int, moves: Dictionary = {}) -> void:
 
 func id_of(name: String) -> int:
 	return (clients[name] as ClientSession).my_id
+
+
+func _on_chat(author: String, text: String, sys: bool, name: String) -> void:
+	chats[name].append([author, text, sys])
