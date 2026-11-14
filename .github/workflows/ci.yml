@@ -54,6 +54,8 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
           ZIP="ThalandorOnline-${VERSION}-windows.zip"
-          (cd exports/windows && zip -q "../../${ZIP}" ThalandorOnline.exe)
+          cp build/windows/*.bat exports/windows/
+          (cd exports/windows && zip -q "../../${ZIP}" ./*)
+          unzip -l "${ZIP}"
           sed "s/{{VERSION}}/${VERSION}/g" .github/release-notes.md > notes.md
           gh release create "$GITHUB_REF_NAME" "$ZIP" --title "Thalandor Online ${VERSION}" --notes-file notes.md

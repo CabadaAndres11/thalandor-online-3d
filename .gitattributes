@@ -3,3 +3,4 @@
 *.glb binary
 *.exe binary
 *.zip binary
+*.bat text eol=crlf
