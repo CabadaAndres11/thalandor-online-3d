@@ -1,5 +1,5 @@
 [
-	{"id": "warrior", "name": "CLASS_WARRIOR", "desc": "CLASS_WARRIOR_DESC", "outfit": "res://assets/characters/layers/outfit_warrior.png", "headgear": "", "primary": "#8e3b2e", "secondary": "#c9c9c9"},
+	{"id": "warrior", "name": "CLASS_WARRIOR", "desc": "CLASS_WARRIOR_DESC", "outfit": "res://assets/characters/layers/outfit_warrior.png", "headgear": "", "pieces": ["pauldron_left", "pauldron_right"], "primary": "#8d96a1", "secondary": "#8e3b2e"},
 	{"id": "cleric", "name": "CLASS_CLERIC", "desc": "CLASS_CLERIC_DESC", "outfit": "res://assets/characters/layers/outfit_cleric.png", "headgear": "hood_cleric", "primary": "#e9e2cf", "secondary": "#3a6fb0"},
 	{"id": "mage", "name": "CLASS_MAGE", "desc": "CLASS_MAGE_DESC", "outfit": "res://assets/characters/layers/outfit_mage.png", "headgear": "hat_mage", "primary": "#5b3f9e", "secondary": "#e8b23a"},
 	{"id": "archer", "name": "CLASS_ARCHER", "desc": "CLASS_ARCHER_DESC", "outfit": "res://assets/characters/layers/outfit_archer.png", "headgear": "hood_archer", "primary": "#4f7a3a", "secondary": "#6b4a2b"},

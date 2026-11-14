@@ -1,4 +1,26 @@
 {
+	"pauldron_left": {
+		"file": "res://assets/characters/pieces/pauldron_left.vox",
+		"part": "arm-left",
+		"offset": [
+			0,
+			-4,
+			-3
+		],
+		"tag": "armor",
+		"hides": []
+	},
+	"pauldron_right": {
+		"file": "res://assets/characters/pieces/pauldron_right.vox",
+		"part": "arm-right",
+		"offset": [
+			-6,
+			-4,
+			-3
+		],
+		"tag": "armor",
+		"hides": []
+	},
 	"hair_long": {
 		"file": "res://assets/characters/pieces/hair_long.vox",
 		"part": "head",

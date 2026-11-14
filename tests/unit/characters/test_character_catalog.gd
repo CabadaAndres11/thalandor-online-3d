@@ -42,6 +42,17 @@ func test_every_referenced_piece_is_defined() -> void:
 	for c: Dictionary in catalog.classes():
 		if c.get("headgear", "") != "":
 			assert_false(catalog.piece(c.headgear).is_empty(), c.headgear)
+		for id: String in c.get("pieces", []):
+			assert_false(catalog.piece(id).is_empty(), id)
+
+
+func test_warrior_wears_pauldrons_on_both_arms() -> void:
+	var look := catalog.resolve("warrior", {})
+	var parts := {}
+	for p: Dictionary in look.pieces:
+		parts[p.id] = p.part
+	assert_eq(parts.get("pauldron_left"), "arm-left")
+	assert_eq(parts.get("pauldron_right"), "arm-right")
 
 
 func test_every_name_key_is_translated() -> void:

@@ -103,6 +103,8 @@ func resolve(class_id: Variant, appearance: Variant) -> Dictionary:
 		for tag: String in hg.get("hides", []):
 			hidden[tag] = true
 		pieces.append(_piece_entry(c.headgear))
+	for id: String in c.get("pieces", []):
+		pieces.append(_piece_entry(id))
 	var hair_piece := str(hair.get("piece", ""))
 	if hair_piece != "" and not hidden.has(str(piece(hair_piece).get("tag", ""))):
 		pieces.append(_piece_entry(hair_piece))

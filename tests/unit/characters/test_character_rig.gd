@@ -65,7 +65,7 @@ func test_hood_hides_long_hair() -> void:
 func test_warrior_shows_long_hair() -> void:
 	var rig := CharacterRig.create("warrior", {"hair_style": "hair_long"})
 	add_child_autofree(rig)
-	assert_eq(rig.pieces(), ["hair_long"])
+	assert_has(rig.pieces(), "hair_long", "no headgear hides the warrior's hair")
 
 
 func test_robust_body_scales_torso_but_not_the_head() -> void:

@@ -83,6 +83,13 @@ func _looks(set_name: String) -> Array:
 			for l: Dictionary in looks:
 				l["rot"] = 180.0
 			return looks
+		"warrior":
+			return _resolved([
+				["warrior", {"skin": "skin_3", "hair_style": "short", "hair_color": "dark_brown", "beard": "full"}],
+				["warrior", {"skin": "skin_6", "hair_style": "hair_ponytail", "hair_color": "black", "body": "robust"}, 35.0],
+				["warrior", {"skin": "skin_2", "hair_style": "bald", "beard": "mustache", "hair_color": "red"}, 90.0],
+				["warrior", {"skin": "skin_4", "hair_style": "hair_long", "hair_color": "blond"}, 180.0],
+			])
 		"variety":
 			return _resolved([
 				["warrior", {"hair_style": "hair_long", "hair_color": "red", "skin": "skin_1"}],

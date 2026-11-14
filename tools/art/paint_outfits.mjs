@@ -68,28 +68,66 @@ function strap(img, color, width = 12, leftToRight = true) {
   }
 }
 
-// Horizontal quilting lines on a face (padded jacket).
-function quilt(img, r, color, step = 18) {
-  for (let y = r[1] + step; y < r[1] + r[3] - 10; y += step) fill(img, [r[0], y, r[2], 2], color);
+// Chain mail: grey with staggered dark rings.
+function mail(img, r) {
+  const base = hex("#7f868e"), ring = hex("#5a6068"), glint = hex("#9aa1a9");
+  fill(img, r, base);
+  for (let y = r[1]; y < r[1] + r[3] - 2; y += 6) {
+    const shift = ((y - r[1]) / 6) % 2 ? 3 : 0;
+    for (let x = r[0] + shift; x < r[0] + r[2] - 2; x += 6) {
+      fill(img, [x, y, 3, 3], ring);
+      fill(img, [x, y, 1, 1], glint);
+    }
+  }
 }
 
 const OUTFITS = {
-  // Padded gambeson in deep red with quilting, leather belt and bracers, grey trousers.
+  // Steel breastplate and backplate over mail, red tabard under the belt, mail
+  // sleeves with steel vambraces, mail leggings with knee cops, greaves and sabatons.
+  // The pauldrons are voxel pieces.
   warrior(img) {
-    const coat = hex("#8e3b2e"), leather = hex("#5e3a22"), buckle = hex("#c9c9c9");
-    torso(img, coat);
-    for (const k of ["left", "front", "right", "back"]) quilt(img, L.TORSO[k], shade(coat, 0.78));
-    const f = L.TORSO.front;
-    fill(img, [f[0] + f[2] / 2 - 2, f[1], 4, f[3] - 40], shade(coat, 0.7)); // closure
-    torsoBand(img, 100, 14, leather);
-    fill(img, [f[0] + f[2] / 2 - 9, f[1] + 99, 18, 16], buckle);
-    fill(img, [f[0] + f[2] / 2 - 4, f[1] + 103, 8, 8], leather);
-    arms(img, coat, leather);
-    for (const o of Object.values(L.ARMS)) {
-      const s = off(o, L.ARM_SIDES);
-      fill(img, [s[0], s[1] + s[3] - L.HAND_PX - 34, s[2], 34], leather); // bracers
+    const steel = hex("#8d96a1"), dark = hex("#5c636c"), tabard = hex("#8e3b2e");
+    const leather = hex("#5e3a22"), gold = hex("#d9a83a");
+    // Mail everywhere on the torso first, then the plates on front and back.
+    for (const k of ["left", "front", "right", "back"]) mail(img, L.TORSO[k]);
+    fill(img, L.TORSO.top, steel);
+    fill(img, L.TORSO.bottom, shade(tabard, 0.8));
+    for (const k of ["front", "back"]) {
+      const r = L.TORSO[k];
+      const plate = [r[0] + 6, r[1], r[2] - 12, 96];
+      face(img, plate, steel, { light: 8, dark: 6 });
+      fill(img, [plate[0], plate[1], 4, plate[3]], shade(steel, 0.85)); // edges
+      fill(img, [plate[0] + plate[2] - 4, plate[1], 4, plate[3]], shade(steel, 0.85));
+      if (k === "front") fill(img, [r[0] + r[2] / 2 - 3, r[1] + 6, 6, 80], shade(steel, 1.2)); // ridge
+      for (const y of [72, 84]) fill(img, [plate[0], plate[1] + y, plate[2], 2], dark); // lames
+      for (const x of [plate[0] + 8, plate[0] + plate[2] - 12]) fill(img, [x, plate[1] + 10, 4, 4], dark); // rivets
     }
-    legs(img, hex("#5f5a55"), hex("#3a2a1e"), { shoePx: 28 });
+    torsoBand(img, 96, 10, leather);
+    const f = L.TORSO.front;
+    fill(img, [f[0] + f[2] / 2 - 8, f[1] + 95, 16, 12], gold); // buckle
+    // Tabard panels hanging below the belt, front and back.
+    for (const k of ["front", "back"]) {
+      const r = L.TORSO[k];
+      face(img, [r[0] + 30, r[1] + 106, r[2] - 60, 38], tabard, { light: 0, dark: 6 });
+      fill(img, [r[0] + r[2] / 2 - 6, r[1] + 112, 12, 12], gold);
+    }
+    // Arms: mail sleeves, steel vambraces above the hand.
+    for (const o of Object.values(L.ARMS)) {
+      fill(img, off(o, L.ARM_CAP_TOP), steel);
+      const s = off(o, L.ARM_SIDES);
+      mail(img, [s[0], s[1], s[2], s[3] - L.HAND_PX]);
+      face(img, [s[0], s[1] + s[3] - L.HAND_PX - 40, s[2], 40], steel, { light: 4, dark: 4 });
+    }
+    // Legs: mail, knee cops, greaves, sabatons.
+    for (const o of Object.values(L.LEGS)) {
+      fill(img, off(o, L.LEG_CAP_TOP), shade(tabard, 0.8));
+      fill(img, off(o, L.LEG_CAP_BOTTOM), dark);
+      const s = off(o, L.LEG_SIDES);
+      mail(img, [s[0], s[1], s[2], 60]);
+      face(img, [s[0], s[1] + 56, s[2], 20], steel, { light: 4, dark: 4 }); // knees
+      face(img, [s[0], s[1] + 76, s[2], 64], shade(steel, 0.95), { light: 3, dark: 6 }); // greaves
+      face(img, [s[0], s[1] + 140, s[2], 20], dark, { light: 3, dark: 3 }); // sabatons
+    }
   },
   // Cream habit with a blue stole down the front, rope belt, sandals.
   cleric(img) {

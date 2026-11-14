@@ -13,7 +13,26 @@ const H = TINT_HAIR, P = TINT_PRIMARY, S = TINT_SECONDARY;
 const HEAD = { x0: 1, x1: 8, y0: 3, y1: 10, z0: 2, z1: 9, part: "head", origin: [-5, -3, -6] };
 const TORSO = { x0: 1, x1: 8, y0: 1, y1: 9, z0: 1, z1: 6, part: "torso", origin: [-5, 2, -4] };
 
+// Arms: each arm occupies x 1..4, y 1..11, z 1..4 of its frame (arm-local voxels
+// x 0..4 / -4..0, y -10..1, z -2..2). The outer side is +X for the left arm.
+const ARM_L = { x0: 1, x1: 4, y0: 1, y1: 11, z0: 1, z1: 4, part: "arm-left", origin: [-1, -11, -3] };
+const ARM_R = { x0: 1, x1: 4, y0: 1, y1: 11, z0: 1, z1: 4, part: "arm-right", origin: [-5, -11, -3] };
+
+// Rounded steel shoulder plate with a trim row; `outer` is +1 (left arm) or -1.
+function pauldron(f, s, outer) {
+  const out = outer > 0 ? f.x1 + 1 : f.x0 - 1;
+  const inner = outer > 0 ? f.x0 : f.x1;
+  const xa = Math.min(inner, out), xb = Math.max(inner, out);
+  s.box(xa, f.y1 - 2, f.z0 - 1, xb, f.y1, f.z1 + 1, P); // shell
+  s.box(f.x0, f.y1 + 1, f.z0, f.x1, f.y1 + 1, f.z1, P); // top dome
+  s.box(out + outer, f.y1 - 3, f.z0 - 1, out + outer, f.y1, f.z1 + 1, P); // outer flap
+  s.box(xa, f.y1 - 3, f.z0 - 1, xb, f.y1 - 3, f.z1 + 1, S); // trim
+  s.box(out + outer, f.y1 - 4, f.z0 - 1, out + outer, f.y1 - 4, f.z1 + 1, S);
+}
+
 const PIECES = {
+  pauldron_left: { frame: ARM_L, tag: "armor", hides: [], build: (f, s) => pauldron(f, s, 1) },
+  pauldron_right: { frame: ARM_R, tag: "armor", hides: [], build: (f, s) => pauldron(f, s, -1) },
   // Long hair: a curtain down the back to the shoulders, side locks, volume on top.
   hair_long: {
     frame: HEAD, tag: "hair", hides: [],
