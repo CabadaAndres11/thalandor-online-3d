@@ -43,6 +43,9 @@ Arrancar el proyecto 3D desde cero: leer el GDD, preparar el entorno, diseñar e
 - En GitHub Actions (Linux) salieron tres fallos que en Windows no se veían: un error de script al acabar la sesión por tiempo de espera (el juego ya había salido en el mismo fotograma), el invitado de ENet no llegaba a la IP de red del propio servidor de CI (ahora la prueba usa 127.0.0.1) y avisos inofensivos de la librería WebRTC al probar rutas sin red. Ya están corregidos y hay 161 tests en verde.
 - **Versión 0.1.1 publicada** en GitHub Releases. El zip lleva el `.exe`, el `.dll` de WebRTC y el `.bat` de ENet.
 
+- Primer informe del usuario jugando con la 0.1.1: al chocar con un muro en diagonal, el jugador "saltaba atrás". No era la red, sino la colisión. Al rozar el lateral de un bloque, un error de redondeo hacía que el otro eje creyera que estaba dentro y lo sacaba por la cara opuesta (saltos de 1-2 m, bloque tras bloque). Ahora solo se frena al jugador si cruza la cara del bloque viniendo desde fuera. Hay tests nuevos que recorren muchas posiciones y direcciones: ningún tick mueve más de un paso y el jugador nunca queda dentro de un bloque.
+- Al amigo del usuario el navegador le bloqueaba la descarga por "no segura": el juego no está firmado y es nuevo, así que el navegador no lo conoce.
+
 ## Siguiente paso
 - Prueba entre casas con la plantilla y decisión D-010.
 - Pendientes: las pruebas de juego de la 0.1.0 y revisar por qué el ping de ENet en local sale de ~100 ms.
