@@ -61,10 +61,9 @@ func test_version_rejection_shows_both_versions() -> void:
 	assert_true(main.dialog.message().contains(GameSession.game_version()))
 
 
-func test_name_and_code_are_remembered() -> void:
+func test_code_is_remembered() -> void:
 	main._on_join("Andrés", "OOOO-0000")
 	var saved := SettingsStore.load_from(SETTINGS)
-	assert_eq(saved.player_name, "Andrés")
 	assert_eq(saved.last_code, "OOOO-0000")
 
 

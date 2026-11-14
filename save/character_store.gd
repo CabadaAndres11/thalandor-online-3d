@@ -1,0 +1,142 @@
+class_name CharacterStore
+extends RefCounted
+## The player's characters on disk: one JSON file per character in `dir`. Damaged or
+## unknown files are skipped (and reported), never deleted.
+
+const MAX_CHARACTERS := 8
+const DEFAULT_DIR := "user://saves/characters"
+
+## Text key of the last failure (ERR_CHAR_FULL, ERR_NAME, ERR_NAME_TAKEN,
+## ERR_IMPORT_INVALID, ERR_SAVE).
+var last_error: String = ""
+## Files of the last load_all() that could not be read as characters.
+var skipped_files: Array[String] = []
+
+var _dir: String
+var _catalog: CharacterCatalog
+
+
+func _init(dir: String = DEFAULT_DIR, catalog: CharacterCatalog = null) -> void:
+	_dir = dir
+	_catalog = catalog if catalog != null else CharacterCatalog.load_default()
+
+
+func load_all() -> Array[CharacterData]:
+	skipped_files.clear()
+	var list: Array[CharacterData] = []
+	var abs := ProjectSettings.globalize_path(_dir)
+	if not DirAccess.dir_exists_absolute(abs):
+		return list
+	for file in DirAccess.get_files_at(abs):
+		if not file.ends_with(".json"):
+			continue
+		var c := _read(_dir.path_join(file))
+		if c == null:
+			skipped_files.append(file)
+		else:
+			list.append(c)
+	list.sort_custom(func(a: CharacterData, b: CharacterData) -> bool:
+		return a.created_at < b.created_at if a.created_at != b.created_at else a.id < b.id)
+	return list
+
+
+func create(char_name: String, class_id: String, appearance: Dictionary) -> CharacterData:
+	if not _can_add(char_name):
+		return null
+	var c := CharacterData.new()
+	c.id = _new_id()
+	c.name = char_name.strip_edges()
+	c.class_id = _catalog.sanitize_class(class_id)
+	c.appearance = _catalog.sanitize_appearance(appearance)
+	c.created_at = int(Time.get_unix_time_from_system())
+	return c if save(c) == OK else null
+
+
+func save(c: CharacterData) -> Error:
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(_dir))
+	var err := _write(_path(c.id), c)
+	if err != OK:
+		last_error = "ERR_SAVE"
+	return err
+
+
+func delete(id: String) -> bool:
+	var path := _path(id)
+	if not _is_safe_id(id) or not FileAccess.file_exists(path):
+		return false
+	return DirAccess.remove_absolute(ProjectSettings.globalize_path(path)) == OK
+
+
+func name_taken(char_name: String, except_id: String = "") -> bool:
+	var key := char_name.strip_edges().to_lower()
+	for c in load_all():
+		if c.id != except_id and c.name.to_lower() == key:
+			return true
+	return false
+
+
+func export_to(id: String, path: String) -> Error:
+	var c := _read(_path(id)) if _is_safe_id(id) else null
+	if c == null:
+		return ERR_DOES_NOT_EXIST
+	return _write(path, c)
+
+
+## Imports a character exported from any PC under a new id; `new_name` replaces its
+## name (for when the original name is already taken).
+func import_from(path: String, new_name: String = "") -> CharacterData:
+	var c := _read(path)
+	if c == null:
+		last_error = "ERR_IMPORT_INVALID"
+		return null
+	if new_name != "":
+		c.name = new_name.strip_edges()
+	if not _can_add(c.name):
+		return null
+	c.id = _new_id()
+	c.created_at = int(Time.get_unix_time_from_system())
+	return c if save(c) == OK else null
+
+
+func _can_add(char_name: String) -> bool:
+	if not HostSession.is_valid_name(char_name.strip_edges()):
+		last_error = "ERR_NAME"
+		return false
+	if load_all().size() >= MAX_CHARACTERS:
+		last_error = "ERR_CHAR_FULL"
+		return false
+	if name_taken(char_name):
+		last_error = "ERR_NAME_TAKEN"
+		return false
+	return true
+
+
+func _read(path: String) -> CharacterData:
+	if not FileAccess.file_exists(path):
+		return null
+	var json := JSON.new()
+	if json.parse(FileAccess.get_file_as_string(path)) != OK:
+		return null
+	return CharacterData.from_dict(json.data, _catalog)
+
+
+func _write(path: String, c: CharacterData) -> Error:
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	if f == null:
+		return FileAccess.get_open_error()
+	f.store_string(JSON.stringify(c.to_dict(), "\t"))
+	f.close()
+	return OK
+
+
+func _path(id: String) -> String:
+	return _dir.path_join(id + ".json")
+
+
+## Ids are our own hex strings; anything else never becomes a file path.
+func _is_safe_id(id: String) -> bool:
+	return id.length() == 16 and id.is_valid_hex_number()
+
+
+func _new_id() -> String:
+	return Crypto.new().generate_random_bytes(8).hex_encode()
