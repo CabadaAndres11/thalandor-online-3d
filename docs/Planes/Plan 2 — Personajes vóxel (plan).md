@@ -57,7 +57,7 @@ Se publica como versión 0.2.0.
 
 ---
 
-### Tarea 0: Cierre del Plan 1
+### Task 0: Cierre del Plan 1
 - [ ] La suite completa PASA en local y en CI.
 - [ ] Revisión final del Plan 1 (`requesting-code-review` sobre los commits desde `95deff0`). Se corrige lo que salga, incluidos los avisos de GDScript que daba `run_project` y el ping de ~100 ms de ENet en local: hay que explicarlo o corregirlo.
 - [ ] Documentación:
@@ -67,7 +67,7 @@ Se publica como versión 0.2.0.
   - nota de sesión.
 - [ ] Commit `docs: close Plan 1 (home-to-home test postponed)` y push.
 
-### Tarea 1: Lector de `.vox`
+### Task 1: Lector de `.vox`
 **Archivos:**
 - Crear: `game/characters/vox_file.gd`
 - Crear: `tests/helpers/vox_writer.gd` (solo para tests)
@@ -94,7 +94,7 @@ Se publica como versión 0.2.0.
 - [ ] **Paso 4:** ejecutar el test → PASA.
 - [ ] **Paso 5:** commit `feat(characters): MagicaVoxel .vox reader`.
 
-### Tarea 2: Mallas de vóxeles con colores teñibles
+### Task 2: Mallas de vóxeles con colores teñibles
 **Archivos:**
 - Crear: `game/characters/vox_mesher.gd`
 - Test: `tests/unit/characters/test_vox_mesher.gd`
@@ -122,7 +122,7 @@ Se publica como versión 0.2.0.
 - [ ] **Paso 4:** ejecutar → PASA.
 - [ ] **Paso 5:** commit `feat(characters): voxel meshing with tintable palette indices`.
 
-### Tarea 3: Prueba de viabilidad del arte (punto de control 1)
+### Task 3: Prueba de viabilidad del arte (punto de control 1)
 **Archivos:**
 - Crear: `tools/art/png.mjs`, que lee PNG con paleta o RGBA (filtros 0–4) y escribe PNG RGBA. Usa solo `zlib` de Node.
 - Crear: `tools/art/vox.mjs`, que escribe `.vox` con la paleta y los índices teñibles de las restricciones globales.
@@ -166,7 +166,7 @@ Se publica como versión 0.2.0.
   - **Se espera su visto bueno.** Según lo que diga: seguir, repintar las capas a mano con scripts, o pasar a Blender o Claude Design.
 - [ ] **Paso 7:** commit `feat(characters): art pipeline spike (layers, mage outfit, first voxel pieces)`.
 
-### Tarea 4: Todo el arte y el catálogo en datos (punto de control 2)
+### Task 4: Todo el arte y el catálogo en datos (punto de control 2)
 **Archivos:**
 - Crear: `data/characters/appearance.json`, `classes.json` y `pieces.json`.
 - Crear: `game/characters/character_catalog.gd`.
@@ -222,7 +222,7 @@ Se publica como versión 0.2.0.
   - Se envía al usuario y **se espera su visto bueno** antes de seguir.
 - [ ] **Paso 7:** commit `feat(characters): appearance catalog, class outfits and voxel pieces`.
 
-### Tarea 5: Avatar animado en el juego
+### Task 5: Avatar animado en el juego
 **Archivos:**
 - Modificar: `game/player_avatar.gd` y `game/game_session.gd:236-250` (`_sync_avatars`).
 - Modificar: `game/characters/character_rig.gd`.
@@ -247,7 +247,7 @@ Se publica como versión 0.2.0.
 - [ ] **Paso 3:** ejecutar el test y la suite completa → PASA.
 - [ ] **Paso 4:** commit `feat(game): animated voxel character avatars`.
 
-### Tarea 6: Personajes guardados
+### Task 6: Personajes guardados
 **Archivos:**
 - Crear: `save/character_data.gd` y `save/character_store.gd`.
 - Modificar: `save/settings_store.gd` (VERSION 2, `last_character_id`; `player_name` solo se lee, para rellenar el nombre del primer personaje).
@@ -290,7 +290,7 @@ Se publica como versión 0.2.0.
 - [ ] **Paso 4:** `test_settings_store.gd`: añadir `test_saves_last_character_id` y `test_reads_v1_player_name`.
 - [ ] **Paso 5:** ejecutar → PASA. Commit `feat(save): characters with versioned files, export and import`.
 
-### Tarea 7: Personaje en la red
+### Task 7: Personaje en la red
 **Archivos:**
 - Modificar: `net/protocol.gd`, `net/host_session.gd`, `net/client_session.gd` y `game/game_session.gd`.
 - Modificar: `tests/helpers/guest_process.gd`, para que envíe una clase y una apariencia.
@@ -320,7 +320,7 @@ Se publica como versión 0.2.0.
 - [ ] **Paso 3:** suite completa → PASA, incluido `test_two_processes.gd`. Opcionalmente, también con `THALANDOR_SIGNALING` apuntando al servidor desplegado.
 - [ ] **Paso 4:** commit `feat(net): players bring their character class and appearance`.
 
-### Tarea 8: Pantallas de personajes
+### Task 8: Pantallas de personajes
 **Archivos:**
 - Crear: `ui/character_preview.gd`, `ui/character_select_screen.gd` y `ui/character_create_screen.gd`.
 - Modificar:
@@ -363,7 +363,7 @@ Se publica como versión 0.2.0.
 - [ ] **Paso 3:** suite completa → PASA. Se ejecuta el juego con `run_project` para ver que arranca sin errores en la consola.
 - [ ] **Paso 4:** commit `feat(ui): character select and create screens`.
 
-### Tarea 9: Cierre del plan y versión 0.2.0
+### Task 9: Cierre del plan y versión 0.2.0
 - [ ] `project.godot` pasa a `config/version="0.2.0"`. `.github/release-notes.md` explica:
   - los personajes nuevos;
   - que los personajes se guardan en `%APPDATA%\Godot\app_userdata\Thalandor Online\saves\characters`;
