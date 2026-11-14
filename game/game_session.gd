@@ -219,7 +219,7 @@ func _process(delta: float) -> void:
 	client.update(delta)
 	if client == null:
 		return # the update ended the session (e.g. timeout) and the game left
-	_sync_avatars()
+	_sync_avatars(delta)
 	var own := client.render_state(client.my_id)
 	if not own.is_empty():
 		camera.follow(own.position)
@@ -235,18 +235,20 @@ func _update_aim() -> void:
 		_aim = hit
 
 
-func _sync_avatars() -> void:
+func _sync_avatars(delta: float) -> void:
 	for id: int in _avatars.keys():
 		if not client.roster.has(id):
 			_remove_avatar(id)
 	for id: int in client.roster:
 		if not _avatars.has(id):
+			var entry: Dictionary = client.roster[id]
 			var avatar := PlayerAvatar.new()
 			avatar.name = "Player%d" % id
-			avatar.setup(client.roster[id].name, client.roster[id].slot)
+			avatar.move_speed = balance.move_speed
+			avatar.setup(entry.name, entry.slot, entry.get("class_id", CharacterCatalog.DEFAULT_CLASS), entry.get("appearance", {}))
 			_avatar_root.add_child(avatar)
 			_avatars[id] = avatar
-		(_avatars[id] as PlayerAvatar).apply_state(client.render_state(id))
+		(_avatars[id] as PlayerAvatar).apply_state(client.render_state(id), delta)
 
 
 func _remove_avatar(id: int) -> void:

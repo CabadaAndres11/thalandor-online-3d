@@ -36,6 +36,25 @@ static func build(look: Dictionary) -> CharacterRig:
 	return rig
 
 
+const WALK_MIN_SPEED := 0.2 # m/s
+const BLEND_S := 0.15
+
+
+## Plays idle or walk for this ground speed; walk runs at speed / move_speed.
+func set_moving_speed(speed_mps: float, move_speed: float) -> void:
+	if animation_player == null:
+		return
+	var walking := speed_mps >= WALK_MIN_SPEED
+	var anim := "walk" if walking else "idle"
+	if animation_player.current_animation != anim:
+		animation_player.play(anim, BLEND_S)
+	animation_player.speed_scale = clampf(speed_mps / maxf(move_speed, 0.01), 0.2, 2.0) if walking else 1.0
+
+
+func current_animation() -> String:
+	return animation_player.current_animation if animation_player != null else ""
+
+
 func part(part_name: String) -> MeshInstance3D:
 	return _parts.get(part_name)
 
