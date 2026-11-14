@@ -27,6 +27,7 @@ func test_play_starts_solo_game() -> void:
 	assert_true(main.in_game())
 	assert_false(main.title.visible)
 	assert_eq(main.game.client.status, ClientSession.Status.IN_GAME)
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
 	assert_eq(main.game.avatar_count(), 1)
 
 
