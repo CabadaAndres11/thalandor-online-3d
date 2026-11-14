@@ -6,9 +6,9 @@ actualizado: 2026-11-14
 
 # 9. Interfaz y flujo
 
-## 9.1 Flujo **[En curso]** (título, Jugar, Abrir grupo y Unirse implementados; falta selección de personaje)
+## 9.1 Flujo **[En curso]** (título, selección y creación de personaje, Jugar, Abrir grupo y Unirse implementados en la 0.2.0; falta la última ubicación y "Ir con el grupo")
 1. **Pantalla de título.**
-2. **Selección de personaje:** cada tarjeta muestra el **modelo 3D del personaje con su equipo**; opciones de crear, borrar, exportar e importar personajes.
+2. **Selección de personaje:** lista de hasta 8 personajes con el **modelo 3D** del elegido girando; opciones de crear, borrar (con confirmación), exportar e importar personajes. **[Implementado]**
 3. **Jugar:** entra al mundo como host de su propia partida.
    - **"Abrir grupo"** está disponible en cualquier momento y genera un código.
    - **"Unirse a un amigo":** desde la selección de personaje, introduciendo el código.

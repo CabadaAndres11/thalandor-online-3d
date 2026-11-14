@@ -12,3 +12,4 @@ Una nota por sesión de trabajo con Claude o por partida de prueba con amigos (p
 
 ## Notas
 - [[Sesión 2026-11-14 — Plan 1 fundaciones y red]]
+- [[Sesión 2026-11-14 — Plan 2 personajes vóxel]]

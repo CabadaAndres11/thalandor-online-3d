@@ -116,12 +116,13 @@ final = (base de clase + atributos + suma de bonos planos) × (1 + suma de bonos
   - Los atributos repartidos se reinician gratis para recolocarlos.
 - **Fuera de la demo:** se implementa después de tener contenido por encima del nivel 50.
 
-## 4.10 Creación y apariencia del personaje **[Diseñado]**
+## 4.10 Creación y apariencia del personaje **[Implementado]** (Plan 2, versión 0.2.0)
 - Hasta **8 personajes** por jugador.
 - Se eligen **nombre, clase y apariencia**.
 - **Apariencia vóxel:** tipo de cuerpo, tono de piel, peinado, color de pelo y color de ojos; los modelos se arman por piezas (cabeza, torso, brazos, piernas).
 - **Ropa inicial:** la decide la clase. Después cambia con el equipo ([[08 Botín y economía|§8]]).
 - **Nombres:** de 2 a 16 caracteres (letras con tildes, números, espacios, `-` y `'`), sin repetir entre los personajes del mismo jugador.
+- **Implementado (0.2.0):** modelo base de **Kenney Blocky Characters** (CC0, 27 vóxeles de alto, animado por piezas rígidas). Apariencia con **2 cuerpos** (esbelto y robusto, por proporciones), **8 tonos de piel**, **6 colores de ojos**, **8 peinados** (corto, media melena, flequillo, calvo, y melena, coleta, moño y cresta en vóxel), **10 colores de pelo** y **5 barbas**. La ropa inicial de cada clase es una capa de textura más piezas vóxel: hombreras del Guerrero, capucha baja del Clérigo, sombrero del Mago, capucha del Arquero y pañuelo del Asesino. Opciones en `data/characters/`.
 
 ---
 ← [[00 Índice del GDD|Índice del GDD]]

@@ -2,7 +2,7 @@
 tags: [plan]
 plan: 2
 fecha: 2026-11-14
-estado: borrador
+estado: hecho
 actualizado: 2026-11-14
 ---
 # Plan 2 — Personajes vóxel: plan de implementación
