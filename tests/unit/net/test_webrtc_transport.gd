@@ -34,6 +34,7 @@ func _poll_until(cond: Callable, seconds: float) -> void:
 		for t: Transport in transports:
 			(received[t] as Array).append_array(t.poll())
 		await wait_seconds(0.02)
+	RtcNoise.accept(self)
 
 
 func test_host_and_guest_connect_and_exchange() -> void:
@@ -73,7 +74,7 @@ func test_host_notices_guest_leaving() -> void:
 	transports.erase(guest)
 	await _poll_until(func() -> bool: return not gone.is_empty(), 10.0)
 	assert_eq(gone, [2])
-	_accept_close_warnings()
+	RtcNoise.accept(self)
 
 
 func test_guest_notices_host_leaving() -> void:
@@ -86,7 +87,7 @@ func test_guest_notices_host_leaving() -> void:
 	transports.erase(host)
 	await _poll_until(func() -> bool: return not gone.is_empty(), 10.0)
 	assert_eq(gone, [Transport.HOST_PEER])
-	_accept_close_warnings()
+	RtcNoise.accept(self)
 
 
 func test_unknown_room_fails() -> void:
@@ -157,9 +158,3 @@ func test_host_drops_guest_that_left_and_never_connects() -> void:
 	assert_false(host._connections.has(2), "dropped after the connect timeout")
 
 
-## The library may warn that it could not reset a channel the other side already closed;
-## that is expected when a peer leaves.
-func _accept_close_warnings() -> void:
-	for err: Variant in get_errors():
-		if err.contains_text("SctpTransport::sendReset"):
-			err.handled = true

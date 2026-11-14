@@ -217,6 +217,8 @@ func _process(delta: float) -> void:
 	if client == null:
 		return
 	client.update(delta)
+	if client == null:
+		return # the update ended the session (e.g. timeout) and the game left
 	_sync_avatars()
 	var own := client.render_state(client.my_id)
 	if not own.is_empty():

@@ -33,6 +33,7 @@ func _wait_until(cond: Callable, seconds: float) -> void:
 	var start := Time.get_ticks_msec()
 	while Time.get_ticks_msec() - start < seconds * 1000.0 and not cond.call():
 		await wait_physics_frames(1)
+	RtcNoise.accept(self)
 
 
 func test_open_group_is_async_and_guest_joins() -> void:
@@ -54,6 +55,24 @@ func test_open_group_is_async_and_guest_joins() -> void:
 	assert_eq(host_game.host.player_count(), 2)
 	await _wait_until(func() -> bool: return guest_game.avatar_count() == 2, 2.0)
 	assert_eq(guest_game.avatar_count(), 2, "guest draws both players")
+
+
+## Like Main: when the session ends (here a silent host times out), the game leaves at
+## once, in the middle of its own frame update; that must not touch the gone client.
+func test_leaving_when_session_times_out_mid_frame() -> void:
+	var host_sig := hub.open_host(CODE) # a host that never answers
+	guest_game = _new_game()
+	guest_game.session_ended.connect(_leave_guest)
+	guest_game.join_with(hub.open_guest(CODE), "Invitado")
+	guest_game.client.balance.timeout_s = 0.3
+	await _wait_until(func() -> bool: return guest_game.client == null, 3.0)
+	assert_null(guest_game.client, "the session ended and the game left")
+	await wait_physics_frames(2)
+	host_sig.close()
+
+
+func _leave_guest(_reason: String) -> void:
+	guest_game.leave()
 
 
 func test_signaling_failure_reports_error() -> void:

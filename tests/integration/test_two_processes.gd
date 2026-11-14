@@ -56,10 +56,7 @@ func test_guest_process_over_webrtc() -> void:
 		pass_test("skipped: set THALANDOR_SIGNALING to a running signaling server")
 		return
 	await _run_session([], 0.0, url)
-	# libdatachannel may warn that it could not reset a channel the guest already closed.
-	for err: Variant in get_errors():
-		if err.contains_text("SctpTransport::sendReset"):
-			err.handled = true
+	RtcNoise.accept(self)
 
 
 func _run_session(extra_args: Array, min_ping_ms: float, signaling_url: String = "") -> void:
@@ -92,6 +89,10 @@ func _run_session(extra_args: Array, min_ping_ms: float, signaling_url: String =
 			if t != null:
 				game.add_host_transport(t)
 				code = GroupCode.encode("127.0.0.1")
+		if code != "":
+			# The host listens on every interface; join over loopback, because CI runners may
+			# not route to their own LAN address (code encoding is covered by unit tests).
+			code = GroupCode.encode("127.0.0.1")
 	if code == "":
 		fail_test("cannot open the group (%s): is the game already running?" % game.last_error)
 		return
