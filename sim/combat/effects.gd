@@ -8,11 +8,13 @@ extends RefCounted
 ##               pulses?, interval_s?}
 ##   dash       {to: "cursor"|"back", distance, speed, on_arrive?: [effects]}
 ##   blink      {to: "cursor"|"behind_target", distance}
-##   heal       {target: "ally_or_self"|"self", amount: {base, coef}, hot?: {duration_s, every_s}}
+##   heal       {target: "ally_or_self"|"self"|"allies_around", radius?, amount: {base, coef},
+##               hot?: {duration_s, every_s}}
 ##              (spell power; with "hot" the amount is spread over time)
 ##   shield     {target: "ally_or_self"|"self", amount: {base, coef}, duration_s}
 ##   status     {target: "enemy"|"self"|"ally_or_self"|"allies_around"|"enemies_around",
-##               radius?, statuses: [{kind, duration_s, magnitude?, stacks?, max_stacks?, every_s?}]}
+##               radius?, statuses: [{kind, duration_s, magnitude?, stacks?, max_stacks?, every_s?,
+##               on_hit?}]}  ("envenom" + on_hit: the bearer's hits apply the on_hit status)
 ##   trap       {radius, arm_s, lifetime_s, damage, statuses?}  (placed at the cursor)
 ##   stealth    {duration_s, vanish?}  (out of combat only, unless vanish: then it also
 ##               leaves combat and monsters forget the caster)
@@ -224,7 +226,21 @@ static func _amount(caster: CombatEntity, spec: Dictionary) -> float:
 
 
 static func _heal(world: SimWorld, caster: CombatEntity, effect: Dictionary, aim: Vector3) -> void:
-	var t := _support_target(world, caster, effect, aim)
+	if str(effect.get("target", "")) == "allies_around":
+		for t: CombatEntity in allies_around(world, caster, float(effect.get("radius", 3.0))):
+			_heal_one(world, caster, t, effect)
+		return
+	_heal_one(world, caster, _support_target(world, caster, effect, aim), effect)
+
+
+## Living allies (the caster included) within `radius` of the caster.
+static func allies_around(world: SimWorld, caster: CombatEntity, radius: float) -> Array:
+	return world.entities().filter(func(o: CombatEntity) -> bool:
+		return o.team == caster.team and o.is_alive() \
+			and flat(o.position).distance_to(flat(caster.position)) <= radius + o.radius)
+
+
+static func _heal_one(world: SimWorld, caster: CombatEntity, t: CombatEntity, effect: Dictionary) -> void:
 	var amount := _amount(caster, effect.get("amount", {})) * caster.stats.healing_done_mult * t.stats.healing_received_mult
 	var hot: Dictionary = effect.get("hot", {})
 	if not hot.is_empty():
@@ -256,9 +272,7 @@ static func _status(world: SimWorld, caster: CombatEntity, effect: Dictionary, c
 		"ally_or_self":
 			targets = [_support_target(world, caster, effect, ctx.aim)]
 		"allies_around":
-			targets = world.entities().filter(func(o: CombatEntity) -> bool:
-				return o.team == caster.team and o.is_alive() \
-					and flat(o.position).distance_to(flat(caster.position)) <= radius + o.radius)
+			targets = allies_around(world, caster, radius)
 		"enemies_around":
 			targets = in_circle(world, caster, caster.position, radius)
 		_:

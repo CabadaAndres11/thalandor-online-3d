@@ -7,5 +7,27 @@
 	 "effects": [{"type": "heal", "target": "ally_or_self", "amount": {"base": 25, "coef": 1.0}}]},
 	{"id": "cleric_shield", "class": "cleric", "name": "AB_CLERIC_SHIELD", "desc": "AB_CLERIC_SHIELD_DESC", "icon": "shield", "kind": "active", "level": 1,
 	 "cost": 30, "cooldown_s": 10, "gcd": true, "range": 20, "anim": "cast",
-	 "effects": [{"type": "shield", "target": "ally_or_self", "amount": {"base": 40, "coef": 1.0}, "duration_s": 8}]}
+	 "effects": [{"type": "shield", "target": "ally_or_self", "amount": {"base": 40, "coef": 1.0}, "duration_s": 8}]},
+	{"id": "cleric_renew", "class": "cleric", "name": "AB_CLERIC_RENEW", "desc": "AB_CLERIC_RENEW_DESC", "icon": "renew", "kind": "active", "level": 3,
+	 "cost": 25, "cooldown_s": 8, "gcd": true, "range": 20, "anim": "cast",
+	 "effects": [{"type": "heal", "target": "ally_or_self", "amount": {"base": 30, "coef": 1.2}, "hot": {"duration_s": 6, "every_s": 1}}]},
+	{"id": "cleric_holy_nova", "class": "cleric", "name": "AB_CLERIC_HOLY_NOVA", "desc": "AB_CLERIC_HOLY_NOVA_DESC", "icon": "holy_nova", "kind": "active", "level": 6,
+	 "cost": 40, "cooldown_s": 12, "gcd": true, "range": 4, "anim": "cast",
+	 "effects": [
+		{"type": "area", "at": "self", "radius": 4, "delay_s": 0, "telegraph": false, "damage": {"base": 15, "coef": 0.7, "kind": "magic"}},
+		{"type": "heal", "target": "allies_around", "radius": 4, "amount": {"base": 15, "coef": 0.6}}]},
+	{"id": "cleric_purify", "class": "cleric", "name": "AB_CLERIC_PURIFY", "desc": "AB_CLERIC_PURIFY_DESC", "icon": "purify", "kind": "active", "level": 10,
+	 "cost": 25, "cooldown_s": 10, "gcd": true, "range": 20, "anim": "cast",
+	 "effects": [{"type": "cleanse", "target": "ally_or_self"}]},
+	{"id": "cleric_resurrection", "class": "cleric", "name": "AB_CLERIC_RESURRECTION", "desc": "AB_CLERIC_RESURRECTION_DESC", "icon": "resurrection", "kind": "active", "level": 20,
+	 "cost": 50, "cooldown_s": 60, "gcd": true, "range": 20, "anim": "cast",
+	 "effects": [{"type": "revive", "range": 20}]},
+	{"id": "cleric_meditation", "class": "cleric", "name": "AB_CLERIC_MEDITATION", "desc": "AB_CLERIC_MEDITATION_DESC", "icon": "passive_cleric", "kind": "passive", "level": 5,
+	 "passive": [{"type": "hook", "hook": "mana_regen_in_combat", "mult": 0.5}]},
+	{"id": "cleric_unshakable_faith", "class": "cleric", "name": "AB_CLERIC_UNSHAKABLE_FAITH", "desc": "AB_CLERIC_UNSHAKABLE_FAITH_DESC", "icon": "passive_cleric", "kind": "passive", "level": 15,
+	 "passive": [{"type": "hook", "hook": "healing_received_pct", "pct": 0.10}]},
+	{"id": "cleric_grace", "class": "cleric", "name": "AB_CLERIC_GRACE", "desc": "AB_CLERIC_GRACE_DESC", "icon": "passive_cleric", "kind": "passive", "level": 25,
+	 "passive": [{"type": "hook", "hook": "healing_done_pct", "pct": 0.10}]},
+	{"id": "cleric_echo_of_light", "class": "cleric", "name": "AB_CLERIC_ECHO_OF_LIGHT", "desc": "AB_CLERIC_ECHO_OF_LIGHT_DESC", "icon": "passive_cleric", "kind": "passive", "level": 35,
+	 "passive": [{"type": "hook", "hook": "heal_leaves_hot", "pct": 0.3, "duration_s": 3, "every_s": 1}]}
 ]

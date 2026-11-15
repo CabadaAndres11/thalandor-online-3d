@@ -30,7 +30,11 @@ static func try_cast(world: SimWorld, caster: CombatEntity, ability_id: String, 
 		ab = ClassRules.scale_damage(ab, float(mods.get("damage_mult", 1.0)), float(mods.get("range_mult", 1.0)))
 	ab = ClassRules.with_passives(world, caster, ab)
 	caster.resource -= cost
-	var cd := world.ticks(float(ab.get("cooldown_s", 0.0)))
+	# combat_cooldown_s: a longer cooldown when cast in combat (Sigilo's vanish).
+	var cd_s := float(ab.get("cooldown_s", 0.0))
+	if ab.has("combat_cooldown_s") and caster.in_combat(world):
+		cd_s = float(ab.combat_cooldown_s)
+	var cd := world.ticks(cd_s)
 	if cd > 0:
 		caster.cooldowns[ability_id] = world.tick + cd
 	if uses_gcd:
@@ -75,6 +79,10 @@ static func deal(world: SimWorld, source: CombatEntity, target: CombatEntity, ef
 		if target is MonsterState and source.team == CombatEntity.TEAM_PLAYERS:
 			var threat: float = r.amount * source.stats.threat_mult * float(_ability.get("threat_mult", 1.0))
 			(target as MonsterState).add_threat(source.id, maxf(threat, 1.0))
+		# Veneno: while the attacker is envenomed, its hits apply the poison.
+		for st: StatusEffect in source.statuses:
+			if st.kind == "envenom" and not st.on_hit.is_empty() and world.tick < st.end_tick:
+				apply_status(world, source, target, st.on_hit)
 	for s: Dictionary in effect.get("statuses", []):
 		apply_status(world, source, target, s)
 
@@ -111,6 +119,7 @@ static func apply_status(world: SimWorld, source: CombatEntity, target: CombatEn
 		return
 	var st := StatusEffect.make(str(s.get("kind", "")), world.tick + world.ticks(float(s.get("duration_s", 1.0))),
 		float(s.get("magnitude", 0.0)), source.id, int(s.get("stacks", 1)), world.ticks(float(s.get("every_s", 0.0))))
+	st.on_hit = s.get("on_hit", {})
 	target.add_status(st, int(s.get("max_stacks", 1)))
 	world.emit(["status", target.id, st.kind, st.end_tick])
 

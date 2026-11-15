@@ -10,5 +10,26 @@
 	 "cost": 0, "cooldown_s": 8, "gcd": true, "range": 20, "anim": "dash",
 	 "effects": [
 		{"type": "projectile", "speed": 26, "radius": 0.2, "range": 20, "pierce": false, "damage": {"base": 9, "coef": 0.6, "kind": "physical"}},
-		{"type": "dash", "to": "back", "distance": 5, "speed": 18}]}
+		{"type": "dash", "to": "back", "distance": 5, "speed": 18}]},
+	{"id": "archer_net", "class": "archer", "name": "AB_ARCHER_NET", "desc": "AB_ARCHER_NET_DESC", "icon": "net", "kind": "active", "level": 3,
+	 "cost": 20, "cooldown_s": 14, "gcd": true, "range": 15, "anim": "shoot",
+	 "effects": [{"type": "status", "target": "enemy", "statuses": [{"kind": "root", "duration_s": 3}]}]},
+	{"id": "archer_arrow_rain", "class": "archer", "name": "AB_ARCHER_ARROW_RAIN", "desc": "AB_ARCHER_ARROW_RAIN_DESC", "icon": "arrow_rain", "kind": "active", "level": 6,
+	 "cost": 30, "cooldown_s": 12, "gcd": true, "range": 20, "anim": "shoot",
+	 "effects": [{"type": "area", "at": "cursor", "radius": 3, "delay_s": 0.4, "telegraph": true, "pulses": 3, "interval_s": 0.5,
+		"damage": {"base": 10, "coef": 0.5, "kind": "physical"}}]},
+	{"id": "archer_explosive_trap", "class": "archer", "name": "AB_ARCHER_EXPLOSIVE_TRAP", "desc": "AB_ARCHER_EXPLOSIVE_TRAP_DESC", "icon": "explosive_trap", "kind": "active", "level": 10,
+	 "cost": 25, "cooldown_s": 18, "gcd": true, "range": 10, "anim": "cast",
+	 "effects": [{"type": "trap", "radius": 1.5, "arm_s": 1.0, "lifetime_s": 30, "damage": {"base": 40, "coef": 1.2, "kind": "physical"}}]},
+	{"id": "archer_mark", "class": "archer", "name": "AB_ARCHER_MARK", "desc": "AB_ARCHER_MARK_DESC", "icon": "mark", "kind": "active", "level": 20,
+	 "cost": 15, "cooldown_s": 30, "gcd": true, "range": 20, "anim": "shoot",
+	 "effects": [{"type": "status", "target": "enemy", "statuses": [{"kind": "mark", "duration_s": 10, "magnitude": 0.15}]}]},
+	{"id": "archer_reflexes", "class": "archer", "name": "AB_ARCHER_REFLEXES", "desc": "AB_ARCHER_REFLEXES_DESC", "icon": "passive_archer", "kind": "passive", "level": 5,
+	 "passive": [{"type": "stat", "stat": "dodge_add", "value": 0.05}]},
+	{"id": "archer_hawk_eye", "class": "archer", "name": "AB_ARCHER_HAWK_EYE", "desc": "AB_ARCHER_HAWK_EYE_DESC", "icon": "passive_archer", "kind": "passive", "level": 15,
+	 "passive": [{"type": "hook", "hook": "range_pct", "pct": 0.15}]},
+	{"id": "archer_lethal_range", "class": "archer", "name": "AB_ARCHER_LETHAL_RANGE", "desc": "AB_ARCHER_LETHAL_RANGE_DESC", "icon": "passive_archer", "kind": "passive", "level": 25,
+	 "passive": [{"type": "hook", "hook": "bonus_vs_far", "distance": 10, "pct": 0.15}]},
+	{"id": "archer_volley", "class": "archer", "name": "AB_ARCHER_VOLLEY", "desc": "AB_ARCHER_VOLLEY_DESC", "icon": "passive_archer", "kind": "passive", "level": 35,
+	 "passive": [{"type": "hook", "hook": "every_nth_basic_crits", "n": 5}]}
 ]

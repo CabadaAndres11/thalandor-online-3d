@@ -3,7 +3,7 @@ extends RefCounted
 ## A timed effect on an entity. Periodic ones (poison, burn, hot) act every
 ## `tick_every` ticks with magnitude × stacks.
 ## Kinds: stun, root, freeze, slow, poison, burn, mark, damage_buff,
-## damage_reduction, evasion, taunted, stealth, invulnerable, hot.
+## damage_reduction, evasion, taunted, stealth, invulnerable, hot, envenom.
 
 const NEGATIVE := ["stun", "root", "freeze", "slow", "poison", "burn", "mark", "taunted"]
 
@@ -14,6 +14,8 @@ var magnitude: float = 0.0
 var source_id: int = 0
 var tick_every: int = 0
 var next_tick: int = 0
+## envenom: the status the bearer's hits apply (a status entry from the data).
+var on_hit: Dictionary = {}
 
 
 static func make(p_kind: String, p_end_tick: int, p_magnitude: float = 0.0, p_source_id: int = 0,

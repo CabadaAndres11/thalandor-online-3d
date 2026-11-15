@@ -126,6 +126,86 @@ AB_ASSASSIN_EVISCERATE,Eviscerar
 AB_ASSASSIN_EVISCERATE_DESC,"Remate que gasta los puntos de combo; cuantos más, más daño."
 AB_ASSASSIN_SHADOWSTEP,Paso sombrío
 AB_ASSASSIN_SHADOWSTEP_DESC,Te teletransportas a la espalda del enemigo bajo el cursor.
+AB_WARRIOR_BATTLE_CRY,Grito de guerra
+AB_WARRIOR_BATTLE_CRY_DESC,"Tú y los aliados a 8 m hacéis un 15 % más de daño durante 8 s."
+AB_WARRIOR_WHIRLWIND,Torbellino
+AB_WARRIOR_WHIRLWIND_DESC,Giras con el arma y golpeas a todos los enemigos a 3 m a tu alrededor.
+AB_WARRIOR_TAUNT,Provocar
+AB_WARRIOR_TAUNT_DESC,Los enemigos a 6 m solo pueden atacarte a ti durante 4 s.
+AB_WARRIOR_SHIELD_WALL,Muro de escudo
+AB_WARRIOR_SHIELD_WALL_DESC,Recibes un 50 % menos de daño durante 6 s.
+AB_WARRIOR_CONTAINED_FURY,Furia contenida
+AB_WARRIOR_CONTAINED_FURY_DESC,La ira decae un 50 % más lento.
+AB_WARRIOR_HARDENED_SKIN,Piel endurecida
+AB_WARRIOR_HARDENED_SKIN_DESC,+10 % de armadura.
+AB_WARRIOR_EXPERT_BLOCK,Bloqueo experto
+AB_WARRIOR_EXPERT_BLOCK_DESC,"Cada golpe que esquivas o que tu escudo absorbe entero te da 10 de ira."
+AB_WARRIOR_BLOODLUST,Sed de sangre
+AB_WARRIOR_BLOODLUST_DESC,Tus críticos te curan un 3 % de la vida máxima.
+AB_CLERIC_RENEW,Renovar
+AB_CLERIC_RENEW_DESC,"Cura al aliado bajo el cursor (o a ti) poco a poco durante 6 s."
+AB_CLERIC_HOLY_NOVA,Nova sagrada
+AB_CLERIC_HOLY_NOVA_DESC,Una ola de luz daña a los enemigos a 4 m y cura a los aliados a 4 m.
+AB_CLERIC_PURIFY,Purificar
+AB_CLERIC_PURIFY_DESC,"Quita los efectos negativos del aliado bajo el cursor (o los tuyos)."
+AB_CLERIC_RESURRECTION,Resurrección
+AB_CLERIC_RESURRECTION_DESC,Levanta a distancia a un aliado derribado bajo el cursor.
+AB_CLERIC_MEDITATION,Meditación
+AB_CLERIC_MEDITATION_DESC,La regeneración de maná sigue al 50 % en combate.
+AB_CLERIC_UNSHAKABLE_FAITH,Fe inquebrantable
+AB_CLERIC_UNSHAKABLE_FAITH_DESC,+10 % de curación recibida.
+AB_CLERIC_GRACE,Gracia
+AB_CLERIC_GRACE_DESC,+10 % de curación realizada.
+AB_CLERIC_ECHO_OF_LIGHT,Eco de luz
+AB_CLERIC_ECHO_OF_LIGHT_DESC,Tus curaciones dejan un 30 % extra que cura durante 3 s.
+AB_MAGE_FROST_NOVA,Nova de escarcha
+AB_MAGE_FROST_NOVA_DESC,Congela 2 s a los enemigos a 4 m a tu alrededor.
+AB_MAGE_MANA_BARRIER,Barrera de maná
+AB_MAGE_MANA_BARRIER_DESC,Un escudo que absorbe daño durante 8 s.
+AB_MAGE_FIREBALL,Bola de fuego
+AB_MAGE_FIREBALL_DESC,"Un proyectil de fuego que explota al impactar y daña a todos a 2,5 m."
+AB_MAGE_FROSTBOLT,Descarga de escarcha
+AB_MAGE_FROSTBOLT_DESC,"Un proyectil de hielo que ralentiza al enemigo un 50 % durante 4 s."
+AB_MAGE_ARCANE_MIND,Mente arcana
+AB_MAGE_ARCANE_MIND_DESC,+10 % de maná máximo.
+AB_MAGE_FOCUS,Concentración
+AB_MAGE_FOCUS_DESC,"Tras 3 s sin recibir daño, tus hechizos hacen un 10 % más de daño."
+AB_MAGE_IGNITION,Ignición
+AB_MAGE_IGNITION_DESC,Tus críticos de fuego dejan una quemadura.
+AB_MAGE_PIERCING_COLD,Frío penetrante
+AB_MAGE_PIERCING_COLD_DESC,+20 % de daño a enemigos congelados o ralentizados.
+AB_ARCHER_NET,Red
+AB_ARCHER_NET_DESC,Inmoviliza 3 s al enemigo bajo el cursor.
+AB_ARCHER_ARROW_RAIN,Lluvia de flechas
+AB_ARCHER_ARROW_RAIN_DESC,Tres oleadas de flechas caen en el cursor y dañan a todos a 3 m.
+AB_ARCHER_EXPLOSIVE_TRAP,Trampa explosiva
+AB_ARCHER_EXPLOSIVE_TRAP_DESC,"Colocas una trampa en el cursor; se arma en 1 s y explota cuando un enemigo la pisa."
+AB_ARCHER_MARK,Marca
+AB_ARCHER_MARK_DESC,El enemigo bajo el cursor recibe un 15 % más de daño durante 10 s.
+AB_ARCHER_REFLEXES,Reflejos
+AB_ARCHER_REFLEXES_DESC,+5 % de esquiva.
+AB_ARCHER_HAWK_EYE,Ojo de halcón
+AB_ARCHER_HAWK_EYE_DESC,+15 % de alcance.
+AB_ARCHER_LETHAL_RANGE,Distancia letal
+AB_ARCHER_LETHAL_RANGE_DESC,+15 % de daño a enemigos a 10 m o más.
+AB_ARCHER_VOLLEY,Ráfaga
+AB_ARCHER_VOLLEY_DESC,Cada 5.º disparo básico es crítico.
+AB_ASSASSIN_STEALTH,Sigilo
+AB_ASSASSIN_STEALTH_DESC,"Fuera de combate, entras en sigilo. En combate, desapareces y sales del combate (recarga larga)."
+AB_ASSASSIN_BLADE_FAN,Abanico de cuchillas
+AB_ASSASSIN_BLADE_FAN_DESC,Dañas a los enemigos a 3 m y ganas 1 punto de combo por cada uno.
+AB_ASSASSIN_POISON,Veneno
+AB_ASSASSIN_POISON_DESC,"Durante 30 s, tus golpes envenenan; el veneno se acumula hasta 5 veces."
+AB_ASSASSIN_EVASION,Evasión
+AB_ASSASSIN_EVASION_DESC,+50 % de esquiva durante 5 s.
+AB_ASSASSIN_BACKSTAB,Golpe por la espalda
+AB_ASSASSIN_BACKSTAB_DESC,+20 % de daño por la espalda.
+AB_ASSASSIN_AMBUSH,Emboscada
+AB_ASSASSIN_AMBUSH_DESC,El primer ataque desde sigilo es crítico y hace un 50 % más de daño.
+AB_ASSASSIN_DEADLY_EVASION,Evasión mortal
+AB_ASSASSIN_DEADLY_EVASION_DESC,"Tras esquivar, el siguiente golpe da 2 puntos de combo."
+AB_ASSASSIN_OPPORTUNIST,Oportunista
+AB_ASSASSIN_OPPORTUNIST_DESC,+10 % de daño a enemigos aturdidos o inmovilizados.
 FX_DODGE,Esquiva
 HUD_KEY_LMB,CI
 HUD_KEY_RMB,CD
