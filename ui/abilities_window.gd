@@ -1,22 +1,27 @@
 class_name AbilitiesWindow
 extends Control
-## Abilities window (K): the class's actives and passives with their descriptions, and
+## Abilities window (K): the class's mouse attacks (CI, CD), actives and passives with
+## their description and computed details (AbilityDetails), and
 ## the bar of slots 1-4. Click an active, then a slot; an ability already on the bar
 ## swaps places. Clicking a slot with nothing selected picks its ability up.
 
 signal bar_changed(bar: Array)
 
-const CARD := Vector2(124, 92)
+const CARD := Vector2(124, 86)
 const BAR_SLOT := 64.0
-const DESC_LINES := 3
+const DESC_LINES := 9
 
 var _abilities: AbilityDB
 var _class_id: String = ""
+var _stats: CombatStats
+var _resource_kind: String = "mana"
 var _bar: Array = []
+var _attacks: Array = [] # basic and secondary (always on the mouse)
 var _actives: Array = []
 var _passives: Array = []
 var _selected: String = ""
 var _panel: PanelContainer
+var _attack_row: HBoxContainer
 var _active_row: HBoxContainer
 var _passive_row: HBoxContainer
 var _bar_row: HBoxContainer
@@ -62,12 +67,13 @@ func _init() -> void:
 	close.pressed.connect(func() -> void: visible = false)
 	header.add_child(close)
 
-	box.add_child(_section(tr("ABILITIES_ACTIVES")))
-	_active_row = _row(box)
-	box.add_child(_section(tr("ABILITIES_PASSIVES")))
-	_passive_row = _row(box)
-	box.add_child(_section(tr("ABILITIES_BAR")))
-	_bar_row = _row(box)
+	# Row 1: the mouse attacks (CI, CD) and the actives; row 2: passives and the bar.
+	var row1 := _row(box)
+	_attack_row = _block(row1, tr("ABILITIES_ATTACKS"))
+	_active_row = _block(row1, tr("ABILITIES_ACTIVES"))
+	var row2 := _row(box)
+	_passive_row = _block(row2, tr("ABILITIES_PASSIVES"))
+	_bar_row = _block(row2, tr("ABILITIES_BAR"))
 	for i in AbilityDB.BAR_SIZE:
 		var slot := Button.new()
 		slot.custom_minimum_size = Vector2(BAR_SLOT, BAR_SLOT)
@@ -85,8 +91,8 @@ func _init() -> void:
 	box.add_child(_name_label)
 	_desc = Label.new()
 	_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_desc.add_theme_font_size_override("font_size", 16)
-	_desc.custom_minimum_size = Vector2(5 * CARD.x + 4 * 6, 3 * 22)
+	_desc.add_theme_font_size_override("font_size", 15)
+	_desc.custom_minimum_size = Vector2(7 * CARD.x + 6 * 6 + 24, DESC_LINES * 21)
 	_desc.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	box.add_child(_desc)
 	var hint := Label.new()
@@ -96,34 +102,43 @@ func _init() -> void:
 	box.add_child(hint)
 
 
-## Fills the window for a class and opens it.
+## Fills the window for a class and opens it. The details use the class's base stats
+## (equipment and levels come in later plans).
 func show_for(class_id: String, p_bar: Array, abilities: AbilityDB) -> void:
 	_abilities = abilities
 	_class_id = class_id
+	var def := CharacterCatalog.load_default().class_def(class_id)
+	_stats = CombatStats.from_dict(def.get("stats", {}))
+	var res: Variant = def.get("resource", {})
+	_resource_kind = str((res as Dictionary).get("kind", "mana")) if res is Dictionary else "mana"
 	_bar = abilities.sanitize_bar(class_id, p_bar)
+	_attacks = [abilities.kind_of(class_id, "basic"), abilities.kind_of(class_id, "secondary")].filter(
+		func(id: String) -> bool: return id != "")
 	_actives = abilities.actives(class_id)
 	_passives = abilities.class_abilities(class_id).filter(
 		func(a: Dictionary) -> bool: return a.get("kind") == "passive").map(
 		func(a: Dictionary) -> String: return a.id)
 	_cards.clear()
-	for row: HBoxContainer in [_active_row, _passive_row]:
+	for row: HBoxContainer in [_attack_row, _active_row, _passive_row]:
 		for child in row.get_children():
 			row.remove_child(child)
 			child.queue_free()
+	for id: String in _attacks:
+		_attack_row.add_child(_card(id))
 	for id: String in _actives:
 		_active_row.add_child(_card(id))
 	for id: String in _passives:
 		_passive_row.add_child(_card(id))
 	_selected = ""
-	_show_description(_actives[0] if not _actives.is_empty() else "")
+	_show_description(_attacks[0] if not _attacks.is_empty() else "")
 	_refresh()
 	visible = true
 
 
-## Selects an ability of the class (actives can then go to a slot). Anything else
-## clears the selection.
+## Selects an ability of the class (actives can then go to a slot; attacks and
+## passives only show their description). Anything else clears the selection.
 func select_ability(id: String) -> void:
-	_selected = id if (id in _actives or id in _passives) else ""
+	_selected = id if (id in _attacks or id in _actives or id in _passives) else ""
 	if _selected != "":
 		_show_description(_selected)
 	_refresh()
@@ -155,6 +170,14 @@ func bar() -> Array:
 	return _bar.duplicate()
 
 
+func attack_ids() -> Array:
+	return _attacks.duplicate()
+
+
+func description_text() -> String:
+	return _desc.text
+
+
 func active_ids() -> Array:
 	return _actives.duplicate()
 
@@ -183,9 +206,21 @@ func _section(text: String) -> Label:
 
 func _row(box: VBoxContainer) -> HBoxContainer:
 	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 6)
+	row.add_theme_constant_override("separation", 24)
 	box.add_child(row)
 	return row
+
+
+## A labelled group of cards inside a row; returns the cards' row.
+func _block(row: HBoxContainer, title: String) -> HBoxContainer:
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 4)
+	row.add_child(col)
+	col.add_child(_section(title))
+	var cards := HBoxContainer.new()
+	cards.add_theme_constant_override("separation", 6)
+	col.add_child(cards)
+	return cards
 
 
 func _card(id: String) -> Button:
@@ -218,13 +253,12 @@ func _show_description(id: String) -> void:
 		_desc.text = ""
 		return
 	var a := _abilities.get_ability(id)
-	_name_label.text = "%s — %s" % [tr(str(a.get("name", id))), tr("ABILITIES_LEVEL") % int(a.get("level", 1))]
-	var cost_line := ""
-	if a.get("kind") == "active":
-		var cd := float(a.get("cooldown_s", 0))
-		var cd_text := str(int(cd)) if is_equal_approx(cd, roundf(cd)) else str(snappedf(cd, 0.1)).replace(".", ",")
-		cost_line = "\n" + tr("ABILITIES_COST") % [int(a.get("cost", 0)), cd_text]
-	_desc.text = tr(str(a.get("desc", ""))) + cost_line
+	var title := "%s — %s" % [tr(str(a.get("name", id))), tr("ABILITIES_LEVEL") % int(a.get("level", 1))]
+	if id in _attacks:
+		title += " · " + tr("HUD_KEY_LMB" if a.get("kind") == "basic" else "HUD_KEY_RMB")
+	_name_label.text = title
+	var details := AbilityDetails.lines(a, _stats, _resource_kind)
+	_desc.text = tr(str(a.get("desc", ""))) + "\n" + "\n".join(details)
 
 
 func _refresh() -> void:

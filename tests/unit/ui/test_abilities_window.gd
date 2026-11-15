@@ -57,10 +57,30 @@ func test_window_fits_1280x720() -> void:
 	get_tree().root.size = Vector2i(1280, 720)
 	for class_id: String in CLASSES:
 		win.show_for(class_id, abilities.default_bar(class_id), abilities)
-		for id: String in win.active_ids() + win.passive_ids():
+		for id: String in win.attack_ids() + win.active_ids() + win.passive_ids():
 			win.select_ability(id)
 			await wait_process_frames(1)
 			var r := win.panel_rect()
 			assert_true(Rect2(0, 0, 1280, 720).encloses(r), "%s %s: panel %s" % [class_id, id, r])
-			assert_gt(r.size.x, 600.0, "the panel is laid out (5 cards wide)")
+			assert_gt(r.size.x, 800.0, "the panel is laid out (7 cards wide)")
 			assert_true(win.description_fits(), "%s: the description fits its box" % id)
+
+
+func test_attacks_row_shows_basic_and_secondary() -> void:
+	win.show_for("warrior", abilities.default_bar("warrior"), abilities)
+	assert_eq(win.attack_ids(), ["warrior_slash", "warrior_brutal"])
+	win.select_ability("warrior_brutal")
+	assert_string_contains(win.description_text(), tr("AB_WARRIOR_BRUTAL_DESC"))
+	assert_string_contains(win.description_text(), "28 + 120 % de tu poder de ataque (20) = 52", "with the class's base stats")
+	win.click_slot(0)
+	assert_eq(win.bar(), abilities.default_bar("warrior"), "attacks stay on the mouse")
+	assert_eq(changes.size(), 0)
+
+
+func test_description_has_the_computed_details() -> void:
+	win.show_for("mage", abilities.default_bar("mage"), abilities)
+	win.select_ability("mage_fireball")
+	var t := win.description_text()
+	assert_string_contains(t, tr("AB_MAGE_FIREBALL_DESC"))
+	assert_string_contains(t, "Explosión")
+	assert_string_contains(t, "45 de maná")

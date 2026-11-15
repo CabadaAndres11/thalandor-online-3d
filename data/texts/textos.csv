@@ -232,15 +232,81 @@ HUD_KEY_SPACE,Espacio
 HUD_FALLEN,"Has caído. Reapareces en %d s"
 BTN_CLOSE,Cerrar
 ABILITIES_TITLE,Habilidades
+ABILITIES_ATTACKS,Ataques (ratón)
 ABILITIES_ACTIVES,Activas
 ABILITIES_PASSIVES,Pasivas
 ABILITIES_BAR,Barra (teclas 1–4)
 ABILITIES_HINT,"Haz clic en una activa y luego en una casilla de la barra. Si ya estaba en la barra, se intercambian."
 ABILITIES_LEVEL,Nivel %d
-ABILITIES_COST,Coste: %d · Recarga: %s s
 PARTY_DOWNED,Derribado
 PARTY_DEAD,Caído
 DOWNED_TITLE,Estás derribado
 DOWNED_HINT,"Un aliado puede levantarte manteniendo E a tu lado. Te desangras en %d s."
 REVIVING,Levantando a %s…
 REVIVE_PROMPT,Mantén E para levantar a %s
+DETAIL_DAMAGE,Daño
+DETAIL_EXPLOSION,Explosión
+DETAIL_DAMAGE_FMT,%s: %s %s
+DETAIL_FORMULA,%s + %s de tu %s (%s) = %s
+DETAIL_POWER_ATTACK,poder de ataque
+DETAIL_POWER_SPELL,poder mágico
+DETAIL_PHYSICAL,físico
+DETAIL_MAGIC,mágico
+DETAIL_SCOPE_ARC,en un arco de %s° hasta %s m
+DETAIL_SCOPE_PROJECTILE,con un proyectil de %s m
+DETAIL_SCOPE_PIERCE,con un proyectil de %s m que atraviesa
+DETAIL_SCOPE_AROUND,a todos a %s m a tu alrededor
+DETAIL_SCOPE_CURSOR,a todos en %s m donde apuntas
+DETAIL_SCOPE_CURSOR_HIT,a todos en %s m del impacto
+DETAIL_SCOPE_TRAP,a todos en %s m al pisarla
+DETAIL_PULSES,"%d oleadas, una cada %s s"
+DETAIL_DELAY,Cae %s s después de lanzarla
+DETAIL_TRAP,Se arma en %s s y dura %s s
+DETAIL_HEAL,"Curación: %s, %s"
+DETAIL_HOT,Repartida en %s s (un pulso cada %s s)
+DETAIL_SHIELD,"Escudo: %s durante %s s, %s"
+DETAIL_TARGET_ALLY_OR_SELF,al aliado bajo el cursor o a ti
+DETAIL_TARGET_ALLIES_AROUND,a ti y a los aliados a %s m
+DETAIL_TARGET_SELF,a ti
+DETAIL_DASH,Te lanzas hacia el cursor hasta %s m
+DETAIL_DASH_BACK,Saltas %s m hacia atrás
+DETAIL_BLINK,Te teletransportas hacia el cursor hasta %s m
+DETAIL_BLINK_BEHIND,Apareces a la espalda del enemigo bajo el cursor (hasta %s m)
+DETAIL_TAUNT,"Los enemigos a %s m te atacan durante %s s, y quedas con su amenaza máxima + 10 %%"
+DETAIL_STEALTH,Sigilo durante %s s: los monstruos no te ven; atacar o recibir daño lo rompe
+DETAIL_VANISH,En combate también te saca del combate y los monstruos te olvidan
+DETAIL_CLEANSE,"Quita los efectos negativos (aturdir, inmovilizar, congelar, ralentizar, veneno, quemadura y marca)"
+DETAIL_REVIVE,Levanta a un aliado derribado a hasta %s m con el %s de su vida
+DETAIL_TO_ALLIES,A ti y a los aliados a %s m: %s
+DETAIL_TO_ENEMY,Al enemigo bajo el cursor: %s
+DETAIL_ON_HIT,Cada golpe aplica: %s
+DETAIL_ST_STUN,aturde %s s
+DETAIL_ST_ROOT,inmoviliza %s s
+DETAIL_ST_FREEZE,congela %s s
+DETAIL_ST_SLOW,ralentiza un %s durante %s s
+DETAIL_ST_MARK,recibe un %s más de daño durante %s s
+DETAIL_ST_DAMAGE_BUFF,+%s de daño durante %s s
+DETAIL_ST_DAMAGE_REDUCTION,−%s de daño recibido durante %s s
+DETAIL_ST_EVASION,+%s de esquiva durante %s s
+DETAIL_ST_POISON,veneno de %s de daño cada %s s durante %s s (se acumula hasta %d veces)
+DETAIL_ST_BURN,quemadura de %s de daño cada %s s durante %s s (se acumula hasta %d veces)
+DETAIL_ST_ENVENOM,armas envenenadas durante %s s
+DETAIL_FINISHER,Remate: multiplica el daño por tus puntos de combo (1 a 5) y los gasta
+DETAIL_COMBO_GAIN,+%d punto de combo al acertar
+DETAIL_COMBO_PER_HIT,+%d punto de combo por cada enemigo alcanzado
+DETAIL_CHARGE,"Mantén pulsado hasta %s s: hasta ×%s de daño y ×%s de alcance; cargarlo cuesta %s de %s"
+DETAIL_CRIT,Crítico: %s (×%s) · el daño varía ±%s · la armadura reduce el daño físico
+DETAIL_COST,Coste: %s de %s
+DETAIL_NO_COST,Sin coste
+DETAIL_COOLDOWN,Recarga: %s s
+DETAIL_COMBAT_COOLDOWN,Recarga: %s s (%s s en combate)
+DETAIL_GCD,recarga global
+DETAIL_RANGE,alcance %s m
+DETAIL_RES_RAGE,ira
+DETAIL_RES_MANA,maná
+DETAIL_RES_FOCUS,concentración
+DETAIL_RES_ENERGY,energía
+DETAIL_PASSIVE_LEVEL,Pasiva: se activa sola desde el nivel %d
+DETAIL_STAT_ARMOR_PCT,Armadura: %s
+DETAIL_STAT_DODGE_ADD,Esquiva: %s
+DETAIL_STAT_MAX_RESOURCE_PCT,Recurso máximo: %s

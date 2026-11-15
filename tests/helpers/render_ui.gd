@@ -59,6 +59,7 @@ func _process(_delta: float) -> bool:
 		_save("ui_combat")
 		var c := _main.game.client
 		_main.abilities_window.show_for(c.class_id, c.bar, _main.abilities)
+		_main.abilities_window.select_ability("archer_shot")
 	elif _frames == 300:
 		_save("ui_abilities")
 		_clear()
