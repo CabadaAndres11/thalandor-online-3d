@@ -181,3 +181,15 @@ func test_boss_bar_shows_name_and_phase() -> void:
 	c.monsters.erase(1000)
 	hud.advance(0.0)
 	assert_false(hud.boss_bar_visible())
+
+
+func test_cooldown_from_the_cast_event_wins() -> void:
+	# Sigilo cast in combat: 45 s, not the 8 s of the data.
+	var c := _client("assassin")
+	c.bar = ["assassin_stealth", "", "", ""]
+	var hud := _hud(c)
+	c.combat_event.emit(["cast", 1, "assassin_stealth", Vector3.ZERO, 45.0])
+	hud.advance(10.0)
+	assert_gt(hud.slot_cooldown(2), 0.7, "still cooling after 10 s of 45")
+	hud.advance(36.0)
+	assert_eq(hud.slot_cooldown(2), 0.0)

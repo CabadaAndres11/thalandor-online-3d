@@ -223,7 +223,8 @@ func _on_combat_event(ev: Array) -> void:
 			if not _abilities.has(id):
 				return
 			var ab := _abilities.get_ability(id)
-			var cd := float(ab.get("cooldown_s", 0.0))
+			# The host sends the cooldown it applied (Sigilo is longer in combat).
+			var cd := float(ev[4]) if ev.size() > 4 else float(ab.get("cooldown_s", 0.0))
 			_cd_end[id] = _clock + cd
 			_cd_total[id] = cd
 			if bool(ab.get("gcd", false)):

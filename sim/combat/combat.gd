@@ -42,7 +42,7 @@ static func try_cast(world: SimWorld, caster: CombatEntity, ability_id: String, 
 	var to := Effects.flat(aim) - Effects.flat(caster.position)
 	if to.length() > 0.01:
 		caster.facing = atan2(to.x, to.y)
-	world.emit(["cast", caster.id, ability_id, aim])
+	world.emit(["cast", caster.id, ability_id, aim, cd_s])
 	world.cast_hits = 0
 	for e: Dictionary in ab.get("effects", []):
 		Effects.apply(world, caster, ab, e, ctx)
@@ -147,7 +147,9 @@ static func on_zero_hp(world: SimWorld, e: CombatEntity) -> void:
 		var p := e as PlayerState
 		p.charge_start = -1
 		p.combo = 0
-		p.revive_target_id = 0
+		if p.revive_target_id != 0:
+			p.revive_target_id = 0
+			world.emit(["revive_cancel", p.id])
 		if _someone_standing(world, p):
 			# In a group with an ally on their feet: downed, waiting for a revive.
 			p.life = CombatEntity.DOWNED
@@ -161,6 +163,7 @@ static func on_zero_hp(world: SimWorld, e: CombatEntity) -> void:
 	world.emit(["died", e.id])
 	if e is MonsterState and bool((e as MonsterState).def.get("boss", false)):
 		world.emit(["boss_down", e.type_id])
+		MonsterAI.dismiss_minions(world, e as MonsterState)
 
 
 static func _someone_standing(world: SimWorld, except: PlayerState) -> bool:
@@ -359,8 +362,12 @@ static func fire_area(world: SimWorld, a: PendingArea) -> void:
 	if str(a.effect.get("type", "")) == "charge":
 		_fire_charge(world, a)
 		return
-	if bool(a.effect.get("leap", false)):
-		_land(world, a)
+	if bool(a.effect.get("leap", false)) and not _land(world, a):
+		a.pulses_left = 0 # a dead, stunned or rooted jumper never lands: no damage
+		var jumper := world.entity(a.owner.id)
+		if jumper != null:
+			world.emit(["leap", jumper.id, jumper.position, jumper.position]) # comes down where it is
+		return
 	for o: CombatEntity in Effects.in_circle(world, a.owner, a.pos, float(a.effect.get("radius", 1.0))):
 		Combat.deal(world, a.owner, o, a.effect, {"id": a.ability_id})
 	a.pulses_left -= 1
@@ -368,14 +375,16 @@ static func fire_area(world: SimWorld, a: PendingArea) -> void:
 	world.emit(["area", a.id, a.pos, float(a.effect.get("radius", 1.0))])
 
 
-## A leaping caster (the boss jump) lands on the area when it goes off, if it still can.
-static func _land(world: SimWorld, a: PendingArea) -> void:
+## A leaping caster (the boss jump) lands on the area when it goes off; false when it
+## cannot (gone, dead, stunned, frozen or rooted).
+static func _land(world: SimWorld, a: PendingArea) -> bool:
 	var live := world.entity(a.owner.id)
 	if live == null or not live.can_act(world.tick) or live.has_status("root"):
-		return
+		return false
 	var from := live.position
 	live.position = Vector3(a.pos.x, live.position.y, a.pos.z)
 	world.emit(["leap", live.id, from, live.position])
+	return true
 
 
 ## A charge after its warning: everyone in the warned line is hit and the caster runs

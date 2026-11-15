@@ -98,7 +98,6 @@ func import_from(path: String, new_name: String = "") -> CharacterData:
 		return null
 	c.id = _new_id()
 	c.created_at = int(Time.get_unix_time_from_system())
-	c.bar = AbilityDB.load_default().default_bar(c.class_id)
 	return c if save(c) == OK else null
 
 

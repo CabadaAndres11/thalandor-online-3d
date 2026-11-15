@@ -139,3 +139,16 @@ func test_downed_cannot_act_and_is_ignored() -> void:
 	for i in w.ticks(0.5):
 		w.step({})
 	assert_ne(m.target_id, 1, "monsters ignore downed players")
+
+
+func test_reviver_killed_mid_revive_cancels() -> void:
+	var w := _world()
+	var down := _player(w, 1, Vector3(20, 0, 20))
+	var helper := _player(w, 2, Vector3(21, 0, 20))
+	_player(w, 3, Vector3(35, 0, 35)) # someone still standing, so the helper goes down
+	_kill(w, down)
+	_hold(w, 2, 1.0)
+	w.events.clear()
+	_kill(w, helper)
+	assert_has(_kinds(w.events), "revive_cancel", "the reviver's bar must go away")
+	assert_eq(helper.revive_target_id, 0)

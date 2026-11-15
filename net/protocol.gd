@@ -13,7 +13,7 @@ const SCHEMAS := {
 	Msg.WELCOME: [["player_id", TYPE_INT], ["tick", TYPE_INT], ["roster", TYPE_ARRAY]],
 	Msg.REJECT: [["reason", TYPE_STRING], ["host_version", TYPE_STRING]],
 	Msg.INPUT: [["inputs", TYPE_ARRAY]],
-	Msg.SNAPSHOT: [["tick", TYPE_INT], ["players", TYPE_ARRAY], ["monsters", TYPE_PACKED_BYTE_ARRAY]],
+	Msg.SNAPSHOT: [["tick", TYPE_INT], ["players", TYPE_PACKED_BYTE_ARRAY], ["monsters", TYPE_PACKED_BYTE_ARRAY]],
 	Msg.EVENTS: [["tick", TYPE_INT], ["events", TYPE_ARRAY]],
 	Msg.SET_BAR: [["bar", TYPE_ARRAY]],
 	Msg.PLAYER_JOINED: [["id", TYPE_INT], ["name", TYPE_STRING], ["slot", TYPE_INT],
@@ -26,19 +26,23 @@ const SCHEMAS := {
 const ROW_SCHEMAS := {
 	"roster": [TYPE_INT, TYPE_STRING, TYPE_INT, TYPE_STRING, TYPE_DICTIONARY],
 	"inputs": [TYPE_INT, TYPE_VECTOR2, TYPE_VECTOR3, TYPE_INT],
-	## id, position, aim, facing, last_seq, hp, max_hp, resource, max_resource, life,
-	## status_bits, dash_ticks, dash_dir, dodge_ready_seq, move_mult, combo, charge (0..1)
-	"players": [TYPE_INT, TYPE_VECTOR3, TYPE_VECTOR3, TYPE_FLOAT, TYPE_INT, TYPE_FLOAT, TYPE_FLOAT,
-		TYPE_FLOAT, TYPE_FLOAT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_VECTOR2, TYPE_INT, TYPE_FLOAT, TYPE_INT, TYPE_FLOAT],
 }
 
 
-## SNAPSHOT monster rows travel packed (Variant arrays cost ~100 bytes per monster and
-## overflow the ENet MTU with a dozen monsters). Each row, as the game uses it:
-##   [id, type, position, facing, hp, max_hp, status_bits, target_id, elite (0|1)]
-## is MONSTER_RECORD bytes: id u32, type u8 (index in monster_types(), 255 unknown),
-## position 3×f32, facing u16 (angle / TAU), hp f32, max_hp f32, status_bits u32,
-## target_id u32, elite u8.
+## SNAPSHOT rows travel packed: Variant arrays cost ~8 bytes per field and overflowed
+## the ENet MTU (1392 bytes) in the arena's boss fight. The game still sees rows:
+##   players: [id, position, aim, facing, last_seq, hp, max_hp, resource, max_resource,
+##             life, status_bits, dash_ticks, dash_dir, dodge_ready_seq, move_mult, combo,
+##             charge (0..1)]
+##            PLAYER_RECORD bytes: id s32, position 3×f32, aim 3×f32, facing f32,
+##            last_seq s32, hp, max_hp, resource, max_resource f32, life u8,
+##            status_bits u32, dash_ticks u16, dash_dir 2×f32, dodge_ready_seq s32,
+##            move_mult f32, combo u8, charge f32.
+##   monsters: [id, type, position, facing, hp, max_hp, status_bits, target_id, elite (0|1)]
+##            MONSTER_RECORD bytes: id u32, type u8 (index in monster_types(), 255
+##            unknown), position 3×f32, facing u16 (angle / TAU), hp f32, max_hp f32,
+##            status_bits u32, target_id u32, elite u8.
+const PLAYER_RECORD := 80
 const MONSTER_RECORD := 36
 
 static var _monster_types: Array = []
@@ -78,7 +82,7 @@ static func input(inputs: Array) -> PackedByteArray:
 
 
 static func snapshot(tick: int, players: Array, monsters: Array = []) -> PackedByteArray:
-	return pack([Msg.SNAPSHOT, tick, players, pack_monsters(monsters)])
+	return pack([Msg.SNAPSHOT, tick, pack_players(players), pack_monsters(monsters)])
 
 
 static func events(tick: int, list: Array) -> PackedByteArray:
@@ -137,6 +141,10 @@ static func decode(data: PackedByteArray) -> Dictionary:
 			return {}
 		if ROW_SCHEMAS.has(field_name) and not _rows_valid(v, ROW_SCHEMAS[field_name]):
 			return {}
+		if field_name == "players" and v is PackedByteArray:
+			v = unpack_players(v)
+			if v == null:
+				return {}
 		if field_name == "monsters":
 			v = unpack_monsters(v)
 			if v == null:
@@ -191,7 +199,7 @@ static func unpack_monsters(data: PackedByteArray) -> Variant:
 	buf.data_array = data
 	var types := monster_types()
 	var rows := []
-	for i in data.size() / MONSTER_RECORD:
+	for _at in range(0, data.size(), MONSTER_RECORD):
 		var id := buf.get_u32()
 		var t := buf.get_u8()
 		var pos := Vector3(buf.get_float(), buf.get_float(), buf.get_float())
@@ -202,4 +210,58 @@ static func unpack_monsters(data: PackedByteArray) -> Variant:
 		var target := buf.get_u32()
 		var elite := buf.get_u8()
 		rows.append([id, types[t] if t < types.size() else "", pos, facing, hp, max_hp, bits, target, elite])
+	return rows
+
+
+static func pack_players(rows: Array) -> PackedByteArray:
+	var buf := StreamPeerBuffer.new()
+	for row: Array in rows:
+		var pos: Vector3 = row[1]
+		var aim: Vector3 = row[2]
+		var dash: Vector2 = row[12]
+		buf.put_32(int(row[0]))
+		for v: float in [pos.x, pos.y, pos.z, aim.x, aim.y, aim.z, float(row[3])]:
+			buf.put_float(v)
+		buf.put_32(int(row[4]))
+		for v: float in [float(row[5]), float(row[6]), float(row[7]), float(row[8])]:
+			buf.put_float(v)
+		buf.put_u8(clampi(int(row[9]), 0, 255))
+		buf.put_u32(int(row[10]))
+		buf.put_u16(clampi(int(row[11]), 0, 65535))
+		buf.put_float(dash.x)
+		buf.put_float(dash.y)
+		buf.put_32(int(row[13]))
+		buf.put_float(float(row[14]))
+		buf.put_u8(clampi(int(row[15]), 0, 255))
+		buf.put_float(float(row[16]))
+	return buf.data_array
+
+
+## The rows back; null when the bytes are not whole records.
+static func unpack_players(data: PackedByteArray) -> Variant:
+	if data.size() % PLAYER_RECORD != 0:
+		return null
+	var buf := StreamPeerBuffer.new()
+	buf.data_array = data
+	var rows := []
+	for _at in range(0, data.size(), PLAYER_RECORD):
+		var id := buf.get_32()
+		var pos := Vector3(buf.get_float(), buf.get_float(), buf.get_float())
+		var aim := Vector3(buf.get_float(), buf.get_float(), buf.get_float())
+		var facing := buf.get_float()
+		var seq := buf.get_32()
+		var hp := buf.get_float()
+		var max_hp := buf.get_float()
+		var res := buf.get_float()
+		var max_res := buf.get_float()
+		var life := buf.get_u8()
+		var bits := buf.get_u32()
+		var dash_ticks := buf.get_u16()
+		var dash_dir := Vector2(buf.get_float(), buf.get_float())
+		var dodge := buf.get_32()
+		var move_mult := buf.get_float()
+		var combo := buf.get_u8()
+		var charge := buf.get_float()
+		rows.append([id, pos, aim, facing, seq, hp, max_hp, res, max_res, life, bits, dash_ticks, dash_dir,
+			dodge, move_mult, combo, charge])
 	return rows

@@ -169,3 +169,23 @@ func test_snapshot_with_arena_monsters_fits_enet_mtu() -> void:
 		monsters.append([1000 + i, "skeleton_archer", Vector3(10.5 + i, 0, 8.25), 2.5, 4567.8, 9000.0, 0x3FFF, 4, 1])
 	var size := Protocol.snapshot(123456, players, monsters).size()
 	assert_lt(size, 1392, "the test arena's 13 monsters and 4 players fit one ENet packet (%d bytes)" % size)
+
+
+func test_boss_fight_snapshot_fits_enet_mtu() -> void:
+	# The arena's 14 monsters + 6 called goblins + a few corpses, 4 players.
+	var players := []
+	for i in 4:
+		players.append([i + 1, Vector3(123.456, 0, 98.765), Vector3(130.1, 0, 90.2), 1.234, 99999,
+			1234.5, 2000.0, 87.5, 100.0, 0, 0x3FFF, 5, Vector2(0.7, 0.7), 123456, 0.6, 5, 0.75])
+	var monsters := []
+	for i in 24:
+		monsters.append([1000 + i, "goblin", Vector3(10.5 + i, 0, 8.25), 2.5, 4567.8, 9000.0, 0x3FFF, 4, 0])
+	var packet := Protocol.snapshot(123456, players, monsters)
+	assert_lt(packet.size(), 1392, "%d bytes" % packet.size())
+	var back := Protocol.decode(packet)
+	assert_eq(back.players.size(), 4)
+	var row: Array = back.players[0]
+	assert_eq(row.size(), 17)
+	assert_eq([row[0], row[4], row[9], row[10], row[11], row[13], row[15]], [1, 99999, 0, 0x3FFF, 5, 123456, 5])
+	assert_almost_eq((row[1] as Vector3).x, 123.456, 0.001)
+	assert_almost_eq(float(row[16]), 0.75, 0.001)

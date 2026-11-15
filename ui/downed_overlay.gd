@@ -123,6 +123,8 @@ func advance(dt: float) -> void:
 		return
 	var me: Dictionary = _client.combat.get(_client.my_id, {})
 	var downed := int(me.get("life", CombatEntity.ALIVE)) == CombatEntity.DOWNED
+	if int(me.get("life", CombatEntity.ALIVE)) != CombatEntity.ALIVE:
+		_reviving = 0 # a fallen reviver is not reviving anyone
 	if downed and _downed_at < 0.0:
 		_downed_at = _clock
 	elif not downed:
@@ -133,8 +135,8 @@ func advance(dt: float) -> void:
 		_banner_label.text = tr("DOWNED_HINT") % left
 	_revive.visible = _reviving != 0
 	if _reviving != 0:
-		var name := str(_client.roster[_reviving].name) if _client.roster.has(_reviving) else "?"
-		_revive_label.text = tr("REVIVING") % name
+		var ally := str(_client.roster[_reviving].name) if _client.roster.has(_reviving) else "?"
+		_revive_label.text = tr("REVIVING") % ally
 		_revive_bar.value = clampf((_clock - _revive_started) / maxf(_client.balance.revive_hold_s, 0.01), 0.0, 1.0)
 	var near := _downed_ally_near() if not downed and _reviving == 0 else 0
 	_prompt.visible = near != 0

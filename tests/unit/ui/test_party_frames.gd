@@ -91,3 +91,19 @@ func test_downed_overlay_countdown_and_revive_bar() -> void:
 	c.combat_event.emit(["revived", 2, 1])
 	overlay.advance(0.0)
 	assert_false(overlay.revive_visible(), "done")
+
+
+func test_revive_bar_goes_when_i_go_down() -> void:
+	var c := _client()
+	var overlay := DownedOverlay.new()
+	_root().add_child(overlay)
+	overlay.bind(c)
+	c.combat_event.emit(["revive_start", 1, 2])
+	overlay.advance(0.5)
+	assert_true(overlay.revive_visible())
+	c.combat[1].life = CombatEntity.DOWNED
+	overlay.advance(0.1)
+	assert_false(overlay.revive_visible(), "no revive bar while I am down")
+	c.combat[1].life = CombatEntity.ALIVE
+	overlay.advance(0.1)
+	assert_false(overlay.revive_visible(), "and it does not come back")

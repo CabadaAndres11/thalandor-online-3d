@@ -184,6 +184,7 @@ static func _go_home(world: SimWorld, m: MonsterState) -> void:
 		m.hp = m.stats.max_hp
 		m.statuses.clear()
 		m.threat.clear()
+		dismiss_minions(world, m)
 		return
 	if not _move_toward(world, m, m.home):
 		m.position = m.home # walled in: never stay stuck away from home
@@ -263,7 +264,12 @@ static func _try_jump(world: SimWorld, m: MonsterState, target: CombatEntity, ga
 	var id := str(j.get("ability", ""))
 	if id == "" or m.phase < int(j.get("from_phase", 2)):
 		return false
-	if gap < float(j.get("min_range", 4.0)) or gap > float(j.get("max_range", 14.0)):
+	# Centre to centre, the same distance the area is clamped to (never short of the
+	# target, so never inside the wall it stands against), and only with a clear line.
+	var dist := Effects.flat(m.position).distance_to(Effects.flat(target.position))
+	if gap < float(j.get("min_range", 4.0)) or dist > minf(float(j.get("max_range", 14.0)), float(world.abilities.get_ability(id).get("range", 14.0))):
+		return false
+	if not world.pathfinder().clear_line(m.position, target.position):
 		return false
 	if not Combat.try_cast(world, m, id, target.position):
 		return false
@@ -297,3 +303,13 @@ static func _maybe_summon(world: SimWorld, m: MonsterState) -> void:
 		world.add_entity(g)
 		m.minions.append(g.id)
 		world.emit(["spawned", g.id, g.type_id, g.position])
+
+
+## A boss's called monsters leave with it (reset at home, or its death): they never
+## respawn, so they would otherwise pile up between attempts.
+static func dismiss_minions(world: SimWorld, m: MonsterState) -> void:
+	for id: int in m.minions:
+		if world.monsters.has(id):
+			world.remove_entity(id)
+	m.minions.clear()
+	m.next_summon_tick = 0

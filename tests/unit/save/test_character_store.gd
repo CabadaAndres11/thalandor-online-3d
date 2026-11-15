@@ -167,3 +167,13 @@ func test_new_character_gets_the_default_bar() -> void:
 	var c := store.create("Brann", "cleric", {})
 	assert_eq(c.bar, AbilityDB.load_default().default_bar("cleric"))
 	assert_eq(CharacterStore.new(DIR).load_all()[0].bar, c.bar)
+
+
+func test_import_keeps_the_saved_bar() -> void:
+	var c := store.create("Barra", "mage", {})
+	c.bar = ["mage_fireball", "mage_frostbolt", "", ""]
+	store.save(c)
+	var path := EXPORT_DIR.path_join("barra.json")
+	assert_eq(store.export_to(c.id, path), OK)
+	store.delete(c.id)
+	assert_eq(store.import_from(path).bar, ["mage_fireball", "mage_frostbolt", "", ""])

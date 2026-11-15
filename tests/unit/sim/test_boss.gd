@@ -156,3 +156,86 @@ func test_boss_death_announced_and_respawns() -> void:
 	for i in w.ticks(3.0):
 		w.step({})
 	assert_eq(w.monsters.values().filter(func(m: CombatEntity) -> bool: return m.is_alive() and m.type_id == "orc_king").size(), 1)
+
+
+func _wait_jump(f: CombatFixture) -> Array:
+	for i in f.world.ticks(2.0):
+		_step(f)
+		var t := _events(f, "telegraph")
+		if not t.is_empty():
+			return t[0]
+	return []
+
+
+func test_cast_event_carries_the_applied_cooldown() -> void:
+	var f := _fixture()
+	var p := f.player(1, Vector3(5, 0, 5))
+	ClassRules.setup_player(p, "assassin")
+	p.last_combat_tick = f.world.tick # in combat: Sigilo's long cooldown
+	f.world.events.clear()
+	assert_true(Combat.try_cast(f.world, p, "assassin_stealth", p.position))
+	var cast: Array = f.world.events.filter(func(ev: Array) -> bool: return ev[0] == "cast")[0]
+	assert_almost_eq(float(cast[4]), 45.0, 0.001)
+
+
+func test_dead_boss_jump_does_no_damage() -> void:
+	var f := _fixture()
+	var boss := _boss(f)
+	boss.hp = boss.stats.max_hp * 0.6
+	var p := f.player(1, Vector3(20, 0, 27), 5000.0)
+	assert_false(_wait_jump(f).is_empty())
+	Damage.apply(boss, {"amount": 999999.0, "crit": false, "dodged": false, "absorbed": 0.0}, f.world)
+	_steps(f, 1.5)
+	assert_eq(p.hp, 5000.0, "a dead boss does not land")
+
+
+func test_no_jump_without_line_of_sight() -> void:
+	var blocks := []
+	for x in range(14, 27):
+		blocks.append([x, 24, 3])
+	var f := CombatFixture.new(blocks, Vector2i(48, 48))
+	f.world.abilities = AbilityDB.load_default()
+	var boss := _boss(f, Vector3(20.5, 0, 20.5))
+	boss.hp = boss.stats.max_hp * 0.6
+	boss.add_threat(1, 10.0)
+	f.player(1, Vector3(20.5, 0, 27.5), 5000.0) # behind the wall
+	_steps(f, 1.0)
+	assert_eq(_events(f, "telegraph").size(), 0, "no leaping over walls")
+
+
+
+func test_minions_dismissed_when_boss_resets_or_dies() -> void:
+	var f := _fixture()
+	var boss := _boss(f)
+	boss.hp = boss.stats.max_hp * 0.3
+	var p := f.player(1, Vector3(20, 0, 22), 50000.0)
+	_steps(f, 0.2)
+	assert_eq(_goblins(f).size(), 3)
+	f.world.remove_player(p.id) # the group leaves: the boss goes home
+	_steps(f, 8.0)
+	assert_eq(boss.ai, MonsterState.IDLE)
+	assert_eq(_goblins(f).size(), 0, "its goblins leave with the reset")
+	var p2 := f.player(2, Vector3(20, 0, 22), 50000.0)
+	boss.hp = boss.stats.max_hp * 0.3
+	_steps(f, 0.3)
+	assert_eq(_goblins(f).size(), 3)
+	Damage.apply(boss, {"amount": 999999.0, "crit": false, "dodged": false, "absorbed": 0.0}, f.world)
+	_steps(f, 0.1)
+	assert_eq(_goblins(f).size(), 0, "and when it dies")
+	assert_true(p2.is_alive())
+
+
+func test_jump_never_lands_short_of_the_target() -> void:
+	# 14.2 m centre to centre: the 14 m area would land 0.2 m short (inside a wall the
+	# player stands against). It must walk closer instead.
+	var f := _fixture()
+	var boss := _boss(f, Vector3(20.5, 0, 10.5))
+	boss.hp = boss.stats.max_hp * 0.6
+	var p := f.player(1, Vector3(20.5, 0, 24.7), 5000.0)
+	boss.add_threat(p.id, 10.0)
+	_step(f)
+	assert_eq(_events(f, "telegraph").size(), 0, "no short jump")
+	_steps(f, 1.0)
+	var tele := _events(f, "telegraph")
+	assert_eq(tele.size(), 1, "it jumps once it is in range")
+	assert_almost_eq(Effects.flat(tele[0][2]).distance_to(Effects.flat(p.position)), 0.0, 0.01, "right onto the player")

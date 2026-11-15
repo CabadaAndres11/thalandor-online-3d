@@ -38,6 +38,13 @@ func _init() -> void:
 	center.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	add_child(center)
 	_panel = PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.07, 0.07, 0.09, 0.96)
+	style.set_corner_radius_all(8)
+	style.set_content_margin_all(16)
+	style.border_color = Color("#8a6d2f")
+	style.set_border_width_all(1)
+	_panel.add_theme_stylebox_override("panel", style)
 	center.add_child(_panel)
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 8)
@@ -78,7 +85,8 @@ func _init() -> void:
 	box.add_child(_name_label)
 	_desc = Label.new()
 	_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_desc.custom_minimum_size = Vector2(5 * CARD.x, 3 * 22)
+	_desc.add_theme_font_size_override("font_size", 16)
+	_desc.custom_minimum_size = Vector2(5 * CARD.x + 4 * 6, 3 * 22)
 	_desc.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	box.add_child(_desc)
 	var hint := Label.new()
@@ -89,10 +97,10 @@ func _init() -> void:
 
 
 ## Fills the window for a class and opens it.
-func show_for(class_id: String, bar: Array, abilities: AbilityDB) -> void:
+func show_for(class_id: String, p_bar: Array, abilities: AbilityDB) -> void:
 	_abilities = abilities
 	_class_id = class_id
-	_bar = abilities.sanitize_bar(class_id, bar)
+	_bar = abilities.sanitize_bar(class_id, p_bar)
 	_actives = abilities.actives(class_id)
 	_passives = abilities.class_abilities(class_id).filter(
 		func(a: Dictionary) -> bool: return a.get("kind") == "passive").map(
