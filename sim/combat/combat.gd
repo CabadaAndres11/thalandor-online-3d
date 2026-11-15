@@ -61,7 +61,10 @@ static func deal(world: SimWorld, source: CombatEntity, target: CombatEntity, ef
 		Damage.apply(target, r, world)
 		world.emit(["hit", target.id, r.amount, r.crit, source.id])
 		world.cast_hits += 1
-		Resources.on_damage_dealt(source, r.amount, world)
+		# Projectiles and areas carry a snapshot of their caster: combat time and rage
+		# go to the live caster when it is still in the world.
+		var live := world.entity(source.id)
+		Resources.on_damage_dealt(live if live != null else source, r.amount, world)
 		Resources.on_damage_taken(target, r.amount, world)
 		if target is MonsterState and source.team == CombatEntity.TEAM_PLAYERS:
 			var threat: float = r.amount * source.stats.threat_mult * float(_ability.get("threat_mult", 1.0))

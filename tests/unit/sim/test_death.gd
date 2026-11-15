@@ -69,3 +69,36 @@ func test_monsters_stay_dead() -> void:
 	_kill(w, m)
 	_steps(w, 5.0)
 	assert_eq(m.life, CombatEntity.DEAD, "monsters never respawn in place (the spawner makes new ones)")
+
+
+func test_projectile_hit_puts_caster_in_combat() -> void:
+	var w := _world()
+	var p := w.add_player(1, Vector3(20, 0, 20))
+	ClassRules.setup_player(p, "mage")
+	var m := MonsterDB.load_default().make("wolf", w.next_monster_id(), Vector3(24, 0, 20), w)
+	w.add_entity(m)
+	m.stats.dodge_chance = 0.0
+	m.add_status(StatusEffect.make("stun", 100000, 0.0, 0, 1, 0), 1) # it must not bite back
+	p.resource = 50.0
+	assert_true(Combat.try_cast(w, p, "mage_missile", m.position))
+	_steps(w, 0.5)
+	assert_lt(m.hp, m.stats.max_hp, "the missile hit")
+	assert_true(p.in_combat(w), "ranged damage counts as fighting")
+	var mana := p.resource
+	_steps(w, 1.0)
+	assert_lte(p.resource, mana, "no mana regen while in combat")
+
+
+func test_area_hit_gives_rage() -> void:
+	var w := _world()
+	var p := w.add_player(1, Vector3(20, 0, 20))
+	ClassRules.setup_player(p, "warrior")
+	var m := MonsterDB.load_default().make("wolf", w.next_monster_id(), Vector3(20.6, 0, 20), w)
+	w.add_entity(m)
+	m.stats.dodge_chance = 0.0
+	var pa := PendingArea.new()
+	pa.owner = Combat.snapshot_of(p)
+	var before := p.resource
+	Combat.deal(w, pa.owner, m, {"damage": {"base": 5, "coef": 0, "kind": "physical"}}, {})
+	assert_gt(p.resource, before, "rage from a hit dealt through a snapshot")
+	assert_true(p.in_combat(w))
