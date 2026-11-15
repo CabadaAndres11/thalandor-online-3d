@@ -1,7 +1,8 @@
 extends SceneTree
 ## UI checkpoint tool (needs a window): opens the real Main with three sample
 ## characters in a temporary folder and saves the character list and the create
-## screen to user://render/ui_select.png and ui_create.png.
+## screen and a solo game with the combat HUD to user://render/ui_select.png,
+## ui_create.png and ui_hud.png.
 
 const DIR := "user://render_ui_chars"
 
@@ -34,6 +35,9 @@ func _process(_delta: float) -> bool:
 		_main.create_screen.select_class("cleric")
 	elif _frames == 80:
 		_save("ui_create")
+		_main._on_play("Lyra", "archer")
+	elif _frames == 200:
+		_save("ui_hud")
 		_clear()
 		return true
 	return false
