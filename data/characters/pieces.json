@@ -145,5 +145,38 @@
 		],
 		"tag": "monster",
 		"hides": []
+	},
+	"orc_tusks": {
+		"file": "res://assets/characters/pieces/orc_tusks.vox",
+		"part": "head",
+		"offset": [
+			-3,
+			1,
+			4
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"orc_crown": {
+		"file": "res://assets/characters/pieces/orc_crown.vox",
+		"part": "head",
+		"offset": [
+			-4,
+			8,
+			-4
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"orc_axe": {
+		"file": "res://assets/characters/pieces/orc_axe.vox",
+		"part": "arm-right",
+		"offset": [
+			-3,
+			-16,
+			1
+		],
+		"tag": "monster",
+		"hides": []
 	}
 }

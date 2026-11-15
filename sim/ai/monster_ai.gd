@@ -16,6 +16,9 @@ extends RefCounted
 ##                target is in that band and in sight; still while it warns and runs
 ##   ranged_kite  backs away while the target is closer than kite_range (shoots when
 ##                it cannot back away)
+##   boss         phases by health (phase_for): 1 cleaves; from "jump.from_phase" it
+##                also leaps at a player (a warned area); from "summon.from_phase" it
+##                calls goblins every summon.every_s
 ## "pack": true monsters wake the IDLE ones of their type within pack_radius.
 
 const REPATH_S := 0.5
@@ -30,6 +33,8 @@ static func tick(world: SimWorld, m: MonsterState) -> void:
 	if m.ai == MonsterState.RETURN:
 		_go_home(world, m)
 		return
+	if str(m.def.get("behavior", "")) == "boss":
+		_update_phase(world, m)
 	if m.forced_ticks > 0 or world.tick < m.busy_until:
 		return # charging
 	_clean_threat(world, m)
@@ -56,6 +61,11 @@ static func tick(world: SimWorld, m: MonsterState) -> void:
 		"ranged_kite":
 			if gap < float(m.def.get("kite_range", 5.0)) and _back_away(world, m, target):
 				m.ai = MonsterState.CHASE
+				return
+		"boss":
+			_maybe_summon(world, m)
+			if _try_jump(world, m, target, gap):
+				m.ai = MonsterState.ATTACK
 				return
 		"charger":
 			if _try_charge(world, m, target, gap):
@@ -229,3 +239,61 @@ static func _back_away(world: SimWorld, m: MonsterState, target: CombatEntity) -
 		return false
 	m.facing = atan2(dir.x, dir.y)
 	return true
+
+
+## Boss phase for a health fraction: 1 above 66 %, 2 above 33 %, then 3.
+static func phase_for(fraction: float) -> int:
+	if fraction > 0.66:
+		return 1
+	if fraction > 0.33:
+		return 2
+	return 3
+
+
+static func _update_phase(world: SimWorld, m: MonsterState) -> void:
+	var p := phase_for(m.hp / maxf(m.stats.max_hp, 1.0))
+	if p != m.phase:
+		m.phase = p
+		world.emit(["boss_phase", m.id, p])
+
+
+## Boss leap: a warned area on the target; the boss lands there when it goes off.
+static func _try_jump(world: SimWorld, m: MonsterState, target: CombatEntity, gap: float) -> bool:
+	var j: Dictionary = m.def.get("jump", {})
+	var id := str(j.get("ability", ""))
+	if id == "" or m.phase < int(j.get("from_phase", 2)):
+		return false
+	if gap < float(j.get("min_range", 4.0)) or gap > float(j.get("max_range", 14.0)):
+		return false
+	if not Combat.try_cast(world, m, id, target.position):
+		return false
+	var delay := 0.0
+	for eff: Dictionary in world.abilities.get_ability(id).get("effects", []):
+		delay = maxf(delay, float(eff.get("delay_s", 0.0)))
+	m.busy_until = world.tick + world.ticks(delay) + 1
+	return true
+
+
+## Boss call: `count` monsters of summon.type around it, fighting its targets.
+static func _maybe_summon(world: SimWorld, m: MonsterState) -> void:
+	var s: Dictionary = m.def.get("summon", {})
+	if s.is_empty() or m.phase < int(s.get("from_phase", 3)) or world.tick < m.next_summon_tick:
+		return
+	m.next_summon_tick = world.tick + world.ticks(float(s.get("every_s", 20.0)))
+	m.minions = m.minions.filter(func(id: int) -> bool:
+		var e := world.entity(id)
+		return e != null and e.is_alive())
+	var room := int(s.get("max_alive", 6)) - m.minions.size()
+	var count := mini(int(s.get("count", 3)), room)
+	for i in count:
+		var a := TAU * float(i) / float(maxi(count, 1)) + m.facing
+		var pos := m.position + Vector3(sin(a), 0, cos(a)) * (m.radius + 1.5)
+		if world.map.is_solid(Vector2i(floori(pos.x), floori(pos.z))):
+			pos = m.position
+		var g := MonsterDB.load_default().make(str(s.get("type", "goblin")), world.next_monster_id(), pos, world)
+		Spawner.scale_health(world, g, 1.0)
+		for pid: int in m.threat:
+			g.add_threat(pid, 1.0)
+		world.add_entity(g)
+		m.minions.append(g.id)
+		world.emit(["spawned", g.id, g.type_id, g.position])

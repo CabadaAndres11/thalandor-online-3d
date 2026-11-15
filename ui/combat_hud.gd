@@ -5,7 +5,7 @@ extends Control
 ## resource is short, the assassin's combo pips, the archer's charge and the
 ## "you have fallen" countdown. Cooldowns come from this player's "cast" events
 ## (the host does not send them); the dodge cooldown comes from the client's
-## prediction.
+## prediction. A fighting boss gets a big bar at the top with its name and phase.
 
 const SLOT := 56.0
 const GAP := 6.0
@@ -17,6 +17,9 @@ const RESOURCE_COLORS := {
 	"rage": Color("#c0392b"), "mana": Color("#3a6fd8"), "focus": Color("#d8a93a"), "energy": Color("#e8d34a"),
 }
 const HP_COLOR := Color("#3fae49")
+const BOSS_COLOR := Color("#b3261e")
+const BOSS_WIDTH := 560.0
+const BOSS_TOP := 52.0
 const DIM := Color(0.35, 0.35, 0.4)
 
 var _client: ClientSession
@@ -39,6 +42,9 @@ var _res_label: Label
 var _slots: Array[Dictionary] = [] # {"panel", "icon", "key", "sweep"}
 var _death: PanelContainer
 var _death_label: Label
+var _boss: VBoxContainer
+var _boss_label: Label
+var _boss_hp: ProgressBar
 
 
 func _init() -> void:
@@ -112,6 +118,26 @@ func _init() -> void:
 	_death.visible = false
 	add_child(_death)
 
+	_boss = VBoxContainer.new()
+	_boss.mouse_filter = MOUSE_FILTER_IGNORE
+	_boss.add_theme_constant_override("separation", 2)
+	_boss.anchor_left = 0.5
+	_boss.anchor_right = 0.5
+	_boss.offset_left = -BOSS_WIDTH / 2.0
+	_boss.offset_right = BOSS_WIDTH / 2.0
+	_boss.offset_top = BOSS_TOP
+	_boss_label = Label.new()
+	_boss_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_boss_label.add_theme_font_size_override("font_size", 22)
+	_boss_label.add_theme_color_override("font_color", Color("#ffd27a"))
+	_boss_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	_boss_label.add_theme_constant_override("outline_size", 6)
+	_boss.add_child(_boss_label)
+	_boss_hp = _bar(BOSS_COLOR, 20)
+	_boss.add_child(_boss_hp)
+	_boss.visible = false
+	add_child(_boss)
+
 
 func bind(client: ClientSession, bar: Array, abilities: AbilityDB) -> void:
 	if _client != null and _client.combat_event.is_connected(_on_combat_event):
@@ -154,6 +180,7 @@ func advance(dt: float) -> void:
 	_clock += dt
 	if _client == null:
 		return
+	_update_boss()
 	var me: Dictionary = _client.combat.get(_client.my_id, {})
 	if me.is_empty():
 		return
@@ -242,6 +269,7 @@ func slot_dimmed(i: int) -> bool:
 	var id := _slot_ids[i] if i < _slot_ids.size() else ""
 	if id == "" or id == "dodge" or _abilities == null or not _abilities.has(id) or _client == null:
 		return false
+	_update_boss()
 	var me: Dictionary = _client.combat.get(_client.my_id, {})
 	return not me.is_empty() and float(_abilities.get_ability(id).get("cost", 0.0)) > float(me.resource)
 
@@ -288,6 +316,44 @@ func bar_rect() -> Rect2:
 
 func death_rect() -> Rect2:
 	return _death.get_global_rect()
+
+
+## The first boss in sight that is fighting someone (it has a target).
+func _update_boss() -> void:
+	var found: Dictionary = {}
+	var ids := _client.monsters.keys()
+	ids.sort()
+	for id: int in ids:
+		var info: Dictionary = _client.monsters[id]
+		var def := MonsterDB.load_default().get_type(str(info.get("type", "")))
+		if bool(def.get("boss", false)) and int(info.get("target", 0)) != 0 and float(info.get("hp", 0.0)) > 0.0:
+			found = info.duplicate()
+			found["name"] = tr(str(def.get("name", "")))
+			break
+	_boss.visible = not found.is_empty()
+	if found.is_empty():
+		return
+	var max_hp := maxf(1.0, float(found.max_hp))
+	_boss_hp.max_value = max_hp
+	_boss_hp.value = float(found.hp)
+	var phase := MonsterAI.phase_for(float(found.hp) / max_hp)
+	_boss_label.text = "%s — %s" % [found.name, tr("HUD_BOSS_PHASE") % phase]
+
+
+func boss_bar_visible() -> bool:
+	return _boss.visible
+
+
+func boss_bar_text() -> String:
+	return _boss_label.text
+
+
+func boss_fraction() -> float:
+	return _boss_hp.value / maxf(1.0, _boss_hp.max_value)
+
+
+func boss_bar_rect() -> Rect2:
+	return _boss.get_global_rect()
 
 
 # --- Building blocks ---

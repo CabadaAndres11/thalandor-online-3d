@@ -22,6 +22,7 @@ var _aura: Node3D
 var _display_name: String = ""
 ## Seconds left of an attack animation (humanoids: idle/walk wait for it).
 var _action_left: float = 0.0
+var _leap: Tween
 
 var _kind: String = ""
 var _height: float = 1.0
@@ -180,6 +181,31 @@ func play_attack(kind: String = "melee") -> Tween:
 			t.parallel().tween_property(head, "rotation:x", 0.0, 0.15)
 			t.tween_callback(_end_bite)
 	return t
+
+
+## A big jump (the boss leap): the body rises during the warning (`rise_s`) and stays
+## up until land(); the position itself jumps with the snapshots when it lands.
+func play_leap(rise_s: float) -> Tween:
+	if dying or body == null:
+		return null
+	if _leap != null:
+		_leap.kill()
+	_leap = create_tween()
+	_leap.tween_property(body, "position:y", _rest.y + 3.0, maxf(rise_s * 0.8, 0.05)).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	return _leap
+
+
+## The slam down after a leap.
+func land() -> Tween:
+	if body == null:
+		return null
+	if _leap != null:
+		_leap.kill()
+	_leap = create_tween()
+	_leap.tween_property(body, "position:y", _rest.y, 0.15).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	return _leap
+
+
 
 
 ## Falls over and shrinks (humanoids play their death animation); the node is removed

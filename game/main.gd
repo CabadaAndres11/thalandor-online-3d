@@ -385,6 +385,7 @@ func _attach_client() -> void:
 	client.welcomed.connect(_on_welcomed)
 	client.rejected.connect(_on_rejected)
 	client.chat_received.connect(chat.add_message)
+	client.combat_event.connect(_on_game_event)
 	debug_overlay.client = client
 	debug_overlay.net_label = game.net_label()
 	combat_hud.bind(client, client.bar, abilities)
@@ -402,6 +403,13 @@ func _on_bar_changed(bar: Array) -> void:
 		_playing.bar = game.client.bar.duplicate()
 		if store.save(_playing) != OK:
 			dialog.show_message(tr(store.last_error))
+
+
+## Game-wide announcements in the chat (everyone gets the same events).
+func _on_game_event(ev: Array) -> void:
+	if ev.size() >= 2 and str(ev[0]) == "boss_down":
+		var def := MonsterDB.load_default().get_type(str(ev[1]))
+		chat.add_message("", tr("CHAT_BOSS_DOWN") % tr(str(def.get("name", ""))), true)
 
 
 func _on_welcomed(_id: int) -> void:

@@ -197,6 +197,54 @@ function ragged(img, r, color, tooth = 10) {
 }
 
 const MONSTERS = {
+  // Orc king: blackened iron breastplate over dark leather, a fur mantle on the
+  // shoulders, red war paint across the eyes, a heavy belt with a gold skull buckle,
+  // iron bracers, dark trousers and iron-shod boots. Pauldrons, crown, tusks and axe
+  // are voxel pieces.
+  orc_king(img) {
+    const iron = hex("#3a3d44"), ironLight = hex("#5a5f69"), leather = hex("#2e2219");
+    const fur = hex("#5a4632"), furDark = hex("#3e3022"), gold = hex("#c9962e"), paint = hex("#a01c14");
+    for (const k of ["left", "front", "right", "back"]) face(img, L.TORSO[k], leather);
+    for (const k of ["front", "back"]) {
+      const r = L.TORSO[k];
+      const plate = [r[0] + 8, r[1] + 16, r[2] - 16, 82];
+      face(img, plate, iron, { light: 6, dark: 6 });
+      for (const y of [30, 54]) fill(img, [plate[0], plate[1] + y, plate[2], 3], ironLight);
+      for (const x of [plate[0] + 6, plate[0] + plate[2] - 10]) for (const y of [8, 70]) fill(img, [x, plate[1] + y, 4, 4], gold);
+    }
+    // Fur mantle: a ragged band across the top of the torso.
+    for (const k of ["left", "front", "right", "back"]) {
+      const r = L.TORSO[k];
+      ragged(img, [r[0], r[1], r[2], 22], fur, 6);
+      for (let x = r[0] + 3; x < r[0] + r[2]; x += 9) fill(img, [x, r[1] + 4, 3, 10], furDark);
+    }
+    fill(img, L.TORSO.top, fur);
+    torsoBand(img, 100, 14, hex("#5b1a14"));
+    const f = L.TORSO.front;
+    // Gold skull buckle: a square skull with dark eye holes.
+    fill(img, [f[0] + f[2] / 2 - 10, f[1] + 98, 20, 18], gold);
+    fill(img, [f[0] + f[2] / 2 - 6, f[1] + 102, 4, 4], leather);
+    fill(img, [f[0] + f[2] / 2 + 2, f[1] + 102, 4, 4], leather);
+    fill(img, [f[0] + f[2] / 2 - 4, f[1] + 110, 8, 2], leather);
+    fill(img, L.TORSO.bottom, leather);
+    // Arms: bare green skin with iron bracers above the hands.
+    for (const o of Object.values(L.ARMS)) {
+      fill(img, off(o, L.ARM_CAP_TOP), fur);
+      const s = off(o, L.ARM_SIDES);
+      face(img, [s[0], s[1] + s[3] - L.HAND_PX - 44, s[2], 40], iron, { light: 4, dark: 4 });
+      fill(img, [s[0], s[1] + s[3] - L.HAND_PX - 26, s[2], 3], gold);
+    }
+    legs(img, hex("#2a2420"), iron, { shoePx: 34 });
+    // War paint: a red band across the eyes on the face.
+    const head = L.HEAD.front;
+    for (const e of L.EYES) {
+      for (let y = e[1] - 6; y < e[1] + e[3] + 6; y++) for (let x = e[0] - 10; x < e[0] + e[2] + 10; x++) {
+        const inEye = x >= e[0] && x < e[0] + e[2] && y >= e[1] && y < e[1] + e[3];
+        if (!inEye) png.set(img, x, y, paint);
+      }
+    }
+    fill(img, [head[0] + 56, head[1] + 66, 16, 6], paint);
+  },
   // Goblin: bare green skin, a crude leather harness, a ragged loincloth, leather
   // wrist wraps and ragged short trousers; bare feet.
   goblin(img) {

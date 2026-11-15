@@ -21,6 +21,9 @@ func _initialize() -> void:
 	var arena := Arena.new()
 	root.add_child(arena)
 	arena.build(Arena.load_layout())
+	if _name == "boss":
+		_boss_scene()
+		return
 	if _name == "monsters_b":
 		_monsters_b()
 		return
@@ -232,3 +235,45 @@ func _monsters_b() -> void:
 	cam.fov = 38
 	root.add_child(cam)
 	cam.look_at_from_position(Vector3(19.5, 9.0, 14.0), Vector3(19.5, 0.6, 21.6))
+
+
+## Task 13 set: the orc king facing two heroes, warning its jump on one of them,
+## with two of its goblins.
+func _boss_scene() -> void:
+	var heroes := [
+		[1, "warrior", {"beard": "full", "hair_color": "dark_brown", "skin": "skin_3"}, Vector3(18.4, 0, 19.0), 0.4, "Aldric"],
+		[2, "cleric", {"hair_style": "bob", "hair_color": "white", "skin": "skin_6"}, Vector3(21.6, 0, 18.4), -0.3, "Elora"],
+	]
+	for h: Array in heroes:
+		var p := PlayerAvatar.new()
+		root.add_child(p)
+		p.setup(h[5], h[0] - 1, h[1], h[2])
+		p.position = h[3]
+		p.rotation.y = h[4]
+		p.set_health(150.0, 200.0)
+		_spots[h[0]] = h[3]
+	var db := MonsterDB.load_default()
+	var monsters := [
+		[1000, "orc_king", Vector3(20.0, 0, 23.0), PI, 0.55],
+		[1001, "goblin", Vector3(16.6, 0, 22.2), 2.6, 1.0],
+		[1002, "goblin", Vector3(23.4, 0, 22.0), -2.6, 0.8],
+	]
+	for m: Array in monsters:
+		var a := MonsterAvatar.new()
+		root.add_child(a)
+		var type := db.get_type(m[1])
+		a.setup(type)
+		var max_hp := float((type.get("stats", {}) as Dictionary).get("max_hp", 60.0))
+		a.apply_state({"position": m[2], "facing": m[3]}, {"hp": max_hp * float(m[4]), "max_hp": max_hp, "status_bits": 0}, 0.016)
+		_spots[m[0]] = m[2]
+		if m[0] == 1000:
+			a.play_attack("melee")
+	_fx = CombatFX.new()
+	root.add_child(_fx)
+	_fx.setup(_spot, func() -> int: return 0, AbilityDB.load_default(), 30)
+	_fx.handle(["telegraph", 9, Vector3(18.4, 0, 19.0), 4.0, 90])
+	_fx.advance(1.2)
+	var cam := Camera3D.new()
+	cam.fov = 40
+	root.add_child(cam)
+	cam.look_at_from_position(Vector3(20.0, 10.5, 12.5), Vector3(20.0, 1.0, 21.0))

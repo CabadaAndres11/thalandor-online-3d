@@ -25,6 +25,10 @@ var died_tick: int = -1
 var unreachable_ticks: int = 0
 ## Busy with an ability (a charge's windup and run) until this tick: no AI.
 var busy_until: int = 0
+## Boss: tick of its next goblin call (0 = as soon as the phase allows) and the
+## monsters it called.
+var next_summon_tick: int = 0
+var minions: Array = []
 
 
 func _init() -> void:

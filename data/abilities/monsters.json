@@ -1,4 +1,11 @@
 [
+	{"id": "orc_king_cleave", "monster": "orc_king", "name": "AB_ORC_KING_CLEAVE", "desc": "AB_ORC_KING_CLEAVE_DESC", "icon": "brutal", "kind": "active", "level": 1,
+	 "cost": 0, "cooldown_s": 2.0, "gcd": false, "range": 2.8, "anim": "melee",
+	 "effects": [{"type": "melee_arc", "angle_deg": 120, "range": 2.8, "damage": {"base": 28, "coef": 0.0, "kind": "physical"}}]},
+	{"id": "orc_king_jump", "monster": "orc_king", "name": "AB_ORC_KING_JUMP", "desc": "AB_ORC_KING_JUMP_DESC", "icon": "charge", "kind": "active", "level": 1,
+	 "cost": 0, "cooldown_s": 9, "gcd": false, "range": 14, "anim": "dash",
+	 "effects": [{"type": "area", "at": "cursor", "radius": 4, "delay_s": 1.2, "telegraph": true, "leap": true,
+		"damage": {"base": 45, "coef": 0.0, "kind": "physical"}}]},
 	{"id": "boar_gore", "monster": "boar", "name": "AB_BOAR_GORE", "desc": "AB_BOAR_GORE_DESC", "icon": "bite", "kind": "active", "level": 1,
 	 "cost": 0, "cooldown_s": 1.4, "gcd": false, "range": 1.6, "anim": "melee",
 	 "effects": [{"type": "melee_arc", "angle_deg": 70, "range": 1.6, "damage": {"base": 10, "coef": 0.0, "kind": "physical"}}]},

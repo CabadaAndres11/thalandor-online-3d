@@ -32,6 +32,8 @@ func tick(world: SimWorld) -> void:
 			world.remove_entity(m.id)
 			if m.spawn_index >= 0 and m.spawn_index < _due.size():
 				var respawn := float(points[m.spawn_index].get("respawn_s", 30.0))
+				if bool(m.def.get("boss", false)):
+					respawn = world.balance.boss_respawn_s
 				(_due[m.spawn_index] as Array).append(m.died_tick + world.ticks(respawn))
 	for i in points.size():
 		var due: Array = _due[i]
@@ -59,7 +61,7 @@ func _spawn(world: SimWorld, index: int) -> void:
 			break
 	var m := MonsterDB.load_default().make(str(p.get("type", "")), world.next_monster_id(), pos, world)
 	m.spawn_index = index
-	if world.rng.randf() < float(p.get("elite_chance", 0.0)):
+	if not bool(m.def.get("boss", false)) and world.rng.randf() < float(p.get("elite_chance", 0.0)):
 		MonsterDB.make_elite(m, world.balance)
 	scale_health(world, m, 1.0)
 	world.add_entity(m)

@@ -16,6 +16,7 @@
 		{"type": "slime", "at": [9, 38], "count": 2, "radius": 3.0, "respawn_s": 40, "elite_chance": 0.1},
 		{"type": "boar", "at": [38, 38], "count": 2, "radius": 3.0, "respawn_s": 35, "elite_chance": 0.15},
 		{"type": "goblin", "at": [7, 21], "count": 4, "radius": 2.5, "respawn_s": 35, "elite_chance": 0.1},
-		{"type": "skeleton_archer", "at": [27, 42], "count": 2, "radius": 3.0, "respawn_s": 35, "elite_chance": 0.15}
+		{"type": "skeleton_archer", "at": [27, 42], "count": 2, "radius": 3.0, "respawn_s": 35, "elite_chance": 0.15},
+		{"type": "orc_king", "at": [23, 4], "count": 1, "radius": 0, "respawn_s": 180, "elite_chance": 0.0}
 	]
 }

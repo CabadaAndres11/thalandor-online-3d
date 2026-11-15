@@ -5,7 +5,7 @@ extends RefCounted
 ##   melee_arc  {angle_deg, range, damage, statuses?}
 ##   projectile {speed, radius, range, pierce, damage, statuses?, explode?: {radius, damage}}
 ##   area       {at: "cursor"|"self", radius, delay_s, telegraph, damage?, statuses?,
-##               pulses?, interval_s?}
+##               pulses?, interval_s?, leap?}  (leap: the caster lands on it when it goes off)
 ##   dash       {to: "cursor"|"back", distance, speed, on_arrive?: [effects]}
 ##   blink      {to: "cursor"|"behind_target", distance}
 ##   heal       {target: "ally_or_self"|"self"|"allies_around", radius?, amount: {base, coef},

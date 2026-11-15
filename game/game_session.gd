@@ -324,10 +324,19 @@ func _on_combat_event(ev: Array) -> void:
 			var who := int(ev[1])
 			if _monster_avatars.has(who):
 				var mab := AbilityDB.load_default().get_ability(str(ev[2]))
-				(_monster_avatars[who] as MonsterAvatar).play_attack(str(mab.get("anim", "melee")))
+				var avatar := _monster_avatars[who] as MonsterAvatar
+				var rise := _leap_delay(mab)
+				if rise > 0.0:
+					avatar.play_leap(rise)
+				else:
+					avatar.play_attack(str(mab.get("anim", "melee")))
 			elif _avatars.has(who):
 				var ab := AbilityDB.load_default().get_ability(str(ev[2]))
 				(_avatars[who] as PlayerAvatar).play_action(str(ab.get("anim", "")))
+		"leap":
+			var jumper := int(ev[1])
+			if _monster_avatars.has(jumper):
+				(_monster_avatars[jumper] as MonsterAvatar).land()
 		"died":
 			var who := int(ev[1])
 			if _monster_avatars.has(who):
@@ -347,3 +356,11 @@ func _entity_position(id: int) -> Variant:
 
 func _latest_tick() -> int:
 	return client.latest_tick() if client != null else 0
+
+
+## Warning time of a leaping ability (0 when it does not leap).
+static func _leap_delay(ability: Dictionary) -> float:
+	for eff: Dictionary in ability.get("effects", []):
+		if bool(eff.get("leap", false)):
+			return float(eff.get("delay_s", 0.0))
+	return 0.0

@@ -111,3 +111,23 @@ func test_elite_is_bigger_with_an_aura() -> void:
 	assert_true(elite.has_aura())
 	assert_string_contains(elite.display_name(), tr("MON_WOLF"))
 	assert_ne(elite.display_name(), normal.display_name(), "the name says it is an elite")
+
+
+func test_boss_is_a_big_humanoid_that_leaps() -> void:
+	var a := _avatar("orc_king")
+	var c := a.body.get_child(0) as CharacterRig
+	assert_not_null(c)
+	for id: String in ["orc_axe", "orc_tusks", "orc_crown"]:
+		assert_not_null(c.piece_node(id), id)
+	assert_almost_eq(a.body.scale.x, 1.8, 0.001)
+	var rest := a.body.position.y
+	var t := a.play_leap(1.2)
+	t.pause()
+	t.custom_step(0.2)
+	assert_gt(a.body.position.y, rest + 0.5, "up in the air")
+	t.custom_step(1.0)
+	assert_gt(a.body.position.y, rest + 2.0, "it stays up until it lands")
+	var down := a.land()
+	down.pause()
+	down.custom_step(0.2)
+	assert_almost_eq(a.body.position.y, rest, 0.001, "landed")

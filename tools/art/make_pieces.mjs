@@ -164,6 +164,48 @@ Object.assign(PIECES, {
   },
 });
 
+
+// Orc king (boss): fixed colors for bone, gem, wood and the bright axe edge.
+const BONE = 22, GEM = 23, WOOD = 24, EDGE = 25;
+const ORC_PALETTE = { [BONE]: "#e6dfcc", [GEM]: "#c0281c", [WOOD]: "#4a3020", [EDGE]: "#d5dae0" };
+Object.assign(PIECES, {
+  // Lower tusks jutting up in front of the mouth.
+  orc_tusks: {
+    frame: HEAD, tag: "monster", hides: [], palette: ORC_PALETTE,
+    build(f, s) {
+      for (const x of [f.x0 + 1, f.x1 - 1]) s.box(x, f.y0 + 1, f.z1 + 1, x, f.y0 + 2, f.z1 + 1, BONE);
+    },
+  },
+  // Heavy spiked gold crown with a red gem at the front.
+  orc_crown: {
+    frame: HEAD, tag: "monster", hides: [], palette: ORC_PALETTE,
+    build(f, s) {
+      s.box(f.x0, f.y1 + 1, f.z0, f.x1, f.y1 + 2, f.z1, S);
+      s.remove(f.x0 + 1, f.y1 + 1, f.z0 + 1, f.x1 - 1, f.y1 + 2, f.z1 - 1);
+      for (const [x, z] of [[f.x0, f.z0], [f.x1, f.z0], [f.x0, f.z1], [f.x1, f.z1], [f.x0 + 3, f.z1], [f.x1 - 3, f.z1], [f.x0 + 3, f.z0], [f.x1 - 3, f.z0]]) {
+        s.box(x, f.y1 + 3, z, x, f.y1 + 4, z, S);
+      }
+      s.box(f.x0 + 3, f.y1 + 3, f.z1, f.x1 - 3, f.y1 + 5, f.z1, S).box(f.x0 + 3, f.y1 + 1, f.z1 + 1, f.x1 - 3, f.y1 + 2, f.z1 + 1, GEM);
+    },
+  },
+  // A huge two-bladed war axe held in the right fist, pointing forward.
+  orc_axe: {
+    frame: ARM_R, tag: "monster", hides: [], palette: ORC_PALETTE,
+    build(f, s) {
+      s.box(2, 1, 5, 3, 2, 19, WOOD); // haft
+      s.box(2, 1, 4, 3, 2, 4, S).box(2, 1, 20, 3, 2, 20, S); // pommel and cap
+      for (const side of [1, -1]) {
+        // Crescent blades above and below the haft near its end.
+        const y0 = side > 0 ? 3 : 0;
+        for (let k = 0; k < 6; k++) {
+          const y = side > 0 ? y0 + k : y0 - k;
+          const half = k < 2 ? 2 : k < 4 ? 3 : 4;
+          s.box(2, y, 17 - half, 3, y, 17 + half - 1, k === 5 ? EDGE : P);
+        }
+      }
+    },
+  },
+});
 const [outDir, jsonPath] = process.argv.slice(2);
 if (!outDir || !jsonPath) {
   console.error("usage: node make_pieces.mjs <pieces out dir> <pieces.json path>");
@@ -173,7 +215,7 @@ const table = {};
 for (const [name, def] of Object.entries(PIECES)) {
   const shape = new Shape();
   def.build(def.frame, shape);
-  write(`${outDir}/${name}.vox`, shape.size(), shape.voxels());
+  write(`${outDir}/${name}.vox`, shape.size(), shape.voxels(), def.palette ?? {});
   const m = shape.min();
   table[name] = {
     file: `res://assets/characters/pieces/${name}.vox`,

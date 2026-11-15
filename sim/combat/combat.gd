@@ -150,6 +150,8 @@ static func on_zero_hp(world: SimWorld, e: CombatEntity) -> void:
 		p.charge_start = -1
 		p.combo = 0
 	world.emit(["died", e.id])
+	if e is MonsterState and bool((e as MonsterState).def.get("boss", false)):
+		world.emit(["boss_down", e.type_id])
 
 
 ## Back at the respawn point with full health and resource (rage starts empty).
@@ -283,11 +285,23 @@ static func fire_area(world: SimWorld, a: PendingArea) -> void:
 	if str(a.effect.get("type", "")) == "charge":
 		_fire_charge(world, a)
 		return
+	if bool(a.effect.get("leap", false)):
+		_land(world, a)
 	for o: CombatEntity in Effects.in_circle(world, a.owner, a.pos, float(a.effect.get("radius", 1.0))):
 		Combat.deal(world, a.owner, o, a.effect, {"id": a.ability_id})
 	a.pulses_left -= 1
 	a.fire_tick = world.tick + maxi(a.interval, 1)
 	world.emit(["area", a.id, a.pos, float(a.effect.get("radius", 1.0))])
+
+
+## A leaping caster (the boss jump) lands on the area when it goes off, if it still can.
+static func _land(world: SimWorld, a: PendingArea) -> void:
+	var live := world.entity(a.owner.id)
+	if live == null or not live.can_act(world.tick) or live.has_status("root"):
+		return
+	var from := live.position
+	live.position = Vector3(a.pos.x, live.position.y, a.pos.z)
+	world.emit(["leap", live.id, from, live.position])
 
 
 ## A charge after its warning: everyone in the warned line is hit and the caster runs
