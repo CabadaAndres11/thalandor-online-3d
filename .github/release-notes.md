@@ -7,12 +7,17 @@
 3. **Aviso de Windows (SmartScreen):** el juego no está firmado. Pulsa **Más información → Ejecutar de todas formas**.
 4. Pulsa **Jugar**. Se abre **Tus personajes**: crea uno con **Crear** (nombre, clase y aspecto) o elige uno que ya tengas.
 
-### Novedades de esta versión: personajes vóxel
-- Hasta **8 personajes** por jugador, de 5 clases: Guerrero, Clérigo, Mago, Arquero y Asesino. Cada clase tiene su ropa.
-- **Aspecto:** cuerpo, piel, ojos, peinado, color de pelo y barba, con vista previa que se puede girar arrastrando.
-- **Animaciones** de reposo y andar. Tus amigos ven tu personaje tal como lo creaste.
-- **Exportar e importar:** sirve para copias de seguridad o para jugar con el mismo personaje en otro PC. Los personajes se guardan en `%APPDATA%\Godot\app_userdata\Thalandor Online\saves\characters`.
-- **Todo el grupo tiene que usar la 0.2.0.** Si un amigo sigue con la 0.1.x, actualizad todos: según quién abra el grupo, saldrá "versión distinta" o un error de conexión.
+### Novedades de esta versión: combate básico
+- **Combate en tiempo real** con las 5 clases y su kit de nivel 1: ataque básico (clic izquierdo), secundario (clic derecho) y una habilidad en la casilla 1.
+  - **Guerrero:** genera **furia** al golpear y al recibir daño; Carga le lleva hasta el enemigo.
+  - **Clérigo y Mago:** gastan **maná**, que solo se recupera fuera de combate.
+  - **Arquero:** mantén el clic izquierdo para **cargar** el disparo (gasta concentración).
+  - **Asesino:** sus golpes suman **combos**; Destripar los gasta todos y pega más cuantos más tengas.
+- **Esquiva** con Espacio: un salto corto con un instante de invulnerabilidad (recarga de 3 s).
+- **Monstruos:** una manada de **lobos** y unos **limos ácidos**, cada grupo en una esquina distinta de la arena. Te persiguen esquivando los muros, vuelven a su sitio si te alejas demasiado y reaparecen al rato. Tienen más vida cuantos más jugadores haya en el grupo.
+- **Si caes**, reapareces a los 3 s cerca del centro de la arena con la vida llena.
+- **HUD de combate** abajo en el centro: vida, recurso, casillas con su recarga (atenuadas si no te llega el recurso), combos y carga. Números de daño, chispas y avisos en el suelo.
+- **Todo el grupo tiene que usar la 0.3.0.** Las versiones anteriores no pueden jugar con esta.
 
 ### Jugar con amigos: dos redes para probar
 Esta versión trae **dos formas de conectarse**. Todos los del grupo tienen que usar la misma, y también **la misma versión** del juego.
@@ -28,4 +33,4 @@ Esta versión trae **dos formas de conectarse**. Todos los del grupo tienen que 
 - Pulsa **F3** para ver la red que usas, el ping y las correcciones.
 
 ### Controles
-WASD mover · ratón apuntar · rueda zoom · Enter chat · Esc menú · F3 datos de red · F9 cambiar proyección de cámara
+WASD mover · ratón apuntar · clic izquierdo ataque básico (mantener: carga del Arquero) · clic derecho secundario · 1–4 habilidades · Espacio esquivar · rueda zoom · Enter chat · Esc menú · F3 datos de red · F9 cambiar proyección de cámara
