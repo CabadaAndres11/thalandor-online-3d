@@ -96,3 +96,16 @@ func test_overhead_bar_hidden_when_full_out_of_combat() -> void:
 	bar.set_health(30.0, 60.0)
 	assert_true(bar.bar_visible())
 	assert_almost_eq(bar.fraction(), 0.5, 0.001)
+
+
+func test_line_telegraph_fills_along_the_line_and_goes_with_the_charge() -> void:
+	fx.handle(["telegraph_line", 4, Vector3(5, 0, 5), Vector3(5, 0, 13), 1.4, latest_tick + 24])
+	assert_eq(fx.telegraph_count(), 1)
+	assert_almost_eq(fx.telegraph_length(4), 8.0, 0.01)
+	fx.advance(0.4)
+	assert_between(fx.telegraph_fill(4), 0.3, 0.9, "filling along the line")
+	fx.handle(["charge", 4, 1000, Vector3(5, 0, 5), Vector3(5, 0, 13)])
+	assert_eq(fx.telegraph_count(), 0, "the charge replaces the warning")
+	fx.handle(["telegraph_line", 5, Vector3(5, 0, 5), Vector3(13, 0, 5), 1.4, latest_tick + 24])
+	fx.handle(["charge_cancel", 5])
+	assert_eq(fx.telegraph_count(), 0, "a cancelled charge clears its warning")

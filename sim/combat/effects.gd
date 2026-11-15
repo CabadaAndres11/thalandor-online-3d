@@ -21,10 +21,12 @@ extends RefCounted
 ##   cleanse    {target: "ally_or_self"|"self"}  (removes negative statuses)
 ##   revive     {range}  (a downed ally near the cursor stands up with revive_hp_pct)
 ##   taunt      {radius, duration_s}  (enemies around must attack the caster)
+##   charge     {distance, width, windup_s, speed, damage, statuses?}  (warns a line
+##               toward the cursor, then runs along it hitting everyone in the line)
 ## damage = {base, coef, kind: "physical"|"magic", can_crit, element?}.
 
 const TYPES := ["melee_arc", "projectile", "area", "dash", "blink", "heal", "shield",
-	"status", "trap", "stealth", "cleanse", "revive", "taunt"]
+	"status", "trap", "stealth", "cleanse", "revive", "taunt", "charge"]
 const TARGET_PICK_RADIUS := 1.5
 
 
@@ -88,6 +90,8 @@ static func apply(world: SimWorld, caster: CombatEntity, ability: Dictionary, ef
 				Combat.revive(world, caster, t)
 		"taunt":
 			_taunt(world, caster, effect)
+		"charge":
+			_charge(world, caster, ability, effect, ctx.aim)
 		_:
 			push_error("Effects: unknown effect %s in %s" % [effect.get("type"), ability.get("id")])
 
@@ -330,3 +334,44 @@ static func _shield(world: SimWorld, caster: CombatEntity, effect: Dictionary, a
 	t.shield = maxf(t.shield, _amount(caster, effect.get("amount", {})))
 	t.shield_end = world.tick + world.ticks(float(effect.get("duration_s", 5.0)))
 	world.emit(["status", t.id, "shield", t.shield_end])
+
+
+## Warns a straight line toward `aim` (stopping at walls); when the windup ends the
+## caster runs along it (Combat.fire_area).
+static func _charge(world: SimWorld, caster: CombatEntity, ability: Dictionary, effect: Dictionary, aim: Vector3) -> void:
+	var start := Vector3(caster.position.x, 0, caster.position.z)
+	var to := flat(aim) - flat(start)
+	var dir := to.normalized() if to.length() > 0.01 else forward(caster.facing)
+	caster.facing = atan2(dir.x, dir.y)
+	var a := PendingArea.new()
+	a.id = world.next_object_id()
+	a.owner = Combat.snapshot_of(caster)
+	a.ability_id = str(ability.get("id", ""))
+	a.pos = start
+	a.end = line_end(world, start, dir, float(effect.get("distance", 8.0)), minf(caster.radius, MonsterAI.TERRAIN_RADIUS))
+	a.fire_tick = world.tick + world.ticks(float(effect.get("windup_s", 0.8)))
+	a.effect = effect
+	world.emit(["telegraph_line", a.id, a.pos, a.end, float(effect.get("width", 1.4)), a.fire_tick])
+	world.pending_areas.append(a)
+
+
+## Where a body of `radius` moving from `start` along `dir` stops: `distance` away or
+## at the first wall.
+static func line_end(world: SimWorld, start: Vector3, dir: Vector2, distance: float, radius: float) -> Vector3:
+	const STEP := 0.1
+	var reached := 0.0
+	while reached + STEP <= distance + 0.0001:
+		var next := start + Vector3(dir.x, 0, dir.y) * (reached + STEP)
+		if Movement.move_circle(start + Vector3(dir.x, 0, dir.y) * reached, dir * STEP, radius, world.map).distance_to(next) > 0.001:
+			break
+		reached += STEP
+	return start + Vector3(dir.x, 0, dir.y) * reached
+
+
+## Living enemies of `caster` touching the segment from `a` to `b` (width/2 + their radius).
+static func in_line(world: SimWorld, caster: CombatEntity, a: Vector3, b: Vector3, width: float) -> Array:
+	var p0 := flat(a)
+	var p1 := flat(b)
+	return enemies_of(world, caster).filter(func(o: CombatEntity) -> bool:
+		var q := Geometry2D.get_closest_point_to_segment(flat(o.position), p0, p1)
+		return q.distance_to(flat(o.position)) <= width / 2.0 + o.radius)

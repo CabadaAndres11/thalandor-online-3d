@@ -37,6 +37,10 @@ var group_hp_scale: float = 0.75
 var threat_switch_margin: float = 0.1
 var boss_respawn_s: float = 180.0
 var max_monsters_per_snapshot: int = 32
+## Elite monsters: size (body and hit radius), health and damage multipliers.
+var elite_scale: float = 1.3
+var elite_hp_mult: float = 2.5
+var elite_damage_mult: float = 1.4
 
 
 static func load_from(path: String = DEFAULT_PATH) -> Balance:

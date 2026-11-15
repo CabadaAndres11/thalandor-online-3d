@@ -124,6 +124,46 @@ const PIECES = {
   },
 };
 
+// --- Monster pieces (data/monsters "look") ----------------------------------------
+// Goblin ears use TINT_HAIR (the look gives them the skin color); weapons use the
+// look's primary (wood, grip) and secondary (blade, string).
+Object.assign(PIECES, {
+  // Long pointed ears sticking out sideways and a bit up.
+  goblin_ears: {
+    frame: HEAD, tag: "monster", hides: [],
+    build(f, s) {
+      for (const side of [-1, 1]) {
+        const x0 = side < 0 ? f.x0 - 1 : f.x1 + 1;
+        const at = (dx) => x0 + side * dx;
+        s.box(Math.min(at(0), at(1)), 5, 4, Math.max(at(0), at(1)), 8, 6, H);
+        s.box(Math.min(at(2), at(3)), 6, 4, Math.max(at(2), at(3)), 8, 5, H);
+        s.put(at(4), 8, 4, H).put(at(4), 9, 4, H).put(at(5), 9, 3, H);
+      }
+    },
+  },
+  // A short jagged knife held in the right fist, blade forward.
+  goblin_knife: {
+    frame: ARM_R, tag: "monster", hides: [],
+    build(f, s) {
+      s.box(2, 1, 5, 3, 2, 6, P); // grip sticking out of the fist
+      s.box(1, 1, 7, 4, 2, 7, P); // crude guard
+      s.box(2, 1, 8, 3, 2, 12, S); // blade
+      s.put(2, 1, 13, S).put(3, 2, 10, P); // tip and a notch
+      s.remove(3, 2, 10, 3, 2, 10);
+    },
+  },
+  // A tall recurve bow held upright in the left fist, string toward the body.
+  skeleton_bow: {
+    frame: ARM_L, tag: "monster", hides: [],
+    build(f, s) {
+      s.box(2, -1, 6, 3, 3, 6, P); // grip
+      s.box(2, 4, 5, 3, 8, 5, P).box(2, 9, 4, 3, 10, 4, P).put(2, 11, 5, P).put(3, 11, 5, P); // upper limb
+      s.box(2, -5, 5, 3, -2, 5, P).box(2, -7, 4, 3, -6, 4, P).put(2, -8, 5, P).put(3, -8, 5, P); // lower limb
+      s.box(2, -7, 3, 2, 10, 3, S); // string
+    },
+  },
+});
+
 const [outDir, jsonPath] = process.argv.slice(2);
 if (!outDir || !jsonPath) {
   console.error("usage: node make_pieces.mjs <pieces out dir> <pieces.json path>");

@@ -280,11 +280,35 @@ static func _areas(world: SimWorld) -> void:
 
 
 static func fire_area(world: SimWorld, a: PendingArea) -> void:
+	if str(a.effect.get("type", "")) == "charge":
+		_fire_charge(world, a)
+		return
 	for o: CombatEntity in Effects.in_circle(world, a.owner, a.pos, float(a.effect.get("radius", 1.0))):
 		Combat.deal(world, a.owner, o, a.effect, {"id": a.ability_id})
 	a.pulses_left -= 1
 	a.fire_tick = world.tick + maxi(a.interval, 1)
 	world.emit(["area", a.id, a.pos, float(a.effect.get("radius", 1.0))])
+
+
+## A charge after its warning: everyone in the warned line is hit and the caster runs
+## to its end. A dead, stunned or frozen caster loses the charge.
+static func _fire_charge(world: SimWorld, a: PendingArea) -> void:
+	a.pulses_left = 0
+	var live := world.entity(a.owner.id)
+	if live == null or not live.can_act(world.tick) or live.has_status("root"):
+		world.emit(["charge_cancel", a.id])
+		return
+	var width := float(a.effect.get("width", 1.4))
+	for o: CombatEntity in Effects.in_line(world, a.owner, a.pos, a.end, width):
+		deal(world, a.owner, o, a.effect, {"id": a.ability_id})
+	var to := Effects.flat(a.end) - Effects.flat(live.position)
+	if to.length() > 0.05:
+		var speed := maxf(float(a.effect.get("speed", 16.0)), 0.1)
+		live.forced_vel = to.normalized() * speed / float(world.balance.tick_rate)
+		live.forced_ticks = maxi(1, ceili(to.length() / speed * world.balance.tick_rate))
+		live.forced_last = to.length() - speed / float(world.balance.tick_rate) * (live.forced_ticks - 1)
+		live.forced_on_arrive = []
+	world.emit(["charge", a.id, live.id, a.pos, a.end])
 
 
 ## Heals up to max health and reports how much was healed.

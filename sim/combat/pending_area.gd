@@ -11,3 +11,5 @@ var fire_tick: int = 0
 var pulses_left: int = 1
 var interval: int = 0
 var effect: Dictionary = {}
+## Line areas (a charge): the far end of the line; pos is where it starts.
+var end: Vector3 = Vector3.ZERO

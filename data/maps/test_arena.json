@@ -12,7 +12,10 @@
 		[40, 18, 2], [41, 18, 2], [40, 30, 2], [16, 41, 2], [17, 41, 2]
 	],
 	"spawns": [
-		{"type": "wolf", "at": [38, 9], "count": 3, "radius": 2.5, "respawn_s": 30, "elite_chance": 0.0},
-		{"type": "slime", "at": [9, 38], "count": 2, "radius": 3.0, "respawn_s": 40, "elite_chance": 0.0}
+		{"type": "wolf", "at": [38, 9], "count": 3, "radius": 2.5, "respawn_s": 30, "elite_chance": 0.1},
+		{"type": "slime", "at": [9, 38], "count": 2, "radius": 3.0, "respawn_s": 40, "elite_chance": 0.1},
+		{"type": "boar", "at": [38, 38], "count": 2, "radius": 3.0, "respawn_s": 35, "elite_chance": 0.15},
+		{"type": "goblin", "at": [7, 21], "count": 4, "radius": 2.5, "respawn_s": 35, "elite_chance": 0.1},
+		{"type": "skeleton_archer", "at": [27, 42], "count": 2, "radius": 3.0, "respawn_s": 35, "elite_chance": 0.15}
 	]
 }

@@ -21,6 +21,9 @@ func _initialize() -> void:
 	var arena := Arena.new()
 	root.add_child(arena)
 	arena.build(Arena.load_layout())
+	if _name == "monsters_b":
+		_monsters_b()
+		return
 	if _name == "monsters_a":
 		_combat_scene()
 		return
@@ -186,3 +189,46 @@ func _combat_scene() -> void:
 	cam.fov = 38
 	root.add_child(cam)
 	cam.look_at_from_position(Vector3(19.0, 9.0, 13.5), Vector3(19.0, 0.6, 20.8))
+
+
+## Task 12 set: boar (warning its charge), goblins (one elite), skeleton archer and an
+## elite wolf, around a warrior.
+func _monsters_b() -> void:
+	var hero := PlayerAvatar.new()
+	root.add_child(hero)
+	hero.setup("Aldric", 0, "warrior", {"beard": "full", "hair_color": "dark_brown", "skin": "skin_3"})
+	hero.position = Vector3(19.0, 0, 19.6)
+	hero.rotation.y = 0.5
+	hero.set_health(150.0, 200.0)
+	_spots[1] = hero.position
+	var db := MonsterDB.load_default()
+	var monsters := [
+		[1000, "boar", Vector3(15.6, 0, 22.6), 2.3, 1.0, false],
+		[1001, "goblin", Vector3(20.2, 0, 21.4), -2.7, 0.7, false],
+		[1002, "goblin", Vector3(21.7, 0, 20.3), -2.2, 1.0, true],
+		[1003, "skeleton_archer", Vector3(23.6, 0, 23.4), -2.4, 0.9, false],
+		[1004, "wolf", Vector3(17.6, 0, 24.4), 2.8, 1.0, true],
+	]
+	for m: Array in monsters:
+		var a := MonsterAvatar.new()
+		root.add_child(a)
+		var type := db.get_type(m[1])
+		a.setup(type, m[5], 1.3)
+		var max_hp := float((type.get("stats", {}) as Dictionary).get("max_hp", 60.0)) * (2.5 if m[5] else 1.0)
+		a.apply_state({"position": m[2], "facing": m[3]}, {"hp": max_hp * float(m[4]), "max_hp": max_hp, "status_bits": 0}, 0.016)
+		_spots[m[0]] = m[2]
+		if m[0] == 1001:
+			a.play_attack("melee")
+		elif m[0] == 1003:
+			a.play_attack("shoot")
+	_fx = CombatFX.new()
+	root.add_child(_fx)
+	_fx.setup(_spot, func() -> int: return 0, AbilityDB.load_default(), 30)
+	_fx.set_process(false)
+	_fx.handle(["telegraph_line", 7, Vector3(15.6, 0, 22.6), Vector3(15.6, 0, 22.6) + Vector3(sin(2.3), 0, cos(2.3)) * 8.0, 1.4, 90])
+	_fx.handle(["projectile", 8, 1003, "skeleton_arrow", Vector3(23.6, 0, 23.4), Vector2(-0.75, -0.66).normalized(), 18.0, 60.0])
+	_fx.advance(1.2)
+	var cam := Camera3D.new()
+	cam.fov = 38
+	root.add_child(cam)
+	cam.look_at_from_position(Vector3(19.5, 9.0, 14.0), Vector3(19.5, 0.6, 21.6))

@@ -112,5 +112,38 @@
 		],
 		"tag": "headgear",
 		"hides": []
+	},
+	"goblin_ears": {
+		"file": "res://assets/characters/pieces/goblin_ears.vox",
+		"part": "head",
+		"offset": [
+			-10,
+			2,
+			-3
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"goblin_knife": {
+		"file": "res://assets/characters/pieces/goblin_knife.vox",
+		"part": "arm-right",
+		"offset": [
+			-4,
+			-10,
+			2
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"skeleton_bow": {
+		"file": "res://assets/characters/pieces/skeleton_bow.vox",
+		"part": "arm-left",
+		"offset": [
+			1,
+			-19,
+			0
+		],
+		"tag": "monster",
+		"hides": []
 	}
 }

@@ -96,6 +96,18 @@ AB_WOLF_BITE,Mordisco
 AB_WOLF_BITE_DESC,Muerde al enemigo que tiene delante.
 AB_SLIME_SLAM,Aplastar
 AB_SLIME_SLAM_DESC,Golpea el suelo y daña a todo lo que tiene alrededor.
+MON_BOAR,Jabalí
+MON_GOBLIN,Goblin
+MON_SKELETON_ARCHER,Esqueleto arquero
+MON_ELITE_NAME,%s élite
+AB_BOAR_GORE,Cornada
+AB_BOAR_GORE_DESC,Embiste con los colmillos al enemigo que tiene delante.
+AB_BOAR_CHARGE,Carga
+AB_BOAR_CHARGE_DESC,"Avisa en el suelo una línea de 8 m y carga por ella, arrollando a quien siga en medio."
+AB_GOBLIN_STAB,Cuchillada
+AB_GOBLIN_STAB_DESC,Apuñala al enemigo que tiene delante.
+AB_SKELETON_ARROW,Flecha
+AB_SKELETON_ARROW_DESC,Dispara una flecha al enemigo.
 AB_WARRIOR_SLASH,Tajo
 AB_WARRIOR_SLASH_DESC,Golpe en arco frontal. Genera ira.
 AB_WARRIOR_BRUTAL,Golpe brutal

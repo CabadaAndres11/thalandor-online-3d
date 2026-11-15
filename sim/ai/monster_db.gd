@@ -46,3 +46,15 @@ func make(type_id: String, id: int, pos: Vector3, world: SimWorld) -> MonsterSta
 	m.hp = m.stats.max_hp
 	m.facing = world.rng.randf_range(-PI, PI)
 	return m
+
+
+## Turns a fresh monster into its elite version (bigger, tougher, hits harder).
+static func make_elite(m: MonsterState, b: Balance) -> void:
+	if m.elite:
+		return
+	m.elite = true
+	m.base_max_hp *= b.elite_hp_mult
+	m.stats.max_hp *= b.elite_hp_mult
+	m.hp = m.stats.max_hp
+	m.radius *= b.elite_scale
+	m.stats.damage_done_mult *= b.elite_damage_mult

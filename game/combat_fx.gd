@@ -4,6 +4,8 @@ extends Node3D
 ##   projectile / projectile_end -> a glowing bolt that flies on its own
 ##   cast (melee arcs)           -> a short flash of the arc
 ##   telegraph                   -> a ground warning that fills up until impact
+##   telegraph_line              -> a charge's lane that fills toward its end; charge or
+##                                  charge_cancel removes it
 ##   area                        -> a flash where an area went off
 ##   status "shield"             -> a bubble around the entity until it fades
 ##   hit / heal / dodge          -> floating numbers
@@ -56,6 +58,10 @@ func handle(ev: Array) -> void:
 			_remove_projectile(int(ev[1]))
 		"cast":
 			_cast_flash(ev)
+		"telegraph_line":
+			_add_line_telegraph(ev)
+		"charge", "charge_cancel":
+			_remove_telegraph(int(ev[1]))
 		"telegraph":
 			_add_telegraph(ev)
 		"area":
@@ -95,7 +101,7 @@ func advance(dt: float) -> void:
 			_telegraphs.erase(id)
 		else:
 			var k: float = g.t / g.duration
-			(g.fill as Node3D).scale = Vector3(k, 1, k)
+			(g.fill as Node3D).scale = Vector3(1, 1, k) if g.get("line", false) else Vector3(k, 1, k)
 	for f: Dictionary in _flashes.duplicate():
 		f.t += dt
 		if f.t >= FLASH_TIME:
@@ -139,6 +145,10 @@ func telegraph_count() -> int:
 
 func telegraph_fill(id: int) -> float:
 	return float(_telegraphs[id].t) / float(_telegraphs[id].duration) if _telegraphs.has(id) else 0.0
+
+
+func telegraph_length(id: int) -> float:
+	return float(_telegraphs[id].get("length", 0.0)) if _telegraphs.has(id) else 0.0
 
 
 func floating_labels() -> Array:
@@ -228,6 +238,53 @@ func _add_telegraph(ev: Array) -> void:
 	holder.add_child(fill)
 	add_child(holder)
 	_telegraphs[id] = {"node": holder, "fill": fill, "t": 0.0, "duration": duration}
+
+
+## A charge lane: dark red strip with glowing edges from `from` to `to`; the fill
+## grows from the start toward the end until the charge.
+func _add_line_telegraph(ev: Array) -> void:
+	var id := int(ev[1])
+	var from: Vector3 = ev[2]
+	var to: Vector3 = ev[3]
+	var width := float(ev[4])
+	var duration := maxf(float(int(ev[5]) - int(_tick_now.call())) / float(_tick_rate), 0.05)
+	var length := Vector2(to.x - from.x, to.z - from.z).length()
+	var holder := Node3D.new()
+	holder.position = Vector3(from.x, 0.03, from.z)
+	if length > 0.01:
+		holder.rotation.y = atan2(to.x - from.x, to.z - from.z)
+	var lane := _strip(width, length, Color(0.35, 0.02, 0.02), 0.35)
+	holder.add_child(lane)
+	for side: float in [-1.0, 1.0]:
+		var edge := _strip(0.08, length, Color(1.0, 0.15, 0.08), 0.95)
+		edge.position.x = side * width / 2.0
+		holder.add_child(edge)
+	var fill := Node3D.new() # scaled along Z from the start
+	var inner := _strip(width, length, Color(0.75, 0.05, 0.03), 0.45)
+	inner.position.y = 0.01
+	fill.add_child(inner)
+	fill.scale = Vector3(1, 1, 0.0)
+	holder.add_child(fill)
+	add_child(holder)
+	_telegraphs[id] = {"node": holder, "fill": fill, "t": 0.0, "duration": duration, "line": true, "length": length}
+
+
+## A flat strip on the ground from z = 0 to z = length (local), centred on x.
+func _strip(width: float, length: float, color: Color, alpha: float) -> MeshInstance3D:
+	var m := MeshInstance3D.new()
+	var box := BoxMesh.new()
+	box.size = Vector3(width, 0.01, maxf(length, 0.01))
+	m.mesh = box
+	m.position.z = length / 2.0
+	m.material_override = _material(color, alpha)
+	m.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return m
+
+
+func _remove_telegraph(id: int) -> void:
+	if _telegraphs.has(id):
+		(_telegraphs[id].node as Node).queue_free()
+		_telegraphs.erase(id)
 
 
 func _area_flash(pos: Vector3, radius: float) -> void:

@@ -67,7 +67,10 @@ func tick() -> void:
 			# No new input this tick: keep moving/holding, but never repeat presses.
 			inputs[id] = (rec.last_input as PlayerInput).held_only()
 	world.step(inputs)
-	_broadcast(Protocol.snapshot(world.tick, _snapshot_rows(), _monster_rows()), false)
+	var player_rows := _snapshot_rows()
+	for id: int in _players:
+		var viewer: Vector3 = world.players[id].position if world.players.has(id) else Vector3.ZERO
+		_send_to(id, Protocol.snapshot(world.tick, player_rows, _monster_rows(viewer)), false)
 	if not world.events.is_empty():
 		_broadcast(Protocol.events(world.tick, world.events.duplicate()), true)
 
@@ -229,10 +232,22 @@ func _snapshot_rows() -> Array:
 	return rows
 
 
-func _monster_rows() -> Array:
+## Monster rows for one player: the nearest max_monsters_per_snapshot (all of them when
+## there are fewer), so a big map never overflows the packet.
+func _monster_rows(viewer: Vector3) -> Array:
+	var list: Array = world.monsters.values()
+	var cap := world.balance.max_monsters_per_snapshot
+	if list.size() > cap:
+		var at := Effects.flat(viewer)
+		list.sort_custom(func(a: CombatEntity, b: CombatEntity) -> bool:
+			var da := Effects.flat(a.position).distance_squared_to(at)
+			var db := Effects.flat(b.position).distance_squared_to(at)
+			return da < db if da != db else a.id < b.id)
+		list = list.slice(0, cap)
 	var rows := []
-	for e: CombatEntity in world.monsters.values():
-		rows.append([e.id, e.type_id, e.position, e.facing, e.hp, e.stats.max_hp, StatusEffect.bits_of(e), e.target_id])
+	for e: CombatEntity in list:
+		var elite := 1 if (e is MonsterState and (e as MonsterState).elite) else 0
+		rows.append([e.id, e.type_id, e.position, e.facing, e.hp, e.stats.max_hp, StatusEffect.bits_of(e), e.target_id, elite])
 	return rows
 
 

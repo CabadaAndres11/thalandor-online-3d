@@ -2,7 +2,7 @@ class_name Protocol
 extends RefCounted
 ## Network messages: Arrays [type, fields...] encoded with var_to_bytes (never objects).
 
-const VERSION := 3
+const VERSION := 4
 
 enum Msg { HELLO = 1, WELCOME, REJECT, INPUT, SNAPSHOT, PLAYER_JOINED, PLAYER_LEFT, CHAT, EVENTS, SET_BAR }
 
@@ -13,7 +13,7 @@ const SCHEMAS := {
 	Msg.WELCOME: [["player_id", TYPE_INT], ["tick", TYPE_INT], ["roster", TYPE_ARRAY]],
 	Msg.REJECT: [["reason", TYPE_STRING], ["host_version", TYPE_STRING]],
 	Msg.INPUT: [["inputs", TYPE_ARRAY]],
-	Msg.SNAPSHOT: [["tick", TYPE_INT], ["players", TYPE_ARRAY], ["monsters", TYPE_ARRAY]],
+	Msg.SNAPSHOT: [["tick", TYPE_INT], ["players", TYPE_ARRAY], ["monsters", TYPE_PACKED_BYTE_ARRAY]],
 	Msg.EVENTS: [["tick", TYPE_INT], ["events", TYPE_ARRAY]],
 	Msg.SET_BAR: [["bar", TYPE_ARRAY]],
 	Msg.PLAYER_JOINED: [["id", TYPE_INT], ["name", TYPE_STRING], ["slot", TYPE_INT],
@@ -30,10 +30,18 @@ const ROW_SCHEMAS := {
 	## status_bits, dash_ticks, dash_dir, dodge_ready_seq, move_mult, combo, charge (0..1)
 	"players": [TYPE_INT, TYPE_VECTOR3, TYPE_VECTOR3, TYPE_FLOAT, TYPE_INT, TYPE_FLOAT, TYPE_FLOAT,
 		TYPE_FLOAT, TYPE_FLOAT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_VECTOR2, TYPE_INT, TYPE_FLOAT, TYPE_INT, TYPE_FLOAT],
-	## id, type, position, facing, hp, max_hp, flags, target_id
-	"monsters": [TYPE_INT, TYPE_STRING, TYPE_VECTOR3, TYPE_FLOAT, TYPE_FLOAT, TYPE_FLOAT, TYPE_INT, TYPE_INT],
 }
 
+
+## SNAPSHOT monster rows travel packed (Variant arrays cost ~100 bytes per monster and
+## overflow the ENet MTU with a dozen monsters). Each row, as the game uses it:
+##   [id, type, position, facing, hp, max_hp, status_bits, target_id, elite (0|1)]
+## is MONSTER_RECORD bytes: id u32, type u8 (index in monster_types(), 255 unknown),
+## position 3×f32, facing u16 (angle / TAU), hp f32, max_hp f32, status_bits u32,
+## target_id u32, elite u8.
+const MONSTER_RECORD := 36
+
+static var _monster_types: Array = []
 const MAX_PACKET_BYTES := 16384
 ## HELLO sizes of older games, padded so the host can answer "different version":
 ## protocol 1 (0.1.x) had no character, protocol 2 (0.2.x) had no ability bar.
@@ -70,7 +78,7 @@ static func input(inputs: Array) -> PackedByteArray:
 
 
 static func snapshot(tick: int, players: Array, monsters: Array = []) -> PackedByteArray:
-	return pack([Msg.SNAPSHOT, tick, players, monsters])
+	return pack([Msg.SNAPSHOT, tick, players, pack_monsters(monsters)])
 
 
 static func events(tick: int, list: Array) -> PackedByteArray:
@@ -129,6 +137,10 @@ static func decode(data: PackedByteArray) -> Dictionary:
 			return {}
 		if ROW_SCHEMAS.has(field_name) and not _rows_valid(v, ROW_SCHEMAS[field_name]):
 			return {}
+		if field_name == "monsters":
+			v = unpack_monsters(v)
+			if v == null:
+				return {}
 		out[field_name] = v
 	return out
 
@@ -141,3 +153,53 @@ static func _rows_valid(rows: Array, types: Array) -> bool:
 			if typeof(row[j]) != types[j]:
 				return false
 	return true
+
+
+## Monster type ids in a fixed order (both ends load the same data/monsters).
+static func monster_types() -> Array:
+	if _monster_types.is_empty():
+		_monster_types = MonsterDB.load_default().type_ids()
+		_monster_types.sort()
+	return _monster_types
+
+
+static func pack_monsters(rows: Array) -> PackedByteArray:
+	var buf := StreamPeerBuffer.new()
+	var types := monster_types()
+	for row: Array in rows:
+		var pos: Vector3 = row[2]
+		var type_index := types.find(str(row[1]))
+		buf.put_u32(int(row[0]))
+		buf.put_u8(type_index if type_index >= 0 and type_index < 255 else 255)
+		buf.put_float(pos.x)
+		buf.put_float(pos.y)
+		buf.put_float(pos.z)
+		buf.put_u16(int(roundf(fposmod(float(row[3]), TAU) / TAU * 65536.0)) & 0xFFFF)
+		buf.put_float(float(row[4]))
+		buf.put_float(float(row[5]))
+		buf.put_u32(int(row[6]))
+		buf.put_u32(int(row[7]))
+		buf.put_u8(1 if int(row[8]) != 0 else 0)
+	return buf.data_array
+
+
+## The rows back (facing in -PI..PI); null when the bytes are not whole records.
+static func unpack_monsters(data: PackedByteArray) -> Variant:
+	if data.size() % MONSTER_RECORD != 0:
+		return null
+	var buf := StreamPeerBuffer.new()
+	buf.data_array = data
+	var types := monster_types()
+	var rows := []
+	for i in data.size() / MONSTER_RECORD:
+		var id := buf.get_u32()
+		var t := buf.get_u8()
+		var pos := Vector3(buf.get_float(), buf.get_float(), buf.get_float())
+		var facing := wrapf(float(buf.get_u16()) / 65536.0 * TAU, -PI, PI)
+		var hp := buf.get_float()
+		var max_hp := buf.get_float()
+		var bits := buf.get_u32()
+		var target := buf.get_u32()
+		var elite := buf.get_u8()
+		rows.append([id, types[t] if t < types.size() else "", pos, facing, hp, max_hp, bits, target, elite])
+	return rows

@@ -1,3 +1,5 @@
+
+
 class_name MonsterAI
 extends RefCounted
 ## Monster brains (deterministic, run by the host each tick):
@@ -8,6 +10,13 @@ extends RefCounted
 ##             then heals fully and forgets its threat -> IDLE
 ## The target is the valid player with most threat; it only switches when another
 ## has more than threat_switch_margin above the current one.
+## Behaviors (data/monsters "behavior"):
+##   melee        the above
+##   charger      also charges ("charge": {ability, min_range, max_range}) when the
+##                target is in that band and in sight; still while it warns and runs
+##   ranged_kite  backs away while the target is closer than kite_range (shoots when
+##                it cannot back away)
+## "pack": true monsters wake the IDLE ones of their type within pack_radius.
 
 const REPATH_S := 0.5
 const UNREACHABLE_S := 3.0
@@ -21,6 +30,8 @@ static func tick(world: SimWorld, m: MonsterState) -> void:
 	if m.ai == MonsterState.RETURN:
 		_go_home(world, m)
 		return
+	if m.forced_ticks > 0 or world.tick < m.busy_until:
+		return # charging
 	_clean_threat(world, m)
 	if m.threat.is_empty():
 		if m.ai != MonsterState.IDLE:
@@ -30,6 +41,8 @@ static func tick(world: SimWorld, m: MonsterState) -> void:
 		if seen == null:
 			return
 		m.add_threat(seen.id, 1.0)
+	if m.ai == MonsterState.IDLE:
+		_alert_pack(world, m)
 	if Effects.flat(m.position).distance_to(Effects.flat(m.home)) > float(m.def.get("leash_range", 20.0)):
 		_start_return(m)
 		return
@@ -39,7 +52,18 @@ static func tick(world: SimWorld, m: MonsterState) -> void:
 		return
 	m.target_id = target.id
 	var gap := Effects.flat(m.position).distance_to(Effects.flat(target.position)) - target.radius
-	if gap <= float(m.def.get("attack_range", 1.5)):
+	match str(m.def.get("behavior", "melee")):
+		"ranged_kite":
+			if gap < float(m.def.get("kite_range", 5.0)) and _back_away(world, m, target):
+				m.ai = MonsterState.CHASE
+				return
+		"charger":
+			if _try_charge(world, m, target, gap):
+				m.ai = MonsterState.ATTACK
+				return
+	var ranged := str(m.def.get("behavior", "")) == "ranged_kite"
+	# Archers need a clear shot; otherwise they walk closer around the obstacle.
+	if gap <= float(m.def.get("attack_range", 1.5)) and (not ranged or world.pathfinder().clear_line(m.position, target.position)):
 		m.ai = MonsterState.ATTACK
 		m.unreachable_ticks = 0
 		var to := Effects.flat(target.position) - Effects.flat(m.position)
@@ -153,3 +177,55 @@ static func _go_home(world: SimWorld, m: MonsterState) -> void:
 		return
 	if not _move_toward(world, m, m.home):
 		m.position = m.home # walled in: never stay stuck away from home
+
+
+## Wakes the idle pack mates (same type, within pack_radius) with this monster's threat.
+static func _alert_pack(world: SimWorld, m: MonsterState) -> void:
+	if not bool(m.def.get("pack", false)):
+		return
+	var reach := float(m.def.get("pack_radius", 10.0))
+	for e: CombatEntity in world.monsters.values():
+		var o := e as MonsterState
+		if o == null or o == m or not o.is_alive() or o.type_id != m.type_id or o.ai != MonsterState.IDLE:
+			continue
+		if Effects.flat(o.position).distance_to(Effects.flat(m.position)) > reach:
+			continue
+		for id: int in m.threat:
+			if not o.threat.has(id):
+				o.add_threat(id, 1.0)
+
+
+## Charger: starts the charge when the target is in the charge band and in sight.
+static func _try_charge(world: SimWorld, m: MonsterState, target: CombatEntity, gap: float) -> bool:
+	var c: Dictionary = m.def.get("charge", {})
+	var id := str(c.get("ability", ""))
+	if id == "" or gap < float(c.get("min_range", 3.0)) or gap > float(c.get("max_range", 8.0)):
+		return false
+	if not world.pathfinder().clear_line(m.position, target.position):
+		return false
+	if not Combat.try_cast(world, m, id, target.position):
+		return false
+	var windup := 0.0
+	for eff: Dictionary in world.abilities.get_ability(id).get("effects", []):
+		windup = maxf(windup, float(eff.get("windup_s", 0.0)))
+	m.busy_until = world.tick + world.ticks(windup) + 1
+	return true
+
+
+## Ranged kiter: one step straight away from the target; false when it cannot move
+## back (a wall), so it fights instead.
+static func _back_away(world: SimWorld, m: MonsterState, target: CombatEntity) -> bool:
+	var away := Effects.flat(m.position) - Effects.flat(target.position)
+	if away.length() < 0.01:
+		away = -Effects.forward(m.facing)
+	var dir := away.normalized()
+	var step := m.speed() / float(world.balance.tick_rate)
+	if step <= 0.0:
+		return false
+	var before := m.position
+	m.position = Movement.move_circle(m.position, dir * step, minf(m.radius, TERRAIN_RADIUS), world.map)
+	if Effects.flat(m.position).distance_to(Effects.flat(before)) < step * 0.5:
+		m.position = before
+		return false
+	m.facing = atan2(dir.x, dir.y)
+	return true

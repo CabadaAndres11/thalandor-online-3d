@@ -134,8 +134,38 @@ func test_snapshot_fits_with_4_players_30_monsters() -> void:
 			1234.5, 2000.0, 87.5, 100.0, 0, 0x3FFF, 5, Vector2(0.7, 0.7), 123456, 0.6, 5, 0.75])
 	var monsters := []
 	for i in 30:
-		monsters.append([1000 + i, "skeleton_archer", Vector3(100.5 + i, 0, 80.25), 2.5, 4567.8, 9000.0, 0x3FFF, 4])
+		monsters.append([1000 + i, "skeleton_archer", Vector3(100.5 + i, 0, 80.25), 2.5, 4567.8, 9000.0, 0x3FFF, 4, 1])
 	var packet := Protocol.snapshot(123456, players, monsters)
 	assert_lt(packet.size(), Protocol.MAX_PACKET_BYTES, "%d bytes" % packet.size())
 	assert_false(Protocol.decode(packet).is_empty())
 	gut.p("snapshot with 4 players and 30 monsters: %d bytes" % packet.size())
+
+
+func test_monster_rows_round_trip_packed() -> void:
+	var rows := [[1000, "boar", Vector3(12.25, 0, 7.5), -2.5, 88.5, 110.0, 0x24, 2, 1],
+		[1001, "goblin", Vector3(3, 0.5, 4), 1.0, 55.0, 55.0, 0, 0, 0]]
+	var m := Protocol.decode(Protocol.snapshot(9, [], rows))
+	assert_eq(m.monsters.size(), 2)
+	var a: Array = m.monsters[0]
+	assert_eq([a[0], a[1], a[2], a[5], a[6], a[7], a[8]], [1000, "boar", Vector3(12.25, 0, 7.5), 110.0, 0x24, 2, 1])
+	assert_almost_eq(float(a[3]), -2.5, 0.001)
+	assert_almost_eq(float(a[4]), 88.5, 0.001)
+	assert_eq(m.monsters[1][1], "goblin")
+	assert_eq(m.monsters[1][8], 0)
+
+
+func test_bad_monster_bytes_are_rejected() -> void:
+	var bad := Protocol.pack([Protocol.Msg.SNAPSHOT, 1, [], PackedByteArray([1, 2, 3])])
+	assert_eq(Protocol.decode(bad), {})
+
+
+func test_snapshot_with_arena_monsters_fits_enet_mtu() -> void:
+	var players := []
+	for i in 4:
+		players.append([i + 1, Vector3(123.456, 0, 98.765), Vector3(130.1, 0, 90.2), 1.234, 99999,
+			1234.5, 2000.0, 87.5, 100.0, 0, 0x3FFF, 5, Vector2(0.7, 0.7), 123456, 0.6, 5, 0.75])
+	var monsters := []
+	for i in 13:
+		monsters.append([1000 + i, "skeleton_archer", Vector3(10.5 + i, 0, 8.25), 2.5, 4567.8, 9000.0, 0x3FFF, 4, 1])
+	var size := Protocol.snapshot(123456, players, monsters).size()
+	assert_lt(size, 1392, "the test arena's 13 monsters and 4 players fit one ENet packet (%d bytes)" % size)

@@ -73,3 +73,41 @@ func test_wolf_bite_moves_the_head() -> void:
 	t.pause()
 	t.custom_step(0.1)
 	assert_ne(rig.part("head").rotation.x, 0.0, "the head snaps down")
+
+
+func test_new_monster_models_build() -> void:
+	var boar := _avatar("boar")
+	var rig := boar.body.get_child(0) as BeastRig
+	assert_not_null(rig, "the boar is a voxel rig")
+	for part: String in ["body", "head", "leg_front_left", "leg_back_right", "tail"]:
+		assert_not_null(rig.part(part), "boar " + part)
+	var pieces := {"goblin": ["goblin_ears", "goblin_knife"], "skeleton_archer": ["skeleton_bow"]}
+	for type_id: String in pieces:
+		var a := _avatar(type_id)
+		var c := a.body.get_child(0) as CharacterRig
+		assert_not_null(c, "%s is a blocky humanoid" % type_id)
+		for id: String in pieces[type_id]:
+			assert_not_null(c.piece_node(id), "%s: %s" % [type_id, id])
+		a.apply_state({"position": Vector3(2, 0, 2), "facing": 0.0}, {"hp": 50.0, "max_hp": 50.0, "status_bits": 0}, DT)
+		assert_eq(a.current_animation(), "idle")
+
+
+func test_humanoid_attack_plays_its_animation() -> void:
+	var a := _avatar("skeleton_archer")
+	a.play_attack("shoot")
+	assert_eq(a.current_animation(), "holding-right-shoot")
+	var g := _avatar("goblin")
+	g.play_attack("melee")
+	assert_eq(g.current_animation(), "attack-melee-right")
+
+
+func test_elite_is_bigger_with_an_aura() -> void:
+	var normal := _avatar("wolf")
+	var elite := MonsterAvatar.new()
+	add_child_autofree(elite)
+	elite.setup(MonsterDB.load_default().get_type("wolf"), true, 1.3)
+	assert_almost_eq(elite.body.scale.x, normal.body.scale.x * 1.3, 0.001)
+	assert_false(normal.has_aura())
+	assert_true(elite.has_aura())
+	assert_string_contains(elite.display_name(), tr("MON_WOLF"))
+	assert_ne(elite.display_name(), normal.display_name(), "the name says it is an elite")

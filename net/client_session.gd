@@ -236,7 +236,7 @@ func _on_snapshot(tick: int, rows: Array, monster_rows: Array) -> void:
 	for row: Array in monster_rows:
 		var id: int = row[0]
 		seen[id] = true
-		monsters[id] = {"type": row[1], "hp": row[4], "max_hp": row[5], "status_bits": row[6], "target": row[7]}
+		monsters[id] = {"type": row[1], "hp": row[4], "max_hp": row[5], "status_bits": row[6], "target": row[7], "elite": row[8] == 1}
 		if not _monster_buffers.has(id):
 			_monster_buffers[id] = InterpolationBuffer.new()
 		(_monster_buffers[id] as InterpolationBuffer).push(tick, row[2], row[2], row[3])

@@ -59,7 +59,8 @@ func _spawn(world: SimWorld, index: int) -> void:
 			break
 	var m := MonsterDB.load_default().make(str(p.get("type", "")), world.next_monster_id(), pos, world)
 	m.spawn_index = index
-	m.elite = world.rng.randf() < float(p.get("elite_chance", 0.0))
+	if world.rng.randf() < float(p.get("elite_chance", 0.0)):
+		MonsterDB.make_elite(m, world.balance)
 	scale_health(world, m, 1.0)
 	world.add_entity(m)
 	world.emit(["spawned", m.id, m.type_id, m.position])

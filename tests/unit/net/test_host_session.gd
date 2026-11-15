@@ -415,3 +415,37 @@ func test_archer_hold_and_release_fires_charged_shot() -> void:
 	host.tick()
 	assert_eq(_casts(a).size(), 1, "a tap fires once more")
 	assert_eq(p.resource, focus - 15.0, "the tap is free")
+
+
+## Each player gets the nearest max_monsters_per_snapshot monsters (Plan 3, point 4).
+func test_snapshot_limits_to_nearest_32_monsters() -> void:
+	var a := _guest("Ana")
+	var b := _guest("Bea")
+	host.tick()
+	host.world.players[1].position = Vector3(2, 0, 2)
+	host.world.players[2].position = Vector3(38, 0, 38)
+	var db := MonsterDB.load_default()
+	for i in 40:
+		var m := db.make("wolf", host.world.next_monster_id(), Vector3(1 + i * 0.9, 0, 1 + i * 0.9), host.world)
+		m.elite = i == 0
+		host.world.add_entity(m)
+	_messages(a)
+	_messages(b)
+	host.tick()
+	for pair: Array in [[a, Vector3(2, 0, 2)], [b, Vector3(38, 0, 38)]]:
+		var snaps := _all_of(_messages(pair[0]), Protocol.Msg.SNAPSHOT)
+		assert_false(snaps.is_empty())
+		var rows: Array = snaps[-1].monsters
+		assert_eq(rows.size(), balance.max_monsters_per_snapshot)
+		var pos: Vector3 = pair[1]
+		var dists := host.world.monsters.values().map(func(m: CombatEntity) -> float:
+			return Effects.flat(m.position).distance_to(Effects.flat(pos)))
+		dists.sort()
+		var limit: float = dists[balance.max_monsters_per_snapshot - 1]
+		for row: Array in rows:
+			assert_lte(Effects.flat(row[2]).distance_to(Effects.flat(pos)), limit + 0.001, "only the nearest")
+	_messages(a)
+	host.tick()
+	var rows_a: Array = _all_of(_messages(a), Protocol.Msg.SNAPSHOT)[-1].monsters
+	var elite_row: Array = rows_a.filter(func(r: Array) -> bool: return int(r[0]) == 1000)[0]
+	assert_eq(int(elite_row[8]), 1, "the elite flag travels in the row")

@@ -80,6 +80,50 @@ const BEASTS = {
     parts.tail = { shape: tail, pivot: [0, 11, -6] };
     return { parts, palette: PALETTE };
   },
+
+  // War boar: a heavy barrel body, hunched shoulders with a bristle crest, a low head
+  // with long upturned tusks, glowing eyes and short legs ending in dark hooves.
+  boar() {
+    const parts = {};
+    const body = new Shape();
+    body.box(-4, 5, -6, 3, 11, 5, P); // barrel
+    body.box(-3, 5, -5, 2, 5, 4, BELLY);
+    body.box(-4, 11, 0, 3, 13, 6, P); // shoulder hump, higher at the front
+    body.box(-3, 13, 1, 2, 14, 5, P);
+    for (let z = -5; z <= 5; z += 1) body.box(-1, 12 + (z >= 0 ? 2 : 0), z, 0, 13 + (z >= 0 ? 3 : 0) - (z % 2 === 0 ? 0 : 1), z, DARK); // bristle crest
+    for (const x of [-4, 3]) for (let z = -5; z <= 4; z += 3) body.put(x, 9, z, DARK).put(x, 10, z + 1, DARK); // dark streaks
+    parts.body = { shape: body, pivot: [0, 0, 0] };
+
+    const head = new Shape(); // pivot at the neck, the head hangs low and forward
+    head.box(-3, -4, 0, 2, 1, 5, P);
+    head.box(-2, -4, 6, 1, -1, 8, P); // snout
+    head.box(-2, -3, 9, 1, -1, 9, NOSE);
+    head.put(-1, -2, 9, BELLY).put(0, -2, 9, BELLY); // nostrils' rim
+    // Long tusks curving up and out from the jaw.
+    for (const x of [-3, 2]) {
+      head.put(x, -4, 7, BONE).put(x, -3, 8, BONE).put(x, -2, 9, BONE).put(x, -1, 10, BONE).put(x, 0, 10, BONE);
+    }
+    head.box(-3, 2, 1, -2, 3, 2, DARK).box(1, 2, 1, 2, 3, 2, DARK); // ears
+    head.box(-3, 0, 5, -2, 0, 5, GLOW).box(1, 0, 5, 2, 0, 5, GLOW); // eyes
+    head.box(-3, 1, 5, -2, 1, 5, DARK).box(1, 1, 5, 2, 1, 5, DARK); // brows
+    parts.head = { shape: head, pivot: [0, 10, 6] };
+
+    const leg = () => {
+      const l = new Shape(); // pivot at the hip, short and thick
+      l.box(-1, -4, -1, 1, 0, 1, P);
+      l.box(-1, -5, -1, 1, -5, 1, PAW);
+      return l;
+    };
+    parts.leg_front_left = { shape: leg(), pivot: [-3, 5, 3] };
+    parts.leg_front_right = { shape: leg(), pivot: [2, 5, 3] };
+    parts.leg_back_left = { shape: leg(), pivot: [-3, 5, -4] };
+    parts.leg_back_right = { shape: leg(), pivot: [2, 5, -4] };
+
+    const tail = new Shape(); // a short curly tail
+    tail.box(0, 0, -2, 0, 0, -1, P).put(0, 1, -2, P).put(0, 1, -3, DARK);
+    parts.tail = { shape: tail, pivot: [0, 10, -6] };
+    return { parts, palette: { ...PALETTE, [BELLY]: "#8a6a50", [PAW]: "#1b1612", [NOSE]: "#2a1a14" } };
+  },
 };
 
 const [outDir] = process.argv.slice(2);

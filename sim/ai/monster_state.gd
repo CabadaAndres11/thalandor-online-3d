@@ -23,6 +23,8 @@ var spawn_index: int = -1
 var died_tick: int = -1
 ## Ticks spent unable to find a way to the target (gives up after a while).
 var unreachable_ticks: int = 0
+## Busy with an ability (a charge's windup and run) until this tick: no AI.
+var busy_until: int = 0
 
 
 func _init() -> void:

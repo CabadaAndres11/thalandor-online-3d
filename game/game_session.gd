@@ -312,7 +312,7 @@ func _sync_monsters(delta: float) -> void:
 			var avatar := MonsterAvatar.new()
 			avatar.name = "Monster%d" % id
 			_avatar_root.add_child(avatar)
-			avatar.setup(MonsterDB.load_default().get_type(str(info.type)))
+			avatar.setup(MonsterDB.load_default().get_type(str(info.type)), bool(info.get("elite", false)), client.balance.elite_scale)
 			_monster_avatars[id] = avatar
 		(_monster_avatars[id] as MonsterAvatar).apply_state(client.monster_render_state(id), info, delta)
 
@@ -323,7 +323,8 @@ func _on_combat_event(ev: Array) -> void:
 		"cast":
 			var who := int(ev[1])
 			if _monster_avatars.has(who):
-				(_monster_avatars[who] as MonsterAvatar).play_attack()
+				var mab := AbilityDB.load_default().get_ability(str(ev[2]))
+				(_monster_avatars[who] as MonsterAvatar).play_attack(str(mab.get("anim", "melee")))
 			elif _avatars.has(who):
 				var ab := AbilityDB.load_default().get_ability(str(ev[2]))
 				(_avatars[who] as PlayerAvatar).play_action(str(ab.get("anim", "")))

@@ -2,7 +2,9 @@ class_name MonsterAvatar
 extends Node3D
 ## A monster on screen, built from its type (data/monsters "model"):
 ##   "rig:<name>"    a voxel beast made of animated parts (BeastRig);
-##   "vox:<name>"    a voxel body from assets/monsters/vox (tint on index 251).
+##   "vox:<name>"    a voxel body from assets/monsters/vox (tint on index 251);
+##   "humanoid:<id>" a blocky character (CharacterRig) from the type's "look".
+## Elites are bigger, have an ember aura on the ground and "élite" in their name.
 ## Attacks (lunge, bite) and deaths (fall over) are tweens on the body holder.
 
 
@@ -15,6 +17,11 @@ var bar: OverheadBar
 var dying: bool = false
 var animation_player: AnimationPlayer
 var _rig: BeastRig
+var _humanoid: CharacterRig
+var _aura: Node3D
+var _display_name: String = ""
+## Seconds left of an attack animation (humanoids: idle/walk wait for it).
+var _action_left: float = 0.0
 
 var _kind: String = ""
 var _height: float = 1.0
@@ -24,10 +31,10 @@ var _time: float = 0.0
 var _rest: Vector3 = Vector3.ZERO
 
 
-func setup(type: Dictionary) -> void:
+func setup(type: Dictionary, elite: bool = false, elite_scale: float = 1.3) -> void:
 	var model := str(type.get("model", ""))
 	var tint := Color(str(type.get("tint", "#ffffff")))
-	var scale_f := float(type.get("scale", 1.0))
+	var scale_f := float(type.get("scale", 1.0)) * (elite_scale if elite else 1.0)
 	if model.begins_with("rig:"):
 		_kind = "rig"
 		body = Node3D.new()
@@ -35,6 +42,14 @@ func setup(type: Dictionary) -> void:
 		body.add_child(_rig)
 		body.scale = Vector3.ONE * scale_f
 		_height = 1.6 * scale_f
+	elif model.begins_with("humanoid:"):
+		_kind = "humanoid"
+		body = Node3D.new()
+		_humanoid = CharacterRig.build(look_of(type))
+		body.add_child(_humanoid)
+		body.scale = Vector3.ONE * scale_f
+		animation_player = _humanoid.animation_player
+		_height = 1.9 * scale_f
 	elif model.begins_with("vox:"):
 		_kind = "vox"
 		body = _vox(model.trim_prefix("vox:"), tint)
@@ -46,10 +61,39 @@ func setup(type: Dictionary) -> void:
 		(body as MeshInstance3D).mesh = BoxMesh.new()
 	add_child(body)
 	_rest = body.position
+	if elite:
+		_aura = _make_aura(float(type.get("radius", 0.5)) * elite_scale)
+		add_child(_aura)
+	_display_name = tr(str(type.get("name", "")))
+	if elite:
+		_display_name = tr("MON_ELITE_NAME") % _display_name
 	bar = OverheadBar.new()
 	bar.position.y = _height + 0.35
 	add_child(bar)
-	bar.setup(tr(str(type.get("name", ""))), true)
+	bar.setup(_display_name, true)
+
+
+## A CharacterRig look (see CharacterRig.build) from a monster's "look" data.
+static func look_of(type: Dictionary) -> Dictionary:
+	var look: Dictionary = type.get("look", {})
+	var catalog := CharacterCatalog.load_default()
+	var skin := Color(str(look.get("skin", "#ffffff")))
+	var pieces: Array = []
+	for id: String in look.get("pieces", []):
+		var p := catalog.piece(id)
+		if not p.is_empty():
+			pieces.append({"id": id, "file": p.get("file", ""), "part": p.get("part", ""), "offset": p.get("offset", [0, 0, 0])})
+	return {
+		"skin_color": skin,
+		"eyes_color": Color(str(look.get("eyes", "#000000"))),
+		"hair_color": Color(str(look.get("hair", look.get("skin", "#000000")))),
+		"voxel_hair_color": skin, # monster pieces tinted like hair take the skin color (ears)
+		"outfit_layer": str(look.get("outfit", "")),
+		"primary": Color(str(look.get("primary", "#808080"))),
+		"secondary": Color(str(look.get("secondary", "#808080"))),
+		"body_scale": look.get("body_scale", {}),
+		"pieces": pieces,
+	}
 
 
 func apply_state(state: Dictionary, info: Dictionary, delta: float) -> void:
@@ -69,14 +113,20 @@ func apply_state(state: Dictionary, info: Dictionary, delta: float) -> void:
 		_time += delta
 	bar.set_health(float(info.get("hp", 1.0)), float(info.get("max_hp", 1.0)))
 	bar.set_statuses(int(info.get("status_bits", 0)))
+	if _aura != null:
+		var pulse := 1.0 + sin(_time * 3.0) * 0.06
+		_aura.scale = Vector3(pulse, 1, pulse)
 	if dying:
 		return
 	if _rig != null:
 		_rig.animate(_speed, delta)
 	elif animation_player != null:
+		if _action_left > 0.0:
+			_action_left -= delta
+			return
 		var anim := "idle"
-		if _speed >= 3.5:
-			anim = "run"
+		if _speed >= 3.5 and animation_player.has_animation("sprint"):
+			anim = "sprint"
 		elif _speed >= 0.2:
 			anim = "walk"
 		if animation_player.current_animation != anim and animation_player.has_animation(anim):
@@ -92,12 +142,29 @@ func current_animation() -> String:
 	return "walk" if _speed >= 0.2 else "idle"
 
 
-## A short lunge forward and back (or a squash for jelly bodies).
-func play_attack() -> Tween:
+## Name above the bar ("Lobo élite" for elites).
+func display_name() -> String:
+	return _display_name
+
+
+func has_aura() -> bool:
+	return _aura != null
+
+
+## The attack of an ability "anim" kind (melee, shoot, cast, dash): humanoids play
+## the matching animation; beasts lunge (biting), jelly bodies squash.
+func play_attack(kind: String = "melee") -> Tween:
 	if dying or body == null:
 		return null
 	var t := create_tween()
-	if _kind == "vox":
+	if _kind == "humanoid":
+		var anim: String = PlayerAvatar.ACTION_ANIMS.get(kind, PlayerAvatar.ACTION_ANIMS.melee)
+		if animation_player != null and animation_player.has_animation(anim):
+			animation_player.play(anim, 0.05)
+			animation_player.speed_scale = 1.0
+			_action_left = animation_player.get_animation(anim).length
+		t.tween_interval(maxf(_action_left, 0.05))
+	elif _kind == "vox":
 		var base := body.scale
 		t.tween_property(body, "scale", base * Vector3(1.25, 0.7, 1.25), 0.1)
 		t.tween_property(body, "scale", base, 0.15)
@@ -115,19 +182,70 @@ func play_attack() -> Tween:
 	return t
 
 
-## Falls over and shrinks; the node is removed when the monster leaves the snapshot.
+## Falls over and shrinks (humanoids play their death animation); the node is removed
+## when the monster leaves the snapshot.
 func play_death() -> Tween:
 	if dying or body == null:
 		return null
 	dying = true
 	bar.visible = false
+	if _aura != null:
+		_aura.visible = false
+	var t := create_tween().set_parallel()
+	if _kind == "humanoid" and animation_player != null and animation_player.has_animation("die"):
+		animation_player.play("die", 0.05)
+		animation_player.speed_scale = 1.0
+		t.tween_property(body, "position:y", _rest.y - 0.05, 0.9)
+		return t
 	if animation_player != null:
 		animation_player.stop()
-	var t := create_tween().set_parallel()
 	t.tween_property(body, "rotation_degrees:z", 90.0, 0.5)
 	t.tween_property(body, "scale:y", body.scale.y * 0.2, 0.9)
 	t.tween_property(body, "position:y", _rest.y - 0.2, 0.9)
 	return t
+
+
+## Elite aura: a glowing ember ring on the ground, a soft inner glow and a warm light.
+func _make_aura(radius: float) -> Node3D:
+	var holder := Node3D.new()
+	holder.name = "EliteAura"
+	var ring := MeshInstance3D.new()
+	var torus := TorusMesh.new()
+	torus.inner_radius = radius + 0.35
+	torus.outer_radius = radius + 0.5
+	torus.rings = 48
+	ring.mesh = torus
+	ring.scale = Vector3(1, 0.15, 1)
+	ring.position.y = 0.04
+	ring.material_override = _glow_material(Color(1.0, 0.55, 0.1), 0.9)
+	ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	holder.add_child(ring)
+	var disc := MeshInstance3D.new()
+	var cyl := CylinderMesh.new()
+	cyl.top_radius = radius + 0.42
+	cyl.bottom_radius = radius + 0.42
+	cyl.height = 0.01
+	disc.mesh = cyl
+	disc.position.y = 0.03
+	disc.material_override = _glow_material(Color(1.0, 0.35, 0.05), 0.22)
+	disc.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	holder.add_child(disc)
+	var light := OmniLight3D.new()
+	light.light_color = Color(1.0, 0.55, 0.2)
+	light.light_energy = 1.2
+	light.omni_range = radius + 2.5
+	light.position.y = 0.6
+	holder.add_child(light)
+	return holder
+
+
+static func _glow_material(color: Color, alpha: float) -> StandardMaterial3D:
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	m.albedo_color = Color(color.r, color.g, color.b, alpha)
+	return m
 
 
 func _vox(name_id: String, tint: Color) -> Node3D:
