@@ -17,6 +17,7 @@ var abilities: AbilityDB = AbilityDB.load_default()
 var monsters: Dictionary = {}
 var projectiles: Array = [] # Projectile
 var pending_areas: Array = [] # PendingArea
+var traps: Array = [] # Trap
 var _next_object_id: int = 1
 ## Hits landed by the cast being resolved (assassin combo points).
 var cast_hits: int = 0
@@ -91,6 +92,8 @@ func step(inputs: Dictionary) -> void:
 			if p.dodge_started:
 				p.dodge_started = false
 				p.add_status(StatusEffect.make("invulnerable", tick + ticks(balance.dodge_invuln_s)), 1)
+				if not Passives.has_hook(p, "after_dodge_combo").is_empty():
+					p.bonus_combo_ready = true
 	for e: CombatEntity in monsters.values():
 		if e is MonsterState:
 			MonsterAI.tick(self, e)

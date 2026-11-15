@@ -52,3 +52,58 @@ func fraction() -> float:
 
 func bar_visible() -> bool:
 	return _quad.visible
+
+
+# --- Status icons ------------------------------------------------------------------
+
+## Statuses that get an icon, in the order they are shown (stealth and the dodge's
+## invulnerability are shown other ways).
+const STATUS_ICON_KINDS := ["stun", "freeze", "root", "slow", "poison", "burn", "mark", "taunted",
+	"damage_buff", "damage_reduction", "evasion", "hot"]
+const MAX_STATUS_ICONS := 4
+const STATUS_ICON_DIR := "res://assets/icons/status/%s.png"
+const STATUS_ICON_SIZE := 0.22
+
+var _icons: Array[Sprite3D] = []
+var _shown_kinds: Array = []
+## Height of the icon row over the bar (players raise it above their name).
+var icon_height: float = 0.2
+
+
+## Shows an icon per active status (snapshot bits, StatusEffect.BIT_KINDS), up to
+## MAX_STATUS_ICONS, centred in a row above the bar.
+func set_statuses(bits: int) -> void:
+	var kinds: Array = []
+	for k: String in STATUS_ICON_KINDS:
+		if StatusEffect.has_bit(bits, k):
+			kinds.append(k)
+	kinds = kinds.slice(0, MAX_STATUS_ICONS)
+	if kinds == _shown_kinds:
+		return
+	_shown_kinds = kinds
+	while _icons.size() < kinds.size():
+		var icon := Sprite3D.new()
+		icon.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		icon.no_depth_test = true
+		icon.shaded = false
+		icon.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		icon.pixel_size = STATUS_ICON_SIZE / 64.0
+		icon.render_priority = 1
+		add_child(icon)
+		_icons.append(icon)
+	var start := -(kinds.size() - 1) * STATUS_ICON_SIZE * 0.55
+	for i in _icons.size():
+		var icon := _icons[i]
+		icon.visible = i < kinds.size()
+		if icon.visible:
+			var path := STATUS_ICON_DIR % kinds[i]
+			icon.texture = load(path) if ResourceLoader.exists(path) else null
+			icon.position = Vector3(start + i * STATUS_ICON_SIZE * 1.1, icon_height + (0.22 if _label != null else 0.0), 0)
+
+
+func status_kinds() -> Array:
+	return _shown_kinds.duplicate()
+
+
+func status_icons() -> Array[Sprite3D]:
+	return _icons

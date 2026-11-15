@@ -17,17 +17,18 @@ static func try_cast(world: SimWorld, caster: CombatEntity, ability_id: String, 
 	if uses_gcd and world.tick < caster.gcd_end:
 		return false
 	var cost := float(ab.get("cost", 0.0)) + float(mods.get("extra_cost", 0.0))
-	if caster.resource < cost or not ClassRules.can_cast(caster, ab):
+	if caster.resource < cost or not ClassRules.can_cast(world, caster, ab):
 		return false
-	ab = ClassRules.shaped(caster, ab)
-	if not mods.is_empty():
-		ab = ClassRules.scale_damage(ab, float(mods.get("damage_mult", 1.0)), float(mods.get("range_mult", 1.0)))
 	var ctx := {"aim": aim, "target": null}
 	for e: Dictionary in ab.get("effects", []):
 		if Effects.needs_target(e):
-			ctx.target = Effects.enemy_near(world, caster, aim, float(e.get("distance", ab.get("range", 10.0))))
+			ctx.target = Effects.find_target(world, caster, e, ab, aim)
 			if ctx.target == null:
 				return false
+	ab = ClassRules.shaped(caster, ab)
+	if not mods.is_empty():
+		ab = ClassRules.scale_damage(ab, float(mods.get("damage_mult", 1.0)), float(mods.get("range_mult", 1.0)))
+	ab = ClassRules.with_passives(world, caster, ab)
 	caster.resource -= cost
 	var cd := world.ticks(float(ab.get("cooldown_s", 0.0)))
 	if cd > 0:
@@ -50,27 +51,59 @@ static func deal(world: SimWorld, source: CombatEntity, target: CombatEntity, ef
 	if not target.is_alive():
 		return
 	if target.has_status("invulnerable"):
-		world.emit(["dodge", target.id])
+		_dodged(world, target)
 		return
 	var spec: Dictionary = effect.get("damage", {})
 	if not spec.is_empty():
 		var r := Damage.roll(source, target, spec, world)
 		if r.dodged:
-			world.emit(["dodge", target.id])
+			_dodged(world, target)
 			return
 		Damage.apply(target, r, world)
 		world.emit(["hit", target.id, r.amount, r.crit, source.id])
 		world.cast_hits += 1
-		# Projectiles and areas carry a snapshot of their caster: combat time and rage
-		# go to the live caster when it is still in the world.
+		if r.amount > 0.0 and r.absorbed >= r.amount:
+			_blocked(target)
+		# Projectiles and areas carry a snapshot of their caster: combat time, rage
+		# and healing go to the live caster when it is still in the world.
 		var live := world.entity(source.id)
-		Resources.on_damage_dealt(live if live != null else source, r.amount, world)
+		var attacker := live if live != null else source
+		Resources.on_damage_dealt(attacker, r.amount, world)
 		Resources.on_damage_taken(target, r.amount, world)
+		if r.crit:
+			_on_crit(world, attacker, source, target, spec)
 		if target is MonsterState and source.team == CombatEntity.TEAM_PLAYERS:
 			var threat: float = r.amount * source.stats.threat_mult * float(_ability.get("threat_mult", 1.0))
 			(target as MonsterState).add_threat(source.id, maxf(threat, 1.0))
 	for s: Dictionary in effect.get("statuses", []):
 		apply_status(world, source, target, s)
+
+
+## A hit avoided (dodge roll, evasion or invulnerability): Bloqueo experto and
+## Evasión mortal react to it.
+static func _dodged(world: SimWorld, target: CombatEntity) -> void:
+	world.emit(["dodge", target.id])
+	_blocked(target)
+	if target is PlayerState and not Passives.has_hook(target, "after_dodge_combo").is_empty():
+		(target as PlayerState).bonus_combo_ready = true
+
+
+## Bloqueo experto: a dodged hit or one the shield fully absorbs gives rage.
+static func _blocked(target: CombatEntity) -> void:
+	var h := Passives.has_hook(target, "block_generates_rage")
+	if not h.is_empty() and target.resource_kind == "rage":
+		Resources.add(target, float(h.get("amount", 0.0)))
+
+
+## Sed de sangre (crits heal) and Ignición (fire crits burn).
+static func _on_crit(world: SimWorld, attacker: CombatEntity, source: CombatEntity, target: CombatEntity, spec: Dictionary) -> void:
+	var h := Passives.has_hook(source, "on_crit_heal_pct")
+	if not h.is_empty() and attacker.is_alive():
+		heal(world, attacker, attacker, attacker.stats.max_hp * float(h.get("pct", 0.0)))
+	h = Passives.has_hook(source, "fire_crit_burn")
+	if not h.is_empty() and str(spec.get("element", "")) == "fire":
+		apply_status(world, source, target, {"kind": "burn", "duration_s": float(h.get("duration_s", 4.0)),
+			"magnitude": float(h.get("magnitude", 1.0)), "every_s": float(h.get("every_s", 1.0))})
 
 
 static func apply_status(world: SimWorld, source: CombatEntity, target: CombatEntity, s: Dictionary) -> void:
@@ -91,6 +124,9 @@ static func snapshot_of(e: CombatEntity) -> CombatEntity:
 	s.position = e.position
 	s.facing = e.facing
 	s.stats = e.stats.duplicate_stats()
+	s.passives = e.passives
+	s.statuses = e.statuses.duplicate()
+	s.last_hurt_tick = e.last_hurt_tick
 	return s
 
 
@@ -133,6 +169,33 @@ static func tick(world: SimWorld) -> void:
 		_forced_move(world, e)
 	_projectiles(world)
 	_areas(world)
+	_traps(world)
+
+
+static func _traps(world: SimWorld) -> void:
+	var kept: Array = []
+	for t: Trap in world.traps:
+		if world.tick >= t.end_tick:
+			world.emit(["trap_end", t.id])
+			continue
+		var radius := float(t.effect.get("radius", 1.5))
+		if world.tick >= t.armed_tick and not Effects.in_circle(world, t.owner, t.pos, radius).is_empty():
+			for o: CombatEntity in Effects.in_circle(world, t.owner, t.pos, radius):
+				deal(world, t.owner, o, t.effect, {"id": t.ability_id})
+			world.emit(["trap_fired", t.id, t.pos, radius])
+			continue
+		kept.append(t)
+	world.traps = kept
+
+
+## A downed player stands up with revive_hp_pct of their health (Resurrección, and
+## allies holding E in Task 14).
+static func revive(world: SimWorld, source: CombatEntity, target: CombatEntity) -> void:
+	if target.life != CombatEntity.DOWNED:
+		return
+	target.life = CombatEntity.ALIVE
+	target.hp = maxf(1.0, target.stats.max_hp * world.balance.revive_hp_pct)
+	world.emit(["revived", target.id, source.id])
 
 
 static func _forced_move(world: SimWorld, e: CombatEntity) -> void:

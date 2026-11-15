@@ -16,6 +16,10 @@ var combo: int = 0
 var charge_start: int = -1
 ## Tick when a dead player reappears at the map's respawn point (-1 = not dead).
 var respawn_tick: int = -1
+## Character level (Plan 4 raises it; passives unlock by level).
+var level: int = 1
+## Evasión mortal: the next combo gain is raised after a dodge.
+var bonus_combo_ready: bool = false
 
 
 func _init() -> void:

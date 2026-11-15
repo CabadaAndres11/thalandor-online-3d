@@ -1,7 +1,8 @@
 // Ability icons: 64×64 PNGs with a dark rounded tile, a border in the class color
 // and a simple symbol. Placeholders until drawn icons exist.
 //   node tools/art/make_icons.mjs <out dir>
-// One icon per "icon" key used in data/abilities (plus "dodge").
+// One icon per "icon" key used in data/abilities (plus "dodge"), and status icons in <out>/status.
+import * as fs from "node:fs";
 import * as png from "./png.mjs";
 
 const S = 64;
@@ -97,6 +98,29 @@ const ICONS = {
   dodge: ["common", (i, c) => { for (const x of [20, 34]) { line(i, x, 18, x + 12, 32, 5, x === 20 ? c : W); line(i, x + 12, 32, x, 46, 5, x === 20 ? c : W); } }],
 };
 
+// Status icons shown above heads: a round badge in the status color with a symbol.
+const K = [24, 22, 28, 255];
+const STATUS = {
+  stun: ["#ffd84a", (i) => { for (let a = 0; a < 3; a++) { const x = 32 + Math.cos(a * 2.1) * 13, y = 32 + Math.sin(a * 2.1) * 13; tri(i, [x, y - 7], [x - 6, y + 5], [x + 6, y + 5], K); } }],
+  root: ["#8a6a3a", (i) => { line(i, 32, 14, 32, 40, 6, K); line(i, 32, 38, 18, 50, 4, K); line(i, 32, 38, 46, 50, 4, K); line(i, 32, 40, 32, 52, 4, K); }],
+  freeze: ["#9fe3ff", (i) => { for (let a = 0; a < 3; a++) { const c = Math.cos(a * Math.PI / 3), s = Math.sin(a * Math.PI / 3); line(i, 32 - c * 18, 32 - s * 18, 32 + c * 18, 32 + s * 18, 4, K); } }],
+  slow: ["#6f8cff", (i) => { ring(i, 32, 32, 15, 4, K); line(i, 32, 32, 32, 21, 4, K); line(i, 32, 32, 40, 36, 4, K); }],
+  poison: ["#6fd04a", (i) => { disk(i, 32, 36, 11, K); tri(i, [32, 14], [23, 32], [41, 32], K); }],
+  burn: ["#ff7a2a", (i) => { tri(i, [32, 12], [18, 46], [46, 46], K); disk(i, 32, 44, 9, K); }],
+  mark: ["#ff4a5a", (i) => { ring(i, 32, 32, 15, 4, K); ring(i, 32, 32, 6, 4, K); line(i, 32, 10, 32, 18, 3, K); line(i, 32, 46, 32, 54, 3, K); line(i, 10, 32, 18, 32, 3, K); line(i, 46, 32, 54, 32, 3, K); }],
+  taunted: ["#ff8a3a", (i) => { line(i, 32, 14, 32, 38, 7, K); disk(i, 32, 48, 4, K); }],
+  damage_buff: ["#ffb03a", (i) => { tri(i, [32, 12], [16, 34], [48, 34], K); line(i, 32, 30, 32, 52, 8, K); }],
+  damage_reduction: ["#c9d0d8", (i) => { tri(i, [16, 16], [48, 16], [32, 52], K); }],
+  evasion: ["#a6dc6e", (i) => { for (const x of [18, 32]) { line(i, x, 18, x + 12, 32, 5, K); line(i, x + 12, 32, x, 46, 5, K); } }],
+  hot: ["#5fe08a", (i) => { line(i, 32, 16, 32, 48, 8, K); line(i, 16, 32, 48, 32, 8, K); }],
+};
+
+function badge(img, color) {
+  const c = hex(color), rim = [Math.round(c[0] * 0.45), Math.round(c[1] * 0.45), Math.round(c[2] * 0.45), 255];
+  disk(img, 32, 32, 30, rim);
+  disk(img, 32, 32, 26, c);
+}
+
 const [outDir] = process.argv.slice(2);
 if (!outDir) {
   console.error("usage: node make_icons.mjs <out dir>");
@@ -108,4 +132,11 @@ for (const [name, [cls, draw]] of Object.entries(ICONS)) {
   draw(img, hex(CLASS[cls]));
   png.write(`${outDir}/${name}.png`, img);
 }
-console.log(`wrote ${Object.keys(ICONS).length} icons`);
+fs.mkdirSync(`${outDir}/status`, { recursive: true });
+for (const [name, [color, draw]] of Object.entries(STATUS)) {
+  const img = canvas();
+  badge(img, color);
+  draw(img);
+  png.write(`${outDir}/status/${name}.png`, img);
+}
+console.log(`wrote ${Object.keys(ICONS).length} icons and ${Object.keys(STATUS).length} status icons`);

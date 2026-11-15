@@ -40,6 +40,12 @@ var forced_ticks: int = 0
 var forced_vel: Vector2 = Vector2.ZERO
 var forced_last: float = 0.0
 var forced_on_arrive: Array = []
+## Passive modifiers in effect (see Passives): {"type": "stat"|"hook", ...}.
+var passives: Array = []
+## Last tick it took damage (Concentración needs time without being hurt).
+var last_hurt_tick: int = -100000
+## Basic attacks cast so far (Ráfaga: every n-th is a crit).
+var basic_count: int = 0
 
 
 func is_alive() -> bool:

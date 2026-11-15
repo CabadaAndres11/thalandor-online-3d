@@ -24,6 +24,9 @@ const ACTION_ANIMS := {
 }
 
 var bar: OverheadBar
+## How see-through the character is in stealth (0 = solid, 1 = invisible).
+const STEALTH_TRANSPARENCY := 0.7
+var _translucent: bool = false
 
 var _label: Label3D
 var _last_position: Variant = null
@@ -66,6 +69,7 @@ func setup(player_name: String, slot: int, class_id: String, appearance: Diction
 	bar.position.y = NAME_HEIGHT - 0.22
 	add_child(bar)
 	bar.setup("", false, Color(0.3, 0.85, 0.35))
+	bar.icon_height = 0.5 # above the name
 	add_child(_label)
 
 
@@ -95,6 +99,23 @@ func set_health(hp: float, max_hp: float, alive: bool = true) -> void:
 	if alive and _dead:
 		_dead = false # back on its feet (respawn / revive)
 		_action_left = 0.0
+
+
+## Status icons above the name, and see-through while in stealth.
+func set_statuses(bits: int) -> void:
+	bar.set_statuses(bits)
+	var stealth := StatusEffect.has_bit(bits, "stealth")
+	if stealth == _translucent:
+		return
+	_translucent = stealth
+	if rig == null:
+		return
+	for n: Node in rig.find_children("*", "GeometryInstance3D", true, false):
+		(n as GeometryInstance3D).transparency = STEALTH_TRANSPARENCY if stealth else 0.0
+
+
+func is_translucent() -> bool:
+	return _translucent
 
 
 ## Plays the animation of an ability kind (melee, shoot, cast, dash) or "die"; idle

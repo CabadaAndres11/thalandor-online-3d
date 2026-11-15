@@ -22,6 +22,8 @@ static func setup_player(p: PlayerState, class_id: String, catalog: CharacterCat
 	p.stats = CombatStats.from_dict(stats)
 	p.resource_kind = str(res.get("kind", ""))
 	p.resource_def = res
+	p.passives = Passives.collect(AbilityDB.load_default(), p.class_id, p.level)
+	Passives.apply_stats(p)
 	p.hp = p.stats.max_hp
 	p.resource = minf(float(res.get("start", res.get("max", 0))), p.stats.max_resource)
 
@@ -40,11 +42,55 @@ static func ally_under_cursor(world: SimWorld, caster: CombatEntity, point: Vect
 	return best
 
 
-## Before a cast: finishers need combo points. Returns false to refuse the cast.
-static func can_cast(caster: CombatEntity, ability: Dictionary) -> bool:
+## Before a cast: finishers need combo points; stealth needs to be out of combat
+## unless it is a vanish. Returns false to refuse the cast.
+static func can_cast(world: SimWorld, caster: CombatEntity, ability: Dictionary) -> bool:
 	if bool(ability.get("finisher", false)):
 		return caster is PlayerState and (caster as PlayerState).combo > 0
+	for e: Dictionary in ability.get("effects", []):
+		if e.get("type") == "stealth" and not bool(e.get("vanish", false)) and caster.in_combat(world):
+			return false
 	return true
+
+
+static func _is_stealth(ability: Dictionary) -> bool:
+	for e: Dictionary in ability.get("effects", []):
+		if e.get("type") == "stealth":
+			return true
+	return false
+
+
+## The ability as the caster's passives change it, and the rules that run on every
+## accepted cast: Ráfaga (every n-th basic crits), Ojo de halcón (range), Emboscada
+## (the opener from stealth crits harder) and breaking stealth by attacking.
+static func with_passives(world: SimWorld, caster: CombatEntity, ability: Dictionary) -> Dictionary:
+	var ab := ability
+	var h := Passives.has_hook(caster, "range_pct")
+	if not h.is_empty():
+		ab = scale_damage(ab, 1.0, 1.0 + float(h.get("pct", 0.0)))
+	h = Passives.has_hook(caster, "every_nth_basic_crits")
+	if ab.get("kind") == "basic":
+		caster.basic_count += 1
+		if not h.is_empty() and caster.basic_count % maxi(int(h.get("n", 5)), 1) == 0:
+			ab = force_crit(ab)
+	if caster.has_status("stealth") and not _is_stealth(ab):
+		h = Passives.has_hook(caster, "stealth_opener_crit_bonus")
+		if not h.is_empty():
+			ab = force_crit(scale_damage(ab, 1.0 + float(h.get("pct", 0.0)), 1.0))
+		caster.remove_status("stealth")
+		world.emit(["status_end", caster.id, "stealth"])
+	return ab
+
+
+## A copy of `ability` whose every damage is critical.
+static func force_crit(ability: Dictionary) -> Dictionary:
+	var a := ability.duplicate(true)
+	for e: Dictionary in a.get("effects", []):
+		if e.has("damage"):
+			(e.damage as Dictionary)["force_crit"] = true
+		if e.has("explode"):
+			((e.explode as Dictionary).get("damage", {}) as Dictionary)["force_crit"] = true
+	return a
 
 
 ## The ability as it will be cast: finishers scale with combo points.
@@ -62,7 +108,12 @@ static func after_cast(caster: CombatEntity, ability: Dictionary, hits: int) -> 
 	if bool(ability.get("finisher", false)):
 		p.combo = 0
 	elif hits > 0:
-		p.combo = mini(p.combo + int(ability.get("combo_gain", 0)) + int(ability.get("combo_per_hit", 0)) * hits, MAX_COMBO)
+		var gain := int(ability.get("combo_gain", 0)) + int(ability.get("combo_per_hit", 0)) * hits
+		if gain > 0 and p.bonus_combo_ready:
+			# Evasión mortal: the first combo gain after a dodge is at least `combo`.
+			gain = maxi(gain, int(Passives.has_hook(p, "after_dodge_combo").get("combo", gain)))
+			p.bonus_combo_ready = false
+		p.combo = mini(p.combo + gain, MAX_COMBO)
 
 
 ## A copy of `ability` with every damage × mult and every range × range_mult.

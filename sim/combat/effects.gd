@@ -8,18 +8,52 @@ extends RefCounted
 ##               pulses?, interval_s?}
 ##   dash       {to: "cursor"|"back", distance, speed, on_arrive?: [effects]}
 ##   blink      {to: "cursor"|"behind_target", distance}
-##   heal       {target: "ally_or_self"|"self", amount: {base, coef}}  (spell power)
+##   heal       {target: "ally_or_self"|"self", amount: {base, coef}, hot?: {duration_s, every_s}}
+##              (spell power; with "hot" the amount is spread over time)
 ##   shield     {target: "ally_or_self"|"self", amount: {base, coef}, duration_s}
-## damage = {base, coef, kind: "physical"|"magic", can_crit}.
+##   status     {target: "enemy"|"self"|"ally_or_self"|"allies_around"|"enemies_around",
+##               radius?, statuses: [{kind, duration_s, magnitude?, stacks?, max_stacks?, every_s?}]}
+##   trap       {radius, arm_s, lifetime_s, damage, statuses?}  (placed at the cursor)
+##   stealth    {duration_s, vanish?}  (out of combat only, unless vanish: then it also
+##               leaves combat and monsters forget the caster)
+##   cleanse    {target: "ally_or_self"|"self"}  (removes negative statuses)
+##   revive     {range}  (a downed ally near the cursor stands up with revive_hp_pct)
+##   taunt      {radius, duration_s}  (enemies around must attack the caster)
+## damage = {base, coef, kind: "physical"|"magic", can_crit, element?}.
 
-const TYPES := ["melee_arc", "projectile", "area", "dash", "blink", "heal", "shield"]
-## Effects that need an enemy near the cursor before the cast is accepted.
-const TARGETED := {"blink": ["behind_target"]}
+const TYPES := ["melee_arc", "projectile", "area", "dash", "blink", "heal", "shield",
+	"status", "trap", "stealth", "cleanse", "revive", "taunt"]
 const TARGET_PICK_RADIUS := 1.5
 
 
+## Effects that need someone near the cursor before the cast is accepted.
 static func needs_target(effect: Dictionary) -> bool:
-	return str(effect.get("to", "")) in TARGETED.get(str(effect.get("type", "")), [])
+	match str(effect.get("type", "")):
+		"blink":
+			return str(effect.get("to", "")) == "behind_target"
+		"status":
+			return str(effect.get("target", "")) == "enemy"
+		"revive":
+			return true
+	return false
+
+
+## The target a targeted effect will use (null = refuse the cast).
+static func find_target(world: SimWorld, caster: CombatEntity, effect: Dictionary, ability: Dictionary, aim: Vector3) -> CombatEntity:
+	if effect.get("type") == "revive":
+		var reach := float(effect.get("range", ability.get("range", 20.0)))
+		var best: CombatEntity = null
+		var best_d := INF
+		for o: CombatEntity in world.entities():
+			if o == caster or o.team != caster.team or o.life != CombatEntity.DOWNED:
+				continue
+			var d := flat(o.position).distance_to(flat(aim))
+			if d <= TARGET_PICK_RADIUS + o.radius and d < best_d \
+					and flat(o.position).distance_to(flat(caster.position)) <= reach:
+				best = o
+				best_d = d
+		return best
+	return enemy_near(world, caster, aim, float(effect.get("distance", effect.get("range", ability.get("range", 10.0)))))
 
 
 static func apply(world: SimWorld, caster: CombatEntity, ability: Dictionary, effect: Dictionary, ctx: Dictionary) -> void:
@@ -38,6 +72,20 @@ static func apply(world: SimWorld, caster: CombatEntity, ability: Dictionary, ef
 			_heal(world, caster, effect, ctx.aim)
 		"shield":
 			_shield(world, caster, effect, ctx.aim)
+		"status":
+			_status(world, caster, effect, ctx)
+		"trap":
+			_trap(world, caster, ability, effect, ctx.aim)
+		"stealth":
+			_stealth(world, caster, effect)
+		"cleanse":
+			_cleanse(world, caster, effect, ctx.aim)
+		"revive":
+			var t: CombatEntity = ctx.get("target")
+			if t != null:
+				Combat.revive(world, caster, t)
+		"taunt":
+			_taunt(world, caster, effect)
 		_:
 			push_error("Effects: unknown effect %s in %s" % [effect.get("type"), ability.get("id")])
 
@@ -178,7 +226,89 @@ static func _amount(caster: CombatEntity, spec: Dictionary) -> float:
 static func _heal(world: SimWorld, caster: CombatEntity, effect: Dictionary, aim: Vector3) -> void:
 	var t := _support_target(world, caster, effect, aim)
 	var amount := _amount(caster, effect.get("amount", {})) * caster.stats.healing_done_mult * t.stats.healing_received_mult
-	Combat.heal(world, caster, t, amount)
+	var hot: Dictionary = effect.get("hot", {})
+	if not hot.is_empty():
+		add_hot(world, caster, t, amount, float(hot.get("duration_s", 3.0)), float(hot.get("every_s", 1.0)))
+		return
+	var healed := Combat.heal(world, caster, t, amount)
+	var echo := Passives.has_hook(caster, "heal_leaves_hot") # Eco de luz
+	if not echo.is_empty() and healed > 0.0:
+		add_hot(world, caster, t, amount * float(echo.get("pct", 0.0)), float(echo.get("duration_s", 3.0)),
+			float(echo.get("every_s", 1.0)))
+
+
+## Heals `total` over `duration_s`, a pulse every `every_s`.
+static func add_hot(world: SimWorld, caster: CombatEntity, t: CombatEntity, total: float, duration_s: float, every_s: float) -> void:
+	var pulses := maxi(1, floori(duration_s / maxf(every_s, 0.01) + 0.001))
+	var st := StatusEffect.make("hot", world.tick + world.ticks(duration_s) + 1, total / float(pulses), caster.id, 1,
+		world.ticks(every_s))
+	t.add_status(st, 1)
+	world.emit(["status", t.id, "hot", st.end_tick])
+
+
+static func _status(world: SimWorld, caster: CombatEntity, effect: Dictionary, ctx: Dictionary) -> void:
+	var targets: Array = []
+	var radius := float(effect.get("radius", 3.0))
+	match str(effect.get("target", "self")):
+		"enemy":
+			if ctx.get("target") != null:
+				targets = [ctx.target]
+		"ally_or_self":
+			targets = [_support_target(world, caster, effect, ctx.aim)]
+		"allies_around":
+			targets = world.entities().filter(func(o: CombatEntity) -> bool:
+				return o.team == caster.team and o.is_alive() \
+					and flat(o.position).distance_to(flat(caster.position)) <= radius + o.radius)
+		"enemies_around":
+			targets = in_circle(world, caster, caster.position, radius)
+		_:
+			targets = [caster]
+	for t: CombatEntity in targets:
+		for s: Dictionary in effect.get("statuses", []):
+			Combat.apply_status(world, caster, t, s)
+
+
+static func _trap(world: SimWorld, caster: CombatEntity, ability: Dictionary, effect: Dictionary, aim: Vector3) -> void:
+	var t := Trap.new()
+	t.id = world.next_object_id()
+	t.owner = Combat.snapshot_of(caster)
+	t.ability_id = str(ability.get("id", ""))
+	var from := flat(caster.position)
+	var to := flat(aim) - from
+	var reach := float(ability.get("range", 10.0))
+	var spot := from + (to.limit_length(reach) if to.length() > 0.01 else Vector2.ZERO)
+	t.pos = Vector3(spot.x, 0, spot.y)
+	t.armed_tick = world.tick + world.ticks(float(effect.get("arm_s", 1.0)))
+	t.end_tick = world.tick + world.ticks(float(effect.get("lifetime_s", 30.0)))
+	t.effect = effect
+	world.traps.append(t)
+	world.emit(["trap", t.id, caster.id, t.pos, float(effect.get("radius", 1.5)), t.armed_tick])
+
+
+static func _stealth(world: SimWorld, caster: CombatEntity, effect: Dictionary) -> void:
+	var st := StatusEffect.make("stealth", world.tick + world.ticks(float(effect.get("duration_s", 10.0))), 0.0, caster.id)
+	caster.add_status(st, 1)
+	world.emit(["status", caster.id, "stealth", st.end_tick])
+	if bool(effect.get("vanish", false)):
+		caster.last_combat_tick = -100000
+		for m: CombatEntity in world.monsters.values():
+			if m is MonsterState:
+				(m as MonsterState).threat.erase(caster.id)
+
+
+static func _cleanse(world: SimWorld, caster: CombatEntity, effect: Dictionary, aim: Vector3) -> void:
+	var t := _support_target(world, caster, effect, aim)
+	var removed := t.statuses.filter(func(s: StatusEffect) -> bool: return s.is_negative())
+	t.statuses = t.statuses.filter(func(s: StatusEffect) -> bool: return not s.is_negative())
+	for s: StatusEffect in removed:
+		world.emit(["status_end", t.id, s.kind])
+
+
+static func _taunt(world: SimWorld, caster: CombatEntity, effect: Dictionary) -> void:
+	for o: CombatEntity in in_circle(world, caster, caster.position, float(effect.get("radius", 6.0))):
+		Combat.apply_status(world, caster, o, {"kind": "taunted", "duration_s": float(effect.get("duration_s", 4.0))})
+		if o is MonsterState:
+			(o as MonsterState).add_threat(caster.id, 1.0)
 
 
 static func _shield(world: SimWorld, caster: CombatEntity, effect: Dictionary, aim: Vector3) -> void:

@@ -83,6 +83,14 @@ static func _nearest_visible(world: SimWorld, m: MonsterState, reach: float) -> 
 
 
 static func _pick_target(world: SimWorld, m: MonsterState) -> CombatEntity:
+	# Provocar: while taunted it attacks whoever taunted it, whatever the threat.
+	for s: StatusEffect in m.statuses:
+		if s.kind == "taunted":
+			var taunter := world.entity(s.source_id)
+			if _valid_target(taunter):
+				if not m.threat.has(taunter.id):
+					m.add_threat(taunter.id, 1.0)
+				return taunter
 	var current := world.entity(m.target_id) if m.threat.has(m.target_id) else null
 	var best_id := -1
 	var best_threat := -1.0

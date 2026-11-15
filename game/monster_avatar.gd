@@ -68,6 +68,7 @@ func apply_state(state: Dictionary, info: Dictionary, delta: float) -> void:
 		_speed = lerpf(_speed, measured, 1.0 - exp(-delta / SPEED_SMOOTHING_S))
 		_time += delta
 	bar.set_health(float(info.get("hp", 1.0)), float(info.get("max_hp", 1.0)))
+	bar.set_statuses(int(info.get("status_bits", 0)))
 	if dying:
 		return
 	if _rig != null:

@@ -18,9 +18,12 @@ static func tick(e: CombatEntity, world: SimWorld) -> void:
 	match e.resource_kind:
 		"rage":
 			if not e.in_combat(world):
-				change = -float(d.get("decay_per_s", 0.0)) * per_tick * float(d.get("decay_mult", 1.0))
+				var decay_mult := float(Passives.has_hook(e, "rage_decay_mult").get("mult", d.get("decay_mult", 1.0)))
+				change = -float(d.get("decay_per_s", 0.0)) * per_tick * decay_mult
 		"mana":
-			var mult := float(d.get("regen_in_combat_mult", 0.0)) if e.in_combat(world) else 1.0
+			var in_combat_mult := maxf(float(d.get("regen_in_combat_mult", 0.0)),
+				float(Passives.has_hook(e, "mana_regen_in_combat").get("mult", 0.0)))
+			var mult := in_combat_mult if e.in_combat(world) else 1.0
 			change = float(d.get("regen_per_s", 0.0)) * per_tick * mult
 		"focus":
 			var mult := float(d.get("dodging_regen_mult", 1.0)) if e.is_dashing() else 1.0

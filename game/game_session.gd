@@ -267,6 +267,7 @@ func _sync_avatars(delta: float) -> void:
 		if client.combat.has(id):
 			var c: Dictionary = client.combat[id]
 			avatar_node.set_health(float(c.hp), float(c.max_hp), int(c.life) == CombatEntity.ALIVE)
+			avatar_node.set_statuses(int(c.status_bits))
 
 
 func _remove_avatar(id: int) -> void:
