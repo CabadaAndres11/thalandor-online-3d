@@ -238,3 +238,9 @@ ABILITIES_BAR,Barra (teclas 1–4)
 ABILITIES_HINT,"Haz clic en una activa y luego en una casilla de la barra. Si ya estaba en la barra, se intercambian."
 ABILITIES_LEVEL,Nivel %d
 ABILITIES_COST,Coste: %d · Recarga: %s s
+PARTY_DOWNED,Derribado
+PARTY_DEAD,Caído
+DOWNED_TITLE,Estás derribado
+DOWNED_HINT,"Un aliado puede levantarte manteniendo E a tu lado. Te desangras en %d s."
+REVIVING,Levantando a %s…
+REVIVE_PROMPT,Mantén E para levantar a %s

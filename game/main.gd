@@ -26,6 +26,8 @@ var select_screen: CharacterSelectScreen
 var create_screen: CharacterCreateScreen
 var chat: ChatBox
 var combat_hud: CombatHud
+var party_frames: PartyFrames
+var downed_overlay: DownedOverlay
 var pause_menu: PauseMenu
 var abilities_window: AbilitiesWindow
 var abilities: AbilityDB
@@ -80,6 +82,16 @@ func _ready() -> void:
 	combat_hud.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	combat_hud.visible = false
 	_ui.add_child(combat_hud)
+
+	party_frames = PartyFrames.new()
+	party_frames.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	party_frames.visible = false
+	_ui.add_child(party_frames)
+
+	downed_overlay = DownedOverlay.new()
+	downed_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	downed_overlay.visible = false
+	_ui.add_child(downed_overlay)
 
 	chat = ChatBox.new()
 	chat.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -390,6 +402,10 @@ func _attach_client() -> void:
 	debug_overlay.net_label = game.net_label()
 	combat_hud.bind(client, client.bar, abilities)
 	combat_hud.visible = true
+	party_frames.bind(client)
+	party_frames.visible = true
+	downed_overlay.bind(client)
+	downed_overlay.visible = true
 	pause_menu.set_can_open_group(game.is_hosting())
 
 
@@ -440,6 +456,10 @@ func _leave_game() -> void:
 	abilities_window.visible = false
 	combat_hud.unbind()
 	combat_hud.visible = false
+	party_frames.unbind()
+	party_frames.visible = false
+	downed_overlay.unbind()
+	downed_overlay.visible = false
 	chat.cancel()
 	chat.visible = false
 	status_label.visible = false

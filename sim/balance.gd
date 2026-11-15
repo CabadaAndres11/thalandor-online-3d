@@ -32,6 +32,8 @@ var in_combat_s: float = 5.0
 var revive_hold_s: float = 3.0
 var revive_range: float = 2.0
 var revive_hp_pct: float = 0.3
+## Downed players bleed out (die and respawn) after this long without a revive.
+var downed_s: float = 30.0
 var respawn_s: float = 3.0
 var group_hp_scale: float = 0.75
 var threat_switch_margin: float = 0.1

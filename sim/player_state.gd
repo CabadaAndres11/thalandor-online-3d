@@ -20,6 +20,12 @@ var respawn_tick: int = -1
 var level: int = 1
 ## Evasión mortal: the next combo gain is raised after a dodge.
 var bonus_combo_ready: bool = false
+## Downed (in a group): the tick it bleeds out and dies if nobody revives it.
+var downed_end_tick: int = -1
+## Reviving an ally with E: who, since when and from where (moving cancels).
+var revive_target_id: int = 0
+var revive_start_tick: int = 0
+var revive_from: Vector3 = Vector3.ZERO
 
 
 func _init() -> void:

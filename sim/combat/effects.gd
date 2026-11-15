@@ -326,7 +326,13 @@ static func _taunt(world: SimWorld, caster: CombatEntity, effect: Dictionary) ->
 	for o: CombatEntity in in_circle(world, caster, caster.position, float(effect.get("radius", 6.0))):
 		Combat.apply_status(world, caster, o, {"kind": "taunted", "duration_s": float(effect.get("duration_s", 4.0))})
 		if o is MonsterState:
-			(o as MonsterState).add_threat(caster.id, 1.0)
+			# The taunter takes the top of the table (+10 %) so it keeps the target after.
+			var m := o as MonsterState
+			var top := 0.0
+			for id: int in m.threat:
+				top = maxf(top, float(m.threat[id]))
+			m.threat[caster.id] = maxf(maxf(float(m.threat.get(caster.id, 0.0)), top * 1.1), 1.0)
+			m.target_id = caster.id
 
 
 static func _shield(world: SimWorld, caster: CombatEntity, effect: Dictionary, aim: Vector3) -> void:

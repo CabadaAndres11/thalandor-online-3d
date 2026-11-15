@@ -25,6 +25,7 @@
 	"revive_hold_s": 3.0,
 	"revive_range": 2.0,
 	"revive_hp_pct": 0.3,
+	"downed_s": 30.0,
 	"respawn_s": 3.0,
 	"group_hp_scale": 0.75,
 	"threat_switch_margin": 0.1,

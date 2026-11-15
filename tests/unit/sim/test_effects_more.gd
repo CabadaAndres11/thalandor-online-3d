@@ -205,7 +205,10 @@ func test_taunt_forces_target() -> void:
 	f.world.tick += f.world.ticks(5.0)
 	StatusEffect.tick_entity(m, f.world)
 	MonsterAI.tick(f.world, m)
-	assert_eq(m.target_id, 2, "the taunt wore off")
+	assert_eq(m.target_id, 1, "after the taunt the tank holds the top threat (+10 %)")
+	m.threat[2] = float(m.threat[1]) * 1.2
+	MonsterAI.tick(f.world, m)
+	assert_eq(m.target_id, 2, "until someone passes it by the margin")
 	assert_true(is_instance_valid(dps))
 
 

@@ -140,18 +140,87 @@ static func snapshot_of(e: CombatEntity) -> CombatEntity:
 
 
 static func on_zero_hp(world: SimWorld, e: CombatEntity) -> void:
-	e.life = CombatEntity.DEAD
 	e.statuses.clear()
 	e.shield = 0.0
 	e.forced_ticks = 0
 	if e is PlayerState:
 		var p := e as PlayerState
-		p.respawn_tick = world.tick + world.ticks(world.balance.respawn_s)
 		p.charge_start = -1
 		p.combo = 0
+		p.revive_target_id = 0
+		if _someone_standing(world, p):
+			# In a group with an ally on their feet: downed, waiting for a revive.
+			p.life = CombatEntity.DOWNED
+			p.downed_end_tick = world.tick + world.ticks(world.balance.downed_s)
+			world.emit(["downed", p.id])
+			return
+		_die(world, p)
+		_fall_all(world)
+		return
+	e.life = CombatEntity.DEAD
 	world.emit(["died", e.id])
 	if e is MonsterState and bool((e as MonsterState).def.get("boss", false)):
 		world.emit(["boss_down", e.type_id])
+
+
+static func _someone_standing(world: SimWorld, except: PlayerState) -> bool:
+	for o: PlayerState in world.players.values():
+		if o != except and o.life == CombatEntity.ALIVE:
+			return true
+	return false
+
+
+## Dead, respawning after respawn_s.
+static func _die(world: SimWorld, p: PlayerState) -> void:
+	p.life = CombatEntity.DEAD
+	p.downed_end_tick = -1
+	p.respawn_tick = world.tick + world.ticks(world.balance.respawn_s)
+	world.emit(["died", p.id])
+
+
+## Nobody left standing: the downed die too, so the whole group respawns together.
+static func _fall_all(world: SimWorld) -> void:
+	for o: PlayerState in world.players.values():
+		if o.life == CombatEntity.ALIVE:
+			return
+	for o: PlayerState in world.players.values():
+		if o.life == CombatEntity.DOWNED:
+			_die(world, o)
+
+
+## Holding E next to a downed ally revives it after revive_hold_s; moving, taking
+## damage, letting go or the ally getting up some other way cancels.
+static func update_revive(world: SimWorld, p: PlayerState, holding: bool) -> void:
+	if p.revive_target_id != 0:
+		var t: PlayerState = world.players.get(p.revive_target_id)
+		var cancel := not holding or not p.is_alive() or t == null or t.life != CombatEntity.DOWNED \
+			or Effects.flat(p.position).distance_to(Effects.flat(p.revive_from)) > 0.05 \
+			or p.last_hurt_tick >= p.revive_start_tick \
+			or Effects.flat(p.position).distance_to(Effects.flat(t.position)) > world.balance.revive_range
+		if cancel:
+			p.revive_target_id = 0
+			world.emit(["revive_cancel", p.id])
+			return
+		if world.tick - p.revive_start_tick >= world.ticks(world.balance.revive_hold_s):
+			p.revive_target_id = 0
+			revive(world, p, t)
+		return
+	if not holding or not p.is_alive():
+		return
+	var best: PlayerState = null
+	var best_d := INF
+	for o: PlayerState in world.players.values():
+		if o == p or o.life != CombatEntity.DOWNED:
+			continue
+		var d := Effects.flat(o.position).distance_to(Effects.flat(p.position))
+		if d <= world.balance.revive_range and d < best_d:
+			best = o
+			best_d = d
+	if best != null:
+		p.revive_target_id = best.id
+		p.revive_start_tick = world.tick
+		p.revive_from = p.position
+		world.emit(["revive_start", p.id, best.id])
 
 
 ## Back at the respawn point with full health and resource (rage starts empty).
@@ -169,7 +238,10 @@ static func respawn(world: SimWorld, p: PlayerState) -> void:
 
 ## One simulation tick of combat (the world's tick counter is advanced by the caller).
 static func tick(world: SimWorld) -> void:
+	_fall_all(world) # e.g. the last player standing left the game
 	for p: PlayerState in world.players.values():
+		if p.life == CombatEntity.DOWNED and p.downed_end_tick >= 0 and world.tick >= p.downed_end_tick:
+			_die(world, p) # bled out
 		if p.life == CombatEntity.DEAD and p.respawn_tick >= 0 and world.tick >= p.respawn_tick:
 			respawn(world, p)
 	for e: CombatEntity in world.entities():
@@ -206,6 +278,8 @@ static func revive(world: SimWorld, source: CombatEntity, target: CombatEntity) 
 		return
 	target.life = CombatEntity.ALIVE
 	target.hp = maxf(1.0, target.stats.max_hp * world.balance.revive_hp_pct)
+	if target is PlayerState:
+		(target as PlayerState).downed_end_tick = -1
 	world.emit(["revived", target.id, source.id])
 
 
@@ -326,10 +400,23 @@ static func _fire_charge(world: SimWorld, a: PendingArea) -> void:
 
 
 ## Heals up to max health and reports how much was healed.
-static func heal(world: SimWorld, _source: CombatEntity, target: CombatEntity, amount: float) -> float:
+static func heal(world: SimWorld, source: CombatEntity, target: CombatEntity, amount: float) -> float:
 	if not target.is_alive():
 		return 0.0
 	var healed := minf(maxf(amount, 0.0), target.stats.max_hp - target.hp)
 	target.hp += healed
 	world.emit(["heal", target.id, healed])
+	heal_threat(world, source, target, healed)
 	return healed
+
+
+## Healing draws half its amount as threat from every monster chasing the healed one.
+static func heal_threat(world: SimWorld, source: CombatEntity, target: CombatEntity, healed: float) -> void:
+	if source == null or healed <= 0.0 or source.team != CombatEntity.TEAM_PLAYERS:
+		return
+	var live := world.entity(source.id)
+	var mult := (live if live != null else source).stats.threat_mult
+	for e: CombatEntity in world.monsters.values():
+		var m := e as MonsterState
+		if m != null and m.is_alive() and m.threat.has(target.id):
+			m.add_threat(source.id, healed * 0.5 * mult)

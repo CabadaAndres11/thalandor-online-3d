@@ -94,6 +94,9 @@ func step(inputs: Dictionary) -> void:
 				p.add_status(StatusEffect.make("invulnerable", tick + ticks(balance.dodge_invuln_s)), 1)
 				if not Passives.has_hook(p, "after_dodge_combo").is_empty():
 					p.bonus_combo_ready = true
+	for p: PlayerState in players.values():
+		var held: bool = inputs.has(p.id) and (inputs[p.id] as PlayerInput).buttons & PlayerInput.BTN_INTERACT_HELD != 0
+		Combat.update_revive(self, p, held)
 	for e: CombatEntity in monsters.values():
 		if e is MonsterState:
 			MonsterAI.tick(self, e)

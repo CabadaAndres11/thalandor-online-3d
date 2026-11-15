@@ -64,6 +64,7 @@ static func _periodic(e: CombatEntity, s: StatusEffect, world: SimWorld) -> void
 			e.hp += healed
 			if healed > 0.0:
 				world.emit(["heal", e.id, healed])
+				Combat.heal_threat(world, world.entity(s.source_id), e, healed)
 
 
 ## Order of the status bits sent in snapshots (for icons and stealth on clients).
