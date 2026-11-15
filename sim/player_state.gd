@@ -1,11 +1,14 @@
 class_name PlayerState
-extends RefCounted
-## Simulated state of one player. `facing` is in radians, 0 = +Z, PI/2 = +X.
+extends CombatEntity
+## Simulated state of one player. Only movement fields are predicted by the client
+## (copy_from/clone); combat values come from the host.
 
-var id: int = 0
-var position: Vector3 = Vector3.ZERO
 var aim: Vector3 = Vector3.ZERO
-var facing: float = 0.0
+
+
+func _init() -> void:
+	team = TEAM_PLAYERS
+	radius = 0.4
 
 
 func copy_from(other: PlayerState) -> void:
