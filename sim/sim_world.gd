@@ -18,6 +18,8 @@ var monsters: Dictionary = {}
 var projectiles: Array = [] # Projectile
 var pending_areas: Array = [] # PendingArea
 var _next_object_id: int = 1
+## Hits landed by the cast being resolved (assassin combo points).
+var cast_hits: int = 0
 var _next_monster_id: int = 999
 var _pathfinder: Pathfinder
 ## Keeps the map's monster spawn points populated (null when the map has none).

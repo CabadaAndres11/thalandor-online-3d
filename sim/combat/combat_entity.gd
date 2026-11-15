@@ -22,6 +22,8 @@ var resource: float = 0.0
 ## "rage", "mana", "focus", "energy" or "" (monsters).
 var resource_kind: String = ""
 var shield: float = 0.0
+## Tick when the current shield fades.
+var shield_end: int = 0
 var life: int = ALIVE
 var statuses: Array = [] # StatusEffect
 var cooldowns: Dictionary = {} # ability id -> tick when ready

@@ -9,6 +9,11 @@ var dash_dir: Vector2 = Vector2.ZERO
 var dodge_ready_seq: int = 0
 ## Set by Movement when a dodge starts; the host turns it into brief invulnerability.
 var dodge_started: bool = false
+## Class (data/characters/classes.json) and its per-player combat state.
+var class_id: String = ""
+var combo: int = 0
+## Tick when the archer started charging the basic shot (-1 = not charging).
+var charge_start: int = -1
 
 
 func _init() -> void:

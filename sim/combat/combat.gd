@@ -6,7 +6,8 @@ extends RefCounted
 
 ## Casts `ability_id` toward `aim` if possible. Refused casts change nothing (no cost,
 ## no cooldown). Returns whether it was cast.
-static func try_cast(world: SimWorld, caster: CombatEntity, ability_id: String, aim: Vector3) -> bool:
+## mods (archer charged shot): {damage_mult, range_mult, extra_cost}.
+static func try_cast(world: SimWorld, caster: CombatEntity, ability_id: String, aim: Vector3, mods: Dictionary = {}) -> bool:
 	var ab := world.abilities.get_ability(ability_id)
 	if ab.is_empty() or ab.get("kind") == "passive" or not caster.can_act(world.tick):
 		return false
@@ -15,9 +16,12 @@ static func try_cast(world: SimWorld, caster: CombatEntity, ability_id: String, 
 	var uses_gcd := bool(ab.get("gcd", false))
 	if uses_gcd and world.tick < caster.gcd_end:
 		return false
-	var cost := float(ab.get("cost", 0.0))
-	if caster.resource < cost:
+	var cost := float(ab.get("cost", 0.0)) + float(mods.get("extra_cost", 0.0))
+	if caster.resource < cost or not ClassRules.can_cast(caster, ab):
 		return false
+	ab = ClassRules.shaped(caster, ab)
+	if not mods.is_empty():
+		ab = ClassRules.scale_damage(ab, float(mods.get("damage_mult", 1.0)), float(mods.get("range_mult", 1.0)))
 	var ctx := {"aim": aim, "target": null}
 	for e: Dictionary in ab.get("effects", []):
 		if Effects.needs_target(e):
@@ -34,8 +38,10 @@ static func try_cast(world: SimWorld, caster: CombatEntity, ability_id: String, 
 	if to.length() > 0.01:
 		caster.facing = atan2(to.x, to.y)
 	world.emit(["cast", caster.id, ability_id, aim])
+	world.cast_hits = 0
 	for e: Dictionary in ab.get("effects", []):
 		Effects.apply(world, caster, ab, e, ctx)
+	ClassRules.after_cast(caster, ab, world.cast_hits)
 	return true
 
 
@@ -54,6 +60,7 @@ static func deal(world: SimWorld, source: CombatEntity, target: CombatEntity, ef
 			return
 		Damage.apply(target, r, world)
 		world.emit(["hit", target.id, r.amount, r.crit, source.id])
+		world.cast_hits += 1
 		Resources.on_damage_dealt(source, r.amount, world)
 		Resources.on_damage_taken(target, r.amount, world)
 		if target is MonsterState and source.team == CombatEntity.TEAM_PLAYERS:
@@ -95,6 +102,8 @@ static func on_zero_hp(world: SimWorld, e: CombatEntity) -> void:
 static func tick(world: SimWorld) -> void:
 	for e: CombatEntity in world.entities():
 		StatusEffect.tick_entity(e, world)
+		if e.shield > 0.0 and world.tick >= e.shield_end:
+			e.shield = 0.0
 		Resources.tick(e, world)
 		_forced_move(world, e)
 	_projectiles(world)
@@ -179,3 +188,13 @@ static func fire_area(world: SimWorld, a: PendingArea) -> void:
 	a.pulses_left -= 1
 	a.fire_tick = world.tick + maxi(a.interval, 1)
 	world.emit(["area", a.id, a.pos, float(a.effect.get("radius", 1.0))])
+
+
+## Heals up to max health and reports how much was healed.
+static func heal(world: SimWorld, _source: CombatEntity, target: CombatEntity, amount: float) -> float:
+	if not target.is_alive():
+		return 0.0
+	var healed := minf(maxf(amount, 0.0), target.stats.max_hp - target.hp)
+	target.hp += healed
+	world.emit(["heal", target.id, healed])
+	return healed

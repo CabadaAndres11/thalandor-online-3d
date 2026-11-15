@@ -75,9 +75,19 @@ func tick() -> void:
 ## Presses of a new input become casts: basic, secondary and the bar slots.
 func _cast_from_input(rec: Dictionary, input: PlayerInput) -> void:
 	var p: PlayerState = world.players.get(rec.id)
-	if p == null or input.buttons == 0:
+	if p == null:
 		return
-	if input.pressed(PlayerInput.BTN_BASIC):
+	var basic := world.abilities.get_ability(rec.basic_id)
+	if basic.has("charge"):
+		# Archer: press starts charging, release fires (a quick tap = normal shot).
+		if input.pressed(PlayerInput.BTN_BASIC) and p.charge_start < 0:
+			p.charge_start = world.tick
+		elif p.charge_start >= 0 and not input.pressed(PlayerInput.BTN_BASIC_HELD):
+			var max_ticks := maxi(1, world.ticks(float(basic.charge.get("max_s", 1.5))))
+			var ratio := float(world.tick - p.charge_start) / float(max_ticks)
+			p.charge_start = -1
+			ClassRules.release_charged(world, p, rec.basic_id, input.aim, ratio)
+	elif input.pressed(PlayerInput.BTN_BASIC):
 		Combat.try_cast(world, p, rec.basic_id, input.aim)
 	if input.pressed(PlayerInput.BTN_SECONDARY):
 		Combat.try_cast(world, p, rec.secondary_id, input.aim)
@@ -154,8 +164,7 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 	var appearance := catalog.sanitize_appearance(msg.appearance)
 	var spawn := map.spawn_point() + Vector3(slot % 2, 0, slot / 2) * SPAWN_SPACING
 	var player := world.add_player(id, spawn)
-	player.hp = player.stats.max_hp
-	player.resource = player.stats.max_resource
+	ClassRules.setup_player(player, class_id, catalog)
 	_players[id] = {
 		"id": id, "name": name, "slot": slot, "class_id": class_id, "appearance": appearance,
 		"transport": index, "peer": peer,
@@ -216,7 +225,7 @@ func _snapshot_rows() -> Array:
 		var s: PlayerState = world.players[id]
 		rows.append([id, s.position, s.aim, s.facing, int(_players[id].last_seq), s.hp, s.stats.max_hp,
 			s.resource, s.stats.max_resource, s.life, StatusEffect.bits_of(s), s.dash_ticks, s.dash_dir,
-			s.dodge_ready_seq, s.move_mult()])
+			s.dodge_ready_seq, s.move_mult(), s.combo, _charge_ratio(s)])
 	return rows
 
 
@@ -235,3 +244,12 @@ func _send_to(id: int, data: PackedByteArray, reliable: bool) -> void:
 func _broadcast(data: PackedByteArray, reliable: bool) -> void:
 	for id: int in _players:
 		_send_to(id, data, reliable)
+
+
+## How far the archer's held shot is charged (0..1), for the HUD.
+func _charge_ratio(p: PlayerState) -> float:
+	if p.charge_start < 0:
+		return 0.0
+	var basic := world.abilities.get_ability(world.abilities.kind_of(p.class_id, "basic"))
+	var max_ticks := maxi(1, world.ticks(float((basic.get("charge", {}) as Dictionary).get("max_s", 1.5))))
+	return clampf(float(world.tick - p.charge_start) / float(max_ticks), 0.0, 1.0)

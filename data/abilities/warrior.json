@@ -1,0 +1,13 @@
+[
+	{"id": "warrior_slash", "class": "warrior", "name": "AB_WARRIOR_SLASH", "desc": "AB_WARRIOR_SLASH_DESC", "icon": "slash", "kind": "basic", "level": 1,
+	 "cost": 0, "cooldown_s": 0.6, "gcd": false, "range": 2.5, "anim": "melee",
+	 "effects": [{"type": "melee_arc", "angle_deg": 120, "range": 2.5, "damage": {"base": 10, "coef": 0.6, "kind": "physical"}}]},
+	{"id": "warrior_brutal", "class": "warrior", "name": "AB_WARRIOR_BRUTAL", "desc": "AB_WARRIOR_BRUTAL_DESC", "icon": "brutal", "kind": "secondary", "level": 1,
+	 "cost": 30, "cooldown_s": 4, "gcd": false, "range": 2.5, "anim": "melee",
+	 "effects": [{"type": "melee_arc", "angle_deg": 60, "range": 2.5, "damage": {"base": 28, "coef": 1.2, "kind": "physical"}}]},
+	{"id": "warrior_charge", "class": "warrior", "name": "AB_WARRIOR_CHARGE", "desc": "AB_WARRIOR_CHARGE_DESC", "icon": "charge", "kind": "active", "level": 1,
+	 "cost": 0, "cooldown_s": 12, "gcd": true, "range": 8, "anim": "dash",
+	 "effects": [{"type": "dash", "to": "cursor", "distance": 8, "speed": 20,
+		"on_arrive": [{"type": "area", "at": "self", "radius": 1.8, "delay_s": 0, "telegraph": false,
+			"damage": {"base": 5, "coef": 0.3, "kind": "physical"}, "statuses": [{"kind": "stun", "duration_s": 1.0}]}]}]}
+]

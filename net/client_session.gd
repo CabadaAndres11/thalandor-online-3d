@@ -224,7 +224,7 @@ func _on_snapshot(tick: int, rows: Array, monster_rows: Array) -> void:
 	for row: Array in rows:
 		var id: int = row[0]
 		combat[id] = {"hp": row[5], "max_hp": row[6], "resource": row[7], "max_resource": row[8],
-			"life": row[9], "status_bits": row[10]}
+			"life": row[9], "status_bits": row[10], "combo": row[15], "charge": row[16]}
 		if id == my_id:
 			_own_move_mult = row[14]
 			_reconcile(row)

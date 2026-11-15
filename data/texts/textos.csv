@@ -96,3 +96,33 @@ AB_WOLF_BITE,Mordisco
 AB_WOLF_BITE_DESC,Muerde al enemigo que tiene delante.
 AB_SLIME_SLAM,Aplastar
 AB_SLIME_SLAM_DESC,Golpea el suelo y daña a todo lo que tiene alrededor.
+AB_WARRIOR_SLASH,Tajo
+AB_WARRIOR_SLASH_DESC,Golpe en arco frontal. Genera ira.
+AB_WARRIOR_BRUTAL,Golpe brutal
+AB_WARRIOR_BRUTAL_DESC,"Gasta ira: un gran golpe al enemigo que tienes delante."
+AB_WARRIOR_CHARGE,Carga
+AB_WARRIOR_CHARGE_DESC,"Te lanzas hacia el cursor y aturdes 1 s a los enemigos donde llegas."
+AB_CLERIC_SMITE,Destello sagrado
+AB_CLERIC_SMITE_DESC,Proyectil de luz.
+AB_CLERIC_HEAL,Sanar
+AB_CLERIC_HEAL_DESC,"Cura al aliado bajo el cursor o, si no hay ninguno, a ti."
+AB_CLERIC_SHIELD,Palabra de escudo
+AB_CLERIC_SHIELD_DESC,"Escudo que absorbe daño durante 8 s, sobre el aliado bajo el cursor o sobre ti."
+AB_MAGE_MISSILE,Proyectil arcano
+AB_MAGE_MISSILE_DESC,Proyectil mágico rápido.
+AB_MAGE_BLAST,Explosión arcana
+AB_MAGE_BLAST_DESC,"Área pequeña en el cursor, con un breve retardo."
+AB_MAGE_BLINK,Parpadeo
+AB_MAGE_BLINK_DESC,Teletransporte corto hacia el cursor.
+AB_ARCHER_SHOT,Disparo
+AB_ARCHER_SHOT_DESC,"Flecha a distancia. Mantén el botón para cargarla: más daño y alcance, a cambio de concentración."
+AB_ARCHER_PIERCING,Disparo perforante
+AB_ARCHER_PIERCING_DESC,Flecha que atraviesa a los enemigos en línea.
+AB_ARCHER_ROLL,Voltereta
+AB_ARCHER_ROLL_DESC,Saltas hacia atrás disparando una flecha.
+AB_ASSASSIN_STAB,Cuchillada
+AB_ASSASSIN_STAB_DESC,Golpe con dagas que genera 1 punto de combo.
+AB_ASSASSIN_EVISCERATE,Eviscerar
+AB_ASSASSIN_EVISCERATE_DESC,"Remate que gasta los puntos de combo; cuantos más, más daño."
+AB_ASSASSIN_SHADOWSTEP,Paso sombrío
+AB_ASSASSIN_SHADOWSTEP_DESC,Te teletransportas a la espalda del enemigo bajo el cursor.

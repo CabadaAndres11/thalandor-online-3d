@@ -1,0 +1,11 @@
+[
+	{"id": "mage_missile", "class": "mage", "name": "AB_MAGE_MISSILE", "desc": "AB_MAGE_MISSILE_DESC", "icon": "missile", "kind": "basic", "level": 1,
+	 "cost": 0, "cooldown_s": 0.7, "gcd": false, "range": 22, "anim": "cast",
+	 "effects": [{"type": "projectile", "speed": 22, "radius": 0.25, "range": 22, "pierce": false, "damage": {"base": 10, "coef": 0.7, "kind": "magic"}}]},
+	{"id": "mage_blast", "class": "mage", "name": "AB_MAGE_BLAST", "desc": "AB_MAGE_BLAST_DESC", "icon": "blast", "kind": "secondary", "level": 1,
+	 "cost": 25, "cooldown_s": 5, "gcd": false, "range": 20, "anim": "cast",
+	 "effects": [{"type": "area", "at": "cursor", "radius": 2.5, "delay_s": 0.6, "telegraph": true, "damage": {"base": 26, "coef": 1.1, "kind": "magic"}}]},
+	{"id": "mage_blink", "class": "mage", "name": "AB_MAGE_BLINK", "desc": "AB_MAGE_BLINK_DESC", "icon": "blink", "kind": "active", "level": 1,
+	 "cost": 15, "cooldown_s": 10, "gcd": true, "range": 8, "anim": "dash",
+	 "effects": [{"type": "blink", "to": "cursor", "distance": 8}]}
+]

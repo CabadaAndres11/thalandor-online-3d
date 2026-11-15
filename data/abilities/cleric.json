@@ -1,0 +1,11 @@
+[
+	{"id": "cleric_smite", "class": "cleric", "name": "AB_CLERIC_SMITE", "desc": "AB_CLERIC_SMITE_DESC", "icon": "smite", "kind": "basic", "level": 1,
+	 "cost": 0, "cooldown_s": 0.8, "gcd": false, "range": 20, "anim": "cast",
+	 "effects": [{"type": "projectile", "speed": 18, "radius": 0.25, "range": 20, "pierce": false, "damage": {"base": 9, "coef": 0.6, "kind": "magic"}}]},
+	{"id": "cleric_heal", "class": "cleric", "name": "AB_CLERIC_HEAL", "desc": "AB_CLERIC_HEAL_DESC", "icon": "heal", "kind": "secondary", "level": 1,
+	 "cost": 20, "cooldown_s": 1.5, "gcd": false, "range": 20, "anim": "cast",
+	 "effects": [{"type": "heal", "target": "ally_or_self", "amount": {"base": 25, "coef": 1.0}}]},
+	{"id": "cleric_shield", "class": "cleric", "name": "AB_CLERIC_SHIELD", "desc": "AB_CLERIC_SHIELD_DESC", "icon": "shield", "kind": "active", "level": 1,
+	 "cost": 30, "cooldown_s": 10, "gcd": true, "range": 20, "anim": "cast",
+	 "effects": [{"type": "shield", "target": "ally_or_self", "amount": {"base": 40, "coef": 1.0}, "duration_s": 8}]}
+]

@@ -1,0 +1,101 @@
+class_name ClassRules
+extends RefCounted
+## Class mechanics that are not generic effects:
+##   - class stats and resource from data/characters/classes.json (setup_player);
+##   - assassin combo points: abilities with "combo_gain" add points when they hit;
+##     "finisher" abilities need points, multiply their damage by them and spend them;
+##   - archer charged shot: basic abilities with a "charge" block are held and fired on
+##     release; a charge above min_ratio costs focus and scales damage and range;
+##   - "ally_or_self" targets (cleric heals and shields).
+
+const MAX_COMBO := 5
+const ALLY_PICK_RADIUS := 1.0
+
+
+static func setup_player(p: PlayerState, class_id: String, catalog: CharacterCatalog = null) -> void:
+	var cat := catalog if catalog != null else CharacterCatalog.load_default()
+	var def := cat.class_def(cat.sanitize_class(class_id))
+	p.class_id = str(def.get("id", class_id))
+	var res: Dictionary = (def.get("resource", {}) as Dictionary).duplicate()
+	var stats: Dictionary = (def.get("stats", {}) as Dictionary).duplicate()
+	stats["max_resource"] = res.get("max", 0)
+	p.stats = CombatStats.from_dict(stats)
+	p.resource_kind = str(res.get("kind", ""))
+	p.resource_def = res
+	p.hp = p.stats.max_hp
+	p.resource = minf(float(res.get("start", res.get("max", 0))), p.stats.max_resource)
+
+
+## The ally (not the caster) closest to `point`, within the pick radius; else null.
+static func ally_under_cursor(world: SimWorld, caster: CombatEntity, point: Vector3) -> CombatEntity:
+	var best: CombatEntity = null
+	var best_d := INF
+	for o: CombatEntity in world.entities():
+		if o == caster or o.team != caster.team or not o.is_alive():
+			continue
+		var d := Effects.flat(o.position).distance_to(Effects.flat(point))
+		if d <= ALLY_PICK_RADIUS + o.radius and d < best_d:
+			best = o
+			best_d = d
+	return best
+
+
+## Before a cast: finishers need combo points. Returns false to refuse the cast.
+static func can_cast(caster: CombatEntity, ability: Dictionary) -> bool:
+	if bool(ability.get("finisher", false)):
+		return caster is PlayerState and (caster as PlayerState).combo > 0
+	return true
+
+
+## The ability as it will be cast: finishers scale with combo points.
+static func shaped(caster: CombatEntity, ability: Dictionary) -> Dictionary:
+	if bool(ability.get("finisher", false)) and caster is PlayerState:
+		return scale_damage(ability, float((caster as PlayerState).combo), 1.0)
+	return ability
+
+
+## After a cast: combo points gained (if it hit) or spent (finisher).
+static func after_cast(caster: CombatEntity, ability: Dictionary, hits: int) -> void:
+	var p := caster as PlayerState
+	if p == null:
+		return
+	if bool(ability.get("finisher", false)):
+		p.combo = 0
+	elif hits > 0:
+		p.combo = mini(p.combo + int(ability.get("combo_gain", 0)) + int(ability.get("combo_per_hit", 0)) * hits, MAX_COMBO)
+
+
+## A copy of `ability` with every damage × mult and every range × range_mult.
+static func scale_damage(ability: Dictionary, mult: float, range_mult: float) -> Dictionary:
+	var a := ability.duplicate(true)
+	for e: Dictionary in a.get("effects", []):
+		_scale_effect(e, mult, range_mult)
+	return a
+
+
+static func _scale_effect(e: Dictionary, mult: float, range_mult: float) -> void:
+	if e.has("damage"):
+		var d: Dictionary = e.damage
+		d.base = float(d.get("base", 0.0)) * mult
+		d.coef = float(d.get("coef", 0.0)) * mult
+	if e.has("range"):
+		e.range = float(e.range) * range_mult
+	if e.has("explode"):
+		_scale_effect(e.explode, mult, 1.0)
+
+
+## Archer: fires a held basic shot. ratio 0..1 of the full charge. Below min_ratio (a
+## quick tap) or without enough focus it is a normal free shot.
+static func release_charged(world: SimWorld, p: PlayerState, ability_id: String, aim: Vector3, ratio: float) -> bool:
+	var ab := world.abilities.get_ability(ability_id)
+	var charge: Dictionary = ab.get("charge", {})
+	var mods := {}
+	if not charge.is_empty() and ratio >= float(charge.get("min_ratio", 0.2)) \
+			and p.resource >= float(charge.get("cost", 0.0)):
+		var r := clampf(ratio, 0.0, 1.0)
+		mods = {
+			"damage_mult": lerpf(1.0, float(charge.get("damage_mult", 1.0)), r),
+			"range_mult": lerpf(1.0, float(charge.get("range_mult", 1.0)), r),
+			"extra_cost": float(charge.get("cost", 0.0)),
+		}
+	return Combat.try_cast(world, p, ability_id, aim, mods)

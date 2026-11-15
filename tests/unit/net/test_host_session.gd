@@ -377,3 +377,41 @@ func test_protocol2_hello_gets_version_reject() -> void:
 	c.send(Transport.HOST_PEER, Protocol.pack([Protocol.Msg.HELLO, "0.2.1", 2, "Ana", "mage", {}]), true)
 	host.tick()
 	assert_eq(_first(c, Protocol.Msg.REJECT).get("reason"), "version")
+
+
+func test_player_gets_class_stats_on_join() -> void:
+	_guest("Ana", VERSION, Protocol.VERSION, "warrior")
+	host.tick()
+	var p: PlayerState = host.world.players[1]
+	assert_eq(p.class_id, "warrior")
+	assert_eq(p.stats.max_hp, 200.0)
+	assert_eq(p.resource_kind, "rage")
+
+
+## Archer: holding the basic button charges, releasing fires once (and costs focus
+## when charged); a quick tap fires a free shot.
+func test_archer_hold_and_release_fires_charged_shot() -> void:
+	var a := _guest("Ana", VERSION, Protocol.VERSION, "archer")
+	host.tick()
+	_messages(a)
+	var p: PlayerState = host.world.players[1]
+	p.resource_def["regen_per_s"] = 0.0
+	var focus := p.resource
+	var held := PlayerInput.BTN_BASIC_HELD
+	a.send(Transport.HOST_PEER, Protocol.input([_row(1, PlayerInput.BTN_BASIC | held)]), false)
+	host.tick()
+	for s in range(2, 47):
+		a.send(Transport.HOST_PEER, Protocol.input([_row(s, held)]), false)
+		host.tick()
+		assert_eq(_casts(a).size(), 0, "nothing while holding (seq %d)" % s)
+	a.send(Transport.HOST_PEER, Protocol.input([_row(47)]), false)
+	host.tick()
+	assert_eq(_casts(a).size(), 1, "fires on release")
+	assert_eq(p.resource, focus - 15.0, "a full charge costs focus")
+	host.world.tick += 30
+	a.send(Transport.HOST_PEER, Protocol.input([_row(48, PlayerInput.BTN_BASIC | held)]), false)
+	host.tick()
+	a.send(Transport.HOST_PEER, Protocol.input([_row(49)]), false)
+	host.tick()
+	assert_eq(_casts(a).size(), 1, "a tap fires once more")
+	assert_eq(p.resource, focus - 15.0, "the tap is free")

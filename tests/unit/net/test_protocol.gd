@@ -33,7 +33,7 @@ func test_roundtrip_input() -> void:
 
 
 func test_roundtrip_snapshot() -> void:
-	var players := [[1, Vector3(1.5, 0, 2.5), Vector3(4, 0, 4), 0.5, 12, 80.0, 100.0, 30.0, 100.0, 0, 0, 0, Vector2.ZERO, 0, 1.0]]
+	var players := [[1, Vector3(1.5, 0, 2.5), Vector3(4, 0, 4), 0.5, 12, 80.0, 100.0, 30.0, 100.0, 0, 0, 0, Vector2.ZERO, 0, 1.0, 0, 0.0]]
 	var m := Protocol.decode(Protocol.snapshot(99, players))
 	assert_eq(m.type, Protocol.Msg.SNAPSHOT)
 	assert_eq(m.tick, 99)
@@ -131,7 +131,7 @@ func test_snapshot_fits_with_4_players_30_monsters() -> void:
 	var players := []
 	for i in 4:
 		players.append([i + 1, Vector3(123.456, 0, 98.765), Vector3(130.1, 0, 90.2), 1.234, 99999,
-			1234.5, 2000.0, 87.5, 100.0, 0, 0x3FFF, 5, Vector2(0.7, 0.7), 123456, 0.6])
+			1234.5, 2000.0, 87.5, 100.0, 0, 0x3FFF, 5, Vector2(0.7, 0.7), 123456, 0.6, 5, 0.75])
 	var monsters := []
 	for i in 30:
 		monsters.append([1000 + i, "skeleton_archer", Vector3(100.5 + i, 0, 80.25), 2.5, 4567.8, 9000.0, 0x3FFF, 4])

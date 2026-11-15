@@ -27,9 +27,9 @@ const ROW_SCHEMAS := {
 	"roster": [TYPE_INT, TYPE_STRING, TYPE_INT, TYPE_STRING, TYPE_DICTIONARY],
 	"inputs": [TYPE_INT, TYPE_VECTOR2, TYPE_VECTOR3, TYPE_INT],
 	## id, position, aim, facing, last_seq, hp, max_hp, resource, max_resource, life,
-	## status_bits, dash_ticks, dash_dir, dodge_ready_seq, move_mult
+	## status_bits, dash_ticks, dash_dir, dodge_ready_seq, move_mult, combo, charge (0..1)
 	"players": [TYPE_INT, TYPE_VECTOR3, TYPE_VECTOR3, TYPE_FLOAT, TYPE_INT, TYPE_FLOAT, TYPE_FLOAT,
-		TYPE_FLOAT, TYPE_FLOAT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_VECTOR2, TYPE_INT, TYPE_FLOAT],
+		TYPE_FLOAT, TYPE_FLOAT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_VECTOR2, TYPE_INT, TYPE_FLOAT, TYPE_INT, TYPE_FLOAT],
 	## id, type, position, facing, hp, max_hp, flags, target_id
 	"monsters": [TYPE_INT, TYPE_STRING, TYPE_VECTOR3, TYPE_FLOAT, TYPE_FLOAT, TYPE_FLOAT, TYPE_INT, TYPE_INT],
 }

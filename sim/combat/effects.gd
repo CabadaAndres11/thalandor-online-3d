@@ -8,9 +8,11 @@ extends RefCounted
 ##               pulses?, interval_s?}
 ##   dash       {to: "cursor"|"back", distance, speed, on_arrive?: [effects]}
 ##   blink      {to: "cursor"|"behind_target", distance}
+##   heal       {target: "ally_or_self"|"self", amount: {base, coef}}  (spell power)
+##   shield     {target: "ally_or_self"|"self", amount: {base, coef}, duration_s}
 ## damage = {base, coef, kind: "physical"|"magic", can_crit}.
 
-const TYPES := ["melee_arc", "projectile", "area", "dash", "blink"]
+const TYPES := ["melee_arc", "projectile", "area", "dash", "blink", "heal", "shield"]
 ## Effects that need an enemy near the cursor before the cast is accepted.
 const TARGETED := {"blink": ["behind_target"]}
 const TARGET_PICK_RADIUS := 1.5
@@ -32,6 +34,10 @@ static func apply(world: SimWorld, caster: CombatEntity, ability: Dictionary, ef
 			_dash(world, caster, effect, ctx.aim)
 		"blink":
 			_blink(world, caster, effect, ctx)
+		"heal":
+			_heal(world, caster, effect, ctx.aim)
+		"shield":
+			_shield(world, caster, effect, ctx.aim)
 		_:
 			push_error("Effects: unknown effect %s in %s" % [effect.get("type"), ability.get("id")])
 
@@ -155,3 +161,28 @@ static func _blink(world: SimWorld, caster: CombatEntity, effect: Dictionary, ct
 		return
 	var step := to.normalized() * minf(distance, to.length())
 	caster.position = Movement.move_circle(caster.position, step, caster.radius, world.map)
+
+
+static func _support_target(world: SimWorld, caster: CombatEntity, effect: Dictionary, aim: Vector3) -> CombatEntity:
+	if str(effect.get("target", "self")) == "ally_or_self":
+		var ally := ClassRules.ally_under_cursor(world, caster, aim)
+		if ally != null:
+			return ally
+	return caster
+
+
+static func _amount(caster: CombatEntity, spec: Dictionary) -> float:
+	return float(spec.get("base", 0.0)) + float(spec.get("coef", 0.0)) * caster.stats.spell_power
+
+
+static func _heal(world: SimWorld, caster: CombatEntity, effect: Dictionary, aim: Vector3) -> void:
+	var t := _support_target(world, caster, effect, aim)
+	var amount := _amount(caster, effect.get("amount", {})) * caster.stats.healing_done_mult * t.stats.healing_received_mult
+	Combat.heal(world, caster, t, amount)
+
+
+static func _shield(world: SimWorld, caster: CombatEntity, effect: Dictionary, aim: Vector3) -> void:
+	var t := _support_target(world, caster, effect, aim)
+	t.shield = maxf(t.shield, _amount(caster, effect.get("amount", {})))
+	t.shield_end = world.tick + world.ticks(float(effect.get("duration_s", 5.0)))
+	world.emit(["status", t.id, "shield", t.shield_end])
