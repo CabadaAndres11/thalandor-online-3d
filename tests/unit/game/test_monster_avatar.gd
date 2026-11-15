@@ -81,7 +81,7 @@ func test_new_monster_models_build() -> void:
 	assert_not_null(rig, "the boar is a voxel rig")
 	for part: String in ["body", "head", "leg_front_left", "leg_back_right", "tail"]:
 		assert_not_null(rig.part(part), "boar " + part)
-	var pieces := {"goblin": ["goblin_ears", "goblin_knife"], "skeleton_archer": ["skeleton_bow"]}
+	var pieces := {"goblin": ["goblin_ears", "goblin_knife"]}
 	for type_id: String in pieces:
 		var a := _avatar(type_id)
 		var c := a.body.get_child(0) as CharacterRig
@@ -93,9 +93,6 @@ func test_new_monster_models_build() -> void:
 
 
 func test_humanoid_attack_plays_its_animation() -> void:
-	var a := _avatar("skeleton_archer")
-	a.play_attack("shoot")
-	assert_eq(a.current_animation(), "holding-right-shoot")
 	var g := _avatar("goblin")
 	g.play_attack("melee")
 	assert_eq(g.current_animation(), "attack-melee-right")
@@ -131,3 +128,59 @@ func test_boss_is_a_big_humanoid_that_leaps() -> void:
 	down.pause()
 	down.custom_step(0.2)
 	assert_almost_eq(a.body.position.y, rest, 0.001, "landed")
+
+
+func _bones(a: MonsterAvatar) -> BeastRig:
+	return a.body.get_child(0) as BeastRig
+
+
+func test_skeleton_is_a_rig_of_bones() -> void:
+	var a := _avatar("skeleton_archer")
+	var rig := _bones(a)
+	assert_not_null(rig, "the skeleton is its own voxel rig, not a blocky body")
+	assert_true(rig.is_biped())
+	for part: String in ["body", "torso", "head", "jaw", "arm_left", "arm_right", "leg_left", "leg_right", "bow"]:
+		assert_not_null(rig.part(part), part)
+	assert_eq(rig.part("head").get_parent(), rig.part("torso"), "the skull rides on the spine")
+	assert_eq(rig.part("bow").get_parent(), rig.part("arm_left"), "the bow is in the left hand")
+	assert_gt(a.bar.position.y, 2.0, "the bar clears the skull")
+
+
+func test_skeleton_walks_with_alternating_limbs() -> void:
+	var a := _avatar("skeleton_archer")
+	var rig := _bones(a)
+	var pos := Vector3.ZERO
+	var legs := []
+	var opposite := 0
+	for i in 20:
+		pos += Vector3(3.6 * DT, 0, 0)
+		a.apply_state({"position": pos, "facing": 0.0}, {"hp": 50.0, "max_hp": 50.0, "status_bits": 0}, DT)
+		var l := rig.part("leg_left").rotation.x
+		legs.append(l)
+		if absf(l) > 0.05 and signf(l) == -signf(rig.part("arm_left").rotation.x):
+			opposite += 1
+	assert_gt(legs.max() - legs.min(), 0.3, "legs swing")
+	assert_gt(opposite, 5, "each arm swings against its leg")
+
+
+func test_skeleton_shoot_raises_the_bow() -> void:
+	var a := _avatar("skeleton_archer")
+	var rig := _bones(a)
+	var t := a.play_attack("shoot")
+	t.pause()
+	t.custom_step(0.15)
+	assert_lt(rig.part("arm_left").rotation.x, -1.2, "bow arm held out in front")
+	t.custom_step(2.0)
+	assert_almost_eq(rig.part("arm_left").rotation.x, 0.0, 0.01, "back to rest")
+
+
+func test_skeleton_falls_apart_when_it_dies() -> void:
+	var a := _avatar("skeleton_archer")
+	var rig := _bones(a)
+	var skull_before := rig.part("head").global_position
+	var t := a.play_death()
+	t.pause()
+	t.custom_step(1.5)
+	var skull := rig.part("head").global_position
+	assert_lt(skull.y, skull_before.y - 1.0, "the skull drops to the ground")
+	assert_gt(Vector2(skull.x, skull.z).distance_to(Vector2(skull_before.x, skull_before.z)), 0.2, "and rolls away")

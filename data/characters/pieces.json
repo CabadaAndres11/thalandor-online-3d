@@ -135,17 +135,6 @@
 		"tag": "monster",
 		"hides": []
 	},
-	"skeleton_bow": {
-		"file": "res://assets/characters/pieces/skeleton_bow.vox",
-		"part": "arm-left",
-		"offset": [
-			1,
-			-19,
-			0
-		],
-		"tag": "monster",
-		"hides": []
-	},
 	"orc_tusks": {
 		"file": "res://assets/characters/pieces/orc_tusks.vox",
 		"part": "head",

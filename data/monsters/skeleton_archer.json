@@ -1,12 +1,8 @@
 {
-	"id": "skeleton_archer", "name": "MON_SKELETON_ARCHER", "model": "humanoid:skeleton", "tint": "#d9d2bd", "scale": 1.0,
+	"id": "skeleton_archer", "name": "MON_SKELETON_ARCHER", "model": "rig:skeleton", "tint": "#d9d2bd", "scale": 1.0,
+	"bar_height": 2.35,
 	"radius": 0.4, "speed": 3.6,
 	"stats": {"max_hp": 50, "armor": 0, "attack_power": 10, "crit_chance": 0.05},
 	"aggro_range": 12, "leash_range": 24, "attack_range": 11,
-	"behavior": "ranged_kite", "kite_range": 5, "abilities": ["skeleton_arrow"],
-	"look": {
-		"skin": "#d9d2bd", "eyes": "#ff3b2f", "outfit": "res://assets/characters/layers/outfit_skeleton.png",
-		"primary": "#4a3a2a", "secondary": "#cfc8b0", "hair": "#d9d2bd", "body_scale": {"arm": [0.75, 1, 0.75], "leg": [0.8, 1, 0.8]},
-		"pieces": ["skeleton_bow"]
-	}
+	"behavior": "ranged_kite", "kite_range": 5, "abilities": ["skeleton_arrow"]
 }

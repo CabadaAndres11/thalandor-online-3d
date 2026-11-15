@@ -21,6 +21,9 @@ func _initialize() -> void:
 	var arena := Arena.new()
 	root.add_child(arena)
 	arena.build(Arena.load_layout())
+	if _name == "skeleton" or _name == "skeleton_face":
+		_skeleton_scene()
+		return
 	if _name == "boss":
 		_boss_scene()
 		return
@@ -277,3 +280,43 @@ func _boss_scene() -> void:
 	cam.fov = 40
 	root.add_child(cam)
 	cam.look_at_from_position(Vector3(20.0, 10.5, 12.5), Vector3(20.0, 1.0, 21.0))
+
+
+## Plan 3.1 set: the skeleton archer's own rig — facing us, mid-stride, drawing the
+## bow, an elite, and one falling apart.
+func _skeleton_scene() -> void:
+	var type := MonsterDB.load_default().get_type("skeleton_archer")
+	var spots := [
+		[Vector3(17.6, 0, 21.0), PI * 0.9, "idle", false],
+		[Vector3(19.0, 0, 21.4), PI * 0.75, "walk", false],
+		[Vector3(20.6, 0, 21.2), PI * 1.15, "shoot", false],
+		[Vector3(22.4, 0, 21.8), PI * 1.05, "idle", true],
+		[Vector3(24.0, 0, 20.6), PI * 0.8, "die", false],
+	]
+	for s: Array in spots:
+		var a := MonsterAvatar.new()
+		root.add_child(a)
+		a.setup(type, s[3], 1.3)
+		var info := {"hp": 50.0, "max_hp": 50.0, "status_bits": 0}
+		var pos: Vector3 = s[0]
+		if s[2] == "walk":
+			for i in 9:
+				pos += Vector3(0.06, 0, 0)
+				a.apply_state({"position": pos, "facing": s[1]}, info, 1.0 / 60.0)
+		else:
+			a.apply_state({"position": pos, "facing": s[1]}, info, 0.3)
+		if s[2] == "shoot":
+			var t := a.play_attack("shoot")
+			t.pause()
+			t.custom_step(0.3)
+		elif s[2] == "die":
+			var t := a.play_death()
+			t.pause()
+			t.custom_step(0.35)
+	var cam := Camera3D.new()
+	cam.fov = 30
+	root.add_child(cam)
+	if _name == "skeleton_face": # close-up of the idle one's skull
+		cam.look_at_from_position(Vector3(18.15, 2.05, 19.35), Vector3(17.6, 1.85, 21.0))
+	else:
+		cam.look_at_from_position(Vector3(20.8, 4.2, 12.2), Vector3(20.8, 1.0, 21.2))

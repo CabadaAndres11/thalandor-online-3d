@@ -152,16 +152,6 @@ Object.assign(PIECES, {
       s.remove(3, 2, 10, 3, 2, 10);
     },
   },
-  // A tall recurve bow held upright in the left fist, string toward the body.
-  skeleton_bow: {
-    frame: ARM_L, tag: "monster", hides: [],
-    build(f, s) {
-      s.box(2, -1, 6, 3, 3, 6, P); // grip
-      s.box(2, 4, 5, 3, 8, 5, P).box(2, 9, 4, 3, 10, 4, P).put(2, 11, 5, P).put(3, 11, 5, P); // upper limb
-      s.box(2, -5, 5, 3, -2, 5, P).box(2, -7, 4, 3, -6, 4, P).put(2, -8, 5, P).put(3, -8, 5, P); // lower limb
-      s.box(2, -7, 3, 2, 10, 3, S); // string
-    },
-  },
 });
 
 

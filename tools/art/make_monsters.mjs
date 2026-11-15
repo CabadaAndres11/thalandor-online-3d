@@ -124,6 +124,112 @@ const BEASTS = {
     parts.tail = { shape: tail, pivot: [0, 10, -6] };
     return { parts, palette: { ...PALETTE, [BELLY]: "#8a6a50", [PAW]: "#1b1612", [NOSE]: "#2a1a14" } };
   },
+
+  // Skeleton archer: a standing rig of thin bones with real gaps between them (the
+  // monster's "tint" colours the bone, index 251). Ribs are hoops with air between
+  // them around a spine; arms and legs are 1-voxel bones with knobbly joints; the
+  // forearms and shins are two bones side by side; a skull with empty sockets and a
+  // glowing ember in each, a separate jaw with teeth, and a recurve bow in the left
+  // hand. Left is +X (the skeleton faces +Z). Parts hang from their parent's pivot.
+  skeleton() {
+    const parts = {};
+    const RAG = DARK, WOOD = PAW, STRING = BELLY;
+    // About 2 m: legs 8 voxels, spine and ribs 7, skull 6; hands reach mid-thigh.
+
+    const pelvis = new Shape(); // pivot at the hips
+    pelvis.box(-2, 0, -1, 2, 0, 0, P); // hip girdle
+    pelvis.put(-3, 1, -1, P).put(3, 1, -1, P).put(-3, 1, 0, P).put(3, 1, 0, P); // iliac wings
+    pelvis.put(-2, -1, 0, P).put(2, -1, 0, P); // hip sockets
+    pelvis.put(0, 1, -1, P); // sacrum
+    // A torn dark loincloth: a few strips of different lengths, front and back.
+    for (const [x, len] of [[-2, 2], [0, 3], [2, 2]]) {
+      pelvis.box(x, -len, 1, x, 0, 1, RAG);
+      if (x !== 0) pelvis.box(x / 2, -len + 1, -2, x / 2, 0, -2, RAG);
+    }
+    parts.body = { shape: pelvis, pivot: [0, 8, 0] };
+
+    const torso = new Shape(); // pivot at the base of the spine, on top of the pelvis
+    torso.box(0, 0, -1, 0, 6, -1, P); // spine
+    for (let y = 0; y <= 6; y += 2) torso.put(-1, y, -1, P).put(1, y, -1, P); // vertebra knobs
+    for (const [y, half] of [[1, 2], [3, 3], [5, 3]]) {
+      // A rib hoop: back to the spine, round the sides, nearly closed in front.
+      torso.box(-half, y, -1, half, y, -1, P);
+      torso.box(-half, y, 0, -half, y, 1, P).box(half, y, 0, half, y, 1, P);
+      torso.box(-half + 1, y, 2, -1, y, 2, P).box(1, y, 2, half - 1, y, 2, P);
+    }
+    torso.box(0, 2, 2, 0, 5, 2, P); // sternum
+    torso.box(-4, 6, 0, 4, 6, 0, P); // collarbones
+    torso.put(-4, 5, -1, P).put(4, 5, -1, P); // shoulder blades
+    parts.torso = { shape: torso, pivot: [0, 9, 0], parent: "body" };
+
+    // An evil skull: heavy brow ridges slanting down to the middle over big sockets
+    // (a scowl), embers burning inside, sharp flared cheekbones and a grin of long teeth.
+    const head = new Shape(); // pivot at the top of the spine
+    head.put(0, 0, -1, P); // neck vertebra
+    head.box(-2, 2, -2, 2, 5, 2, P); // cranium...
+    for (const x of [-2, 2]) for (const z of [-2, 2]) head.remove(x, 2, z, x, 5, z); // ...rounded
+    head.remove(-2, 5, -1, -2, 5, 1).remove(2, 5, -1, 2, 5, 1).remove(-1, 5, -2, 1, 5, -2);
+    head.box(-1, 6, -1, 1, 6, 1, P); // dome
+    head.box(-2, 1, 0, 2, 1, 2, P); // upper jaw
+    head.remove(-2, 3, 2, -1, 4, 2).remove(1, 3, 2, 2, 4, 2); // big empty eye sockets
+    head.box(-2, 3, 1, -1, 4, 1, RAG).box(1, 3, 1, 2, 4, 1, RAG); // deep dark sockets...
+    head.put(-1, 3, 1, GLOW).put(1, 3, 1, GLOW); // ...with an ember low in the inner corner
+    // Brow ridges jutting out, high at the temples and low in the middle.
+    head.put(-2, 5, 3, P).put(-1, 4, 3, P).put(0, 4, 3, P);
+    head.put(2, 5, 3, P).put(1, 4, 3, P); // (the low inner ends hide the top of each socket: a scowl)
+    head.put(-2, 2, 3, P).put(2, 2, 3, P); // sharp cheekbones jutting forward
+    head.remove(0, 2, 2, 0, 2, 2).put(0, 2, 1, RAG); // dark nose hole
+    head.remove(-1, 1, 2, -1, 1, 2).remove(1, 1, 2, 1, 1, 2).put(-1, 1, 1, RAG).put(1, 1, 1, RAG); // dark gaps between the upper teeth
+    head.put(-2, 0, 2, P).put(2, 0, 2, P); // upper fangs
+    head.remove(-2, 3, 0, -2, 3, 0).remove(2, 3, 0, 2, 3, 0); // sunken temples
+    parts.head = { shape: head, pivot: [0, 15, -1], parent: "torso" };
+
+    const jaw = new Shape(); // pivot at the hinge, under the skull; hangs a little open
+    jaw.box(-2, 0, 0, 2, 0, 3, P);
+    jaw.remove(-1, 0, 0, 1, 0, 1); // open behind the chin
+    for (const x of [-2, -1, 0, 1, 2]) jaw.put(x, 1, 3, P); // a row of teeth...
+    jaw.remove(-1, 1, 3, -1, 1, 3).remove(1, 1, 3, 1, 1, 3); // ...with gaps
+    jaw.box(-1, 0, 2, 1, 0, 2, RAG); // the dark of the open mouth behind the teeth
+    jaw.put(-2, 2, 3, P).put(2, 2, 3, P); // lower fangs
+    parts.jaw = { shape: jaw, pivot: [0, 15, -1], parent: "head" };
+
+    // Arm: humerus, a knobbly elbow, two forearm bones with a gap, bony fingers.
+    const arm = () => {
+      const a = new Shape(); // pivot at the shoulder
+      a.box(0, -4, 0, 0, -1, 0, P);
+      a.box(0, -5, -1, 0, -5, 1, P); // elbow
+      a.box(0, -8, -1, 0, -6, -1, P).box(0, -8, 1, 0, -6, 1, P); // radius and ulna
+      a.box(0, -9, -1, 0, -9, 1, P); // wrist
+      a.put(0, -10, -1, P).put(0, -10, 1, P).put(0, -11, 1, P); // claw-like fingers
+      return a;
+    };
+    parts.arm_left = { shape: arm(), pivot: [5, 15, 0], parent: "torso" };
+    parts.arm_right = { shape: arm(), pivot: [-5, 15, 0], parent: "torso" };
+
+    // Leg: femur, a knee cap, shin and calf bones with a gap, ankle and a bony foot.
+    const leg = () => {
+      const l = new Shape(); // pivot at the hip socket
+      l.box(0, -3, 0, 0, -1, 0, P);
+      l.box(0, -4, 0, 0, -4, 1, P); // knee
+      l.box(0, -7, -1, 0, -5, -1, P).box(0, -7, 1, 0, -5, 1, P); // tibia and fibula
+      l.put(0, -8, 0, P); // ankle
+      l.box(0, -8, 1, 0, -8, 3, P).put(0, -8, -1, P); // foot and heel
+      return l;
+    };
+    parts.leg_left = { shape: leg(), pivot: [2, 8, 0], parent: "body" };
+    parts.leg_right = { shape: leg(), pivot: [-2, 8, 0], parent: "body" };
+
+    const bow = new Shape(); // pivot at the grip in the left fist, upright, curving forward
+    bow.box(0, -1, 1, 0, 1, 1, WOOD); // grip
+    bow.box(0, 2, 0, 0, 3, 0, WOOD).put(0, 4, -1, WOOD).put(0, 5, -1, WOOD).put(0, 6, -2, WOOD); // upper limb
+    bow.box(0, -3, 0, 0, -2, 0, WOOD).put(0, -4, -1, WOOD).put(0, -5, -1, WOOD).put(0, -6, -2, WOOD); // lower limb
+    bow.box(0, -5, -3, 0, 5, -3, STRING); // string
+    parts.bow = { shape: bow, pivot: [5, 5, 1], parent: "arm_left" };
+    return {
+      parts, gait: "biped",
+      palette: { ...PALETTE, [DARK]: "#24222a", [PAW]: "#7a5232", [BELLY]: "#e8e2cf", [GLOW]: "#ff2a1a" },
+    };
+  },
 };
 
 const [outDir] = process.argv.slice(2);
@@ -137,12 +243,12 @@ for (const [name, build] of Object.entries(BODIES)) {
   console.log(`wrote monster ${name} ${shape.size().join("x")} (${shape.voxels().length} voxels)`);
 }
 for (const [name, build] of Object.entries(BEASTS)) {
-  const { parts, palette } = build();
-  const rig = { parts: {} };
-  for (const [part, { shape, pivot }] of Object.entries(parts)) {
+  const { parts, palette, gait } = build();
+  const rig = gait ? { gait, parts: {} } : { parts: {} };
+  for (const [part, { shape, pivot, parent }] of Object.entries(parts)) {
     const file = `${name}_${part}.vox`;
     write(`${outDir}/${file}`, shape.size(), shape.voxels(), palette);
-    rig.parts[part] = { file: `res://assets/monsters/vox/${file}`, pivot, offset: shape.min() };
+    rig.parts[part] = { file: `res://assets/monsters/vox/${file}`, pivot, offset: shape.min(), ...(parent ? { parent } : {}) };
   }
   fs.writeFileSync(`${outDir}/${name}.json`, JSON.stringify(rig, null, "\t") + "\n");
   console.log(`wrote beast ${name}: ${Object.keys(parts).join(", ")}`);

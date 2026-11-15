@@ -1,7 +1,7 @@
 class_name MonsterAvatar
 extends Node3D
 ## A monster on screen, built from its type (data/monsters "model"):
-##   "rig:<name>"    a voxel beast made of animated parts (BeastRig);
+##   "rig:<name>"    a voxel rig of animated parts (BeastRig: beasts, the skeleton);
 ##   "vox:<name>"    a voxel body from assets/monsters/vox (tint on index 251);
 ##   "humanoid:<id>" a blocky character (CharacterRig) from the type's "look".
 ## Elites are bigger, have an ember aura on the ground and "élite" in their name.
@@ -42,7 +42,7 @@ func setup(type: Dictionary, elite: bool = false, elite_scale: float = 1.3) -> v
 		_rig = BeastRig.build(model.trim_prefix("rig:"), tint)
 		body.add_child(_rig)
 		body.scale = Vector3.ONE * scale_f
-		_height = 1.6 * scale_f
+		_height = float(type.get("bar_height", 1.6)) * scale_f
 	elif model.begins_with("humanoid:"):
 		_kind = "humanoid"
 		body = Node3D.new()
@@ -158,7 +158,9 @@ func play_attack(kind: String = "melee") -> Tween:
 	if dying or body == null:
 		return null
 	var t := create_tween()
-	if _kind == "humanoid":
+	if _rig != null and _rig.is_biped():
+		_rig.shoot(t)
+	elif _kind == "humanoid":
 		var anim: String = PlayerAvatar.ACTION_ANIMS.get(kind, PlayerAvatar.ACTION_ANIMS.melee)
 		if animation_player != null and animation_player.has_animation(anim):
 			animation_player.play(anim, 0.05)
@@ -218,6 +220,9 @@ func play_death() -> Tween:
 	if _aura != null:
 		_aura.visible = false
 	var t := create_tween().set_parallel()
+	if _rig != null and _rig.is_biped():
+		_rig.collapse(t)
+		return t
 	if _kind == "humanoid" and animation_player != null and animation_player.has_animation("die"):
 		animation_player.play("die", 0.05)
 		animation_player.speed_scale = 1.0

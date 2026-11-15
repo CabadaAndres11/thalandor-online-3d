@@ -268,52 +268,6 @@ const MONSTERS = {
     }
     for (const x of [30, 70, 100]) fill(img, [f[0] + x, f[1] + 60 + (x % 20), 8, 6], dirt);
   },
-  // Skeleton: bone skin with the gaps between the bones painted dark: ribs and spine
-  // on the torso, thin bones on arms and legs, a skull face (sockets around the eyes,
-  // nose hole, teeth) and a tattered dark rag at the hips.
-  skeleton(img) {
-    const gap = hex("#231d19"), bone = hex("#d9d2bd"), rag = hex("#2b2b30");
-    const f = L.TORSO.front, b = L.TORSO.back;
-    for (const r of [f, b, L.TORSO.left, L.TORSO.right]) fill(img, [r[0], r[1] + 8, r[2], 88], gap);
-    for (let y = 12; y < 92; y += 14) {
-      fill(img, [f[0] + 10, f[1] + y, f[2] - 20, 8], bone); // ribs
-      fill(img, [b[0] + 10, b[1] + y, b[2] - 20, 8], bone);
-      for (const s of [L.TORSO.left, L.TORSO.right]) fill(img, [s[0], s[1] + y, s[2], 8], bone);
-    }
-    fill(img, [f[0] + f[2] / 2 - 5, f[1] + 8, 10, 80], bone); // sternum
-    fill(img, [b[0] + b[2] / 2 - 6, b[1], 12, 120], bone); // spine
-    for (let y = 4; y < 120; y += 12) fill(img, [b[0] + b[2] / 2 - 9, b[1] + y, 18, 4], bone);
-    fill(img, [f[0], f[1] + 96, f[2], 20], gap); // belly between ribs and pelvis
-    fill(img, [f[0] + f[2] / 2 - 5, f[1] + 96, 10, 20], bone); // spine seen through
-    for (const k of ["front", "back"]) ragged(img, [L.TORSO[k][0], L.TORSO[k][1] + 116, L.TORSO[k][2], 28], rag, 8);
-    for (const k of ["left", "right"]) fill(img, [L.TORSO[k][0], L.TORSO[k][1] + 116, L.TORSO[k][2], 20], rag);
-    fill(img, L.TORSO.bottom, rag);
-    // Arms and legs: two dark grooves along each face make the bones look thin.
-    for (const [o, sides, len] of [...Object.values(L.ARMS).map((o) => [o, L.ARM_SIDES, L.ARM_SIDES[3] - L.HAND_PX]), ...Object.values(L.LEGS).map((o) => [o, L.LEG_SIDES, L.LEG_SIDES[3]])]) {
-      const s = off(o, sides);
-      for (let x = 0; x < s[2]; x += 64) {
-        fill(img, [s[0] + x, s[1], 14, len], gap);
-        fill(img, [s[0] + x + 50, s[1], 14, len], gap);
-      }
-      fill(img, [s[0], s[1] + Math.round(len / 2) - 4, s[2], 8], shade(bone, 0.85)); // joint
-    }
-    // Skull: dark sockets around the (glowing) eyes, a nose hole and teeth.
-    for (const e of L.EYES) {
-      const r = [e[0] - 8, e[1] - 10, e[2] + 16, e[3] + 18];
-      for (let y = r[1]; y < r[1] + r[3]; y++) for (let x = r[0]; x < r[0] + r[2]; x++) {
-        const inEye = x >= e[0] + 3 && x < e[0] + e[2] - 3 && y >= e[1] + 3 && y < e[1] + e[3] - 3;
-        if (!inEye) png.set(img, x, y, gap);
-      }
-    }
-    const n = L.NOSE;
-    for (let y = 0; y < n[3]; y++) {
-      const w = Math.max(2, Math.round((n[2] - 14) * (1 - y / n[3])));
-      fill(img, [n[0] + n[2] / 2 - w / 2, n[1] + 4 + y, w, 1], gap);
-    }
-    const m = L.MOUTH;
-    fill(img, [m[0] - 14, m[1] - 4, m[2] + 28, m[3] + 10], gap);
-    for (let x = m[0] - 12; x < m[0] + m[2] + 12; x += 7) fill(img, [x, m[1] - 2, 5, m[3] + 6], bone);
-  },
 };
 
 const [outDir, ...only] = process.argv.slice(2);
