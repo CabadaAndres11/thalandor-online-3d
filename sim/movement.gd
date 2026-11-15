@@ -10,24 +10,30 @@ const FACE_EPSILON := 0.001
 const CONTACT_EPSILON := 0.001
 
 
-static func apply(state: PlayerState, input: PlayerInput, dt: float, balance: Balance, map: CollisionMap) -> void:
+static func apply(state: PlayerState, input: PlayerInput, dt: float, balance: Balance, map: CollisionMap,
+		speed_mult: float = 1.0) -> void:
 	var dir := input.move.limit_length(1.0)
-	var delta := dir * balance.move_speed * dt
-	var radius := balance.player_radius
+	var delta := dir * balance.move_speed * speed_mult * dt
+	state.position = move_circle(state.position, delta, balance.player_radius, map)
+	state.aim = input.aim
+	var to_aim := Vector2(input.aim.x - state.position.x, input.aim.z - state.position.z)
+	if to_aim.length() > MIN_AIM_DISTANCE:
+		state.facing = atan2(to_aim.x, to_aim.y)
+
+
+## Moves a circle of `radius` by `delta` (world XZ) with sliding collision against
+## solid cells, in sub-steps so it never tunnels. Used by players, dashes, monsters.
+static func move_circle(position: Vector3, delta: Vector2, radius: float, map: CollisionMap) -> Vector3:
 	var steps := maxi(1, ceili(delta.length() / (radius * 0.5)))
 	var step := delta / float(steps)
-	var x := state.position.x
-	var z := state.position.z
+	var x := position.x
+	var z := position.z
 	for i in steps:
 		if step.x != 0.0:
 			x = _resolve_x(x + step.x, z, step.x, radius, map)
 		if step.y != 0.0:
 			z = _resolve_z(x, z + step.y, step.y, radius, map)
-	state.position = Vector3(x, state.position.y, z)
-	state.aim = input.aim
-	var to_aim := Vector2(input.aim.x - x, input.aim.z - z)
-	if to_aim.length() > MIN_AIM_DISTANCE:
-		state.facing = atan2(to_aim.x, to_aim.y)
+	return Vector3(x, position.y, z)
 
 
 ## Moves along one axis and stops at the face of any solid cell the circle crosses in this

@@ -26,8 +26,14 @@ var gcd_end: int = 0
 var last_combat_tick: int = -100000
 ## Resource rules of its class (see Resources): regen_per_s, decay_per_s…
 var resource_def: Dictionary = {}
-## Ticks left of a dodge or charge dash (movement is driven by Movement / effects).
+## Ticks left of a dodge (players, predicted; see Movement).
 var dash_ticks: int = 0
+## Movement imposed by an ability (Carga, Voltereta…): per-tick velocity (world XZ),
+## ticks left, length of the last step and effects applied on arrival.
+var forced_ticks: int = 0
+var forced_vel: Vector2 = Vector2.ZERO
+var forced_last: float = 0.0
+var forced_on_arrive: Array = []
 
 
 func is_alive() -> bool:

@@ -1,0 +1,18 @@
+[
+	{"id": "t_arc", "class": "test", "name": "T", "desc": "T", "icon": "t", "kind": "basic", "level": 1, "cost": 0, "cooldown_s": 0.5, "gcd": false, "range": 2.0, "anim": "melee",
+	 "effects": [{"type": "melee_arc", "angle_deg": 90, "range": 2.0, "damage": {"base": 10, "coef": 0, "kind": "magic", "can_crit": false}}]},
+	{"id": "t_proj", "class": "test", "name": "T", "desc": "T", "icon": "t", "kind": "secondary", "level": 1, "cost": 0, "cooldown_s": 0, "gcd": false, "range": 10, "anim": "shoot",
+	 "effects": [{"type": "projectile", "speed": 15, "radius": 0.2, "range": 10, "pierce": false, "damage": {"base": 10, "coef": 0, "kind": "magic", "can_crit": false}}]},
+	{"id": "t_pierce", "class": "test", "name": "T", "desc": "T", "icon": "t", "kind": "active", "level": 1, "cost": 0, "cooldown_s": 0, "gcd": false, "range": 12, "anim": "shoot",
+	 "effects": [{"type": "projectile", "speed": 20, "radius": 0.2, "range": 12, "pierce": true, "damage": {"base": 10, "coef": 0, "kind": "magic", "can_crit": false}}]},
+	{"id": "t_area", "class": "test", "name": "T", "desc": "T", "icon": "t", "kind": "active", "level": 1, "cost": 0, "cooldown_s": 0, "gcd": false, "range": 15, "anim": "cast",
+	 "effects": [{"type": "area", "at": "cursor", "radius": 2.0, "delay_s": 0.5, "telegraph": true, "damage": {"base": 20, "coef": 0, "kind": "magic", "can_crit": false}}]},
+	{"id": "t_dash", "class": "test", "name": "T", "desc": "T", "icon": "t", "kind": "active", "level": 1, "cost": 0, "cooldown_s": 0, "gcd": false, "range": 6, "anim": "dash",
+	 "effects": [{"type": "dash", "to": "cursor", "distance": 6, "speed": 20}]},
+	{"id": "t_blink_behind", "class": "test", "name": "T", "desc": "T", "icon": "t", "kind": "active", "level": 1, "cost": 0, "cooldown_s": 0, "gcd": false, "range": 12, "anim": "dash",
+	 "effects": [{"type": "blink", "to": "behind_target", "distance": 12}]},
+	{"id": "t_costly", "class": "test", "name": "T", "desc": "T", "icon": "t", "kind": "active", "level": 1, "cost": 50, "cooldown_s": 2, "gcd": true, "range": 10, "anim": "cast",
+	 "effects": [{"type": "area", "at": "self", "radius": 1.0, "delay_s": 0, "telegraph": false, "damage": {"base": 1, "coef": 0, "kind": "magic", "can_crit": false}}]},
+	{"id": "t_gcd_other", "class": "test", "name": "T", "desc": "T", "icon": "t", "kind": "active", "level": 1, "cost": 0, "cooldown_s": 0, "gcd": true, "range": 10, "anim": "cast",
+	 "effects": [{"type": "area", "at": "self", "radius": 1.0, "delay_s": 0, "telegraph": false, "damage": {"base": 1, "coef": 0, "kind": "magic", "can_crit": false}}]}
+]
