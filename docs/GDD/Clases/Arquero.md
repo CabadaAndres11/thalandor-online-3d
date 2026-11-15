@@ -1,7 +1,7 @@
 ---
 tags: [gdd, clase]
-estado: diseñado
-actualizado: 2026-11-14
+estado: implementado
+actualizado: 2026-11-15
 ---
 
 # Arquero
@@ -38,6 +38,28 @@ Se elige una de las dos al llegar al nivel 50 (ver [[04 Personajes y progresión
 
 ## Rangos siguientes (nivel 100+)
 _Por diseñar._
+
+## Valores iniciales (0.4.0)
+Generados de `data/characters/classes.json` y `data/abilities/archer.json`; son la propuesta inicial, ajustable tras las pruebas.
+
+- **Estadísticas:** vida 150 · poder de ataque 20 · poder mágico 0 · armadura 20 · crítico 5 % · esquiva 5 %
+- **Recurso:** Concentración máx. 100, empieza en 100, +12/s, al 30 % al esquivar
+
+| Nivel | Habilidad | Tipo | Coste | Recarga | Alcance | Efecto |
+|---|---|---|---|---|---|---|
+| 1 | Disparo | Básico (CI) | 0 | 0,6 s | 20 m | Flecha a distancia. Mantén el botón para cargarla: más daño y alcance, a cambio de concentración. |
+| 1 | Disparo perforante | Secundario (CD) | 25 | 6 s | 20 m | Flecha que atraviesa a los enemigos en línea. |
+| 1 | Voltereta | Activa | 0 | 8 s | 20 m | Saltas hacia atrás disparando una flecha. |
+| 3 | Red | Activa | 20 | 14 s | 15 m | Inmoviliza 3 s al enemigo bajo el cursor. |
+| 6 | Lluvia de flechas | Activa | 30 | 12 s | 20 m | Tres oleadas de flechas caen en el cursor y dañan a todos a 3 m. |
+| 10 | Trampa explosiva | Activa | 25 | 18 s | 10 m | Colocas una trampa en el cursor; se arma en 1 s y explota cuando un enemigo la pisa. |
+| 20 | Marca | Activa | 15 | 30 s | 20 m | El enemigo bajo el cursor recibe un 15 % más de daño durante 10 s. |
+| 5 | Reflejos | Pasiva | — | — | — | +5 % de esquiva. |
+| 15 | Ojo de halcón | Pasiva | — | — | — | +15 % de alcance. |
+| 25 | Distancia letal | Pasiva | — | — | — | +15 % de daño a enemigos a 10 m o más. |
+| 35 | Ráfaga | Pasiva | — | — | — | Cada 5.º disparo básico es crítico. |
+
+Hasta el Plan 4 todos los personajes son nivel 1: las activas se pueden poner en la barra (ventana K) aunque sean de nivel superior, y las pasivas aún no se activan.
 
 ## Notas y cambios
 - 

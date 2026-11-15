@@ -1,12 +1,12 @@
 ---
 tags: [gdd]
 estado: diseñado
-actualizado: 2026-11-14
+actualizado: 2026-11-15
 ---
 
 # 4. Personajes y clases
 
-## 4.1 Recursos **[Diseñado]**
+## 4.1 Recursos **[Implementado]** (Plan 3, 0.3.0–0.4.0; los valores están en `data/characters/classes.json`)
 - **Vida:** todas las clases.
 - **Recurso de clase:**
   - **Ira** (Guerrero): se genera golpeando y recibiendo daño; decae fuera de combate.
@@ -14,7 +14,7 @@ actualizado: 2026-11-14
   - **Concentración** (Arquero): se regenera rápido estando quieto o caminando, más despacio al esquivar; los disparos cargados la consumen.
   - **Energía** (Asesino): se regenera rápido a ritmo fijo.
 
-## 4.2 Las 5 clases iniciales **[Diseñado]**
+## 4.2 Las 5 clases iniciales **[Implementado]** (0.4.0: kit completo de cada clase; valores iniciales en la nota de cada clase)
 Cada clase tiene su nota con kit, pasivas y mejoras: [[Guerrero]] · [[Clérigo]] · [[Mago]] · [[Arquero]] · [[Asesino]].
 | Clase | Recurso | Rol base | Arma | Armadura |
 |---|---|---|---|---|
@@ -37,7 +37,7 @@ Orden de armaduras, de más ligera a más pesada: tela < cuero < malla < placas.
 - **Arquero:** disparos **cargados** (mantener el botón aumenta daño y alcance), **trampas** colocadas en el suelo y **marca** sobre un objetivo.
 - **Asesino:** **sigilo** (los monstruos no lo detectan; se rompe al atacar o recibir daño; el primer golpe saliendo de sigilo es crítico), **puntos de combo** (0–5) que se gastan en remates, y **venenos** acumulables.
 
-## 4.3 Habilidades **[Diseñado]**
+## 4.3 Habilidades **[Implementado]** (0.4.0: 7 habilidades usables y 4 pasivas por clase como datos, ventana K y barra guardada con el personaje. Hasta el Plan 4 todos son nivel 1: las activas no se bloquean por nivel y las pasivas aún no se activan)
 - **Kit base por clase:** ataque básico (clic izquierdo), ataque secundario (clic derecho) y habilidades que se desbloquean por nivel (niveles 1, 3, 6, 10, 15, 20, 30 y 40).
 - **Pasivas de clase:** niveles 5, 15, 25 y 35.
 - **Barra:** 4 ranuras asignables (1–4); hay más habilidades que ranuras y el jugador elige cuáles lleva (ventana K).

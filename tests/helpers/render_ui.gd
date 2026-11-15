@@ -38,6 +38,29 @@ func _process(_delta: float) -> bool:
 		_main._on_play("Lyra", "archer")
 	elif _frames == 200:
 		_save("ui_hud")
+		# Combat: next to the orc king at 60 % (phase 2), with two allies in the frames
+		# (one downed) for the party frames.
+		var w := _main.game.host.world
+		var me: PlayerState = w.players[_main.game.client.my_id]
+		me.position = Vector3(23.5, 0, 10.0)
+		me.stats.max_hp = 99999.0
+		me.hp = 99999.0
+		for m: CombatEntity in w.monsters.values():
+			if m.type_id == "orc_king":
+				m.hp = m.stats.max_hp * 0.6
+		var c := _main.game.client
+		c.roster[90] = {"name": "Bea", "slot": 1, "class_id": "cleric", "appearance": {}}
+		c.roster[91] = {"name": "Cris", "slot": 2, "class_id": "mage", "appearance": {}}
+	elif _frames > 200 and _frames < 290:
+		var c := _main.game.client
+		c.combat[90] = {"hp": 120.0, "max_hp": 150.0, "life": CombatEntity.ALIVE, "status_bits": 0, "resource": 0.0, "max_resource": 100.0, "combo": 0, "charge": 0.0}
+		c.combat[91] = {"hp": 0.0, "max_hp": 130.0, "life": CombatEntity.DOWNED, "status_bits": 0, "resource": 0.0, "max_resource": 100.0, "combo": 0, "charge": 0.0}
+	elif _frames == 290:
+		_save("ui_combat")
+		var c := _main.game.client
+		_main.abilities_window.show_for(c.class_id, c.bar, _main.abilities)
+	elif _frames == 300:
+		_save("ui_abilities")
 		_clear()
 		return true
 	return false

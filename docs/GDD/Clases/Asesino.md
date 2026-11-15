@@ -1,7 +1,7 @@
 ---
 tags: [gdd, clase]
-estado: diseñado
-actualizado: 2026-11-14
+estado: implementado
+actualizado: 2026-11-15
 ---
 
 # Asesino
@@ -38,6 +38,28 @@ Se elige una de las dos al llegar al nivel 50 (ver [[04 Personajes y progresión
 
 ## Rangos siguientes (nivel 100+)
 _Por diseñar._
+
+## Valores iniciales (0.4.0)
+Generados de `data/characters/classes.json` y `data/abilities/assassin.json`; son la propuesta inicial, ajustable tras las pruebas.
+
+- **Estadísticas:** vida 160 · poder de ataque 20 · poder mágico 0 · armadura 20 · crítico 5 % · esquiva 5 %
+- **Recurso:** Energía máx. 100, empieza en 100, +12/s
+
+| Nivel | Habilidad | Tipo | Coste | Recarga | Alcance | Efecto |
+|---|---|---|---|---|---|---|
+| 1 | Cuchillada | Básico (CI) | 0 | 0,5 s | 2 m | Golpe con dagas que genera 1 punto de combo. |
+| 1 | Eviscerar | Secundario (CD) | 35 | 1 s | 2 m | Remate que gasta los puntos de combo; cuantos más, más daño. |
+| 1 | Paso sombrío | Activa | 20 | 12 s | 12 m | Te teletransportas a la espalda del enemigo bajo el cursor. |
+| 3 | Sigilo | Activa | 20 | 8 s (45 s en combate) | — | Fuera de combate, entras en sigilo. En combate, desapareces y sales del combate (recarga larga). |
+| 6 | Abanico de cuchillas | Activa | 30 | 8 s | 3 m | Dañas a los enemigos a 3 m y ganas 1 punto de combo por cada uno. |
+| 10 | Veneno | Activa | 25 | 20 s | — | Durante 30 s, tus golpes envenenan; el veneno se acumula hasta 5 veces. |
+| 20 | Evasión | Activa | 20 | 40 s | — | +50 % de esquiva durante 5 s. |
+| 5 | Golpe por la espalda | Pasiva | — | — | — | +20 % de daño por la espalda. |
+| 15 | Emboscada | Pasiva | — | — | — | El primer ataque desde sigilo es crítico y hace un 50 % más de daño. |
+| 25 | Evasión mortal | Pasiva | — | — | — | Tras esquivar, el siguiente golpe da 2 puntos de combo. |
+| 35 | Oportunista | Pasiva | — | — | — | +10 % de daño a enemigos aturdidos o inmovilizados. |
+
+Hasta el Plan 4 todos los personajes son nivel 1: las activas se pueden poner en la barra (ventana K) aunque sean de nivel superior, y las pasivas aún no se activan.
 
 ## Notas y cambios
 - 

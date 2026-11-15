@@ -7,17 +7,15 @@
 3. **Aviso de Windows (SmartScreen):** el juego no está firmado. Pulsa **Más información → Ejecutar de todas formas**.
 4. Pulsa **Jugar**. Se abre **Tus personajes**: crea uno con **Crear** (nombre, clase y aspecto) o elige uno que ya tengas.
 
-### Novedades de esta versión: combate básico
-- **Combate en tiempo real** con las 5 clases y su kit de nivel 1: ataque básico (clic izquierdo), secundario (clic derecho) y una habilidad en la casilla 1.
-  - **Guerrero:** genera **furia** al golpear y al recibir daño; Carga le lleva hasta el enemigo.
-  - **Clérigo y Mago:** gastan **maná**, que solo se recupera fuera de combate.
-  - **Arquero:** mantén el clic izquierdo para **cargar** el disparo (gasta concentración).
-  - **Asesino:** sus golpes suman **combos**; Destripar los gasta todos y pega más cuantos más tengas.
-- **Esquiva** con Espacio: un salto corto con un instante de invulnerabilidad (recarga de 3 s).
-- **Monstruos:** una manada de **lobos** y unos **limos ácidos**, cada grupo en una esquina distinta de la arena. Te persiguen esquivando los muros, vuelven a su sitio si te alejas demasiado y reaparecen al rato. Tienen más vida cuantos más jugadores haya en el grupo.
-- **Si caes**, reapareces a los 3 s cerca del centro de la arena con la vida llena.
-- **HUD de combate** abajo en el centro: vida, recurso, casillas con su recarga (atenuadas si no te llega el recurso), combos y carga. Números de daño, chispas y avisos en el suelo.
-- **Todo el grupo tiene que usar la 0.3.0.** Las versiones anteriores no pueden jugar con esta.
+### Novedades de esta versión: clases completas, monstruos y jefe
+- **Kit completo de las 5 clases:** cada una tiene ya su ataque básico, su secundario, 5 habilidades activas y 4 pasivas. Abre la ventana de **Habilidades con K**: ves todas con su descripción, coste y recarga. Para colocar una en la barra, haz clic en ella y luego en una casilla del 1 al 4 (si ya estaba, se intercambian). La barra se guarda con cada personaje.
+  - Hasta que lleguen los niveles (próxima versión) todos sois nivel 1: puedes usar todas las activas, pero las pasivas aún no se activan.
+- **Monstruos nuevos:** **jabalíes** que avisan una línea en el suelo y cargan por ella (¡apártate!), **goblins** que van en manada y **esqueletos arqueros** que se alejan si te acercas. Cualquier monstruo puede salir **élite**: más grande, con un aura en el suelo, más vida y más daño.
+- **Jefe: el Rey orco**, en un extremo de la arena. Tiene tres fases: golpea en arco; a partir del 66 % de vida salta sobre un jugador (el círculo rojo avisa dónde cae); y a partir del 33 % llama a goblins. Una barra arriba muestra su vida y su fase. Cuando cae, todo el grupo lo ve en el chat; reaparece a los 3 minutos.
+- **Amenaza:** los monstruos atacan a quien más amenaza tiene. Curar también da amenaza, y *Provocar* del Guerrero se los lleva y los mantiene en él.
+- **Derribo en grupo:** si caes y queda algún aliado en pie, quedas **derribado** 30 s. Un aliado se acerca y **mantiene E** 3 s para levantarte (si se mueve o le pegan, se corta). Si cae todo el grupo, reaparecéis todos juntos.
+- **Marcos de grupo** a la izquierda con la vida de tus aliados.
+- **Todo el grupo tiene que usar la 0.4.0.** Las versiones anteriores no pueden jugar con esta.
 
 ### Jugar con amigos: dos redes para probar
 Esta versión trae **dos formas de conectarse**. Todos los del grupo tienen que usar la misma, y también **la misma versión** del juego.
@@ -33,4 +31,18 @@ Esta versión trae **dos formas de conectarse**. Todos los del grupo tienen que 
 - Pulsa **F3** para ver la red que usas, el ping y las correcciones.
 
 ### Controles
-WASD mover · ratón apuntar · clic izquierdo ataque básico (mantener: carga del Arquero) · clic derecho secundario · 1–4 habilidades · Espacio esquivar · rueda zoom · Enter chat · Esc menú · F3 datos de red · F9 cambiar proyección de cámara
+| Acción | Tecla |
+|---|---|
+| Moverse | W A S D |
+| Apuntar | Ratón |
+| Ataque básico | Clic izquierdo (Arquero: mantener para cargar) |
+| Ataque secundario | Clic derecho |
+| Habilidades | 1 · 2 · 3 · 4 |
+| Esquivar | Espacio |
+| Levantar a un aliado derribado | Mantener E a su lado |
+| Ventana de habilidades | K |
+| Chat | Enter |
+| Menú | Esc |
+| Zoom | Rueda del ratón |
+| Datos de red | F3 |
+| Cambiar proyección de cámara | F9 |

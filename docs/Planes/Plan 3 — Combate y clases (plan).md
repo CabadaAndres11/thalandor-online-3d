@@ -2,7 +2,7 @@
 tags: [plan]
 plan: 3
 fecha: 2026-11-15
-estado: borrador
+estado: hecho
 actualizado: 2026-11-15
 ---
 # Plan 3 — Combate y clases: plan de implementación

@@ -1,7 +1,7 @@
 ---
 tags: [gdd, clase]
-estado: diseñado
-actualizado: 2026-11-14
+estado: implementado
+actualizado: 2026-11-15
 ---
 
 # Mago
@@ -38,6 +38,28 @@ Se elige una de las dos al llegar al nivel 50 (ver [[04 Personajes y progresión
 
 ## Rangos siguientes (nivel 100+)
 _Por diseñar._
+
+## Valores iniciales (0.4.0)
+Generados de `data/characters/classes.json` y `data/abilities/mage.json`; son la propuesta inicial, ajustable tras las pruebas.
+
+- **Estadísticas:** vida 130 · poder de ataque 5 · poder mágico 20 · armadura 10 · crítico 5 % · esquiva 0 %
+- **Recurso:** Maná máx. 160, empieza en 160, +6/s, no se regenera en combate
+
+| Nivel | Habilidad | Tipo | Coste | Recarga | Alcance | Efecto |
+|---|---|---|---|---|---|---|
+| 1 | Proyectil arcano | Básico (CI) | 0 | 0,7 s | 22 m | Proyectil mágico rápido. |
+| 1 | Explosión arcana | Secundario (CD) | 25 | 5 s | 20 m | Área pequeña en el cursor, con un breve retardo. |
+| 1 | Parpadeo | Activa | 15 | 10 s | 8 m | Teletransporte corto hacia el cursor. |
+| 3 | Nova de escarcha | Activa | 40 | 15 s | 4 m | Congela 2 s a los enemigos a 4 m a tu alrededor. |
+| 6 | Barrera de maná | Activa | 40 | 20 s | — | Un escudo que absorbe daño durante 8 s. |
+| 10 | Bola de fuego | Activa | 45 | 10 s | 22 m | Un proyectil de fuego que explota al impactar y daña a todos a 2,5 m. |
+| 20 | Descarga de escarcha | Activa | 40 | 25 s | 22 m | Un proyectil de hielo que ralentiza al enemigo un 50 % durante 4 s. |
+| 5 | Mente arcana | Pasiva | — | — | — | +10 % de maná máximo. |
+| 15 | Concentración | Pasiva | — | — | — | Tras 3 s sin recibir daño, tus hechizos hacen un 10 % más de daño. |
+| 25 | Ignición | Pasiva | — | — | — | Tus críticos de fuego dejan una quemadura. |
+| 35 | Frío penetrante | Pasiva | — | — | — | +20 % de daño a enemigos congelados o ralentizados. |
+
+Hasta el Plan 4 todos los personajes son nivel 1: las activas se pueden poner en la barra (ventana K) aunque sean de nivel superior, y las pasivas aún no se activan.
 
 ## Notas y cambios
 - 
