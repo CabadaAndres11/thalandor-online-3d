@@ -208,3 +208,10 @@ func test_damaged_files_are_reported() -> void:
 	assert_true(main.dialog.visible)
 	assert_true(main.dialog.message().contains("1"))
 	assert_true(FileAccess.file_exists(CHARS.path_join("roto.json")))
+
+
+func test_monsters_appear_in_solo_game() -> void:
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game != null and main.game.monster_avatar_count() > 0, 3.0)
+	assert_gt(main.game.monster_avatar_count(), 0, "the arena's monsters are drawn")
+	assert_eq(main.game.monster_avatar_count(), main.game.client.monsters.size())

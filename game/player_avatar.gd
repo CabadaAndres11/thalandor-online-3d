@@ -17,9 +17,20 @@ var rig: CharacterRig
 ## Walk animation plays at real speed / move_speed (set from balance by the game).
 var move_speed: float = 5.0
 
+## Kenney animation for each ability "anim" kind.
+const ACTION_ANIMS := {
+	"melee": "attack-melee-right", "shoot": "holding-right-shoot", "cast": "interact-right",
+	"dash": "holding-both", "die": "die",
+}
+
+var bar: OverheadBar
+
 var _label: Label3D
 var _last_position: Variant = null
 var _speed: float = 0.0
+## Seconds left of an action animation (idle/walk wait for it); dead = stays down.
+var _action_left: float = 0.0
+var _dead: bool = false
 
 
 func setup(player_name: String, slot: int, class_id: String, appearance: Dictionary) -> void:
@@ -51,6 +62,10 @@ func setup(player_name: String, slot: int, class_id: String, appearance: Diction
 	_label.font_size = 40
 	_label.outline_size = 10
 	_label.position.y = NAME_HEIGHT
+	bar = OverheadBar.new()
+	bar.position.y = NAME_HEIGHT - 0.22
+	add_child(bar)
+	bar.setup("", false, Color(0.3, 0.85, 0.35))
 	add_child(_label)
 
 
@@ -70,5 +85,27 @@ func apply_state(state: Dictionary, delta: float) -> void:
 		rotation.y = state.facing
 	if delta > 0.0:
 		_speed = lerpf(_speed, measured, 1.0 - exp(-delta / SPEED_SMOOTHING_S))
-	if rig != null:
+		_action_left = maxf(_action_left - delta, 0.0)
+	if rig != null and _action_left <= 0.0 and not _dead:
 		rig.set_moving_speed(_speed, move_speed)
+
+
+func set_health(hp: float, max_hp: float, alive: bool = true) -> void:
+	bar.set_health(hp, max_hp)
+	if alive and _dead:
+		_dead = false # back on its feet (respawn / revive)
+		_action_left = 0.0
+
+
+## Plays the animation of an ability kind (melee, shoot, cast, dash) or "die"; idle
+## and walk resume when it ends (a dead character stays down until it is alive).
+func play_action(kind: String) -> void:
+	if rig == null or rig.animation_player == null or not ACTION_ANIMS.has(kind):
+		return
+	var anim: String = ACTION_ANIMS[kind]
+	if not rig.animation_player.has_animation(anim):
+		return
+	rig.animation_player.play(anim, 0.05)
+	rig.animation_player.speed_scale = 1.0
+	_action_left = rig.animation_player.get_animation(anim).length
+	_dead = kind == "die"

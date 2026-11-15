@@ -21,6 +21,9 @@ func _initialize() -> void:
 	var arena := Arena.new()
 	root.add_child(arena)
 	arena.build(Arena.load_layout())
+	if _name == "monsters_a":
+		_combat_scene()
+		return
 	var looks := _looks(_name)
 	var origin := Vector3(20.5 - (looks.size() - 1) * SPACING / 2.0, 0, 18.5)
 	for i in looks.size():
@@ -120,3 +123,66 @@ func _resolved(list: Array) -> Array:
 			look["rot"] = entry[2]
 		looks.append(look)
 	return looks
+
+
+## Combat checkpoint: two heroes facing wolves and slimes, a wolf mid-lunge, a ground
+## warning, a projectile, a shield, damage numbers and health bars.
+var _fx: CombatFX
+var _spots: Dictionary = {}
+
+
+func _spot(id: int) -> Variant:
+	return _spots.get(id)
+
+
+func _combat_scene() -> void:
+	var catalog := CharacterCatalog.load_default()
+	var heroes := [
+		[1, "warrior", {"beard": "full", "hair_color": "dark_brown", "skin": "skin_3"}, Vector3(18.5, 0, 19.5), 0.35],
+		[2, "mage", {"hair_style": "bob", "hair_color": "white", "skin": "skin_6"}, Vector3(16.8, 0, 18.3), 0.6],
+	]
+	for h: Array in heroes:
+		var p := PlayerAvatar.new()
+		root.add_child(p)
+		p.setup("Aldric" if h[0] == 1 else "Morwen", h[0] - 1, h[1], h[2])
+		p.position = h[3]
+		p.rotation.y = h[4]
+		p.set_health(140.0 if h[0] == 1 else 90.0, 200.0 if h[0] == 1 else 130.0)
+		_spots[h[0]] = h[3]
+	var db := MonsterDB.load_default()
+	var monsters := [
+		[1000, "wolf", Vector3(20.6, 0, 21.4), -2.6, 0.5],
+		[1001, "wolf", Vector3(22.2, 0, 20.4), -2.2, 1.0],
+		[1002, "wolf", Vector3(21.6, 0, 22.8), -2.7, 0.2],
+		[1003, "slime", Vector3(18.0, 0, 23.0), PI, 0.7],
+		[1004, "slime", Vector3(15.6, 0, 22.4), 2.6, 1.0],
+	]
+	var lunging: MonsterAvatar
+	for m: Array in monsters:
+		var a := MonsterAvatar.new()
+		root.add_child(a)
+		var type := db.get_type(m[1])
+		a.setup(type)
+		var max_hp := float((type.get("stats", {}) as Dictionary).get("max_hp", 60.0))
+		a.apply_state({"position": m[2], "facing": m[3]}, {"hp": max_hp * float(m[4]), "max_hp": max_hp, "status_bits": 0}, 0.016)
+		_spots[m[0]] = m[2]
+		if m[0] == 1000:
+			lunging = a
+	var t := lunging.play_attack()
+	t.pause()
+	t.custom_step(0.1)
+	_fx = CombatFX.new()
+	root.add_child(_fx)
+	_fx.setup(_spot, func() -> int: return 0, AbilityDB.load_default(), 30)
+	_fx.set_process(false)
+	_fx.handle(["telegraph", 1, Vector3(17.0, 0, 22.6), 2.5, 30])
+	_fx.handle(["projectile", 2, 2, "mage_missile", Vector3(16.8, 0, 18.3), Vector2(0.3, 0.95).normalized(), 22.0, 22.0])
+	_fx.handle(["status", 1, "shield", 300])
+	_fx.handle(["hit", 1001, 23.0, false, 1])
+	_fx.handle(["hit", 1002, 41.0, true, 1])
+	_fx.handle(["heal", 2, 35.0])
+	_fx.advance(0.12)
+	var cam := Camera3D.new()
+	cam.fov = 38
+	root.add_child(cam)
+	cam.look_at_from_position(Vector3(19.0, 9.0, 13.5), Vector3(19.0, 0.6, 20.8))

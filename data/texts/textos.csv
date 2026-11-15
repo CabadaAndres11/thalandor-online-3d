@@ -126,3 +126,4 @@ AB_ASSASSIN_EVISCERATE,Eviscerar
 AB_ASSASSIN_EVISCERATE_DESC,"Remate que gasta los puntos de combo; cuantos más, más daño."
 AB_ASSASSIN_SHADOWSTEP,Paso sombrío
 AB_ASSASSIN_SHADOWSTEP_DESC,Te teletransportas a la espalda del enemigo bajo el cursor.
+FX_DODGE,Esquiva

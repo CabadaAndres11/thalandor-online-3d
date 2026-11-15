@@ -83,3 +83,26 @@ func test_teleport_jump_is_not_walking() -> void:
 func test_faces_state_facing() -> void:
 	avatar.apply_state(_state(Vector3.ZERO, 1.2), DT)
 	assert_almost_eq(avatar.rotation.y, 1.2, 0.0001)
+
+
+func test_action_animation_plays_then_walk_resumes() -> void:
+	avatar.play_action("melee")
+	assert_eq(avatar.rig.current_animation(), "attack-melee-right")
+	_walk(3, 5.0)
+	assert_eq(avatar.rig.current_animation(), "attack-melee-right", "walking does not cut the swing")
+	_walk(120, 5.0)
+	assert_eq(avatar.rig.current_animation(), "walk", "back to walking once it ended")
+
+
+func test_dead_stays_down_until_alive_again() -> void:
+	avatar.play_action("die")
+	_walk(200, 0.0)
+	assert_eq(avatar.rig.current_animation(), "die")
+	avatar.set_health(100.0, 100.0, true)
+	_walk(5, 0.0)
+	assert_eq(avatar.rig.current_animation(), "idle")
+
+
+func test_unknown_action_is_ignored() -> void:
+	avatar.play_action("teleport_to_moon")
+	assert_eq(avatar.rig.current_animation(), "idle")

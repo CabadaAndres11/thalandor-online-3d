@@ -27,6 +27,9 @@ var net_mode: String = NET_WEBRTC
 var arena: Arena
 var camera: IsoCamera
 var _avatars: Dictionary = {} # id -> PlayerAvatar
+var _monster_avatars: Dictionary = {} # id -> MonsterAvatar
+## Combat visuals (projectiles, warnings, numbers…) driven by host events.
+var fx: CombatFX
 var _avatar_root: Node3D
 var _loopback: MemoryNetwork
 var _group_code: String = ""
@@ -52,6 +55,10 @@ func _init() -> void:
 	camera.name = "Camera"
 	add_child(camera)
 	camera.follow(map.spawn_point())
+	fx = CombatFX.new()
+	fx.name = "CombatFX"
+	add_child(fx)
+	fx.setup(_entity_position, _latest_tick, AbilityDB.load_default(), balance.tick_rate)
 	_aim = map.spawn_point()
 
 
@@ -182,6 +189,9 @@ func leave() -> void:
 	host = null
 	_group_code = ""
 	_opening = false
+	for id: int in _monster_avatars.keys():
+		(_monster_avatars[id] as Node).queue_free()
+	_monster_avatars.clear()
 	for id: int in _avatars.keys():
 		_remove_avatar(id)
 
@@ -193,6 +203,7 @@ func is_hosting() -> bool:
 func _start_client(player_name: String, class_id: String, appearance: Dictionary, t: Transport) -> void:
 	client = ClientSession.new(balance, map, game_version(), player_name, class_id, appearance)
 	client.disconnected.connect(_on_client_disconnected)
+	client.combat_event.connect(_on_combat_event)
 	client.connect_to(t)
 
 
@@ -222,6 +233,7 @@ func _process(delta: float) -> void:
 	if client == null:
 		return # the update ended the session (e.g. timeout) and the game left
 	_sync_avatars(delta)
+	_sync_monsters(delta)
 	var own := client.render_state(client.my_id)
 	if not own.is_empty():
 		camera.follow(own.position)
@@ -250,7 +262,11 @@ func _sync_avatars(delta: float) -> void:
 			avatar.setup(entry.name, entry.slot, entry.get("class_id", CharacterCatalog.DEFAULT_CLASS), entry.get("appearance", {}))
 			_avatar_root.add_child(avatar)
 			_avatars[id] = avatar
-		(_avatars[id] as PlayerAvatar).apply_state(client.render_state(id), delta)
+		var avatar_node := _avatars[id] as PlayerAvatar
+		avatar_node.apply_state(client.render_state(id), delta)
+		if client.combat.has(id):
+			var c: Dictionary = client.combat[id]
+			avatar_node.set_health(float(c.hp), float(c.max_hp), int(c.life) == CombatEntity.ALIVE)
 
 
 func _remove_avatar(id: int) -> void:
@@ -274,3 +290,54 @@ static func _user_arg(key: String, default: String = "") -> String:
 		if arg.begins_with("--" + key + "="):
 			return arg.trim_prefix("--" + key + "=")
 	return default
+
+
+func monster_avatar_count() -> int:
+	return _monster_avatars.size()
+
+
+func _sync_monsters(delta: float) -> void:
+	for id: int in _monster_avatars.keys():
+		if not client.monsters.has(id):
+			(_monster_avatars[id] as Node).queue_free()
+			_monster_avatars.erase(id)
+	for id: int in client.monsters:
+		var info: Dictionary = client.monsters[id]
+		if not _monster_avatars.has(id):
+			var avatar := MonsterAvatar.new()
+			avatar.name = "Monster%d" % id
+			_avatar_root.add_child(avatar)
+			avatar.setup(MonsterDB.load_default().get_type(str(info.type)))
+			_monster_avatars[id] = avatar
+		(_monster_avatars[id] as MonsterAvatar).apply_state(client.monster_render_state(id), info, delta)
+
+
+func _on_combat_event(ev: Array) -> void:
+	fx.handle(ev)
+	match str(ev[0]):
+		"cast":
+			var who := int(ev[1])
+			if _monster_avatars.has(who):
+				(_monster_avatars[who] as MonsterAvatar).play_attack()
+			elif _avatars.has(who):
+				var ab := AbilityDB.load_default().get_ability(str(ev[2]))
+				(_avatars[who] as PlayerAvatar).play_action(str(ab.get("anim", "")))
+		"died":
+			var who := int(ev[1])
+			if _monster_avatars.has(who):
+				(_monster_avatars[who] as MonsterAvatar).play_death()
+			elif _avatars.has(who):
+				(_avatars[who] as PlayerAvatar).play_action("die")
+
+
+## Drawn position of a player or monster (for effects), or null.
+func _entity_position(id: int) -> Variant:
+	if _avatars.has(id):
+		return (_avatars[id] as Node3D).position
+	if _monster_avatars.has(id):
+		return (_monster_avatars[id] as Node3D).position
+	return null
+
+
+func _latest_tick() -> int:
+	return client.latest_tick() if client != null else 0
