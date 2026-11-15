@@ -1,16 +1,12 @@
 class_name MonsterAvatar
 extends Node3D
 ## A monster on screen, built from its type (data/monsters "model"):
-##   "pets:<animal>" Kenney Cube Pets model, recolored with the type's tint;
+##   "rig:<name>"    a voxel beast made of animated parts (BeastRig);
 ##   "vox:<name>"    a voxel body from assets/monsters/vox (tint on index 251).
-## Pets use their idle/walk/run animations; attacks (lunge) and deaths (fall over)
-## are tweens, since the pack has none.
+## Attacks (lunge, bite) and deaths (fall over) are tweens on the body holder.
 
-const PET_PATH := "res://assets/monsters/pets/animal-%s.glb"
+
 const VOX_PATH := "res://assets/monsters/vox/%s.vox"
-const TINT_SHADER := preload("res://assets/monsters/pet_tint.gdshader")
-const PET_TEXTURE := "res://assets/monsters/pets/Textures/colormap.png"
-const PET_SCALE := 0.75
 const SPEED_SMOOTHING_S := 0.1
 const TELEPORT_DISTANCE := 2.0
 
@@ -18,6 +14,7 @@ var body: Node3D
 var bar: OverheadBar
 var dying: bool = false
 var animation_player: AnimationPlayer
+var _rig: BeastRig
 
 var _kind: String = ""
 var _height: float = 1.0
@@ -31,11 +28,13 @@ func setup(type: Dictionary) -> void:
 	var model := str(type.get("model", ""))
 	var tint := Color(str(type.get("tint", "#ffffff")))
 	var scale_f := float(type.get("scale", 1.0))
-	if model.begins_with("pets:"):
-		_kind = "pets"
-		body = _pet(model.trim_prefix("pets:"), tint)
-		body.scale = Vector3.ONE * PET_SCALE * scale_f
-		_height = 1.4 * PET_SCALE * scale_f
+	if model.begins_with("rig:"):
+		_kind = "rig"
+		body = Node3D.new()
+		_rig = BeastRig.build(model.trim_prefix("rig:"), tint)
+		body.add_child(_rig)
+		body.scale = Vector3.ONE * scale_f
+		_height = 1.6 * scale_f
 	elif model.begins_with("vox:"):
 		_kind = "vox"
 		body = _vox(model.trim_prefix("vox:"), tint)
@@ -71,7 +70,9 @@ func apply_state(state: Dictionary, info: Dictionary, delta: float) -> void:
 	bar.set_health(float(info.get("hp", 1.0)), float(info.get("max_hp", 1.0)))
 	if dying:
 		return
-	if animation_player != null:
+	if _rig != null:
+		_rig.animate(_speed, delta)
+	elif animation_player != null:
 		var anim := "idle"
 		if _speed >= 3.5:
 			anim = "run"
@@ -100,8 +101,16 @@ func play_attack() -> Tween:
 		t.tween_property(body, "scale", base * Vector3(1.25, 0.7, 1.25), 0.1)
 		t.tween_property(body, "scale", base, 0.15)
 	else:
+		var head := _rig.part("head") if _rig != null else null
+		if head != null:
+			_rig.biting = true
 		t.tween_property(body, "position", _rest + Vector3(0, 0, 0.35), 0.1)
+		if head != null:
+			t.parallel().tween_property(head, "rotation:x", 0.5, 0.1)
 		t.tween_property(body, "position", _rest, 0.15)
+		if head != null:
+			t.parallel().tween_property(head, "rotation:x", 0.0, 0.15)
+			t.tween_callback(_end_bite)
 	return t
 
 
@@ -120,24 +129,6 @@ func play_death() -> Tween:
 	return t
 
 
-func _pet(animal: String, tint: Color) -> Node3D:
-	var node: Node3D = (load(PET_PATH % animal) as PackedScene).instantiate()
-	animation_player = node.find_child("AnimationPlayer", true, false) as AnimationPlayer
-	var mat := ShaderMaterial.new()
-	mat.shader = TINT_SHADER
-	mat.set_shader_parameter("tex", load(PET_TEXTURE))
-	mat.set_shader_parameter("tint", tint)
-	for m: Node in node.find_children("*", "MeshInstance3D", true, false):
-		(m as MeshInstance3D).material_override = mat
-	if animation_player != null and animation_player.has_animation("idle"):
-		animation_player.play("idle")
-	# The pack's animations move the model's root every frame; tweens (lunge, death)
-	# act on this holder instead so they are not overwritten.
-	var holder := Node3D.new()
-	holder.add_child(node)
-	return holder
-
-
 func _vox(name_id: String, tint: Color) -> Node3D:
 	var holder := Node3D.new()
 	var mesh := VoxMesher.cached(VOX_PATH % name_id, {VoxMesher.TINT_PRIMARY: tint})
@@ -148,3 +139,8 @@ func _vox(name_id: String, tint: Color) -> Node3D:
 		mi.position = Vector3(-box.size.x / 2.0, 0, -box.size.z / 2.0)
 	holder.add_child(mi)
 	return holder
+
+
+func _end_bite() -> void:
+	if _rig != null:
+		_rig.biting = false

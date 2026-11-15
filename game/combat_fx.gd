@@ -64,6 +64,9 @@ func handle(ev: Array) -> void:
 			if str(ev[2]) == "shield":
 				_add_shield(int(ev[1]), int(ev[3]))
 		"hit":
+			var at: Variant = _position_of.call(int(ev[1]))
+			if at != null:
+				_sparks(at, COLOR_CRIT if bool(ev[3]) else Color(1.0, 0.55, 0.3))
 			if bool(ev[3]):
 				_number(int(ev[1]), "%d" % roundi(float(ev[2])), COLOR_CRIT, 64)
 			else:
@@ -98,7 +101,7 @@ func advance(dt: float) -> void:
 		if f.t >= FLASH_TIME:
 			(f.node as Node).queue_free()
 			_flashes.erase(f)
-		else:
+		elif f.node is MeshInstance3D and f.t >= 0.0:
 			((f.node as MeshInstance3D).material_override as StandardMaterial3D).albedo_color.a = 0.6 * (1.0 - f.t / FLASH_TIME)
 	for n: Dictionary in _numbers.duplicate():
 		n.t += dt
@@ -168,16 +171,24 @@ func _add_projectile(ev: Array) -> void:
 	var pid := int(ev[1])
 	var from: Vector3 = ev[4]
 	var dir2: Vector2 = ev[5]
-	var node := MeshInstance3D.new()
-	var mesh := SphereMesh.new()
-	mesh.radius = 0.16
-	mesh.height = 0.32
-	node.mesh = mesh
-	node.material_override = _material(_color_of(str(ev[3])), 1.0)
-	node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var color := _color_of(str(ev[3]))
+	var node := Node3D.new()
+	# A stretched glowing bolt along its flight, with a fading trail behind.
+	var bolt := MeshInstance3D.new()
+	var mesh := CapsuleMesh.new()
+	mesh.radius = 0.09
+	mesh.height = 0.55
+	bolt.mesh = mesh
+	bolt.rotation_degrees.x = 90.0
+	bolt.material_override = _material(color.lightened(0.3), 1.0)
+	bolt.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	node.add_child(bolt)
+	node.add_child(_trail(color))
 	var start := from + Vector3(0, 1.1, 0)
 	node.position = start
 	add_child(node)
+	if dir2.length() > 0.001:
+		node.rotation.y = atan2(dir2.x, dir2.y)
 	_projectiles[pid] = {"node": node, "from": start, "dir": Vector3(dir2.x, 0, dir2.y),
 		"speed": float(ev[6]), "range": float(ev[7]), "t": 0.0}
 
@@ -207,9 +218,11 @@ func _add_telegraph(ev: Array) -> void:
 	var duration := maxf(float(int(ev[4]) - int(_tick_now.call())) / float(_tick_rate), 0.05)
 	var holder := Node3D.new()
 	holder.position = (ev[2] as Vector3) + Vector3(0, 0.03, 0)
-	var ring := _disc(radius, Color(1.0, 0.25, 0.15), 0.28)
-	holder.add_child(ring)
-	var fill := _disc(radius, Color(1.0, 0.35, 0.1), 0.45)
+	# Dark blood-red area with a bright glowing rim; the fill grows until impact.
+	var area := _disc(radius, Color(0.35, 0.02, 0.02), 0.35)
+	holder.add_child(area)
+	holder.add_child(_ring(radius, Color(1.0, 0.15, 0.08)))
+	var fill := _disc(radius, Color(0.75, 0.05, 0.03), 0.45)
 	fill.position.y = 0.01
 	fill.scale = Vector3(0.0, 1, 0.0)
 	holder.add_child(fill)
@@ -291,7 +304,8 @@ func _number(id: int, text: String, color: Color, size: int) -> void:
 	label.text = text
 	label.modulate = color
 	label.font_size = size
-	label.outline_size = 10
+	label.outline_size = 18
+	label.outline_modulate = Color(0.05, 0.02, 0.02)
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.fixed_size = true
 	label.no_depth_test = true
@@ -300,3 +314,71 @@ func _number(id: int, text: String, color: Color, size: int) -> void:
 	label.position = (pos as Vector3) + Vector3(0, HEAD_HEIGHT, 0) + jitter
 	add_child(label)
 	_numbers.append({"node": label, "t": 0.0, "base_y": label.position.y})
+
+
+## A thin glowing ring lying on the ground (edge of a warning).
+func _ring(radius: float, color: Color) -> MeshInstance3D:
+	var node := MeshInstance3D.new()
+	var mesh := TorusMesh.new()
+	mesh.inner_radius = maxf(radius - 0.12, 0.01)
+	mesh.outer_radius = radius
+	mesh.rings = 48
+	mesh.ring_segments = 4
+	node.mesh = mesh
+	node.scale = Vector3(1, 0.15, 1)
+	node.position.y = 0.02
+	node.material_override = _material(color, 0.95)
+	node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return node
+
+
+## Particles left behind a projectile (in world space, so they trail).
+func _trail(color: Color) -> CPUParticles3D:
+	var p := CPUParticles3D.new()
+	p.amount = 24
+	p.lifetime = 0.25
+	p.local_coords = false
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_SPHERE
+	p.emission_sphere_radius = 0.05
+	p.gravity = Vector3.ZERO
+	p.initial_velocity_min = 0.0
+	p.initial_velocity_max = 0.3
+	p.scale_amount_min = 0.5
+	p.scale_amount_max = 1.0
+	var quad := SphereMesh.new()
+	quad.radius = 0.05
+	quad.height = 0.1
+	p.mesh = quad
+	p.material_override = _material(color, 0.7)
+	p.color_ramp = _fade_ramp(color)
+	return p
+
+
+## A short burst of sparks where something got hit.
+func _sparks(pos: Vector3, color: Color) -> void:
+	var p := CPUParticles3D.new()
+	p.one_shot = true
+	p.emitting = true
+	p.amount = 14
+	p.lifetime = 0.35
+	p.explosiveness = 1.0
+	p.direction = Vector3.UP
+	p.spread = 70.0
+	p.initial_velocity_min = 2.0
+	p.initial_velocity_max = 4.5
+	p.gravity = Vector3(0, -9.0, 0)
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(0.06, 0.06, 0.06)
+	p.mesh = mesh
+	p.material_override = _material(color, 1.0)
+	p.color_ramp = _fade_ramp(color)
+	p.position = pos + Vector3(0, 1.0, 0)
+	add_child(p)
+	_flashes.append({"node": p, "t": -0.3}) # freed with the flashes, a bit later
+
+
+func _fade_ramp(color: Color) -> Gradient:
+	var g := Gradient.new()
+	g.set_color(0, Color(color, 1.0))
+	g.set_color(1, Color(color, 0.0))
+	return g

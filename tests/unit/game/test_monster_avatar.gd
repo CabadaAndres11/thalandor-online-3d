@@ -48,3 +48,28 @@ func test_death_falls_over() -> void:
 	t.custom_step(1.0)
 	assert_lt(a.body.scale.y, 0.5, "shrunk or fallen")
 	assert_null(a.play_attack(), "dead monsters don't attack")
+
+
+func test_wolf_is_a_voxel_rig_with_moving_legs() -> void:
+	var a := _avatar("wolf")
+	var rig := a.body.get_child(0) as BeastRig
+	assert_not_null(rig, "wolves are voxel rigs")
+	for part: String in ["body", "head", "leg_front_left", "leg_back_right", "tail"]:
+		assert_not_null(rig.part(part), part)
+	var leg := rig.part("leg_front_left")
+	var pos := Vector3.ZERO
+	var angles := []
+	for i in 20:
+		pos += Vector3(5.0 * DT, 0, 0)
+		a.apply_state({"position": pos, "facing": 0.0}, {"hp": 60.0, "max_hp": 60.0, "status_bits": 0}, DT)
+		angles.append(leg.rotation.x)
+	assert_gt(angles.max() - angles.min(), 0.2, "legs swing while walking")
+
+
+func test_wolf_bite_moves_the_head() -> void:
+	var a := _avatar("wolf")
+	var rig := a.body.get_child(0) as BeastRig
+	var t := a.play_attack()
+	t.pause()
+	t.custom_step(0.1)
+	assert_ne(rig.part("head").rotation.x, 0.0, "the head snaps down")

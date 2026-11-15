@@ -1,5 +1,5 @@
 {
-	"id": "slime", "name": "MON_SLIME", "model": "vox:slime", "tint": "#5fbf4f", "scale": 1.0,
+	"id": "slime", "name": "MON_SLIME", "model": "vox:slime", "tint": "#4e8f2a", "scale": 1.0,
 	"radius": 0.6, "speed": 2.2,
 	"stats": {"max_hp": 140, "armor": 0, "attack_power": 14, "crit_chance": 0.0},
 	"aggro_range": 7, "leash_range": 18, "attack_range": 1.6,

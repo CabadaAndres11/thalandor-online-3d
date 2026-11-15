@@ -94,3 +94,24 @@ func test_cached_returns_same_mesh_for_same_tints() -> void:
 
 func test_cached_missing_file_is_null() -> void:
 	assert_null(VoxMesher.cached("res://nope.vox", {}))
+
+
+## Glowing voxels (eyes, runes) go to a second, unshaded surface so they stand out.
+func test_glow_index_gets_its_own_unshaded_surface() -> void:
+	var p := PackedColorArray()
+	p.resize(256)
+	p[3] = Color.GRAY
+	p[VoxMesher.GLOW] = Color.RED
+	var vox := VoxFile.parse(VoxWriter.build(Vector3i(2, 1, 1), [[0, 0, 0, 3], [1, 0, 0, VoxMesher.GLOW]], p))
+	var mesh := VoxMesher.build(vox, {})
+	assert_eq(mesh.get_surface_count(), 2)
+	var glow_mat := mesh.surface_get_material(1) as StandardMaterial3D
+	assert_eq(glow_mat.shading_mode, BaseMaterial3D.SHADING_MODE_UNSHADED)
+	for c: Color in mesh.surface_get_arrays(1)[Mesh.ARRAY_COLOR] as PackedColorArray:
+		assert_eq(c, Color.RED)
+
+
+func test_glow_tint_overrides_palette() -> void:
+	var vox := VoxFile.parse(VoxWriter.build(Vector3i(1, 1, 1), [[0, 0, 0, VoxMesher.GLOW]]))
+	var mesh := VoxMesher.build(vox, {VoxMesher.GLOW: Color.YELLOW})
+	assert_eq((mesh.surface_get_arrays(0)[Mesh.ARRAY_COLOR] as PackedColorArray)[0], Color.YELLOW)

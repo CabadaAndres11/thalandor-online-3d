@@ -1,6 +1,6 @@
 {
-	"id": "wolf", "name": "MON_WOLF", "model": "pets:dog", "tint": "#7c8088", "scale": 1.0,
-	"radius": 0.45, "speed": 5.5,
+	"id": "wolf", "name": "MON_WOLF", "model": "rig:wolf", "tint": "#3b3e45", "scale": 0.8,
+	"radius": 0.55, "speed": 5.5,
 	"stats": {"max_hp": 60, "armor": 10, "attack_power": 10, "crit_chance": 0.05},
 	"aggro_range": 8, "leash_range": 22, "attack_range": 1.6,
 	"behavior": "melee", "abilities": ["wolf_bite"]

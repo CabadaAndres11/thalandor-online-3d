@@ -5,6 +5,7 @@
 export const TINT_HAIR = 250;
 export const TINT_PRIMARY = 251;
 export const TINT_SECONDARY = 252;
+export const GLOW = 253; // drawn unshaded: eyes, runes, acid
 import fs from "node:fs";
 
 function u32(v) {
