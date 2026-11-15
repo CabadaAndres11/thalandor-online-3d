@@ -94,12 +94,34 @@ static func snapshot_of(e: CombatEntity) -> CombatEntity:
 static func on_zero_hp(world: SimWorld, e: CombatEntity) -> void:
 	e.life = CombatEntity.DEAD
 	e.statuses.clear()
+	e.shield = 0.0
 	e.forced_ticks = 0
+	if e is PlayerState:
+		var p := e as PlayerState
+		p.respawn_tick = world.tick + world.ticks(world.balance.respawn_s)
+		p.charge_start = -1
+		p.combo = 0
 	world.emit(["died", e.id])
+
+
+## Back at the respawn point with full health and resource (rage starts empty).
+static func respawn(world: SimWorld, p: PlayerState) -> void:
+	p.life = CombatEntity.ALIVE
+	p.respawn_tick = -1
+	p.hp = p.stats.max_hp
+	p.resource = minf(float(p.resource_def.get("start", p.stats.max_resource)), p.stats.max_resource)
+	p.statuses.clear()
+	p.cooldowns.clear()
+	p.dash_ticks = 0
+	p.position = world.map.respawn_point()
+	world.emit(["respawned", p.id, p.position])
 
 
 ## One simulation tick of combat (the world's tick counter is advanced by the caller).
 static func tick(world: SimWorld) -> void:
+	for p: PlayerState in world.players.values():
+		if p.life == CombatEntity.DEAD and p.respawn_tick >= 0 and world.tick >= p.respawn_tick:
+			respawn(world, p)
 	for e: CombatEntity in world.entities():
 		StatusEffect.tick_entity(e, world)
 		if e.shield > 0.0 and world.tick >= e.shield_end:

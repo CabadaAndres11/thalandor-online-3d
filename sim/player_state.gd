@@ -14,6 +14,8 @@ var class_id: String = ""
 var combo: int = 0
 ## Tick when the archer started charging the basic shot (-1 = not charging).
 var charge_start: int = -1
+## Tick when a dead player reappears at the map's respawn point (-1 = not dead).
+var respawn_tick: int = -1
 
 
 func _init() -> void:
