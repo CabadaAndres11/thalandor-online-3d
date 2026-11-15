@@ -127,3 +127,7 @@ AB_ASSASSIN_EVISCERATE_DESC,"Remate que gasta los puntos de combo; cuantos más,
 AB_ASSASSIN_SHADOWSTEP,Paso sombrío
 AB_ASSASSIN_SHADOWSTEP_DESC,Te teletransportas a la espalda del enemigo bajo el cursor.
 FX_DODGE,Esquiva
+HUD_KEY_LMB,CI
+HUD_KEY_RMB,CD
+HUD_KEY_SPACE,Espacio
+HUD_FALLEN,"Has caído. Reapareces en %d s"

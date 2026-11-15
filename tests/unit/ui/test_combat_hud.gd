@@ -1,0 +1,162 @@
+extends GutTest
+
+const SCREEN := Vector2(1280, 720)
+
+
+func _client(class_id: String) -> ClientSession:
+	var c := ClientSession.new(Balance.load_from(), CollisionMap.from_layout({"size": [10, 10], "spawn": [1, 1], "blocks": []}),
+		"0.0.0", "Ana", class_id)
+	c.my_id = 1
+	c.combat[1] = {"hp": 120.0, "max_hp": 200.0, "resource": 30.0, "max_resource": 100.0,
+		"life": CombatEntity.ALIVE, "status_bits": 0, "combo": 0, "charge": 0.0}
+	return c
+
+
+func _hud(c: ClientSession) -> CombatHud:
+	var root := Control.new()
+	root.size = SCREEN
+	add_child_autofree(root)
+	var hud := CombatHud.new()
+	root.add_child(hud)
+	hud.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	hud.bind(c, c.bar, AbilityDB.load_default())
+	return hud
+
+
+func test_hud_shows_hp_resource() -> void:
+	var hud := _hud(_client("warrior"))
+	hud.advance(0.0)
+	assert_eq(hud.hp_text(), "120 / 200")
+	assert_eq(hud.resource_text(), "30 / 100")
+	assert_almost_eq(hud.hp_fraction(), 0.6, 0.001)
+
+
+func test_slots_follow_class_and_bar() -> void:
+	var c := _client("mage")
+	var hud := _hud(c)
+	var db := AbilityDB.load_default()
+	assert_eq(hud.slot_count(), 7, "CI, CD, 1-4 and Espacio")
+	assert_eq(hud.slot_ability(0), db.kind_of("mage", "basic"))
+	assert_eq(hud.slot_ability(1), db.kind_of("mage", "secondary"))
+	assert_eq(hud.slot_ability(2), c.bar[0])
+	assert_eq(hud.slot_key(6), tr("HUD_KEY_SPACE"))
+
+
+func test_slot_dims_without_resource() -> void:
+	var c := _client("mage") # the secondary (mage_blast) costs 25 mana
+	c.combat[1].resource = 5.0
+	var hud := _hud(c)
+	hud.advance(0.0)
+	var blast := 1
+	assert_eq(hud.slot_ability(blast), "mage_blast")
+	assert_true(hud.slot_dimmed(blast), "not enough mana")
+	assert_false(hud.slot_dimmed(0), "the basic attack is free")
+	c.combat[1].resource = 100.0
+	hud.advance(0.0)
+	assert_false(hud.slot_dimmed(blast))
+
+
+func test_cooldown_sweep_from_cast_event() -> void:
+	var c := _client("mage")
+	var hud := _hud(c)
+	var db := AbilityDB.load_default()
+	var secondary := db.kind_of("mage", "secondary")
+	var cd := float(db.get_ability(secondary).cooldown_s)
+	c.combat_event.emit(["cast", 1, secondary, Vector3.ZERO])
+	hud.advance(0.0)
+	assert_almost_eq(hud.slot_cooldown(1), 1.0, 0.01, "full sweep just after casting")
+	hud.advance(cd / 2.0)
+	assert_almost_eq(hud.slot_cooldown(1), 0.5, 0.02)
+	hud.advance(cd)
+	assert_eq(hud.slot_cooldown(1), 0.0)
+
+
+func test_gcd_sweeps_other_gcd_slots_only() -> void:
+	var c := _client("mage")
+	var db := AbilityDB.from_list([
+		{"id": "b", "class": "mage", "kind": "basic", "cost": 0, "cooldown_s": 0.5, "gcd": false},
+		{"id": "s", "class": "mage", "kind": "secondary", "cost": 0, "cooldown_s": 4, "gcd": false},
+		{"id": "a1", "class": "mage", "kind": "active", "cost": 0, "cooldown_s": 10, "gcd": true},
+		{"id": "a2", "class": "mage", "kind": "active", "cost": 0, "cooldown_s": 10, "gcd": true},
+	])
+	var hud := _hud(c)
+	hud.bind(c, ["a1", "a2", "", ""], db)
+	c.combat_event.emit(["cast", 1, "a1", Vector3.ZERO])
+	hud.advance(0.0)
+	assert_almost_eq(hud.slot_cooldown(2), 1.0, 0.01, "a1's own cooldown")
+	assert_almost_eq(hud.slot_cooldown(3), 1.0, 0.01, "a2 waits for the global cooldown")
+	assert_eq(hud.slot_cooldown(0), 0.0, "the basic attack ignores the global cooldown")
+	assert_eq(hud.slot_cooldown(1), 0.0, "the secondary ignores the global cooldown")
+	assert_eq(hud.slot_cooldown(4), 0.0, "an empty slot")
+	hud.advance(c.balance.gcd_s + 0.01)
+	assert_eq(hud.slot_cooldown(3), 0.0, "the global cooldown is over")
+	assert_gt(hud.slot_cooldown(2), 0.9)
+
+
+func test_other_players_casts_do_not_sweep() -> void:
+	var c := _client("mage")
+	var hud := _hud(c)
+	c.combat_event.emit(["cast", 2, AbilityDB.load_default().kind_of("mage", "secondary"), Vector3.ZERO])
+	hud.advance(0.0)
+	assert_eq(hud.slot_cooldown(1), 0.0)
+
+
+func test_combo_pips_only_for_assassin() -> void:
+	var c := _client("assassin")
+	c.combat[1].combo = 3
+	var hud := _hud(c)
+	hud.advance(0.0)
+	assert_true(hud.combo_visible())
+	assert_eq(hud.combo_lit(), 3)
+	var w := _hud(_client("warrior"))
+	w.advance(0.0)
+	assert_false(w.combo_visible())
+
+
+func test_archer_charge_bar() -> void:
+	var c := _client("archer")
+	var hud := _hud(c)
+	hud.advance(0.0)
+	assert_false(hud.charge_visible())
+	c.combat[1].charge = 0.5
+	hud.advance(0.0)
+	assert_true(hud.charge_visible())
+	assert_almost_eq(hud.charge_fraction(), 0.5, 0.001)
+
+
+func test_death_countdown() -> void:
+	var c := _client("warrior")
+	var hud := _hud(c)
+	c.combat_event.emit(["died", 1])
+	c.combat[1].life = CombatEntity.DEAD
+	hud.advance(0.0)
+	assert_true(hud.death_visible())
+	assert_string_contains(hud.death_text(), "3")
+	hud.advance(1.2)
+	assert_string_contains(hud.death_text(), "2")
+	c.combat_event.emit(["respawned", 1, Vector3.ZERO])
+	c.combat[1].life = CombatEntity.ALIVE
+	hud.advance(0.0)
+	assert_false(hud.death_visible())
+
+
+func test_hud_fits_and_avoids_chat() -> void:
+	var c := _client("assassin")
+	c.combat[1].combo = 5
+	c.combat[1].charge = 1.0
+	var hud := _hud(c)
+	c.combat_event.emit(["died", 1])
+	c.combat[1].life = CombatEntity.DEAD
+	hud.advance(0.0)
+	var chat := ChatBox.new()
+	hud.get_parent().add_child(chat)
+	chat.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	for i in 8:
+		chat.add_message("Nombre-Largo-16c", "x".repeat(120), false)
+	chat.open_input()
+	await wait_frames(3)
+	var screen := Rect2(Vector2.ZERO, SCREEN).grow(0.5)
+	var bar := hud.bar_rect()
+	assert_true(screen.encloses(bar), "HUD %s inside 1280x720" % bar)
+	assert_true(screen.encloses(hud.death_rect()))
+	assert_false(bar.intersects(chat.column_rect()), "chat %s over the HUD %s" % [chat.column_rect(), bar])

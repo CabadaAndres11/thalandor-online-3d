@@ -215,3 +215,14 @@ func test_monsters_appear_in_solo_game() -> void:
 	await wait_until(func() -> bool: return main.game != null and main.game.monster_avatar_count() > 0, 3.0)
 	assert_gt(main.game.monster_avatar_count(), 0, "the arena's monsters are drawn")
 	assert_eq(main.game.monster_avatar_count(), main.game.client.monsters.size())
+
+
+func test_combat_hud_in_game_only() -> void:
+	assert_false(main.combat_hud.visible, "no HUD on the title screen")
+	main._on_play("Prueba", "archer")
+	await wait_until(func() -> bool: return main.combat_hud.hp_text() != "", 3.0)
+	assert_true(main.combat_hud.visible)
+	assert_eq(main.combat_hud.slot_ability(0), "archer_shot")
+	assert_string_contains(main.combat_hud.hp_text(), "150")
+	main._leave_game()
+	assert_false(main.combat_hud.visible)

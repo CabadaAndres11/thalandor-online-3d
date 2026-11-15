@@ -25,6 +25,7 @@ var title: TitleScreen
 var select_screen: CharacterSelectScreen
 var create_screen: CharacterCreateScreen
 var chat: ChatBox
+var combat_hud: CombatHud
 var pause_menu: PauseMenu
 var dialog: MessageDialog
 var debug_overlay: DebugOverlay
@@ -69,6 +70,11 @@ func _ready() -> void:
 	create_screen.create_requested.connect(_on_create_requested)
 	create_screen.back_requested.connect(_show_select)
 	_add_screen(create_screen)
+
+	combat_hud = CombatHud.new()
+	combat_hud.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	combat_hud.visible = false
+	_ui.add_child(combat_hud)
 
 	chat = ChatBox.new()
 	chat.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -358,6 +364,8 @@ func _attach_client() -> void:
 	client.chat_received.connect(chat.add_message)
 	debug_overlay.client = client
 	debug_overlay.net_label = game.net_label()
+	combat_hud.bind(client, client.bar, AbilityDB.load_default())
+	combat_hud.visible = true
 	pause_menu.set_can_open_group(game.is_hosting())
 
 
@@ -385,6 +393,8 @@ func _leave_game() -> void:
 		game.queue_free()
 		game = null
 	debug_overlay.client = null
+	combat_hud.unbind()
+	combat_hud.visible = false
 	chat.cancel()
 	chat.visible = false
 	status_label.visible = false

@@ -74,8 +74,17 @@ func test_all_ui_fits_1280x720() -> void:
 	var asking := MessageDialog.new()
 	var r8 := _host(asking)
 	asking.ask_text(TranslationServer.translate("IMPORT_NEW_NAME") % "Nombre-Largo-16c", "Nombre-Largo-16c")
+	var client := ClientSession.new(Balance.load_from(), CollisionMap.from_layout({"size": [10, 10], "spawn": [1, 1], "blocks": []}),
+		"0.0.0", "Nombre-Largo-16c", "assassin")
+	client.my_id = 1
+	client.combat[1] = {"hp": 0.0, "max_hp": 160.0, "resource": 100.0, "max_resource": 100.0,
+		"life": CombatEntity.DEAD, "status_bits": 0, "combo": 5, "charge": 1.0}
+	var hud := CombatHud.new()
+	var r9 := _host(hud)
+	hud.bind(client, client.bar, AbilityDB.load_default())
+	hud.advance(0.0)
 	await wait_frames(3)
-	for r: Control in [r1, r2, r3, r4, r5, r6, r7, r8]:
+	for r: Control in [r1, r2, r3, r4, r5, r6, r7, r8, r9]:
 		_assert_fits(r)
 
 

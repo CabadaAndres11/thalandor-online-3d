@@ -9,12 +9,13 @@ signal typing_changed(is_typing: bool)
 const MAX_LINES := 8
 const VISIBLE_SECONDS := 10.0
 const FADE_SECONDS := 1.0
-const WIDTH := 600.0
+const WIDTH := 400.0 # ends left of the combat HUD (bottom centre)
 const MAX_LINES_PER_MESSAGE := 3
 const SYSTEM_COLOR := Color("#f3d36b")
 
 var max_length: int = 120
 
+var column: VBoxContainer
 var _lines_box: VBoxContainer
 var _input: LineEdit
 var _lines: Array = [] # [{"label": Label, "age": float}]
@@ -22,7 +23,7 @@ var _lines: Array = [] # [{"label": Label, "age": float}]
 
 func _init() -> void:
 	mouse_filter = MOUSE_FILTER_IGNORE
-	var column := VBoxContainer.new()
+	column = VBoxContainer.new()
 	column.mouse_filter = MOUSE_FILTER_IGNORE
 	column.anchor_top = 1.0
 	column.anchor_bottom = 1.0
@@ -138,3 +139,7 @@ func _close() -> void:
 	_input.release_focus()
 	_refresh_alpha()
 	typing_changed.emit(false)
+
+
+func column_rect() -> Rect2:
+	return column.get_global_rect()

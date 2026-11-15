@@ -253,6 +253,14 @@ func monster_render_state(id: int) -> Dictionary:
 	return {}
 
 
+## Dodge cooldown left from the prediction: 1 just after dodging, 0 when ready.
+func dodge_cooldown_ratio() -> float:
+	if _predicted == null:
+		return 0.0
+	var total := balance.ticks(balance.dodge_cooldown_s)
+	return clampf(float(_predicted.dodge_ready_seq - _seq) / float(total), 0.0, 1.0) if total > 0 else 0.0
+
+
 ## Replaces slots 1-4 (the host checks they are this class's abilities).
 func send_bar(new_bar: Array) -> void:
 	bar = new_bar.duplicate()
