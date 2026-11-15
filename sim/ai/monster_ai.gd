@@ -12,6 +12,7 @@ extends RefCounted
 const REPATH_S := 0.5
 const UNREACHABLE_S := 3.0
 const HOME_ARRIVE := 0.5
+const TERRAIN_RADIUS := 0.45
 
 
 static func tick(world: SimWorld, m: MonsterState) -> void:
@@ -119,7 +120,9 @@ static func _move_toward(world: SimWorld, m: MonsterState, goal: Vector3) -> boo
 	if to.length() < 0.001:
 		return true
 	var move := to.normalized() * minf(step, to.length())
-	m.position = Movement.move_circle(m.position, move, m.radius, world.map)
+	# Paths run through cell centres: bodies wider than half a cell would snag on
+	# corners, so terrain collision uses at most TERRAIN_RADIUS (hits use m.radius).
+	m.position = Movement.move_circle(m.position, move, minf(m.radius, TERRAIN_RADIUS), world.map)
 	m.facing = atan2(to.x, to.y)
 	return true
 
