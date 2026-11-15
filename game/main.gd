@@ -318,9 +318,19 @@ func _on_chat_submitted(text: String) -> void:
 		game.client.send_chat(text)
 
 
-func _on_typing_changed(is_typing: bool) -> void:
+func _on_typing_changed(_is_typing: bool) -> void:
+	_update_input_block()
+
+
+## No movement or attacks while typing in the chat or with a menu or dialog open
+## (a click on a menu button must not attack).
+func _update_input_block() -> void:
 	if game != null:
-		game.input_blocked = is_typing
+		game.input_blocked = chat.is_typing() or pause_menu.visible or dialog.visible
+
+
+func _process(_delta: float) -> void:
+	_update_input_block()
 
 
 func _on_resume() -> void:

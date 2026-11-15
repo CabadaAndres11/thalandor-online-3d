@@ -78,6 +78,9 @@ func step(inputs: Dictionary) -> void:
 			if p.forced_ticks > 0:
 				continue # an ability is moving this player (Carga, Voltereta…)
 			Movement.apply(p, inputs[id], dt(), balance, map, p.move_mult())
+			if p.dodge_started:
+				p.dodge_started = false
+				p.add_status(StatusEffect.make("invulnerable", tick + ticks(balance.dodge_invuln_s)), 1)
 	Combat.tick(self)
 	tick += 1
 
@@ -88,4 +91,4 @@ func dt() -> float:
 
 ## Seconds -> whole simulation ticks (at least 1 for positive times).
 func ticks(seconds: float) -> int:
-	return 0 if seconds <= 0.0 else maxi(1, roundi(seconds * balance.tick_rate))
+	return balance.ticks(seconds)

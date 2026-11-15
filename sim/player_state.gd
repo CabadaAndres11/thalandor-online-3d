@@ -4,6 +4,11 @@ extends CombatEntity
 ## (copy_from/clone); combat values come from the host.
 
 var aim: Vector3 = Vector3.ZERO
+## Dodge (predicted): direction, and the input sequence from which it is ready again.
+var dash_dir: Vector2 = Vector2.ZERO
+var dodge_ready_seq: int = 0
+## Set by Movement when a dodge starts; the host turns it into brief invulnerability.
+var dodge_started: bool = false
 
 
 func _init() -> void:
@@ -16,6 +21,9 @@ func copy_from(other: PlayerState) -> void:
 	position = other.position
 	aim = other.aim
 	facing = other.facing
+	dash_ticks = other.dash_ticks
+	dash_dir = other.dash_dir
+	dodge_ready_seq = other.dodge_ready_seq
 
 
 func clone() -> PlayerState:

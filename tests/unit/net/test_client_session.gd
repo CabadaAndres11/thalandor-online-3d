@@ -198,3 +198,26 @@ func test_player_joined_updates_roster_with_appearance() -> void:
 	assert_eq(a.roster[2].class_id, "mage")
 	assert_eq(a.roster[2].appearance.hair_style, "hair_bun")
 	assert_eq(b.roster[1].class_id, "warrior", "the welcome roster carries the others too")
+
+
+func test_dodge_prediction_matches_host() -> void:
+	net.latency_ms = 100
+	var a := _client("Ana")
+	_steps(15)
+	var start := _own_pos(a)
+	var dt := balance.dt()
+	net.advance(dt * 1000.0)
+	a.tick(Vector2(1, 0), Vector3(20.5, 0, 30), PlayerInput.BTN_DODGE)
+	host.tick()
+	a.update(dt)
+	var right_after := _own_pos(a)
+	var worst := 0.0
+	for i in 20:
+		_step({a: Vector2(1, 0)})
+		worst = maxf(worst, a.last_correction)
+	assert_lt(worst, 0.01, "no correction while the dodge plays out")
+	_steps(30)
+	assert_gt(right_after.x, start.x + 0.2, "the dodge shows at once (predicted)")
+	assert_almost_eq(_own_pos(a).distance_to(host.world.players[1].position), 0.0, 0.01)
+	assert_lt(a.last_correction, 0.01, "no correction needed")
+	assert_gt(host.world.players[1].position.x, start.x + balance.dodge_distance)

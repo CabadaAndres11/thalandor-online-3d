@@ -63,6 +63,48 @@ func class_abilities(owner_id: String) -> Array:
 	return out
 
 
+const BAR_SIZE := 4
+
+
+## Id of the class's ability of this kind ("basic" or "secondary"), or "".
+func kind_of(class_id: String, kind: String) -> String:
+	for a: Dictionary in class_abilities(class_id):
+		if a.get("kind") == kind:
+			return a.id
+	return ""
+
+
+## Ids of the class's active abilities, lowest level first (file order on ties).
+func actives(class_id: String) -> Array:
+	var list := class_abilities(class_id).filter(func(a: Dictionary) -> bool: return a.get("kind") == "active")
+	var indexed: Array = []
+	for i in list.size():
+		indexed.append([int(list[i].get("level", 1)), i, list[i].id])
+	indexed.sort()
+	return indexed.map(func(row: Array) -> String: return row[2])
+
+
+## The first BAR_SIZE actives, padded with "".
+func default_bar(class_id: String) -> Array:
+	var bar := actives(class_id).slice(0, BAR_SIZE)
+	while bar.size() < BAR_SIZE:
+		bar.append("")
+	return bar
+
+
+## A bar sent by a client: exactly BAR_SIZE entries, each one of the class's actives
+## (anything else becomes ""), no duplicates. Not an array or empty -> the default bar.
+func sanitize_bar(class_id: String, bar: Variant) -> Array:
+	if not bar is Array or (bar as Array).is_empty():
+		return default_bar(class_id)
+	var allowed := actives(class_id)
+	var out: Array = []
+	for i in BAR_SIZE:
+		var v: Variant = (bar as Array)[i] if i < (bar as Array).size() else ""
+		out.append(v if v is String and v in allowed and not v in out else "")
+	return out
+
+
 ## Human-readable problems (empty = all good). check_texts: names and descriptions
 ## must be translated (off for test data).
 func validate(check_texts: bool = true) -> Array[String]:

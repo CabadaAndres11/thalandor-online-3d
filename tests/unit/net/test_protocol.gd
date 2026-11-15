@@ -26,14 +26,14 @@ func test_roundtrip_reject() -> void:
 
 
 func test_roundtrip_input() -> void:
-	var inputs := [[5, Vector2(1, 0), Vector3(3, 0, 4)], [6, Vector2(0, -1), Vector3(1, 0, 1)]]
+	var inputs := [[5, Vector2(1, 0), Vector3(3, 0, 4), PlayerInput.BTN_BASIC], [6, Vector2(0, -1), Vector3(1, 0, 1), 0]]
 	var m := Protocol.decode(Protocol.input(inputs))
 	assert_eq(m.type, Protocol.Msg.INPUT)
 	assert_eq(m.inputs, inputs)
 
 
 func test_roundtrip_snapshot() -> void:
-	var players := [[1, Vector3(1.5, 0, 2.5), Vector3(4, 0, 4), 0.5, 12]]
+	var players := [[1, Vector3(1.5, 0, 2.5), Vector3(4, 0, 4), 0.5, 12, 80.0, 100.0, 30.0, 100.0, 0, 0, 0, Vector2.ZERO, 0, 1.0]]
 	var m := Protocol.decode(Protocol.snapshot(99, players))
 	assert_eq(m.type, Protocol.Msg.SNAPSHOT)
 	assert_eq(m.tick, 99)
@@ -124,3 +124,18 @@ func test_legacy_hello_decodes_without_character() -> void:
 	assert_eq(m.protocol, 1)
 	assert_eq(m.class_id, "")
 	assert_eq(m.appearance, {})
+
+
+## Attention point 4: 4 players with statuses and 30 monsters fit in one packet.
+func test_snapshot_fits_with_4_players_30_monsters() -> void:
+	var players := []
+	for i in 4:
+		players.append([i + 1, Vector3(123.456, 0, 98.765), Vector3(130.1, 0, 90.2), 1.234, 99999,
+			1234.5, 2000.0, 87.5, 100.0, 0, 0x3FFF, 5, Vector2(0.7, 0.7), 123456, 0.6])
+	var monsters := []
+	for i in 30:
+		monsters.append([1000 + i, "skeleton_archer", Vector3(100.5 + i, 0, 80.25), 2.5, 4567.8, 9000.0, 0x3FFF, 4])
+	var packet := Protocol.snapshot(123456, players, monsters)
+	assert_lt(packet.size(), Protocol.MAX_PACKET_BYTES, "%d bytes" % packet.size())
+	assert_false(Protocol.decode(packet).is_empty())
+	gut.p("snapshot with 4 players and 30 monsters: %d bytes" % packet.size())

@@ -8,6 +8,8 @@ signal rejected(reason: String, host_version: String)
 signal disconnected(reason: String)
 signal roster_changed()
 signal chat_received(author: String, text: String, is_system: bool)
+## One combat event from the host (see SimWorld.events), in order.
+signal combat_event(ev: Array)
 
 enum Status { CONNECTING, IN_GAME, CLOSED }
 
@@ -29,6 +31,12 @@ var game_version: String
 var player_name: String
 var class_id: String
 var appearance: Dictionary
+## Abilities in slots 1-4 (sent in HELLO and with send_bar).
+var bar: Array = []
+## Combat state from the last snapshot: player id -> {hp, max_hp, resource,
+## max_resource, life, status_bits}; monster id -> {type, hp, max_hp, status_bits, target}.
+var combat: Dictionary = {}
+var monsters: Dictionary = {}
 
 var _transport: Transport
 var _seq: int = 0
@@ -42,6 +50,8 @@ var _silence: float = 0.0
 var _clock_ms: float = 0.0
 var _sent_at: Dictionary = {} # seq -> _clock_ms when sent
 var _ping_ms: float = 0.0
+var _own_move_mult: float = 1.0
+var _monster_buffers: Dictionary = {} # id -> InterpolationBuffer
 
 
 func _init(p_balance: Balance, p_map: CollisionMap, p_game_version: String, p_name: String,
@@ -52,6 +62,7 @@ func _init(p_balance: Balance, p_map: CollisionMap, p_game_version: String, p_na
 	player_name = p_name
 	class_id = p_class_id
 	appearance = p_appearance
+	bar = AbilityDB.load_default().default_bar(p_class_id)
 
 
 func connect_to(t: Transport) -> void:
@@ -62,7 +73,7 @@ func connect_to(t: Transport) -> void:
 
 
 ## Called once per physics tick with this tick's movement (world XZ) and aim point.
-func tick(move: Vector2, aim: Vector3) -> void:
+func tick(move: Vector2, aim: Vector3, buttons: int = 0) -> void:
 	if _transport == null or status == Status.CLOSED:
 		return
 	for packet: Dictionary in _transport.poll():
@@ -73,8 +84,8 @@ func tick(move: Vector2, aim: Vector3) -> void:
 	if status != Status.IN_GAME or _predicted == null:
 		return
 	_seq += 1
-	var input := PlayerInput.new(_seq, move.limit_length(1.0), aim)
-	Movement.apply(_predicted, input, balance.dt(), balance, map)
+	var input := PlayerInput.new(_seq, move.limit_length(1.0), aim, buttons)
+	Movement.apply(_predicted, input, balance.dt(), balance, map, _own_move_mult)
 	_pending.append(input)
 	while _pending.size() > MAX_REPLAY:
 		_pending.pop_front()
@@ -82,7 +93,7 @@ func tick(move: Vector2, aim: Vector3) -> void:
 	var rows := []
 	for i in range(maxi(0, _pending.size() - balance.input_redundancy), _pending.size()):
 		var p: PlayerInput = _pending[i]
-		rows.append([p.seq, p.move, p.aim])
+		rows.append([p.seq, p.move, p.aim, p.buttons])
 	_transport.send(Transport.HOST_PEER, Protocol.input(rows), false)
 
 
@@ -147,7 +158,7 @@ func latest_tick() -> int:
 func _on_peer_connected(peer: int) -> void:
 	if peer == Transport.HOST_PEER:
 		_transport.send(Transport.HOST_PEER,
-			Protocol.hello(game_version, Protocol.VERSION, player_name, class_id, appearance), true)
+			Protocol.hello(game_version, Protocol.VERSION, player_name, class_id, appearance, bar), true)
 
 
 func _on_peer_disconnected(peer: int) -> void:
@@ -182,7 +193,11 @@ func _handle(msg: Dictionary) -> void:
 			_transport.close()
 			rejected.emit(msg.reason, msg.host_version)
 		Protocol.Msg.SNAPSHOT:
-			_on_snapshot(msg.tick, msg.players)
+			_on_snapshot(msg.tick, msg.players, msg.monsters)
+		Protocol.Msg.EVENTS:
+			for ev: Variant in msg.events:
+				if ev is Array and not (ev as Array).is_empty():
+					combat_event.emit(ev)
 		Protocol.Msg.PLAYER_JOINED:
 			roster[msg.id] = {"name": msg.name, "slot": msg.slot, "class_id": msg.class_id, "appearance": msg.appearance}
 			roster_changed.emit()
@@ -191,6 +206,7 @@ func _handle(msg: Dictionary) -> void:
 			var name: String = roster[msg.id].name if roster.has(msg.id) else "?"
 			roster.erase(msg.id)
 			_buffers.erase(msg.id)
+			combat.erase(msg.id)
 			roster_changed.emit()
 			chat_received.emit("", tr_text("CHAT_LEFT") % name, true)
 		Protocol.Msg.CHAT:
@@ -198,7 +214,7 @@ func _handle(msg: Dictionary) -> void:
 			chat_received.emit(author, msg.text, false)
 
 
-func _on_snapshot(tick: int, rows: Array) -> void:
+func _on_snapshot(tick: int, rows: Array, monster_rows: Array) -> void:
 	if status != Status.IN_GAME or tick <= _latest_tick:
 		return
 	var first := _latest_tick < 0
@@ -207,15 +223,49 @@ func _on_snapshot(tick: int, rows: Array) -> void:
 		render_tick = target_render_tick()
 	for row: Array in rows:
 		var id: int = row[0]
+		combat[id] = {"hp": row[5], "max_hp": row[6], "resource": row[7], "max_resource": row[8],
+			"life": row[9], "status_bits": row[10]}
 		if id == my_id:
-			_reconcile(row[1], row[2], row[3], row[4])
+			_own_move_mult = row[14]
+			_reconcile(row)
 		else:
 			if not _buffers.has(id):
 				_buffers[id] = InterpolationBuffer.new()
 			(_buffers[id] as InterpolationBuffer).push(tick, row[1], row[2], row[3])
+	var seen := {}
+	for row: Array in monster_rows:
+		var id: int = row[0]
+		seen[id] = true
+		monsters[id] = {"type": row[1], "hp": row[4], "max_hp": row[5], "status_bits": row[6], "target": row[7]}
+		if not _monster_buffers.has(id):
+			_monster_buffers[id] = InterpolationBuffer.new()
+		(_monster_buffers[id] as InterpolationBuffer).push(tick, row[2], row[2], row[3])
+	for id: int in monsters.keys():
+		if not seen.has(id):
+			monsters.erase(id)
+			_monster_buffers.erase(id)
 
 
-func _reconcile(position: Vector3, aim: Vector3, facing: float, acked: int) -> void:
+## {"position", "aim", "facing"} of a monster for drawing; {} when unknown.
+func monster_render_state(id: int) -> Dictionary:
+	if _monster_buffers.has(id):
+		return (_monster_buffers[id] as InterpolationBuffer).sample(render_tick)
+	return {}
+
+
+## Replaces slots 1-4 (the host checks they are this class's abilities).
+func send_bar(new_bar: Array) -> void:
+	bar = new_bar.duplicate()
+	if status == Status.IN_GAME:
+		_transport.send(Transport.HOST_PEER, Protocol.set_bar(bar), true)
+
+
+## row: a SNAPSHOT player row of this player (see Protocol.ROW_SCHEMAS.players).
+func _reconcile(row: Array) -> void:
+	var position: Vector3 = row[1]
+	var aim: Vector3 = row[2]
+	var facing: float = row[3]
+	var acked: int = row[4]
 	while not _pending.is_empty() and (_pending[0] as PlayerInput).seq <= acked:
 		_pending.pop_front()
 	if _sent_at.has(acked):
@@ -236,8 +286,11 @@ func _reconcile(position: Vector3, aim: Vector3, facing: float, acked: int) -> v
 	_predicted.position = position
 	_predicted.aim = aim
 	_predicted.facing = facing
+	_predicted.dash_ticks = row[11]
+	_predicted.dash_dir = row[12]
+	_predicted.dodge_ready_seq = row[13]
 	for p: PlayerInput in _pending:
-		Movement.apply(_predicted, p, balance.dt(), balance, map)
+		Movement.apply(_predicted, p, balance.dt(), balance, map, _own_move_mult)
 	last_correction = old_predicted.distance_to(_predicted.position)
 	_offset = old_visual - _predicted.position
 	if _offset.length() > SNAP_DISTANCE:

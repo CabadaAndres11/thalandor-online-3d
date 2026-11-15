@@ -27,7 +27,7 @@ func _init(p_balance: Balance, p_map: CollisionMap, p_game_version: String) -> v
 	balance = p_balance
 	map = p_map
 	game_version = p_game_version
-	world = SimWorld.new(balance, map)
+	world = SimWorld.new(balance, map, randi())
 
 
 static func is_valid_name(name: String) -> bool:
@@ -52,6 +52,7 @@ func tick() -> void:
 		var t: Transport = _transports[index]
 		for packet: Dictionary in t.poll():
 			_handle(index, packet.peer, packet.data)
+	world.events.clear()
 	var inputs := {}
 	for id: int in _players:
 		var rec: Dictionary = _players[id]
@@ -60,10 +61,29 @@ func tick() -> void:
 			var next: PlayerInput = queue.pop_front()
 			rec.last_input = next
 			rec.last_seq = next.seq
-		if rec.last_input != null:
-			inputs[id] = rec.last_input
+			inputs[id] = next
+			_cast_from_input(rec, next)
+		elif rec.last_input != null:
+			# No new input this tick: keep moving/holding, but never repeat presses.
+			inputs[id] = (rec.last_input as PlayerInput).held_only()
 	world.step(inputs)
-	_broadcast(Protocol.snapshot(world.tick, _snapshot_rows()), false)
+	_broadcast(Protocol.snapshot(world.tick, _snapshot_rows(), _monster_rows()), false)
+	if not world.events.is_empty():
+		_broadcast(Protocol.events(world.tick, world.events.duplicate()), true)
+
+
+## Presses of a new input become casts: basic, secondary and the bar slots.
+func _cast_from_input(rec: Dictionary, input: PlayerInput) -> void:
+	var p: PlayerState = world.players.get(rec.id)
+	if p == null or input.buttons == 0:
+		return
+	if input.pressed(PlayerInput.BTN_BASIC):
+		Combat.try_cast(world, p, rec.basic_id, input.aim)
+	if input.pressed(PlayerInput.BTN_SECONDARY):
+		Combat.try_cast(world, p, rec.secondary_id, input.aim)
+	for i in PlayerInput.SLOT_BITS.size():
+		if input.pressed(PlayerInput.SLOT_BITS[i]) and str(rec.bar[i]) != "":
+			Combat.try_cast(world, p, rec.bar[i], input.aim)
 
 
 func close() -> void:
@@ -107,6 +127,8 @@ func _handle(index: int, peer: int, data: PackedByteArray) -> void:
 	match msg.type:
 		Protocol.Msg.INPUT:
 			_on_input(rec, msg.inputs)
+		Protocol.Msg.SET_BAR:
+			rec.bar = world.abilities.sanitize_bar(rec.class_id, msg.bar)
 		Protocol.Msg.CHAT:
 			var text: String = (msg.text as String).strip_edges().left(balance.chat_max_len)
 			if text != "":
@@ -131,11 +153,16 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 	var class_id := catalog.sanitize_class(msg.class_id)
 	var appearance := catalog.sanitize_appearance(msg.appearance)
 	var spawn := map.spawn_point() + Vector3(slot % 2, 0, slot / 2) * SPAWN_SPACING
-	world.add_player(id, spawn)
+	var player := world.add_player(id, spawn)
+	player.hp = player.stats.max_hp
+	player.resource = player.stats.max_resource
 	_players[id] = {
 		"id": id, "name": name, "slot": slot, "class_id": class_id, "appearance": appearance,
 		"transport": index, "peer": peer,
 		"queue": [], "last_input": null, "last_seq": 0, "last_received": 0,
+		"basic_id": world.abilities.kind_of(class_id, "basic"),
+		"secondary_id": world.abilities.kind_of(class_id, "secondary"),
+		"bar": world.abilities.sanitize_bar(class_id, msg.bar),
 	}
 	_by_conn[key] = id
 	t.send(peer, Protocol.welcome(id, world.tick, roster()), true)
@@ -155,7 +182,7 @@ func _on_input(rec: Dictionary, rows: Array) -> void:
 		if not (row[1] as Vector2).is_finite() or not (row[2] as Vector3).is_finite():
 			continue
 		rec.last_received = seq
-		queue.append(PlayerInput.new(seq, (row[1] as Vector2).limit_length(1.0), row[2]))
+		queue.append(PlayerInput.new(seq, (row[1] as Vector2).limit_length(1.0), row[2], int(row[3])))
 	queue.sort_custom(func(a: PlayerInput, b: PlayerInput) -> bool: return a.seq < b.seq)
 	while queue.size() > balance.max_pending_inputs:
 		queue.pop_front()
@@ -187,7 +214,16 @@ func _snapshot_rows() -> Array:
 	var rows := []
 	for id: int in _players:
 		var s: PlayerState = world.players[id]
-		rows.append([id, s.position, s.aim, s.facing, int(_players[id].last_seq)])
+		rows.append([id, s.position, s.aim, s.facing, int(_players[id].last_seq), s.hp, s.stats.max_hp,
+			s.resource, s.stats.max_resource, s.life, StatusEffect.bits_of(s), s.dash_ticks, s.dash_dir,
+			s.dodge_ready_seq, s.move_mult()])
+	return rows
+
+
+func _monster_rows() -> Array:
+	var rows := []
+	for e: CombatEntity in world.monsters.values():
+		rows.append([e.id, e.type_id, e.position, e.facing, e.hp, e.stats.max_hp, StatusEffect.bits_of(e), e.target_id])
 	return rows
 
 

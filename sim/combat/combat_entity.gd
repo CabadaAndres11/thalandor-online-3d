@@ -7,6 +7,10 @@ enum { TEAM_PLAYERS, TEAM_MONSTERS }
 enum { ALIVE, DOWNED, DEAD }
 
 var id: int = 0
+## Monster type (data/monsters) or "" for players.
+var type_id: String = ""
+## Who it is attacking (monsters), 0 = nobody.
+var target_id: int = 0
 var team: int = TEAM_PLAYERS
 var position: Vector3 = Vector3.ZERO
 ## Radians, 0 = +Z, PI/2 = +X.

@@ -99,7 +99,7 @@ func test_inputs_move_player() -> void:
 	var a := _guest("Ana")
 	host.tick()
 	var start: Vector3 = host.world.players[1].position
-	a.send(Transport.HOST_PEER, Protocol.input([[1, Vector2(1, 0), start]]), false)
+	a.send(Transport.HOST_PEER, Protocol.input([[1, Vector2(1, 0), start, 0]]), false)
 	host.tick()
 	assert_gt(host.world.players[1].position.x, start.x)
 
@@ -110,10 +110,10 @@ func test_non_finite_inputs_are_dropped() -> void:
 	host.tick()
 	var start: Vector3 = host.world.players[1].position
 	a.send(Transport.HOST_PEER, Protocol.input([
-		[1, Vector2(NAN, 0), start],
-		[2, Vector2(INF, 1), start],
-		[3, Vector2(1, 0), Vector3(NAN, 0, 0)],
-		[4, Vector2(1, 0), Vector3(0, -INF, 0)],
+		[1, Vector2(NAN, 0), start, 0],
+		[2, Vector2(INF, 1), start, 0],
+		[3, Vector2(1, 0), Vector3(NAN, 0, 0), 0],
+		[4, Vector2(1, 0), Vector3(0, -INF, 0), 0],
 	]), false)
 	for i in 6:
 		host.tick()
@@ -128,7 +128,7 @@ func test_duplicate_inputs_ignored() -> void:
 	var a := _guest("Ana")
 	host.tick()
 	var start: Vector3 = host.world.players[1].position
-	var i1 := [1, Vector2(1, 0), start]
+	var i1 := [1, Vector2(1, 0), start, 0]
 	a.send(Transport.HOST_PEER, Protocol.input([i1]), false)
 	a.send(Transport.HOST_PEER, Protocol.input([i1]), false)
 	a.send(Transport.HOST_PEER, Protocol.input([i1]), false)
@@ -147,7 +147,7 @@ func test_input_queue_is_capped() -> void:
 	host.tick()
 	var rows := []
 	for s in range(1, 11):
-		rows.append([s, Vector2(1, 0), Vector3.ZERO])
+		rows.append([s, Vector2(1, 0), Vector3.ZERO, 0])
 	a.send(Transport.HOST_PEER, Protocol.input(rows), false)
 	host.tick()
 	assert_lte(host.pending_inputs(1), balance.max_pending_inputs)
@@ -158,7 +158,7 @@ func test_missing_input_repeats_last() -> void:
 	var a := _guest("Ana")
 	host.tick()
 	var start: Vector3 = host.world.players[1].position
-	a.send(Transport.HOST_PEER, Protocol.input([[1, Vector2(0, 1), start]]), false)
+	a.send(Transport.HOST_PEER, Protocol.input([[1, Vector2(0, 1), start, 0]]), false)
 	host.tick()
 	host.tick()
 	var one_step := balance.move_speed * balance.dt()
@@ -170,7 +170,7 @@ func test_snapshot_reports_last_seq() -> void:
 	var a := _guest("Ana")
 	host.tick()
 	_messages(a)
-	a.send(Transport.HOST_PEER, Protocol.input([[1, Vector2.ZERO, Vector3.ZERO], [2, Vector2.ZERO, Vector3.ZERO]]), false)
+	a.send(Transport.HOST_PEER, Protocol.input([[1, Vector2.ZERO, Vector3.ZERO, 0], [2, Vector2.ZERO, Vector3.ZERO, 0]]), false)
 	host.tick()
 	var snap := _first(a, Protocol.Msg.SNAPSHOT)
 	assert_eq(snap.players[0][0], 1)
@@ -279,3 +279,101 @@ func test_old_client_hello_gets_version_reject() -> void:
 	var r := _first(c, Protocol.Msg.REJECT)
 	assert_eq(r.get("reason"), "version")
 	assert_eq(host.player_count(), 0)
+
+
+# --- Combat input (Plan 3) -------------------------------------------------------
+
+func _combat_db() -> AbilityDB:
+	var hit := [{"type": "area", "at": "self", "radius": 1.0, "delay_s": 0, "telegraph": false,
+		"damage": {"base": 1, "coef": 0, "kind": "magic", "can_crit": false}}]
+	return AbilityDB.from_list([
+		{"id": "w_basic", "class": "warrior", "kind": "basic", "level": 1, "cooldown_s": 0, "effects": hit},
+		{"id": "w_a1", "class": "warrior", "kind": "active", "level": 1, "cooldown_s": 0, "effects": hit},
+		{"id": "w_a2", "class": "warrior", "kind": "active", "level": 3, "cooldown_s": 0, "effects": hit},
+	])
+
+
+func _casts(c: MemoryTransport) -> Array:
+	var out: Array = []
+	for m: Dictionary in _messages(c):
+		if m.get("type") == Protocol.Msg.EVENTS:
+			for ev: Array in m.events:
+				if ev[0] == "cast":
+					out.append(ev)
+	return out
+
+
+func _row(seq: int, buttons := 0) -> Array:
+	return [seq, Vector2.ZERO, Vector3(20, 0, 25), buttons]
+
+
+## Attention point 1: the client repeats each input in 3 packets; one press, one cast.
+func test_press_with_redundancy_casts_once() -> void:
+	host.world.abilities = _combat_db()
+	var a := _guest("Ana")
+	host.tick()
+	_messages(a)
+	var r1 := _row(1, PlayerInput.BTN_BASIC)
+	a.send(Transport.HOST_PEER, Protocol.input([r1]), false)
+	a.send(Transport.HOST_PEER, Protocol.input([r1, _row(2)]), false)
+	a.send(Transport.HOST_PEER, Protocol.input([r1, _row(2), _row(3)]), false)
+	for i in 4:
+		host.tick()
+	assert_eq(_casts(a).size(), 1)
+
+
+func test_lost_packet_press_still_casts_once() -> void:
+	host.world.abilities = _combat_db()
+	var a := _guest("Ana")
+	host.tick()
+	_messages(a)
+	# The packet with only seq 1 is lost; the next one still carries it.
+	a.send(Transport.HOST_PEER, Protocol.input([_row(1, PlayerInput.BTN_BASIC), _row(2)]), false)
+	for i in 3:
+		host.tick()
+	assert_eq(_casts(a).size(), 1)
+
+
+func test_repeated_last_input_does_not_recast() -> void:
+	host.world.abilities = _combat_db()
+	var a := _guest("Ana")
+	host.tick()
+	_messages(a)
+	a.send(Transport.HOST_PEER, Protocol.input([_row(1, PlayerInput.BTN_BASIC | PlayerInput.BTN_SLOT1)]), false)
+	for i in 8: # no more inputs: the host keeps reusing the last one
+		host.tick()
+	assert_eq(_casts(a).size(), 2, "basic + slot 1, once each")
+
+
+func test_set_bar_validates_ability_ids_of_class() -> void:
+	host.world.abilities = _combat_db()
+	var c := net.connect_client(host_t)
+	c.send(Transport.HOST_PEER, Protocol.hello(VERSION, Protocol.VERSION, "Ana", "warrior", {}, ["w_a2", "bogus", "w_a2", 7]), true)
+	host.tick()
+	assert_eq(host._players[1].bar, ["w_a2", "", "", ""])
+	c.send(Transport.HOST_PEER, Protocol.set_bar(["w_a1", "w_a2", "fireball", ""]), true)
+	host.tick()
+	assert_eq(host._players[1].bar, ["w_a1", "w_a2", "", ""])
+
+
+func test_events_reach_all_clients_in_order() -> void:
+	host.world.abilities = _combat_db()
+	var a := _guest("Ana")
+	var b := _guest("Bea")
+	host.tick()
+	_messages(a)
+	_messages(b)
+	a.send(Transport.HOST_PEER, Protocol.input([_row(1, PlayerInput.BTN_BASIC)]), false)
+	host.tick()
+	var seen_a := _casts(a)
+	var seen_b := _casts(b)
+	assert_eq(seen_a.size(), 1)
+	assert_eq(seen_a, seen_b)
+
+
+## A friend still on 0.2.x sends the protocol 2 HELLO (no bar): "different version".
+func test_protocol2_hello_gets_version_reject() -> void:
+	var c := net.connect_client(host_t)
+	c.send(Transport.HOST_PEER, Protocol.pack([Protocol.Msg.HELLO, "0.2.1", 2, "Ana", "mage", {}]), true)
+	host.tick()
+	assert_eq(_first(c, Protocol.Msg.REJECT).get("reason"), "version")

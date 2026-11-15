@@ -62,3 +62,22 @@ static func _periodic(e: CombatEntity, s: StatusEffect, world: SimWorld) -> void
 			e.hp += healed
 			if healed > 0.0:
 				world.emit(["heal", e.id, healed])
+
+
+## Order of the status bits sent in snapshots (for icons and stealth on clients).
+const BIT_KINDS := ["stun", "root", "freeze", "slow", "poison", "burn", "mark", "damage_buff",
+	"damage_reduction", "evasion", "taunted", "stealth", "invulnerable", "hot"]
+
+
+static func bits_of(e: CombatEntity) -> int:
+	var bits := 0
+	for s: StatusEffect in e.statuses:
+		var i := BIT_KINDS.find(s.kind)
+		if i >= 0:
+			bits |= 1 << i
+	return bits
+
+
+static func has_bit(bits: int, kind: String) -> bool:
+	var i := BIT_KINDS.find(kind)
+	return i >= 0 and bits & (1 << i) != 0

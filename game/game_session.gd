@@ -209,7 +209,8 @@ func _physics_process(delta: float) -> void:
 	_update_aim()
 	if _loopback != null:
 		_loopback.advance(delta * 1000.0)
-	client.tick(move, _aim)
+	var buttons := 0 if input_blocked else InputReader.read_buttons()
+	client.tick(move, _aim, buttons)
 	if host != null:
 		host.tick()
 

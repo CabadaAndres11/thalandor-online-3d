@@ -61,6 +61,11 @@ static func load_from(path: String = DEFAULT_PATH) -> Balance:
 	return b
 
 
+## Seconds -> whole simulation ticks (at least 1 for positive times).
+func ticks(seconds: float) -> int:
+	return 0 if seconds <= 0.0 else maxi(1, roundi(seconds * tick_rate))
+
+
 ## Seconds per simulation tick.
 func dt() -> float:
 	return 1.0 / float(tick_rate)

@@ -37,3 +37,26 @@ func test_ground_point_parallel_ray_is_null() -> void:
 
 func test_ground_point_upward_ray_is_null() -> void:
 	assert_null(InputReader.ground_point(Vector3(0, 10, 0), Vector3(0, 1, 0)))
+
+
+func test_read_buttons_maps_actions_to_bits() -> void:
+	InputSetup.ensure_actions()
+	Input.action_press("attack_basic")
+	Input.action_press("dodge")
+	Input.action_press("slot_3")
+	var b := InputReader.read_buttons()
+	Input.action_release("attack_basic")
+	Input.action_release("dodge")
+	Input.action_release("slot_3")
+	assert_true(b & PlayerInput.BTN_BASIC != 0, "basic pressed")
+	assert_true(b & PlayerInput.BTN_BASIC_HELD != 0, "basic held")
+	assert_true(b & PlayerInput.BTN_DODGE != 0)
+	assert_true(b & PlayerInput.BTN_SLOT3 != 0)
+	assert_eq(b & PlayerInput.BTN_SECONDARY, 0)
+
+
+func test_default_bindings_include_combat_actions() -> void:
+	InputSetup.ensure_actions()
+	for action: String in ["attack_basic", "attack_secondary", "slot_1", "slot_2", "slot_3", "slot_4", "dodge", "interact"]:
+		assert_true(InputMap.has_action(action), action)
+		assert_false(InputMap.action_get_events(action).is_empty(), action)

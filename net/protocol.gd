@@ -2,18 +2,20 @@ class_name Protocol
 extends RefCounted
 ## Network messages: Arrays [type, fields...] encoded with var_to_bytes (never objects).
 
-const VERSION := 2
+const VERSION := 3
 
-enum Msg { HELLO = 1, WELCOME, REJECT, INPUT, SNAPSHOT, PLAYER_JOINED, PLAYER_LEFT, CHAT }
+enum Msg { HELLO = 1, WELCOME, REJECT, INPUT, SNAPSHOT, PLAYER_JOINED, PLAYER_LEFT, CHAT, EVENTS, SET_BAR }
 
 ## Field names and Variant types per message type.
 const SCHEMAS := {
 	Msg.HELLO: [["game_version", TYPE_STRING], ["protocol", TYPE_INT], ["name", TYPE_STRING],
-		["class_id", TYPE_STRING], ["appearance", TYPE_DICTIONARY]],
+		["class_id", TYPE_STRING], ["appearance", TYPE_DICTIONARY], ["bar", TYPE_ARRAY]],
 	Msg.WELCOME: [["player_id", TYPE_INT], ["tick", TYPE_INT], ["roster", TYPE_ARRAY]],
 	Msg.REJECT: [["reason", TYPE_STRING], ["host_version", TYPE_STRING]],
 	Msg.INPUT: [["inputs", TYPE_ARRAY]],
-	Msg.SNAPSHOT: [["tick", TYPE_INT], ["players", TYPE_ARRAY]],
+	Msg.SNAPSHOT: [["tick", TYPE_INT], ["players", TYPE_ARRAY], ["monsters", TYPE_ARRAY]],
+	Msg.EVENTS: [["tick", TYPE_INT], ["events", TYPE_ARRAY]],
+	Msg.SET_BAR: [["bar", TYPE_ARRAY]],
 	Msg.PLAYER_JOINED: [["id", TYPE_INT], ["name", TYPE_STRING], ["slot", TYPE_INT],
 		["class_id", TYPE_STRING], ["appearance", TYPE_DICTIONARY]],
 	Msg.PLAYER_LEFT: [["id", TYPE_INT]],
@@ -23,13 +25,20 @@ const SCHEMAS := {
 ## Element types of the nested arrays.
 const ROW_SCHEMAS := {
 	"roster": [TYPE_INT, TYPE_STRING, TYPE_INT, TYPE_STRING, TYPE_DICTIONARY],
-	"inputs": [TYPE_INT, TYPE_VECTOR2, TYPE_VECTOR3],
-	"players": [TYPE_INT, TYPE_VECTOR3, TYPE_VECTOR3, TYPE_FLOAT, TYPE_INT],
+	"inputs": [TYPE_INT, TYPE_VECTOR2, TYPE_VECTOR3, TYPE_INT],
+	## id, position, aim, facing, last_seq, hp, max_hp, resource, max_resource, life,
+	## status_bits, dash_ticks, dash_dir, dodge_ready_seq, move_mult
+	"players": [TYPE_INT, TYPE_VECTOR3, TYPE_VECTOR3, TYPE_FLOAT, TYPE_INT, TYPE_FLOAT, TYPE_FLOAT,
+		TYPE_FLOAT, TYPE_FLOAT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_VECTOR2, TYPE_INT, TYPE_FLOAT],
+	## id, type, position, facing, hp, max_hp, flags, target_id
+	"monsters": [TYPE_INT, TYPE_STRING, TYPE_VECTOR3, TYPE_FLOAT, TYPE_FLOAT, TYPE_FLOAT, TYPE_INT, TYPE_INT],
 }
 
 const MAX_PACKET_BYTES := 16384
-## [type, game_version, protocol, name]: HELLO of protocol 1 (game 0.1.x).
+## HELLO sizes of older games, padded so the host can answer "different version":
+## protocol 1 (0.1.x) had no character, protocol 2 (0.2.x) had no ability bar.
 const LEGACY_HELLO_SIZE := 4
+const PROTOCOL2_HELLO_SIZE := 6
 const MAGIC_0 := 0x54 # "T"
 const MAGIC_1 := 0x4F # "O"
 const HEADER_SIZE := 6
@@ -44,8 +53,8 @@ static func pack(message: Array) -> PackedByteArray:
 
 
 static func hello(game_version: String, protocol: int, name: String, class_id: String,
-		appearance: Dictionary) -> PackedByteArray:
-	return pack([Msg.HELLO, game_version, protocol, name, class_id, appearance])
+		appearance: Dictionary, bar: Array = []) -> PackedByteArray:
+	return pack([Msg.HELLO, game_version, protocol, name, class_id, appearance, bar])
 
 
 static func welcome(player_id: int, tick: int, roster: Array) -> PackedByteArray:
@@ -60,8 +69,16 @@ static func input(inputs: Array) -> PackedByteArray:
 	return pack([Msg.INPUT, inputs])
 
 
-static func snapshot(tick: int, players: Array) -> PackedByteArray:
-	return pack([Msg.SNAPSHOT, tick, players])
+static func snapshot(tick: int, players: Array, monsters: Array = []) -> PackedByteArray:
+	return pack([Msg.SNAPSHOT, tick, players, monsters])
+
+
+static func events(tick: int, list: Array) -> PackedByteArray:
+	return pack([Msg.EVENTS, tick, list])
+
+
+static func set_bar(bar: Array) -> PackedByteArray:
+	return pack([Msg.SET_BAR, bar])
 
 
 static func player_joined(id: int, name: String, slot: int, class_id: String,
@@ -97,9 +114,11 @@ static func decode(data: PackedByteArray) -> Dictionary:
 	if arr.is_empty() or typeof(arr[0]) != TYPE_INT or not SCHEMAS.has(arr[0]):
 		return {}
 	var schema: Array = SCHEMAS[arr[0]]
-	# Protocol 1 HELLO had no character: decode it so the host can answer "version".
+	# Older HELLOs (0.1.x, 0.2.x) are padded so the host can answer "version".
 	if arr[0] == Msg.HELLO and arr.size() == LEGACY_HELLO_SIZE:
-		arr = arr + ["", {}]
+		arr = arr + ["", {}, []]
+	elif arr[0] == Msg.HELLO and arr.size() == PROTOCOL2_HELLO_SIZE:
+		arr = arr + [[]]
 	if arr.size() != schema.size() + 1:
 		return {}
 	var out := {"type": arr[0]}
