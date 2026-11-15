@@ -1,10 +1,10 @@
 ---
 tags: [gdd]
-estado: diseñado
-actualizado: 2026-11-14
+estado: en curso
+actualizado: 2026-11-15
 ---
 
-# 5. Combate **[Diseñado]** (reglas probadas en el prototipo 2D)
+# 5. Combate **[En curso]** (0.3.0: daño, esquiva, recarga global, kits de nivel 1, lobos y limos con IA, escalado por grupo y reaparición en solitario)
 
 - **Tiempo real.** Ataques cuerpo a cuerpo en arco, proyectiles y áreas, con avisos en el suelo antes de los ataques fuertes de los monstruos.
 - **Hitbox en 3D:** cada personaje y monstruo tiene una **cápsula** (de los pies a la cabeza); los proyectiles impactan en cualquier punto del cuerpo, no solo en los pies.
@@ -14,7 +14,7 @@ actualizado: 2026-11-14
 - **Sin fuego amigo.**
 - **Escalado por grupo:** la vida de los monstruos escala con el número de jugadores presentes (`1 + 0,75 × (jugadores − 1)`).
 - **Monstruos:** normales, élite (más fuertes, mejor botín) y jefes (fases y ataques en área que hay que esquivar).
-- **IA:** reposo, combate (persecución con navegación de Godot: `NavigationAgent3D`) y vuelta a su zona si se alejan demasiado; algunos en manada, otros a distancia.
+- **IA:** reposo, combate (persecución con caminos `AStarGrid2D` calculados en la simulación, sin nodos) y vuelta a su zona si se alejan demasiado; algunos en manada, otros a distancia.
 - **Muerte:**
   - **En grupo:** el jugador queda **derribado** y un compañero lo levanta manteniendo **E** unos segundos.
   - **En solitario, o si cae todo el grupo:** reaparición en el último punto de control. Se pierde **durabilidad del equipo**, no experiencia.

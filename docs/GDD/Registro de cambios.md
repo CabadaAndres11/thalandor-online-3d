@@ -1,6 +1,6 @@
 ---
 tags: [gdd]
-actualizado: 2026-11-14
+actualizado: 2026-11-15
 ---
 
 # Registro de cambios del GDD
@@ -14,6 +14,8 @@ actualizado: 2026-11-14
 | 2.3 | 2026-11-14 | **Versión 0.1.2:** corregida la colisión con bloques. Al rozar el lateral de un bloque en diagonal, el jugador salía expulsado 1-2 m hacia atrás. |
 | 2.4 | 2026-11-14 | **Plan 2 implementado (versión 0.2.0): personajes vóxel.** Modelo de Kenney Blocky Characters (CC0) con capas de textura teñidas y piezas `.vox`; 5 clases con su ropa (el Guerrero con armadura y hombreras); 2 cuerpos, 8 pieles, 6 ojos, 8 peinados, 10 colores de pelo y 5 barbas; animaciones de reposo y andar; hasta 8 personajes guardados con versión, exportación e importación; pantallas "Tus personajes" y "Crear personaje"; el personaje viaja por la red y el anfitrión lo sanea. Cierre del Plan 1: el tercer jugador ya puede entrar por WebRTC y se descartan entradas no válidas; prueba entre casas aplazada. |
 | 2.5 | 2026-11-14 | Tras la primera prueba de la 0.2.0: el personaje ya no se queda atascado al andar en diagonal pegado a un muro (se para en cada junta entre bloques); ojos rojos y pelo rojo intenso como opciones; la vista previa del personaje gira más despacio. |
+
+| 2.6 | 2026-11-15 | **Versión 0.3.0 (Plan 3, primera parte): combate básico.** Simulación de combate determinista en el anfitrión: daño con armadura, críticos y esquiva, estados, recursos (furia, maná, concentración y energía), recarga global y esquiva con invulnerabilidad. Kit de nivel 1 de las 5 clases como datos (combos del Asesino, disparo cargado del Arquero). Lobos y limos vóxel propios con IA (persecución con caminos, correa, línea de visión y amenaza), reaparición de monstruos y vida escalada por grupo. Reaparición en solitario a los 3 s. HUD de combate con iconos y recargas; efectos y números de daño. Protocolo de red 3. |
 
 Añade una fila por cada cambio de diseño o funcionalidad implementada.
 

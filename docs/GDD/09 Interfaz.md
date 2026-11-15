@@ -1,7 +1,7 @@
 ---
 tags: [gdd]
 estado: en curso
-actualizado: 2026-11-14
+actualizado: 2026-11-15
 ---
 
 # 9. Interfaz y flujo
@@ -15,7 +15,7 @@ actualizado: 2026-11-14
    - **Al unirse**, el invitado aparece en su última ubicación guardada.
    - **"Ir con el grupo"** teletransporta junto al líder, solo fuera de combate.
 
-## 9.2 HUD **[Diseñado]**
+## 9.2 HUD **[En curso]** (vida, recurso, casillas CI, CD, 1–4 y Espacio con recarga, combos, carga y cuenta atrás de reaparición en la 0.3.0)
 - Vida, recurso de clase, barra de experiencia y nivel.
 - Barra de habilidades en **casillas cuadradas con icono** (clic izquierdo, clic derecho, 1–4, Espacio, Q y R), con barrido de recarga, tecla y casilla atenuada sin recurso.
 - Indicadores propios de clase (puntos de combo del Asesino, carga del disparo del Arquero).
