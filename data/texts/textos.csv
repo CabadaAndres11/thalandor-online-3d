@@ -211,3 +211,11 @@ HUD_KEY_LMB,CI
 HUD_KEY_RMB,CD
 HUD_KEY_SPACE,Espacio
 HUD_FALLEN,"Has caído. Reapareces en %d s"
+BTN_CLOSE,Cerrar
+ABILITIES_TITLE,Habilidades
+ABILITIES_ACTIVES,Activas
+ABILITIES_PASSIVES,Pasivas
+ABILITIES_BAR,Barra (teclas 1–4)
+ABILITIES_HINT,"Haz clic en una activa y luego en una casilla de la barra. Si ya estaba en la barra, se intercambian."
+ABILITIES_LEVEL,Nivel %d
+ABILITIES_COST,Coste: %d · Recarga: %s s

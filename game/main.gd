@@ -27,6 +27,8 @@ var create_screen: CharacterCreateScreen
 var chat: ChatBox
 var combat_hud: CombatHud
 var pause_menu: PauseMenu
+var abilities_window: AbilitiesWindow
+var abilities: AbilityDB
 var dialog: MessageDialog
 var debug_overlay: DebugOverlay
 var status_label: Label
@@ -36,12 +38,15 @@ var _file_dialog: FileDialog
 ## What the open dialog / file picker is for: {"action": "delete"|"export"|"import"|
 ## "import_rename", "id", "path"}; {} when nothing is pending.
 var _pending: Dictionary = {}
+## The saved character being played (null in games started without one).
+var _playing: CharacterData = null
 
 
 func _ready() -> void:
 	InputSetup.ensure_actions()
 	settings = SettingsStore.load_from(settings_path)
 	store = CharacterStore.new(characters_dir)
+	abilities = AbilityDB.load_default()
 	_ui = CanvasLayer.new()
 	_ui.name = "UI"
 	add_child(_ui)
@@ -93,6 +98,11 @@ func _ready() -> void:
 	debug_overlay = DebugOverlay.new()
 	_ui.add_child(debug_overlay)
 
+	abilities_window = AbilitiesWindow.new()
+	abilities_window.theme = theme
+	abilities_window.bar_changed.connect(_on_bar_changed)
+	_ui.add_child(abilities_window)
+
 	pause_menu = PauseMenu.new()
 	pause_menu.theme = theme
 	pause_menu.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -122,7 +132,16 @@ func _unhandled_input(event: InputEvent) -> void:
 	if game == null or chat.is_typing() or dialog.visible:
 		return
 	if event.is_action_pressed("menu"):
-		pause_menu.visible = not pause_menu.visible
+		if abilities_window.visible:
+			abilities_window.visible = false
+		else:
+			pause_menu.visible = not pause_menu.visible
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("abilities_window") and not pause_menu.visible:
+		if abilities_window.visible:
+			abilities_window.visible = false
+		else:
+			abilities_window.show_for(game.client.class_id, game.client.bar, abilities)
 		get_viewport().set_input_as_handled()
 
 
@@ -186,6 +205,7 @@ func _on_select_play(id: String) -> void:
 	var c := _find(id)
 	if c != null:
 		_remember_character(id)
+		_playing = c
 		_on_play(c.name, c.class_id, c.appearance)
 
 
@@ -193,6 +213,7 @@ func _on_select_join(id: String, code: String) -> void:
 	var c := _find(id)
 	if c != null:
 		_remember_character(id)
+		_playing = c
 		_on_join(c.name, code, c.class_id, c.appearance)
 
 
@@ -332,7 +353,7 @@ func _on_typing_changed(_is_typing: bool) -> void:
 ## (a click on a menu button must not attack).
 func _update_input_block() -> void:
 	if game != null:
-		game.input_blocked = chat.is_typing() or pause_menu.visible or dialog.visible
+		game.input_blocked = chat.is_typing() or pause_menu.visible or dialog.visible or abilities_window.visible
 
 
 func _process(_delta: float) -> void:
@@ -350,6 +371,8 @@ func _start_game() -> void:
 		game.net_mode = net_mode
 	add_child(game)
 	game.session_ended.connect(_on_session_ended)
+	if _playing != null:
+		game.character_bar = _playing.bar.duplicate()
 	game.group_opened.connect(_on_group_opened)
 	game.group_failed.connect(_on_group_failed)
 	_show_only(null)
@@ -364,9 +387,21 @@ func _attach_client() -> void:
 	client.chat_received.connect(chat.add_message)
 	debug_overlay.client = client
 	debug_overlay.net_label = game.net_label()
-	combat_hud.bind(client, client.bar, AbilityDB.load_default())
+	combat_hud.bind(client, client.bar, abilities)
 	combat_hud.visible = true
 	pause_menu.set_can_open_group(game.is_hosting())
+
+
+## A new bar from the K window: the host, the HUD and the saved character get it.
+func _on_bar_changed(bar: Array) -> void:
+	if game == null or game.client == null:
+		return
+	game.client.send_bar(bar)
+	combat_hud.bind(game.client, game.client.bar, abilities)
+	if _playing != null:
+		_playing.bar = game.client.bar.duplicate()
+		if store.save(_playing) != OK:
+			dialog.show_message(tr(store.last_error))
 
 
 func _on_welcomed(_id: int) -> void:
@@ -393,6 +428,8 @@ func _leave_game() -> void:
 		game.queue_free()
 		game = null
 	debug_overlay.client = null
+	_playing = null
+	abilities_window.visible = false
 	combat_hud.unbind()
 	combat_hud.visible = false
 	chat.cancel()

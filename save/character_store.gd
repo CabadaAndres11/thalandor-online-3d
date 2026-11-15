@@ -51,6 +51,7 @@ func create(char_name: String, class_id: String, appearance: Dictionary) -> Char
 	c.class_id = _catalog.sanitize_class(class_id)
 	c.appearance = _catalog.sanitize_appearance(appearance)
 	c.created_at = int(Time.get_unix_time_from_system())
+	c.bar = AbilityDB.load_default().default_bar(c.class_id)
 	return c if save(c) == OK else null
 
 
@@ -97,6 +98,7 @@ func import_from(path: String, new_name: String = "") -> CharacterData:
 		return null
 	c.id = _new_id()
 	c.created_at = int(Time.get_unix_time_from_system())
+	c.bar = AbilityDB.load_default().default_bar(c.class_id)
 	return c if save(c) == OK else null
 
 

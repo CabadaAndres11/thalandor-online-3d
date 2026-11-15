@@ -161,3 +161,9 @@ func test_file_name_must_match_the_character_id() -> void:
 	assert_true(s.delete(c.id))
 	assert_eq(s.load_all().size(), 0, "deleting really removes it from the list")
 	assert_true(FileAccess.file_exists(DIR.path_join(c.id + " - copia.json")), "the copy is left alone")
+
+
+func test_new_character_gets_the_default_bar() -> void:
+	var c := store.create("Brann", "cleric", {})
+	assert_eq(c.bar, AbilityDB.load_default().default_bar("cleric"))
+	assert_eq(CharacterStore.new(DIR).load_all()[0].bar, c.bar)

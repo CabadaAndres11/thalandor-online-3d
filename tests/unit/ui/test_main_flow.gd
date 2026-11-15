@@ -226,3 +226,48 @@ func test_combat_hud_in_game_only() -> void:
 	assert_string_contains(main.combat_hud.hp_text(), "150")
 	main._leave_game()
 	assert_false(main.combat_hud.visible)
+
+
+func _press(action: String) -> void:
+	var ev := InputEventAction.new()
+	ev.action = action
+	ev.pressed = true
+	main._unhandled_input(ev)
+
+
+func test_k_toggles_abilities_window_in_game_only() -> void:
+	_press("abilities_window")
+	assert_false(main.abilities_window.visible, "no window outside the game")
+	main._on_play("Prueba", "mage")
+	await wait_physics_frames(3)
+	_press("abilities_window")
+	assert_true(main.abilities_window.visible)
+	assert_eq(main.abilities_window.bar(), main.game.client.bar)
+	main._process(0.0)
+	assert_true(main.game.input_blocked, "no attacks while clicking the window")
+	_press("menu")
+	assert_false(main.abilities_window.visible, "Esc closes the window first")
+	assert_false(main.pause_menu.visible)
+	_press("abilities_window")
+	_press("abilities_window")
+	assert_false(main.abilities_window.visible)
+
+
+func test_bar_change_sends_set_bar_and_saves() -> void:
+	main._show_create()
+	var c := _create("Brann", "warrior")
+	main._on_select_play(c.id)
+	await wait_until(func() -> bool: return main.game.client.status == ClientSession.Status.IN_GAME, 3.0)
+	_press("abilities_window")
+	var new_bar := ["warrior_shield_wall", "warrior_charge", "warrior_taunt", ""]
+	main.abilities_window.bar_changed.emit(new_bar)
+	await wait_physics_frames(5)
+	assert_eq(main.game.host._players[main.game.client.my_id].bar, new_bar, "the host got SET_BAR")
+	assert_eq(main.combat_hud.slot_ability(2), "warrior_shield_wall", "the HUD shows the new bar")
+	assert_eq(main.store.load_all()[0].bar, new_bar, "saved with the character")
+	main._leave_game()
+	main._on_select_play(c.id)
+	assert_eq(main.game.client.bar, new_bar, "the saved bar is used next time")
+	await wait_until(func() -> bool: return main.game.client.status == ClientSession.Status.IN_GAME, 3.0)
+	await wait_physics_frames(3)
+	assert_eq(main.game.host._players[main.game.client.my_id].bar, new_bar, "and sent in HELLO")
