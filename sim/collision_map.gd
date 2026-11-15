@@ -5,6 +5,10 @@ extends RefCounted
 
 var size: Vector2i = Vector2i.ZERO
 var spawn_cell: Vector2i = Vector2i.ZERO
+## Where players reappear after dying (defaults to the spawn cell).
+var respawn_cell: Vector2i = Vector2i.ZERO
+## Monster spawn points: {type, at: [x, z], count, radius, respawn_s, elite_chance}.
+var spawns: Array = []
 var _solid: Dictionary = {}
 
 
@@ -14,6 +18,9 @@ static func from_layout(layout: Dictionary) -> CollisionMap:
 	map.size = Vector2i(int(s[0]), int(s[1]))
 	var sp: Array = layout.get("spawn", [0, 0])
 	map.spawn_cell = Vector2i(int(sp[0]), int(sp[1]))
+	var rp: Array = layout.get("respawn_point", sp)
+	map.respawn_cell = Vector2i(int(rp[0]), int(rp[1]))
+	map.spawns = layout.get("spawns", [])
 	for block: Array in layout.get("blocks", []):
 		map.set_solid(Vector2i(int(block[0]), int(block[1])), true)
 	return map
@@ -34,3 +41,7 @@ func is_solid(cell: Vector2i) -> bool:
 
 func spawn_point() -> Vector3:
 	return Vector3(spawn_cell.x + 0.5, 0.0, spawn_cell.y + 0.5)
+
+
+func respawn_point() -> Vector3:
+	return Vector3(respawn_cell.x + 0.5, 0.0, respawn_cell.y + 0.5)

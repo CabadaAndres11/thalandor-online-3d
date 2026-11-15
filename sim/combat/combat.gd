@@ -56,6 +56,9 @@ static func deal(world: SimWorld, source: CombatEntity, target: CombatEntity, ef
 		world.emit(["hit", target.id, r.amount, r.crit, source.id])
 		Resources.on_damage_dealt(source, r.amount, world)
 		Resources.on_damage_taken(target, r.amount, world)
+		if target is MonsterState and source.team == CombatEntity.TEAM_PLAYERS:
+			var threat: float = r.amount * source.stats.threat_mult * float(_ability.get("threat_mult", 1.0))
+			(target as MonsterState).add_threat(source.id, maxf(threat, 1.0))
 	for s: Dictionary in effect.get("statuses", []):
 		apply_status(world, source, target, s)
 

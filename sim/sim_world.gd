@@ -18,6 +18,10 @@ var monsters: Dictionary = {}
 var projectiles: Array = [] # Projectile
 var pending_areas: Array = [] # PendingArea
 var _next_object_id: int = 1
+var _next_monster_id: int = 999
+var _pathfinder: Pathfinder
+## Keeps the map's monster spawn points populated (null when the map has none).
+var spawner: Spawner
 
 
 func emit(ev: Array) -> void:
@@ -42,6 +46,8 @@ func _init(p_balance: Balance, p_map: CollisionMap, p_seed: int = 1) -> void:
 	balance = p_balance
 	map = p_map
 	rng.seed = p_seed
+	if not p_map.spawns.is_empty():
+		spawner = Spawner.new(p_map.spawns)
 
 
 func add_player(id: int, position: Vector3) -> PlayerState:
@@ -50,11 +56,13 @@ func add_player(id: int, position: Vector3) -> PlayerState:
 	s.position = position
 	s.aim = position
 	players[id] = s
+	rescale_monsters()
 	return s
 
 
 func remove_player(id: int) -> void:
 	players.erase(id)
+	rescale_monsters()
 
 
 func entities() -> Array:
@@ -81,7 +89,12 @@ func step(inputs: Dictionary) -> void:
 			if p.dodge_started:
 				p.dodge_started = false
 				p.add_status(StatusEffect.make("invulnerable", tick + ticks(balance.dodge_invuln_s)), 1)
+	for e: CombatEntity in monsters.values():
+		if e is MonsterState:
+			MonsterAI.tick(self, e)
 	Combat.tick(self)
+	if spawner != null:
+		spawner.tick(self)
 	tick += 1
 
 
@@ -92,3 +105,23 @@ func dt() -> float:
 ## Seconds -> whole simulation ticks (at least 1 for positive times).
 func ticks(seconds: float) -> int:
 	return balance.ticks(seconds)
+
+
+## Monster ids start at 1000 (players use 1, 2…).
+func next_monster_id() -> int:
+	_next_monster_id += 1
+	return _next_monster_id
+
+
+func pathfinder() -> Pathfinder:
+	if _pathfinder == null:
+		_pathfinder = Pathfinder.new(map)
+	return _pathfinder
+
+
+## Monster health follows the group size (GDD §5), keeping each one's fraction.
+func rescale_monsters() -> void:
+	for e: CombatEntity in monsters.values():
+		var m := e as MonsterState
+		if m != null and m.is_alive() and m.stats.max_hp > 0.0:
+			Spawner.scale_health(self, m, m.hp / m.stats.max_hp)

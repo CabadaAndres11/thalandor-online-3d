@@ -1,0 +1,8 @@
+[
+	{"id": "wolf_bite", "monster": "wolf", "name": "AB_WOLF_BITE", "desc": "AB_WOLF_BITE_DESC", "icon": "bite", "kind": "active", "level": 1,
+	 "cost": 0, "cooldown_s": 1.2, "gcd": false, "range": 1.6, "anim": "melee",
+	 "effects": [{"type": "melee_arc", "angle_deg": 60, "range": 1.6, "damage": {"base": 8, "coef": 0.0, "kind": "physical"}}]},
+	{"id": "slime_slam", "monster": "slime", "name": "AB_SLIME_SLAM", "desc": "AB_SLIME_SLAM_DESC", "icon": "slam", "kind": "active", "level": 1,
+	 "cost": 0, "cooldown_s": 2.0, "gcd": false, "range": 1.8, "anim": "melee",
+	 "effects": [{"type": "area", "at": "self", "radius": 1.8, "delay_s": 0, "telegraph": false, "damage": {"base": 14, "coef": 0.0, "kind": "physical"}}]}
+]

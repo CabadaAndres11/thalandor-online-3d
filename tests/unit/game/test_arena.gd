@@ -27,4 +27,5 @@ func test_gridmap_has_floor_and_stacked_blocks() -> void:
 func test_real_arena_builds() -> void:
 	var arena: Arena = autofree(Arena.new())
 	var map := arena.build(Arena.load_layout())
-	assert_eq(map.size, Vector2i(40, 40))
+	assert_eq(map.size, Vector2i(48, 48))
+	assert_false(map.spawns.is_empty(), "the test arena has monster spawn points")

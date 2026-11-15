@@ -90,3 +90,9 @@ ERR_SAVE,"No se ha podido guardar el personaje. Revisa que haya espacio en el di
 ERR_EXPORT,"No se ha podido exportar el personaje a esa carpeta."
 ERR_CHAR_SKIPPED,"%d archivos de personaje no se han podido leer. Se han dejado como estaban."
 ERR_DELETE,"No se ha podido borrar el personaje. Revisa que el archivo no esté abierto en otro programa."
+MON_WOLF,Lobo
+MON_SLIME,Limo
+AB_WOLF_BITE,Mordisco
+AB_WOLF_BITE_DESC,Muerde al enemigo que tiene delante.
+AB_SLIME_SLAM,Aplastar
+AB_SLIME_SLAM_DESC,Golpea el suelo y daña a todo lo que tiene alrededor.
