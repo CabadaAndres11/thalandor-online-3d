@@ -5,6 +5,8 @@
 |---|---|---|---|
 | [Blocky Characters 2.0](https://kenney.nl/assets/blocky-characters) | Kenney (www.kenney.nl) | CC0 1.0 | Modelo y animaciones de los personajes (`assets/characters/base/`); piel, orejas, nariz, peinados y barbas recortados de sus texturas (`assets/characters/layers/`) |
 
+| [Cube Pets 2.0](https://kenney.nl/assets/cube-pets) | Kenney (www.kenney.nl) | CC0 1.0 | Modelos y animaciones de las bestias (lobo y jabalí, recoloreados) en `assets/monsters/pets/` |
+
 La ropa de las clases y las piezas vóxel (`assets/characters/pieces/`) están hechas para este proyecto con los scripts de `tools/art/`.
 
 ## Código y herramientas
