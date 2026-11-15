@@ -9,6 +9,13 @@ var balance: Balance
 var map: CollisionMap
 ## The only source of randomness in the simulation (seeded per game).
 var rng := RandomNumberGenerator.new()
+## Combat events of the current tick (arrays like ["hit", target_id, amount, crit,
+## source_id]); the host sends them and clears the list at the start of each tick.
+var events: Array = []
+
+
+func emit(ev: Array) -> void:
+	events.append(ev)
 
 
 func _init(p_balance: Balance, p_map: CollisionMap, p_seed: int = 1) -> void:

@@ -24,12 +24,65 @@ var cooldowns: Dictionary = {} # ability id -> tick when ready
 var gcd_end: int = 0
 ## Last tick this entity dealt or took damage (in combat for balance.in_combat_s).
 var last_combat_tick: int = -100000
+## Resource rules of its class (see Resources): regen_per_s, decay_per_s…
+var resource_def: Dictionary = {}
+## Ticks left of a dodge or charge dash (movement is driven by Movement / effects).
+var dash_ticks: int = 0
 
 
 func is_alive() -> bool:
 	return life == ALIVE
 
 
-## Alive and not stunned or frozen (statuses arrive with StatusEffect).
+## Alive and not stunned or frozen.
 func can_act(_tick: int) -> bool:
-	return is_alive()
+	return is_alive() and not has_status("stun") and not has_status("freeze")
+
+
+## Movement speed factor from statuses (rooted, stunned or frozen = 0).
+func move_mult() -> float:
+	if not is_alive() or has_status("stun") or has_status("freeze") or has_status("root"):
+		return 0.0
+	return stats.move_speed_mult * maxf(0.0, 1.0 - status_magnitude("slow"))
+
+
+func is_dashing() -> bool:
+	return dash_ticks > 0
+
+
+func in_combat(world: SimWorld) -> bool:
+	return world.tick - last_combat_tick < world.ticks(world.balance.in_combat_s)
+
+
+## Adds a status, or refreshes the existing one of the same kind (duration and
+## stacks up to max_stacks; the stronger magnitude wins).
+func add_status(s: StatusEffect, max_stacks: int = 1) -> void:
+	for existing: StatusEffect in statuses:
+		if existing.kind == s.kind:
+			existing.end_tick = maxi(existing.end_tick, s.end_tick)
+			existing.stacks = mini(existing.stacks + s.stacks, maxi(max_stacks, 1))
+			existing.magnitude = maxf(existing.magnitude, s.magnitude)
+			existing.source_id = s.source_id
+			return
+	s.stacks = mini(s.stacks, maxi(max_stacks, 1))
+	statuses.append(s)
+
+
+func has_status(kind: String) -> bool:
+	for s: StatusEffect in statuses:
+		if s.kind == kind:
+			return true
+	return false
+
+
+## Sum of magnitude × stacks of the statuses of this kind (0 if none).
+func status_magnitude(kind: String) -> float:
+	var total := 0.0
+	for s: StatusEffect in statuses:
+		if s.kind == kind:
+			total += s.magnitude * s.stacks
+	return total
+
+
+func remove_status(kind: String) -> void:
+	statuses = statuses.filter(func(s: StatusEffect) -> bool: return s.kind != kind)
