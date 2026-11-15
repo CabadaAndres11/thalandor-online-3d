@@ -2,7 +2,7 @@
 tags: [plan]
 plan: 3.1
 fecha: 2026-11-16
-estado: en curso
+estado: hecho
 actualizado: 2026-11-16
 ---
 # Plan 3.1 — Ajustes tras la 0.4.0: plan de implementación

@@ -7,7 +7,13 @@
 3. **Aviso de Windows (SmartScreen):** el juego no está firmado. Pulsa **Más información → Ejecutar de todas formas**.
 4. Pulsa **Jugar**. Se abre **Tus personajes**: crea uno con **Crear** (nombre, clase y aspecto) o elige uno que ya tengas.
 
-### Novedades de esta versión: clases completas, monstruos y jefe
+### Novedades de la 0.4.1
+- **Esqueleto arquero nuevo:** ya no es un cuerpo de cubos. Está hecho de huesos finos con huecos entre ellos (costillas, columna, pelvis, brazos y piernas), con un cráneo de mirada malvada, brasas en las cuencas y colmillos. Camina traqueteando, tensa el arco al disparar y se desmorona al morir.
+- **Ventana de habilidades (K):** ahora incluye también el **clic izquierdo y el derecho**, para ver qué hacen.
+- **Descripciones detalladas:** cada habilidad muestra de dónde sale su daño (por ejemplo, *18 + 80 % de tu poder de ataque (20) = 34 físico*), a quién alcanza, los efectos con su porcentaje y duración, el crítico, el coste, la recarga y el alcance.
+- **Todo el grupo tiene que usar la 0.4.1:** el juego solo deja jugar juntos con la misma versión.
+
+### Novedades de la 0.4.0: clases completas, monstruos y jefe
 - **Kit completo de las 5 clases:** cada una tiene ya su ataque básico, su secundario, 5 habilidades activas y 4 pasivas. Abre la ventana de **Habilidades con K**: ves todas con su descripción, coste y recarga. Para colocar una en la barra, haz clic en ella y luego en una casilla del 1 al 4 (si ya estaba, se intercambian). La barra se guarda con cada personaje.
   - Hasta que lleguen los niveles (próxima versión) todos sois nivel 1: puedes usar todas las activas, pero las pasivas aún no se activan.
 - **Monstruos nuevos:** **jabalíes** que avisan una línea en el suelo y cargan por ella (¡apártate!), **goblins** que van en manada y **esqueletos arqueros** que se alejan si te acercas. Cualquier monstruo puede salir **élite**: más grande, con un aura en el suelo, más vida y más daño.
@@ -15,7 +21,7 @@
 - **Amenaza:** los monstruos atacan a quien más amenaza tiene. Curar también da amenaza, y *Provocar* del Guerrero se los lleva y los mantiene en él.
 - **Derribo en grupo:** si caes y queda algún aliado en pie, quedas **derribado** 30 s. Un aliado se acerca y **mantiene E** 3 s para levantarte (si se mueve o le pegan, se corta). Si cae todo el grupo, reaparecéis todos juntos.
 - **Marcos de grupo** a la izquierda con la vida de tus aliados.
-- **Todo el grupo tiene que usar la 0.4.0.** Las versiones anteriores no pueden jugar con esta.
+
 
 ### Jugar con amigos: dos redes para probar
 Esta versión trae **dos formas de conectarse**. Todos los del grupo tienen que usar la misma, y también **la misma versión** del juego.

@@ -1,6 +1,6 @@
 ---
 tags: [gdd]
-actualizado: 2026-11-15
+actualizado: 2026-11-16
 ---
 
 # Registro de cambios del GDD
@@ -17,6 +17,7 @@ actualizado: 2026-11-15
 
 | 2.6 | 2026-11-15 | **Versión 0.3.0 (Plan 3, primera parte): combate básico.** Simulación de combate determinista en el anfitrión: daño con armadura, críticos y esquiva, estados, recursos (furia, maná, concentración y energía), recarga global y esquiva con invulnerabilidad. Kit de nivel 1 de las 5 clases como datos (combos del Asesino, disparo cargado del Arquero). Lobos y limos vóxel propios con IA (persecución con caminos, correa, línea de visión y amenaza), reaparición de monstruos y vida escalada por grupo. Reaparición en solitario a los 3 s. HUD de combate con iconos y recargas; efectos y números de daño. Protocolo de red 3. |
 | 2.7 | 2026-11-15 | **Versión 0.4.0 (Plan 3 terminado): clases completas, monstruos y jefe.** Kit completo de las 5 clases (7 habilidades usables y 4 pasivas cada una, como datos), ventana de Habilidades (K) y barra guardada con el personaje (personajes versión 2). Jabalí con carga avisada en línea, goblins en manada, esqueleto arquero que se aleja y élites (×1,3 tamaño, ×2,5 vida, ×1,4 daño, aura). Jefe Rey orco con 3 fases (tajo, salto con área avisada y llamada de goblins), barra de jefe y aviso en el chat. Amenaza completa (curación y *Provocar*), derribo en grupo con levantar con E, desangrado a los 30 s y caída de todo el grupo; marcos de aliados. Instantáneas por jugador con los 32 monstruos más cercanos, con las filas en formato binario para caber en un paquete. Protocolo de red 4. |
+| 2.8 | 2026-11-16 | **Versión 0.4.1 ([[Plan 3.1 — Ajustes tras la 0.4.0 (spec)\|Plan 3.1]]):** el esqueleto arquero pasa a ser un rig vóxel propio de huesos finos con huecos, cara malvada y animaciones por código (andar, disparar, desmoronarse); la ventana K muestra también el clic izquierdo y el derecho; cada habilidad muestra un detalle calculado de los datos (fórmula del daño con el % del poder, alcance, estados, crítico, coste, recarga y alcance). |
 
 Añade una fila por cada cambio de diseño o funcionalidad implementada.
 

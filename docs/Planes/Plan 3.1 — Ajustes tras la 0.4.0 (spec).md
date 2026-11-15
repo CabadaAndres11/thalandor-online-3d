@@ -44,7 +44,7 @@ Todos los textos en `textos.csv`.
 ## Decisiones tomadas
 - Esqueleto vóxel propio con animación por código (usuario, frente a huesos sobre el modelo de Kenney).
 - Detalle calculado de los datos (usuario, frente a textos escritos a mano).
-- Versión 0.4.1, compatible en red con la 0.4.0. Publicación solo con permiso.
+- Versión 0.4.1 (el formato de red no cambia, pero el juego exige la misma versión a todo el grupo). Publicación con permiso del usuario.
 
 ---
 ← [[Planes]]

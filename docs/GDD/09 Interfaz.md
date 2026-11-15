@@ -1,7 +1,7 @@
 ---
 tags: [gdd]
 estado: en curso
-actualizado: 2026-11-15
+actualizado: 2026-11-16
 ---
 
 # 9. Interfaz y flujo
@@ -24,7 +24,7 @@ actualizado: 2026-11-15
 - Números de daño flotantes; nombre y vida sobre personajes y enemigos.
 - **Textos nítidos:** los textos sobre el mundo (nombres, botín) se dibujan como interfaz (`Label` en pantalla o `Label3D` con fuente de alta resolución), nunca escalados de forma que se vean borrosos.
 
-## 9.3 Ventanas **[En curso]** (0.4.0: Habilidades (K) implementada; el resto está diseñado)
+## 9.3 Ventanas **[En curso]** (Habilidades (K) implementada en la 0.4.0; en la 0.4.1 muestra también CI y CD y un detalle calculado de cada habilidad; el resto está diseñado)
 - **Norma:** **ninguna ventana puede necesitar scroll** para verse entera (en una pantalla de 1280×720). Si una ventana se llena, su contenido se reparte en otra ventana con su propia tecla.
 - **Personaje (C):** atributos y estadísticas a la izquierda; a la derecha, el equipo alrededor de un **modelo 3D en vivo** del personaje (un `SubViewport` que gira lentamente) con lo que lleva puesto.
 - **Inventario (I):** cuadrícula de 30 casillas y oro; se puede ver a la vez que la ventana de Personaje.
