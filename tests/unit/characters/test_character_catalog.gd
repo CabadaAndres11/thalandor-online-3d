@@ -153,7 +153,7 @@ func test_red_hair_and_eyes_are_options() -> void:
 	assert_false(catalog.option("eyes", "red").is_empty())
 
 
-## Every weapon passes through its fist (the hand is voxels -1..0 on each axis from
+## Every weapon passes through its fist (the hand is voxels x -2..1, y -4..0, z -2..1 from
 ## its pivot), so it is held, not floating in front of it.
 func test_weapons_pass_through_the_fist() -> void:
 	for id: String in catalog.piece_ids():
@@ -165,7 +165,7 @@ func test_weapons_pass_through_the_fist() -> void:
 		var inside := false
 		for v: Array in vox.voxels:
 			var cell := Vector3i(int(o[0]) + v[0], int(o[1]) + v[1], int(o[2]) + v[2])
-			if cell.x >= -1 and cell.x <= 0 and cell.y >= -1 and cell.y <= 0 and cell.z >= -1 and cell.z <= 0:
+			if cell.x >= -2 and cell.x <= 1 and cell.y >= -4 and cell.y <= 0 and cell.z >= -2 and cell.z <= 1:
 				inside = true
 				break
 		assert_true(inside, id + " goes through the fist")

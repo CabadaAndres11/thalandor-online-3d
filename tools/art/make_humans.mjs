@@ -117,7 +117,8 @@ function human() {
     const l = new Shape();
     l.box(-2, -3, -2, 2, 0, 2, T);
     l.box(-2, -12, -2, 2, -4, 2, BOOT);
-    l.box(-3, -5, -3, 3, -4, 3, BOOT_L).box(-3, -5, -3, 3, -5, 3, BOOT); // cuff
+    l.box(-2, -4, -2, 2, -4, 2, BOOT_L); // folded cuff
+    l.box(-2, -5, -2, -2, -11, 2, BOOT_D).box(2, -5, -2, 2, -11, 2, BOOT_D); // sides in shade
     l.box(-2, -12, -2, 2, -12, -2, BOOT_D).box(-2, -12, 3, 2, -11, 4, BOOT); // heel, toe
     l.box(-2, -12, -2, 2, -12, 4, SOLE);
     l.box(-2, -10, 2, 2, -10, 2, BOOT_D); // ankle crease
