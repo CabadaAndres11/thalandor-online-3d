@@ -43,6 +43,8 @@ var max_monsters_per_snapshot: int = 32
 var elite_scale: float = 1.3
 var elite_hp_mult: float = 2.5
 var elite_damage_mult: float = 1.4
+## Progression (Plan 4): experience curve (see Xp).
+var xp: Dictionary = {}
 
 
 static func load_from(path: String = DEFAULT_PATH) -> Balance:
@@ -64,6 +66,9 @@ static func load_from(path: String = DEFAULT_PATH) -> Balance:
 				b.set(key, str(data[key]))
 			TYPE_FLOAT:
 				b.set(key, float(data[key]))
+			TYPE_DICTIONARY:
+				if data[key] is Dictionary:
+					b.set(key, data[key])
 	return b
 
 
