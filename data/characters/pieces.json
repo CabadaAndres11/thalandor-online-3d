@@ -136,23 +136,12 @@
 		"tag": "outfit",
 		"hides": []
 	},
-	"cult_mask": {
-		"file": "res://assets/characters/pieces/cult_mask.vox",
-		"part": "head",
-		"offset": [
-			-4,
-			0,
-			4
-		],
-		"tag": "monster",
-		"hides": []
-	},
 	"cult_hood": {
 		"file": "res://assets/characters/pieces/cult_hood.vox",
 		"part": "head",
 		"offset": [
-			-5,
-			-1,
+			-9,
+			-4,
 			-8
 		],
 		"tag": "monster",
@@ -162,8 +151,52 @@
 		"file": "res://assets/characters/pieces/cult_robe.vox",
 		"part": "torso",
 		"offset": [
-			-7,
-			-16,
+			-12,
+			-25,
+			-9
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"cult_sleeve_left": {
+		"file": "res://assets/characters/pieces/cult_sleeve_left.vox",
+		"part": "arm_left",
+		"offset": [
+			-3,
+			-10,
+			-3
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"cult_sleeve_right": {
+		"file": "res://assets/characters/pieces/cult_sleeve_right.vox",
+		"part": "arm_right",
+		"offset": [
+			-3,
+			-10,
+			-3
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"cult_cuff_left": {
+		"file": "res://assets/characters/pieces/cult_cuff_left.vox",
+		"part": "forearm_left",
+		"offset": [
+			-4,
+			-10,
+			-4
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"cult_cuff_right": {
+		"file": "res://assets/characters/pieces/cult_cuff_right.vox",
+		"part": "forearm_right",
+		"offset": [
+			-4,
+			-10,
 			-4
 		],
 		"tag": "monster",

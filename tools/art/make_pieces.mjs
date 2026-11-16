@@ -369,64 +369,135 @@ const WEAPONS = {
 WEAPONS.weapon_dagger_left = WEAPONS.weapon_dagger_right;
 
 // --- Monster pieces (data/monsters "look") ----------------------------------------------
-// The cult of the demon king: bone masks with the black sun split in five (the five
-// seals), dark hoods and robes. The guard beast: a horned brute in chains with the
+// The cult of the demon king: faceless hoods with the black sun, long dark robes. The guard beast: a horned brute in chains with the
 // cult's collar.
 const BONE = 22, BONE_D = 23, SUN = 24, EMBER = 25, FUR = 26, FUR_D = 27, IRON = 28, IRON_L = 29;
 const MONSTER_KIT = {
   ...KIT, [BONE]: "#e4dccb", [BONE_D]: "#b3a991", [SUN]: "#141016", [EMBER]: "#ff4a26",
   [FUR]: "#3b2c24", [FUR_D]: "#251b16", [IRON]: "#3b3b42", [IRON_L]: "#6e6e78", [GLOW]: "#ff4a26",
 };
-// The black sun: a disk with five rays, split down the middle by a thin bone line.
-function blackSun(s, cx, cy, z) {
-  s.box(cx - 1, cy - 1, z, cx + 2, cy + 1, z, SUN); // disk
-  s.put(cx, cy + 2, z, SUN).put(cx + 1, cy + 2, z, SUN); // up
-  s.put(cx - 2, cy + 1, z, SUN).put(cx + 3, cy + 1, z, SUN); // upper sides
-  s.put(cx - 2, cy - 2, z, SUN).put(cx + 3, cy - 2, z, SUN); // lower sides
-  s.box(cx, cy - 1, z, cx, cy + 2, z, BONE_D); // split
+// The cult's robes (the user's reference sheet): near-black cloth, grey folds, old
+// gold trim, a grey-green pendant.
+const ROBE = 60, ROBE_D = 61, ROBE_L = 62, VOID = 63, PANEL = 64, ROPE = 65, ROPE_D = 66, PENDANT = 67, PENDANT_D = 68, GOLD_D = 69;
+const CULT_KIT = {
+  ...KIT, [ROBE]: "#1c1b1f", [ROBE_D]: "#121114", [ROBE_L]: "#2c2b30", [VOID]: "#09080a", [PANEL]: "#141317",
+  [ROPE]: "#37352f", [ROPE_D]: "#25231f", [PENDANT]: "#6f7568", [PENDANT_D]: "#4c5149", [GOLD]: "#b39a5e", [GOLD_D]: "#7d6a3e",
+};
+// Forearms x -2..1, y -8..0, z -2..1.
+const FORE_L = { x0: 1, x1: 4, y0: 1, y1: 9, z0: 1, z1: 4, part: "forearm_left", origin: [-3, -9, -3] };
+const FORE_R = { ...FORE_L, part: "forearm_right" };
+function upperSleeve(f, s) {
+  s.box(f.x0 - 1, f.y0 - 1, f.z0 - 1, f.x1 + 1, f.y1 + 1, f.z1 + 1, ROBE);
+  s.box(f.x0 - 1, f.y1 + 1, f.z0 - 1, f.x1 + 1, f.y1 + 1, f.z1 + 1, ROBE_L);
+  s.box(f.x0 - 1, f.y0 - 1, f.z0 - 1, f.x0 - 1, f.y1, f.z0 - 1, ROBE_D);
+}
+function bellCuff(f, s) {
+  for (let y = f.y0 - 2; y <= f.y1; y++) {
+    const w = y < f.y0 + 3 ? 2 : 1; // wider at the mouth
+    s.box(f.x0 - w, y, f.z0 - w, f.x1 + w, y, f.z1 + w, ROBE);
+    s.remove(f.x0, y, f.z0, f.x1, y, f.z1);
+  }
+  for (const v of [...s.cells.values()].filter((c) => c[1] <= f.y0 - 1)) {
+    s.put(v[0], v[1], v[2], (v[0] * 5 + v[2] * 3) % 4 === 0 ? ROBE : (v[1] === f.y0 - 2 ? GOLD_D : GOLD));
+  }
+  s.box(f.x0 - 1, f.y0 + 3, f.z0 - 1, f.x0 - 1, f.y1, f.z0 - 1, ROBE_D);
 }
 const MONSTER = {
-  // Smooth bone mask over the whole face: eye slits, the black sun on the brow.
-  cult_mask: {
-    frame: HEAD, tag: "monster", palette: MONSTER_KIT,
-    build(f, s) {
-      s.box(f.x0, f.y0, f.z1 + 1, f.x1, f.y1 - 1, f.z1 + 1, BONE);
-      s.box(f.x0, f.y0, f.z1 + 1, f.x0, f.y1 - 1, f.z1 + 1, BONE_D).box(f.x1, f.y0, f.z1 + 1, f.x1, f.y1 - 1, f.z1 + 1, BONE_D);
-      s.remove(f.x0, f.y0, f.z1 + 1, f.x0, f.y0, f.z1 + 1).remove(f.x1, f.y0, f.z1 + 1, f.x1, f.y0, f.z1 + 1);
-      s.box(f.x0 + 1, f.y0 + 4, f.z1 + 1, f.x0 + 2, f.y0 + 4, f.z1 + 1, SUN).box(f.x1 - 2, f.y0 + 4, f.z1 + 1, f.x1 - 1, f.y0 + 4, f.z1 + 1, SUN); // slits
-      s.put(f.x0 + 2, f.y0 + 4, f.z1 + 1, EMBER).put(f.x1 - 2, f.y0 + 4, f.z1 + 1, EMBER); // eyes in the dark
-      const [a] = mid(f);
-      blackSun(s, a, f.y0 + 7, f.z1 + 2);
-      s.box(a, f.y0 + 1, f.z1 + 1, a + 1, f.y0 + 2, f.z1 + 1, BONE_D); // breathing holes
-    },
-  },
-  // A deep hood that leaves only the mask showing, falling to the shoulders.
+  // The cult's faceless hood (from the user's reference): tall, rounded, falling onto
+  // the shoulders, the face hidden behind the black sun in old gold, its rays wavy.
   cult_hood: {
-    frame: HEAD, tag: "monster", palette: MONSTER_KIT,
+    frame: HEAD, tag: "monster", palette: CULT_KIT,
     build(f, s) {
-      s.box(f.x0 - 1, f.y1 + 1, f.z0 - 1, f.x1 + 1, f.y1 + 2, f.z1 + 2, P);
-      s.box(f.x0 - 1, f.y0 - 1, f.z0 - 1, f.x1 + 1, f.y1 + 1, f.z0 - 1, P);
-      s.box(f.x0 - 1, f.y0 - 1, f.z0, f.x0 - 1, f.y1 + 1, f.z1 + 2, P).box(f.x1 + 1, f.y0 - 1, f.z0, f.x1 + 1, f.y1 + 1, f.z1 + 2, P);
-      s.box(f.x0 - 1, f.y0 - 1, f.z1 + 2, f.x0 - 1, f.y1, f.z1 + 2, SHADE(P)).box(f.x1 + 1, f.y0 - 1, f.z1 + 2, f.x1 + 1, f.y1, f.z1 + 2, SHADE(P));
-      s.box(f.x0 - 1, f.y1 + 2, f.z1 + 2, f.x1 + 1, f.y1 + 2, f.z1 + 2, SHADE(P)); // brow of the hood
-      const [a, b] = mid(f);
-      s.box(a, f.y1, f.z0 - 3, b, f.y1 + 2, f.z0 - 2, P); // point
+      s.box(f.x0 - 2, f.y0 - 1, f.z0 - 2, f.x1 + 2, f.y1 + 2, f.z1 + 1, ROBE); // shell (the head is inside)
+      s.box(f.x0 - 1, f.y1 + 3, f.z0 - 1, f.x1 + 1, f.y1 + 3, f.z1, ROBE); // rounded dome
+      s.box(f.x0, f.y1 + 4, f.z0, f.x1, f.y1 + 4, f.z1 - 1, ROBE);
+      s.box(f.x0 + 2, f.y1 + 5, f.z0 + 2, f.x1 - 2, f.y1 + 5, f.z1 - 3, ROBE);
+      for (const x of [f.x0 - 2, f.x1 + 2]) for (const z of [f.z0 - 2, f.z1 + 1]) s.remove(x, f.y1 + 1, z, x, f.y1 + 2, z); // rounded
+      s.box(f.x0 - 4, f.y0 - 4, f.z0 - 3, f.x1 + 4, f.y0 - 1, f.z1 + 1, ROBE); // mantle over the shoulders
+      s.box(f.x0 - 4, f.y0 - 4, f.z0 - 3, f.x1 + 4, f.y0 - 4, f.z1 + 1, ROBE_D);
+      s.box(f.x0 - 3, f.y0 - 1, f.z0 - 3, f.x1 + 3, f.y0 + 2, f.z1, ROBE); // the hood widens into the mantle
+      s.box(f.x0 - 3, f.y0 + 3, f.z0 - 2, f.x1 + 3, f.y0 + 5, f.z1 - 1, ROBE);
+      s.box(f.x0 - 3, f.y0 - 1, f.z0 - 3, f.x0 - 3, f.y0 + 5, f.z0 - 2, ROBE_D).box(f.x1 + 3, f.y0 - 1, f.z0 - 3, f.x1 + 3, f.y0 + 5, f.z0 - 2, ROBE_D);
+      for (let y = f.y0 - 3; y <= f.y1 + 4; y++) { // folds down the sides, in shade
+        s.put(f.x0 - 2, y, f.z0, ROBE_D).put(f.x1 + 2, y, f.z0, ROBE_D);
+      }
+      s.box(f.x0, f.y1 + 4, f.z0 + 1, f.x1, f.y1 + 4, f.z1 - 2, ROBE_L); // light on the crown
+      s.box(f.x0 - 1, f.y0 - 1, f.z1 + 1, f.x1 + 1, f.y1 + 1, f.z1 + 1, VOID); // the dark face
+      // The black sun: a dark disk ringed in gold, eight wavy rays.
+      const cx = (f.x0 + f.x1) / 2, cy = f.y0 + 5.5, z = f.z1 + 2;
+      for (let x = Math.floor(cx) - 3; x <= Math.ceil(cx) + 3; x++) {
+        for (let y = Math.floor(cy) - 3; y <= Math.ceil(cy) + 3; y++) {
+          const d = Math.hypot(x - cx, y - cy);
+          if (d <= 2.2) s.put(x, y, z, VOID);
+          else if (d <= 3.1) s.put(x, y, z, GOLD_D);
+        }
+      }
+      for (let k = 0; k < 8; k++) {
+        const a = (k * Math.PI) / 4 + Math.PI / 2;
+        const len = k % 2 === 0 ? 8.5 : 7;
+        for (let t = 3; t <= len; t += 0.25) {
+          const wig = Math.sin(t * 1.2 + k) * 0.9;
+          const px = cx + Math.cos(a) * t - Math.sin(a) * wig, py = cy + Math.sin(a) * t + Math.cos(a) * wig;
+          const c = t < len - 1.5 ? GOLD : GOLD_D;
+          s.put(Math.round(px), Math.round(py), z, c);
+          if (t < len - 1.5) s.put(Math.round(px + 0.5), Math.round(py), z, c); // bold near the disk
+        }
+      }
     },
   },
-  // A long robe over the shirt down to the shins, a rope belt, the sun on the chest.
+  // A long robe to the floor over the chest and hips: a front panel bordered in gold
+  // with the sun, a rope belt tied at the back, a worn gold hem, a grey-green
+  // horseshoe pendant on the chest.
   cult_robe: {
-    frame: TORSO, tag: "monster", palette: MONSTER_KIT,
+    frame: TORSO, tag: "monster", palette: CULT_KIT,
     build(f, s) {
-      s.box(f.x0 - 1, f.y0 - 16, f.z0, f.x1 + 1, f.y0 + 1, f.z1 - 3, P); // skirt to the shins
-      s.remove(f.x0, f.y0 - 16, f.z0 + 1, f.x1, f.y0 + 1, f.z1 - 4);
-      for (let x = f.x0; x <= f.x1; x += 3) s.box(x, f.y0 - 15, f.z1 - 3, x, f.y0, f.z1 - 3, SHADE(P)); // folds
-      s.box(f.x0 - 1, f.y0 - 16, f.z0, f.x1 + 1, f.y0 - 16, f.z1 - 3, SHADE(P)); // hem
-      s.box(f.x0, f.y0 + 2, f.z1 - 3, f.x1, f.y0 + 3, f.z1 - 3, BONE_D); // rope belt
-      s.box(f.x0 + 3, f.y0 - 4, f.z1 - 2, f.x0 + 3, f.y0 + 1, f.z1 - 2, BONE_D); // its knot
-      const [a] = mid(f);
-      blackSun(s, a, f.y1 - 4, f.z1 + 1);
+      const [a, b] = mid(f);
+      s.box(f.x0 - 1, f.y0 + 3, f.z0 - 1, f.x1 + 1, f.y1, f.z1 + 1, ROBE); // over the chest
+      s.box(f.x0 - 2, f.y1 - 1, f.z0 - 1, f.x1 + 2, f.y1 + 1, f.z1, ROBE); // broad shoulders
+      s.box(f.x0 - 1, f.y1 + 1, f.z0 - 1, f.x1 + 1, f.y1 + 1, f.z1, ROBE_L);
+      const bottom = f.y0 - 25; // just above the ground
+      const flareAt = (y) => Math.floor((f.y0 + 2 - y) / 6);
+      const front = (y) => f.z1 + 1 + flareAt(y); // clears the belt buckle
+      for (let y = bottom; y <= f.y0 + 2; y++) { // skirt, flaring towards the hem
+        const flare = flareAt(y);
+        const x0 = f.x0 - 2 - flare, x1 = f.x1 + 2 + flare, z0 = f.z0 - 1 - flare, z1 = front(y);
+        s.box(x0, y, z0, x1, y, z1, ROBE);
+        s.remove(x0 + 1, y, z0 + 1, x1 - 1, y, z1 - 1); // hollow: the legs move inside
+        for (let x = x0 + 2; x <= x1 - 1; x += 3) s.put(x, y, z1, ROBE_D).put(x, y, z0, ROBE_D); // folds
+      }
+      for (let y = bottom; y <= bottom + 1; y++) { // worn gold hem
+        for (const v of [...s.cells.values()].filter((c) => c[1] === y)) {
+          s.put(v[0], v[1], v[2], (v[0] * 7 + v[2] * 3 + y) % 5 === 0 ? ROBE : (y === bottom ? GOLD_D : GOLD));
+        }
+      }
+      // Front panel from the chest to the hem, bordered in gold, the sun and marks on it.
+      const pz = front(bottom + 2) + 1;
+      for (let y = bottom + 2; y <= f.y1 - 4; y++) {
+        const zz = y > f.y0 + 2 ? f.z1 + 2 : front(y) + 1;
+        s.box(a - 3, y, zz, b + 3, y, zz, GOLD).box(a - 2, y, zz, b + 2, y, zz, PANEL);
+      }
+      s.box(a - 3, bottom + 2, pz, b + 3, bottom + 2, pz, GOLD);
+      const sz = front(f.y0 - 9) + 2;
+      s.box(a, f.y0 - 10, sz, b, f.y0 - 7, sz, GOLD).box(a - 1, f.y0 - 9, sz, b + 1, f.y0 - 8, sz, GOLD); // small sun
+      s.put(a - 2, f.y0 - 8, sz, GOLD_D).put(b + 2, f.y0 - 9, sz, GOLD_D).box(a, f.y0 - 6, sz, b, f.y0 - 5, sz, GOLD_D);
+      s.box(a, f.y0 - 14, sz, b, f.y0 - 12, sz, GOLD_D).box(a - 1, f.y0 - 13, sz, b + 1, f.y0 - 13, sz, GOLD_D); // a cross-mark
+      s.put(a, f.y0 - 17, sz, GOLD).put(b, f.y0 - 17, sz, GOLD); // a dot
+      // Rope belt with its tie hanging at the back.
+      s.box(f.x0 - 3, f.y0 + 1, f.z0 - 2, f.x1 + 3, f.y0 + 2, f.z1 + 3, ROPE);
+      s.remove(f.x0 - 2, f.y0 + 1, f.z0 - 1, f.x1 + 2, f.y0 + 2, f.z1 + 2);
+      s.box(a, f.y0 - 6, f.z0 - 3, b, f.y0 + 2, f.z0 - 3, ROPE).box(a - 1, f.y0 - 7, f.z0 - 3, a - 1, f.y0 - 1, f.z0 - 3, ROPE_D);
+      // Horseshoe pendant hanging from the neck.
+      for (let y = f.y1 - 4; y <= f.y1; y++) s.put(a - 2, y, f.z1 + 3, PENDANT).put(b + 2, y, f.z1 + 3, PENDANT);
+      s.box(a - 1, f.y1 - 5, f.z1 + 3, b + 1, f.y1 - 5, f.z1 + 3, PENDANT);
+      s.put(a - 2, f.y1 - 4, f.z1 + 3, PENDANT_D).put(b + 2, f.y1 - 4, f.z1 + 3, PENDANT_D);
     },
   },
+  // Wide sleeves over the upper arms...
+  cult_sleeve_left: { frame: ARM_L, tag: "monster", palette: CULT_KIT, build: (f, s) => upperSleeve(f, s) },
+  cult_sleeve_right: { frame: ARM_R, tag: "monster", palette: CULT_KIT, build: (f, s) => upperSleeve(f, s) },
+  // ...opening into bell cuffs with a worn gold hem over the forearms.
+  cult_cuff_left: { frame: FORE_L, tag: "monster", palette: CULT_KIT, build: (f, s) => bellCuff(f, s) },
+  cult_cuff_right: { frame: FORE_R, tag: "monster", palette: CULT_KIT, build: (f, s) => bellCuff(f, s) },
   // The guard beast's head: a heavy brow, a bestial muzzle with tusks, glowing eyes
   // and two great curved horns.
   beast_head: {

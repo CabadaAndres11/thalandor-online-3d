@@ -5,8 +5,8 @@
 	"aggro_range": 7, "leash_range": 20, "attack_range": 1.5,
 	"behavior": "melee", "pack": true, "pack_radius": 10, "abilities": ["cultist_stab"],
 	"look": {
-		"skin": "#c9a088", "eyes": "#2a2020", "hair": "#2a2020",
-		"primary": "#2b2530", "secondary": "#7a2424",
-		"pieces": ["cult_robe", "cult_hood", "cult_mask", "weapon_dagger_right"]
+		"skin": "#1b1a1d", "eyes": "#09080a", "hair": "#09080a",
+		"primary": "#1c1b1f", "secondary": "#b39a5e", "trousers": "#121114",
+		"pieces": ["cult_robe", "cult_hood", "cult_sleeve_left", "cult_sleeve_right", "cult_cuff_left", "cult_cuff_right", "weapon_dagger_right"]
 	}
 }

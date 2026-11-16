@@ -92,6 +92,13 @@ func _looks(set_name: String) -> Array:
 			var v: Dictionary = _resolved([["villager", {"hair_style": "bob", "hair_color": "chestnut", "skin": "skin_2"}]])[0]
 			var v2: Dictionary = _resolved([["villager", {"hair_style": "short", "hair_color": "black", "skin": "skin_5", "beard": "short"}]])[0]
 			return [v, b, v2]
+		"cult":
+			var out := []
+			for a: Array in [["cultist", 0.0], ["cultist", 90.0], ["cultist", 180.0], ["cult_archer", 25.0]]:
+				var l := MonsterAvatar.look_of(MonsterDB.load_default().get_type(a[0]))
+				l["rot"] = a[1]
+				out.append(l)
+			return out
 		"classes_back":
 			var looks := _looks("classes")
 			for l: Dictionary in looks:

@@ -177,3 +177,10 @@ func test_weapons_pass_through_the_fist() -> void:
 				inside = true
 				break
 		assert_true(inside, id + " goes through the fist")
+
+
+func test_cult_sleeves_hang_from_the_arms() -> void:
+	assert_eq(catalog.piece("cult_sleeve_left").part, "arm_left")
+	assert_eq(catalog.piece("cult_cuff_left").part, "forearm_left")
+	assert_eq(catalog.piece("cult_cuff_right").part, "forearm_right")
+	assert_true(catalog.piece("cult_mask").is_empty(), "the faceless hood replaces the mask")

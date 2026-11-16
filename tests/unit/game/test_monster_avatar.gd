@@ -81,7 +81,7 @@ func test_new_monster_models_build() -> void:
 	assert_not_null(rig, "the marked_boar is a voxel rig")
 	for part: String in ["body", "head", "leg_front_left", "leg_back_right", "tail"]:
 		assert_not_null(rig.part(part), "marked_boar " + part)
-	var pieces := {"cultist": ["cult_mask", "cult_hood", "cult_robe", "weapon_dagger_right"], "cult_archer": ["cult_mask", "weapon_bow"]}
+	var pieces := {"cultist": ["cult_hood", "cult_robe", "cult_sleeve_left", "cult_sleeve_right", "cult_cuff_left", "cult_cuff_right", "weapon_dagger_right"], "cult_archer": ["cult_hood", "cult_robe", "weapon_bow"]}
 	for type_id: String in pieces:
 		var a := _avatar(type_id)
 		var c := a.body.get_child(0) as HumanRig
