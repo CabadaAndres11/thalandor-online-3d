@@ -58,19 +58,21 @@ Orden de armaduras, de más ligera a más pesada: tela < cuero < malla < placas.
 - **Definición:** el listado concreto está en el **anexo A** y en `data/abilities/`. Es una propuesta inicial, ajustable tras las pruebas.
 
 ## 4.4 Mejoras de clase cada 50 niveles **[Diseñado]** (sustituyen a las especializaciones del prototipo)
-- **Cada 50 niveles** (50, 100, 150…) se alcanza un **rango de clase** y se elige **una de 2 mejoras**.
+- **Cada 50 niveles** (50, 100, 150…) se alcanza un **rango de clase** y se elige **una mejora entre 2 o 3** (el Mago tiene 3).
 - **Cada mejora aporta:** 2 habilidades activas nuevas, 2 pasivas y la **evolución de una habilidad base** (por ejemplo, el Tajo del Guerrero pasa a golpear dos veces).
 - **Las mejoras se acumulan:** al nivel 100 se elige otra mejora de un segundo rango, cuyas opciones dependen de la elegida al 50 (árbol de evolución de la clase).
 - **Cambiar de mejora:** posible en la capital (instructor de clase) pagando oro, fuera de combate.
 - **Primer rango (nivel 50):** definido en el **anexo A**. Los rangos siguientes se diseñarán a medida que haya contenido para esos niveles.
 
-| Clase | Mejora A (nivel 50) | Mejora B (nivel 50) |
-|---|---|---|
-| Guerrero | **Protector** (tanque: provocar en área, muro de escudo, represalia) | **Campeón** (daño: golpe mortal, ejecutar, temeridad) |
-| Clérigo | **Sanador** (círculo de sanación, plegaria de vida, himno) | **Castigador** (fuego sagrado, juicio, lanza de luz) |
-| Mago | **Piromante** (bola de fuego, columna de llamas, meteoro) | **Criomante** (descarga de escarcha, ventisca, bloque de hielo) |
-| Arquero | **Francotirador** (disparo apuntado, ráfaga, marca del cazador) | **Montaraz** (disparo múltiple, trampas mejoradas, compañero animal) |
-| Asesino | **Sombra** (eviscerar mejorado, desvanecer, emboscada) | **Venenero** (venenos letales, nube tóxica, contagio) |
+| Clase | Mejora A (nivel 50) | Mejora B (nivel 50) | Mejora C (nivel 50) |
+|---|---|---|---|
+| Guerrero | **Protector** (tanque: provocar en área, muro de escudo, represalia) | **Berserker** (daño: frenesí, ejecutar, más daño cuanta menos vida) | — |
+| Clérigo | **Sanador** (círculo de sanación, plegaria de vida, himno) | **Templario** (combate cuerpo a cuerpo: golpe de cruzado, consagración, armadura de fe) | — |
+| Mago | **Piromante** (bola de fuego, columna de llamas, meteoro) | **Criomante** (descarga de escarcha, ventisca, bloque de hielo) | **Arcano** (daño puro sin elemento: misiles arcanos, lanza arcana) |
+| Arquero | **Francotirador** (disparo apuntado, ráfaga, marca del cazador) | **Cazador** (ballesta: disparo múltiple, trampas mejoradas, compañero animal) | — |
+| Asesino | **Sombra** (eviscerar mejorado, desvanecer, emboscada) | **Venenero** (venenos letales, nube tóxica, contagio) | — |
+
+El detalle de cada mejora está en la nota de su clase y en [[Plan 4 — Progresión (spec)]].
 
 ## 4.5 Atributos **[Diseñado]**
 Cada nivel otorga **5 puntos de atributo** para repartir libremente, y cada clase sube además 2 atributos principales por nivel.

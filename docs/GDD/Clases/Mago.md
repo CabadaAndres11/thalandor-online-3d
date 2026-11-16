@@ -29,12 +29,13 @@ Reglas generales en [[04 Personajes y progresión]].
 | 35 | Frío penetrante | Pasiva | +20 % de daño a enemigos congelados o ralentizados. |
 
 ## Mejoras de clase del nivel 50
-Se elige una de las dos al llegar al nivel 50 (ver [[04 Personajes y progresión|§4.4]]).
+Se elige una de las tres al llegar al nivel 50 (ver [[04 Personajes y progresión|§4.4]]).
 
 | Mejora | Activas | Pasivas | Evoluciona |
 |---|---|---|---|
 | **Piromante** | Columna de llamas (suelo ardiendo); Meteoro | Combustión (+10 % daño a enemigos ardiendo); Fénix (renace con 30 % de vida) | Bola de fuego deja el suelo ardiendo |
 | **Criomante** | Ventisca; Bloque de hielo | Escalofrío (los ralentizados atacan más lento); Corazón helado (congelar reduce recargas) | Nova de escarcha se lanza en el cursor |
+| **Arcano** | Misiles arcanos (canalizado, ráfaga de 5 proyectiles); Lanza arcana (rayo en línea que atraviesa) | Carga arcana (+4 % de daño por hechizo arcano, hasta 5 cargas; se pierden a los 6 s); Poder puro (+15 % de crítico con hechizos arcanos) | Explosión arcana estalla sin retardo y con más área |
 
 ## Rangos siguientes (nivel 100+)
 _Por diseñar._

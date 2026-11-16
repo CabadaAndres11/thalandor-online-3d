@@ -34,7 +34,7 @@ Se elige una de las dos al llegar al nivel 50 (ver [[04 Personajes y progresión
 | Mejora | Activas | Pasivas | Evoluciona |
 |---|---|---|---|
 | **Francotirador** | Disparo apuntado (canalizado, gran daño); Ráfaga de 3 flechas | Punto débil (+daño crítico a distancia); Paciencia (+daño estando quieto) | Disparo cargado atraviesa |
-| **Montaraz** | Disparo múltiple (abanico de 5); Compañero animal (lobo que ataca y distrae) | Trampero (las trampas se rearman); Superviviente (+10 % vida y velocidad) | Red alcanza a varios enemigos |
+| **Cazador** (usa ballesta) | Disparo múltiple (abanico de 5); Compañero animal (lobo que ataca y distrae) | Trampero (las trampas se rearman); Superviviente (+10 % vida y velocidad) | Red alcanza a varios enemigos |
 
 ## Rangos siguientes (nivel 100+)
 _Por diseñar._

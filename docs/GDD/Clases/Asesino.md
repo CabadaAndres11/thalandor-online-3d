@@ -19,14 +19,18 @@ Reglas generales en [[04 Personajes y progresión]].
 | 1 | Cuchillada (CI) | Activa | Golpe con dagas que genera 1 punto de combo. |
 | 1 | Eviscerar (CD) | Activa | Remate que gasta los puntos de combo; el daño escala con los puntos. |
 | 1 | Paso sombrío | Activa | Se teletransporta a la espalda del objetivo. |
-| 3 | Sigilo | Activa | Fuera de combate entra en sigilo; en combate, desaparece y sale del combate (recarga larga). |
-| 6 | Abanico de cuchillas | Activa | Daño en área alrededor y 1 punto de combo por enemigo. |
-| 10 | Veneno | Activa | Durante 30 s, los golpes aplican un veneno acumulable (hasta 5). |
-| 20 | Evasión | Activa | +50 % de esquiva durante 5 s. |
+| 3 | Lanzar cuchillo | Activa | A 12 m: daño, ralentiza un 40 % durante 3 s y da 1 punto de combo. |
+| 6 | Sigilo | Activa | Fuera de combate entra en sigilo; en combate, desaparece y sale del combate (recarga larga). |
+| 10 | Abanico de cuchillas | Activa | Daño en área alrededor y 1 punto de combo por enemigo. |
+| 15 | Veneno | Activa | Durante 30 s, los golpes aplican un veneno acumulable (hasta 5). |
+| 20 | Desgarro | Activa | Golpe fuerte que deja un sangrado y da 2 puntos de combo. |
+| 30 | Aluvión de puñaladas | Activa | Cuatro golpes rápidos a un objetivo; da 2 puntos de combo. |
 | 5 | Golpe por la espalda | Pasiva | +20 % de daño por la espalda. |
 | 15 | Emboscada | Pasiva | El primer golpe desde sigilo es crítico y hace +50 % de daño. |
 | 25 | Evasión mortal | Pasiva | Tras esquivar, el siguiente golpe genera 2 puntos de combo. |
 | 35 | Oportunista | Pasiva | +10 % de daño a objetivos aturdidos o inmovilizados. |
+
+**Kit rehecho en el [[Plan 4 — Progresión (spec)|Plan 4]] [Diseñado]:** más daño (Lanzar cuchillo, Desgarro, Aluvión de puñaladas) y sin Evasión. La tabla de «Valores iniciales» de abajo sigue siendo la de la 0.4.0 hasta que se implemente.
 
 ## Mejoras de clase del nivel 50
 Se elige una de las dos al llegar al nivel 50 (ver [[04 Personajes y progresión|§4.4]]).

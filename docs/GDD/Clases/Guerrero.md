@@ -34,7 +34,7 @@ Se elige una de las dos al llegar al nivel 50 (ver [[04 Personajes y progresión
 | Mejora | Activas | Pasivas | Evoluciona |
 |---|---|---|---|
 | **Protector** | Provocar en área; Represalia (escudo que devuelve daño) | Postura defensiva (+100 % amenaza, +15 % vida); Último bastión (al bajar del 20 %: −40 % daño 8 s) | Muro de escudo protege también a los aliados cercanos |
-| **Campeón** | Golpe mortal (reduce curación recibida); Ejecutar (gran daño por debajo del 25 %) | Maestría con armas (+10 % daño físico); Masacre (matar reinicia Carga) | Tajo golpea dos veces |
+| **Berserker** | Frenesí (10 s: más daño y recargas más cortas, pero +15 % de daño recibido); Ejecutar (gran daño por debajo del 25 %; si mata, devuelve la ira) | Furia sangrienta (hasta +25 % de daño según la vida que falta); Masacre (matar reinicia Carga y cura un 5 %) | Tajo golpea dos veces |
 
 ## Rangos siguientes (nivel 100+)
 _Por diseñar._

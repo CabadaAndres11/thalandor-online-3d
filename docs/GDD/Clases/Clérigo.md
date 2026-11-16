@@ -34,7 +34,7 @@ Se elige una de las dos al llegar al nivel 50 (ver [[04 Personajes y progresión
 | Mejora | Activas | Pasivas | Evoluciona |
 |---|---|---|---|
 | **Sanador** | Círculo de sanación; Himno divino (canalizado) | Ángel guardián (salva a un aliado de un golpe mortal); Gracia mayor (+20 % curación) | Sanar rebota a un segundo aliado |
-| **Castigador** | Fuego sagrado (quemadura); Juicio (+15 % daño recibido de todo el grupo) | Ira divina (+15 % daño sagrado); Expiación (el daño cura al aliado más herido) | Destello sagrado atraviesa enemigos |
+| **Templario** | Golpe de cruzado (mazazo sagrado cuerpo a cuerpo que cura parte del daño); Consagración (suelo sagrado alrededor: daña a los enemigos y cura un poco a los aliados) | Armadura de fe (+40 % armadura, +15 % vida); Celo (los golpes cuerpo a cuerpo devuelven maná) | Destello sagrado pasa a ser un mazazo cuerpo a cuerpo en arco |
 
 ## Rangos siguientes (nivel 100+)
 _Por diseñar._
