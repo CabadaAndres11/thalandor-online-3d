@@ -13,6 +13,8 @@ var rng := RandomNumberGenerator.new()
 ## source_id]); the host sends them and clears the list at the start of each tick.
 var events: Array = []
 var abilities: AbilityDB = AbilityDB.load_default()
+## Class upgrades (level 50), see UpgradeDB.
+var upgrades: UpgradeDB = UpgradeDB.load_default()
 ## Non-player entities (monsters; test dummies), id -> CombatEntity.
 var monsters: Dictionary = {}
 var projectiles: Array = [] # Projectile
