@@ -5,6 +5,8 @@ extends RefCounted
 ## the character (hair, class colors) instead of their palette color.
 
 const VOXEL_SIZE := 0.1
+const TINT_SKIN := 248
+const TINT_EYES := 249
 const TINT_HAIR := 250
 const TINT_PRIMARY := 251
 const TINT_SECONDARY := 252

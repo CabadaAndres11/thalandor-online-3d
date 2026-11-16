@@ -1,0 +1,129 @@
+{
+	"parts": {
+		"hips": {
+			"file": "res://assets/characters/vox/human_hips.vox",
+			"pivot": [
+				0,
+				8,
+				0
+			],
+			"offset": [
+				-3,
+				0,
+				-2
+			]
+		},
+		"torso": {
+			"file": "res://assets/characters/vox/human_torso.vox",
+			"pivot": [
+				0,
+				10,
+				0
+			],
+			"offset": [
+				-4,
+				0,
+				-2
+			],
+			"parent": "hips"
+		},
+		"head": {
+			"file": "res://assets/characters/vox/human_head.vox",
+			"pivot": [
+				0,
+				16,
+				0
+			],
+			"offset": [
+				-4,
+				0,
+				-3
+			],
+			"parent": "torso"
+		},
+		"arm_left": {
+			"file": "res://assets/characters/vox/human_arm_left.vox",
+			"pivot": [
+				4,
+				15,
+				0
+			],
+			"offset": [
+				-1,
+				-5,
+				-1
+			],
+			"parent": "torso"
+		},
+		"arm_right": {
+			"file": "res://assets/characters/vox/human_arm_right.vox",
+			"pivot": [
+				-4,
+				15,
+				0
+			],
+			"offset": [
+				-1,
+				-5,
+				-1
+			],
+			"parent": "torso"
+		},
+		"hand_left": {
+			"file": "res://assets/characters/vox/human_hand_left.vox",
+			"pivot": [
+				4,
+				9,
+				0
+			],
+			"offset": [
+				-1,
+				-1,
+				-1
+			],
+			"parent": "arm_left"
+		},
+		"hand_right": {
+			"file": "res://assets/characters/vox/human_hand_right.vox",
+			"pivot": [
+				-4,
+				9,
+				0
+			],
+			"offset": [
+				-1,
+				-1,
+				-1
+			],
+			"parent": "arm_right"
+		},
+		"leg_left": {
+			"file": "res://assets/characters/vox/human_leg_left.vox",
+			"pivot": [
+				1,
+				8,
+				0
+			],
+			"offset": [
+				-1,
+				-8,
+				-1
+			],
+			"parent": "hips"
+		},
+		"leg_right": {
+			"file": "res://assets/characters/vox/human_leg_right.vox",
+			"pivot": [
+				-2,
+				8,
+				0
+			],
+			"offset": [
+				-1,
+				-8,
+				-1
+			],
+			"parent": "hips"
+		}
+	}
+}

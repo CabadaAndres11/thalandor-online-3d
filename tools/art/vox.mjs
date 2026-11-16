@@ -2,6 +2,8 @@
 // Voxels are given in Godot axes (Y up) and stored in MagicaVoxel axes (Z up), the
 // inverse of VoxFile's conversion: Godot (x, y, z) -> MagicaVoxel (x, z, y).
 // Tintable palette indices (see game/characters/vox_mesher.gd):
+export const TINT_SKIN = 248;
+export const TINT_EYES = 249;
 export const TINT_HAIR = 250;
 export const TINT_PRIMARY = 251;
 export const TINT_SECONDARY = 252;
