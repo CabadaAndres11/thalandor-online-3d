@@ -2,7 +2,7 @@
 tags: [plan]
 plan: 3.2
 fecha: 2026-11-16
-estado: borrador
+estado: hecho
 actualizado: 2026-11-16
 ---
 # Plan 3.2 — Vóxel propio, bestiario del prólogo y clase con Brann: plan de implementación
@@ -196,6 +196,20 @@ Pasos:
 - [ ] Nota de sesión.
 - [ ] GUT completo verde, más una revisión final de toda la rama por un revisor nuevo.
 - [ ] Commit `docs: version 0.5.0`. La publicación queda para cuando el usuario pruebe.
+
+## Cambios durante la ejecución
+- **Revisiones del usuario sobre el humanoide:** el agarre del bastón y del arco; un estilo menos «bloque» según una referencia (vóxel fino, proporciones de adulto, codos y rodillas, tonos y oclusión ambiental); y el bastón inclinado en reposo.
+- **Avatares a `HumanRig` antes de la revisión:** el rig de Kenney no admitía las partes nuevas. El borrado de Kenney sí esperó al visto bueno.
+- **La bestia de guardia usa `HumanRig`** (cabeza bestial, cadenas y cuchilla) en lugar de un `BeastRig` bípedo:
+  - reutiliza el tajo y el salto del humanoide;
+  - tiene el vóxel fino;
+  - se retiraron el modo bípedo de `BeastRig` y los monstruos de vóxel único.
+- **Las armas son una lista (`weapons`)**: el asesino lleva dos dagas. La ropa de cada clase es una pieza `outfit_<clase>`.
+- **`CharacterData` no sube de versión:** el formato no cambia; una clase que falta o es desconocida pasa a ser aldeano.
+- **Textos provisionales en la documentación:** `textos.csv` no tiene columna de notas, así que los provisionales se listan en [[15 Decisiones abiertas]].
+- **Recurso al elegir clase:** se usa el valor inicial de cada clase (la ira empieza en 0).
+- **Brann está en la celda [22, 19]**, a 2,2 m del inicio: así el aldeano nuevo ya está a distancia de hablar.
+- **La frase de Brann va al chat** (aún no hay bocadillos).
 
 ---
 ← [[Planes]]

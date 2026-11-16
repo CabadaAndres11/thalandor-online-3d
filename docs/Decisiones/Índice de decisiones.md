@@ -1,6 +1,6 @@
 ---
 tags: [decision, indice]
-actualizado: 2026-11-14
+actualizado: 2026-11-16
 ---
 
 # Índice de decisiones
@@ -17,6 +17,8 @@ Cada decisión importante tiene su nota (plantilla **Decisión**). Las pendiente
 - [[D-007 Interfaz sin scroll]]
 - [[D-008 Red con mensajes propios]]
 - [[D-009 Repositorio nuevo y publicación en GitHub Releases]]
+- [[D-010 Arte propio hecho por código]]
+- [[D-011 La clase se elige dentro de la partida]]
 
 ---
 ← [[00 Inicio|Inicio]]

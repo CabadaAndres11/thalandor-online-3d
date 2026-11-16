@@ -6,6 +6,19 @@ actualizado: 2026-11-15
 
 # 4. Personajes y clases
 
+## 4.0 Creación y elección de clase **[Implementado]** (0.5.0, [[D-011 La clase se elige dentro de la partida]])
+- **Crear personaje:** solo nombre y aspecto. Todo personaje nace **aldeano**:
+  - 120 de vida y sin recurso de clase;
+  - un golpe con espada de madera como ataque básico;
+  - sin secundario ni habilidades en la barra; la esquiva funciona igual.
+- **Elegir clase:** se habla con **Brann**, el herrero de la aldea, que es un PNJ definido en `data/npcs/brann.json` y colocado por el mapa.
+  - Con **E** a 2,5 m o menos se abre la ventana *Elige tu camino*: las 5 clases con nombre, recurso, descripción y vista previa del personaje.
+  - La elección es **definitiva** (el cambio de clase de §4.9 llegará más adelante).
+  - El anfitrión comprueba que el jugador es un aldeano vivo junto a Brann.
+  - Con un aliado derribado al alcance, E levanta al aliado en lugar de hablar.
+  - Si ya tienes clase, Brann dice una frase.
+- En el guion es «La práctica» de la misión 1, en [[Anexo B — Historia]]. Los textos de Brann y de la ventana son **provisionales** hasta que el guion los fije.
+
 ## 4.1 Recursos **[Implementado]** (Plan 3, 0.3.0–0.4.0; los valores están en `data/characters/classes.json`)
 - **Vida:** todas las clases.
 - **Recurso de clase:**

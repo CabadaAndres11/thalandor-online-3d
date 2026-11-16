@@ -13,7 +13,7 @@ Cada plan de la [[14 Hoja de ruta]] tiene aquí su **spec** (diseño acordado) y
 | 2 · Personajes vóxel | [[Plan 2 — Personajes vóxel (spec)\|Spec]] | [[Plan 2 — Personajes vóxel (plan)\|Plan]] | Hecho (0.2.0) |
 | 3 · Combate y clases | [[Plan 3 — Combate y clases (spec)\|Spec]] | [[Plan 3 — Combate y clases (plan)\|Plan]] | Hecho (0.4.0; la primera parte salió en la 0.3.0) |
 | 3.1 · Ajustes tras la 0.4.0 | [[Plan 3.1 — Ajustes tras la 0.4.0 (spec)\|Spec]] | [[Plan 3.1 — Ajustes tras la 0.4.0 (plan)\|Plan]] | Hecho (0.4.1) |
-| 3.2 · Vóxel propio, bestiario del prólogo y clase con Brann | [[Plan 3.2 — Vóxel propio, bestiario del prólogo y clase con Brann (spec)\|Spec]] | [[Plan 3.2 — Vóxel propio, bestiario del prólogo y clase con Brann (plan)\|Plan]] | Planificado |
+| 3.2 · Vóxel propio, bestiario del prólogo y clase con Brann | [[Plan 3.2 — Vóxel propio, bestiario del prólogo y clase con Brann (spec)\|Spec]] | [[Plan 3.2 — Vóxel propio, bestiario del prólogo y clase con Brann (plan)\|Plan]] | Hecho (0.5.0) |
 | 4 · Progresión | — | — | Pendiente |
 | 5 · Objetos | — | — | Pendiente |
 | 6 · Mundo y misiones | — | — | Pendiente |

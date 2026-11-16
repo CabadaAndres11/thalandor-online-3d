@@ -2,7 +2,7 @@
 tags: [plan, spec]
 plan: 3.2
 fecha: 2026-11-16
-estado: borrador
+estado: hecho
 actualizado: 2026-11-16
 ---
 # Plan 3.2 — Vóxel propio, bestiario del prólogo y clase con Brann: diseño
