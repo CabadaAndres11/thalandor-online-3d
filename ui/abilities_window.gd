@@ -111,14 +111,14 @@ func _init() -> void:
 
 ## Fills the window for a class and opens it. The details use the class's base stats
 ## (equipment and levels come in later plans).
-func show_for(class_id: String, p_bar: Array, abilities: AbilityDB) -> void:
+func show_for(class_id: String, p_bar: Array, abilities: AbilityDB, level: int = 65535, upgrade: String = "") -> void:
 	_abilities = abilities
 	_class_id = class_id
 	var def := CharacterCatalog.load_default().class_def(class_id)
 	_stats = CombatStats.from_dict(def.get("stats", {}))
 	var res: Variant = def.get("resource", {})
 	_resource_kind = str((res as Dictionary).get("kind", "mana")) if res is Dictionary else "mana"
-	_bar = abilities.sanitize_bar(class_id, p_bar)
+	_bar = abilities.sanitize_bar(class_id, p_bar, level, upgrade)
 	_attacks = [abilities.kind_of(class_id, "basic"), abilities.kind_of(class_id, "secondary")].filter(
 		func(id: String) -> bool: return id != "")
 	_actives = abilities.actives(class_id)

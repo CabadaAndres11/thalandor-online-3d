@@ -13,9 +13,9 @@ func _sample() -> CharacterData:
 	c.name = "Andrés"
 	c.class_id = "mage"
 	c.appearance = catalog.sanitize_appearance({"hair_style": "hair_long", "skin": "skin_4"})
-	c.level = 1
+	c.level = 20
 	c.created_at = 1_800_000_000
-	c.bar = AbilityDB.load_default().sanitize_bar("mage", ["mage_fireball", "", "mage_frost_nova", ""])
+	c.bar = AbilityDB.load_default().sanitize_bar("mage", ["mage_fireball", "", "mage_frost_nova", ""], 20)
 	return c
 
 
@@ -94,7 +94,7 @@ func test_bar_sanitized_to_class_abilities() -> void:
 	assert_eq(c.bar, ["mage_fireball", "", "", ""],
 		"other classes' abilities, duplicates, non-strings and extra slots are dropped")
 	d.bar = "nope"
-	assert_eq(CharacterData.from_dict(d, catalog).bar, AbilityDB.load_default().default_bar("mage"))
+	assert_eq(CharacterData.from_dict(d, catalog).bar, AbilityDB.load_default().default_bar("mage", 20))
 	d.class_id = "warrior"
 	d.bar = ["mage_fireball", "", "", ""]
 	assert_eq(CharacterData.from_dict(d, catalog).bar, ["", "", "", ""], "the bar follows the class")

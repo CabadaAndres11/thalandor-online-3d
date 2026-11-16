@@ -15,6 +15,7 @@ func before_each() -> void:
 func _hero(class_id: String, id: int, pos: Vector3) -> PlayerState:
 	var p := f.world.add_player(id, pos)
 	ClassRules.setup_player(p, class_id)
+	p.level = 50 # may cast every ability; passives and stats stay those of level 1
 	p.stats.crit_chance = 0.0
 	p.resource = p.stats.max_resource
 	p.resource_def["regen_per_s"] = 0.0

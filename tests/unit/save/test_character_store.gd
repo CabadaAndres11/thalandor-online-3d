@@ -171,6 +171,7 @@ func test_new_character_gets_the_default_bar() -> void:
 
 func test_import_keeps_the_saved_bar() -> void:
 	var c := store.create("Barra", "mage", {})
+	c.level = 20
 	c.bar = ["mage_fireball", "mage_frostbolt", "", ""]
 	store.save(c)
 	var path := EXPORT_DIR.path_join("barra.json")

@@ -350,7 +350,8 @@ func test_set_bar_validates_ability_ids_of_class() -> void:
 	var c := net.connect_client(host_t)
 	c.send(Transport.HOST_PEER, Protocol.hello(VERSION, Protocol.VERSION, "Ana", "warrior", {}, ["w_a2", "bogus", "w_a2", 7]), true)
 	host.tick()
-	assert_eq(host._players[1].bar, ["w_a2", "", "", ""])
+	assert_eq(host._players[1].bar, ["", "", "", ""], "level 3 is not unlocked yet")
+	host.world.players[1].level = 3
 	c.send(Transport.HOST_PEER, Protocol.set_bar(["w_a1", "w_a2", "fireball", ""]), true)
 	host.tick()
 	assert_eq(host._players[1].bar, ["w_a1", "w_a2", "", ""])

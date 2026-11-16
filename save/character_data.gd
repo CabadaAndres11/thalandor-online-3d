@@ -48,7 +48,7 @@ static func from_dict(d: Variant, catalog: CharacterCatalog, abilities: AbilityD
 	c.level = maxi(1, int(lv)) if (lv is int or lv is float) else 1
 	var t: Variant = m.get("created_at", 0)
 	c.created_at = int(t) if (t is int or t is float) else 0
-	c.bar = (abilities if abilities != null else AbilityDB.load_default()).sanitize_bar(c.class_id, m.get("bar"))
+	c.bar = (abilities if abilities != null else AbilityDB.load_default()).sanitize_bar(c.class_id, m.get("bar"), c.level)
 	return c
 
 

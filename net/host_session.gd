@@ -141,7 +141,8 @@ func _handle(index: int, peer: int, data: PackedByteArray) -> void:
 		Protocol.Msg.INPUT:
 			_on_input(rec, msg.inputs)
 		Protocol.Msg.SET_BAR:
-			rec.bar = world.abilities.sanitize_bar(rec.class_id, msg.bar)
+			var bp: PlayerState = world.players.get(rec.id)
+			rec.bar = world.abilities.sanitize_bar(rec.class_id, msg.bar, bp.level, bp.progress.upgrade)
 		Protocol.Msg.CHOOSE_CLASS:
 			_on_choose_class(rec, msg.class_id)
 		Protocol.Msg.CHAT:
@@ -176,7 +177,7 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 		"queue": [], "last_input": null, "last_seq": 0, "last_received": 0,
 		"basic_id": world.abilities.kind_of(class_id, "basic"),
 		"secondary_id": world.abilities.kind_of(class_id, "secondary"),
-		"bar": world.abilities.sanitize_bar(class_id, msg.bar),
+		"bar": world.abilities.sanitize_bar(class_id, msg.bar, player.level, player.progress.upgrade),
 	}
 	_by_conn[key] = id
 	t.send(peer, Protocol.welcome(id, world.tick, roster()), true)
@@ -200,7 +201,7 @@ func _on_choose_class(rec: Dictionary, class_id: String) -> void:
 	rec.class_id = class_id
 	rec.basic_id = world.abilities.kind_of(class_id, "basic")
 	rec.secondary_id = world.abilities.kind_of(class_id, "secondary")
-	rec.bar = world.abilities.default_bar(class_id)
+	rec.bar = world.abilities.default_bar(class_id, p.level, p.progress.upgrade)
 	_broadcast(Protocol.player_class(rec.id, class_id, rec.bar), true)
 
 

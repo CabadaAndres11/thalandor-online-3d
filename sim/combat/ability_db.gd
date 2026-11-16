@@ -74,9 +74,18 @@ func kind_of(class_id: String, kind: String) -> String:
 	return ""
 
 
-## Ids of the class's active abilities, lowest level first (file order on ties).
-func actives(class_id: String) -> Array:
-	var list := class_abilities(class_id).filter(func(a: Dictionary) -> bool: return a.get("kind") == "active")
+## Whether an ability applies to a player with this upgrade: abilities of an upgrade
+## need it, the rest are always there.
+static func upgrade_ok(a: Dictionary, upgrade: String) -> bool:
+	var u := str(a.get("upgrade", ""))
+	return u == "" or u == upgrade
+
+
+## Ids of the class's active abilities (those of an upgrade only when it is `upgrade`),
+## lowest level first (file order on ties).
+func actives(class_id: String, upgrade: String = "") -> Array:
+	var list := class_abilities(class_id).filter(func(a: Dictionary) -> bool:
+		return a.get("kind") == "active" and upgrade_ok(a, upgrade))
 	var indexed: Array = []
 	for i in list.size():
 		indexed.append([int(list[i].get("level", 1)), i, list[i].id])
@@ -84,24 +93,46 @@ func actives(class_id: String) -> Array:
 	return indexed.map(func(row: Array) -> String: return row[2])
 
 
-## The first BAR_SIZE actives, padded with "".
-func default_bar(class_id: String) -> Array:
-	var bar := actives(class_id).slice(0, BAR_SIZE)
+## Active abilities available at `level` (with the player's upgrade), lowest level first.
+func unlocked(class_id: String, level: int, upgrade: String = "") -> Array:
+	return actives(class_id, upgrade).filter(func(id: String) -> bool: return int(_by_id[id].get("level", 1)) <= level)
+
+
+## The first BAR_SIZE unlocked actives, padded with "".
+func default_bar(class_id: String, level: int = 1, upgrade: String = "") -> Array:
+	var bar := unlocked(class_id, level, upgrade).slice(0, BAR_SIZE)
 	while bar.size() < BAR_SIZE:
 		bar.append("")
 	return bar
 
 
-## A bar sent by a client: exactly BAR_SIZE entries, each one of the class's actives
-## (anything else becomes ""), no duplicates. Not an array or empty -> the default bar.
-func sanitize_bar(class_id: String, bar: Variant) -> Array:
+## A bar sent by a client: exactly BAR_SIZE entries, each one of the actives unlocked
+## at `level` (anything else becomes ""), no duplicates. Not an array or empty -> the
+## default bar.
+func sanitize_bar(class_id: String, bar: Variant, level: int = 1, upgrade: String = "") -> Array:
 	if not bar is Array or (bar as Array).is_empty():
-		return default_bar(class_id)
-	var allowed := actives(class_id)
+		return default_bar(class_id, level, upgrade)
+	var allowed := unlocked(class_id, level, upgrade)
 	var out: Array = []
 	for i in BAR_SIZE:
 		var v: Variant = (bar as Array)[i] if i < (bar as Array).size() else ""
 		out.append(v if v is String and v in allowed and not v in out else "")
+	return out
+
+
+## Puts the actives unlocked between `old_level` (exclusive) and `new_level` (inclusive)
+## in the free slots of the bar, lowest level first. A full bar stays as it is.
+func place_unlocked(bar: Array, class_id: String, old_level: int, new_level: int, upgrade: String) -> Array:
+	var out := bar.duplicate()
+	while out.size() < BAR_SIZE:
+		out.append("")
+	var fresh := unlocked(class_id, new_level, upgrade).filter(func(id: String) -> bool:
+		return int(_by_id[id].get("level", 1)) > old_level and not id in out)
+	for id: String in fresh:
+		var slot := out.find("")
+		if slot < 0 or slot >= BAR_SIZE:
+			break
+		out[slot] = id
 	return out
 
 

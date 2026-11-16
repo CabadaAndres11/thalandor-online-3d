@@ -11,6 +11,9 @@ static func try_cast(world: SimWorld, caster: CombatEntity, ability_id: String, 
 	var ab := world.abilities.get_ability(ability_id)
 	if ab.is_empty() or ab.get("kind") == "passive" or not caster.can_act(world.tick):
 		return false
+	if caster is PlayerState and (int(ab.get("level", 1)) > caster.level \
+			or not AbilityDB.upgrade_ok(ab, (caster as PlayerState).progress.upgrade)):
+		return false
 	if world.tick < int(caster.cooldowns.get(ability_id, 0)):
 		return false
 	var uses_gcd := bool(ab.get("gcd", false))

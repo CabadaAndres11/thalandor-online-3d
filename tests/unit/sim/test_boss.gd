@@ -170,6 +170,7 @@ func _wait_jump(f: CombatFixture) -> Array:
 func test_cast_event_carries_the_applied_cooldown() -> void:
 	var f := _fixture()
 	var p := f.player(1, Vector3(5, 0, 5))
+	p.progress.level = 6 # Sigilo unlocks at level 6
 	ClassRules.setup_player(p, "assassin")
 	p.last_combat_tick = f.world.tick # in combat: Sigilo's long cooldown
 	f.world.events.clear()
