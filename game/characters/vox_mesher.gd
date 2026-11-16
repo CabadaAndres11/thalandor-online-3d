@@ -13,6 +13,15 @@ const TINT_PRIMARY := 251
 const TINT_SECONDARY := 252
 ## Voxels of this index glow: drawn unshaded (eyes, runes, acid).
 const GLOW := 253
+## Tone indices: a darker (shade) and a lighter (light) version of each tint, for
+## folds, edges and highlights painted into the voxels.
+const SHADE_OF := {247: 227, 248: 228, 249: 229, 250: 230, 251: 231, 252: 232}
+const LIGHT_OF := {247: 217, 248: 218, 249: 219, 250: 220, 251: 221, 252: 222}
+const TONE_SHADE := 0.28
+const TONE_LIGHT := 0.18
+## Vertex ambient occlusion: color factor by how open a face corner is (0 = an inner
+## corner closed on both sides, 3 = open).
+const AO_LEVELS := [0.6, 0.74, 0.88, 1.0]
 
 ## Side normal -> the 4 corners of that side of the unit cube, counterclockwise around
 ## the normal; they are emitted reversed (Godot front faces are clockwise).
@@ -40,7 +49,7 @@ static func build(vox: VoxFile, tints: Dictionary) -> ArrayMesh:
 	for v: Array in vox.voxels:
 		var cell := Vector3i(v[0], v[1], v[2])
 		var index: int = v[3]
-		var color: Color = tints[index] if tints.has(index) else vox.palette[index]
+		var color := _color(index, tints, vox.palette)
 		var s: Dictionary = glow if index == GLOW else lit
 		for side: Array in SIDES:
 			var normal: Vector3i = side[0]
@@ -50,7 +59,11 @@ static func build(vox: VoxFile, tints: Dictionary) -> ArrayMesh:
 			for corner: Vector3 in side[1]:
 				s.verts.append((Vector3(cell) + corner) * VOXEL_SIZE)
 				s.normals.append(Vector3(normal))
-				s.colors.append(color)
+				if index == GLOW:
+					s.colors.append(color)
+				else:
+					var f: float = AO_LEVELS[_openness(solid, cell, normal, corner)]
+					s.colors.append(Color(color.r * f, color.g * f, color.b * f, color.a))
 			s.indices.append_array(PackedInt32Array([base, base + 2, base + 1, base, base + 3, base + 2]))
 	var mesh := ArrayMesh.new()
 	for pair: Array in [[lit, material()], [glow, glow_material()]]:
@@ -66,6 +79,35 @@ static func build(vox: VoxFile, tints: Dictionary) -> ArrayMesh:
 		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 		mesh.surface_set_material(mesh.get_surface_count() - 1, pair[1])
 	return mesh
+
+
+static func _color(index: int, tints: Dictionary, palette: PackedColorArray) -> Color:
+	if tints.has(index):
+		return tints[index]
+	for base: int in SHADE_OF:
+		if SHADE_OF[base] == index and tints.has(base):
+			return (tints[base] as Color).darkened(TONE_SHADE)
+		if LIGHT_OF[base] == index and tints.has(base):
+			return (tints[base] as Color).lightened(TONE_LIGHT)
+	return palette[index]
+
+
+## How open the corner of a face is (0..3): the two voxels beside it and the one
+## diagonal to it, in the layer the face looks into.
+static func _openness(solid: Dictionary, cell: Vector3i, normal: Vector3i, corner: Vector3) -> int:
+	var axis := 0 if normal.x != 0 else (1 if normal.y != 0 else 2)
+	var t1 := (axis + 1) % 3
+	var t2 := (axis + 2) % 3
+	var d1 := Vector3i.ZERO
+	var d2 := Vector3i.ZERO
+	d1[t1] = 1 if corner[t1] > 0.5 else -1
+	d2[t2] = 1 if corner[t2] > 0.5 else -1
+	var front := cell + normal
+	var s1 := solid.has(front + d1)
+	var s2 := solid.has(front + d2)
+	if s1 and s2:
+		return 0
+	return 3 - int(s1) - int(s2) - int(solid.has(front + d1 + d2))
 
 
 static func _new_surface() -> Dictionary:

@@ -9,6 +9,9 @@ export const TINT_HAIR = 250;
 export const TINT_PRIMARY = 251;
 export const TINT_SECONDARY = 252;
 export const GLOW = 253; // drawn unshaded: eyes, runes, acid
+// Darker / lighter tone of a tint (see VoxMesher.SHADE_OF / LIGHT_OF).
+export const SHADE = (tint) => tint - 20;
+export const LIGHT = (tint) => tint - 30;
 import fs from "node:fs";
 
 function u32(v) {
