@@ -2,7 +2,7 @@ class_name CharacterCatalog
 extends RefCounted
 ## Character options from data/characters/: appearance options, classes and voxel
 ## pieces. Sanitizes untrusted appearances (saves, imports, the network) and resolves a
-## class + appearance into the "look" CharacterRig builds.
+## class + appearance into the "look" HumanRig builds.
 
 const KINDS := ["body", "skin", "eyes", "hair_style", "hair_color", "beard"]
 const DEFAULT_CLASS := "warrior"
@@ -90,7 +90,9 @@ func random_appearance(rng: RandomNumberGenerator) -> Dictionary:
 	return app
 
 
-## The look CharacterRig.build() expects (see there), from untrusted ids.
+## The look HumanRig.build() expects (see there), from untrusted ids: colors and the
+## voxel pieces (headgear, class outfit and gear, weapons, hair unless the headgear
+## hides it, beard).
 func resolve(class_id: Variant, appearance: Variant) -> Dictionary:
 	var c := class_def(sanitize_class(class_id))
 	var app := sanitize_appearance(appearance)
@@ -99,23 +101,24 @@ func resolve(class_id: Variant, appearance: Variant) -> Dictionary:
 	var pieces: Array = []
 	var hidden := {}
 	if str(c.get("headgear", "")) != "":
-		var hg := piece(c.headgear)
-		for tag: String in hg.get("hides", []):
+		for tag: String in piece(c.headgear).get("hides", []):
 			hidden[tag] = true
 		pieces.append(_piece_entry(c.headgear))
 	for id: String in c.get("pieces", []):
 		pieces.append(_piece_entry(id))
-	var hair_piece := str(hair.get("piece", ""))
-	if hair_piece != "" and not hidden.has(str(piece(hair_piece).get("tag", ""))):
-		pieces.append(_piece_entry(hair_piece))
+	for id: String in c.get("weapons", []):
+		pieces.append(_piece_entry(id))
+	for id: String in hair.get("pieces", []):
+		if not hidden.has(str(piece(id).get("tag", ""))):
+			pieces.append(_piece_entry(id))
+	var beard := str(option("beard", app.beard).get("piece", ""))
+	if beard != "":
+		pieces.append(_piece_entry(beard))
 	return {
 		"skin_color": Color(str(option("skin", app.skin).color)),
 		"eyes_color": Color(str(option("eyes", app.eyes).color)),
 		"hair_color": hair_color,
 		"voxel_hair_color": hair_color.darkened(VOXEL_HAIR_DARKEN),
-		"hair_layer": str(hair.get("layer", "")),
-		"beard_layer": str(option("beard", app.beard).get("layer", "")),
-		"outfit_layer": str(c.get("outfit", "")),
 		"primary": Color(str(c.get("primary", "#808080"))),
 		"secondary": Color(str(c.get("secondary", "#808080"))),
 		"body_scale": option("body", app.body).get("scale", {}),

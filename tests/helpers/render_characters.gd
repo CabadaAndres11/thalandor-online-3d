@@ -36,12 +36,10 @@ func _initialize() -> void:
 	var looks := _looks(_name)
 	var origin := Vector3(20.5 - (looks.size() - 1) * SPACING / 2.0, 0, 18.5)
 	for i in looks.size():
-		var rig := CharacterRig.build(looks[i])
+		var rig := HumanRig.build(looks[i])
 		rig.position = origin + Vector3(i * SPACING, 0, 0)
 		rig.rotation_degrees.y = float(looks[i].get("rot", 0.0))
 		root.add_child(rig)
-		if rig.animation_player != null and rig.animation_player.has_animation("idle"):
-			rig.animation_player.play("idle")
 	var cam := Camera3D.new()
 	cam.fov = 30
 	root.add_child(cam)

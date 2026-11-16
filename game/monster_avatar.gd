@@ -3,7 +3,7 @@ extends Node3D
 ## A monster on screen, built from its type (data/monsters "model"):
 ##   "rig:<name>"    a voxel rig of animated parts (BeastRig: beasts, the skeleton);
 ##   "vox:<name>"    a voxel body from assets/monsters/vox (tint on index 251);
-##   "humanoid:<id>" a blocky character (CharacterRig) from the type's "look".
+##   "humanoid:<id>" a voxel humanoid (HumanRig) from the type's "look".
 ## Elites are bigger, have an ember aura on the ground and "élite" in their name.
 ## Attacks (lunge, bite) and deaths (fall over) are tweens on the body holder.
 
@@ -17,7 +17,7 @@ var bar: OverheadBar
 var dying: bool = false
 var animation_player: AnimationPlayer
 var _rig: BeastRig
-var _humanoid: CharacterRig
+var _humanoid: HumanRig
 var _aura: Node3D
 var _display_name: String = ""
 ## Seconds left of an attack animation (humanoids: idle/walk wait for it).
@@ -28,6 +28,7 @@ var _kind: String = ""
 var _height: float = 1.0
 var _last_position: Variant = null
 var _speed: float = 0.0
+var _move_speed: float = 3.0
 var _time: float = 0.0
 var _rest: Vector3 = Vector3.ZERO
 
@@ -46,10 +47,11 @@ func setup(type: Dictionary, elite: bool = false, elite_scale: float = 1.3) -> v
 	elif model.begins_with("humanoid:"):
 		_kind = "humanoid"
 		body = Node3D.new()
-		_humanoid = CharacterRig.build(look_of(type))
+		_humanoid = HumanRig.build(look_of(type))
+		_humanoid.auto_update = false
 		body.add_child(_humanoid)
 		body.scale = Vector3.ONE * scale_f
-		animation_player = _humanoid.animation_player
+		_move_speed = float(type.get("speed", 3.0))
 		_height = 1.9 * scale_f
 	elif model.begins_with("vox:"):
 		_kind = "vox"
@@ -74,7 +76,7 @@ func setup(type: Dictionary, elite: bool = false, elite_scale: float = 1.3) -> v
 	bar.setup(_display_name, true)
 
 
-## A CharacterRig look (see CharacterRig.build) from a monster's "look" data.
+## A HumanRig look (see HumanRig.build) from a monster's "look" data.
 static func look_of(type: Dictionary) -> Dictionary:
 	var look: Dictionary = type.get("look", {})
 	var catalog := CharacterCatalog.load_default()
@@ -89,7 +91,6 @@ static func look_of(type: Dictionary) -> Dictionary:
 		"eyes_color": Color(str(look.get("eyes", "#000000"))),
 		"hair_color": Color(str(look.get("hair", look.get("skin", "#000000")))),
 		"voxel_hair_color": skin, # monster pieces tinted like hair take the skin color (ears)
-		"outfit_layer": str(look.get("outfit", "")),
 		"primary": Color(str(look.get("primary", "#808080"))),
 		"secondary": Color(str(look.get("secondary", "#808080"))),
 		"body_scale": look.get("body_scale", {}),
@@ -118,9 +119,14 @@ func apply_state(state: Dictionary, info: Dictionary, delta: float) -> void:
 		var pulse := 1.0 + sin(_time * 3.0) * 0.06
 		_aura.scale = Vector3(pulse, 1, pulse)
 	if dying:
+		if _humanoid != null:
+			_humanoid.update(delta) # the fall plays on
 		return
 	if _rig != null:
 		_rig.animate(_speed, delta)
+	elif _humanoid != null:
+		_humanoid.set_moving_speed(_speed, _move_speed)
+		_humanoid.update(delta)
 	elif animation_player != null:
 		if _action_left > 0.0:
 			_action_left -= delta
@@ -138,6 +144,8 @@ func apply_state(state: Dictionary, info: Dictionary, delta: float) -> void:
 
 
 func current_animation() -> String:
+	if _humanoid != null:
+		return _humanoid.current_animation()
 	if animation_player != null:
 		return animation_player.current_animation
 	return "walk" if _speed >= 0.2 else "idle"
@@ -161,12 +169,7 @@ func play_attack(kind: String = "melee") -> Tween:
 	if _rig != null and _rig.is_biped():
 		_rig.shoot(t)
 	elif _kind == "humanoid":
-		var anim: String = PlayerAvatar.ACTION_ANIMS.get(kind, PlayerAvatar.ACTION_ANIMS.melee)
-		if animation_player != null and animation_player.has_animation(anim):
-			animation_player.play(anim, 0.05)
-			animation_player.speed_scale = 1.0
-			_action_left = animation_player.get_animation(anim).length
-		t.tween_interval(maxf(_action_left, 0.05))
+		t.tween_interval(maxf(_humanoid.play_action(kind if HumanRig.ACTIONS.has(kind) else "melee"), 0.05))
 	elif _kind == "vox":
 		var base := body.scale
 		t.tween_property(body, "scale", base * Vector3(1.25, 0.7, 1.25), 0.1)
@@ -223,9 +226,8 @@ func play_death() -> Tween:
 	if _rig != null and _rig.is_biped():
 		_rig.collapse(t)
 		return t
-	if _kind == "humanoid" and animation_player != null and animation_player.has_animation("die"):
-		animation_player.play("die", 0.05)
-		animation_player.speed_scale = 1.0
+	if _humanoid != null:
+		_humanoid.play_action("die")
 		t.tween_property(body, "position:y", _rest.y - 0.05, 0.9)
 		return t
 	if animation_player != null:

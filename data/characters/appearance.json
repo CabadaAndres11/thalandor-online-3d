@@ -23,14 +23,14 @@
 		{"id": "red", "color": "#c0283a"}
 	],
 	"hair_style": [
-		{"id": "short", "name": "HAIR_SHORT", "layer": "res://assets/characters/layers/hair_short.png", "piece": ""},
-		{"id": "bob", "name": "HAIR_BOB", "layer": "res://assets/characters/layers/hair_bob.png", "piece": ""},
-		{"id": "swept", "name": "HAIR_SWEPT", "layer": "res://assets/characters/layers/hair_swept.png", "piece": ""},
-		{"id": "bald", "name": "HAIR_BALD", "layer": "", "piece": ""},
-		{"id": "hair_long", "name": "HAIR_LONG", "layer": "res://assets/characters/layers/hair_bob.png", "piece": "hair_long"},
-		{"id": "hair_ponytail", "name": "HAIR_PONYTAIL", "layer": "res://assets/characters/layers/hair_short.png", "piece": "hair_ponytail"},
-		{"id": "hair_bun", "name": "HAIR_BUN", "layer": "res://assets/characters/layers/hair_swept.png", "piece": "hair_bun"},
-		{"id": "hair_mohawk", "name": "HAIR_MOHAWK", "layer": "", "piece": "hair_mohawk"}
+		{"id": "short", "name": "HAIR_SHORT", "pieces": ["hair_short"]},
+		{"id": "bob", "name": "HAIR_BOB", "pieces": ["hair_bob"]},
+		{"id": "swept", "name": "HAIR_SWEPT", "pieces": ["hair_swept"]},
+		{"id": "bald", "name": "HAIR_BALD", "pieces": []},
+		{"id": "hair_long", "name": "HAIR_LONG", "pieces": ["hair_bob", "hair_long"]},
+		{"id": "hair_ponytail", "name": "HAIR_PONYTAIL", "pieces": ["hair_short", "hair_ponytail"]},
+		{"id": "hair_bun", "name": "HAIR_BUN", "pieces": ["hair_swept", "hair_bun"]},
+		{"id": "hair_mohawk", "name": "HAIR_MOHAWK", "pieces": ["hair_mohawk"]}
 	],
 	"hair_color": [
 		{"id": "black", "color": "#1d1a19"},
@@ -46,10 +46,10 @@
 		{"id": "crimson", "color": "#b3202e"}
 	],
 	"beard": [
-		{"id": "none", "name": "BEARD_NONE", "layer": ""},
-		{"id": "full", "name": "BEARD_FULL", "layer": "res://assets/characters/layers/beard_full.png"},
-		{"id": "mustache", "name": "BEARD_MUSTACHE", "layer": "res://assets/characters/layers/beard_mustache.png"},
-		{"id": "short", "name": "BEARD_SHORT", "layer": "res://assets/characters/layers/beard_short.png"},
-		{"id": "goatee", "name": "BEARD_GOATEE", "layer": "res://assets/characters/layers/beard_goatee.png"}
+		{"id": "none", "name": "BEARD_NONE", "piece": ""},
+		{"id": "full", "name": "BEARD_FULL", "piece": "beard_full"},
+		{"id": "mustache", "name": "BEARD_MUSTACHE", "piece": "beard_mustache"},
+		{"id": "short", "name": "BEARD_SHORT", "piece": "beard_short"},
+		{"id": "goatee", "name": "BEARD_GOATEE", "piece": "beard_goatee"}
 	]
 }

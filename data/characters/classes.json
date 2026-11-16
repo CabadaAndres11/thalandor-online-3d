@@ -1,17 +1,17 @@
 [
-	{"id": "warrior", "name": "CLASS_WARRIOR", "desc": "CLASS_WARRIOR_DESC", "outfit": "res://assets/characters/layers/outfit_warrior.png", "headgear": "", "pieces": ["pauldron_left", "pauldron_right"], "primary": "#8d96a1", "secondary": "#8e3b2e",
+	{"id": "warrior", "name": "CLASS_WARRIOR", "desc": "CLASS_WARRIOR_DESC", "weapons": ["weapon_sword"], "headgear": "", "pieces": ["outfit_warrior", "pauldron_left", "pauldron_right"], "primary": "#8d96a1", "secondary": "#8e3b2e",
 	 "stats": {"max_hp": 200, "attack_power": 20, "spell_power": 0, "armor": 40, "crit_chance": 0.05, "dodge_chance": 0.0},
 	 "resource": {"kind": "rage", "max": 100, "start": 0, "gain_per_hit": 8, "gain_per_damage_taken": 0.5, "decay_per_s": 5}},
-	{"id": "cleric", "name": "CLASS_CLERIC", "desc": "CLASS_CLERIC_DESC", "outfit": "res://assets/characters/layers/outfit_cleric.png", "headgear": "hood_cleric", "primary": "#e9e2cf", "secondary": "#3a6fb0",
+	{"id": "cleric", "name": "CLASS_CLERIC", "desc": "CLASS_CLERIC_DESC", "weapons": ["weapon_mace"], "headgear": "hood_cleric", "pieces": ["outfit_cleric"], "primary": "#e9e2cf", "secondary": "#3a6fb0",
 	 "stats": {"max_hp": 150, "attack_power": 10, "spell_power": 20, "armor": 15, "crit_chance": 0.05, "dodge_chance": 0.0},
 	 "resource": {"kind": "mana", "max": 150, "start": 150, "regen_per_s": 6, "regen_in_combat_mult": 0.0}},
-	{"id": "mage", "name": "CLASS_MAGE", "desc": "CLASS_MAGE_DESC", "outfit": "res://assets/characters/layers/outfit_mage.png", "headgear": "hat_mage", "primary": "#5b3f9e", "secondary": "#e8b23a",
+	{"id": "mage", "name": "CLASS_MAGE", "desc": "CLASS_MAGE_DESC", "weapons": ["weapon_staff"], "headgear": "hat_mage", "pieces": ["outfit_mage"], "primary": "#5b3f9e", "secondary": "#e8b23a",
 	 "stats": {"max_hp": 130, "attack_power": 5, "spell_power": 20, "armor": 10, "crit_chance": 0.05, "dodge_chance": 0.0},
 	 "resource": {"kind": "mana", "max": 160, "start": 160, "regen_per_s": 6, "regen_in_combat_mult": 0.0}},
-	{"id": "archer", "name": "CLASS_ARCHER", "desc": "CLASS_ARCHER_DESC", "outfit": "res://assets/characters/layers/outfit_archer.png", "headgear": "hood_archer", "primary": "#4f7a3a", "secondary": "#6b4a2b",
+	{"id": "archer", "name": "CLASS_ARCHER", "desc": "CLASS_ARCHER_DESC", "weapons": ["weapon_bow"], "headgear": "hood_archer", "pieces": ["outfit_archer"], "primary": "#4f7a3a", "secondary": "#6b4a2b",
 	 "stats": {"max_hp": 150, "attack_power": 20, "spell_power": 0, "armor": 20, "crit_chance": 0.05, "dodge_chance": 0.05},
 	 "resource": {"kind": "focus", "max": 100, "start": 100, "regen_per_s": 12, "dodging_regen_mult": 0.3}},
-	{"id": "assassin", "name": "CLASS_ASSASSIN", "desc": "CLASS_ASSASSIN_DESC", "outfit": "res://assets/characters/layers/outfit_assassin.png", "headgear": "mask_assassin", "primary": "#2d2f3a", "secondary": "#8a2433",
+	{"id": "assassin", "name": "CLASS_ASSASSIN", "desc": "CLASS_ASSASSIN_DESC", "weapons": ["weapon_dagger_right", "weapon_dagger_left"], "headgear": "mask_assassin", "pieces": ["outfit_assassin"], "primary": "#2d2f3a", "secondary": "#8a2433",
 	 "stats": {"max_hp": 160, "attack_power": 20, "spell_power": 0, "armor": 20, "crit_chance": 0.05, "dodge_chance": 0.05},
 	 "resource": {"kind": "energy", "max": 100, "start": 100, "regen_per_s": 12}}
 ]

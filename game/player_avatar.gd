@@ -1,6 +1,6 @@
 class_name PlayerAvatar
 extends Node3D
-## A player in the world: their voxel character (CharacterRig), their name above it in
+## A player in the world: their voxel character (HumanRig), their name above it in
 ## their slot color and an aim arrow on the ground. Plays idle or walk from how fast
 ## its drawn position moves.
 
@@ -13,15 +13,9 @@ const SPEED_SMOOTHING_S := 0.1
 ## A jump longer than this in one frame (spawn, big correction) is not walking.
 const TELEPORT_DISTANCE := 2.0
 
-var rig: CharacterRig
+var rig: HumanRig
 ## Walk animation plays at real speed / move_speed (set from balance by the game).
 var move_speed: float = 5.0
-
-## Kenney animation for each ability "anim" kind.
-const ACTION_ANIMS := {
-	"melee": "attack-melee-right", "shoot": "holding-right-shoot", "cast": "interact-right",
-	"dash": "holding-both", "die": "die",
-}
 
 var bar: OverheadBar
 ## How see-through the character is in stealth (0 = solid, 1 = invisible).
@@ -38,7 +32,8 @@ var _dead: bool = false
 
 func setup(player_name: String, slot: int, class_id: String, appearance: Dictionary) -> void:
 	var color: Color = SLOT_COLORS[clampi(slot, 0, SLOT_COLORS.size() - 1)]
-	rig = CharacterRig.create(class_id, appearance)
+	rig = HumanRig.create(class_id, appearance)
+	rig.auto_update = false
 	add_child(rig)
 	rig.set_moving_speed(0.0, move_speed)
 
@@ -86,12 +81,15 @@ func apply_state(state: Dictionary, delta: float) -> void:
 				measured = step / delta
 		_last_position = pos
 		position = pos
-		rotation.y = state.facing
+		if not _dead:
+			rotation.y = state.facing # a body on the ground does not turn with the mouse
 	if delta > 0.0:
 		_speed = lerpf(_speed, measured, 1.0 - exp(-delta / SPEED_SMOOTHING_S))
 		_action_left = maxf(_action_left - delta, 0.0)
-	if rig != null and _action_left <= 0.0 and not _dead:
-		rig.set_moving_speed(_speed, move_speed)
+	if rig != null:
+		if _action_left <= 0.0 and not _dead:
+			rig.set_moving_speed(_speed, move_speed)
+		rig.update(delta)
 
 
 func set_health(hp: float, max_hp: float, alive: bool = true) -> void:
@@ -99,6 +97,8 @@ func set_health(hp: float, max_hp: float, alive: bool = true) -> void:
 	if alive and _dead:
 		_dead = false # back on its feet (respawn / revive)
 		_action_left = 0.0
+		if rig != null:
+			rig.play_action("idle")
 
 
 ## Status icons above the name, and see-through while in stealth.
@@ -118,15 +118,13 @@ func is_translucent() -> bool:
 	return _translucent
 
 
-## Plays the animation of an ability kind (melee, shoot, cast, dash) or "die"; idle
-## and walk resume when it ends (a dead character stays down until it is alive).
+## Plays the action of an ability kind (melee, shoot, cast, dash), "downed" or "die";
+## idle and walk resume when it ends (a body on the ground stays down until alive).
 func play_action(kind: String) -> void:
-	if rig == null or rig.animation_player == null or not ACTION_ANIMS.has(kind):
+	if rig == null:
 		return
-	var anim: String = ACTION_ANIMS[kind]
-	if not rig.animation_player.has_animation(anim):
+	var d := rig.play_action(kind)
+	if d <= 0.0:
 		return
-	rig.animation_player.play(anim, 0.05)
-	rig.animation_player.speed_scale = 1.0
-	_action_left = rig.animation_player.get_animation(anim).length
-	_dead = kind == "die"
+	_action_left = d
+	_dead = kind == "die" or kind == "downed"

@@ -6,7 +6,7 @@ extends SubViewportContainer
 const TURN_DEG_PER_S := 6.0 # slow enough to look at the details
 const DRAG_DEG_PER_PX := 0.6
 
-var rig: CharacterRig
+var rig: HumanRig
 
 var _viewport: SubViewport
 var _pivot: Node3D
@@ -44,7 +44,7 @@ func _init() -> void:
 func show_character(class_id: String, appearance: Dictionary) -> void:
 	if rig != null:
 		rig.queue_free()
-	rig = CharacterRig.create(class_id, appearance)
+	rig = HumanRig.create(class_id, appearance)
 	_pivot.add_child(rig)
 	rig.set_moving_speed(0.0, 1.0)
 

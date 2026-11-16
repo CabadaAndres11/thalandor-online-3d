@@ -84,7 +84,7 @@ func test_new_monster_models_build() -> void:
 	var pieces := {"goblin": ["goblin_ears", "goblin_knife"]}
 	for type_id: String in pieces:
 		var a := _avatar(type_id)
-		var c := a.body.get_child(0) as CharacterRig
+		var c := a.body.get_child(0) as HumanRig
 		assert_not_null(c, "%s is a blocky humanoid" % type_id)
 		for id: String in pieces[type_id]:
 			assert_not_null(c.piece_node(id), "%s: %s" % [type_id, id])
@@ -95,7 +95,7 @@ func test_new_monster_models_build() -> void:
 func test_humanoid_attack_plays_its_animation() -> void:
 	var g := _avatar("goblin")
 	g.play_attack("melee")
-	assert_eq(g.current_animation(), "attack-melee-right")
+	assert_eq(g.current_animation(), "melee")
 
 
 func test_elite_is_bigger_with_an_aura() -> void:
@@ -112,7 +112,7 @@ func test_elite_is_bigger_with_an_aura() -> void:
 
 func test_boss_is_a_big_humanoid_that_leaps() -> void:
 	var a := _avatar("orc_king")
-	var c := a.body.get_child(0) as CharacterRig
+	var c := a.body.get_child(0) as HumanRig
 	assert_not_null(c)
 	for id: String in ["orc_axe", "orc_tusks", "orc_crown"]:
 		assert_not_null(c.piece_node(id), id)

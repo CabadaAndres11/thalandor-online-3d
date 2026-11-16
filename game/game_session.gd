@@ -340,7 +340,7 @@ func _on_combat_event(ev: Array) -> void:
 		"downed":
 			var fallen := int(ev[1])
 			if _avatars.has(fallen):
-				(_avatars[fallen] as PlayerAvatar).play_action("die")
+				(_avatars[fallen] as PlayerAvatar).play_action("downed")
 		"died":
 			var who := int(ev[1])
 			if _monster_avatars.has(who):

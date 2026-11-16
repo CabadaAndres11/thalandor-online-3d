@@ -36,11 +36,19 @@ var _phase: float = 0.0
 var _time: float = 0.0
 var _action: String = "idle"
 var _action_t: float = 0.0
+## False when an avatar drives update() itself (from its state updates).
+var auto_update: bool = true
 
 
 ## look: skin_color, eyes_color, hair_color, voxel_hair_color, primary, secondary
 ## (Color); body_scale ({"torso"|"arm"|"leg": [x, y, z]}); pieces ([{id, file, part,
 ## offset: [x, y, z] voxels from the part's pivot}]).
+## A character of a class with an appearance (ids; untrusted values are sanitized).
+static func create(class_id: String, appearance: Dictionary, catalog: CharacterCatalog = null) -> HumanRig:
+	var cat := catalog if catalog != null else CharacterCatalog.load_default()
+	return build(cat.resolve(class_id, appearance))
+
+
 static func build(look: Dictionary) -> HumanRig:
 	var rig := HumanRig.new()
 	rig.name = "Human"
@@ -86,6 +94,11 @@ func play_action(kind: String) -> float:
 	return ACTIONS[kind]
 
 
+## How fast the walk cycle runs (speed / move_speed, clamped).
+func walk_rate() -> float:
+	return _rate
+
+
 func current_action() -> String:
 	return _action
 
@@ -98,7 +111,8 @@ func current_animation() -> String:
 
 
 func _process(delta: float) -> void:
-	update(delta)
+	if auto_update:
+		update(delta)
 
 
 func update(delta: float) -> void:

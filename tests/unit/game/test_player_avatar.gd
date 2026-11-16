@@ -26,7 +26,9 @@ func _walk(frames: int, speed: float, start := Vector3.ZERO) -> Vector3:
 
 
 func test_builds_a_character_rig() -> void:
+	assert_true(avatar.rig is HumanRig)
 	assert_not_null(avatar.rig)
+	assert_has(avatar.rig.pieces(), "weapon_sword")
 	assert_has(avatar.rig.pieces(), "pauldron_left")
 
 
@@ -43,7 +45,7 @@ func test_walk_when_moving_at_move_speed() -> void:
 
 func test_walk_speed_scale_matches_velocity() -> void:
 	_walk(60, 2.5)
-	assert_almost_eq(avatar.rig.animation_player.speed_scale, 0.5, 0.05)
+	assert_almost_eq(avatar.rig.walk_rate(), 0.5, 0.05)
 
 
 ## The own player's position only changes on physics ticks (30/s) while frames are
@@ -87,9 +89,9 @@ func test_faces_state_facing() -> void:
 
 func test_action_animation_plays_then_walk_resumes() -> void:
 	avatar.play_action("melee")
-	assert_eq(avatar.rig.current_animation(), "attack-melee-right")
+	assert_eq(avatar.rig.current_animation(), "melee")
 	_walk(3, 5.0)
-	assert_eq(avatar.rig.current_animation(), "attack-melee-right", "walking does not cut the swing")
+	assert_eq(avatar.rig.current_animation(), "melee", "walking does not cut the swing")
 	_walk(120, 5.0)
 	assert_eq(avatar.rig.current_animation(), "walk", "back to walking once it ended")
 
@@ -98,6 +100,15 @@ func test_dead_stays_down_until_alive_again() -> void:
 	avatar.play_action("die")
 	_walk(200, 0.0)
 	assert_eq(avatar.rig.current_animation(), "die")
+	avatar.set_health(100.0, 100.0, true)
+	_walk(5, 0.0)
+	assert_eq(avatar.rig.current_animation(), "idle")
+
+
+func test_downed_stays_down_and_does_not_walk() -> void:
+	avatar.play_action("downed")
+	_walk(200, 5.0)
+	assert_eq(avatar.rig.current_animation(), "downed")
 	avatar.set_health(100.0, 100.0, true)
 	_walk(5, 0.0)
 	assert_eq(avatar.rig.current_animation(), "idle")

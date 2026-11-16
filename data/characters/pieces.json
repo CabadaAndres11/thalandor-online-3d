@@ -1,33 +1,236 @@
 {
 	"pauldron_left": {
 		"file": "res://assets/characters/pieces/pauldron_left.vox",
-		"part": "arm-left",
+		"part": "arm_left",
 		"offset": [
-			0,
-			-4,
-			-3
+			-1,
+			-2,
+			-2
 		],
 		"tag": "armor",
 		"hides": []
 	},
 	"pauldron_right": {
 		"file": "res://assets/characters/pieces/pauldron_right.vox",
-		"part": "arm-right",
+		"part": "arm_right",
 		"offset": [
-			-6,
-			-4,
-			-3
+			-3,
+			-2,
+			-2
 		],
 		"tag": "armor",
+		"hides": []
+	},
+	"hat_mage": {
+		"file": "res://assets/characters/pieces/hat_mage.vox",
+		"part": "head",
+		"offset": [
+			-6,
+			7,
+			-6
+		],
+		"tag": "headgear",
+		"hides": [
+			"hair"
+		]
+	},
+	"hood_archer": {
+		"file": "res://assets/characters/pieces/hood_archer.vox",
+		"part": "head",
+		"offset": [
+			-4,
+			-1,
+			-5
+		],
+		"tag": "headgear",
+		"hides": [
+			"hair",
+			"hair_cap"
+		]
+	},
+	"mask_assassin": {
+		"file": "res://assets/characters/pieces/mask_assassin.vox",
+		"part": "head",
+		"offset": [
+			-4,
+			-3,
+			-5
+		],
+		"tag": "headgear",
+		"hides": []
+	},
+	"hood_cleric": {
+		"file": "res://assets/characters/pieces/hood_cleric.vox",
+		"part": "torso",
+		"offset": [
+			-3,
+			2,
+			-3
+		],
+		"tag": "headgear",
+		"hides": []
+	},
+	"outfit_warrior": {
+		"file": "res://assets/characters/pieces/outfit_warrior.vox",
+		"part": "torso",
+		"offset": [
+			-3,
+			1,
+			2
+		],
+		"tag": "outfit",
+		"hides": []
+	},
+	"outfit_cleric": {
+		"file": "res://assets/characters/pieces/outfit_cleric.vox",
+		"part": "torso",
+		"offset": [
+			-2,
+			0,
+			2
+		],
+		"tag": "outfit",
+		"hides": []
+	},
+	"outfit_mage": {
+		"file": "res://assets/characters/pieces/outfit_mage.vox",
+		"part": "torso",
+		"offset": [
+			-4,
+			-3,
+			-3
+		],
+		"tag": "outfit",
+		"hides": []
+	},
+	"outfit_archer": {
+		"file": "res://assets/characters/pieces/outfit_archer.vox",
+		"part": "torso",
+		"offset": [
+			-3,
+			0,
+			-3
+		],
+		"tag": "outfit",
+		"hides": []
+	},
+	"outfit_assassin": {
+		"file": "res://assets/characters/pieces/outfit_assassin.vox",
+		"part": "torso",
+		"offset": [
+			-3,
+			0,
+			2
+		],
+		"tag": "outfit",
+		"hides": []
+	},
+	"outfit_villager": {
+		"file": "res://assets/characters/pieces/outfit_villager.vox",
+		"part": "torso",
+		"offset": [
+			-3,
+			0,
+			2
+		],
+		"tag": "outfit",
+		"hides": []
+	},
+	"goblin_ears": {
+		"file": "res://assets/characters/pieces/goblin_ears.vox",
+		"part": "head",
+		"offset": [
+			-7,
+			2,
+			-1
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"goblin_knife": {
+		"file": "res://assets/characters/pieces/goblin_knife.vox",
+		"part": "hand_right",
+		"offset": [
+			-1,
+			-2,
+			-1
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"orc_tusks": {
+		"file": "res://assets/characters/pieces/orc_tusks.vox",
+		"part": "head",
+		"offset": [
+			-2,
+			0,
+			3
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"orc_crown": {
+		"file": "res://assets/characters/pieces/orc_crown.vox",
+		"part": "head",
+		"offset": [
+			-3,
+			6,
+			-3
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"orc_axe": {
+		"file": "res://assets/characters/pieces/orc_axe.vox",
+		"part": "hand_right",
+		"offset": [
+			-1,
+			-5,
+			-2
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"hair_short": {
+		"file": "res://assets/characters/pieces/hair_short.vox",
+		"part": "head",
+		"offset": [
+			-4,
+			3,
+			-4
+		],
+		"tag": "hair_cap",
+		"hides": []
+	},
+	"hair_bob": {
+		"file": "res://assets/characters/pieces/hair_bob.vox",
+		"part": "head",
+		"offset": [
+			-4,
+			1,
+			-4
+		],
+		"tag": "hair_cap",
+		"hides": []
+	},
+	"hair_swept": {
+		"file": "res://assets/characters/pieces/hair_swept.vox",
+		"part": "head",
+		"offset": [
+			-4,
+			3,
+			-4
+		],
+		"tag": "hair_cap",
 		"hides": []
 	},
 	"hair_long": {
 		"file": "res://assets/characters/pieces/hair_long.vox",
 		"part": "head",
 		"offset": [
-			-5,
-			-3,
-			-6
+			-4,
+			-4,
+			-5
 		],
 		"tag": "hair",
 		"hides": []
@@ -37,7 +240,7 @@
 		"part": "head",
 		"offset": [
 			-1,
-			-3,
+			-2,
 			-6
 		],
 		"tag": "hair",
@@ -48,7 +251,7 @@
 		"part": "head",
 		"offset": [
 			-2,
-			8,
+			7,
 			-3
 		],
 		"tag": "hair",
@@ -60,112 +263,130 @@
 		"offset": [
 			-1,
 			2,
-			-5
+			-4
 		],
-		"tag": "hair",
+		"tag": "hair_cap",
 		"hides": []
 	},
-	"hat_mage": {
-		"file": "res://assets/characters/pieces/hat_mage.vox",
+	"beard_mustache": {
+		"file": "res://assets/characters/pieces/beard_mustache.vox",
 		"part": "head",
 		"offset": [
-			-7,
-			8,
-			-7
-		],
-		"tag": "headgear",
-		"hides": [
-			"hair"
-		]
-	},
-	"hood_archer": {
-		"file": "res://assets/characters/pieces/hood_archer.vox",
-		"part": "head",
-		"offset": [
-			-5,
+			-2,
 			-1,
-			-6
+			3
 		],
-		"tag": "headgear",
-		"hides": [
-			"hair"
-		]
+		"tag": "beard",
+		"hides": []
 	},
-	"mask_assassin": {
-		"file": "res://assets/characters/pieces/mask_assassin.vox",
+	"beard_goatee": {
+		"file": "res://assets/characters/pieces/beard_goatee.vox",
 		"part": "head",
 		"offset": [
-			-5,
-			-3,
-			-6
-		],
-		"tag": "headgear",
-		"hides": []
-	},
-	"hood_cleric": {
-		"file": "res://assets/characters/pieces/hood_cleric.vox",
-		"part": "torso",
-		"offset": [
-			-3,
-			8,
-			-4
-		],
-		"tag": "headgear",
-		"hides": []
-	},
-	"goblin_ears": {
-		"file": "res://assets/characters/pieces/goblin_ears.vox",
-		"part": "head",
-		"offset": [
-			-10,
-			2,
-			-3
-		],
-		"tag": "monster",
-		"hides": []
-	},
-	"goblin_knife": {
-		"file": "res://assets/characters/pieces/goblin_knife.vox",
-		"part": "arm-right",
-		"offset": [
-			-4,
-			-10,
-			2
-		],
-		"tag": "monster",
-		"hides": []
-	},
-	"orc_tusks": {
-		"file": "res://assets/characters/pieces/orc_tusks.vox",
-		"part": "head",
-		"offset": [
-			-3,
-			1,
-			4
-		],
-		"tag": "monster",
-		"hides": []
-	},
-	"orc_crown": {
-		"file": "res://assets/characters/pieces/orc_crown.vox",
-		"part": "head",
-		"offset": [
-			-4,
-			8,
-			-4
-		],
-		"tag": "monster",
-		"hides": []
-	},
-	"orc_axe": {
-		"file": "res://assets/characters/pieces/orc_axe.vox",
-		"part": "arm-right",
-		"offset": [
-			-3,
-			-16,
+			-2,
+			-2,
 			1
 		],
-		"tag": "monster",
+		"tag": "beard",
+		"hides": []
+	},
+	"beard_short": {
+		"file": "res://assets/characters/pieces/beard_short.vox",
+		"part": "head",
+		"offset": [
+			-4,
+			-1,
+			-1
+		],
+		"tag": "beard",
+		"hides": []
+	},
+	"beard_full": {
+		"file": "res://assets/characters/pieces/beard_full.vox",
+		"part": "head",
+		"offset": [
+			-4,
+			-3,
+			-1
+		],
+		"tag": "beard",
+		"hides": []
+	},
+	"weapon_sword": {
+		"file": "res://assets/characters/pieces/weapon_sword.vox",
+		"part": "hand_right",
+		"offset": [
+			-1,
+			-2,
+			-2
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"weapon_wood_sword": {
+		"file": "res://assets/characters/pieces/weapon_wood_sword.vox",
+		"part": "hand_right",
+		"offset": [
+			-1,
+			-2,
+			-2
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"weapon_mace": {
+		"file": "res://assets/characters/pieces/weapon_mace.vox",
+		"part": "hand_right",
+		"offset": [
+			-3,
+			-3,
+			-2
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"weapon_staff": {
+		"file": "res://assets/characters/pieces/weapon_staff.vox",
+		"part": "hand_right",
+		"offset": [
+			-2,
+			-8,
+			0
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"weapon_bow": {
+		"file": "res://assets/characters/pieces/weapon_bow.vox",
+		"part": "hand_left",
+		"offset": [
+			-1,
+			-8,
+			-3
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"weapon_dagger_right": {
+		"file": "res://assets/characters/pieces/weapon_dagger_right.vox",
+		"part": "hand_right",
+		"offset": [
+			-1,
+			-2,
+			-1
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"weapon_dagger_left": {
+		"file": "res://assets/characters/pieces/weapon_dagger_left.vox",
+		"part": "hand_left",
+		"offset": [
+			-1,
+			-2,
+			-1
+		],
+		"tag": "weapon",
 		"hides": []
 	}
 }
