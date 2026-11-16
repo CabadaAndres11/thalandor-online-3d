@@ -10,6 +10,8 @@ signal roster_changed()
 signal chat_received(author: String, text: String, is_system: bool)
 ## One combat event from the host (see SimWorld.events), in order.
 signal combat_event(ev: Array)
+## A player (maybe this one) learned a class from a class trainer.
+signal class_changed(id: int, class_id: String)
 
 enum Status { CONNECTING, IN_GAME, CLOSED }
 
@@ -202,6 +204,13 @@ func _handle(msg: Dictionary) -> void:
 			roster[msg.id] = {"name": msg.name, "slot": msg.slot, "class_id": msg.class_id, "appearance": msg.appearance}
 			roster_changed.emit()
 			chat_received.emit("", tr_text("CHAT_JOINED") % msg.name, true)
+		Protocol.Msg.PLAYER_CLASS:
+			if roster.has(msg.id):
+				roster[msg.id].class_id = msg.class_id
+			if msg.id == my_id:
+				class_id = msg.class_id
+				bar = (msg.bar as Array).duplicate()
+			class_changed.emit(msg.id, msg.class_id)
 		Protocol.Msg.PLAYER_LEFT:
 			var name: String = roster[msg.id].name if roster.has(msg.id) else "?"
 			roster.erase(msg.id)
@@ -259,6 +268,13 @@ func dodge_cooldown_ratio() -> float:
 		return 0.0
 	var total := balance.ticks(balance.dodge_cooldown_s)
 	return clampf(float(_predicted.dodge_ready_seq - _seq) / float(total), 0.0, 1.0) if total > 0 else 0.0
+
+
+## Asks the host to learn a class (it checks this player is a villager next to a
+## class trainer); class_changed follows if it agrees.
+func choose_class(new_class: String) -> void:
+	if status == Status.IN_GAME:
+		_transport.send(Transport.HOST_PEER, Protocol.choose_class(new_class), true)
 
 
 ## Replaces slots 1-4 (the host checks they are this class's abilities).

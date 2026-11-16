@@ -142,6 +142,8 @@ func _handle(index: int, peer: int, data: PackedByteArray) -> void:
 			_on_input(rec, msg.inputs)
 		Protocol.Msg.SET_BAR:
 			rec.bar = world.abilities.sanitize_bar(rec.class_id, msg.bar)
+		Protocol.Msg.CHOOSE_CLASS:
+			_on_choose_class(rec, msg.class_id)
 		Protocol.Msg.CHAT:
 			var text: String = (msg.text as String).strip_edges().left(balance.chat_max_len)
 			if text != "":
@@ -182,6 +184,21 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 		if other != id:
 			_send_to(other, Protocol.player_joined(id, name, slot, class_id, appearance), true)
 	player_joined.emit(id, name)
+
+
+## A villager next to a class trainer learns a class: final, for everyone to see.
+func _on_choose_class(rec: Dictionary, class_id: String) -> void:
+	var p: PlayerState = world.players.get(rec.id)
+	if p == null or not p.is_alive() or catalog.is_selectable(rec.class_id) or not catalog.is_selectable(class_id):
+		return
+	if NpcDB.load_default().near_with_role(map, p.position, "class_trainer") == "":
+		return
+	ClassRules.setup_player(p, class_id, catalog)
+	rec.class_id = class_id
+	rec.basic_id = world.abilities.kind_of(class_id, "basic")
+	rec.secondary_id = world.abilities.kind_of(class_id, "secondary")
+	rec.bar = world.abilities.default_bar(class_id)
+	_broadcast(Protocol.player_class(rec.id, class_id, rec.bar), true)
 
 
 func _on_input(rec: Dictionary, rows: Array) -> void:

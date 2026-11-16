@@ -312,3 +312,9 @@ CLASS_VILLAGER_DESC,"Aprendiz en la forja de la aldea. Aún no has elegido tu ca
 AB_VILLAGER_STRIKE,Golpe de madera
 AB_VILLAGER_STRIKE_DESC,Un golpe con la espada de entrenamiento al enemigo que tienes delante.
 ABILITIES_VILLAGER_HINT,Habla con Brann para elegir tu clase.
+NPC_BRANN,Brann
+BRANN_HAS_CLASS,Ya has elegido tu camino. Ahora recórrelo.
+CLASS_CHOICE_TITLE,Elige tu camino
+CLASS_CHOICE_CONFIRM,Confirmar
+CLASS_CHOICE_WARNING,La elección es definitiva.
+CLASS_CHOICE_TALK,[E] Hablar con Brann

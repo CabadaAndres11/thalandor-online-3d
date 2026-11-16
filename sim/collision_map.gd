@@ -9,11 +9,14 @@ var spawn_cell: Vector2i = Vector2i.ZERO
 var respawn_cell: Vector2i = Vector2i.ZERO
 ## Monster spawn points: {type, at: [x, z], count, radius, respawn_s, elite_chance}.
 var spawns: Array = []
+## NPCs standing on the map: {id, at: [x, z], facing (degrees)}.
+var npcs: Array = []
 var _solid: Dictionary = {}
 
 
 static func from_layout(layout: Dictionary) -> CollisionMap:
 	var map := CollisionMap.new()
+	map.npcs = (layout.get("npcs", []) as Array).duplicate(true)
 	var s: Array = layout.get("size", [0, 0])
 	map.size = Vector2i(int(s[0]), int(s[1]))
 	var sp: Array = layout.get("spawn", [0, 0])

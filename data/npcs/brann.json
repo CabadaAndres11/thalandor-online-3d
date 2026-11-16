@@ -1,0 +1,10 @@
+{
+	"id": "brann", "name": "NPC_BRANN", "role": "class_trainer",
+	"lines": {"has_class": "BRANN_HAS_CLASS"},
+	"look": {
+		"class": "villager",
+		"appearance": {"body": "robust", "skin": "skin_4", "eyes": "grey", "hair_style": "short", "hair_color": "grey", "beard": "full"},
+		"primary": "#6b4a2b", "secondary": "#9a9a9a", "trousers": "#3a2e24",
+		"weapons": ["weapon_sword"]
+	}
+}

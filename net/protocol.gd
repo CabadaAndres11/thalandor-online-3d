@@ -2,9 +2,9 @@ class_name Protocol
 extends RefCounted
 ## Network messages: Arrays [type, fields...] encoded with var_to_bytes (never objects).
 
-const VERSION := 4
+const VERSION := 5
 
-enum Msg { HELLO = 1, WELCOME, REJECT, INPUT, SNAPSHOT, PLAYER_JOINED, PLAYER_LEFT, CHAT, EVENTS, SET_BAR }
+enum Msg { HELLO = 1, WELCOME, REJECT, INPUT, SNAPSHOT, PLAYER_JOINED, PLAYER_LEFT, CHAT, EVENTS, SET_BAR, CHOOSE_CLASS, PLAYER_CLASS }
 
 ## Field names and Variant types per message type.
 const SCHEMAS := {
@@ -16,6 +16,8 @@ const SCHEMAS := {
 	Msg.SNAPSHOT: [["tick", TYPE_INT], ["players", TYPE_PACKED_BYTE_ARRAY], ["monsters", TYPE_PACKED_BYTE_ARRAY]],
 	Msg.EVENTS: [["tick", TYPE_INT], ["events", TYPE_ARRAY]],
 	Msg.SET_BAR: [["bar", TYPE_ARRAY]],
+	Msg.CHOOSE_CLASS: [["class_id", TYPE_STRING]],
+	Msg.PLAYER_CLASS: [["id", TYPE_INT], ["class_id", TYPE_STRING], ["bar", TYPE_ARRAY]],
 	Msg.PLAYER_JOINED: [["id", TYPE_INT], ["name", TYPE_STRING], ["slot", TYPE_INT],
 		["class_id", TYPE_STRING], ["appearance", TYPE_DICTIONARY]],
 	Msg.PLAYER_LEFT: [["id", TYPE_INT]],
@@ -91,6 +93,16 @@ static func events(tick: int, list: Array) -> PackedByteArray:
 
 static func set_bar(bar: Array) -> PackedByteArray:
 	return pack([Msg.SET_BAR, bar])
+
+
+## A villager asks to learn a class (from a class trainer next to them).
+static func choose_class(class_id: String) -> PackedByteArray:
+	return pack([Msg.CHOOSE_CLASS, class_id])
+
+
+## The host tells everyone a player has a new class (and its default bar).
+static func player_class(id: int, class_id: String, bar: Array) -> PackedByteArray:
+	return pack([Msg.PLAYER_CLASS, id, class_id, bar])
 
 
 static func player_joined(id: int, name: String, slot: int, class_id: String,
