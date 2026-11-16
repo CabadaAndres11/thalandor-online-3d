@@ -318,3 +318,7 @@ CLASS_CHOICE_TITLE,Elige tu camino
 CLASS_CHOICE_CONFIRM,Confirmar
 CLASS_CHOICE_WARNING,La elección es definitiva.
 CLASS_CHOICE_TALK,[E] Hablar con Brann
+RES_RAGE,Recurso: ira
+RES_MANA,Recurso: maná
+RES_FOCUS,Recurso: concentración
+RES_ENERGY,Recurso: energía

@@ -30,6 +30,7 @@ var party_frames: PartyFrames
 var downed_overlay: DownedOverlay
 var pause_menu: PauseMenu
 var abilities_window: AbilitiesWindow
+var class_choice_window: ClassChoiceWindow
 var abilities: AbilityDB
 var dialog: MessageDialog
 var debug_overlay: DebugOverlay
@@ -115,6 +116,12 @@ func _ready() -> void:
 	abilities_window.bar_changed.connect(_on_bar_changed)
 	_ui.add_child(abilities_window)
 
+	class_choice_window = ClassChoiceWindow.new()
+	class_choice_window.theme = theme
+	class_choice_window.class_confirmed.connect(_on_class_confirmed)
+	class_choice_window.visibility_changed.connect(_update_input_block)
+	_ui.add_child(class_choice_window)
+
 	pause_menu = PauseMenu.new()
 	pause_menu.theme = theme
 	pause_menu.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -144,17 +151,53 @@ func _unhandled_input(event: InputEvent) -> void:
 	if game == null or chat.is_typing() or dialog.visible:
 		return
 	if event.is_action_pressed("menu"):
-		if abilities_window.visible:
+		if class_choice_window.visible:
+			class_choice_window.visible = false
+		elif abilities_window.visible:
 			abilities_window.visible = false
 		else:
 			pause_menu.visible = not pause_menu.visible
 		get_viewport().set_input_as_handled()
-	elif event.is_action_pressed("abilities_window") and not pause_menu.visible:
+	elif event.is_action_pressed("interact") and not pause_menu.visible and not abilities_window.visible \
+			and not class_choice_window.visible and game.client != null:
+		_on_interact() # no set_input_as_handled: holding E also revives
+	elif event.is_action_pressed("abilities_window") and not pause_menu.visible and not class_choice_window.visible:
 		if abilities_window.visible:
 			abilities_window.visible = false
 		else:
 			abilities_window.show_for(game.client.class_id, game.client.bar, abilities)
 		get_viewport().set_input_as_handled()
+
+
+## E next to an NPC: a villager by Brann chooses a class; anyone else hears him.
+func _on_interact() -> void:
+	var r := game.interaction()
+	match str(r.action):
+		NpcInteraction.CHOOSE_CLASS:
+			class_choice_window.show_for(game.client.appearance)
+		NpcInteraction.TALK:
+			var npc := NpcDB.load_default().npc(str(r.npc))
+			var line := str((npc.get("lines", {}) as Dictionary).get("has_class", ""))
+			chat.add_message(tr(str(npc.get("name", ""))), tr(line), false)
+
+
+func _on_class_confirmed(class_id: String) -> void:
+	if game != null and game.client != null:
+		game.client.choose_class(class_id)
+
+
+## The host agreed: this player now has a class. The HUD gets its bar and the saved
+## character remembers both.
+func _on_class_changed(id: int, class_id: String) -> void:
+	if game == null or game.client == null or id != game.client.my_id:
+		return
+	abilities_window.visible = false
+	combat_hud.bind(game.client, game.client.bar, abilities)
+	if _playing != null:
+		_playing.class_id = class_id
+		_playing.bar = game.client.bar.duplicate()
+		if store.save(_playing) != OK:
+			dialog.show_message(tr(store.last_error))
 
 
 func in_game() -> bool:
@@ -365,7 +408,8 @@ func _on_typing_changed(_is_typing: bool) -> void:
 ## (a click on a menu button must not attack).
 func _update_input_block() -> void:
 	if game != null:
-		game.input_blocked = chat.is_typing() or pause_menu.visible or dialog.visible or abilities_window.visible
+		game.input_blocked = chat.is_typing() or pause_menu.visible or dialog.visible or abilities_window.visible \
+			or class_choice_window.visible
 
 
 func _process(_delta: float) -> void:
@@ -398,6 +442,7 @@ func _attach_client() -> void:
 	client.rejected.connect(_on_rejected)
 	client.chat_received.connect(chat.add_message)
 	client.combat_event.connect(_on_game_event)
+	client.class_changed.connect(_on_class_changed)
 	debug_overlay.client = client
 	debug_overlay.net_label = game.net_label()
 	combat_hud.bind(client, client.bar, abilities)
@@ -454,6 +499,7 @@ func _leave_game() -> void:
 	debug_overlay.client = null
 	_playing = null
 	abilities_window.visible = false
+	class_choice_window.visible = false
 	combat_hud.unbind()
 	combat_hud.visible = false
 	party_frames.unbind()

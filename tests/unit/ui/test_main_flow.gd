@@ -283,3 +283,34 @@ func test_boss_death_is_announced_in_chat() -> void:
 	main.game.client.combat_event.emit(["boss_down", "guard_beast"])
 	var lines := main.chat.visible_lines()
 	assert_string_contains(lines[lines.size() - 1], tr("CHAT_BOSS_DOWN") % tr("MON_GUARD_BEAST"))
+
+
+func test_villager_learns_a_class_from_brann() -> void:
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	assert_eq(main.game.client.class_id, "villager")
+	assert_eq(main.game.npc_count(), 1, "Brann stands in the arena")
+	_press("interact")
+	assert_true(main.class_choice_window.visible, "E next to Brann opens the class window")
+	assert_true(main.game.input_blocked)
+	main.class_choice_window.select("mage")
+	main.class_choice_window.confirm_button.pressed.emit()
+	await wait_until(func() -> bool: return main.game.client.class_id == "mage", 3.0)
+	assert_eq(main.game.client.class_id, "mage")
+	var first := AbilityDB.load_default().kind_of("mage", "basic") # slot 0 is the basic attack
+	await wait_until(func() -> bool: return main.combat_hud.slot_ability(0) == first, 3.0)
+	assert_eq(main.combat_hud.slot_ability(0), first, "the HUD has the mage bar")
+	await wait_physics_frames(3)
+	assert_has(main.game.player_avatar(main.game.client.my_id).rig.pieces(), "weapon_staff", "the avatar is redressed")
+	_press("interact")
+	assert_false(main.class_choice_window.visible, "with a class, Brann only talks")
+
+
+func test_esc_closes_the_class_window() -> void:
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	_press("interact")
+	assert_true(main.class_choice_window.visible)
+	_press("menu")
+	assert_false(main.class_choice_window.visible)
+	assert_false(main.pause_menu.visible)

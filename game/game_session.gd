@@ -28,6 +28,7 @@ var arena: Arena
 var camera: IsoCamera
 var _avatars: Dictionary = {} # id -> PlayerAvatar
 var _monster_avatars: Dictionary = {} # id -> MonsterAvatar
+var _npc_avatars: Array = [] # NpcAvatar
 ## Combat visuals (projectiles, warnings, numbers…) driven by host events.
 var fx: CombatFX
 var _avatar_root: Node3D
@@ -53,6 +54,12 @@ func _init() -> void:
 	_avatar_root = Node3D.new()
 	_avatar_root.name = "Players"
 	add_child(_avatar_root)
+	for n: Dictionary in NpcDB.placed(map):
+		var npc := NpcAvatar.new()
+		npc.name = "Npc_" + str(n.id)
+		_avatar_root.add_child(npc)
+		npc.setup(n.id, n.position, n.facing)
+		_npc_avatars.append(npc)
 	camera = IsoCamera.new()
 	camera.name = "Camera"
 	add_child(camera)
@@ -208,6 +215,7 @@ func _start_client(player_name: String, class_id: String, appearance: Dictionary
 		client.bar = character_bar.duplicate()
 	client.disconnected.connect(_on_client_disconnected)
 	client.combat_event.connect(_on_combat_event)
+	client.class_changed.connect(_on_class_changed)
 	client.connect_to(t)
 
 
@@ -241,6 +249,9 @@ func _process(delta: float) -> void:
 	var own := client.render_state(client.my_id)
 	if not own.is_empty():
 		camera.follow(own.position)
+		for npc: NpcAvatar in _npc_avatars:
+			var d := Vector2(own.position.x - npc.position.x, own.position.z - npc.position.z).length()
+			npc.set_prompt_visible(d <= NpcDB.TALK_RANGE)
 
 
 func _update_aim() -> void:
@@ -278,6 +289,34 @@ func _remove_avatar(id: int) -> void:
 	var avatar: Node = _avatars[id]
 	_avatars.erase(id)
 	avatar.queue_free()
+
+
+func npc_count() -> int:
+	return _npc_avatars.size()
+
+
+func player_avatar(id: int) -> PlayerAvatar:
+	return _avatars.get(id)
+
+
+## What E does here and now (see NpcInteraction): {action, npc}.
+func interaction() -> Dictionary:
+	var own := client.render_state(client.my_id)
+	if own.is_empty():
+		return {"action": NpcInteraction.NONE, "npc": ""}
+	var allies := []
+	for id: int in client.roster:
+		if id != client.my_id and client.combat.has(id):
+			var st := client.render_state(id)
+			if not st.is_empty():
+				allies.append({"position": st.position, "life": int(client.combat[id].life)})
+	return NpcInteraction.decide(map, own.position, client.class_id, allies, balance.revive_range)
+
+
+## A player learned a class: their avatar is rebuilt in the new class's clothes.
+func _on_class_changed(id: int, _class_id: String) -> void:
+	if _avatars.has(id):
+		_remove_avatar(id)
 
 
 func avatar_count() -> int:

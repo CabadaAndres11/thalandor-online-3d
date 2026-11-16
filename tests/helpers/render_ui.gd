@@ -61,6 +61,11 @@ func _process(_delta: float) -> bool:
 		_main.abilities_window.select_ability("archer_shot")
 	elif _frames == 300:
 		_save("ui_abilities")
+		_main.abilities_window.visible = false
+		_main.class_choice_window.show_for({"hair_style": "bob", "beard": "none"})
+		_main.class_choice_window.select("cleric")
+	elif _frames == 330:
+		_save("ui_classes")
 		_clear()
 		return true
 	return false

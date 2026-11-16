@@ -87,6 +87,11 @@ func _looks(set_name: String) -> Array:
 					l["at"] = a[2]
 				out.append(l)
 			return out
+		"brann":
+			var b := NpcAvatar.look_of(NpcDB.load_default().npc("brann").look)
+			var v: Dictionary = _resolved([["villager", {"hair_style": "bob", "hair_color": "chestnut", "skin": "skin_2"}]])[0]
+			var v2: Dictionary = _resolved([["villager", {"hair_style": "short", "hair_color": "black", "skin": "skin_5", "beard": "short"}]])[0]
+			return [v, b, v2]
 		"classes_back":
 			var looks := _looks("classes")
 			for l: Dictionary in looks:

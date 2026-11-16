@@ -12,7 +12,7 @@
 		[40, 18, 2], [41, 18, 2], [40, 30, 2], [16, 41, 2], [17, 41, 2]
 	],
 	"npcs": [
-		{"id": "brann", "at": [22, 18], "facing": 180}
+		{"id": "brann", "at": [22, 19], "facing": 250}
 	],
 	"spawns": [
 		{"type": "marked_hound", "at": [38, 9], "count": 3, "radius": 2.5, "respawn_s": 30, "elite_chance": 0.1},
