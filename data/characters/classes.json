@@ -5,7 +5,7 @@
 	{"id": "cleric", "name": "CLASS_CLERIC", "desc": "CLASS_CLERIC_DESC", "weapons": ["weapon_mace"], "headgear": "hood_cleric", "pieces": ["outfit_cleric"], "primary": "#e9e2cf", "secondary": "#3a6fb0",
 	 "stats": {"max_hp": 150, "attack_power": 10, "spell_power": 20, "armor": 15, "crit_chance": 0.05, "dodge_chance": 0.0},
 	 "resource": {"kind": "mana", "max": 150, "start": 150, "regen_per_s": 6, "regen_in_combat_mult": 0.0}},
-	{"id": "mage", "name": "CLASS_MAGE", "desc": "CLASS_MAGE_DESC", "weapons": ["weapon_staff"], "headgear": "hat_mage", "pieces": ["outfit_mage"], "primary": "#5b3f9e", "secondary": "#e8b23a",
+	{"id": "mage", "name": "CLASS_MAGE", "desc": "CLASS_MAGE_DESC", "weapons": ["weapon_staff"], "grip": "staff", "headgear": "hat_mage", "pieces": ["outfit_mage"], "primary": "#5b3f9e", "secondary": "#e8b23a",
 	 "stats": {"max_hp": 130, "attack_power": 5, "spell_power": 20, "armor": 10, "crit_chance": 0.05, "dodge_chance": 0.0},
 	 "resource": {"kind": "mana", "max": 160, "start": 160, "regen_per_s": 6, "regen_in_combat_mult": 0.0}},
 	{"id": "archer", "name": "CLASS_ARCHER", "desc": "CLASS_ARCHER_DESC", "weapons": ["weapon_bow"], "headgear": "hood_archer", "pieces": ["outfit_archer"], "primary": "#4f7a3a", "secondary": "#6b4a2b",

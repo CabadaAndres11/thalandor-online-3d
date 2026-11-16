@@ -123,6 +123,7 @@ func resolve(class_id: Variant, appearance: Variant) -> Dictionary:
 		"secondary": Color(str(c.get("secondary", "#808080"))),
 		"trousers": Color(str(c.trousers)) if c.has("trousers") else Color(str(c.get("primary", "#808080"))).darkened(HumanRig.TROUSERS_DARKEN),
 		"body_scale": option("body", app.body).get("scale", {}),
+		"grip": str(c.get("grip", "")),
 		"pieces": pieces,
 	}
 

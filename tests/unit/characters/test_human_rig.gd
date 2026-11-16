@@ -176,3 +176,23 @@ func test_about_as_tall_as_a_person() -> void:
 		var aabb := mi.global_transform * mi.get_aabb()
 		top = maxf(top, aabb.end.y)
 	assert_between(top, 1.65, 1.85, "head top in meters")
+
+
+func test_staff_rests_tilted_until_casting() -> void:
+	var look := _look()
+	look["grip"] = "staff"
+	var rig := HumanRig.build(look)
+	add_child_autofree(rig)
+	rig.update(0.1)
+	var up := rig.part("hand_right").global_transform.basis.y.normalized()
+	assert_lt(up.dot(Vector3.UP), 0.6, "the staff leans over at rest")
+	assert_gt(up.dot(Vector3.UP), 0.0, "crystal still above the hand")
+	rig.play_action("cast")
+	rig.update(HumanRig.ACTIONS.cast * 0.4)
+	up = rig.part("hand_right").global_transform.basis.y.normalized()
+	assert_gt(up.dot(Vector3.UP), 0.7, "upright while casting")
+
+
+func test_mage_look_has_the_staff_grip() -> void:
+	assert_eq(CharacterCatalog.load_default().resolve("mage", {}).get("grip"), "staff")
+	assert_eq(CharacterCatalog.load_default().resolve("warrior", {}).get("grip", ""), "")

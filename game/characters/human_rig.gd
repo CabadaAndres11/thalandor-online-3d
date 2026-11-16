@@ -41,6 +41,8 @@ var _phase: float = 0.0
 var _time: float = 0.0
 var _action: String = "idle"
 var _action_t: float = 0.0
+## How the right hand holds its weapon at rest ("staff": leaning forward over the arm).
+var _grip: String = ""
 ## False when an avatar drives update() itself (from its state updates).
 var auto_update: bool = true
 
@@ -134,6 +136,7 @@ func update(delta: float) -> void:
 
 func _setup(look: Dictionary) -> void:
 	scale = Vector3.ONE * MODEL_SCALE
+	_grip = str(look.get("grip", ""))
 	_body = Node3D.new()
 	_body.name = "Body"
 	add_child(_body)
@@ -262,6 +265,11 @@ func _locomotion(walk: float) -> void:
 	(_parts["hips"] as Node3D).position.y += absf(sin(_phase)) * 0.04 * walk
 	_rot("hand_left", 0.1)
 	_rot("hand_right", 0.1)
+	if _grip == "staff":
+		# The staff leans forward and out, resting across the body like a walking stick
+		# held at an angle, not standing straight up from the fist.
+		_rot("hand_right", 1.3)
+		(_parts["hand_right"] as Node3D).rotation.z = -0.25
 
 
 ## Wind up over the shoulder, a heavy diagonal swing with the torso, recover.
@@ -315,6 +323,7 @@ func _cast(k: float) -> void:
 	_rot("forearm_right", 0.0)
 	_rot("hand_left", -arms) # staves and maces stay upright
 	_rot("hand_right", -arms)
+	(_parts["hand_right"] as Node3D).rotation.z = 0.0
 	(_parts["head"] as Node3D).rotation.x = -0.15 * sin(k * PI)
 
 
