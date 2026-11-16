@@ -20,9 +20,6 @@ func _initialize() -> void:
 	var arena := Arena.new()
 	root.add_child(arena)
 	arena.build(Arena.load_layout())
-	if _name == "skeleton" or _name == "skeleton_face":
-		_skeleton_scene()
-		return
 	if _name == "boss":
 		_boss_scene()
 		return
@@ -134,7 +131,7 @@ func _resolved(list: Array) -> Array:
 	return looks
 
 
-## Combat checkpoint: two heroes facing wolves and slimes, a wolf mid-lunge, a ground
+## Combat checkpoint: two heroes facing hounds and cultists, a hound mid-lunge, a ground
 ## warning, a projectile, a shield, damage numbers and health bars.
 var _fx: CombatFX
 var _spots: Dictionary = {}
@@ -160,11 +157,11 @@ func _combat_scene() -> void:
 		_spots[h[0]] = h[3]
 	var db := MonsterDB.load_default()
 	var monsters := [
-		[1000, "wolf", Vector3(20.6, 0, 21.4), -2.6, 0.5],
-		[1001, "wolf", Vector3(22.2, 0, 20.4), -2.2, 1.0],
-		[1002, "wolf", Vector3(21.6, 0, 22.8), -2.7, 0.2],
-		[1003, "slime", Vector3(18.0, 0, 23.0), PI, 0.7],
-		[1004, "slime", Vector3(15.6, 0, 22.4), 2.6, 1.0],
+		[1000, "marked_hound", Vector3(20.6, 0, 21.4), -2.6, 0.5],
+		[1001, "marked_hound", Vector3(22.2, 0, 20.4), -2.2, 1.0],
+		[1002, "marked_hound", Vector3(21.6, 0, 22.8), -2.7, 0.2],
+		[1003, "cultist", Vector3(18.0, 0, 23.0), PI, 0.7],
+		[1004, "cultist", Vector3(15.6, 0, 22.4), 2.6, 1.0],
 	]
 	var lunging: MonsterAvatar
 	for m: Array in monsters:
@@ -197,8 +194,8 @@ func _combat_scene() -> void:
 	cam.look_at_from_position(Vector3(19.0, 9.0, 13.5), Vector3(19.0, 0.6, 20.8))
 
 
-## Task 12 set: boar (warning its charge), goblins (one elite), skeleton archer and an
-## elite wolf, around a warrior.
+## Task 12 set: marked boar (warning its charge), cultists (one elite), cult archer and an
+## elite marked_hound, around a warrior.
 func _monsters_b() -> void:
 	var hero := PlayerAvatar.new()
 	root.add_child(hero)
@@ -209,11 +206,11 @@ func _monsters_b() -> void:
 	_spots[1] = hero.position
 	var db := MonsterDB.load_default()
 	var monsters := [
-		[1000, "boar", Vector3(15.6, 0, 22.6), 2.3, 1.0, false],
-		[1001, "goblin", Vector3(20.2, 0, 21.4), -2.7, 0.7, false],
-		[1002, "goblin", Vector3(21.7, 0, 20.3), -2.2, 1.0, true],
-		[1003, "skeleton_archer", Vector3(23.6, 0, 23.4), -2.4, 0.9, false],
-		[1004, "wolf", Vector3(17.6, 0, 24.4), 2.8, 1.0, true],
+		[1000, "marked_boar", Vector3(15.6, 0, 22.6), 2.3, 1.0, false],
+		[1001, "cultist", Vector3(20.2, 0, 21.4), -2.7, 0.7, false],
+		[1002, "cultist", Vector3(21.7, 0, 20.3), -2.2, 1.0, true],
+		[1003, "cult_archer", Vector3(23.6, 0, 23.4), -2.4, 0.9, false],
+		[1004, "marked_hound", Vector3(17.6, 0, 24.4), 2.8, 1.0, true],
 	]
 	for m: Array in monsters:
 		var a := MonsterAvatar.new()
@@ -232,7 +229,7 @@ func _monsters_b() -> void:
 	_fx.setup(_spot, func() -> int: return 0, AbilityDB.load_default(), 30)
 	_fx.set_process(false)
 	_fx.handle(["telegraph_line", 7, Vector3(15.6, 0, 22.6), Vector3(15.6, 0, 22.6) + Vector3(sin(2.3), 0, cos(2.3)) * 8.0, 1.4, 90])
-	_fx.handle(["projectile", 8, 1003, "skeleton_arrow", Vector3(23.6, 0, 23.4), Vector2(-0.75, -0.66).normalized(), 18.0, 60.0])
+	_fx.handle(["projectile", 8, 1003, "cult_arrow", Vector3(23.6, 0, 23.4), Vector2(-0.75, -0.66).normalized(), 18.0, 60.0])
 	_fx.advance(1.2)
 	var cam := Camera3D.new()
 	cam.fov = 38
@@ -257,9 +254,9 @@ func _boss_scene() -> void:
 		_spots[h[0]] = h[3]
 	var db := MonsterDB.load_default()
 	var monsters := [
-		[1000, "orc_king", Vector3(20.0, 0, 23.0), PI, 0.55],
-		[1001, "goblin", Vector3(16.6, 0, 22.2), 2.6, 1.0],
-		[1002, "goblin", Vector3(23.4, 0, 22.0), -2.6, 0.8],
+		[1000, "guard_beast", Vector3(20.0, 0, 23.0), PI, 0.55],
+		[1001, "cultist", Vector3(16.6, 0, 22.2), 2.6, 1.0],
+		[1002, "cultist", Vector3(23.4, 0, 22.0), -2.6, 0.8],
 	]
 	for m: Array in monsters:
 		var a := MonsterAvatar.new()
@@ -282,41 +279,4 @@ func _boss_scene() -> void:
 	cam.look_at_from_position(Vector3(20.0, 10.5, 12.5), Vector3(20.0, 1.0, 21.0))
 
 
-## Plan 3.1 set: the skeleton archer's own rig — facing us, mid-stride, drawing the
 ## bow, an elite, and one falling apart.
-func _skeleton_scene() -> void:
-	var type := MonsterDB.load_default().get_type("skeleton_archer")
-	var spots := [
-		[Vector3(17.6, 0, 21.0), PI * 0.9, "idle", false],
-		[Vector3(19.0, 0, 21.4), PI * 0.75, "walk", false],
-		[Vector3(20.6, 0, 21.2), PI * 1.15, "shoot", false],
-		[Vector3(22.4, 0, 21.8), PI * 1.05, "idle", true],
-		[Vector3(24.0, 0, 20.6), PI * 0.8, "die", false],
-	]
-	for s: Array in spots:
-		var a := MonsterAvatar.new()
-		root.add_child(a)
-		a.setup(type, s[3], 1.3)
-		var info := {"hp": 50.0, "max_hp": 50.0, "status_bits": 0}
-		var pos: Vector3 = s[0]
-		if s[2] == "walk":
-			for i in 9:
-				pos += Vector3(0.06, 0, 0)
-				a.apply_state({"position": pos, "facing": s[1]}, info, 1.0 / 60.0)
-		else:
-			a.apply_state({"position": pos, "facing": s[1]}, info, 0.3)
-		if s[2] == "shoot":
-			var t := a.play_attack("shoot")
-			t.pause()
-			t.custom_step(0.3)
-		elif s[2] == "die":
-			var t := a.play_death()
-			t.pause()
-			t.custom_step(0.35)
-	var cam := Camera3D.new()
-	cam.fov = 30
-	root.add_child(cam)
-	if _name == "skeleton_face": # close-up of the idle one's skull
-		cam.look_at_from_position(Vector3(18.15, 2.05, 19.35), Vector3(17.6, 1.85, 21.0))
-	else:
-		cam.look_at_from_position(Vector3(20.8, 4.2, 12.2), Vector3(20.8, 1.0, 21.2))

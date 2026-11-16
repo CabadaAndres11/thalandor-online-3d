@@ -369,44 +369,112 @@ const WEAPONS = {
 WEAPONS.weapon_dagger_left = WEAPONS.weapon_dagger_right;
 
 // --- Monster pieces (data/monsters "look") ----------------------------------------------
-const BONE = 22;
-const MONSTER_KIT = { ...KIT, [BONE]: "#e6dfcc" };
+// The cult of the demon king: bone masks with the black sun split in five (the five
+// seals), dark hoods and robes. The guard beast: a horned brute in chains with the
+// cult's collar.
+const BONE = 22, BONE_D = 23, SUN = 24, EMBER = 25, FUR = 26, FUR_D = 27, IRON = 28, IRON_L = 29;
+const MONSTER_KIT = {
+  ...KIT, [BONE]: "#e4dccb", [BONE_D]: "#b3a991", [SUN]: "#141016", [EMBER]: "#ff4a26",
+  [FUR]: "#3b2c24", [FUR_D]: "#251b16", [IRON]: "#3b3b42", [IRON_L]: "#6e6e78", [GLOW]: "#ff4a26",
+};
+// The black sun: a disk with five rays, split down the middle by a thin bone line.
+function blackSun(s, cx, cy, z) {
+  s.box(cx - 1, cy - 1, z, cx + 2, cy + 1, z, SUN); // disk
+  s.put(cx, cy + 2, z, SUN).put(cx + 1, cy + 2, z, SUN); // up
+  s.put(cx - 2, cy + 1, z, SUN).put(cx + 3, cy + 1, z, SUN); // upper sides
+  s.put(cx - 2, cy - 2, z, SUN).put(cx + 3, cy - 2, z, SUN); // lower sides
+  s.box(cx, cy - 1, z, cx, cy + 2, z, BONE_D); // split
+}
 const MONSTER = {
-  goblin_ears: {
-    frame: HEAD, tag: "monster",
+  // Smooth bone mask over the whole face: eye slits, the black sun on the brow.
+  cult_mask: {
+    frame: HEAD, tag: "monster", palette: MONSTER_KIT,
     build(f, s) {
-      for (const side of [-1, 1]) {
-        const x0 = side < 0 ? f.x0 - 1 : f.x1 + 1;
-        for (let k = 0; k < 6; k++) s.box(x0 + side * k, f.y0 + 4 + Math.floor(k / 2), f.z0 + 3, x0 + side * k, f.y0 + 6 + Math.floor(k / 2), f.z0 + 4, H);
+      s.box(f.x0, f.y0, f.z1 + 1, f.x1, f.y1 - 1, f.z1 + 1, BONE);
+      s.box(f.x0, f.y0, f.z1 + 1, f.x0, f.y1 - 1, f.z1 + 1, BONE_D).box(f.x1, f.y0, f.z1 + 1, f.x1, f.y1 - 1, f.z1 + 1, BONE_D);
+      s.remove(f.x0, f.y0, f.z1 + 1, f.x0, f.y0, f.z1 + 1).remove(f.x1, f.y0, f.z1 + 1, f.x1, f.y0, f.z1 + 1);
+      s.box(f.x0 + 1, f.y0 + 4, f.z1 + 1, f.x0 + 2, f.y0 + 4, f.z1 + 1, SUN).box(f.x1 - 2, f.y0 + 4, f.z1 + 1, f.x1 - 1, f.y0 + 4, f.z1 + 1, SUN); // slits
+      s.put(f.x0 + 2, f.y0 + 4, f.z1 + 1, EMBER).put(f.x1 - 2, f.y0 + 4, f.z1 + 1, EMBER); // eyes in the dark
+      const [a] = mid(f);
+      blackSun(s, a, f.y0 + 7, f.z1 + 2);
+      s.box(a, f.y0 + 1, f.z1 + 1, a + 1, f.y0 + 2, f.z1 + 1, BONE_D); // breathing holes
+    },
+  },
+  // A deep hood that leaves only the mask showing, falling to the shoulders.
+  cult_hood: {
+    frame: HEAD, tag: "monster", palette: MONSTER_KIT,
+    build(f, s) {
+      s.box(f.x0 - 1, f.y1 + 1, f.z0 - 1, f.x1 + 1, f.y1 + 2, f.z1 + 2, P);
+      s.box(f.x0 - 1, f.y0 - 1, f.z0 - 1, f.x1 + 1, f.y1 + 1, f.z0 - 1, P);
+      s.box(f.x0 - 1, f.y0 - 1, f.z0, f.x0 - 1, f.y1 + 1, f.z1 + 2, P).box(f.x1 + 1, f.y0 - 1, f.z0, f.x1 + 1, f.y1 + 1, f.z1 + 2, P);
+      s.box(f.x0 - 1, f.y0 - 1, f.z1 + 2, f.x0 - 1, f.y1, f.z1 + 2, SHADE(P)).box(f.x1 + 1, f.y0 - 1, f.z1 + 2, f.x1 + 1, f.y1, f.z1 + 2, SHADE(P));
+      s.box(f.x0 - 1, f.y1 + 2, f.z1 + 2, f.x1 + 1, f.y1 + 2, f.z1 + 2, SHADE(P)); // brow of the hood
+      const [a, b] = mid(f);
+      s.box(a, f.y1, f.z0 - 3, b, f.y1 + 2, f.z0 - 2, P); // point
+    },
+  },
+  // A long robe over the shirt down to the shins, a rope belt, the sun on the chest.
+  cult_robe: {
+    frame: TORSO, tag: "monster", palette: MONSTER_KIT,
+    build(f, s) {
+      s.box(f.x0 - 1, f.y0 - 16, f.z0, f.x1 + 1, f.y0 + 1, f.z1 - 3, P); // skirt to the shins
+      s.remove(f.x0, f.y0 - 16, f.z0 + 1, f.x1, f.y0 + 1, f.z1 - 4);
+      for (let x = f.x0; x <= f.x1; x += 3) s.box(x, f.y0 - 15, f.z1 - 3, x, f.y0, f.z1 - 3, SHADE(P)); // folds
+      s.box(f.x0 - 1, f.y0 - 16, f.z0, f.x1 + 1, f.y0 - 16, f.z1 - 3, SHADE(P)); // hem
+      s.box(f.x0, f.y0 + 2, f.z1 - 3, f.x1, f.y0 + 3, f.z1 - 3, BONE_D); // rope belt
+      s.box(f.x0 + 3, f.y0 - 4, f.z1 - 2, f.x0 + 3, f.y0 + 1, f.z1 - 2, BONE_D); // its knot
+      const [a] = mid(f);
+      blackSun(s, a, f.y1 - 4, f.z1 + 1);
+    },
+  },
+  // The guard beast's head: a heavy brow, a bestial muzzle with tusks, glowing eyes
+  // and two great curved horns.
+  beast_head: {
+    frame: HEAD, tag: "monster", palette: MONSTER_KIT,
+    build(f, s) {
+      s.box(f.x0 - 1, f.y0, f.z1 + 1, f.x1 + 1, f.y0 + 3, f.z1 + 3, FUR); // muzzle
+      s.box(f.x0, f.y0 + 1, f.z1 + 4, f.x1, f.y0 + 3, f.z1 + 4, FUR_D);
+      s.box(f.x0 + 2, f.y0 + 2, f.z1 + 5, f.x1 - 2, f.y0 + 3, f.z1 + 5, SUN); // nose
+      s.box(f.x0, f.y0 - 1, f.z1 + 3, f.x0, f.y0 + 2, f.z1 + 3, BONE).box(f.x1, f.y0 - 1, f.z1 + 3, f.x1, f.y0 + 2, f.z1 + 3, BONE); // tusks
+      s.box(f.x0 - 1, f.y0 + 5, f.z1 + 1, f.x1 + 1, f.y0 + 6, f.z1 + 2, FUR_D); // heavy brow
+      s.box(f.x0 + 1, f.y0 + 4, f.z1 + 1, f.x0 + 2, f.y0 + 4, f.z1 + 1, GLOW).box(f.x1 - 2, f.y0 + 4, f.z1 + 1, f.x1 - 1, f.y0 + 4, f.z1 + 1, GLOW);
+      s.box(f.x0 - 1, f.y0 + 4, f.z0 - 1, f.x1 + 1, f.y1 + 1, f.z1, FUR); // shaggy skull
+      s.remove(f.x0, f.y0 + 4, f.z0, f.x1, f.y1, f.z1);
+      for (const side of [-1, 1]) { // horns sweeping out, back and up
+        const x0 = side < 0 ? f.x0 - 2 : f.x1 + 2;
+        const pts = [[0, 0, 0], [1, 0, 0], [2, 1, -1], [3, 2, -1], [4, 3, -2], [4, 5, -2], [4, 6, -1], [3, 7, 0]];
+        for (const [dx, dy, dz] of pts) s.box(x0 + side * dx, f.y1 - 1 + dy, f.z0 + 4 + dz, x0 + side * dx, f.y1 + dy, f.z0 + 5 + dz, dy > 5 ? BONE_D : BONE);
       }
     },
   },
-  goblin_knife: { frame: HAND_R, tag: "monster", palette: MONSTER_KIT, build: (f, s) => WEAPONS.weapon_dagger_right(f, s) },
-  orc_tusks: {
-    frame: HEAD, tag: "monster", palette: MONSTER_KIT,
+  // Chains across the chest and the cult's iron collar with its glowing mark.
+  beast_chains: {
+    frame: TORSO, tag: "monster", palette: MONSTER_KIT,
     build(f, s) {
-      for (const x of [f.x0 + 1, f.x1 - 1]) s.box(x, f.y0, f.z1 + 1, x, f.y0 + 3, f.z1 + 1, BONE);
-    },
-  },
-  orc_crown: {
-    frame: HEAD, tag: "monster", palette: MONSTER_KIT,
-    build(f, s) {
-      s.box(f.x0, f.y1 + 1, f.z0, f.x1, f.y1 + 3, f.z1, GOLD);
-      s.remove(f.x0 + 1, f.y1 + 1, f.z0 + 1, f.x1 - 1, f.y1 + 3, f.z1 - 1);
-      for (let x = f.x0; x <= f.x1; x += 2) s.box(x, f.y1 + 4, f.z1, x, f.y1 + 5, f.z1, GOLD).box(x, f.y1 + 4, f.z0, x, f.y1 + 5, f.z0, GOLD);
+      for (let i = 0; i <= f.x1 - f.x0; i++) {
+        s.put(f.x0 + i, f.y1 - 2 - Math.floor(i * 0.8), f.z1 + 1, i % 2 ? IRON : IRON_L);
+        s.put(f.x1 - i, f.y1 - 2 - Math.floor(i * 0.8), f.z1 + 1, i % 2 ? IRON_L : IRON);
+      }
+      s.box(f.x0 + 2, f.y1 - 1, f.z0 - 1, f.x1 - 2, f.y1 + 1, f.z1 + 1, IRON); // collar
+      s.remove(f.x0 + 3, f.y1 - 1, f.z0, f.x1 - 3, f.y1 + 1, f.z1);
+      s.box(f.x0 + 2, f.y1 + 1, f.z0 - 1, f.x1 - 2, f.y1 + 1, f.z1 + 1, IRON_L);
       const [a, b] = mid(f);
-      s.box(a, f.y1 + 2, f.z1 + 1, b, f.y1 + 3, f.z1 + 1, GEM);
+      s.box(a, f.y1 - 1, f.z1 + 2, b, f.y1, f.z1 + 2, GLOW); // the mark
+      s.box(f.x0 - 1, f.y1 - 2, f.z0 - 2, f.x1 + 1, f.y1 + 1, f.z1, FUR); // fur mantle on the shoulders
+      s.remove(f.x0, f.y1 - 2, f.z0 - 1, f.x1, f.y1 + 1, f.z1);
+      for (let x = f.x0 - 1; x <= f.x1 + 1; x += 2) s.put(x, f.y1 - 3, f.z0 - 2, FUR_D);
     },
   },
-  orc_axe: {
+  // A huge notched cleaver in the right fist.
+  beast_cleaver: {
     frame: HAND_R, tag: "monster", palette: MONSTER_KIT,
     build(f, s) {
-      s.box(2, 2, f.z0 - 2, 3, 3, f.z1 + 22, WOOD);
-      for (let k = 0; k < 8; k++) {
-        const half = 3 + Math.floor(k / 2);
-        s.box(2, 4 + k, f.z1 + 18 - half, 2, 4 + k, f.z1 + 18 + half, k === 7 ? STEEL_L : STEEL);
-        s.box(2, 1 - k, f.z1 + 18 - half, 2, 1 - k, f.z1 + 18 + half, k === 7 ? STEEL_L : STEEL);
-      }
+      s.box(2, 2, f.z0 - 2, 3, 3, f.z1 + 4, LEATHER_D); // haft
+      s.box(2, 1, f.z1 + 5, 2, 9, f.z1 + 22, IRON); // blade, its edge up
+      s.box(2, 9, f.z1 + 5, 2, 9, f.z1 + 22, IRON_L);
+      for (const z of [f.z1 + 9, f.z1 + 15, f.z1 + 19]) s.remove(2, 9, z, 2, 9, z); // notches
+      s.box(2, 1, f.z1 + 5, 2, 2, f.z1 + 22, SUN);
+      s.box(2, 4, f.z1 + 12, 2, 6, f.z1 + 14, EMBER); // a glowing rune
     },
   },
 };

@@ -1,14 +1,12 @@
 class_name MonsterAvatar
 extends Node3D
 ## A monster on screen, built from its type (data/monsters "model"):
-##   "rig:<name>"    a voxel rig of animated parts (BeastRig: beasts, the skeleton);
-##   "vox:<name>"    a voxel body from assets/monsters/vox (tint on index 251);
+##   "rig:<name>"    a voxel rig of animated parts (BeastRig: beasts);
 ##   "humanoid:<id>" a voxel humanoid (HumanRig) from the type's "look".
 ## Elites are bigger, have an ember aura on the ground and "élite" in their name.
 ## Attacks (lunge, bite) and deaths (fall over) are tweens on the body holder.
 
 
-const VOX_PATH := "res://assets/monsters/vox/%s.vox"
 const SPEED_SMOOTHING_S := 0.1
 const TELEPORT_DISTANCE := 2.0
 
@@ -51,11 +49,6 @@ func setup(type: Dictionary, elite: bool = false, elite_scale: float = 1.3) -> v
 		body.scale = Vector3.ONE * scale_f
 		_move_speed = float(type.get("speed", 3.0))
 		_height = 1.9 * scale_f
-	elif model.begins_with("vox:"):
-		_kind = "vox"
-		body = _vox(model.trim_prefix("vox:"), tint)
-		body.scale = Vector3.ONE * scale_f
-		_height = 0.9 * scale_f
 	else:
 		_kind = "box"
 		body = MeshInstance3D.new()
@@ -91,6 +84,7 @@ static func look_of(type: Dictionary) -> Dictionary:
 		"voxel_hair_color": skin, # monster pieces tinted like hair take the skin color (ears)
 		"primary": Color(str(look.get("primary", "#808080"))),
 		"secondary": Color(str(look.get("secondary", "#808080"))),
+		"trousers": Color(str(look.trousers)) if look.has("trousers") else Color(str(look.get("primary", "#808080"))).darkened(HumanRig.TROUSERS_DARKEN),
 		"body_scale": look.get("body_scale", {}),
 		"pieces": pieces,
 	}
@@ -125,9 +119,6 @@ func apply_state(state: Dictionary, info: Dictionary, delta: float) -> void:
 	elif _humanoid != null:
 		_humanoid.set_moving_speed(_speed, _move_speed)
 		_humanoid.update(delta)
-	elif _kind == "vox":
-		var hop := absf(sin(_time * 9.0)) * 0.18 if _speed >= 0.2 else 0.0
-		body.position.y = _rest.y + hop
 
 
 func current_animation() -> String:
@@ -151,14 +142,8 @@ func play_attack(kind: String = "melee") -> Tween:
 	if dying or body == null:
 		return null
 	var t := create_tween()
-	if _rig != null and _rig.is_biped():
-		_rig.shoot(t)
-	elif _kind == "humanoid":
+	if _kind == "humanoid":
 		t.tween_interval(maxf(_humanoid.play_action(kind if HumanRig.ACTIONS.has(kind) else "melee"), 0.05))
-	elif _kind == "vox":
-		var base := body.scale
-		t.tween_property(body, "scale", base * Vector3(1.25, 0.7, 1.25), 0.1)
-		t.tween_property(body, "scale", base, 0.15)
 	else:
 		var head := _rig.part("head") if _rig != null else null
 		if head != null:
@@ -208,9 +193,6 @@ func play_death() -> Tween:
 	if _aura != null:
 		_aura.visible = false
 	var t := create_tween().set_parallel()
-	if _rig != null and _rig.is_biped():
-		_rig.collapse(t)
-		return t
 	if _humanoid != null:
 		_humanoid.play_action("die")
 		t.tween_property(body, "position:y", _rest.y - 0.05, 0.9)
@@ -262,18 +244,6 @@ static func _glow_material(color: Color, alpha: float) -> StandardMaterial3D:
 	m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
 	m.albedo_color = Color(color.r, color.g, color.b, alpha)
 	return m
-
-
-func _vox(name_id: String, tint: Color) -> Node3D:
-	var holder := Node3D.new()
-	var mesh := VoxMesher.cached(VOX_PATH % name_id, {VoxMesher.TINT_PRIMARY: tint})
-	var mi := MeshInstance3D.new()
-	mi.mesh = mesh
-	if mesh != null:
-		var box := mesh.get_aabb()
-		mi.position = Vector3(-box.size.x / 2.0, 0, -box.size.z / 2.0)
-	holder.add_child(mi)
-	return holder
 
 
 func _end_bite() -> void:

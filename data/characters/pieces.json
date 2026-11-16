@@ -136,56 +136,67 @@
 		"tag": "outfit",
 		"hides": []
 	},
-	"goblin_ears": {
-		"file": "res://assets/characters/pieces/goblin_ears.vox",
+	"cult_mask": {
+		"file": "res://assets/characters/pieces/cult_mask.vox",
 		"part": "head",
 		"offset": [
-			-10,
-			4,
-			-2
-		],
-		"tag": "monster",
-		"hides": []
-	},
-	"goblin_knife": {
-		"file": "res://assets/characters/pieces/goblin_knife.vox",
-		"part": "hand_right",
-		"offset": [
-			-1,
-			-5,
-			-3
-		],
-		"tag": "monster",
-		"hides": []
-	},
-	"orc_tusks": {
-		"file": "res://assets/characters/pieces/orc_tusks.vox",
-		"part": "head",
-		"offset": [
-			-3,
+			-4,
 			0,
 			4
 		],
 		"tag": "monster",
 		"hides": []
 	},
-	"orc_crown": {
-		"file": "res://assets/characters/pieces/orc_crown.vox",
+	"cult_hood": {
+		"file": "res://assets/characters/pieces/cult_hood.vox",
 		"part": "head",
 		"offset": [
-			-4,
-			10,
-			-5
+			-5,
+			-1,
+			-8
 		],
 		"tag": "monster",
 		"hides": []
 	},
-	"orc_axe": {
-		"file": "res://assets/characters/pieces/orc_axe.vox",
+	"cult_robe": {
+		"file": "res://assets/characters/pieces/cult_robe.vox",
+		"part": "torso",
+		"offset": [
+			-7,
+			-16,
+			-4
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"beast_head": {
+		"file": "res://assets/characters/pieces/beast_head.vox",
+		"part": "head",
+		"offset": [
+			-10,
+			-1,
+			-6
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"beast_chains": {
+		"file": "res://assets/characters/pieces/beast_chains.vox",
+		"part": "torso",
+		"offset": [
+			-7,
+			1,
+			-6
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"beast_cleaver": {
+		"file": "res://assets/characters/pieces/beast_cleaver.vox",
 		"part": "hand_right",
 		"offset": [
 			-1,
-			-11,
+			-4,
 			-4
 		],
 		"tag": "monster",

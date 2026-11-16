@@ -132,7 +132,7 @@ func test_downed_cannot_act_and_is_ignored() -> void:
 	w.abilities = AbilityDB.load_default()
 	var down := _player(w, 1, Vector3(20, 0, 20))
 	_player(w, 2, Vector3(35, 0, 35))
-	var m := MonsterDB.load_default().make("wolf", w.next_monster_id(), Vector3(22, 0, 20), w)
+	var m := MonsterDB.load_default().make("marked_hound", w.next_monster_id(), Vector3(22, 0, 20), w)
 	w.add_entity(m)
 	_kill(w, down)
 	assert_false(Combat.try_cast(w, down, "warrior_slash", Vector3(22, 0, 20)))

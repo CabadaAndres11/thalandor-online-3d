@@ -11,9 +11,9 @@ func test_combat_group_three_clients_see_same_hp() -> void:
 		h.add_client(n)
 	h.run_ticks(30)
 	var w := h.host.world
-	var wolf := MonsterDB.load_default().make("wolf", w.next_monster_id(), Vector3(30, 0, 30), w)
-	w.add_entity(wolf)
-	Damage.apply(wolf, {"amount": 17.0, "crit": false, "dodged": false, "absorbed": 0.0}, w)
+	var marked_hound := MonsterDB.load_default().make("marked_hound", w.next_monster_id(), Vector3(30, 0, 30), w)
+	w.add_entity(marked_hound)
+	Damage.apply(marked_hound, {"amount": 17.0, "crit": false, "dodged": false, "absorbed": 0.0}, w)
 	var bea: PlayerState = w.players[h.id_of("Bea")]
 	Damage.apply(bea, {"amount": 33.0, "crit": false, "dodged": false, "absorbed": 0.0}, w)
 	var cris: PlayerState = w.players[h.id_of("Cris")]
@@ -27,4 +27,4 @@ func test_combat_group_three_clients_see_same_hp() -> void:
 			var p: PlayerState = w.players[id]
 			assert_almost_eq(float(c.combat[id].hp), p.hp, 0.01, "%s sees %s's health" % [viewer, n])
 			assert_eq(int(c.combat[id].life), p.life, "%s sees %s's state" % [viewer, n])
-		assert_almost_eq(float(c.monsters[wolf.id].hp), wolf.hp, 0.01, "%s sees the wolf" % viewer)
+		assert_almost_eq(float(c.monsters[marked_hound.id].hp), marked_hound.hp, 0.01, "%s sees the marked_hound" % viewer)

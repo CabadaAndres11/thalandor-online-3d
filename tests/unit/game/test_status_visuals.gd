@@ -62,7 +62,7 @@ func test_stealth_makes_avatar_translucent() -> void:
 func test_monster_shows_status_icons() -> void:
 	var m := MonsterAvatar.new()
 	add_child_autofree(m)
-	m.setup(MonsterDB.load_default().get_type("wolf"))
+	m.setup(MonsterDB.load_default().get_type("marked_hound"))
 	m.apply_state({"position": Vector3.ZERO, "aim": Vector3.ZERO, "facing": 0.0},
 		{"hp": 30.0, "max_hp": 60.0, "status_bits": _bits(["root"])}, 0.016)
 	assert_eq(m.bar.status_kinds(), ["root"])

@@ -1,0 +1,12 @@
+{
+	"id": "cultist", "name": "MON_CULTIST", "model": "humanoid:cultist", "tint": "#2b2530", "scale": 1.0,
+	"radius": 0.4, "speed": 4.6,
+	"stats": {"max_hp": 55, "armor": 5, "attack_power": 9, "crit_chance": 0.05},
+	"aggro_range": 7, "leash_range": 20, "attack_range": 1.5,
+	"behavior": "melee", "pack": true, "pack_radius": 10, "abilities": ["cultist_stab"],
+	"look": {
+		"skin": "#c9a088", "eyes": "#2a2020", "hair": "#2a2020",
+		"primary": "#2b2530", "secondary": "#7a2424",
+		"pieces": ["cult_robe", "cult_hood", "cult_mask", "weapon_dagger_right"]
+	}
+}

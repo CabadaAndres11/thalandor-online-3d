@@ -13,13 +13,13 @@ func _monsters(w: SimWorld) -> Array:
 
 
 func test_map_reads_spawns_and_respawn_point() -> void:
-	var w := _world([{"type": "wolf", "at": [30, 10], "count": 3, "radius": 2, "respawn_s": 5}])
+	var w := _world([{"type": "marked_hound", "at": [30, 10], "count": 3, "radius": 2, "respawn_s": 5}])
 	assert_eq(w.map.respawn_point(), Vector3(20.5, 0, 20.5))
 	assert_eq(w.map.spawns.size(), 1)
 
 
 func test_spawns_count_on_first_tick() -> void:
-	var w := _world([{"type": "wolf", "at": [30, 10], "count": 3, "radius": 2, "respawn_s": 5}])
+	var w := _world([{"type": "marked_hound", "at": [30, 10], "count": 3, "radius": 2, "respawn_s": 5}])
 	w.step({})
 	assert_eq(_monsters(w).size(), 3)
 	for m: MonsterState in _monsters(w):
@@ -28,7 +28,7 @@ func test_spawns_count_on_first_tick() -> void:
 
 
 func test_spawner_respawns_after_timer() -> void:
-	var w := _world([{"type": "wolf", "at": [30, 10], "count": 1, "radius": 0, "respawn_s": 2}])
+	var w := _world([{"type": "marked_hound", "at": [30, 10], "count": 1, "radius": 0, "respawn_s": 2}])
 	w.step({})
 	var m: MonsterState = _monsters(w)[0]
 	Damage.apply(m, {"amount": 9999.0, "crit": false, "dodged": false, "absorbed": 0.0}, w)
@@ -43,7 +43,7 @@ func test_spawner_respawns_after_timer() -> void:
 
 
 func test_group_scaling_at_spawn_and_rescale_on_join_leave() -> void:
-	var w := _world([{"type": "wolf", "at": [30, 10], "count": 1, "radius": 0, "respawn_s": 5}])
+	var w := _world([{"type": "marked_hound", "at": [30, 10], "count": 1, "radius": 0, "respawn_s": 5}])
 	w.add_player(1, Vector3(1, 0, 1))
 	w.add_player(2, Vector3(2, 0, 2))
 	w.step({})

@@ -8,7 +8,7 @@ func _fixture(blocks := []) -> CombatFixture:
 
 
 func _wolf(f: CombatFixture, pos: Vector3) -> MonsterState:
-	var m := MonsterDB.load_default().make("wolf", f.world.next_monster_id(), pos, f.world)
+	var m := MonsterDB.load_default().make("marked_hound", f.world.next_monster_id(), pos, f.world)
 	f.world.add_entity(m)
 	return m
 
@@ -24,7 +24,7 @@ func _steps(f: CombatFixture, seconds: float) -> void:
 func test_monster_made_from_data() -> void:
 	var f := _fixture()
 	var m := _wolf(f, Vector3(30, 0, 30))
-	assert_eq(m.type_id, "wolf")
+	assert_eq(m.type_id, "marked_hound")
 	assert_eq(m.team, CombatEntity.TEAM_MONSTERS)
 	assert_eq(m.hp, m.stats.max_hp)
 	assert_eq(m.home, Vector3(30, 0, 30))

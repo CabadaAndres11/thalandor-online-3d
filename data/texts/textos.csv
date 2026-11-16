@@ -90,31 +90,28 @@ ERR_SAVE,"No se ha podido guardar el personaje. Revisa que haya espacio en el di
 ERR_EXPORT,"No se ha podido exportar el personaje a esa carpeta."
 ERR_CHAR_SKIPPED,"%d archivos de personaje no se han podido leer. Se han dejado como estaban."
 ERR_DELETE,"No se ha podido borrar el personaje. Revisa que el archivo no esté abierto en otro programa."
-MON_WOLF,Lobo
-MON_SLIME,Limo
-AB_WOLF_BITE,Mordisco
-AB_WOLF_BITE_DESC,Muerde al enemigo que tiene delante.
-AB_SLIME_SLAM,Aplastar
-AB_SLIME_SLAM_DESC,Golpea el suelo y daña a todo lo que tiene alrededor.
-MON_BOAR,Jabalí
-MON_GOBLIN,Goblin
-MON_SKELETON_ARCHER,Esqueleto arquero
+MON_MARKED_HOUND,Sabueso marcado
+AB_HOUND_BITE,Mordisco
+AB_HOUND_BITE_DESC,Muerde al enemigo que tiene delante.
+MON_MARKED_BOAR,Jabalí marcado
+MON_CULTIST,Cultista enmascarado
+MON_CULT_ARCHER,Arquero del culto
 MON_ELITE_NAME,%s élite
-MON_ORC_KING,Rey orco
-AB_ORC_KING_CLEAVE,Tajo del rey
-AB_ORC_KING_CLEAVE_DESC,Un hachazo en arco ancho delante de él.
-AB_ORC_KING_JUMP,Salto aplastante
-AB_ORC_KING_JUMP_DESC,"Salta hacia un jugador y cae sobre él: el área de 4 m se avisa en el suelo."
+MON_GUARD_BEAST,Bestia de guardia
+AB_GUARD_BEAST_CLEAVE,Tajo brutal
+AB_GUARD_BEAST_CLEAVE_DESC,Un golpe de cuchilla en arco ancho delante de ella.
+AB_GUARD_BEAST_JUMP,Salto aplastante
+AB_GUARD_BEAST_JUMP_DESC,"Salta hacia un jugador y cae sobre él: el área de 4 m se avisa en el suelo."
 CHAT_BOSS_DOWN,¡El %s ha caído!
 HUD_BOSS_PHASE,Fase %d
-AB_BOAR_GORE,Cornada
-AB_BOAR_GORE_DESC,Embiste con los colmillos al enemigo que tiene delante.
-AB_BOAR_CHARGE,Carga
-AB_BOAR_CHARGE_DESC,"Avisa en el suelo una línea de 8 m y carga por ella, arrollando a quien siga en medio."
-AB_GOBLIN_STAB,Cuchillada
-AB_GOBLIN_STAB_DESC,Apuñala al enemigo que tiene delante.
-AB_SKELETON_ARROW,Flecha
-AB_SKELETON_ARROW_DESC,Dispara una flecha al enemigo.
+AB_MARKED_BOAR_GORE,Cornada
+AB_MARKED_BOAR_GORE_DESC,Embiste con los colmillos al enemigo que tiene delante.
+AB_MARKED_BOAR_CHARGE,Carga
+AB_MARKED_BOAR_CHARGE_DESC,"Avisa en el suelo una línea de 8 m y carga por ella, arrollando a quien siga en medio."
+AB_CULTIST_STAB,Cuchillada
+AB_CULTIST_STAB_DESC,Apuñala al enemigo que tiene delante.
+AB_CULT_ARROW,Flecha
+AB_CULT_ARROW_DESC,Dispara una flecha al enemigo.
 AB_WARRIOR_SLASH,Tajo
 AB_WARRIOR_SLASH_DESC,Golpe en arco frontal. Genera ira.
 AB_WARRIOR_BRUTAL,Golpe brutal

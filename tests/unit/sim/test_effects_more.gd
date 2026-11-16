@@ -133,7 +133,7 @@ func test_stealth_cast_rejected_when_in_combat_unless_vanish() -> void:
 	_use([_ab("stealth", [{"type": "stealth", "duration_s": 20}], {"cost": 10, "cooldown_s": 5}),
 		_ab("vanish", [{"type": "stealth", "duration_s": 5, "vanish": true}], {"cost": 10, "cooldown_s": 5})])
 	var p := f.player(1, Vector3(5, 0, 5))
-	var m := MonsterDB.load_default().make("wolf", f.world.next_monster_id(), Vector3(8, 0, 5), f.world)
+	var m := MonsterDB.load_default().make("marked_hound", f.world.next_monster_id(), Vector3(8, 0, 5), f.world)
 	f.world.add_entity(m)
 	m.threat[1] = 50.0
 	p.last_combat_tick = f.world.tick
@@ -193,7 +193,7 @@ func test_taunt_forces_target() -> void:
 	_use([_ab("taunt", [{"type": "taunt", "radius": 8, "duration_s": 4}])])
 	var tank := f.player(1, Vector3(10, 0, 10))
 	var dps := f.player(2, Vector3(12, 0, 10))
-	var m := MonsterDB.load_default().make("wolf", f.world.next_monster_id(), Vector3(13, 0, 10), f.world)
+	var m := MonsterDB.load_default().make("marked_hound", f.world.next_monster_id(), Vector3(13, 0, 10), f.world)
 	f.world.add_entity(m)
 	m.threat[2] = 500.0
 	m.target_id = 2

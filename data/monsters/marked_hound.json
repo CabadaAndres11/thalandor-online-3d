@@ -1,0 +1,7 @@
+{
+	"id": "marked_hound", "name": "MON_MARKED_HOUND", "model": "rig:marked_hound", "tint": "#2d2b30", "scale": 0.8,
+	"radius": 0.55, "speed": 5.5,
+	"stats": {"max_hp": 60, "armor": 10, "attack_power": 10, "crit_chance": 0.05},
+	"aggro_range": 8, "leash_range": 22, "attack_range": 1.6,
+	"behavior": "melee", "abilities": ["hound_bite"]
+}

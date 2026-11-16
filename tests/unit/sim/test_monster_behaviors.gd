@@ -1,6 +1,6 @@
 extends GutTest
-## Task 12 behaviors: the boar's telegraphed charge, the skeleton archer keeping its
-## distance, goblin packs and elite modifiers.
+## Task 12 behaviors: the marked_boar's telegraphed charge, the cult archer keeping its
+## distance, cultist packs and elite modifiers.
 
 
 func _fixture(blocks := []) -> CombatFixture:
@@ -33,22 +33,22 @@ func _events(f: CombatFixture, kind: String) -> Array:
 
 func test_new_monsters_load_from_data() -> void:
 	var db := MonsterDB.load_default()
-	for id: String in ["boar", "goblin", "skeleton_archer"]:
+	for id: String in ["marked_boar", "cultist", "cult_archer"]:
 		var d := db.get_type(id)
 		assert_false(d.is_empty(), id)
 		for ab: String in d.get("abilities", []):
 			assert_true(AbilityDB.load_default().has(ab), "%s: ability %s" % [id, ab])
-	assert_eq(db.get_type("boar").behavior, "charger")
-	assert_eq(db.get_type("skeleton_archer").behavior, "ranged_kite")
-	assert_true(bool(db.get_type("goblin").get("pack", false)))
+	assert_eq(db.get_type("marked_boar").behavior, "charger")
+	assert_eq(db.get_type("cult_archer").behavior, "ranged_kite")
+	assert_true(bool(db.get_type("cultist").get("pack", false)))
 	assert_true(AbilityDB.load_default().validate().is_empty(), str(AbilityDB.load_default().validate()))
 
 
 func test_boar_telegraphs_then_charges_line() -> void:
 	var f := _fixture()
-	var boar := _monster(f, "boar", Vector3(20, 0, 20))
+	var marked_boar := _monster(f, "marked_boar", Vector3(20, 0, 20))
 	var p := f.player(1, Vector3(20, 0, 26), 500.0)
-	var start := boar.position
+	var start := marked_boar.position
 	for i in f.world.ticks(1.0):
 		_step(f)
 		if not _events(f, "telegraph_line").is_empty():
@@ -64,16 +64,16 @@ func test_boar_telegraphs_then_charges_line() -> void:
 	assert_gt(fire_tick, f.world.tick, "a windup before it charges")
 	while f.world.tick < fire_tick - 1:
 		_step(f)
-	assert_eq(boar.position, start, "it stays put while warning")
+	assert_eq(marked_boar.position, start, "it stays put while warning")
 	assert_eq(p.hp, 500.0)
 	_steps(f, 1.0)
 	assert_lt(p.hp, 500.0, "the charge hits whoever stands in the line")
-	assert_gt(Effects.flat(boar.position).distance_to(Effects.flat(start)), 5.0, "it ran along the line")
+	assert_gt(Effects.flat(marked_boar.position).distance_to(Effects.flat(start)), 5.0, "it ran along the line")
 
 
 func test_boar_charge_can_be_sidestepped() -> void:
 	var f := _fixture()
-	var boar := _monster(f, "boar", Vector3(20, 0, 20))
+	var marked_boar := _monster(f, "marked_boar", Vector3(20, 0, 20))
 	var p := f.player(1, Vector3(20, 0, 26), 500.0)
 	for i in f.world.ticks(1.0):
 		_step(f)
@@ -86,9 +86,9 @@ func test_boar_charge_can_be_sidestepped() -> void:
 	assert_eq(charge_hits.size(), 0, "nothing outside the line")
 
 
-func test_skeleton_keeps_distance_and_shoots() -> void:
+func test_cult_archer_keeps_distance_and_shoots() -> void:
 	var f := _fixture()
-	var sk := _monster(f, "skeleton_archer", Vector3(20, 0, 20))
+	var sk := _monster(f, "cult_archer", Vector3(20, 0, 20))
 	var p := f.player(1, Vector3(20, 0, 22.5), 500.0) # 2.5 m: too close
 	_steps(f, 1.5)
 	var gap := Effects.flat(sk.position).distance_to(Effects.flat(p.position))
@@ -101,11 +101,11 @@ func test_skeleton_keeps_distance_and_shoots() -> void:
 	assert_lt(Effects.flat(sk.position).distance_to(Effects.flat(p.position)), 11.5, "it does not run off when far enough")
 
 
-func test_skeleton_cornered_still_shoots() -> void:
+func test_cult_archer_cornered_still_shoots() -> void:
 	# Walled in on three sides: backing away is impossible, so it fights.
 	var blocks := [[19, 18, 2], [20, 18, 2], [21, 18, 2], [18, 19, 2], [18, 20, 2], [22, 19, 2], [22, 20, 2]]
 	var f := _fixture(blocks)
-	var sk := _monster(f, "skeleton_archer", Vector3(20.5, 0, 19.5))
+	var sk := _monster(f, "cult_archer", Vector3(20.5, 0, 19.5))
 	var p := f.player(1, Vector3(20.5, 0, 22.5), 500.0)
 	_steps(f, 3.0)
 	assert_gt(_events(f, "projectile").size(), 0)
@@ -115,24 +115,24 @@ func test_skeleton_cornered_still_shoots() -> void:
 
 func test_goblins_pack_share_aggro() -> void:
 	var f := _fixture()
-	var a := _monster(f, "goblin", Vector3(20, 0, 20))
-	var b := _monster(f, "goblin", Vector3(26, 0, 20)) # 6 m away, can't see the player yet
-	var far := _monster(f, "goblin", Vector3(40, 0, 40)) # outside the pack radius
-	var wolf := _monster(f, "wolf", Vector3(22, 0, 16))
+	var a := _monster(f, "cultist", Vector3(20, 0, 20))
+	var b := _monster(f, "cultist", Vector3(26, 0, 20)) # 6 m away, can't see the player yet
+	var far := _monster(f, "cultist", Vector3(40, 0, 40)) # outside the pack radius
+	var marked_hound := _monster(f, "marked_hound", Vector3(22, 0, 16))
 	var p := f.player(1, Vector3(14, 0, 20))
 	_steps(f, 0.2)
-	assert_true(a.threat.has(p.id), "the nearest goblin sees the player")
+	assert_true(a.threat.has(p.id), "the nearest cultist sees the player")
 	_steps(f, 0.2)
 	assert_true(b.threat.has(p.id), "its pack mate joins in")
 	assert_eq(b.ai, MonsterState.CHASE)
 	assert_false(far.threat.has(p.id), "goblins too far away do not")
-	assert_false(wolf.threat.has(p.id), "other monster types do not")
+	assert_false(marked_hound.threat.has(p.id), "other monster types do not")
 
 
-func test_pack_joins_when_a_goblin_is_hit() -> void:
+func test_pack_joins_when_a_cultist_is_hit() -> void:
 	var f := _fixture()
-	var a := _monster(f, "goblin", Vector3(20, 0, 20))
-	var b := _monster(f, "goblin", Vector3(23, 0, 20))
+	var a := _monster(f, "cultist", Vector3(20, 0, 20))
+	var b := _monster(f, "cultist", Vector3(23, 0, 20))
 	var p := f.player(1, Vector3(5, 0, 5)) # far: nobody sees it
 	_steps(f, 0.2)
 	a.add_threat(p.id, 10.0) # as if hit from afar
@@ -143,8 +143,8 @@ func test_pack_joins_when_a_goblin_is_hit() -> void:
 func test_elite_modifiers() -> void:
 	var f := _fixture()
 	var b := f.world.balance
-	var normal := _monster(f, "wolf", Vector3(10, 0, 10))
-	var elite := _monster(f, "wolf", Vector3(12, 0, 10))
+	var normal := _monster(f, "marked_hound", Vector3(10, 0, 10))
+	var elite := _monster(f, "marked_hound", Vector3(12, 0, 10))
 	MonsterDB.make_elite(elite, b)
 	assert_true(elite.elite)
 	assert_almost_eq(elite.base_max_hp, normal.base_max_hp * 2.5, 0.01)
@@ -158,19 +158,19 @@ func test_elite_modifiers() -> void:
 	var bite := {"type": "melee_arc", "damage": {"base": 10, "coef": 0.0, "kind": "physical", "can_crit": false}}
 	normal.stats.crit_chance = 0.0
 	elite.stats.crit_chance = 0.0
-	Combat.deal(f.world, normal, p1, bite, {"id": "wolf_bite"})
-	Combat.deal(f.world, elite, p2, bite, {"id": "wolf_bite"})
+	Combat.deal(f.world, normal, p1, bite, {"id": "hound_bite"})
+	Combat.deal(f.world, elite, p2, bite, {"id": "hound_bite"})
 	assert_almost_eq(1000.0 - p2.hp, (1000.0 - p1.hp) * 1.4, 0.01)
 
 
 func test_spawner_makes_elites_by_chance() -> void:
 	var map := CollisionMap.from_layout({"size": [40, 40], "spawn": [20, 20], "blocks": [],
 		"respawn_point": [20, 20], "spawns": [
-			{"type": "goblin", "at": [30, 10], "count": 2, "radius": 1, "respawn_s": 5, "elite_chance": 1.0},
-			{"type": "goblin", "at": [10, 30], "count": 2, "radius": 1, "respawn_s": 5, "elite_chance": 0.0}]})
+			{"type": "cultist", "at": [30, 10], "count": 2, "radius": 1, "respawn_s": 5, "elite_chance": 1.0},
+			{"type": "cultist", "at": [10, 30], "count": 2, "radius": 1, "respawn_s": 5, "elite_chance": 0.0}]})
 	var w := SimWorld.new(Balance.load_from(), map, 3)
 	w.step({})
-	var base := float(MonsterDB.load_default().get_type("goblin").stats.max_hp)
+	var base := float(MonsterDB.load_default().get_type("cultist").stats.max_hp)
 	for m: MonsterState in w.monsters.values():
 		if m.spawn_index == 0:
 			assert_true(m.elite)

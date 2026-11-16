@@ -426,7 +426,7 @@ func test_snapshot_limits_to_nearest_32_monsters() -> void:
 	host.world.players[2].position = Vector3(38, 0, 38)
 	var db := MonsterDB.load_default()
 	for i in 40:
-		var m := db.make("wolf", host.world.next_monster_id(), Vector3(1 + i * 0.9, 0, 1 + i * 0.9), host.world)
+		var m := db.make("marked_hound", host.world.next_monster_id(), Vector3(1 + i * 0.9, 0, 1 + i * 0.9), host.world)
 		m.elite = i == 0
 		host.world.add_entity(m)
 	_messages(a)

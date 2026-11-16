@@ -10,7 +10,7 @@ func _fixture() -> CombatFixture:
 
 
 func _wolf(f: CombatFixture, pos := Vector3(20, 0, 20)) -> MonsterState:
-	var m := MonsterDB.load_default().make("wolf", f.world.next_monster_id(), pos, f.world)
+	var m := MonsterDB.load_default().make("marked_hound", f.world.next_monster_id(), pos, f.world)
 	f.world.add_entity(m)
 	return m
 
