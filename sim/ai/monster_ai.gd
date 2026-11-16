@@ -300,6 +300,7 @@ static func _maybe_summon(world: SimWorld, m: MonsterState) -> void:
 		var g := MonsterDB.load_default().make(g_type, world.next_monster_id(), pos, world,
 			world.monster_level({}, MonsterDB.load_default().get_type(g_type)))
 		Spawner.scale_health(world, g, 1.0)
+		g.summoned_by = m.id
 		for pid: int in m.threat:
 			g.add_threat(pid, 1.0)
 		world.add_entity(g)

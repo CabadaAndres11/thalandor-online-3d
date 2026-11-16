@@ -162,6 +162,8 @@ static func on_zero_hp(world: SimWorld, e: CombatEntity) -> void:
 		return
 	e.life = CombatEntity.DEAD
 	world.emit(["died", e.id])
+	if e is MonsterState:
+		Xp.share(world, e as MonsterState)
 	if e is MonsterState and bool((e as MonsterState).def.get("boss", false)):
 		world.emit(["boss_down", e.type_id])
 		MonsterAI.dismiss_minions(world, e as MonsterState)

@@ -16,6 +16,9 @@ var combo: int = 0
 var charge_start: int = -1
 ## Tick when a dead player reappears at the map's respawn point (-1 = not dead).
 var respawn_tick: int = -1
+## Experience, attributes, talents… (see PlayerProgress); progress_dirty asks the host to send it.
+var progress := PlayerProgress.new()
+var progress_dirty: bool = false
 ## Evasión mortal: the next combo gain is raised after a dodge.
 var bonus_combo_ready: bool = false
 ## Downed (in a group): the tick it bleeds out and dies if nobody revives it.

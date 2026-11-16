@@ -29,6 +29,8 @@ var busy_until: int = 0
 ## monsters it called.
 var next_summon_tick: int = 0
 var minions: Array = []
+## Id of the monster or player that called this one (0 = none): it gives no experience.
+var summoned_by: int = 0
 
 
 func _init() -> void:

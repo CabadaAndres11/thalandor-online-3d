@@ -56,3 +56,36 @@ static func add(progress: PlayerProgress, amount: int, b: Balance) -> int:
 	if progress.level >= PlayerProgress.MAX_LEVEL:
 		progress.xp = 0
 	return gained
+
+
+## Splits a dead monster's experience among the players near it that are not dead.
+## Summoned monsters (boss minions, allied summons) give none.
+static func share(world: SimWorld, m: MonsterState) -> void:
+	if m.summoned_by != 0 or m.def.is_empty():
+		return
+	var b := world.balance
+	var range_m := _f(b, "share_range")
+	var near: Array = []
+	for p: PlayerState in world.players.values():
+		if p.life != CombatEntity.DEAD and Effects.flat(p.position).distance_to(Effects.flat(m.position)) <= range_m:
+			near.append(p)
+	if near.is_empty():
+		return
+	var each := group_share(monster_xp(m.level, m.elite, bool(m.def.get("boss", false)), b), near.size(), b)
+	for p: PlayerState in near:
+		award(world, p, roundi(each * level_factor(p.progress.level, m.level, b)))
+
+
+## Gives experience to a player; on a level-up refills health and resource (not rage).
+static func award(world: SimWorld, p: PlayerState, amount: int) -> void:
+	if amount <= 0:
+		return
+	var gained := add(p.progress, amount, world.balance)
+	p.progress_dirty = true
+	if gained <= 0:
+		return
+	p.level = p.progress.level
+	p.hp = p.stats.max_hp
+	if p.resource_kind != "rage":
+		p.resource = p.stats.max_resource
+	world.emit(["level_up", p.id, p.level])
