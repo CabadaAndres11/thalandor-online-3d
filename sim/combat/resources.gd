@@ -10,10 +10,14 @@ extends RefCounted
 
 
 static func tick(e: CombatEntity, world: SimWorld) -> void:
-	if not e.is_alive() or e.resource_kind == "":
+	if not e.is_alive():
+		return
+	var per_tick := 1.0 / float(world.balance.tick_rate)
+	if e.stats.hp_regen > 0.0 and not e.in_combat(world) and e.hp < e.stats.max_hp:
+		e.hp = minf(e.hp + e.stats.hp_regen * per_tick, e.stats.max_hp)
+	if e.resource_kind == "":
 		return
 	var d := e.resource_def
-	var per_tick := 1.0 / float(world.balance.tick_rate)
 	var change := 0.0
 	match e.resource_kind:
 		"rage":
@@ -24,7 +28,7 @@ static func tick(e: CombatEntity, world: SimWorld) -> void:
 			var in_combat_mult := maxf(float(d.get("regen_in_combat_mult", 0.0)),
 				float(Passives.has_hook(e, "mana_regen_in_combat").get("mult", 0.0)))
 			var mult := in_combat_mult if e.in_combat(world) else 1.0
-			change = float(d.get("regen_per_s", 0.0)) * per_tick * mult
+			change = (float(d.get("regen_per_s", 0.0)) * e.stats.resource_regen_mult + e.stats.resource_regen_add) * per_tick * mult
 		"focus":
 			var mult := float(d.get("dodging_regen_mult", 1.0)) if e.is_dashing() else 1.0
 			change = float(d.get("regen_per_s", 0.0)) * per_tick * mult

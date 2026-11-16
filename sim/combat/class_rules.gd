@@ -12,20 +12,11 @@ const MAX_COMBO := 5
 const ALLY_PICK_RADIUS := 1.0
 
 
-static func setup_player(p: PlayerState, class_id: String, catalog: CharacterCatalog = null) -> void:
+static func setup_player(p: PlayerState, class_id: String, catalog: CharacterCatalog = null, world: SimWorld = null) -> void:
 	var cat := catalog if catalog != null else CharacterCatalog.load_default()
 	var def := cat.class_def(cat.sanitize_class(class_id))
 	p.class_id = str(def.get("id", class_id))
-	var res: Dictionary = (def.get("resource", {}) as Dictionary).duplicate()
-	var stats: Dictionary = (def.get("stats", {}) as Dictionary).duplicate()
-	stats["max_resource"] = res.get("max", 0)
-	p.stats = CombatStats.from_dict(stats)
-	p.resource_kind = str(res.get("kind", ""))
-	p.resource_def = res
-	p.passives = Passives.collect(AbilityDB.load_default(), p.class_id, p.level)
-	Passives.apply_stats(p)
-	p.hp = p.stats.max_hp
-	p.resource = minf(float(res.get("start", res.get("max", 0))), p.stats.max_resource)
+	Progression.rebuild(p, world, true)
 
 
 ## The ally (not the caster) closest to `point`, within the pick radius; else null.

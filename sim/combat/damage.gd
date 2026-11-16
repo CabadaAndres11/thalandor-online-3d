@@ -8,6 +8,10 @@ extends RefCounted
 ## spec.force_crit makes the hit critical without rolling (Ráfaga, Emboscada).
 
 
+## Physical hits from this close (or from a melee arc) can be blocked.
+const BLOCK_RANGE := 3.0
+
+
 ## Armor weakens against stronger attackers: K grows with the attacker's level.
 static func mitigation(armor: float, balance: Balance, attacker_level: int = 1) -> float:
 	if armor <= 0.0:
@@ -18,20 +22,27 @@ static func mitigation(armor: float, balance: Balance, attacker_level: int = 1) 
 
 ## spec: {base, coef, kind: "physical"|"magic", can_crit := true, force_crit := false}.
 ## Returns {amount, crit, dodged, absorbed}.
-static func roll(attacker: CombatEntity, target: CombatEntity, spec: Dictionary, world: SimWorld) -> Dictionary:
-	var result := {"amount": 0.0, "crit": false, "dodged": false, "absorbed": 0.0}
+## `melee`: the hit comes from a melee arc (physical melee hits can be blocked).
+static func roll(attacker: CombatEntity, target: CombatEntity, spec: Dictionary, world: SimWorld, melee: bool = false) -> Dictionary:
+	var result := {"amount": 0.0, "crit": false, "dodged": false, "absorbed": 0.0, "blocked": false}
 	var b := world.balance
 	var dodge := target.stats.dodge_chance + target.status_magnitude("evasion")
 	if dodge > 0.0 and world.rng.randf() < dodge:
 		result.dodged = true
 		return result
 	var physical := str(spec.get("kind", "physical")) == "physical"
+	# Block: a physical hit from a melee arc or from 3 m or less. Rolled only when the
+	# target can block, so characters without it keep the same sequence of random numbers.
+	if physical and target.stats.block_chance > 0.0 \
+			and (melee or Effects.flat(attacker.position).distance_to(Effects.flat(target.position)) <= BLOCK_RANGE) \
+			and world.rng.randf() < target.stats.block_chance:
+		result.blocked = true
 	var power := attacker.stats.attack_power if physical else attacker.stats.spell_power
 	var amount := float(spec.get("base", 0.0)) + float(spec.get("coef", 0.0)) * power
 	amount *= 1.0 + world.rng.randf_range(-b.damage_variance, b.damage_variance)
 	if bool(spec.get("can_crit", true)) and (bool(spec.get("force_crit", false)) or world.rng.randf() < attacker.stats.crit_chance):
 		result.crit = true
-		amount *= b.crit_multiplier
+		amount *= b.crit_multiplier + attacker.stats.crit_damage
 	amount *= attacker.stats.damage_done_mult * target.stats.damage_taken_mult
 	amount *= 1.0 + attacker.status_magnitude("damage_buff")
 	amount *= 1.0 + target.status_magnitude("mark")
@@ -39,6 +50,8 @@ static func roll(attacker: CombatEntity, target: CombatEntity, spec: Dictionary,
 	amount *= Passives.damage_mult(attacker, target, spec, world)
 	if physical:
 		amount *= 1.0 - mitigation(target.stats.armor, b, attacker.level)
+	if result.blocked:
+		amount *= float(b.attributes.get("block_reduction", 0.5))
 	result.amount = maxf(amount, 0.0)
 	return result
 

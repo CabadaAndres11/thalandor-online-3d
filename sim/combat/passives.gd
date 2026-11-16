@@ -2,10 +2,10 @@ class_name Passives
 extends RefCounted
 ## Passive abilities as data: each passive ability lists modifiers in "passive":
 ##   {"type": "stat", "stat": <name>, "value": v}
-##     armor_pct, max_hp_pct, max_resource_pct, move_speed_pct (× (1 + v)), dodge_add (+ v)
+##     the "<name>_add" and "<name>_pct" stats listed in Progression (applied by Progression.rebuild)
 ##   {"type": "hook", "hook": <name>, ...params}
 ##     warrior:  rage_decay_mult {mult}, block_generates_rage {amount}, on_crit_heal_pct {pct}
-##     cleric:   mana_regen_in_combat {mult}, healing_received_pct {pct}, healing_done_pct {pct},
+##     cleric:   mana_regen_in_combat {mult},
 ##               heal_leaves_hot {pct, duration_s, every_s}
 ##     mage:     spell_power_after_no_damage_s {seconds, pct}, fire_crit_burn {magnitude,
 ##               duration_s, every_s}, bonus_vs_status {statuses, pct}
@@ -48,17 +48,15 @@ static func has_hook(e: CombatEntity, hook: String) -> Dictionary:
 	return {}
 
 
-## Applies the stat modifiers (and the healing hooks) to the entity's stats once.
-static func apply_stats(e: CombatEntity) -> void:
-	var mods := stat_mods(e)
-	var s := e.stats
-	s.armor *= 1.0 + float(mods.get("armor_pct", 0.0))
-	s.max_hp *= 1.0 + float(mods.get("max_hp_pct", 0.0))
-	s.max_resource *= 1.0 + float(mods.get("max_resource_pct", 0.0))
-	s.move_speed_mult *= 1.0 + float(mods.get("move_speed_pct", 0.0))
-	s.dodge_chance += float(mods.get("dodge_add", 0.0))
-	s.healing_received_mult *= 1.0 + float(has_hook(e, "healing_received_pct").get("pct", 0.0))
-	s.healing_done_mult *= 1.0 + float(has_hook(e, "healing_done_pct").get("pct", 0.0))
+## Every hook with this name (several sources can grant the same one).
+static func hooks(e: CombatEntity, hook: String) -> Array:
+	var out: Array = []
+	if e == null:
+		return out
+	for m: Dictionary in e.passives:
+		if m.get("type") == "hook" and m.get("hook") == hook:
+			out.append(m)
+	return out
 
 
 ## Damage multiplier from the attacker's passives against this target.
@@ -68,11 +66,10 @@ static func damage_mult(attacker: CombatEntity, target: CombatEntity, spec: Dict
 	if not h.is_empty() and str(spec.get("kind", "physical")) == "magic" \
 			and world.tick - attacker.last_hurt_tick >= world.ticks(float(h.get("seconds", 3.0))):
 		mult *= 1.0 + float(h.get("pct", 0.0))
-	h = has_hook(attacker, "bonus_vs_status")
-	if not h.is_empty():
-		for k: Variant in h.get("statuses", []):
+	for bh: Dictionary in hooks(attacker, "bonus_vs_status"):
+		for k: Variant in bh.get("statuses", []):
 			if target.has_status(str(k)):
-				mult *= 1.0 + float(h.get("pct", 0.0))
+				mult *= 1.0 + float(bh.get("pct", 0.0))
 				break
 	h = has_hook(attacker, "bonus_vs_far")
 	if not h.is_empty() and Effects.flat(attacker.position).distance_to(Effects.flat(target.position)) >= float(h.get("distance", 10.0)):

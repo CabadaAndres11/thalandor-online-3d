@@ -85,18 +85,18 @@ func test_passives_come_from_data_by_level() -> void:
 	var low := _hero("warrior", 1, Vector3(5, 0, 5))
 	assert_eq(low.passives, [], "level 1: none yet")
 	var p := f.world.add_player(2, Vector3(9, 0, 5))
-	p.level = 35
+	p.progress.level = 35
 	ClassRules.setup_player(p, "warrior")
 	assert_almost_eq(p.stats.armor, low.stats.armor * 1.10, 0.001, "Piel endurecida")
 	for hook: String in ["rage_decay_mult", "block_generates_rage", "on_crit_heal_pct"]:
 		assert_false(Passives.has_hook(p, hook).is_empty(), hook)
 	var m := f.world.add_player(3, Vector3(13, 0, 5))
-	m.level = 5
+	m.progress.level = 5
 	ClassRules.setup_player(m, "mage")
-	assert_almost_eq(m.stats.max_resource, 160.0 * 1.10, 0.001, "Mente arcana at level 5")
+	assert_almost_eq(m.stats.max_resource, (160.0 + 2.0 * 4.0) * 1.10, 0.001, "Mente arcana at level 5 (+4 auto intellect)")
 	assert_true(Passives.has_hook(m, "spell_power_after_no_damage_s").is_empty(), "Concentración is level 15")
 	var a := f.world.add_player(4, Vector3(17, 0, 5))
-	a.level = 35
+	a.progress.level = 35
 	ClassRules.setup_player(a, "assassin")
 	assert_eq(Passives.has_hook(a, "bonus_vs_status").get("statuses"), ["stun", "root"], "Oportunista")
 	assert_eq(int(Passives.has_hook(a, "after_dodge_combo").get("combo")), 2)

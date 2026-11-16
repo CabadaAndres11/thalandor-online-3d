@@ -34,7 +34,7 @@ static func try_cast(world: SimWorld, caster: CombatEntity, ability_id: String, 
 	var cd_s := float(ab.get("cooldown_s", 0.0))
 	if ab.has("combat_cooldown_s") and caster.in_combat(world):
 		cd_s = float(ab.combat_cooldown_s)
-	var cd := world.ticks(cd_s)
+	var cd := world.ticks(cd_s * (1.0 - caster.stats.cooldown_reduction))
 	if cd > 0:
 		caster.cooldowns[ability_id] = world.tick + cd
 	if uses_gcd:
@@ -59,15 +59,23 @@ static func deal(world: SimWorld, source: CombatEntity, target: CombatEntity, ef
 		return
 	var spec: Dictionary = effect.get("damage", {})
 	if not spec.is_empty():
-		var r := Damage.roll(source, target, spec, world)
+		var r := Damage.roll(source, target, spec, world, effect.get("type") == "melee_arc")
 		if r.dodged:
 			_dodged(world, target)
 			return
 		Damage.apply(target, r, world)
 		world.emit(["hit", target.id, r.amount, r.crit, source.id])
 		world.cast_hits += 1
-		if r.amount > 0.0 and r.absorbed >= r.amount:
+		if r.blocked:
+			world.emit(["block", target.id])
 			_blocked(target)
+		elif r.amount > 0.0 and r.absorbed >= r.amount:
+			_blocked(target)
+		if source.stats.lifesteal > 0.0 and r.amount > 0.0:
+			var live_src := world.entity(source.id)
+			var healer := live_src if live_src != null else source
+			if healer.is_alive():
+				heal(world, healer, healer, r.amount * source.stats.lifesteal)
 		# Projectiles and areas carry a snapshot of their caster: combat time, rage
 		# and healing go to the live caster when it is still in the world.
 		var live := world.entity(source.id)

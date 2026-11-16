@@ -169,7 +169,7 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 	var appearance := catalog.sanitize_appearance(msg.appearance)
 	var spawn := map.spawn_point() + Vector3(slot % 2, 0, slot / 2) * SPAWN_SPACING
 	var player := world.add_player(id, spawn)
-	ClassRules.setup_player(player, class_id, catalog)
+	ClassRules.setup_player(player, class_id, catalog, world)
 	_players[id] = {
 		"id": id, "name": name, "slot": slot, "class_id": class_id, "appearance": appearance,
 		"transport": index, "peer": peer,
@@ -195,7 +195,7 @@ func _on_choose_class(rec: Dictionary, class_id: String) -> void:
 		return
 	# Same share of health as before: learning a class mid-fight is not a free heal.
 	var ratio := p.hp / maxf(p.stats.max_hp, 1.0)
-	ClassRules.setup_player(p, class_id, catalog)
+	ClassRules.setup_player(p, class_id, catalog, world)
 	p.hp = p.stats.max_hp * ratio
 	rec.class_id = class_id
 	rec.basic_id = world.abilities.kind_of(class_id, "basic")

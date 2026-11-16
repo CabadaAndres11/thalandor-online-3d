@@ -37,14 +37,11 @@ func test_stat_mods_and_has_hook() -> void:
 
 
 func test_stat_passives_change_stats() -> void:
-	var p := f.player(1, Vector3(5, 0, 5))
-	p.stats.armor = 40.0
-	p.stats.max_resource = 100.0
-	p.passives = [{"type": "stat", "stat": "armor_pct", "value": 0.10}, {"type": "stat", "stat": "max_resource_pct", "value": 0.10},
-		{"type": "stat", "stat": "dodge_add", "value": 0.05}]
-	Passives.apply_stats(p)
+	f.world.abilities = AbilityDB.from_list([{"id": "pa", "class": "warrior", "kind": "passive", "level": 1, "passive": [
+		{"type": "stat", "stat": "armor_pct", "value": 0.10}, {"type": "stat", "stat": "dodge_add", "value": 0.05}]}])
+	var p := f.world.add_player(1, Vector3(5, 0, 5))
+	ClassRules.setup_player(p, "warrior", null, f.world)
 	assert_almost_eq(p.stats.armor, 44.0, 0.001)
-	assert_almost_eq(p.stats.max_resource, 110.0, 0.001)
 	assert_almost_eq(p.stats.dodge_chance, 0.05, 0.001)
 
 
@@ -111,10 +108,8 @@ func test_hook_healing_received_and_done_pct() -> void:
 	var p := f.player(1, Vector3(5, 0, 5), 1000.0)
 	var ally := f.player(2, Vector3(9, 0, 5), 1000.0)
 	ally.hp = 100.0
-	p.passives = [_hook("healing_done_pct", {"pct": 0.10})]
-	ally.passives = [_hook("healing_received_pct", {"pct": 0.10})]
-	Passives.apply_stats(p)
-	Passives.apply_stats(ally)
+	p.stats.healing_done_mult = 1.1
+	ally.stats.healing_received_mult = 1.1
 	assert_true(Combat.try_cast(f.world, p, "heal", ally.position))
 	assert_almost_eq(ally.hp, 221.0, 0.01, "100 × 1.1 × 1.1")
 

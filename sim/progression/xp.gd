@@ -84,7 +84,7 @@ static func award(world: SimWorld, p: PlayerState, amount: int) -> void:
 	p.progress_dirty = true
 	if gained <= 0:
 		return
-	p.level = p.progress.level
+	Progression.rebuild(p, world)
 	p.hp = p.stats.max_hp
 	if p.resource_kind != "rage":
 		p.resource = p.stats.max_resource

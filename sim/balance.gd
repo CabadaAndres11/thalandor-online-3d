@@ -49,6 +49,8 @@ var xp: Dictionary = {}
 var monster_scaling: Dictionary = {}
 ## Extra armor constant per attacker level above 1 (armor loses value against stronger foes).
 var armor_k_per_level: float = 6.0
+## Attribute effects, soft caps and stat caps (see Attributes, Progression).
+var attributes: Dictionary = {}
 
 
 static func load_from(path: String = DEFAULT_PATH) -> Balance:
