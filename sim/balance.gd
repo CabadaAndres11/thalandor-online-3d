@@ -51,6 +51,8 @@ var monster_scaling: Dictionary = {}
 var armor_k_per_level: float = 6.0
 ## Attribute effects, soft caps and stat caps (see Attributes, Progression).
 var attributes: Dictionary = {}
+## Mastery per direction: {stat, value}; "half_at" is the rank that gives half of the linear value.
+var masteries: Dictionary = {}
 
 
 static func load_from(path: String = DEFAULT_PATH) -> Balance:
