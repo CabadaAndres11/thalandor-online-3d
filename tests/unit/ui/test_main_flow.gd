@@ -268,6 +268,7 @@ func test_bar_change_sends_set_bar_and_saves() -> void:
 	var me: PlayerState = main.game.host.world.players[main.game.client.my_id]
 	me.level = 20
 	me.progress.level = 20
+	main.game.host._players[main.game.client.my_id].bar_level = 20
 	var new_bar := ["warrior_shield_wall", "warrior_charge", "warrior_taunt", ""]
 	main.abilities_window.bar_changed.emit(new_bar)
 	await wait_physics_frames(5)

@@ -76,12 +76,13 @@ static func game_version() -> String:
 
 
 ## Starts a game hosted on this PC (solo until open_group() is called).
-func start_host(player_name: String, class_id: String = CharacterCatalog.DEFAULT_CLASS, appearance: Dictionary = {}) -> void:
+func start_host(player_name: String, class_id: String = CharacterCatalog.DEFAULT_CLASS, appearance: Dictionary = {},
+		progress: Dictionary = {}) -> void:
 	host = HostSession.new(balance, map, game_version())
 	_loopback = MemoryNetwork.new()
 	var host_t := _loopback.create_host()
 	host.add_transport(host_t)
-	_start_client(player_name, class_id, appearance, _loopback.connect_client(host_t))
+	_start_client(player_name, class_id, appearance, _loopback.connect_client(host_t), progress)
 
 
 ## Opens the game to friends. Returns the group code, or "" with last_error set, or ""
@@ -138,7 +139,8 @@ func net_label() -> String:
 
 
 ## Joins a friend's game by code.
-func join(code: String, player_name: String, class_id: String = CharacterCatalog.DEFAULT_CLASS, appearance: Dictionary = {}) -> Error:
+func join(code: String, player_name: String, class_id: String = CharacterCatalog.DEFAULT_CLASS, appearance: Dictionary = {},
+		progress: Dictionary = {}) -> Error:
 	var ip := GroupCode.decode(code)
 	if ip == "":
 		last_error = "ERR_BAD_CODE"
@@ -147,21 +149,21 @@ func join(code: String, player_name: String, class_id: String = CharacterCatalog
 		if balance.signaling_url == "":
 			last_error = "ERR_SIGNALING"
 			return ERR_UNCONFIGURED
-		join_with(WebSocketSignaling.join(balance.signaling_url, code), player_name, class_id, appearance)
+		join_with(WebSocketSignaling.join(balance.signaling_url, code), player_name, class_id, appearance, progress)
 		return OK
 	var t: Transport = EnetTransport.join(ip, balance.port)
 	if t == null:
 		last_error = "ERR_CONNECT"
 		return ERR_CANT_CONNECT
-	_start_client(player_name, class_id, appearance, _with_debug_lag(t))
+	_start_client(player_name, class_id, appearance, _with_debug_lag(t), progress)
 	return OK
 
 
 ## Joins a WebRTC group through the given signaling channel (tests pass a fake one).
 func join_with(signaling: Signaling, player_name: String, class_id: String = CharacterCatalog.DEFAULT_CLASS,
-		appearance: Dictionary = {}) -> void:
+		appearance: Dictionary = {}, progress: Dictionary = {}) -> void:
 	var t := WebRtcTransport.join(signaling, WebRtcTransport.ice_from_url(balance.stun_url))
-	_start_client(player_name, class_id, appearance, _with_debug_lag(t))
+	_start_client(player_name, class_id, appearance, _with_debug_lag(t), progress)
 
 
 func _with_debug_lag(t: Transport) -> Transport:
@@ -209,8 +211,8 @@ func is_hosting() -> bool:
 	return host != null
 
 
-func _start_client(player_name: String, class_id: String, appearance: Dictionary, t: Transport) -> void:
-	client = ClientSession.new(balance, map, game_version(), player_name, class_id, appearance)
+func _start_client(player_name: String, class_id: String, appearance: Dictionary, t: Transport, progress: Dictionary = {}) -> void:
+	client = ClientSession.new(balance, map, game_version(), player_name, class_id, appearance, progress)
 	if not character_bar.is_empty():
 		client.bar = character_bar.duplicate()
 	client.disconnected.connect(_on_client_disconnected)

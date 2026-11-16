@@ -2,15 +2,16 @@ class_name Protocol
 extends RefCounted
 ## Network messages: Arrays [type, fields...] encoded with var_to_bytes (never objects).
 
-const VERSION := 5
+const VERSION := 6
 
-enum Msg { HELLO = 1, WELCOME, REJECT, INPUT, SNAPSHOT, PLAYER_JOINED, PLAYER_LEFT, CHAT, EVENTS, SET_BAR, CHOOSE_CLASS, PLAYER_CLASS }
+enum Msg { HELLO = 1, WELCOME, REJECT, INPUT, SNAPSHOT, PLAYER_JOINED, PLAYER_LEFT, CHAT, EVENTS, SET_BAR, CHOOSE_CLASS, PLAYER_CLASS,
+	SPEND_ATTRIBUTE, BUY_TALENT, BUY_MASTERY, RESET, SET_ARENA_LEVEL, PROGRESS, ARENA_LEVEL }
 
 ## Field names and Variant types per message type.
 const SCHEMAS := {
 	Msg.HELLO: [["game_version", TYPE_STRING], ["protocol", TYPE_INT], ["name", TYPE_STRING],
-		["class_id", TYPE_STRING], ["appearance", TYPE_DICTIONARY], ["bar", TYPE_ARRAY]],
-	Msg.WELCOME: [["player_id", TYPE_INT], ["tick", TYPE_INT], ["roster", TYPE_ARRAY]],
+		["class_id", TYPE_STRING], ["appearance", TYPE_DICTIONARY], ["bar", TYPE_ARRAY], ["progress", TYPE_DICTIONARY]],
+	Msg.WELCOME: [["player_id", TYPE_INT], ["tick", TYPE_INT], ["roster", TYPE_ARRAY], ["arena_level", TYPE_INT]],
 	Msg.REJECT: [["reason", TYPE_STRING], ["host_version", TYPE_STRING]],
 	Msg.INPUT: [["inputs", TYPE_ARRAY]],
 	Msg.SNAPSHOT: [["tick", TYPE_INT], ["players", TYPE_PACKED_BYTE_ARRAY], ["monsters", TYPE_PACKED_BYTE_ARRAY]],
@@ -22,6 +23,13 @@ const SCHEMAS := {
 		["class_id", TYPE_STRING], ["appearance", TYPE_DICTIONARY]],
 	Msg.PLAYER_LEFT: [["id", TYPE_INT]],
 	Msg.CHAT: [["from_id", TYPE_INT], ["text", TYPE_STRING]],
+	Msg.SPEND_ATTRIBUTE: [["attr", TYPE_STRING]],
+	Msg.BUY_TALENT: [["id", TYPE_STRING]],
+	Msg.BUY_MASTERY: [["dir", TYPE_STRING]],
+	Msg.RESET: [["what", TYPE_STRING]],
+	Msg.SET_ARENA_LEVEL: [["level", TYPE_INT]],
+	Msg.PROGRESS: [["progress", TYPE_DICTIONARY], ["bar", TYPE_ARRAY]],
+	Msg.ARENA_LEVEL: [["level", TYPE_INT]],
 }
 
 ## Element types of the nested arrays.
@@ -35,24 +43,26 @@ const ROW_SCHEMAS := {
 ## the ENet MTU (1392 bytes) in the arena's boss fight. The game still sees rows:
 ##   players: [id, position, aim, facing, last_seq, hp, max_hp, resource, max_resource,
 ##             life, status_bits, dash_ticks, dash_dir, dodge_ready_seq, move_mult, combo,
-##             charge (0..1)]
+##             charge (0..1), level]
 ##            PLAYER_RECORD bytes: id s32, position 3×f32, aim 3×f32, facing f32,
 ##            last_seq s32, hp, max_hp, resource, max_resource f32, life u8,
 ##            status_bits u32, dash_ticks u16, dash_dir 2×f32, dodge_ready_seq s32,
-##            move_mult f32, combo u8, charge f32.
-##   monsters: [id, type, position, facing, hp, max_hp, status_bits, target_id, elite (0|1)]
+##            move_mult f32, combo u8, charge f32, level u16.
+##   monsters: [id, type, position, facing, hp, max_hp, status_bits, target_id, elite (0|1), level]
 ##            MONSTER_RECORD bytes: id u32, type u8 (index in monster_types(), 255
 ##            unknown), position 3×f32, facing u16 (angle / TAU), hp f32, max_hp f32,
-##            status_bits u32, target_id u32, elite u8.
-const PLAYER_RECORD := 80
-const MONSTER_RECORD := 36
+##            status_bits u32, target_id u32, elite u8, level u16.
+const PLAYER_RECORD := 82
+const MONSTER_RECORD := 38
 
 static var _monster_types: Array = []
 const MAX_PACKET_BYTES := 16384
 ## HELLO sizes of older games, padded so the host can answer "different version":
-## protocol 1 (0.1.x) had no character, protocol 2 (0.2.x) had no ability bar.
+## protocol 1 (0.1.x) had no character, protocol 2 (0.2.x) had no ability bar, protocol 5
+## (0.5.x) had no progress.
 const LEGACY_HELLO_SIZE := 4
 const PROTOCOL2_HELLO_SIZE := 6
+const PROTOCOL5_HELLO_SIZE := 7
 const MAGIC_0 := 0x54 # "T"
 const MAGIC_1 := 0x4F # "O"
 const HEADER_SIZE := 6
@@ -67,12 +77,12 @@ static func pack(message: Array) -> PackedByteArray:
 
 
 static func hello(game_version: String, protocol: int, name: String, class_id: String,
-		appearance: Dictionary, bar: Array = []) -> PackedByteArray:
-	return pack([Msg.HELLO, game_version, protocol, name, class_id, appearance, bar])
+		appearance: Dictionary, bar: Array = [], progress: Dictionary = {}) -> PackedByteArray:
+	return pack([Msg.HELLO, game_version, protocol, name, class_id, appearance, bar, progress])
 
 
-static func welcome(player_id: int, tick: int, roster: Array) -> PackedByteArray:
-	return pack([Msg.WELCOME, player_id, tick, roster])
+static func welcome(player_id: int, tick: int, roster: Array, arena_level: int = 1) -> PackedByteArray:
+	return pack([Msg.WELCOME, player_id, tick, roster, arena_level])
 
 
 static func reject(reason: String, host_version: String) -> PackedByteArray:
@@ -118,6 +128,38 @@ static func chat(from_id: int, text: String) -> PackedByteArray:
 	return pack([Msg.CHAT, from_id, text])
 
 
+## A player asks to spend a free attribute point.
+static func spend_attribute(attr: String) -> PackedByteArray:
+	return pack([Msg.SPEND_ATTRIBUTE, attr])
+
+
+static func buy_talent(id: String) -> PackedByteArray:
+	return pack([Msg.BUY_TALENT, id])
+
+
+static func buy_mastery(dir: String) -> PackedByteArray:
+	return pack([Msg.BUY_MASTERY, dir])
+
+
+## what: "attributes", "talents" or "upgrade" (next to the class trainer, out of combat).
+static func reset(what: String) -> PackedByteArray:
+	return pack([Msg.RESET, what])
+
+
+## The host player asks the trainer to change the arena's monster level.
+static func set_arena_level(level: int) -> PackedByteArray:
+	return pack([Msg.SET_ARENA_LEVEL, level])
+
+
+## The host sends a player their own progress and ability bar (nobody else's).
+static func progress(progress_data: Dictionary, bar: Array) -> PackedByteArray:
+	return pack([Msg.PROGRESS, progress_data, bar])
+
+
+static func arena_level(level: int) -> PackedByteArray:
+	return pack([Msg.ARENA_LEVEL, level])
+
+
 ## Returns {"type": Msg, <fields>} or {} when the packet is invalid.
 static func decode(data: PackedByteArray) -> Dictionary:
 	# Header: 2 magic bytes + u32 payload length. Truncated or foreign packets are
@@ -140,9 +182,11 @@ static func decode(data: PackedByteArray) -> Dictionary:
 	var schema: Array = SCHEMAS[arr[0]]
 	# Older HELLOs (0.1.x, 0.2.x) are padded so the host can answer "version".
 	if arr[0] == Msg.HELLO and arr.size() == LEGACY_HELLO_SIZE:
-		arr = arr + ["", {}, []]
+		arr = arr + ["", {}, [], {}]
 	elif arr[0] == Msg.HELLO and arr.size() == PROTOCOL2_HELLO_SIZE:
-		arr = arr + [[]]
+		arr = arr + [[], {}]
+	elif arr[0] == Msg.HELLO and arr.size() == PROTOCOL5_HELLO_SIZE:
+		arr = arr + [{}]
 	if arr.size() != schema.size() + 1:
 		return {}
 	var out := {"type": arr[0]}
@@ -200,6 +244,7 @@ static func pack_monsters(rows: Array) -> PackedByteArray:
 		buf.put_u32(int(row[6]))
 		buf.put_u32(int(row[7]))
 		buf.put_u8(1 if int(row[8]) != 0 else 0)
+		buf.put_u16(clampi(int(row[9]), 0, 65535))
 	return buf.data_array
 
 
@@ -221,7 +266,8 @@ static func unpack_monsters(data: PackedByteArray) -> Variant:
 		var bits := buf.get_u32()
 		var target := buf.get_u32()
 		var elite := buf.get_u8()
-		rows.append([id, types[t] if t < types.size() else "", pos, facing, hp, max_hp, bits, target, elite])
+		var level := buf.get_u16()
+		rows.append([id, types[t] if t < types.size() else "", pos, facing, hp, max_hp, bits, target, elite, level])
 	return rows
 
 
@@ -246,6 +292,7 @@ static func pack_players(rows: Array) -> PackedByteArray:
 		buf.put_float(float(row[14]))
 		buf.put_u8(clampi(int(row[15]), 0, 255))
 		buf.put_float(float(row[16]))
+		buf.put_u16(clampi(int(row[17]), 0, 65535))
 	return buf.data_array
 
 
@@ -274,6 +321,7 @@ static func unpack_players(data: PackedByteArray) -> Variant:
 		var move_mult := buf.get_float()
 		var combo := buf.get_u8()
 		var charge := buf.get_float()
+		var level := buf.get_u16()
 		rows.append([id, pos, aim, facing, seq, hp, max_hp, res, max_res, life, bits, dash_ticks, dash_dir,
-			dodge, move_mult, combo, charge])
+			dodge, move_mult, combo, charge, level])
 	return rows

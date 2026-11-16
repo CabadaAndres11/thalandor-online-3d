@@ -82,8 +82,23 @@ static func award(world: SimWorld, p: PlayerState, amount: int) -> void:
 		return
 	var gained := add(p.progress, amount, world.balance)
 	p.progress_dirty = true
-	if gained <= 0:
+	if gained > 0:
+		_leveled_up(world, p)
+
+
+## Sets the level directly (the /nivel test command): no experience is needed. Never lowers.
+static func set_level(world: SimWorld, p: PlayerState, level: int) -> void:
+	level = clampi(level, 1, PlayerProgress.MAX_LEVEL)
+	if level <= p.progress.level:
 		return
+	p.progress.level = level
+	p.progress.xp = 0
+	p.progress_dirty = true
+	_leveled_up(world, p)
+
+
+## Rebuilds the stats for the new level, refills health and resource (not rage) and tells everybody.
+static func _leveled_up(world: SimWorld, p: PlayerState) -> void:
 	Progression.rebuild(p, world)
 	p.hp = p.stats.max_hp
 	if p.resource_kind != "rage":

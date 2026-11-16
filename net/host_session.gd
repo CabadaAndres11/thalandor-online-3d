@@ -20,6 +20,8 @@ var _transports: Array = []
 var _players: Dictionary = {} # player id -> record
 var _by_conn: Dictionary = {} # "transport_index:peer" -> player id
 var _next_id: int = 1
+## The first player to join: the only one who may set the arena level and use commands.
+var _host_player_id: int = 0
 static var _name_regex: RegEx
 
 
@@ -48,11 +50,11 @@ func add_transport(t: Transport) -> void:
 
 
 func tick() -> void:
+	world.events.clear()
 	for index in _transports.size():
 		var t: Transport = _transports[index]
 		for packet: Dictionary in t.poll():
 			_handle(index, packet.peer, packet.data)
-	world.events.clear()
 	var inputs := {}
 	for id: int in _players:
 		var rec: Dictionary = _players[id]
@@ -67,6 +69,7 @@ func tick() -> void:
 			# No new input this tick: keep moving/holding, but never repeat presses.
 			inputs[id] = (rec.last_input as PlayerInput).held_only()
 	world.step(inputs)
+	_flush_progress()
 	var player_rows := _snapshot_rows()
 	for id: int in _players:
 		var viewer: Vector3 = world.players[id].position if world.players.has(id) else Vector3.ZERO
@@ -143,11 +146,18 @@ func _handle(index: int, peer: int, data: PackedByteArray) -> void:
 		Protocol.Msg.SET_BAR:
 			var bp: PlayerState = world.players.get(rec.id)
 			rec.bar = world.abilities.sanitize_bar(rec.class_id, msg.bar, bp.level, bp.progress.upgrade)
+			rec.sent_bar = rec.bar.duplicate() # the client already has it
 		Protocol.Msg.CHOOSE_CLASS:
 			_on_choose_class(rec, msg.class_id)
+		Protocol.Msg.SPEND_ATTRIBUTE, Protocol.Msg.BUY_TALENT, Protocol.Msg.BUY_MASTERY, Protocol.Msg.RESET:
+			_on_progress_request(rec, msg)
+		Protocol.Msg.SET_ARENA_LEVEL:
+			_on_set_arena_level(rec, msg.level)
 		Protocol.Msg.CHAT:
 			var text: String = (msg.text as String).strip_edges().left(balance.chat_max_len)
-			if text != "":
+			if text.begins_with("/"):
+				_on_command(rec, text)
+			elif text != "":
 				_broadcast(Protocol.chat(rec.id, text), true)
 
 
@@ -170,17 +180,26 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 	var appearance := catalog.sanitize_appearance(msg.appearance)
 	var spawn := map.spawn_point() + Vector3(slot % 2, 0, slot / 2) * SPAWN_SPACING
 	var player := world.add_player(id, spawn)
+	# Whatever progress the guest brings is fixed up, never refused.
+	player.progress = ProgressRequests.sanitize(PlayerProgress.from_dict(msg.progress), class_id, world)
 	ClassRules.setup_player(player, class_id, catalog, world)
+	var bar := world.abilities.sanitize_bar(class_id, msg.bar, player.level, player.progress.upgrade)
 	_players[id] = {
 		"id": id, "name": name, "slot": slot, "class_id": class_id, "appearance": appearance,
 		"transport": index, "peer": peer,
 		"queue": [], "last_input": null, "last_seq": 0, "last_received": 0,
 		"basic_id": world.abilities.kind_of(class_id, "basic"),
 		"secondary_id": world.abilities.kind_of(class_id, "secondary"),
-		"bar": world.abilities.sanitize_bar(class_id, msg.bar, player.level, player.progress.upgrade),
+		"bar": bar,
+		# What the owner was last sent (PROGRESS), to send only what changed.
+		"bar_level": player.progress.level, "sent_other": _without_xp(player.progress.to_dict()),
+		"sent_bar": bar.duplicate(), "sent_tick": -100000,
 	}
+	if _host_player_id == 0:
+		_host_player_id = id
 	_by_conn[key] = id
-	t.send(peer, Protocol.welcome(id, world.tick, roster()), true)
+	t.send(peer, Protocol.welcome(id, world.tick, roster(), world.arena_level), true)
+	t.send(peer, Protocol.progress(player.progress.to_dict(), bar), true)
 	for other: int in _players:
 		if other != id:
 			_send_to(other, Protocol.player_joined(id, name, slot, class_id, appearance), true)
@@ -202,7 +221,97 @@ func _on_choose_class(rec: Dictionary, class_id: String) -> void:
 	rec.basic_id = world.abilities.kind_of(class_id, "basic")
 	rec.secondary_id = world.abilities.kind_of(class_id, "secondary")
 	rec.bar = world.abilities.default_bar(class_id, p.level, p.progress.upgrade)
+	rec.sent_bar = rec.bar.duplicate()
 	_broadcast(Protocol.player_class(rec.id, class_id, rec.bar), true)
+
+
+## Spend a point, buy a node or reset: the host checks everything (ProgressRequests).
+func _on_progress_request(rec: Dictionary, msg: Dictionary) -> void:
+	var p: PlayerState = world.players.get(rec.id)
+	if p == null:
+		return
+	match msg.type:
+		Protocol.Msg.SPEND_ATTRIBUTE:
+			ProgressRequests.spend_attribute(world, p, msg.attr)
+		Protocol.Msg.BUY_TALENT:
+			ProgressRequests.buy_talent(world, p, msg.id)
+		Protocol.Msg.BUY_MASTERY:
+			ProgressRequests.buy_mastery(world, p, msg.dir)
+		Protocol.Msg.RESET:
+			var near := NpcDB.load_default().near_with_role(map, p.position, "class_trainer") != ""
+			if ProgressRequests.reset(world, p, msg.what, near):
+				rec.bar = world.abilities.sanitize_bar(rec.class_id, rec.bar, p.level, p.progress.upgrade)
+
+
+## Only the host player, next to the class trainer, sets the monster level of the arena.
+func _on_set_arena_level(rec: Dictionary, level: int) -> void:
+	var p: PlayerState = world.players.get(rec.id)
+	if p == null or rec.id != _host_player_id or not p.is_alive():
+		return
+	if NpcDB.load_default().near_with_role(map, p.position, "class_trainer") == "":
+		return
+	world.set_arena_level(level)
+	_broadcast(Protocol.arena_level(world.arena_level), true)
+
+
+## Test commands (host player only): /xp <n> [name] and /nivel <n> [name]. They are not
+## chat. Anything else starting with "/" is refused with a system message to the author.
+func _on_command(rec: Dictionary, text: String) -> void:
+	if rec.id != _host_player_id:
+		_send_to(rec.id, Protocol.chat(0, "CMD_HOST_ONLY"), true)
+		return
+	var parts := text.substr(1).split(" ", false)
+	if parts.size() < 2 or not parts[0].to_lower() in ["xp", "nivel"] or not parts[1].is_valid_int() or parts[1].to_int() < 1:
+		_send_to(rec.id, Protocol.chat(0, "CMD_BAD"), true)
+		return
+	var target: PlayerState = world.players.get(rec.id)
+	if parts.size() > 2:
+		target = null
+		var wanted := " ".join(parts.slice(2)).to_lower()
+		for id: int in _players:
+			if str(_players[id].name).to_lower() == wanted:
+				target = world.players.get(id)
+		if target == null:
+			_send_to(rec.id, Protocol.chat(0, "CMD_NO_PLAYER"), true)
+			return
+	var n := parts[1].to_int()
+	if parts[0].to_lower() == "xp":
+		Xp.award(world, target, clampi(n, 1, Xp.MAX_AMOUNT))
+	elif n > target.progress.level:
+		Xp.set_level(world, target, mini(n, PlayerProgress.MAX_LEVEL))
+
+
+## Sends each owner their changed progress (and the bar). Level-ups also place the newly
+## unlocked abilities in free bar slots. Only experience changing is sent at most once a
+## second; anything else goes at once.
+func _flush_progress() -> void:
+	for id: int in _players:
+		var rec: Dictionary = _players[id]
+		var p: PlayerState = world.players.get(id)
+		if p == null:
+			continue
+		if p.progress.level != rec.bar_level:
+			rec.bar = world.abilities.place_unlocked(rec.bar, rec.class_id, rec.bar_level, p.progress.level, p.progress.upgrade)
+			rec.bar_level = p.progress.level
+			p.progress_dirty = true
+		if not p.progress_dirty:
+			continue
+		var d := p.progress.to_dict()
+		var other := _without_xp(d)
+		var only_xp: bool = other == rec.sent_other and rec.bar == rec.sent_bar
+		if only_xp and world.tick - int(rec.sent_tick) < balance.tick_rate:
+			continue
+		_send_to(id, Protocol.progress(d, rec.bar), true)
+		rec.sent_other = other
+		rec.sent_bar = (rec.bar as Array).duplicate()
+		rec.sent_tick = world.tick
+		p.progress_dirty = false
+
+
+static func _without_xp(d: Dictionary) -> Dictionary:
+	var out := d.duplicate(true)
+	out.erase("xp")
+	return out
 
 
 func _on_input(rec: Dictionary, rows: Array) -> void:
@@ -249,7 +358,7 @@ func _snapshot_rows() -> Array:
 		var s: PlayerState = world.players[id]
 		rows.append([id, s.position, s.aim, s.facing, int(_players[id].last_seq), s.hp, s.stats.max_hp,
 			s.resource, s.stats.max_resource, s.life, StatusEffect.bits_of(s), s.dash_ticks, s.dash_dir,
-			s.dodge_ready_seq, s.move_mult(), s.combo, _charge_ratio(s)])
+			s.dodge_ready_seq, s.move_mult(), s.combo, _charge_ratio(s), s.level])
 	return rows
 
 
@@ -268,7 +377,7 @@ func _monster_rows(viewer: Vector3) -> Array:
 	var rows := []
 	for e: CombatEntity in list:
 		var elite := 1 if (e is MonsterState and (e as MonsterState).elite) else 0
-		rows.append([e.id, e.type_id, e.position, e.facing, e.hp, e.stats.max_hp, StatusEffect.bits_of(e), e.target_id, elite])
+		rows.append([e.id, e.type_id, e.position, e.facing, e.hp, e.stats.max_hp, StatusEffect.bits_of(e), e.target_id, elite, e.level])
 	return rows
 
 

@@ -12,6 +12,11 @@ signal chat_received(author: String, text: String, is_system: bool)
 signal combat_event(ev: Array)
 ## A player (maybe this one) learned a class from a class trainer.
 signal class_changed(id: int, class_id: String)
+## The host sent this player their progress (and ability bar).
+signal progress_changed()
+## A player (maybe this one) reached a new level.
+signal leveled_up(id: int, level: int)
+signal arena_level_changed(level: int)
 
 enum Status { CONNECTING, IN_GAME, CLOSED }
 
@@ -35,6 +40,10 @@ var class_id: String
 var appearance: Dictionary
 ## Abilities in slots 1-4 (sent in HELLO and with send_bar).
 var bar: Array = []
+## This player's progress, as the host last sent it (what HELLO carries at first).
+var progress := PlayerProgress.new()
+## Monster level of the arena.
+var arena_level: int = 1
 ## Combat state from the last snapshot: player id -> {hp, max_hp, resource,
 ## max_resource, life, status_bits}; monster id -> {type, hp, max_hp, status_bits, target}.
 var combat: Dictionary = {}
@@ -57,14 +66,15 @@ var _monster_buffers: Dictionary = {} # id -> InterpolationBuffer
 
 
 func _init(p_balance: Balance, p_map: CollisionMap, p_game_version: String, p_name: String,
-		p_class_id: String = CharacterCatalog.DEFAULT_CLASS, p_appearance: Dictionary = {}) -> void:
+		p_class_id: String = CharacterCatalog.DEFAULT_CLASS, p_appearance: Dictionary = {}, p_progress: Dictionary = {}) -> void:
 	balance = p_balance
 	map = p_map
 	game_version = p_game_version
 	player_name = p_name
 	class_id = p_class_id
 	appearance = p_appearance
-	bar = AbilityDB.load_default().default_bar(p_class_id)
+	progress = PlayerProgress.from_dict(p_progress)
+	bar = AbilityDB.load_default().default_bar(p_class_id, progress.level, progress.upgrade)
 
 
 func connect_to(t: Transport) -> void:
@@ -138,10 +148,14 @@ func leave() -> void:
 
 ## {"position", "aim", "facing"} for drawing; {} when unknown.
 func render_state(id: int) -> Dictionary:
+	var level: int = combat[id].get("level", 1) if combat.has(id) else 1
 	if id == my_id and _predicted != null:
-		return {"position": _predicted.position + _offset, "aim": _predicted.aim, "facing": _predicted.facing}
+		return {"position": _predicted.position + _offset, "aim": _predicted.aim, "facing": _predicted.facing, "level": level}
 	if _buffers.has(id):
-		return (_buffers[id] as InterpolationBuffer).sample(render_tick)
+		var s: Dictionary = (_buffers[id] as InterpolationBuffer).sample(render_tick)
+		if not s.is_empty():
+			s["level"] = level
+		return s
 	return {}
 
 
@@ -160,7 +174,7 @@ func latest_tick() -> int:
 func _on_peer_connected(peer: int) -> void:
 	if peer == Transport.HOST_PEER:
 		_transport.send(Transport.HOST_PEER,
-			Protocol.hello(game_version, Protocol.VERSION, player_name, class_id, appearance, bar), true)
+			Protocol.hello(game_version, Protocol.VERSION, player_name, class_id, appearance, bar, progress.to_dict()), true)
 
 
 func _on_peer_disconnected(peer: int) -> void:
@@ -185,6 +199,7 @@ func _handle(msg: Dictionary) -> void:
 			if status != Status.CONNECTING:
 				return
 			my_id = msg.player_id
+			arena_level = msg.arena_level
 			status = Status.IN_GAME
 			for row: Array in msg.roster:
 				roster[row[0]] = {"name": row[1], "slot": row[2], "class_id": row[3], "appearance": row[4]}
@@ -200,6 +215,10 @@ func _handle(msg: Dictionary) -> void:
 			for ev: Variant in msg.events:
 				if ev is Array and not (ev as Array).is_empty():
 					combat_event.emit(ev)
+					if ev[0] == "level_up" and (ev as Array).size() >= 3:
+						if combat.has(ev[1]):
+							combat[ev[1]].level = ev[2]
+						leveled_up.emit(ev[1], ev[2])
 		Protocol.Msg.PLAYER_JOINED:
 			roster[msg.id] = {"name": msg.name, "slot": msg.slot, "class_id": msg.class_id, "appearance": msg.appearance}
 			roster_changed.emit()
@@ -211,6 +230,13 @@ func _handle(msg: Dictionary) -> void:
 				class_id = msg.class_id
 				bar = (msg.bar as Array).duplicate()
 			class_changed.emit(msg.id, msg.class_id)
+		Protocol.Msg.PROGRESS:
+			progress = PlayerProgress.from_dict(msg.progress)
+			bar = (msg.bar as Array).duplicate()
+			progress_changed.emit()
+		Protocol.Msg.ARENA_LEVEL:
+			arena_level = msg.level
+			arena_level_changed.emit(arena_level)
 		Protocol.Msg.PLAYER_LEFT:
 			var name: String = roster[msg.id].name if roster.has(msg.id) else "?"
 			roster.erase(msg.id)
@@ -219,6 +245,9 @@ func _handle(msg: Dictionary) -> void:
 			roster_changed.emit()
 			chat_received.emit("", tr_text("CHAT_LEFT") % name, true)
 		Protocol.Msg.CHAT:
+			if msg.from_id == 0: # a system message from the host: the text is a translation key
+				chat_received.emit("", tr_text(msg.text), true)
+				return
 			var author: String = roster[msg.from_id].name if roster.has(msg.from_id) else "?"
 			chat_received.emit(author, msg.text, false)
 
@@ -233,7 +262,7 @@ func _on_snapshot(tick: int, rows: Array, monster_rows: Array) -> void:
 	for row: Array in rows:
 		var id: int = row[0]
 		combat[id] = {"hp": row[5], "max_hp": row[6], "resource": row[7], "max_resource": row[8],
-			"life": row[9], "status_bits": row[10], "combo": row[15], "charge": row[16]}
+			"life": row[9], "status_bits": row[10], "combo": row[15], "charge": row[16], "level": row[17]}
 		if id == my_id:
 			_own_move_mult = row[14]
 			_reconcile(row)
@@ -245,7 +274,7 @@ func _on_snapshot(tick: int, rows: Array, monster_rows: Array) -> void:
 	for row: Array in monster_rows:
 		var id: int = row[0]
 		seen[id] = true
-		monsters[id] = {"type": row[1], "hp": row[4], "max_hp": row[5], "status_bits": row[6], "target": row[7], "elite": row[8] == 1}
+		monsters[id] = {"type": row[1], "hp": row[4], "max_hp": row[5], "status_bits": row[6], "target": row[7], "elite": row[8] == 1, "level": row[9]}
 		if not _monster_buffers.has(id):
 			_monster_buffers[id] = InterpolationBuffer.new()
 		(_monster_buffers[id] as InterpolationBuffer).push(tick, row[2], row[2], row[3])
@@ -258,7 +287,10 @@ func _on_snapshot(tick: int, rows: Array, monster_rows: Array) -> void:
 ## {"position", "aim", "facing"} of a monster for drawing; {} when unknown.
 func monster_render_state(id: int) -> Dictionary:
 	if _monster_buffers.has(id):
-		return (_monster_buffers[id] as InterpolationBuffer).sample(render_tick)
+		var s: Dictionary = (_monster_buffers[id] as InterpolationBuffer).sample(render_tick)
+		if not s.is_empty():
+			s["level"] = int(monsters[id].get("level", 1)) if monsters.has(id) else 1
+		return s
 	return {}
 
 
@@ -275,6 +307,34 @@ func dodge_cooldown_ratio() -> float:
 func choose_class(new_class: String) -> void:
 	if status == Status.IN_GAME:
 		_transport.send(Transport.HOST_PEER, Protocol.choose_class(new_class), true)
+
+
+## Progress requests: the host checks each one and answers with PROGRESS when it accepts.
+func spend_attribute(attr: String) -> void:
+	if status == Status.IN_GAME:
+		_transport.send(Transport.HOST_PEER, Protocol.spend_attribute(attr), true)
+
+
+func buy_talent(id: String) -> void:
+	if status == Status.IN_GAME:
+		_transport.send(Transport.HOST_PEER, Protocol.buy_talent(id), true)
+
+
+func buy_mastery(dir: String) -> void:
+	if status == Status.IN_GAME:
+		_transport.send(Transport.HOST_PEER, Protocol.buy_mastery(dir), true)
+
+
+## what: "attributes", "talents" or "upgrade" (next to the trainer, out of combat).
+func reset_progress(what: String) -> void:
+	if status == Status.IN_GAME:
+		_transport.send(Transport.HOST_PEER, Protocol.reset(what), true)
+
+
+## Only the host player, next to the trainer (the host checks).
+func set_arena_level(level: int) -> void:
+	if status == Status.IN_GAME:
+		_transport.send(Transport.HOST_PEER, Protocol.set_arena_level(level), true)
 
 
 ## Replaces slots 1-4 (the host checks they are this class's abilities).

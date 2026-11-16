@@ -33,7 +33,7 @@ func test_roundtrip_input() -> void:
 
 
 func test_roundtrip_snapshot() -> void:
-	var players := [[1, Vector3(1.5, 0, 2.5), Vector3(4, 0, 4), 0.5, 12, 80.0, 100.0, 30.0, 100.0, 0, 0, 0, Vector2.ZERO, 0, 1.0, 0, 0.0]]
+	var players := [[1, Vector3(1.5, 0, 2.5), Vector3(4, 0, 4), 0.5, 12, 80.0, 100.0, 30.0, 100.0, 0, 0, 0, Vector2.ZERO, 0, 1.0, 0, 0.0, 1]]
 	var m := Protocol.decode(Protocol.snapshot(99, players))
 	assert_eq(m.type, Protocol.Msg.SNAPSHOT)
 	assert_eq(m.tick, 99)
@@ -131,10 +131,10 @@ func test_snapshot_fits_with_4_players_30_monsters() -> void:
 	var players := []
 	for i in 4:
 		players.append([i + 1, Vector3(123.456, 0, 98.765), Vector3(130.1, 0, 90.2), 1.234, 99999,
-			1234.5, 2000.0, 87.5, 100.0, 0, 0x3FFF, 5, Vector2(0.7, 0.7), 123456, 0.6, 5, 0.75])
+			1234.5, 2000.0, 87.5, 100.0, 0, 0x3FFF, 5, Vector2(0.7, 0.7), 123456, 0.6, 5, 0.75, 1])
 	var monsters := []
 	for i in 30:
-		monsters.append([1000 + i, "cult_archer", Vector3(100.5 + i, 0, 80.25), 2.5, 4567.8, 9000.0, 0x3FFF, 4, 1])
+		monsters.append([1000 + i, "cult_archer", Vector3(100.5 + i, 0, 80.25), 2.5, 4567.8, 9000.0, 0x3FFF, 4, 1, 1])
 	var packet := Protocol.snapshot(123456, players, monsters)
 	assert_lt(packet.size(), Protocol.MAX_PACKET_BYTES, "%d bytes" % packet.size())
 	assert_false(Protocol.decode(packet).is_empty())
@@ -142,8 +142,8 @@ func test_snapshot_fits_with_4_players_30_monsters() -> void:
 
 
 func test_monster_rows_round_trip_packed() -> void:
-	var rows := [[1000, "marked_boar", Vector3(12.25, 0, 7.5), -2.5, 88.5, 110.0, 0x24, 2, 1],
-		[1001, "cultist", Vector3(3, 0.5, 4), 1.0, 55.0, 55.0, 0, 0, 0]]
+	var rows := [[1000, "marked_boar", Vector3(12.25, 0, 7.5), -2.5, 88.5, 110.0, 0x24, 2, 1, 7],
+		[1001, "cultist", Vector3(3, 0.5, 4), 1.0, 55.0, 55.0, 0, 0, 0, 65535]]
 	var m := Protocol.decode(Protocol.snapshot(9, [], rows))
 	assert_eq(m.monsters.size(), 2)
 	var a: Array = m.monsters[0]
@@ -163,10 +163,10 @@ func test_snapshot_with_arena_monsters_fits_enet_mtu() -> void:
 	var players := []
 	for i in 4:
 		players.append([i + 1, Vector3(123.456, 0, 98.765), Vector3(130.1, 0, 90.2), 1.234, 99999,
-			1234.5, 2000.0, 87.5, 100.0, 0, 0x3FFF, 5, Vector2(0.7, 0.7), 123456, 0.6, 5, 0.75])
+			1234.5, 2000.0, 87.5, 100.0, 0, 0x3FFF, 5, Vector2(0.7, 0.7), 123456, 0.6, 5, 0.75, 1])
 	var monsters := []
 	for i in 13:
-		monsters.append([1000 + i, "cult_archer", Vector3(10.5 + i, 0, 8.25), 2.5, 4567.8, 9000.0, 0x3FFF, 4, 1])
+		monsters.append([1000 + i, "cult_archer", Vector3(10.5 + i, 0, 8.25), 2.5, 4567.8, 9000.0, 0x3FFF, 4, 1, 1])
 	var size := Protocol.snapshot(123456, players, monsters).size()
 	assert_lt(size, 1392, "the test arena's 13 monsters and 4 players fit one ENet packet (%d bytes)" % size)
 
@@ -176,16 +176,79 @@ func test_boss_fight_snapshot_fits_enet_mtu() -> void:
 	var players := []
 	for i in 4:
 		players.append([i + 1, Vector3(123.456, 0, 98.765), Vector3(130.1, 0, 90.2), 1.234, 99999,
-			1234.5, 2000.0, 87.5, 100.0, 0, 0x3FFF, 5, Vector2(0.7, 0.7), 123456, 0.6, 5, 0.75])
+			1234.5, 2000.0, 87.5, 100.0, 0, 0x3FFF, 5, Vector2(0.7, 0.7), 123456, 0.6, 5, 0.75, 1])
 	var monsters := []
 	for i in 24:
-		monsters.append([1000 + i, "cultist", Vector3(10.5 + i, 0, 8.25), 2.5, 4567.8, 9000.0, 0x3FFF, 4, 0])
+		monsters.append([1000 + i, "cultist", Vector3(10.5 + i, 0, 8.25), 2.5, 4567.8, 9000.0, 0x3FFF, 4, 0, 1])
 	var packet := Protocol.snapshot(123456, players, monsters)
 	assert_lt(packet.size(), 1392, "%d bytes" % packet.size())
 	var back := Protocol.decode(packet)
 	assert_eq(back.players.size(), 4)
 	var row: Array = back.players[0]
-	assert_eq(row.size(), 17)
+	assert_eq(row.size(), 18)
 	assert_eq([row[0], row[4], row[9], row[10], row[11], row[13], row[15]], [1, 99999, 0, 0x3FFF, 5, 123456, 5])
 	assert_almost_eq((row[1] as Vector3).x, 123.456, 0.001)
 	assert_almost_eq(float(row[16]), 0.75, 0.001)
+
+
+# --- Protocol 6: progression ----------------------------------------------------------
+
+func test_version_is_6() -> void:
+	assert_eq(Protocol.VERSION, 6)
+
+
+func test_progress_requests_roundtrip() -> void:
+	assert_eq(Protocol.decode(Protocol.spend_attribute("strength")), {"type": Protocol.Msg.SPEND_ATTRIBUTE, "attr": "strength"})
+	assert_eq(Protocol.decode(Protocol.buy_talent("might_1")), {"type": Protocol.Msg.BUY_TALENT, "id": "might_1"})
+	assert_eq(Protocol.decode(Protocol.buy_mastery("might")), {"type": Protocol.Msg.BUY_MASTERY, "dir": "might"})
+	assert_eq(Protocol.decode(Protocol.reset("talents")), {"type": Protocol.Msg.RESET, "what": "talents"})
+	assert_eq(Protocol.decode(Protocol.set_arena_level(12)), {"type": Protocol.Msg.SET_ARENA_LEVEL, "level": 12})
+	assert_eq(Protocol.decode(Protocol.arena_level(7)), {"type": Protocol.Msg.ARENA_LEVEL, "level": 7})
+
+
+func test_progress_message_roundtrip() -> void:
+	var pr := PlayerProgress.new()
+	pr.level = 9
+	pr.attributes["spirit"] = 3
+	var m := Protocol.decode(Protocol.progress(pr.to_dict(), ["a", "", "", ""]))
+	assert_eq(m.type, Protocol.Msg.PROGRESS)
+	assert_eq(PlayerProgress.from_dict(m.progress).level, 9)
+	assert_eq(m.bar, ["a", "", "", ""])
+
+
+func test_wrong_types_decode_to_empty() -> void:
+	for t: int in [Protocol.Msg.SPEND_ATTRIBUTE, Protocol.Msg.BUY_TALENT, Protocol.Msg.BUY_MASTERY, Protocol.Msg.RESET,
+			Protocol.Msg.SET_ARENA_LEVEL, Protocol.Msg.ARENA_LEVEL]:
+		assert_eq(Protocol.decode(Protocol.pack([t, 3.5])), {}, "type %d" % t)
+		assert_eq(Protocol.decode(Protocol.pack([t])), {}, "type %d without field" % t)
+	assert_eq(Protocol.decode(Protocol.pack([Protocol.Msg.PROGRESS, "x", []])), {})
+	assert_eq(Protocol.decode(Protocol.pack([Protocol.Msg.PROGRESS, {}, "x"])), {})
+
+
+func test_hello_and_welcome_carry_progress_and_arena_level() -> void:
+	var h := Protocol.decode(Protocol.hello("0.6.0", Protocol.VERSION, "Ana", "warrior", {}, [], {"level": 4}))
+	assert_eq(h.progress, {"level": 4})
+	var w := Protocol.decode(Protocol.welcome(2, 10, [], 33))
+	assert_eq(w.arena_level, 33)
+
+
+func test_protocol5_hello_decodes_so_the_host_can_answer_version() -> void:
+	var m := Protocol.decode(Protocol.pack([Protocol.Msg.HELLO, "0.5.0", 5, "Ana", "warrior", {}, ["a", "", "", ""]]))
+	assert_eq(m.type, Protocol.Msg.HELLO)
+	assert_eq(m.protocol, 5)
+	assert_eq(m.progress, {})
+
+
+func test_level_65535_survives_snapshot_rows() -> void:
+	var players := [[1, Vector3(1, 0, 1), Vector3(2, 0, 2), 0.5, 3, 80.0, 100.0, 30.0, 100.0, 0, 0, 0, Vector2.ZERO, 0, 1.0, 0, 0.0, 65535]]
+	var monsters := [[1000, "cultist", Vector3(3, 0, 3), 1.0, 55.0, 55.0, 0, 0, 0, 65535]]
+	var m := Protocol.decode(Protocol.snapshot(5, players, monsters))
+	assert_eq(m.players[0][17], 65535)
+	assert_eq(m.monsters[0][9], 65535)
+	var over := Protocol.decode(Protocol.snapshot(5, [], [[1000, "cultist", Vector3.ZERO, 0.0, 1.0, 1.0, 0, 0, 0, 99999999]]))
+	assert_eq(over.monsters[0][9], 65535, "clamped, not wrapped")
+
+
+func test_record_sizes() -> void:
+	assert_eq(Protocol.pack_players([[1, Vector3.ZERO, Vector3.ZERO, 0.0, 0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, Vector2.ZERO, 0, 1.0, 0, 0.0, 1]]).size(), Protocol.PLAYER_RECORD)
+	assert_eq(Protocol.pack_monsters([[1000, "cultist", Vector3.ZERO, 0.0, 1.0, 1.0, 0, 0, 0, 1]]).size(), Protocol.MONSTER_RECORD)

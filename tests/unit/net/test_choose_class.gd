@@ -128,8 +128,8 @@ func test_client_updates_roster_and_emits() -> void:
 	assert_eq(client.bar, AbilityDB.load_default().default_bar("archer"))
 
 
-func test_protocol_is_5() -> void:
-	assert_eq(Protocol.VERSION, 5)
+func test_protocol_is_6() -> void:
+	assert_eq(Protocol.VERSION, 6)
 
 
 func test_choosing_keeps_the_health_ratio() -> void:
