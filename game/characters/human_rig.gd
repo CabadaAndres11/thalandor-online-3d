@@ -279,6 +279,7 @@ func _shoot(k: float) -> void:
 	var up := _ease(minf(k / 0.2, 1.0)) * (1.0 - _ease(clampf((k - 0.8) / 0.2, 0.0, 1.0)))
 	var draw := _ease(clampf((k - 0.15) / 0.4, 0.0, 1.0)) if k < 0.7 else 0.0
 	_rot("arm_left", -PI / 2.0 * up)
+	_rot("hand_left", PI / 2.0 * up - 0.15 * (1.0 - up)) # the bow stays upright
 	_rot("arm_right", -PI / 2.0 * up)
 	(_parts["arm_right"] as Node3D).rotation.y = 0.7 * draw
 	(_parts["torso"] as Node3D).rotation.y = 0.25 * up
@@ -295,6 +296,8 @@ func _cast(k: float) -> void:
 		arms = lerpf(-1.5, 0.0, _ease((k - 0.6) / 0.4))
 	_rot("arm_left", arms)
 	_rot("arm_right", arms)
+	_rot("hand_left", -arms) # staves and maces stay upright
+	_rot("hand_right", -arms)
 	(_parts["head"] as Node3D).rotation.x = -0.15 * sin(k * PI)
 
 

@@ -124,3 +124,24 @@ func test_no_external_resources() -> void:
 		assert_false(mi.mesh.resource_path.contains("characters/base"), mi.name)
 		for s in mi.get_surface_override_material_count():
 			assert_null(mi.get_surface_override_material(s), "no layered shader on " + mi.name)
+
+
+func test_bow_stays_upright_while_aiming() -> void:
+	var rig := HumanRig.build(_look())
+	add_child_autofree(rig)
+	rig.play_action("shoot")
+	rig.update(HumanRig.ACTIONS.shoot * 0.5)
+	var up := rig.part("hand_left").global_transform.basis.y.normalized()
+	assert_gt(up.dot(Vector3.UP), 0.9, "the bow hand holds the bow upright")
+	var arm_dir := -rig.part("arm_left").global_transform.basis.y.normalized()
+	assert_gt(arm_dir.dot(Vector3.FORWARD * -1.0), 0.9, "the bow arm points forward")
+
+
+func test_staff_points_up_while_casting() -> void:
+	var rig := HumanRig.build(_look())
+	add_child_autofree(rig)
+	rig.play_action("cast")
+	for k: float in [0.2, 0.5]:
+		rig.update(HumanRig.ACTIONS.cast * 0.15)
+		var up := rig.part("hand_right").global_transform.basis.y.normalized()
+		assert_gt(up.dot(Vector3.UP), 0.7, "the staff stays upright at %.1f" % k)

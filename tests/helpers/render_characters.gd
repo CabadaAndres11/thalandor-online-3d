@@ -40,8 +40,8 @@ func _initialize() -> void:
 		rig.position = origin + Vector3(i * SPACING, 0, 0)
 		rig.rotation_degrees.y = float(looks[i].get("rot", 0.0))
 		root.add_child(rig)
-		if looks[i].has("action"):
-			rig.position.x += (i - 3) * 0.35 # spread the poses out
+		if looks[i].has("action") or looks[i].has("dx"):
+			rig.position.x += (i - 3) * float(looks[i].get("dx", 0.35)) # spread the poses out
 		var action := str(looks[i].get("action", ""))
 		if action != "":
 			rig.auto_update = false
@@ -100,6 +100,16 @@ func _looks(set_name: String) -> Array:
 				var l: Dictionary = _resolved([[a[0], {"hair_style": "short", "beard": "short"}, 35.0]])[0]
 				l["action"] = a[1]
 				l["at"] = a[2]
+				out.append(l)
+			return out
+		"grip":
+			var out := []
+			for a: Array in [["archer", "", 0.0, 50.0], ["archer", "shoot", 0.5, 70.0], ["mage", "", 0.0, 50.0], ["mage", "cast", 0.5, 70.0]]:
+				var l: Dictionary = _resolved([[a[0], {"hair_style": "short"}, a[3]]])[0]
+				l["dx"] = 0.6
+				if a[1] != "":
+					l["action"] = a[1]
+					l["at"] = a[2]
 				out.append(l)
 			return out
 		"classes_back":

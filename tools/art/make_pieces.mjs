@@ -268,17 +268,19 @@ const WEAPONS = {
     s.box(-1, 1, f.z1 + 6, -1, 2, f.z1 + 8, STEEL).box(3, 1, f.z1 + 6, 3, 2, f.z1 + 8, STEEL);
     s.box(1, 1, f.z1 + 9, 1, 2, f.z1 + 9, GOLD);
   },
-  // An upright staff (it stands on the ground beside the mage) crowned by a crystal.
+  // An upright staff through the fist (it reaches the ground beside the mage),
+  // crowned by a crystal in gold claws.
   weapon_staff(f, s) {
-    s.box(1, -6, f.z1 + 1, 1, 10, f.z1 + 1, WOOD);
-    s.box(0, 9, f.z1 + 1, 2, 9, f.z1 + 1, GOLD).put(0, 10, f.z1 + 1, GOLD).put(2, 10, f.z1 + 1, GOLD);
-    s.box(1, 11, f.z1, 1, 13, f.z1 + 2, GLOW).box(0, 12, f.z1 + 1, 2, 12, f.z1 + 1, GLOW);
+    s.box(1, -6, f.z1, 1, 10, f.z1, WOOD);
+    s.box(0, 9, f.z1, 2, 9, f.z1, GOLD).put(0, 10, f.z1, GOLD).put(2, 10, f.z1, GOLD);
+    s.box(1, 11, f.z1 - 1, 1, 13, f.z1 + 1, GLOW).box(0, 12, f.z1, 2, 12, f.z1, GLOW);
   },
-  // An upright longbow in the left fist, limbs curving back toward the archer.
+  // An upright longbow gripped in the left fist; the limbs curve back to the tips and
+  // the string runs between them, on the archer's side.
   weapon_bow(f, s) {
-    s.box(1, -1, f.z1 + 1, 1, 4, f.z1 + 1, WOOD); // grip, just in front of the fist
-    s.box(1, 5, f.z1, 1, 6, f.z1, WOOD).box(1, 7, f.z1 - 1, 1, 8, f.z1 - 1, WOOD).put(1, 9, f.z1 - 2, WOOD);
-    s.box(1, -3, f.z1, 1, -2, f.z1, WOOD).box(1, -5, f.z1 - 1, 1, -4, f.z1 - 1, WOOD).put(1, -6, f.z1 - 2, WOOD);
+    s.box(1, -1, f.z1, 1, 4, f.z1, WOOD); // grip, through the fist
+    s.box(1, 5, f.z1 - 1, 1, 6, f.z1 - 1, WOOD).box(1, 7, f.z1 - 2, 1, 8, f.z1 - 2, WOOD).put(1, 9, f.z1 - 3, WOOD);
+    s.box(1, -3, f.z1 - 1, 1, -2, f.z1 - 1, WOOD).box(1, -5, f.z1 - 2, 1, -4, f.z1 - 2, WOOD).put(1, -6, f.z1 - 3, WOOD);
     s.box(1, -5, f.z1 - 3, 1, 8, f.z1 - 3, STRING);
   },
   weapon_dagger_right(f, s) {
