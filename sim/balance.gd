@@ -45,6 +45,10 @@ var elite_hp_mult: float = 2.5
 var elite_damage_mult: float = 1.4
 ## Progression (Plan 4): experience curve (see Xp).
 var xp: Dictionary = {}
+## Monster level scaling per level above 1 (hp, damage, armor) and arena level limits.
+var monster_scaling: Dictionary = {}
+## Extra armor constant per attacker level above 1 (armor loses value against stronger foes).
+var armor_k_per_level: float = 6.0
 
 
 static func load_from(path: String = DEFAULT_PATH) -> Balance:

@@ -296,7 +296,9 @@ static func _maybe_summon(world: SimWorld, m: MonsterState) -> void:
 		var pos := m.position + Vector3(sin(a), 0, cos(a)) * (m.radius + 1.5)
 		if world.map.is_solid(Vector2i(floori(pos.x), floori(pos.z))):
 			pos = m.position
-		var g := MonsterDB.load_default().make(str(s.get("type", "cultist")), world.next_monster_id(), pos, world)
+		var g_type := str(s.get("type", "cultist"))
+		var g := MonsterDB.load_default().make(g_type, world.next_monster_id(), pos, world,
+			world.monster_level({}, MonsterDB.load_default().get_type(g_type)))
 		Spawner.scale_health(world, g, 1.0)
 		for pid: int in m.threat:
 			g.add_threat(pid, 1.0)

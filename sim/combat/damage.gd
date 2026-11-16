@@ -8,10 +8,12 @@ extends RefCounted
 ## spec.force_crit makes the hit critical without rolling (Ráfaga, Emboscada).
 
 
-static func mitigation(armor: float, balance: Balance) -> float:
+## Armor weakens against stronger attackers: K grows with the attacker's level.
+static func mitigation(armor: float, balance: Balance, attacker_level: int = 1) -> float:
 	if armor <= 0.0:
 		return 0.0
-	return minf(armor / (armor + balance.armor_k), balance.mitigation_cap)
+	var k := balance.armor_k + balance.armor_k_per_level * float(maxi(attacker_level, 1) - 1)
+	return minf(armor / (armor + k), balance.mitigation_cap)
 
 
 ## spec: {base, coef, kind: "physical"|"magic", can_crit := true, force_crit := false}.
@@ -36,7 +38,7 @@ static func roll(attacker: CombatEntity, target: CombatEntity, spec: Dictionary,
 	amount *= maxf(0.0, 1.0 - target.status_magnitude("damage_reduction"))
 	amount *= Passives.damage_mult(attacker, target, spec, world)
 	if physical:
-		amount *= 1.0 - mitigation(target.stats.armor, b)
+		amount *= 1.0 - mitigation(target.stats.armor, b, attacker.level)
 	result.amount = maxf(amount, 0.0)
 	return result
 

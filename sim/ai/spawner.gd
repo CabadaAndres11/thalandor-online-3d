@@ -59,7 +59,9 @@ func _spawn(world: SimWorld, index: int) -> void:
 		if not world.map.is_solid(Vector2i(floori(c.x), floori(c.z))):
 			pos = c
 			break
-	var m := MonsterDB.load_default().make(str(p.get("type", "")), world.next_monster_id(), pos, world)
+	var type_id := str(p.get("type", ""))
+	var level := world.monster_level(p, MonsterDB.load_default().get_type(type_id))
+	var m := MonsterDB.load_default().make(type_id, world.next_monster_id(), pos, world, level)
 	m.spawn_index = index
 	if not bool(m.def.get("boss", false)) and world.rng.randf() < float(p.get("elite_chance", 0.0)):
 		MonsterDB.make_elite(m, world.balance)

@@ -130,6 +130,7 @@ static func snapshot_of(e: CombatEntity) -> CombatEntity:
 	var s := CombatEntity.new()
 	s.id = e.id
 	s.team = e.team
+	s.level = e.level
 	s.position = e.position
 	s.facing = e.facing
 	s.stats = e.stats.duplicate_stats()

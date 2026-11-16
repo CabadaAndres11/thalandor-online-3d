@@ -7,6 +7,8 @@ enum { TEAM_PLAYERS, TEAM_MONSTERS }
 enum { ALIVE, DOWNED, DEAD }
 
 var id: int = 0
+## Character or monster level (players: PlayerProgress.level via Progression.rebuild).
+var level: int = 1
 ## Monster type (data/monsters) or "" for players.
 var type_id: String = ""
 ## Who it is attacking (monsters), 0 = nobody.

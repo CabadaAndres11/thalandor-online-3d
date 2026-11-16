@@ -37,6 +37,31 @@ func next_object_id() -> int:
 	return _next_object_id
 
 
+## Level of the monsters the arena spawns (Brann sets it, 1..60).
+var arena_level: int = 1
+
+
+## Changes the arena level; idle monsters (no target, no threat) are rebuilt at the new
+## level on the spot, the rest take it when they respawn.
+func set_arena_level(level: int) -> void:
+	arena_level = clampi(level, int(balance.monster_scaling.get("arena_min", 1)), int(balance.monster_scaling.get("arena_max", 60)))
+	for e: CombatEntity in monsters.values():
+		var m := e as MonsterState
+		if m == null or not m.is_alive() or m.target_id != 0 or not m.threat.is_empty():
+			continue
+		if m.def.is_empty():
+			continue
+		MonsterDB.apply_level(m, monster_level({}, m.def), balance)
+		Spawner.scale_health(self, m, 1.0)
+	emit(["arena_level", arena_level])
+
+
+## Level of a monster spawned from `spawn` (map spawn point) of type `def`.
+func monster_level(spawn: Dictionary, def: Dictionary) -> int:
+	var bonus := int(balance.monster_scaling.get("boss_level_bonus", 2)) if bool(def.get("boss", false)) else 0
+	return arena_level + int(spawn.get("level_offset", 0)) + bonus
+
+
 func add_entity(e: CombatEntity) -> void:
 	monsters[e.id] = e
 
