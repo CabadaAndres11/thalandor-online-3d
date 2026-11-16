@@ -34,7 +34,7 @@ func test_builds_all_parts() -> void:
 		assert_not_null(rig.part(part_name), part_name)
 		assert_not_null(rig.part_mesh(part_name), part_name + " mesh")
 	assert_eq(rig.part("head").get_parent(), rig.part("torso"), "head hangs from the torso")
-	assert_eq(rig.part("hand_right").get_parent(), rig.part("arm_right"), "hand hangs from the arm")
+	assert_eq(rig.part("hand_right").get_parent(), rig.part("forearm_right"), "hand hangs from the forearm")
 
 
 func test_tints_skin_and_eyes() -> void:
@@ -145,3 +145,34 @@ func test_staff_points_up_while_casting() -> void:
 		rig.update(HumanRig.ACTIONS.cast * 0.15)
 		var up := rig.part("hand_right").global_transform.basis.y.normalized()
 		assert_gt(up.dot(Vector3.UP), 0.7, "the staff stays upright at %.1f" % k)
+
+
+func test_limbs_have_elbows_and_knees() -> void:
+	var rig := HumanRig.build(_look())
+	add_child_autofree(rig)
+	assert_eq(rig.part("forearm_left").get_parent(), rig.part("arm_left"), "elbow")
+	assert_eq(rig.part("hand_left").get_parent(), rig.part("forearm_left"), "wrist")
+	assert_eq(rig.part("shin_right").get_parent(), rig.part("leg_right"), "knee")
+
+
+func test_walk_bends_the_knees() -> void:
+	var rig := HumanRig.build(_look())
+	add_child_autofree(rig)
+	rig.set_moving_speed(5.0, 5.0)
+	var bent := false
+	for i in 20:
+		rig.update(0.05)
+		if rig.part("shin_left").rotation.x > 0.2:
+			bent = true
+	assert_true(bent, "the lifted leg bends at the knee")
+
+
+func test_about_as_tall_as_a_person() -> void:
+	var rig := HumanRig.build(_look())
+	add_child_autofree(rig)
+	var top := -INF
+	for n: Node in rig.find_children("Mesh", "MeshInstance3D", true, false):
+		var mi := n as MeshInstance3D
+		var aabb := mi.global_transform * mi.get_aabb()
+		top = maxf(top, aabb.end.y)
+	assert_between(top, 1.65, 1.85, "head top in meters")

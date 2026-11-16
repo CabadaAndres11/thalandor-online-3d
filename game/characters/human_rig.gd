@@ -8,12 +8,15 @@ extends Node3D
 ## their progress, so they are deterministic and testable (update(delta)).
 
 const RIG := "res://assets/characters/vox/human.json"
-const MODEL_SCALE := 0.78
-const PARTS := ["hips", "torso", "head", "arm_left", "arm_right", "hand_left", "hand_right", "leg_left", "leg_right"]
+## Fine voxels: the 49-voxel body is about 1.76 m tall.
+const MODEL_SCALE := 0.36
+const PARTS := ["hips", "torso", "head", "arm_left", "arm_right", "forearm_left", "forearm_right",
+	"hand_left", "hand_right", "leg_left", "leg_right", "shin_left", "shin_right"]
 ## Which body_scale entry applies to each part.
 const SCALE_GROUP := {
 	"hips": "torso", "torso": "torso", "arm_left": "arm", "arm_right": "arm",
-	"hand_left": "arm", "hand_right": "arm", "leg_left": "leg", "leg_right": "leg",
+	"forearm_left": "arm", "forearm_right": "arm", "hand_left": "arm", "hand_right": "arm",
+	"leg_left": "leg", "leg_right": "leg", "shin_left": "leg", "shin_right": "leg",
 }
 ## Seconds each action lasts; downed and die then stay.
 const ACTIONS := {"melee": 0.45, "shoot": 0.65, "cast": 0.6, "dash": 0.35, "downed": 0.5, "die": 0.7}
@@ -169,11 +172,11 @@ func _setup(look: Dictionary) -> void:
 		var parent_name := str((parts[part_name] as Dictionary).get("parent", ""))
 		var pivot: Node3D = _parts[part_name]
 		var pos: Vector3 = pivots[part_name]
-		if part_name.begins_with("arm_"):
+		if _in_arm(part_name):
 			pos.x *= torso_f.x # broad shoulders carry the arms out
 		if parent_name != "" and _parts.has(parent_name):
 			var parent_pos: Vector3 = pivots[parent_name]
-			if parent_name.begins_with("arm_"):
+			if _in_arm(parent_name):
 				parent_pos.x *= torso_f.x
 			pivot.position = (pos - parent_pos) * VoxMesher.VOXEL_SIZE
 			(_parts[parent_name] as Node3D).add_child(pivot)
@@ -199,6 +202,10 @@ func _attach_piece(p: Dictionary, tints: Dictionary) -> void:
 	node.position = Vector3(o[0], o[1], o[2]) * VoxMesher.VOXEL_SIZE
 	host.add_child(node)
 	_pieces[str(p.id)] = node
+
+
+static func _in_arm(part_name: String) -> bool:
+	return part_name.begins_with("arm_") or part_name.begins_with("forearm_") or part_name.begins_with("hand_")
 
 
 static func _factor(body_scale: Dictionary, group: String) -> Vector3:
@@ -243,13 +250,18 @@ func _locomotion(walk: float) -> void:
 	_rot("leg_right", -swing)
 	_rot("arm_left", -swing * ARM_SWING / LEG_SWING)
 	_rot("arm_right", swing * ARM_SWING / LEG_SWING)
+	# The leg swinging forward bends at the knee; the elbows stay a little bent.
+	_rot("shin_left", maxf(0.0, -sin(_phase)) * 0.9 * walk + 0.05)
+	_rot("shin_right", maxf(0.0, sin(_phase)) * 0.9 * walk + 0.05)
+	_rot("forearm_left", -0.18 - 0.25 * walk)
+	_rot("forearm_right", -0.18 - 0.25 * walk)
 	var breath := sin(_time * 2.0)
 	(_parts["torso"] as Node3D).position.y += breath * 0.004 * (1.0 - walk)
 	(_parts["torso"] as Node3D).rotation.y = sin(_phase) * 0.08 * walk
 	(_parts["head"] as Node3D).rotation.x = sin(_time * 1.3) * 0.03
 	(_parts["hips"] as Node3D).position.y += absf(sin(_phase)) * 0.04 * walk
-	_rot("hand_left", -0.15)
-	_rot("hand_right", -0.15)
+	_rot("hand_left", 0.1)
+	_rot("hand_right", 0.1)
 
 
 ## Wind up over the shoulder, a heavy diagonal swing with the torso, recover.
@@ -269,6 +281,7 @@ func _melee(k: float) -> void:
 		arm = lerpf(0.6, 0.0, e)
 		twist = lerpf(-0.45, 0.0, e)
 	_rot("arm_right", arm)
+	_rot("forearm_right", -1.1 * clampf(-arm / 2.5, 0.0, 1.0)) # cocked back, then straight
 	(_parts["arm_right"] as Node3D).rotation.z = -absf(twist) * 0.6
 	(_parts["torso"] as Node3D).rotation.y = twist
 	_rot("arm_left", -twist * 0.6)
@@ -279,7 +292,9 @@ func _shoot(k: float) -> void:
 	var up := _ease(minf(k / 0.2, 1.0)) * (1.0 - _ease(clampf((k - 0.8) / 0.2, 0.0, 1.0)))
 	var draw := _ease(clampf((k - 0.15) / 0.4, 0.0, 1.0)) if k < 0.7 else 0.0
 	_rot("arm_left", -PI / 2.0 * up)
-	_rot("hand_left", PI / 2.0 * up - 0.15 * (1.0 - up)) # the bow stays upright
+	_rot("forearm_left", -0.18 * (1.0 - up)) # the bow arm straightens
+	_rot("hand_left", PI / 2.0 * up + 0.1 * (1.0 - up)) # the bow stays upright
+	_rot("forearm_right", -1.7 * draw) # the string comes back to the cheek
 	_rot("arm_right", -PI / 2.0 * up)
 	(_parts["arm_right"] as Node3D).rotation.y = 0.7 * draw
 	(_parts["torso"] as Node3D).rotation.y = 0.25 * up
@@ -296,6 +311,8 @@ func _cast(k: float) -> void:
 		arms = lerpf(-1.5, 0.0, _ease((k - 0.6) / 0.4))
 	_rot("arm_left", arms)
 	_rot("arm_right", arms)
+	_rot("forearm_left", 0.0)
+	_rot("forearm_right", 0.0)
 	_rot("hand_left", -arms) # staves and maces stay upright
 	_rot("hand_right", -arms)
 	(_parts["head"] as Node3D).rotation.x = -0.15 * sin(k * PI)
@@ -309,6 +326,8 @@ func _dash(k: float) -> void:
 	_rot("arm_right", 1.0 * e)
 	_rot("leg_left", -0.7 * e)
 	_rot("leg_right", 0.8 * e)
+	_rot("shin_left", 0.7 * e)
+	_rot("shin_right", 0.3 * e)
 	_body.position.y = -0.12 * e
 
 
@@ -318,6 +337,7 @@ func _fall(e: float, downed: bool) -> void:
 	_body.position.y = 0.25 * e
 	_rot("leg_left", -0.25 * e)
 	_rot("leg_right", 0.1 * e)
+	_rot("shin_left", 0.6 * e if downed else 0.1 * e)
 	if downed:
 		_rot("arm_right", -1.2 * e)
 		(_parts["head"] as Node3D).rotation.x = 0.5 * e

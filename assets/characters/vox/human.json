@@ -4,26 +4,26 @@
 			"file": "res://assets/characters/vox/human_hips.vox",
 			"pivot": [
 				0,
-				8,
+				22,
 				0
 			],
 			"offset": [
-				-3,
-				0,
-				-2
+				-5,
+				-2,
+				-3
 			]
 		},
 		"torso": {
 			"file": "res://assets/characters/vox/human_torso.vox",
 			"pivot": [
 				0,
-				10,
+				26,
 				0
 			],
 			"offset": [
-				-4,
+				-6,
 				0,
-				-2
+				-4
 			],
 			"parent": "hips"
 		},
@@ -31,99 +31,155 @@
 			"file": "res://assets/characters/vox/human_head.vox",
 			"pivot": [
 				0,
-				16,
+				40,
 				0
 			],
 			"offset": [
-				-4,
+				-5,
 				0,
-				-3
+				-5
 			],
 			"parent": "torso"
 		},
 		"arm_left": {
 			"file": "res://assets/characters/vox/human_arm_left.vox",
 			"pivot": [
-				4,
-				15,
+				8,
+				36,
 				0
 			],
 			"offset": [
-				-1,
-				-5,
-				-1
+				-2,
+				-9,
+				-2
 			],
 			"parent": "torso"
 		},
 		"arm_right": {
 			"file": "res://assets/characters/vox/human_arm_right.vox",
 			"pivot": [
-				-4,
-				15,
+				-8,
+				36,
 				0
 			],
 			"offset": [
-				-1,
-				-5,
-				-1
+				-2,
+				-9,
+				-2
 			],
 			"parent": "torso"
+		},
+		"forearm_left": {
+			"file": "res://assets/characters/vox/human_forearm_left.vox",
+			"pivot": [
+				8,
+				26,
+				0
+			],
+			"offset": [
+				-2,
+				-8,
+				-2
+			],
+			"parent": "arm_left"
+		},
+		"forearm_right": {
+			"file": "res://assets/characters/vox/human_forearm_right.vox",
+			"pivot": [
+				-8,
+				26,
+				0
+			],
+			"offset": [
+				-2,
+				-8,
+				-2
+			],
+			"parent": "arm_right"
 		},
 		"hand_left": {
 			"file": "res://assets/characters/vox/human_hand_left.vox",
 			"pivot": [
-				4,
-				9,
+				8,
+				18,
 				0
 			],
 			"offset": [
-				-1,
-				-1,
-				-1
+				-2,
+				-4,
+				-2
 			],
-			"parent": "arm_left"
+			"parent": "forearm_left"
 		},
 		"hand_right": {
 			"file": "res://assets/characters/vox/human_hand_right.vox",
 			"pivot": [
-				-4,
-				9,
+				-8,
+				18,
 				0
 			],
 			"offset": [
-				-1,
-				-1,
-				-1
+				-2,
+				-4,
+				-2
 			],
-			"parent": "arm_right"
+			"parent": "forearm_right"
 		},
 		"leg_left": {
 			"file": "res://assets/characters/vox/human_leg_left.vox",
 			"pivot": [
-				1,
-				8,
+				2,
+				22,
 				0
 			],
 			"offset": [
-				-1,
-				-8,
-				-1
+				-2,
+				-10,
+				-2
 			],
 			"parent": "hips"
 		},
 		"leg_right": {
 			"file": "res://assets/characters/vox/human_leg_right.vox",
 			"pivot": [
-				-2,
-				8,
+				-3,
+				22,
 				0
 			],
 			"offset": [
-				-1,
-				-8,
-				-1
+				-2,
+				-10,
+				-2
 			],
 			"parent": "hips"
+		},
+		"shin_left": {
+			"file": "res://assets/characters/vox/human_shin_left.vox",
+			"pivot": [
+				2,
+				12,
+				0
+			],
+			"offset": [
+				-3,
+				-12,
+				-3
+			],
+			"parent": "leg_left"
+		},
+		"shin_right": {
+			"file": "res://assets/characters/vox/human_shin_right.vox",
+			"pivot": [
+				-3,
+				12,
+				0
+			],
+			"offset": [
+				-3,
+				-12,
+				-3
+			],
+			"parent": "leg_right"
 		}
 	}
 }

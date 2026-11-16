@@ -1,69 +1,130 @@
 // The voxel humanoid (players, cultists, NPCs), made as data.
 //   node tools/art/make_humans.mjs <out dir>      (assets/characters/vox)
-// Godot axes, faces +Z, 1 voxel = 0.1 m before HumanRig.MODEL_SCALE. Writes one .vox
-// per part plus human.json with each part's pivot (where it rotates, in voxels from
-// the rig origin on the ground) and mesh offset (from the pivot), as BeastRig rigs.
-// The body is symmetric about x = -0.5 (even widths). Tinted indices: skin (248),
-// eyes (249), hair (250: brows), primary (251: shirt and sleeves), trousers (247);
-// boots and belt are fixed colors.
+// Godot axes, faces +Z. Fine voxels: HumanRig scales the rig so the body (49 voxels)
+// is about 1.76 m tall. Writes one .vox per part plus human.json with each part's
+// pivot (where it rotates, in voxels from the rig origin on the ground) and mesh
+// offset (from the pivot), as BeastRig rigs. Symmetric about x = -0.5.
+// Adult proportions: a head about 1/5 of the height, long limbs with elbows and
+// knees. Each material has a base, a shade (folds, sides away from the light, under
+// the chest) and a light (top edges, cheekbones) tone, so it reads modelled rather
+// than flat; HumanRig tints them per character (skin, eyes, hair, shirt, trousers).
 import fs from "node:fs";
-import { write, Shape, TINT_TROUSERS, TINT_SKIN, TINT_EYES, TINT_HAIR, TINT_PRIMARY, TINT_SECONDARY } from "./vox.mjs";
+import { write, Shape, SHADE, LIGHT, TINT_TROUSERS, TINT_SKIN, TINT_EYES, TINT_HAIR, TINT_PRIMARY } from "./vox.mjs";
 
-const T = TINT_TROUSERS, SK = TINT_SKIN, EY = TINT_EYES, HR = TINT_HAIR, P = TINT_PRIMARY, S = TINT_SECONDARY;
-const BOOT = 30, BELT = 31, BUCKLE = 32, WHITE = 33, SHADE = 34, SOLE = 35;
+const T = TINT_TROUSERS, SK = TINT_SKIN, EY = TINT_EYES, HR = TINT_HAIR, P = TINT_PRIMARY;
+const BOOT = 30, BELT = 31, BUCKLE = 32, WHITE = 33, MOUTH = 34, SOLE = 35, BOOT_D = 36, BOOT_L = 37, BELT_D = 38;
 const PALETTE = {
-  [BOOT]: "#3a2a1e", [BELT]: "#4f3520", [BUCKLE]: "#c9a64a", [WHITE]: "#f1ece2",
-  [SHADE]: "#2a2420", [SOLE]: "#231a12",
+  [BOOT]: "#5a3d26", [BOOT_D]: "#3e2a1a", [BOOT_L]: "#7a5636", [BELT]: "#4a3220", [BELT_D]: "#33231a",
+  [BUCKLE]: "#d4ad4a", [WHITE]: "#efe9df", [MOUTH]: "#5a2a24", [SOLE]: "#231a12",
 };
+
+// Shade the faces of a box that look away from the light: its -X/+X sides by
+// `sides`, its back (-Z) and its bottom row.
+function shadeSides(s, x0, y0, z0, x1, y1, z1, tint) {
+  for (const v of [...s.cells.values()]) {
+    const [x, y, z, i] = v;
+    if (i !== tint || x < x0 || x > x1 || y < y0 || y > y1 || z < z0 || z > z1) continue;
+    if (x === x0 || x === x1 || z === z0) s.put(x, y, z, SHADE(tint));
+  }
+}
 
 function human() {
   const parts = {};
 
-  const hips = new Shape(); // pivot at the hip line, y 8
-  hips.box(-3, 0, -2, 2, 1, 1, T);
-  hips.box(-3, 1, -2, 2, 1, 1, BELT);
-  hips.put(-1, 1, 2, BUCKLE).put(0, 1, 2, BUCKLE); // buckle sticks out a little
-  parts.hips = { shape: hips, pivot: [0, 8, 0] };
+  // Pelvis and belt (pivot at the hip joints' height).
+  const hips = new Shape();
+  hips.box(-5, -2, -3, 4, 3, 2, T);
+  shadeSides(hips, -5, -2, -3, 4, 1, 2, T);
+  hips.box(-5, 2, -3, 4, 3, 2, BELT).box(-5, 2, -3, 4, 2, 2, BELT_D);
+  hips.box(-2, 1, 3, 1, 4, 3, BUCKLE).box(-1, 2, 3, 0, 3, 3, BELT_D); // buckle
+  parts.hips = { shape: hips, pivot: [0, 22, 0] };
 
-  const torso = new Shape(); // pivot at the waist, y 10
-  torso.box(-3, 0, -2, 2, 5, 1, P);
-  torso.box(-4, 4, -2, 3, 5, 1, P); // broad shoulders
-  torso.box(-1, 4, 1, 0, 5, 1, SK); // neckline
-  torso.box(-1, 5, 0, 0, 5, 0, SK); // neck
-  torso.box(-3, 0, -2, 2, 0, 1, P); // hem
-  parts.torso = { shape: torso, pivot: [0, 10, 0], parent: "hips" };
+  // Torso: waist, a broader chest and shoulders, the neck.
+  const torso = new Shape(); // pivot at the waist
+  torso.box(-5, 0, -3, 4, 3, 2, P);
+  torso.box(-6, 4, -4, 5, 11, 3, P);
+  torso.remove(-6, 11, -4, -6, 11, 3).remove(5, 11, -4, 5, 11, 3); // sloping shoulders
+  shadeSides(torso, -6, 0, -4, 5, 11, 3, P);
+  for (let x = -5; x <= 4; x++) torso.put(x, 4, 3, SHADE(P)); // fold under the chest
+  for (let x = -5; x <= 4; x++) torso.put(x, 10, 3, LIGHT(P)).put(x, 11, 2, LIGHT(P)); // light on the shoulders
+  torso.box(-2, 9, 4, 1, 11, 4, SK).remove(-2, 11, 3, 1, 11, 3).box(-1, 10, 3, 0, 11, 3, SK); // open collar
+  torso.box(-2, 12, -2, 1, 13, 1, SK).box(-2, 12, -2, 1, 13, -2, SHADE(SK)); // neck
+  parts.torso = { shape: torso, pivot: [0, 26, 0], parent: "hips" };
 
-  const head = new Shape(); // pivot at the base of the skull, y 16
-  head.box(-3, 0, -3, 2, 5, 2, SK);
-  head.remove(-3, 5, -3, -3, 5, 2).remove(2, 5, -3, 2, 5, 2); // rounded top corners
-  head.remove(-3, 0, -3, 2, 0, -3).remove(-3, 0, 2, -3, 0, 2).remove(2, 0, 2, 2, 0, 2); // jaw line
-  // Face on z = 2: eyes, brows in the hair color, a nose and a mouth.
-  head.put(-2, 2, 2, EY).put(1, 2, 2, EY);
-  head.box(-2, 3, 2, -1, 3, 2, HR).box(0, 3, 2, 1, 3, 2, HR);
-  head.box(-1, 1, 3, 0, 1, 3, SK); // nose
-  head.put(-1, 0, 2, SHADE).put(0, 0, 2, SHADE); // mouth
-  head.put(-4, 2, 0, SK).put(3, 2, 0, SK); // ears
-  parts.head = { shape: head, pivot: [0, 16, 0], parent: "torso" };
+  // Head: a rounded skull, brow, cheekbones, nose, lips, ears.
+  const head = new Shape(); // pivot at the base of the skull
+  head.box(-4, 0, -5, 3, 9, 3, SK);
+  for (const x of [-4, 3]) for (const z of [-5, 3]) head.remove(x, 0, z, x, 9, z); // round the corners
+  head.remove(-4, 9, -5, 3, 9, -4).remove(-4, 9, -5, -4, 9, 3).remove(3, 9, -5, 3, 9, 3); // round the top
+  head.remove(-4, 0, -5, 3, 0, -3).remove(-4, 0, -2, -4, 1, 3).remove(3, 0, -2, 3, 1, 3); // jaw line
+  shadeSides(head, -4, 0, -5, 3, 9, 3, SK);
+  // Face on z = 3.
+  head.box(-3, 6, 3, -2, 6, 3, HR).box(1, 6, 3, 2, 6, 3, HR); // brows
+  head.put(-3, 5, 3, WHITE).put(-2, 5, 3, EY).put(1, 5, 3, EY).put(2, 5, 3, WHITE); // eyes
+  head.box(-3, 4, 3, -2, 4, 3, SHADE(SK)).box(1, 4, 3, 2, 4, 3, SHADE(SK)); // under the eyes
+  head.put(-3, 3, 3, LIGHT(SK)).put(2, 3, 3, LIGHT(SK)); // cheekbones
+  head.box(-1, 3, 4, 0, 5, 4, SK).box(-1, 3, 4, 0, 3, 4, LIGHT(SK)); // nose, its tip catches the light
+  head.box(-1, 2, 3, 0, 2, 3, SHADE(SK)); // under the nose
+  head.box(-2, 1, 3, 1, 1, 3, SHADE(SK)).box(-1, 1, 3, 0, 1, 3, MOUTH); // lips
+  head.box(-5, 3, -1, -5, 5, 0, SK).box(4, 3, -1, 4, 5, 0, SK); // ears
+  head.put(-5, 4, 0, SHADE(SK)).put(4, 4, 0, SHADE(SK));
+  parts.head = { shape: head, pivot: [0, 40, 0], parent: "torso" };
 
-  // Arm: a sleeve from the shoulder; the hand is its own part (weapons go in it).
-  const arm = () => new Shape().box(-1, -5, -1, 0, 0, 0, P).box(-1, -5, -1, 0, -5, 0, SK);
-  parts.arm_left = { shape: arm(), pivot: [4, 15, 0], parent: "torso" };
-  parts.arm_right = { shape: arm(), pivot: [-4, 15, 0], parent: "torso" };
-  const hand = () => new Shape().box(-1, -1, -1, 0, 0, 0, SK);
-  parts.hand_left = { shape: hand(), pivot: [4, 9, 0], parent: "arm_left" };
-  parts.hand_right = { shape: hand(), pivot: [-4, 9, 0], parent: "arm_right" };
+  // Upper arm: a sleeve over the shoulder, bare below; inner side in shade.
+  const upper = (inner) => {
+    const a = new Shape();
+    a.box(-2, -9, -2, 1, 0, 1, SK);
+    a.box(-2, -5, -2, 1, 1, 1, P).box(-2, -5, -2, 1, -5, 1, SHADE(P)); // sleeve and its hem
+    a.box(-2, 1, -2, 1, 1, 1, LIGHT(P));
+    a.box(inner, -9, -2, inner, -6, 1, SHADE(SK));
+    return a;
+  };
+  parts.arm_left = { shape: upper(-2), pivot: [8, 36, 0], parent: "torso" };
+  parts.arm_right = { shape: upper(1), pivot: [-8, 36, 0], parent: "torso" };
+  // Forearm with a leather bracer at the wrist.
+  const fore = (inner) => {
+    const a = new Shape();
+    a.box(-2, -8, -2, 1, 0, 1, SK);
+    a.box(inner, -8, -2, inner, 0, 1, SHADE(SK));
+    a.box(-2, -8, -2, 1, -5, 1, BOOT).box(-2, -5, -2, 1, -5, 1, BOOT_L).box(-2, -8, -2, 1, -8, 1, BOOT_D);
+    return a;
+  };
+  parts.forearm_left = { shape: fore(-2), pivot: [8, 26, 0], parent: "arm_left" };
+  parts.forearm_right = { shape: fore(1), pivot: [-8, 26, 0], parent: "arm_right" };
+  // Fist, knuckles forward, thumb on top.
+  const hand = () => {
+    const h = new Shape();
+    h.box(-2, -4, -2, 1, 0, 1, SK);
+    h.remove(-2, -4, -2, -2, -4, 1).remove(1, -4, -2, 1, -4, 1);
+    h.box(-2, -3, 1, 1, -3, 1, SHADE(SK)); // finger crease
+    return h;
+  };
+  parts.hand_left = { shape: hand(), pivot: [8, 18, 0], parent: "forearm_left" };
+  parts.hand_right = { shape: hand(), pivot: [-8, 18, 0], parent: "forearm_right" };
 
-  // Leg: trousers down to the knee-high boots, the toe sticking out in front.
-  const leg = () => {
+  // Thigh; the inner side in shade.
+  const thigh = (inner) => {
     const l = new Shape();
-    l.box(-1, -5, -1, 1, -1, 1, T);
-    l.box(-1, -8, -1, 1, -6, 1, BOOT);
-    l.box(-1, -6, -1, 1, -6, 1, BELT); // boot cuff
-    l.box(-1, -8, 2, 1, -8, 2, SOLE); // toe
+    l.box(-2, -10, -2, 2, 0, 2, T);
+    l.box(inner, -10, -2, inner, 0, 2, SHADE(T)).box(-2, -10, -2, 2, -10, -2, SHADE(T));
+    l.box(-2, -1, 2, 2, -1, 2, SHADE(T)); // crease at the hip
     return l;
   };
-  parts.leg_left = { shape: leg(), pivot: [1, 8, 0], parent: "hips" };
-  parts.leg_right = { shape: leg(), pivot: [-2, 8, 0], parent: "hips" };
+  parts.leg_left = { shape: thigh(-2), pivot: [2, 22, 0], parent: "hips" };
+  parts.leg_right = { shape: thigh(2), pivot: [-3, 22, 0], parent: "hips" };
+  // Shin in a tall boot with a folded cuff, a toe cap and a sole.
+  const shin = () => {
+    const l = new Shape();
+    l.box(-2, -3, -2, 2, 0, 2, T);
+    l.box(-2, -12, -2, 2, -4, 2, BOOT);
+    l.box(-3, -5, -3, 3, -4, 3, BOOT_L).box(-3, -5, -3, 3, -5, 3, BOOT); // cuff
+    l.box(-2, -12, -2, 2, -12, -2, BOOT_D).box(-2, -12, 3, 2, -11, 4, BOOT); // heel, toe
+    l.box(-2, -12, -2, 2, -12, 4, SOLE);
+    l.box(-2, -10, 2, 2, -10, 2, BOOT_D); // ankle crease
+    return l;
+  };
+  parts.shin_left = { shape: shin(), pivot: [2, 12, 0], parent: "leg_left" };
+  parts.shin_right = { shape: shin(), pivot: [-3, 12, 0], parent: "leg_right" };
   return { parts, palette: PALETTE };
 }
 
@@ -73,6 +134,7 @@ if (!outDir) {
   process.exit(1);
 }
 fs.mkdirSync(outDir, { recursive: true });
+for (const f of fs.readdirSync(outDir)) if (f.startsWith("human_") && f.endsWith(".vox")) fs.unlinkSync(`${outDir}/${f}`);
 const { parts, palette } = human();
 const rig = { parts: {} };
 for (const [part, { shape, pivot, parent }] of Object.entries(parts)) {
