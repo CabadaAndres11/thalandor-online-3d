@@ -24,8 +24,8 @@ const LASTING := ["downed", "die"]
 ## Trousers default to the primary color this much darker.
 const TROUSERS_DARKEN := 0.45
 const WALK_MIN_SPEED := 0.2 # m/s
-const STRIDE := 1.2 # meters per full leg cycle
-const LEG_SWING := 0.7
+const STRIDE := 2.6 # meters per full leg cycle (two steps): about 2 strides/s at 5 m/s
+const LEG_SWING := 0.8
 const ARM_SWING := 0.5
 
 static var _rig_data: Dictionary = {}

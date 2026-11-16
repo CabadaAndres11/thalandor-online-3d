@@ -196,3 +196,20 @@ func test_staff_rests_tilted_until_casting() -> void:
 func test_mage_look_has_the_staff_grip() -> void:
 	assert_eq(CharacterCatalog.load_default().resolve("mage", {}).get("grip"), "staff")
 	assert_eq(CharacterCatalog.load_default().resolve("warrior", {}).get("grip", ""), "")
+
+
+## At the players' move speed (5 m/s) the legs take about two full strides a second,
+## not four: each stride covers ground like a real jog.
+func test_walk_pace_is_natural() -> void:
+	var rig := HumanRig.build(_look())
+	add_child_autofree(rig)
+	rig.set_moving_speed(5.0, 5.0)
+	var crossings := 0
+	var last := 0.0
+	for i in 60: # one second
+		rig.update(1.0 / 60.0)
+		var a := rig.part("leg_left").rotation.x
+		if i > 0 and signf(a) != signf(last):
+			crossings += 1
+		last = a
+	assert_between(crossings, 3, 4, "about two strides a second")
