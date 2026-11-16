@@ -322,3 +322,4 @@ RES_RAGE,Recurso: ira
 RES_MANA,Recurso: maná
 RES_FOCUS,Recurso: concentración
 RES_ENERGY,Recurso: energía
+CLASS_CHOICE_TOO_FAR,Tienes que estar en pie junto a Brann para elegir tu clase.

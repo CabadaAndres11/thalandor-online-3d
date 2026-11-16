@@ -310,7 +310,8 @@ func interaction() -> Dictionary:
 			var st := client.render_state(id)
 			if not st.is_empty():
 				allies.append({"position": st.position, "life": int(client.combat[id].life)})
-	return NpcInteraction.decide(map, own.position, client.class_id, allies, balance.revive_range)
+	var alive := not client.combat.has(client.my_id) or int(client.combat[client.my_id].life) == CombatEntity.ALIVE
+	return NpcInteraction.decide(map, own.position, client.class_id, allies, balance.revive_range, alive)
 
 
 ## A player learned a class: their avatar is rebuilt in the new class's clothes.

@@ -193,7 +193,10 @@ func _on_choose_class(rec: Dictionary, class_id: String) -> void:
 		return
 	if NpcDB.load_default().near_with_role(map, p.position, "class_trainer") == "":
 		return
+	# Same share of health as before: learning a class mid-fight is not a free heal.
+	var ratio := p.hp / maxf(p.stats.max_hp, 1.0)
 	ClassRules.setup_player(p, class_id, catalog)
+	p.hp = p.stats.max_hp * ratio
 	rec.class_id = class_id
 	rec.basic_id = world.abilities.kind_of(class_id, "basic")
 	rec.secondary_id = world.abilities.kind_of(class_id, "secondary")

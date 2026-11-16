@@ -130,3 +130,13 @@ func test_client_updates_roster_and_emits() -> void:
 
 func test_protocol_is_5() -> void:
 	assert_eq(Protocol.VERSION, 5)
+
+
+func test_choosing_keeps_the_health_ratio() -> void:
+	_start([22, 20])
+	var a := _guest("Ana")
+	_decoded(a)
+	var p: PlayerState = host.world.players[1]
+	p.hp = p.stats.max_hp * 0.25
+	_choose(a, "warrior")
+	assert_almost_eq(p.hp, 200.0 * 0.25, 0.01, "no free heal from choosing in combat")

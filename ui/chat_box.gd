@@ -77,6 +77,11 @@ func cancel() -> void:
 	_close()
 
 
+## True if a line with exactly this text is in the chat.
+func has_message(text: String) -> bool:
+	return _lines.any(func(l: Dictionary) -> bool: return (l.label as Label).text == text)
+
+
 func add_message(author: String, text: String, is_system: bool) -> void:
 	var label := Label.new()
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

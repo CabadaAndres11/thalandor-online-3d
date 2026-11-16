@@ -9,8 +9,12 @@ const CHOOSE_CLASS := "choose_class"
 const TALK := "talk"
 
 
-## allies: [{position: Vector3, life: int}] (other players). Returns {action, npc}.
-static func decide(map: CollisionMap, pos: Vector3, class_id: String, allies: Array, revive_range: float) -> Dictionary:
+## allies: [{position: Vector3, life: int}] (other players); own_alive: false while this
+## player is downed or dead (then E does nothing here). Returns {action, npc}.
+static func decide(map: CollisionMap, pos: Vector3, class_id: String, allies: Array, revive_range: float,
+		own_alive: bool = true) -> Dictionary:
+	if not own_alive:
+		return {"action": NONE, "npc": ""}
 	for a: Dictionary in allies:
 		if int(a.life) == CombatEntity.DOWNED and Vector2(pos.x - a.position.x, pos.z - a.position.z).length() <= revive_range:
 			return {"action": NONE, "npc": ""}

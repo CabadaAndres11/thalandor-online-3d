@@ -46,3 +46,8 @@ func test_brann_avatar_builds_with_name() -> void:
 	assert_false(a.prompt_visible())
 	a.set_prompt_visible(true)
 	assert_true(a.prompt_visible())
+
+
+func test_e_while_downed_does_nothing() -> void:
+	var r := NpcInteraction.decide(map, Vector3(20.5, 0, 20.5), "villager", [], 2.0, false)
+	assert_eq(r.action, NpcInteraction.NONE, "on the ground you can't talk to Brann")

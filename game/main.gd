@@ -182,8 +182,14 @@ func _on_interact() -> void:
 
 
 func _on_class_confirmed(class_id: String) -> void:
-	if game != null and game.client != null:
-		game.client.choose_class(class_id)
+	if game == null or game.client == null:
+		return
+	# Checked again: the player may have been pushed away or knocked down meanwhile,
+	# and the host would drop the request without a word.
+	if str(game.interaction().action) != NpcInteraction.CHOOSE_CLASS:
+		chat.add_message("", tr("CLASS_CHOICE_TOO_FAR"), true)
+		return
+	game.client.choose_class(class_id)
 
 
 ## The host agreed: this player now has a class. The HUD gets its bar and the saved
@@ -468,6 +474,9 @@ func _on_bar_changed(bar: Array) -> void:
 
 ## Game-wide announcements in the chat (everyone gets the same events).
 func _on_game_event(ev: Array) -> void:
+	if ev.size() >= 2 and str(ev[0]) in ["downed", "died"] and game != null and game.client != null \
+			and int(ev[1]) == game.client.my_id:
+		class_choice_window.visible = false # on the ground there is no training
 	if ev.size() >= 2 and str(ev[0]) == "boss_down":
 		var def := MonsterDB.load_default().get_type(str(ev[1]))
 		chat.add_message("", tr("CHAT_BOSS_DOWN") % tr(str(def.get("name", ""))), true)

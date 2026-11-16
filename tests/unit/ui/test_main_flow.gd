@@ -314,3 +314,22 @@ func test_esc_closes_the_class_window() -> void:
 	_press("menu")
 	assert_false(main.class_choice_window.visible)
 	assert_false(main.pause_menu.visible)
+
+
+func test_class_window_closes_when_downed() -> void:
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	_press("interact")
+	assert_true(main.class_choice_window.visible)
+	main._on_game_event(["downed", main.game.client.my_id])
+	assert_false(main.class_choice_window.visible, "knocked down: the window closes")
+
+
+func test_confirm_out_of_reach_says_why() -> void:
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	_press("interact")
+	main.game.map.npcs.clear() # as if pushed away from Brann
+	main.class_choice_window.select("mage")
+	main.class_choice_window.confirm_button.pressed.emit()
+	assert_true(main.chat.has_message(tr("CLASS_CHOICE_TOO_FAR")), "the player is told why nothing happened")
