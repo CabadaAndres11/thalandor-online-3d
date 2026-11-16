@@ -94,3 +94,32 @@ func test_villager_sees_the_strike_and_the_hint() -> void:
 	assert_true(win.panel_rect().size.y <= 720.0 and win.panel_rect().size.x <= 1280.0)
 	win.show_for("warrior", abilities.default_bar("warrior"), abilities)
 	assert_false(win.villager_hint_visible())
+
+
+func test_locked_abilities_are_marked_and_listed() -> void:
+	win.show_for("warrior", ["warrior_charge", "", "", ""], abilities, 3)
+	assert_has(win.locked_ids(), "warrior_whirlwind")
+	assert_has(win.locked_ids(), "warrior_contained_fury", "passives unlock by level too")
+	assert_does_not_have(win.locked_ids(), "warrior_battle_cry")
+	assert_does_not_have(win.locked_ids(), "warrior_charge")
+	assert_eq(win.card_text("warrior_whirlwind"), tr(str(abilities.get_ability("warrior_whirlwind").name)) + "\n" + tr("ABILITIES_LEVEL") % 6)
+	assert_eq(win.card_text("warrior_battle_cry"), tr(str(abilities.get_ability("warrior_battle_cry").name)))
+	assert_true(win.has_lock_icon("warrior_whirlwind"))
+	assert_false(win.has_lock_icon("warrior_battle_cry"))
+
+
+func test_locked_cannot_be_assigned() -> void:
+	win.show_for("warrior", ["warrior_charge", "", "", ""], abilities, 3)
+	changes.clear()
+	win.select_ability("warrior_whirlwind")
+	win.click_slot(1)
+	assert_eq(win.bar(), ["warrior_charge", "", "", ""])
+	assert_eq(changes.size(), 0)
+	win.select_ability("warrior_battle_cry")
+	win.click_slot(1)
+	assert_eq(win.bar(), ["warrior_charge", "warrior_battle_cry", "", ""])
+
+
+func test_a_locked_bar_slot_is_cleared() -> void:
+	win.show_for("warrior", ["warrior_whirlwind", "warrior_charge", "", ""], abilities, 1)
+	assert_eq(win.bar(), ["", "warrior_charge", "", ""])

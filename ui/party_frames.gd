@@ -63,6 +63,7 @@ func advance(_dt: float) -> void:
 		elif life == CombatEntity.DEAD:
 			status = tr("PARTY_DEAD")
 		(f.status as Label).text = status
+		(f.level as Label).text = tr("LEVEL_SHORT") % int(c.get("level", 1))
 		(f.panel as Control).modulate = Color(1, 1, 1, 0.6) if life != CombatEntity.ALIVE else Color.WHITE
 
 
@@ -91,6 +92,10 @@ func frame_name(id: int) -> String:
 func frame_fraction(id: int) -> float:
 	var bar: ProgressBar = _frames[id].hp
 	return bar.value / maxf(1.0, bar.max_value)
+
+
+func frame_level(id: int) -> String:
+	return (_frames[id].level as Label).text
 
 
 func frame_status(id: int) -> String:
@@ -137,6 +142,10 @@ func _make_frame(id: int) -> Dictionary:
 	name_label.size_flags_horizontal = SIZE_EXPAND_FILL
 	name_label.clip_text = true
 	row.add_child(name_label)
+	var level_label := Label.new()
+	level_label.add_theme_font_size_override("font_size", 13)
+	level_label.modulate = Color(1, 1, 1, 0.75)
+	row.add_child(level_label)
 	var status := Label.new()
 	status.add_theme_font_size_override("font_size", 13)
 	status.add_theme_color_override("font_color", Color("#ff7a6b"))
@@ -153,4 +162,4 @@ func _make_frame(id: int) -> Dictionary:
 	hp.add_theme_stylebox_override("fill", fill)
 	col.add_child(hp)
 	_box.add_child(panel)
-	return {"panel": panel, "name": name_label, "hp": hp, "status": status}
+	return {"panel": panel, "name": name_label, "hp": hp, "status": status, "level": level_label}

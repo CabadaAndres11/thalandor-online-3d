@@ -117,3 +117,13 @@ func test_downed_stays_down_and_does_not_walk() -> void:
 func test_unknown_action_is_ignored() -> void:
 	avatar.play_action("teleport_to_moon")
 	assert_eq(avatar.rig.current_animation(), "idle")
+
+
+func test_level_is_next_to_the_name() -> void:
+	var a := PlayerAvatar.new()
+	add_child_autofree(a)
+	a.setup("Ana", 0, "warrior", {})
+	a.set_level(7)
+	assert_eq(a.label_text(), tr("OVERHEAD_LEVEL") % [7, "Ana"])
+	a.set_level(8)
+	assert_eq(a.label_text(), tr("OVERHEAD_LEVEL") % [8, "Ana"])

@@ -30,6 +30,8 @@ var _cards: Dictionary = {} # ability id -> Button
 var _slots: Array = [] # Button per bar slot
 var _name_label: Label
 var _desc: Label
+var _level: int = 65535
+var _upgrade: String = ""
 
 
 func _init() -> void:
@@ -121,9 +123,11 @@ func show_for(class_id: String, p_bar: Array, abilities: AbilityDB, level: int =
 	_bar = abilities.sanitize_bar(class_id, p_bar, level, upgrade)
 	_attacks = [abilities.kind_of(class_id, "basic"), abilities.kind_of(class_id, "secondary")].filter(
 		func(id: String) -> bool: return id != "")
-	_actives = abilities.actives(class_id)
+	_level = level
+	_upgrade = upgrade
+	_actives = abilities.actives(class_id, upgrade)
 	_passives = abilities.class_abilities(class_id).filter(
-		func(a: Dictionary) -> bool: return a.get("kind") == "passive").map(
+		func(a: Dictionary) -> bool: return a.get("kind") == "passive" and AbilityDB.upgrade_ok(a, upgrade)).map(
 		func(a: Dictionary) -> String: return a.id)
 	_cards.clear()
 	for row: HBoxContainer in [_attack_row, _active_row, _passive_row]:
@@ -155,7 +159,7 @@ func select_ability(id: String) -> void:
 func click_slot(i: int) -> void:
 	if i < 0 or i >= _bar.size():
 		return
-	if _selected == "" or not _selected in _actives:
+	if _selected == "" or not _selected in _actives or is_locked(_selected):
 		_selected = ""
 		if str(_bar[i]) != "":
 			select_ability(_bar[i])
@@ -197,6 +201,27 @@ func active_ids() -> Array:
 
 func passive_ids() -> Array:
 	return _passives.duplicate()
+
+
+## Abilities and passives above the player's level: shown with a lock, never assignable.
+func is_locked(id: String) -> bool:
+	return _abilities != null and _abilities.has(id) and int(_abilities.get_ability(id).get("level", 1)) > _level
+
+
+func locked_ids() -> Array:
+	var out: Array = []
+	for id: String in _attacks + _actives + _passives:
+		if is_locked(id):
+			out.append(id)
+	return out
+
+
+func card_text(id: String) -> String:
+	return (_cards[id] as Button).text if _cards.has(id) else ""
+
+
+func has_lock_icon(id: String) -> bool:
+	return _cards.has(id) and (_cards[id] as Button).find_child("Lock", false, false) != null
 
 
 func panel_rect() -> Rect2:
@@ -248,6 +273,12 @@ func _card(id: String) -> Button:
 	b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	b.add_theme_font_size_override("font_size", 13)
 	b.tooltip_text = tr(str(a.get("desc", "")))
+	if is_locked(id):
+		b.text += "\n" + tr("ABILITIES_LEVEL") % int(a.get("level", 1))
+		b.modulate = Color(0.55, 0.55, 0.6)
+		var lock := LockIcon.new()
+		lock.name = "Lock"
+		b.add_child(lock)
 	b.pressed.connect(select_ability.bind(id))
 	_cards[id] = b
 	return b
@@ -276,7 +307,8 @@ func _show_description(id: String) -> void:
 
 func _refresh() -> void:
 	for id: String in _cards:
-		(_cards[id] as Button).modulate = Color(1.35, 1.2, 0.6) if id == _selected else Color.WHITE
+		(_cards[id] as Button).modulate = Color(1.35, 1.2, 0.6) if id == _selected \
+			else (Color(0.55, 0.55, 0.6) if is_locked(id) else Color.WHITE)
 	for i in _slots.size():
 		var slot: Button = _slots[i]
 		var id := str(_bar[i]) if i < _bar.size() else ""

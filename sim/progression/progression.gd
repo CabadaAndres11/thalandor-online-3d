@@ -19,6 +19,16 @@ const PERCENT := {
 }
 
 
+## The stats a character with this class and progress has (for windows: the client has no
+## PlayerState of its own to read them from). Same numbers the host computes.
+static func preview_stats(class_id: String, progress: PlayerProgress, b: Balance) -> CombatStats:
+	var p := PlayerState.new()
+	p.class_id = class_id
+	p.progress = progress
+	rebuild(p, null, true, b)
+	return p.stats
+
+
 ## Modifiers in effect for the player: stat and hook entries.
 static func modifiers(p: PlayerState, world: SimWorld) -> Array:
 	var db := world.abilities if world != null else AbilityDB.load_default()
@@ -31,8 +41,8 @@ static func modifiers(p: PlayerState, world: SimWorld) -> Array:
 ## Recomputes stats and passives from class, level, attributes and modifiers. Keeps the
 ## health and resource percentages and touches no statuses, cooldowns or position.
 ## `fresh`: a new character or a new class, which starts full (resource at its start).
-static func rebuild(p: PlayerState, world: SimWorld, fresh: bool = false) -> void:
-	var b := world.balance if world != null else Balance.load_from()
+static func rebuild(p: PlayerState, world: SimWorld, fresh: bool = false, balance: Balance = null) -> void:
+	var b := balance if balance != null else (world.balance if world != null else Balance.load_from())
 	var def := CharacterCatalog.load_default().class_def(p.class_id)
 	p.level = p.progress.level
 	if def.is_empty():

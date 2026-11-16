@@ -22,6 +22,9 @@ const BOSS_WIDTH := 560.0
 const BOSS_TOP := 52.0
 const DIM := Color(0.35, 0.35, 0.4)
 
+## Thin experience bar under the slots.
+var xp_bar: XpBar
+
 var _client: ClientSession
 var _abilities: AbilityDB
 var _slot_ids: Array[String] = []
@@ -94,6 +97,8 @@ func _init() -> void:
 	_column.add_child(row)
 	for i in SLOTS:
 		_slots.append(_make_slot(row))
+	xp_bar = XpBar.new()
+	_column.add_child(xp_bar)
 
 	_death = PanelContainer.new()
 	_death.mouse_filter = MOUSE_FILTER_IGNORE
@@ -181,6 +186,7 @@ func advance(dt: float) -> void:
 	if _client == null:
 		return
 	_update_boss()
+	xp_bar.set_progress(_client.progress.level, _client.progress.xp, Xp.to_next(_client.progress.level, _client.balance))
 	var me: Dictionary = _client.combat.get(_client.my_id, {})
 	if me.is_empty():
 		return

@@ -23,6 +23,8 @@ const STEALTH_TRANSPARENCY := 0.7
 var _translucent: bool = false
 
 var _label: Label3D
+var _player_name: String = ""
+var _level: int = 0
 var _last_position: Variant = null
 var _speed: float = 0.0
 ## Seconds left of an action animation (idle/walk wait for it); dead = stays down.
@@ -52,6 +54,7 @@ func setup(player_name: String, slot: int, class_id: String, appearance: Diction
 
 	_label = Label3D.new()
 	_label.text = player_name
+	_player_name = player_name
 	_label.modulate = color.lightened(0.5)
 	_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_label.fixed_size = true
@@ -128,3 +131,15 @@ func play_action(kind: String) -> void:
 		return
 	_action_left = d
 	_dead = kind == "die" or kind == "downed"
+
+
+## "Nv N name" above the character.
+func set_level(level: int) -> void:
+	if level == _level or _label == null:
+		return
+	_level = level
+	_label.text = tr("OVERHEAD_LEVEL") % [level, _player_name]
+
+
+func label_text() -> String:
+	return _label.text if _label != null else ""

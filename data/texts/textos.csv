@@ -326,3 +326,98 @@ CLASS_CHOICE_TOO_FAR,Tienes que estar en pie junto a Brann para elegir tu clase.
 CMD_HOST_ONLY,"Solo el anfitrión puede usar comandos"
 CMD_BAD,"Comando no válido. Usa /xp <cantidad> [nombre] o /nivel <nivel> [nombre]"
 CMD_NO_PLAYER,"No hay ningún jugador con ese nombre"
+OVERHEAD_LEVEL,Nv %d %s
+LEVEL_SHORT,Nv %d
+XP_BAR_TEXT,Nivel %d · %d / %d
+FX_LEVEL_UP,¡Nivel %d!
+CHAT_LEVEL_UP,%s ha alcanzado el nivel %d
+CHAR_TITLE,Personaje
+CHAR_LEVEL,Nivel %d
+CHAR_XP,Experiencia: %d / %d
+CHAR_FREE_POINTS,Puntos por repartir: %d
+CHAR_ATTRIBUTES,Atributos
+CHAR_STATS,Estadísticas
+CHAR_HINT,C o Esc para cerrar
+ATTR_STRENGTH,Fuerza
+ATTR_AGILITY,Agilidad
+ATTR_INTELLECT,Intelecto
+ATTR_STAMINA,Aguante
+ATTR_SPIRIT,Espíritu
+ATTR_STRENGTH_DESC,Poder de ataque (menos el arquero) y bloqueo.
+ATTR_AGILITY_DESC,Crítico y esquiva; poder de ataque del arquero.
+ATTR_INTELLECT_DESC,Poder de hechizos y maná máximo.
+ATTR_STAMINA_DESC,Vida máxima.
+ATTR_SPIRIT_DESC,Regeneración de vida y de maná.
+STAT_ROW_HP,Vida máxima
+STAT_ROW_RESOURCE,Recurso máximo
+STAT_ROW_ATTACK,Poder de ataque
+STAT_ROW_SPELL,Poder de hechizos
+STAT_ROW_ARMOR,Armadura
+STAT_ROW_CRIT,Probabilidad de crítico
+STAT_ROW_CRIT_DAMAGE,Daño crítico
+STAT_ROW_DODGE,Esquiva
+STAT_ROW_BLOCK,Bloqueo
+STAT_ROW_SPEED,Velocidad de movimiento
+STAT_ROW_COOLDOWN,Reducción de recargas
+STAT_ROW_LIFESTEAL,Robo de vida
+STAT_ROW_REGEN,Regeneración de vida por segundo
+STAT_ARMOR_ADD,%s armadura
+STAT_MAX_HP_ADD,%s vida máxima
+STAT_HP_REGEN_ADD,%s vida por segundo
+STAT_DODGE_ADD,%s esquiva
+STAT_CRIT_ADD,%s crítico
+STAT_BLOCK_ADD,%s bloqueo
+STAT_CRIT_DAMAGE_ADD,%s daño crítico
+STAT_LIFESTEAL_ADD,%s robo de vida
+STAT_COOLDOWN_REDUCTION_ADD,%s recargas
+STAT_ARMOR_PCT,%s armadura
+STAT_MAX_HP_PCT,%s vida máxima
+STAT_MAX_RESOURCE_PCT,%s recurso máximo
+STAT_MOVE_SPEED_PCT,%s velocidad de movimiento
+STAT_ATTACK_POWER_PCT,%s poder de ataque
+STAT_SPELL_POWER_PCT,%s poder de hechizos
+STAT_DAMAGE_DONE_PCT,%s daño realizado
+STAT_DAMAGE_TAKEN_PCT,%s daño recibido
+STAT_HEALING_DONE_PCT,%s curación realizada
+STAT_HEALING_RECEIVED_PCT,%s curación recibida
+STAT_THREAT_PCT,%s amenaza
+STAT_RESOURCE_REGEN_PCT,%s regeneración de recurso
+TALENTS_TITLE,Talentos
+TALENTS_POINTS,Puntos de talento: %d
+TALENTS_HINT,Pulsa un nodo para verlo. T o Esc para cerrar
+TALENT_BUY,Comprar
+TALENT_NONE,Elige un nodo del árbol
+TALENT_DIR_MIGHT,Poderío
+TALENT_DIR_CELERITY,Celeridad
+TALENT_DIR_VITALITY,Vitalidad
+TALENT_DIR_BASTION,Bastión
+TALENT_DIR_ARCANE,Arcano
+TALENT_KIND_START,Inicio
+TALENT_KIND_MINOR,Nodo
+TALENT_KIND_NOTABLE,Nodo notable
+TALENT_KIND_KEYSTONE,Nodo culminante
+TALENT_RING_OUTER,Anillo exterior
+TALENT_STATE_OWNED,Comprado
+TALENT_STATE_AVAILABLE,Disponible
+TALENT_STATE_LOCKED,Bloqueado: compra antes un nodo vecino
+TALENT_STATE_RING_LOCKED,Bloqueado: el anillo exterior necesita una mejora de clase
+MASTERIES_TITLE,Maestrías
+MASTERIES_HINT,Compra todos los nodos de una dirección y cada punto extra mejora su maestría.
+MASTERY_RANK,Rango %d
+MASTERY_BUY,+1
+TRAINER_TITLE,Brann
+TRAINER_PROMPT,¿Qué necesitas?
+TRAINER_CHOOSE_CLASS,Elegir clase
+TRAINER_CHOOSE_UPGRADE,Elegir mejora de clase
+TRAINER_RESET_ATTRIBUTES,Reiniciar atributos
+TRAINER_RESET_TALENTS,Reiniciar talentos
+TRAINER_RESET_UPGRADE,Reiniciar mejora de clase
+TRAINER_ARENA_LEVEL,Nivel de la arena
+CONFIRM_RESET_ATTRIBUTES,¿Reiniciar tus atributos? Recuperarás todos los puntos.
+CONFIRM_RESET_TALENTS,¿Reiniciar tus talentos? Recuperarás todos los puntos.
+CONFIRM_RESET_UPGRADE,¿Reiniciar tu mejora de clase? Perderás sus habilidades y los nodos del anillo exterior.
+ARENA_TITLE,Nivel de la arena
+ARENA_DESC,Los monstruos aparecerán con este nivel (los jefes, con dos más).
+ARENA_CONFIRM,Fijar
+ARENA_LEVEL_SET,La arena ahora es de nivel %d
+RESET_DONE,Reinicio hecho.

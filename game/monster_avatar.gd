@@ -106,6 +106,8 @@ func apply_state(state: Dictionary, info: Dictionary, delta: float) -> void:
 		_speed = lerpf(_speed, measured, 1.0 - exp(-delta / SPEED_SMOOTHING_S))
 		_time += delta
 	bar.set_health(float(info.get("hp", 1.0)), float(info.get("max_hp", 1.0)))
+	if info.has("level"):
+		bar.set_level(int(info.level))
 	bar.set_statuses(int(info.get("status_bits", 0)))
 	if _aura != null:
 		var pulse := 1.0 + sin(_time * 3.0) * 0.06

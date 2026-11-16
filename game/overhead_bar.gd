@@ -8,6 +8,8 @@ const WIDTH := 0.9
 const HEIGHT := 0.1
 
 var _label: Label3D
+var _base_name: String = ""
+var _level: int = 0
 var _quad: MeshInstance3D
 var _material: ShaderMaterial
 var _hide_when_full: bool = false
@@ -16,6 +18,7 @@ var _fraction: float = 1.0
 
 func setup(display_name: String, hide_when_full: bool, color := Color(0.85, 0.2, 0.2)) -> void:
 	_hide_when_full = hide_when_full
+	_base_name = display_name
 	if display_name != "":
 		_label = Label3D.new()
 		_label.text = display_name
@@ -107,3 +110,17 @@ func status_kinds() -> Array:
 
 func status_icons() -> Array[Sprite3D]:
 	return _icons
+
+
+# --- Level ------------------------------------------------------------------------
+
+## Shows "Nv N name" (a bar without a name has nothing to show it on).
+func set_level(level: int) -> void:
+	if level == _level or _label == null:
+		return
+	_level = level
+	_label.text = tr("OVERHEAD_LEVEL") % [level, _base_name]
+
+
+func label_text() -> String:
+	return _label.text if _label != null else ""

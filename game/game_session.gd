@@ -19,6 +19,8 @@ var client: ClientSession
 var host: HostSession
 ## When true (chat open) movement input is ignored.
 var input_blocked: bool = false
+## When true (the K, C or T window is open) mouse attacks are ignored; moving still works.
+var attacks_blocked: bool = false
 ## Text key of the last open_group()/join() error.
 var last_error: String = ""
 ## Network used for groups: NET_WEBRTC (default) or NET_ENET; user argument --net=.
@@ -235,6 +237,8 @@ func _physics_process(delta: float) -> void:
 	if _loopback != null:
 		_loopback.advance(delta * 1000.0)
 	var buttons := 0 if input_blocked else InputReader.read_buttons()
+	if attacks_blocked:
+		buttons &= ~(PlayerInput.BTN_BASIC | PlayerInput.BTN_BASIC_HELD | PlayerInput.BTN_SECONDARY)
 	client.tick(move, _aim, buttons)
 	if host != null:
 		host.tick()
@@ -285,6 +289,7 @@ func _sync_avatars(delta: float) -> void:
 			var c: Dictionary = client.combat[id]
 			avatar_node.set_health(float(c.hp), float(c.max_hp), int(c.life) == CombatEntity.ALIVE)
 			avatar_node.set_statuses(int(c.status_bits))
+			avatar_node.set_level(int(c.get("level", 1)))
 
 
 func _remove_avatar(id: int) -> void:

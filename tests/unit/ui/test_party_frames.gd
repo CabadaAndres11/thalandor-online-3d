@@ -107,3 +107,16 @@ func test_revive_bar_goes_when_i_go_down() -> void:
 	c.combat[1].life = CombatEntity.ALIVE
 	overlay.advance(0.1)
 	assert_false(overlay.revive_visible(), "and it does not come back")
+
+
+func test_party_frames_show_the_allys_level() -> void:
+	var c := _client()
+	c.combat[2]["level"] = 14
+	var frames := PartyFrames.new()
+	_root().add_child(frames)
+	frames.bind(c)
+	frames.advance(0.0)
+	assert_eq(frames.frame_level(2), tr("LEVEL_SHORT") % 14)
+	c.combat[2]["level"] = 15
+	frames.advance(0.0)
+	assert_eq(frames.frame_level(2), tr("LEVEL_SHORT") % 15)

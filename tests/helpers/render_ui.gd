@@ -66,6 +66,31 @@ func _process(_delta: float) -> bool:
 		_main.class_choice_window.select("cleric")
 	elif _frames == 330:
 		_save("ui_classes")
+		_main.class_choice_window.visible = false
+		# A level 35 archer with points spent and a few talents, for the progression windows.
+		var w := _main.game.host.world
+		var me: PlayerState = w.players[_main.game.client.my_id]
+		Xp.set_level(w, me, 35)
+		for a: String in ["agility", "agility", "stamina", "strength"]:
+			ProgressRequests.spend_attribute(w, me, a)
+		for id: String in ["might_1", "might_2", "might_3", "bastion_1", "bastion_2", "arcane_1"]:
+			ProgressRequests.buy_talent(w, me, id)
+	elif _frames == 345:
+		_main._show_character()
+	elif _frames == 375:
+		_save("ui_character")
+		_main.character_window.visible = false
+		var c := _main.game.client
+		_main.talents_window.show_for(c.progress, TalentDB.load_default(), c.balance)
+		_main.talents_window.select("might_4")
+	elif _frames == 405:
+		_save("ui_talents")
+		_main.talents_window.visible = false
+		var c := _main.game.client
+		_main.trainer_menu.show_for(NpcInteraction.trainer_options(c.class_id, c.progress, true, false))
+	elif _frames == 435:
+		_save("ui_trainer")
+		_main.trainer_menu.visible = false
 		_clear()
 		return true
 	return false

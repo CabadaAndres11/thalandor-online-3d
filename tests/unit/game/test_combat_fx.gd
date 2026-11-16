@@ -109,3 +109,12 @@ func test_line_telegraph_fills_along_the_line_and_goes_with_the_charge() -> void
 	fx.handle(["telegraph_line", 5, Vector3(5, 0, 5), Vector3(13, 0, 5), 1.4, latest_tick + 24])
 	fx.handle(["charge_cancel", 5])
 	assert_eq(fx.telegraph_count(), 0, "a cancelled charge clears its warning")
+
+
+func test_level_up_shows_a_number_and_a_flash() -> void:
+	var numbers := fx.floating_labels().size()
+	fx.handle(["level_up", 1, 6])
+	assert_eq(fx.floating_labels().size(), numbers + 1)
+	assert_eq((fx.floating_labels()[numbers] as Label3D).text, tr("FX_LEVEL_UP") % 6)
+	fx.advance(2.0)
+	assert_eq(fx.floating_labels().size(), numbers, "it fades away")

@@ -248,7 +248,8 @@ func test_k_toggles_abilities_window_in_game_only() -> void:
 	assert_true(main.abilities_window.visible)
 	assert_eq(main.abilities_window.bar(), main.game.client.bar)
 	main._process(0.0)
-	assert_true(main.game.input_blocked, "no attacks while clicking the window")
+	assert_true(main.game.attacks_blocked, "no attacks while clicking the window")
+	assert_false(main.game.input_blocked, "but moving still works")
 	_press("menu")
 	assert_false(main.abilities_window.visible, "Esc closes the window first")
 	assert_false(main.pause_menu.visible)
@@ -296,6 +297,98 @@ func test_progress_is_saved_with_the_character() -> void:
 	assert_eq(saved.progress.level, 7)
 	assert_gt(saved.progress.xp, 0, "the experience was written")
 	assert_eq(saved.progress.attributes.strength, 3)
+
+
+func _host_player() -> PlayerState:
+	return main.game.host.world.players[main.game.client.my_id]
+
+
+func test_c_t_and_k_windows_toggle_and_exclude_each_other() -> void:
+	main._on_play("Prueba", "mage")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	_press("window_character")
+	assert_true(main.character_window.visible)
+	main._process(0.0)
+	assert_true(main.game.attacks_blocked, "no mouse attacks while a window is open")
+	assert_false(main.game.input_blocked, "but you can still move")
+	_press("window_talents")
+	assert_true(main.talents_window.visible)
+	assert_false(main.character_window.visible, "opening one closes the others")
+	_press("abilities_window")
+	assert_true(main.abilities_window.visible)
+	assert_false(main.talents_window.visible)
+	_press("window_character")
+	_press("window_character")
+	assert_false(main.character_window.visible, "its own key closes it")
+	_press("window_talents")
+	_press("menu")
+	assert_false(main.talents_window.visible, "Esc closes it")
+	assert_false(main.pause_menu.visible)
+	main._process(0.0)
+	assert_false(main.game.attacks_blocked)
+
+
+func test_brann_offers_a_menu_to_a_class_holder() -> void:
+	main._on_play("Prueba", "mage")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	_press("interact")
+	assert_true(main.trainer_menu.visible)
+	assert_eq(main.trainer_menu.option_ids(), ["reset_attributes", "reset_talents", "arena_level"])
+	main._process(0.0)
+	assert_true(main.game.input_blocked, "the menu takes the input")
+	_press("menu")
+	assert_false(main.trainer_menu.visible)
+	assert_false(main.pause_menu.visible)
+
+
+func test_a_reset_asks_first_and_the_host_applies_it() -> void:
+	main._on_play("Prueba", "warrior")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	Xp.set_level(main.game.host.world, _host_player(), 5)
+	ProgressRequests.spend_attribute(main.game.host.world, _host_player(), "strength")
+	await wait_physics_frames(3)
+	assert_eq(main.game.client.progress.attributes.strength, 1)
+	_press("interact")
+	main.trainer_menu.press("reset_attributes")
+	assert_true(main.dialog.visible)
+	assert_eq(main.dialog.message(), tr("CONFIRM_RESET_ATTRIBUTES"))
+	main.dialog.yes_button.pressed.emit()
+	await wait_physics_frames(4)
+	assert_eq(main.game.client.progress.attributes.strength, 0)
+
+
+func test_spending_and_buying_from_the_windows() -> void:
+	main._on_play("Prueba", "warrior")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	Xp.set_level(main.game.host.world, _host_player(), 5)
+	await wait_physics_frames(3)
+	main.character_window.attribute_spent.emit("stamina")
+	main.talents_window.talent_bought.emit("might_1")
+	await wait_physics_frames(4)
+	assert_eq(main.game.client.progress.attributes.stamina, 1)
+	assert_eq(main.game.client.progress.talents, ["might_1"])
+
+
+func test_open_windows_refresh_when_progress_changes() -> void:
+	main._on_play("Prueba", "warrior")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	Xp.set_level(main.game.host.world, _host_player(), 5)
+	await wait_physics_frames(3)
+	_press("window_character")
+	assert_eq(main.character_window.free_points(), 20)
+	main.game.client.spend_attribute("strength")
+	await wait_physics_frames(4)
+	assert_eq(main.character_window.free_points(), 19)
+
+
+func test_level_up_is_announced_in_the_chat_and_changes_the_bar_xp() -> void:
+	main._on_play("Prueba", "warrior")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	main.game.client.send_chat("/nivel 4") # the host player's test command: the level-up happens inside a tick
+	await wait_physics_frames(4)
+	var lines := main.chat.visible_lines()
+	assert_string_contains(lines[lines.size() - 1], tr("CHAT_LEVEL_UP") % ["Prueba", 4])
+	assert_eq(main.combat_hud.xp_bar.text(), tr("XP_BAR_TEXT") % [4, 0, Xp.to_next(4, main.game.balance)])
 
 
 func test_boss_death_is_announced_in_chat() -> void:

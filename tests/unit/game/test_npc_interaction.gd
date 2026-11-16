@@ -51,3 +51,43 @@ func test_brann_avatar_builds_with_name() -> void:
 func test_e_while_downed_does_nothing() -> void:
 	var r := NpcInteraction.decide(map, Vector3(20.5, 0, 20.5), "villager", [], 2.0, false)
 	assert_eq(r.action, NpcInteraction.NONE, "on the ground you can't talk to Brann")
+
+
+# --- Brann as a trainer: what he offers ----------------------------------------------
+
+func _opts(class_id: String, level := 1, upgrade := "", host := false, combat := false) -> Array:
+	var pr := PlayerProgress.from_dict({"level": level, "upgrade": upgrade})
+	return NpcInteraction.trainer_options(class_id, pr, host, combat)
+
+
+func test_trainer_options_villager_only_chooses_a_class() -> void:
+	assert_eq(_opts("villager"), ["choose_class"])
+	assert_eq(_opts("villager", 5, "", true), ["choose_class"], "the host's arena control waits for a class")
+
+
+func test_trainer_options_class_below_50() -> void:
+	assert_eq(_opts("warrior", 10), ["reset_attributes", "reset_talents"])
+
+
+func test_trainer_options_level_50_without_upgrade() -> void:
+	assert_eq(_opts("warrior", 50), ["choose_upgrade", "reset_attributes", "reset_talents"])
+
+
+func test_trainer_options_with_upgrade() -> void:
+	assert_eq(_opts("warrior", 50, "berserker"), ["reset_attributes", "reset_talents", "reset_upgrade"])
+
+
+func test_trainer_options_host_gets_the_arena_level() -> void:
+	assert_eq(_opts("mage", 3, "", true), ["reset_attributes", "reset_talents", "arena_level"])
+	assert_eq(_opts("mage", 3, "", false), ["reset_attributes", "reset_talents"])
+
+
+func test_trainer_options_in_combat_have_no_resets() -> void:
+	assert_eq(_opts("warrior", 10, "", false, true), [])
+	assert_eq(_opts("warrior", 50, "", false, true), ["choose_upgrade"])
+	assert_eq(_opts("warrior", 50, "berserker", true, true), ["arena_level"])
+
+
+func test_revive_still_beats_trainer() -> void:
+	var allies := [{"position": Vector3(21.0, 0, 20.5), "life": CombatEntity.DOWNED}]
+	assert_eq(_decide(Vector3(20.5, 0, 20.5), "warrior", allies).action, NpcInteraction.NONE)

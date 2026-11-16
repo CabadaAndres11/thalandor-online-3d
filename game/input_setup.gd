@@ -18,6 +18,8 @@ const BINDINGS := {
 	"dodge": [KEY_SPACE],
 	"interact": [KEY_E],
 	"abilities_window": [KEY_K],
+	"window_character": [KEY_C],
+	"window_talents": [KEY_T],
 }
 
 ## Mouse buttons of actions (GDD §3.2).

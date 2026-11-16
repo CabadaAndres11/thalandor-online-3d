@@ -31,6 +31,9 @@ var downed_overlay: DownedOverlay
 var pause_menu: PauseMenu
 var abilities_window: AbilitiesWindow
 var class_choice_window: ClassChoiceWindow
+var character_window: CharacterWindow
+var talents_window: TalentsWindow
+var trainer_menu: TrainerMenu
 var abilities: AbilityDB
 var dialog: MessageDialog
 var debug_overlay: DebugOverlay
@@ -122,6 +125,23 @@ func _ready() -> void:
 	class_choice_window.visibility_changed.connect(_update_input_block)
 	_ui.add_child(class_choice_window)
 
+	character_window = CharacterWindow.new()
+	character_window.theme = theme
+	character_window.attribute_spent.connect(_on_attribute_spent)
+	_ui.add_child(character_window)
+
+	talents_window = TalentsWindow.new()
+	talents_window.theme = theme
+	talents_window.talent_bought.connect(_on_talent_bought)
+	talents_window.mastery_bought.connect(_on_mastery_bought)
+	_ui.add_child(talents_window)
+
+	trainer_menu = TrainerMenu.new()
+	trainer_menu.theme = theme
+	trainer_menu.chosen.connect(_on_trainer_choice)
+	trainer_menu.arena_level_confirmed.connect(_on_arena_level_confirmed)
+	_ui.add_child(trainer_menu)
+
 	pause_menu = PauseMenu.new()
 	pause_menu.theme = theme
 	pause_menu.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -151,34 +171,149 @@ func _unhandled_input(event: InputEvent) -> void:
 	if game == null or chat.is_typing() or dialog.visible:
 		return
 	if event.is_action_pressed("menu"):
-		if class_choice_window.visible:
-			class_choice_window.visible = false
-		elif abilities_window.visible:
-			abilities_window.visible = false
-		else:
+		if not _close_open_window():
 			pause_menu.visible = not pause_menu.visible
 		get_viewport().set_input_as_handled()
-	elif event.is_action_pressed("interact") and not pause_menu.visible and not abilities_window.visible \
-			and not class_choice_window.visible and game.client != null:
+	elif event.is_action_pressed("interact") and not pause_menu.visible and not _modal_open() and not _panel_open() \
+			and game.client != null:
 		_on_interact() # no set_input_as_handled: holding E also revives
-	elif event.is_action_pressed("abilities_window") and not pause_menu.visible and not class_choice_window.visible:
-		if abilities_window.visible:
-			abilities_window.visible = false
-		else:
-			abilities_window.show_for(game.client.class_id, game.client.bar, abilities)
+	elif pause_menu.visible or _modal_open() or game.client == null:
+		return
+	elif event.is_action_pressed("abilities_window"):
+		_toggle_window(abilities_window)
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("window_character"):
+		_toggle_window(character_window)
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("window_talents"):
+		_toggle_window(talents_window)
 		get_viewport().set_input_as_handled()
 
 
-## E next to an NPC: a villager by Brann chooses a class; anyone else hears him.
+## The windows opened with K, C and T (one at a time): they block mouse attacks, not movement.
+func _panel_windows() -> Array:
+	return [abilities_window, character_window, talents_window]
+
+
+func _panel_open() -> bool:
+	return _panel_windows().any(func(w: Control) -> bool: return w.visible)
+
+
+## Class choice and Brann's menu take the whole input while they are open.
+func _modal_open() -> bool:
+	return class_choice_window.visible or trainer_menu.visible
+
+
+## Esc: closes whatever window is open and says whether there was one.
+func _close_open_window() -> bool:
+	for w: Control in [class_choice_window, trainer_menu] + _panel_windows():
+		if w.visible:
+			w.visible = false
+			return true
+	return false
+
+
+## Opens a K/C/T window (closing the other two) or closes it if it is the open one.
+func _toggle_window(w: Control) -> void:
+	var was_open := w.visible
+	for other: Control in _panel_windows():
+		other.visible = false
+	if was_open:
+		return
+	match w:
+		abilities_window:
+			abilities_window.show_for(game.client.class_id, game.client.bar, abilities,
+				game.client.progress.level, game.client.progress.upgrade)
+		character_window:
+			_show_character()
+		talents_window:
+			talents_window.show_for(game.client.progress, TalentDB.load_default(), game.client.balance)
+
+
+func _show_character() -> void:
+	var c := game.client
+	var char_name: String = c.roster[c.my_id].name if c.roster.has(c.my_id) else c.player_name
+	character_window.show_for(char_name, c.class_id, c.progress, Progression.preview_stats(c.class_id, c.progress, c.balance), c.balance)
+
+
+## E next to an NPC: a villager by Brann chooses a class; anyone else gets Brann's menu
+## (or just hears him when there is nothing to offer).
 func _on_interact() -> void:
 	var r := game.interaction()
 	match str(r.action):
 		NpcInteraction.CHOOSE_CLASS:
 			class_choice_window.show_for(game.client.appearance)
 		NpcInteraction.TALK:
-			var npc := NpcDB.load_default().npc(str(r.npc))
-			var line := str((npc.get("lines", {}) as Dictionary).get("has_class", ""))
-			chat.add_message(tr(str(npc.get("name", ""))), tr(line), false)
+			var c := game.client
+			var me: Dictionary = c.combat.get(c.my_id, {})
+			var in_combat := false
+			if game.host != null and game.host.world.players.has(c.my_id):
+				in_combat = (game.host.world.players[c.my_id] as PlayerState).in_combat(game.host.world)
+			var options := NpcInteraction.trainer_options(c.class_id, c.progress, game.is_hosting() and c.my_id == 1, in_combat)
+			if options.is_empty() or me.is_empty():
+				var npc := NpcDB.load_default().npc(str(r.npc))
+				var line := str((npc.get("lines", {}) as Dictionary).get("has_class", ""))
+				chat.add_message(tr(str(npc.get("name", ""))), tr(line), false)
+			else:
+				for w: Control in _panel_windows():
+					w.visible = false
+				trainer_menu.show_for(options)
+
+
+## An option of Brann's menu. Resets ask first; the host answers with PROGRESS.
+func _on_trainer_choice(option: String) -> void:
+	if game == null or game.client == null:
+		return
+	match option:
+		"choose_class":
+			trainer_menu.visible = false
+			class_choice_window.show_for(game.client.appearance)
+		"choose_upgrade":
+			trainer_menu.visible = false
+			_open_upgrade_window()
+		"reset_attributes", "reset_talents", "reset_upgrade":
+			trainer_menu.visible = false
+			_pending = {"action": "reset", "what": option.trim_prefix("reset_")}
+			dialog.ask(tr("CONFIRM_" + option.to_upper()))
+		"arena_level":
+			trainer_menu.show_arena_selector(game.client.arena_level)
+
+
+## The class upgrade window arrives with the upgrades (Task 12).
+func _open_upgrade_window() -> void:
+	pass
+
+
+func _on_arena_level_confirmed(level: int) -> void:
+	if game != null and game.client != null:
+		game.client.set_arena_level(level)
+
+
+func _on_arena_level_changed(level: int) -> void:
+	chat.add_message("", tr("ARENA_LEVEL_SET") % level, true)
+
+
+func _on_attribute_spent(attr: String) -> void:
+	if game != null and game.client != null:
+		game.client.spend_attribute(attr)
+
+
+func _on_talent_bought(id: String) -> void:
+	if game != null and game.client != null:
+		game.client.buy_talent(id)
+
+
+func _on_mastery_bought(dir: String) -> void:
+	if game != null and game.client != null:
+		game.client.buy_mastery(dir)
+
+
+## Somebody reached a level: a line in the chat for everyone.
+func _on_leveled_up(id: int, level: int) -> void:
+	if game == null or game.client == null:
+		return
+	var who: String = game.client.roster[id].name if game.client.roster.has(id) else "?"
+	chat.add_message("", tr("CHAT_LEVEL_UP") % [who, level], true)
 
 
 func _on_class_confirmed(class_id: String) -> void:
@@ -208,10 +343,20 @@ func _on_class_changed(id: int, class_id: String) -> void:
 ## The host sent this player's progress (experience, level, points…): the saved character
 ## keeps it. Saves are coalesced per frame (CharacterStore.queue_save).
 func _on_progress_changed() -> void:
-	if game == null or game.client == null or _playing == null:
+	if game == null or game.client == null:
 		return
-	_playing.progress = game.client.progress.copy()
-	_playing.bar = game.client.bar.duplicate()
+	var c := game.client
+	combat_hud.bind(c, c.bar, abilities) # a level-up can add an ability to the bar
+	if character_window.visible:
+		_show_character()
+	if talents_window.visible:
+		talents_window.show_for(c.progress, TalentDB.load_default(), c.balance)
+	if abilities_window.visible:
+		abilities_window.show_for(c.class_id, c.bar, abilities, c.progress.level, c.progress.upgrade)
+	if _playing == null:
+		return
+	_playing.progress = c.progress.copy()
+	_playing.bar = c.bar.duplicate()
 	store.queue_save(_playing)
 
 
@@ -346,6 +491,8 @@ func _import(path: String, new_name: String) -> void:
 func _on_dialog_answered(yes: bool) -> void:
 	var pending := _pending
 	_pending = {}
+	if pending.get("action", "") == "reset" and yes and game != null and game.client != null:
+		game.client.reset_progress(str(pending.what))
 	if pending.get("action", "") == "delete" and yes:
 		var deleted := store.delete(pending.id)
 		_show_select()
@@ -430,8 +577,9 @@ func _on_typing_changed(_is_typing: bool) -> void:
 ## (a click on a menu button must not attack).
 func _update_input_block() -> void:
 	if game != null:
-		game.input_blocked = chat.is_typing() or pause_menu.visible or dialog.visible or abilities_window.visible \
-			or class_choice_window.visible
+		game.input_blocked = chat.is_typing() or pause_menu.visible or dialog.visible or class_choice_window.visible \
+			or trainer_menu.visible
+		game.attacks_blocked = _panel_open()
 
 
 func _process(_delta: float) -> void:
@@ -466,6 +614,8 @@ func _attach_client() -> void:
 	client.combat_event.connect(_on_game_event)
 	client.class_changed.connect(_on_class_changed)
 	client.progress_changed.connect(_on_progress_changed)
+	client.leveled_up.connect(_on_leveled_up)
+	client.arena_level_changed.connect(_on_arena_level_changed)
 	debug_overlay.client = client
 	debug_overlay.net_label = game.net_label()
 	combat_hud.bind(client, client.bar, abilities)
@@ -525,8 +675,8 @@ func _leave_game() -> void:
 		game = null
 	debug_overlay.client = null
 	_playing = null
-	abilities_window.visible = false
-	class_choice_window.visible = false
+	for w: Control in _panel_windows() + [class_choice_window, trainer_menu]:
+		w.visible = false
 	combat_hud.unbind()
 	combat_hud.visible = false
 	party_frames.unbind()

@@ -130,3 +130,11 @@ func test_boss_is_a_big_humanoid_that_leaps() -> void:
 	assert_almost_eq(a.body.position.y, rest, 0.001, "landed")
 
 
+
+
+func test_monster_level_is_in_its_label() -> void:
+	var a := _avatar("cultist")
+	a.apply_state({"position": Vector3.ZERO, "facing": 0.0}, {"hp": 55.0, "max_hp": 55.0, "status_bits": 0, "level": 12}, DT)
+	assert_eq(a.bar.label_text(), tr("OVERHEAD_LEVEL") % [12, tr("MON_CULTIST")])
+	a.apply_state({"position": Vector3.ZERO, "facing": 0.0}, {"hp": 55.0, "max_hp": 55.0, "status_bits": 0, "level": 13}, DT)
+	assert_eq(a.bar.label_text(), tr("OVERHEAD_LEVEL") % [13, tr("MON_CULTIST")])

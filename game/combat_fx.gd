@@ -9,12 +9,14 @@ extends Node3D
 ##   area                        -> a flash where an area went off
 ##   status "shield"             -> a bubble around the entity until it fades
 ##   hit / heal / dodge          -> floating numbers
+##   level_up                    -> "¡Nivel N!" over the player and a flash
 ## Time advances in advance(dt) (called from _process; tests call it by hand).
 
 const COLOR_HIT := Color(1, 1, 1)
 const COLOR_CRIT := Color(1.0, 0.85, 0.2)
 const COLOR_HEAL := Color(0.4, 1.0, 0.45)
 const COLOR_DODGE := Color(0.7, 0.7, 0.72)
+const COLOR_LEVEL := Color(1.0, 0.82, 0.3)
 const CLASS_COLORS := {
 	"warrior": Color("#d8dde3"), "cleric": Color("#ffe38a"), "mage": Color("#b98cff"),
 	"archer": Color("#e8d2a0"), "assassin": Color("#ff5f6d"),
@@ -64,6 +66,8 @@ func handle(ev: Array) -> void:
 			_remove_telegraph(int(ev[1]))
 		"telegraph":
 			_add_telegraph(ev)
+		"level_up":
+			level_up(int(ev[1]), int(ev[2]))
 		"area":
 			_area_flash(ev[2], float(ev[3]))
 		"status":
@@ -82,6 +86,14 @@ func handle(ev: Array) -> void:
 				_number(int(ev[1]), "+%d" % roundi(float(ev[2])), COLOR_HEAL, 44)
 		"dodge":
 			_number(int(ev[1]), tr("FX_DODGE"), COLOR_DODGE, 36)
+
+
+## A player reached a level: a golden number over them and a flash on the ground.
+func level_up(id: int, level: int) -> void:
+	_number(id, tr("FX_LEVEL_UP") % level, COLOR_LEVEL, 60)
+	var at: Variant = _position_of.call(id)
+	if at != null:
+		_area_flash(at, 1.6)
 
 
 func advance(dt: float) -> void:
