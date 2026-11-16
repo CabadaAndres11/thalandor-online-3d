@@ -2,7 +2,7 @@
 tags: [plan]
 plan: 4
 fecha: 2026-11-16
-estado: borrador
+estado: en curso
 actualizado: 2026-11-16
 ---
 # Plan 4 — Progresión: plan de implementación
