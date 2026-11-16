@@ -15,13 +15,11 @@ const TELEPORT_DISTANCE := 2.0
 var body: Node3D
 var bar: OverheadBar
 var dying: bool = false
-var animation_player: AnimationPlayer
 var _rig: BeastRig
 var _humanoid: HumanRig
 var _aura: Node3D
 var _display_name: String = ""
 ## Seconds left of an attack animation (humanoids: idle/walk wait for it).
-var _action_left: float = 0.0
 var _leap: Tween
 
 var _kind: String = ""
@@ -127,17 +125,6 @@ func apply_state(state: Dictionary, info: Dictionary, delta: float) -> void:
 	elif _humanoid != null:
 		_humanoid.set_moving_speed(_speed, _move_speed)
 		_humanoid.update(delta)
-	elif animation_player != null:
-		if _action_left > 0.0:
-			_action_left -= delta
-			return
-		var anim := "idle"
-		if _speed >= 3.5 and animation_player.has_animation("sprint"):
-			anim = "sprint"
-		elif _speed >= 0.2:
-			anim = "walk"
-		if animation_player.current_animation != anim and animation_player.has_animation(anim):
-			animation_player.play(anim, 0.15)
 	elif _kind == "vox":
 		var hop := absf(sin(_time * 9.0)) * 0.18 if _speed >= 0.2 else 0.0
 		body.position.y = _rest.y + hop
@@ -146,8 +133,6 @@ func apply_state(state: Dictionary, info: Dictionary, delta: float) -> void:
 func current_animation() -> String:
 	if _humanoid != null:
 		return _humanoid.current_animation()
-	if animation_player != null:
-		return animation_player.current_animation
 	return "walk" if _speed >= 0.2 else "idle"
 
 
@@ -230,8 +215,6 @@ func play_death() -> Tween:
 		_humanoid.play_action("die")
 		t.tween_property(body, "position:y", _rest.y - 0.05, 0.9)
 		return t
-	if animation_player != null:
-		animation_player.stop()
 	t.tween_property(body, "rotation_degrees:z", 90.0, 0.5)
 	t.tween_property(body, "scale:y", body.scale.y * 0.2, 0.9)
 	t.tween_property(body, "position:y", _rest.y - 0.2, 0.9)

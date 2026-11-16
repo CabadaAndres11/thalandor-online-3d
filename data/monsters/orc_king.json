@@ -7,7 +7,7 @@
 	"jump": {"ability": "orc_king_jump", "min_range": 4, "max_range": 14, "from_phase": 2},
 	"summon": {"type": "goblin", "count": 3, "every_s": 20, "from_phase": 3, "max_alive": 6},
 	"look": {
-		"skin": "#5f7a3a", "eyes": "#ff5a1f", "hair": "#1e2a12", "outfit": "res://assets/characters/layers/outfit_orc_king.png",
+		"skin": "#5f7a3a", "eyes": "#ff5a1f", "hair": "#1e2a12",
 		"primary": "#3a3d44", "secondary": "#c9962e",
 		"body_scale": {"torso": [1.15, 1, 1.15], "arm": [1.15, 1, 1.15]},
 		"pieces": ["orc_tusks", "orc_crown", "pauldron_left", "pauldron_right", "orc_axe"]

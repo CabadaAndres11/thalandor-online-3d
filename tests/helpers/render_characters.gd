@@ -1,16 +1,15 @@
 extends SceneTree
 ## Art checkpoint tool (needs a window, not --headless): lines up characters on the
 ## arena's ground and light and saves user://render/<name>.png.
-##   Godot --path . -s tests/helpers/render_characters.gd -- --set=spike
-## Each set is a list of looks (see CharacterRig.build) or, from Task 4 on, of
+##   Godot --path . -s tests/helpers/render_characters.gd -- --set=classes
+## Each set is a list of looks (see HumanRig.build) made from
 ## [class_id, appearance] pairs resolved through CharacterCatalog.
 
-const LAYERS := "res://assets/characters/layers/"
 const PIECES := "res://assets/characters/pieces/"
 const SPACING := 1.3
 
 var _frames := 0
-var _name := "spike"
+var _name := "classes"
 
 
 func _initialize() -> void:
@@ -65,27 +64,6 @@ func _process(_delta: float) -> bool:
 
 func _looks(set_name: String) -> Array:
 	match set_name:
-		"spike":
-			var mage := {
-				"hair_layer": LAYERS + "hair_short.png", "beard_layer": "",
-				"outfit_layer": LAYERS + "outfit_mage.png",
-				"primary": Color("#5b3f9e"), "secondary": Color("#e8b23a"),
-				"pieces": [{"id": "hat_mage", "file": PIECES + "hat_mage.vox", "part": "head", "offset": [-7, 8, -7]}],
-			}
-			var a := mage.duplicate(true)
-			a.merge({"skin_color": Color("#f1c8a4"), "eyes_color": Color("#3d7cc9"), "hair_color": Color("#4a3426")}, true)
-			var b := mage.duplicate(true)
-			b.merge({"skin_color": Color("#8d5a3b"), "eyes_color": Color("#3b2a1e"), "hair_color": Color("#1d1a19"),
-				"beard_layer": LAYERS + "beard_full.png"}, true)
-			var c := mage.duplicate(true)
-			c.merge({"skin_color": Color("#d9a27a"), "eyes_color": Color("#3f8f4e"), "hair_color": Color("#c9c3b8"),
-				"beard_layer": LAYERS + "beard_full.png"}, true)
-			var d := mage.duplicate(true)
-			d.merge({"skin_color": Color("#f6d9c0"), "eyes_color": Color("#6a4a2a"), "hair_color": Color("#c4542a"),
-				"pieces": [{"id": "hair_long", "file": PIECES + "hair_long.vox", "part": "head", "offset": [-5, -3, -6]}]}, true)
-			var e := d.duplicate(true)
-			e["rot"] = 160.0
-			return [a, b, c, d, e]
 		"classes":
 			return _resolved([
 				["warrior", {"skin": "skin_4", "hair_style": "short", "hair_color": "dark_brown", "beard": "full", "body": "robust"}],

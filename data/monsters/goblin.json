@@ -5,7 +5,7 @@
 	"aggro_range": 7, "leash_range": 20, "attack_range": 1.5,
 	"behavior": "melee", "pack": true, "pack_radius": 10, "abilities": ["goblin_stab"],
 	"look": {
-		"skin": "#6f9a3c", "eyes": "#ffd23a", "outfit": "res://assets/characters/layers/outfit_goblin.png",
+		"skin": "#6f9a3c", "eyes": "#ffd23a",
 		"primary": "#5b4630", "secondary": "#9aa0a6", "hair": "#2f4a1c", "pieces": ["goblin_ears", "goblin_knife"]
 	}
 }
