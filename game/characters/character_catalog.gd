@@ -121,6 +121,7 @@ func resolve(class_id: Variant, appearance: Variant) -> Dictionary:
 		"voxel_hair_color": hair_color.darkened(VOXEL_HAIR_DARKEN),
 		"primary": Color(str(c.get("primary", "#808080"))),
 		"secondary": Color(str(c.get("secondary", "#808080"))),
+		"trousers": Color(str(c.trousers)) if c.has("trousers") else Color(str(c.get("primary", "#808080"))).darkened(HumanRig.TROUSERS_DARKEN),
 		"body_scale": option("body", app.body).get("scale", {}),
 		"pieces": pieces,
 	}

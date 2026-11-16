@@ -31,11 +31,11 @@ const KIT = {
 // --- Hair (cap + extras) and beards --------------------------------------------------
 // Caps are tagged hair_cap (only hoods hide them); long extras are tagged hair.
 function cap(f, s) {
-  s.box(f.x0 - 1, f.y1 + 1, f.z0 - 1, f.x1 + 1, f.y1 + 1, f.z1, H); // top
-  s.box(f.x0 - 1, f.y1 - 2, f.z0 - 1, f.x1 + 1, f.y1, f.z0 - 1, H); // back
-  s.box(f.x0 - 1, f.y1 - 1, f.z0, f.x0 - 1, f.y1, f.z1 - 1, H); // sides
-  s.box(f.x1 + 1, f.y1 - 1, f.z0, f.x1 + 1, f.y1, f.z1 - 1, H);
-  s.box(f.x0, f.y1, f.z1 + 1, f.x1, f.y1, f.z1 + 1, H); // fringe over the brow line
+  s.box(f.x0, f.y1 + 1, f.z0, f.x1, f.y1 + 1, f.z1, H); // top
+  s.box(f.x0, f.y0 + 2, f.z0 - 1, f.x1, f.y1 + 1, f.z0 - 1, H); // back, down to the ears
+  s.box(f.x0 - 1, f.y1 - 1, f.z0, f.x0 - 1, f.y1, f.z1 - 2, H); // temples
+  s.box(f.x1 + 1, f.y1 - 1, f.z0, f.x1 + 1, f.y1, f.z1 - 2, H);
+  s.box(f.x0, f.y1, f.z1 + 1, f.x0 + 2, f.y1, f.z1 + 1, H); // a lock of fringe on one side
 }
 
 const HAIR = {
@@ -45,9 +45,10 @@ const HAIR = {
     tag: "hair_cap",
     build(f, s) {
       cap(f, s);
-      s.box(f.x0 - 1, f.y0 + 1, f.z0 - 1, f.x1 + 1, f.y1, f.z0 - 1, H);
-      s.box(f.x0 - 1, f.y0 + 1, f.z0, f.x0 - 1, f.y1, f.z1, H);
-      s.box(f.x1 + 1, f.y0 + 1, f.z0, f.x1 + 1, f.y1, f.z1, H);
+      s.box(f.x0, f.y0, f.z0 - 1, f.x1, f.y1, f.z0 - 1, H);
+      s.box(f.x0 - 1, f.y0, f.z0, f.x0 - 1, f.y1, f.z1 - 1, H);
+      s.box(f.x1 + 1, f.y0, f.z0, f.x1 + 1, f.y1, f.z1 - 1, H);
+      s.box(f.x0, f.y1, f.z1 + 1, f.x1, f.y1, f.z1 + 1, H); // full fringe
     },
   },
   // Swept back: tall at the front, combed backwards, no fringe.
@@ -82,8 +83,8 @@ const HAIR = {
     tag: "hair",
     build(f, s) {
       const [a, b] = mid(f);
-      s.box(a - 1, f.y1 + 2, f.z0, b + 1, f.y1 + 3, f.z0 + 2, H);
-      s.box(a, f.y1 + 4, f.z0 + 1, b, f.y1 + 4, f.z0 + 1, H);
+      s.box(a - 1, f.y1 - 1, f.z0 - 3, b + 1, f.y1 + 1, f.z0 - 2, H); // bun at the back of the head
+      s.box(a, f.y1 + 2, f.z0 - 3, b, f.y1 + 2, f.z0 - 2, H);
     },
   },
   // Crest along the middle of a shaved head, down the back.
@@ -193,10 +194,12 @@ const GEAR = {
   outfit_warrior: {
     frame: TORSO, tag: "outfit", palette: KIT,
     build(f, s) {
-      s.box(f.x0, f.y0 + 2, f.z1 + 1, f.x1, f.y1 - 1, f.z1 + 1, STEEL); // breastplate
-      s.box(f.x0, f.y0 + 1, f.z1 + 1, f.x1, f.y0 + 1, f.z1 + 1, CHAIN); // mail below it
+      s.box(f.x0, f.y0 + 1, f.z1 + 1, f.x1, f.y1 - 1, f.z1 + 1, STEEL); // breastplate
+      s.box(f.x0, f.y0 + 1, f.z1 + 1, f.x0, f.y1 - 1, f.z1 + 1, DARKSTEEL).box(f.x1, f.y0 + 1, f.z1 + 1, f.x1, f.y1 - 1, f.z1 + 1, DARKSTEEL);
+      s.box(f.x0, f.y0 + 1, f.z1 + 1, f.x1, f.y0 + 1, f.z1 + 1, DARKSTEEL); // rims
       const [a, b] = mid(f);
-      s.box(a, f.y0 + 3, f.z1 + 2, b, f.y1 - 2, f.z1 + 2, S); // red heraldic stripe
+      s.box(a, f.y0 + 2, f.z1 + 2, b, f.y1 - 1, f.z1 + 2, STEEL); // ridge down the middle
+      s.box(f.x0, f.y0, f.z1 + 1, f.x1, f.y0, f.z1 + 1, CHAIN); // mail below it
     },
   },
   outfit_cleric: {

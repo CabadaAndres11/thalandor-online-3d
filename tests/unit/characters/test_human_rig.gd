@@ -7,7 +7,7 @@ func _look(body_scale: Dictionary = {}) -> Dictionary:
 	return {
 		"skin_color": Color("#e8b996"), "eyes_color": Color("#3d7cc9"), "hair_color": Color("#784628"),
 		"voxel_hair_color": Color("#663b22"),
-		"primary": Color("#5b3f9e"), "secondary": Color("#e8b23a"),
+		"primary": Color("#5b3f9e"), "secondary": Color("#e8b23a"), "trousers": Color("#3a2e5a"),
 		"body_scale": body_scale,
 		"pieces": [{"id": "hat_mage", "file": PIECES + "hat_mage.vox", "part": "head", "offset": [-4, 5, -4]}],
 	}
@@ -19,6 +19,12 @@ func _colors(mi: MeshInstance3D) -> Array:
 	for s in mesh.get_surface_count():
 		out.append_array(Array(mesh.surface_get_arrays(s)[Mesh.ARRAY_COLOR]))
 	return out
+
+
+## Vertex colors are stored with 8 bits per channel.
+func _has_color(colors: Array, c: Color) -> bool:
+	return colors.any(func(x: Color) -> bool:
+		return absf(x.r - c.r) < 0.004 and absf(x.g - c.g) < 0.004 and absf(x.b - c.b) < 0.004)
 
 
 func test_builds_all_parts() -> void:
@@ -35,10 +41,15 @@ func test_tints_skin_and_eyes() -> void:
 	var rig := HumanRig.build(_look())
 	add_child_autofree(rig)
 	var colors := _colors(rig.part_mesh("head"))
-	assert_has(colors, Color("#e8b996"), "skin tint")
-	assert_has(colors, Color("#3d7cc9"), "eyes tint")
-	assert_has(_colors(rig.part_mesh("torso")), Color("#5b3f9e"), "shirt in the primary color")
-	assert_has(_colors(rig.part_mesh("leg_left")), Color("#e8b23a"), "trousers in the secondary color")
+	assert_true(_has_color(colors, Color("#e8b996")), "skin tint")
+	assert_true(_has_color(colors, Color("#3d7cc9")), "eyes tint")
+	assert_true(_has_color(_colors(rig.part_mesh("torso")), Color("#5b3f9e")), "shirt in the primary color")
+	assert_true(_has_color(_colors(rig.part_mesh("leg_left")), Color("#3a2e5a")), "trousers in their own color")
+	var plain := _look()
+	plain.erase("trousers")
+	var rig2 := HumanRig.build(plain)
+	add_child_autofree(rig2)
+	assert_true(_has_color(_colors(rig2.part_mesh("leg_left")), Color("#5b3f9e").darkened(HumanRig.TROUSERS_DARKEN)), "default: a darker primary")
 
 
 func test_body_scale_widens_torso() -> void:

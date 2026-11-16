@@ -75,7 +75,7 @@
 		"part": "torso",
 		"offset": [
 			-3,
-			1,
+			0,
 			2
 		],
 		"tag": "outfit",
@@ -196,7 +196,7 @@
 		"part": "head",
 		"offset": [
 			-4,
-			3,
+			2,
 			-4
 		],
 		"tag": "hair_cap",
@@ -207,7 +207,7 @@
 		"part": "head",
 		"offset": [
 			-4,
-			1,
+			0,
 			-4
 		],
 		"tag": "hair_cap",
@@ -218,7 +218,7 @@
 		"part": "head",
 		"offset": [
 			-4,
-			3,
+			2,
 			-4
 		],
 		"tag": "hair_cap",
@@ -251,8 +251,8 @@
 		"part": "head",
 		"offset": [
 			-2,
-			7,
-			-3
+			4,
+			-6
 		],
 		"tag": "hair",
 		"hides": []

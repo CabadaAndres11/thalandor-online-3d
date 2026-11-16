@@ -40,6 +40,12 @@ func _initialize() -> void:
 		rig.position = origin + Vector3(i * SPACING, 0, 0)
 		rig.rotation_degrees.y = float(looks[i].get("rot", 0.0))
 		root.add_child(rig)
+		if looks[i].has("action"):
+			rig.position.x += (i - 3) * 0.35 # spread the poses out
+		var action := str(looks[i].get("action", ""))
+		if action != "":
+			rig.auto_update = false
+			rig.update(rig.play_action(action) * float(looks[i].get("at", 0.4)))
 	var cam := Camera3D.new()
 	cam.fov = 30
 	root.add_child(cam)
@@ -88,6 +94,14 @@ func _looks(set_name: String) -> Array:
 				["archer", {"skin": "skin_3", "hair_style": "swept", "hair_color": "blond", "eyes": "green"}],
 				["assassin", {"skin": "skin_7", "hair_style": "short", "hair_color": "black", "eyes": "grey"}],
 			])
+		"actions":
+			var out := []
+			for a: Array in [["warrior", "melee", 0.25], ["warrior", "melee", 0.45], ["archer", "shoot", 0.5], ["mage", "cast", 0.3], ["assassin", "dash", 0.5], ["cleric", "downed", 1.0], ["warrior", "die", 1.0]]:
+				var l: Dictionary = _resolved([[a[0], {"hair_style": "short", "beard": "short"}, 35.0]])[0]
+				l["action"] = a[1]
+				l["at"] = a[2]
+				out.append(l)
+			return out
 		"classes_back":
 			var looks := _looks("classes")
 			for l: Dictionary in looks:

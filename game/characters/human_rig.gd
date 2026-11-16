@@ -18,6 +18,8 @@ const SCALE_GROUP := {
 ## Seconds each action lasts; downed and die then stay.
 const ACTIONS := {"melee": 0.45, "shoot": 0.65, "cast": 0.6, "dash": 0.35, "downed": 0.5, "die": 0.7}
 const LASTING := ["downed", "die"]
+## Trousers default to the primary color this much darker.
+const TROUSERS_DARKEN := 0.45
 const WALK_MIN_SPEED := 0.2 # m/s
 const STRIDE := 1.2 # meters per full leg cycle
 const LEG_SWING := 0.7
@@ -40,8 +42,8 @@ var _action_t: float = 0.0
 var auto_update: bool = true
 
 
-## look: skin_color, eyes_color, hair_color, voxel_hair_color, primary, secondary
-## (Color); body_scale ({"torso"|"arm"|"leg": [x, y, z]}); pieces ([{id, file, part,
+## look: skin_color, eyes_color, hair_color, voxel_hair_color, primary, secondary,
+## trousers (Color; trousers default to a darker primary); body_scale ({"torso"|"arm"|"leg": [x, y, z]}); pieces ([{id, file, part,
 ## offset: [x, y, z] voxels from the part's pivot}]).
 ## A character of a class with an appearance (ids; untrusted values are sanitized).
 static func create(class_id: String, appearance: Dictionary, catalog: CharacterCatalog = null) -> HumanRig:
@@ -140,6 +142,7 @@ func _setup(look: Dictionary) -> void:
 		VoxMesher.TINT_HAIR: look.get("voxel_hair_color", look.get("hair_color", Color.BLACK)),
 		VoxMesher.TINT_PRIMARY: look.get("primary", Color.GRAY),
 		VoxMesher.TINT_SECONDARY: look.get("secondary", Color.GRAY),
+		VoxMesher.TINT_TROUSERS: look.get("trousers", (look.get("primary", Color.GRAY) as Color).darkened(TROUSERS_DARKEN)),
 	}
 	var body_scale: Dictionary = look.get("body_scale", {})
 	var torso_f := _factor(body_scale, "torso")
