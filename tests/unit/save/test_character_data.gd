@@ -33,7 +33,7 @@ func test_sanitizes_unknown_class_and_appearance() -> void:
 	d.class_id = "druid"
 	d.appearance = {"skin": "purple", "hair_style": 3}
 	var c := CharacterData.from_dict(d, catalog)
-	assert_eq(c.class_id, "warrior")
+	assert_eq(c.class_id, "villager")
 	assert_eq(c.appearance, catalog.default_appearance())
 
 
@@ -98,3 +98,15 @@ func test_bar_sanitized_to_class_abilities() -> void:
 	d.class_id = "warrior"
 	d.bar = ["mage_fireball", "", "", ""]
 	assert_eq(CharacterData.from_dict(d, catalog).bar, ["", "", "", ""], "the bar follows the class")
+
+
+func test_new_character_is_villager() -> void:
+	assert_eq(CharacterData.new().class_id, "villager")
+	var d := {"version": 2, "id": "c1", "name": "Ana", "appearance": {}, "bar": []}
+	var c := CharacterData.from_dict(d, CharacterCatalog.load_default())
+	assert_eq(c.class_id, "villager", "no class in the file: a villager")
+
+
+func test_old_save_keeps_class() -> void:
+	var d := {"version": 2, "id": "c1", "name": "Ana", "class_id": "mage", "appearance": {}, "bar": []}
+	assert_eq(CharacterData.from_dict(d, CharacterCatalog.load_default()).class_id, "mage")

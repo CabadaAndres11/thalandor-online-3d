@@ -94,9 +94,13 @@ func _clear(dir: String) -> void:
 
 
 func _create(char_name: String, class_id: String, appearance := {}) -> CharacterData:
-	main._on_create_requested(char_name, class_id, appearance)
+	main._on_create_requested(char_name, appearance)
 	for c in main.store.load_all():
 		if c.name == char_name:
+			if class_id != c.class_id: # tests of classed characters: as if trained by Brann
+				c.class_id = class_id
+				c.bar = AbilityDB.load_default().default_bar(class_id)
+				main.store.save(c)
 			return c
 	return null
 
@@ -125,7 +129,7 @@ func test_create_then_play_enters_game_with_that_class() -> void:
 func test_create_with_taken_name_shows_error() -> void:
 	_create("Lyra", "archer")
 	main._show_create()
-	main._on_create_requested("lyra", "mage", {})
+	main._on_create_requested("lyra", {})
 	assert_true(main.dialog.visible)
 	assert_eq(main.dialog.message(), tr("ERR_NAME_TAKEN"))
 	assert_true(main.create_screen.visible, "stays on the create screen")

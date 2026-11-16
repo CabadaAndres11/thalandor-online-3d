@@ -1,10 +1,11 @@
 class_name CharacterCreateScreen
 extends Control
-## "Crear personaje": name, class (with its description) and appearance, one ◀ ▶ row
+## "Crear personaje": name and appearance, one ◀ ▶ row
 ## per option (colors show a swatch), with a live preview that can be turned by
-## dragging. Options come from CharacterCatalog (data/characters/).
+## dragging. Options come from CharacterCatalog (data/characters/). Everyone starts
+## as a villager: the class is chosen in the game, talking to Brann.
 
-signal create_requested(char_name: String, class_id: String, appearance: Dictionary)
+signal create_requested(char_name: String, appearance: Dictionary)
 signal back_requested()
 
 const LABEL_KEYS := {
@@ -16,15 +17,12 @@ var name_edit: LineEdit
 var create_button: Button
 var random_button: Button
 var back_button: Button
-var class_buttons: Dictionary = {} # class id -> Button
 var preview: CharacterPreview
 
 var _catalog: CharacterCatalog
-var _class_id: String = CharacterCatalog.DEFAULT_CLASS
 var _index: Dictionary = {} # kind -> option index
 var _value_labels: Dictionary = {} # kind -> Label
 var _swatches: Dictionary = {} # kind -> ColorRect
-var _class_desc: Label
 var _rng := RandomNumberGenerator.new()
 
 
@@ -62,24 +60,12 @@ func _init() -> void:
 	name_edit.text_changed.connect(_on_name_changed)
 	name_row.add_child(name_edit)
 
-	var class_row := HBoxContainer.new()
-	left.add_child(class_row)
-	class_row.add_child(_caption("CLASS_LABEL"))
-	var group := ButtonGroup.new()
-	for c: Dictionary in _catalog.classes():
-		var b := Button.new()
-		b.text = tr(c.name)
-		b.toggle_mode = true
-		b.button_group = group
-		b.size_flags_horizontal = SIZE_EXPAND_FILL
-		b.pressed.connect(select_class.bind(c.id))
-		class_row.add_child(b)
-		class_buttons[c.id] = b
-	_class_desc = Label.new()
-	_class_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_class_desc.custom_minimum_size.y = 52
-	_class_desc.modulate = Color(1, 1, 1, 0.75)
-	left.add_child(_class_desc)
+	var note := Label.new()
+	note.text = tr("CLASS_VILLAGER_DESC")
+	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	note.custom_minimum_size.y = 52
+	note.modulate = Color(1, 1, 1, 0.75)
+	left.add_child(note)
 
 	for kind: String in CharacterCatalog.KINDS:
 		left.add_child(_option_row(kind))
@@ -105,19 +91,13 @@ func _init() -> void:
 	reset("")
 
 
-## Fresh form: default class and appearance, `default_name` already written.
+## Fresh form: default appearance, `default_name` already written.
 func reset(default_name: String) -> void:
 	name_edit.text = default_name
-	_class_id = CharacterCatalog.DEFAULT_CLASS
 	for kind: String in CharacterCatalog.KINDS:
 		_index[kind] = 0
 	_rng.randomize()
 	_on_name_changed(default_name)
-	_update()
-
-
-func select_class(id: String) -> void:
-	_class_id = _catalog.sanitize_class(id)
 	_update()
 
 
@@ -143,9 +123,6 @@ func _step(kind: String, delta: int) -> void:
 
 
 func _update() -> void:
-	for id: String in class_buttons:
-		(class_buttons[id] as Button).set_pressed_no_signal(id == _class_id)
-	_class_desc.text = tr(str(_catalog.class_def(_class_id).get("desc", "")))
 	for kind: String in CharacterCatalog.KINDS:
 		var o: Dictionary = _catalog.options(kind)[_index[kind]]
 		var label: Label = _value_labels[kind]
@@ -157,7 +134,7 @@ func _update() -> void:
 		else:
 			swatch.modulate.a = 0.0 # keeps its space so the arrows line up
 			label.text = tr(str(o.get("name", o.id)))
-	preview.show_character(_class_id, current_appearance())
+	preview.show_character(CharacterCatalog.DEFAULT_CLASS, current_appearance())
 
 
 func _option_row(kind: String) -> Control:
@@ -219,4 +196,4 @@ func _on_random() -> void:
 
 func _on_create() -> void:
 	if not create_button.disabled:
-		create_requested.emit(name_edit.text.strip_edges(), _class_id, current_appearance())
+		create_requested.emit(name_edit.text.strip_edges(), current_appearance())

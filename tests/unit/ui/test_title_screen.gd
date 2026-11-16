@@ -70,7 +70,6 @@ func test_all_ui_fits_1280x720() -> void:
 	var create := CharacterCreateScreen.new()
 	var r7 := _host(create)
 	create.reset("Nombre-Largo-16c")
-	create.select_class("cleric")
 	var asking := MessageDialog.new()
 	var r8 := _host(asking)
 	asking.ask_text(TranslationServer.translate("IMPORT_NEW_NAME") % "Nombre-Largo-16c", "Nombre-Largo-16c")

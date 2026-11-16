@@ -122,18 +122,23 @@ func test_random_gives_valid_appearance() -> void:
 		assert_eq(catalog.sanitize_appearance(c.current_appearance()), c.current_appearance())
 
 
-func test_create_emits_name_class_appearance() -> void:
+func test_create_emits_name_and_appearance() -> void:
 	var c := CharacterCreateScreen.new()
 	_host(c)
 	c.reset("  Lyra  ")
-	c.select_class("archer")
 	c.next_option("beard")
 	watch_signals(c)
 	c.create_button.pressed.emit()
 	var params: Array = get_signal_parameters(c, "create_requested")
 	assert_eq(params[0], "Lyra")
-	assert_eq(params[1], "archer")
-	assert_eq(params[2], c.current_appearance())
+	assert_eq(params[1], c.current_appearance())
+
+
+func test_create_screen_has_no_class_choice() -> void:
+	var c := CharacterCreateScreen.new()
+	_host(c)
+	assert_false("class_buttons" in c, "the class is chosen in the game, with Brann")
+	assert_false(c.has_method("select_class"))
 
 
 func test_preview_shows_character() -> void:

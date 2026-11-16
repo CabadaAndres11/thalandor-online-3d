@@ -32,7 +32,6 @@ func _process(_delta: float) -> bool:
 		_main._show_create()
 		_main.create_screen.name_edit.text = "Nombre-Largo-16c"
 		_main.create_screen.name_edit.text_changed.emit("Nombre-Largo-16c")
-		_main.create_screen.select_class("cleric")
 	elif _frames == 80:
 		_save("ui_create")
 		_main._on_play("Lyra", "archer")

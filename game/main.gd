@@ -192,8 +192,8 @@ func _show_create() -> void:
 	_show_only(create_screen)
 
 
-func _on_create_requested(char_name: String, class_id: String, appearance: Dictionary) -> void:
-	var c := store.create(char_name, class_id, appearance)
+func _on_create_requested(char_name: String, appearance: Dictionary) -> void:
+	var c := store.create(char_name, CharacterCatalog.DEFAULT_CLASS, appearance)
 	if c == null:
 		dialog.show_message(tr(store.last_error))
 		return

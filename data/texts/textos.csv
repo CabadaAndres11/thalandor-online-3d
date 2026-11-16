@@ -307,3 +307,8 @@ DETAIL_PASSIVE_LEVEL,Pasiva: se activa sola desde el nivel %d
 DETAIL_STAT_ARMOR_PCT,Armadura: %s
 DETAIL_STAT_DODGE_ADD,Esquiva: %s
 DETAIL_STAT_MAX_RESOURCE_PCT,Recurso máximo: %s
+CLASS_VILLAGER,Aldeano
+CLASS_VILLAGER_DESC,"Aprendiz en la forja de la aldea. Aún no has elegido tu camino: habla con Brann."
+AB_VILLAGER_STRIKE,Golpe de madera
+AB_VILLAGER_STRIKE_DESC,Un golpe con la espada de entrenamiento al enemigo que tienes delante.
+ABILITIES_VILLAGER_HINT,Habla con Brann para elegir tu clase.

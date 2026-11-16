@@ -1,0 +1,5 @@
+[
+	{"id": "villager_strike", "class": "villager", "name": "AB_VILLAGER_STRIKE", "desc": "AB_VILLAGER_STRIKE_DESC", "icon": "slash", "kind": "basic", "level": 1,
+	 "cost": 0, "cooldown_s": 0.7, "gcd": false, "range": 2.0, "anim": "melee",
+	 "effects": [{"type": "melee_arc", "angle_deg": 100, "range": 2.0, "damage": {"base": 7, "coef": 0.42, "kind": "physical"}}]}
+]

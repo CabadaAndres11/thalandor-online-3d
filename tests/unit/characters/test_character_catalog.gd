@@ -13,10 +13,18 @@ func test_all_kinds_have_expected_counts() -> void:
 		assert_eq(catalog.options(kind).size(), expected[kind], kind)
 
 
-func test_five_classes_with_ids() -> void:
-	var ids := catalog.classes().map(func(c: Dictionary) -> String: return c.id)
+func test_classes_villager_first_then_the_five() -> void:
+	var ids: Array = catalog.classes().map(func(c: Dictionary) -> String: return c.id)
+	assert_eq(ids, ["villager", "warrior", "cleric", "mage", "archer", "assassin"])
+	assert_eq(CharacterCatalog.DEFAULT_CLASS, "villager")
+
+
+func test_villager_not_selectable() -> void:
+	var ids: Array = catalog.selectable_classes().map(func(c: Dictionary) -> String: return c.id)
 	assert_eq(ids, ["warrior", "cleric", "mage", "archer", "assassin"])
-	assert_eq(CharacterCatalog.DEFAULT_CLASS, "warrior")
+	assert_false(catalog.is_selectable("villager"))
+	assert_true(catalog.is_selectable("mage"))
+	assert_false(catalog.is_selectable("druid"))
 
 
 func test_every_referenced_file_exists() -> void:
@@ -75,7 +83,7 @@ func test_bald_has_no_hair_piece() -> void:
 
 
 func test_class_weapon_in_hand() -> void:
-	var hands := {"warrior": "hand_right", "cleric": "hand_right", "mage": "hand_right", "archer": "hand_left", "assassin": "hand_right"}
+	var hands := {"villager": "hand_right", "warrior": "hand_right", "cleric": "hand_right", "mage": "hand_right", "archer": "hand_left", "assassin": "hand_right"}
 	for class_id: String in hands:
 		var look := catalog.resolve(class_id, {})
 		var weapons := (look.pieces as Array).filter(func(p: Dictionary) -> bool: return str(p.id).begins_with("weapon_"))
@@ -111,8 +119,8 @@ func test_sanitize_unknown_ids_fall_back_to_defaults() -> void:
 	assert_eq(app.skin, catalog.default_appearance().skin)
 	assert_eq(app.hair_style, "hair_long")
 	assert_eq(app.eyes, catalog.default_appearance().eyes)
-	assert_eq(catalog.sanitize_class("druid"), "warrior")
-	assert_eq(catalog.sanitize_class(42), "warrior")
+	assert_eq(catalog.sanitize_class("druid"), "villager")
+	assert_eq(catalog.sanitize_class(42), "villager")
 	assert_eq(catalog.sanitize_class("mage"), "mage")
 
 

@@ -84,3 +84,13 @@ func test_description_has_the_computed_details() -> void:
 	assert_string_contains(t, tr("AB_MAGE_FIREBALL_DESC"))
 	assert_string_contains(t, "Explosión")
 	assert_string_contains(t, "45 de maná")
+
+
+func test_villager_sees_the_strike_and_the_hint() -> void:
+	win.show_for("villager", ["", "", "", ""], abilities)
+	assert_eq(win.attack_ids(), ["villager_strike"])
+	assert_eq(win.active_ids(), [])
+	assert_true(win.villager_hint_visible())
+	assert_true(win.panel_rect().size.y <= 720.0 and win.panel_rect().size.x <= 1280.0)
+	win.show_for("warrior", abilities.default_bar("warrior"), abilities)
+	assert_false(win.villager_hint_visible())

@@ -1,4 +1,7 @@
 [
+	{"id": "villager", "name": "CLASS_VILLAGER", "desc": "CLASS_VILLAGER_DESC", "selectable": false, "weapons": ["weapon_wood_sword"], "headgear": "", "pieces": ["outfit_villager"], "primary": "#8a7a5c", "secondary": "#5a4632", "trousers": "#4a3a2a",
+	 "stats": {"max_hp": 120, "attack_power": 10, "spell_power": 0, "armor": 10, "crit_chance": 0.05, "dodge_chance": 0.0},
+	 "resource": {"kind": "none", "max": 0, "start": 0}},
 	{"id": "warrior", "name": "CLASS_WARRIOR", "desc": "CLASS_WARRIOR_DESC", "weapons": ["weapon_sword"], "headgear": "", "pieces": ["outfit_warrior", "pauldron_left", "pauldron_right"], "primary": "#8d96a1", "secondary": "#8e3b2e",
 	 "stats": {"max_hp": 200, "attack_power": 20, "spell_power": 0, "armor": 40, "crit_chance": 0.05, "dodge_chance": 0.0},
 	 "resource": {"kind": "rage", "max": 100, "start": 0, "gain_per_hit": 8, "gain_per_damage_taken": 0.5, "decay_per_s": 5}},

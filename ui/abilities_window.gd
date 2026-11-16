@@ -13,6 +13,7 @@ const DESC_LINES := 9
 
 var _abilities: AbilityDB
 var _class_id: String = ""
+var _villager_hint: Label
 var _stats: CombatStats
 var _resource_kind: String = "mana"
 var _bar: Array = []
@@ -95,6 +96,12 @@ func _init() -> void:
 	_desc.custom_minimum_size = Vector2(7 * CARD.x + 6 * 6 + 24, DESC_LINES * 21)
 	_desc.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	box.add_child(_desc)
+	_villager_hint = Label.new()
+	_villager_hint.text = tr("ABILITIES_VILLAGER_HINT")
+	_villager_hint.add_theme_font_size_override("font_size", 16)
+	_villager_hint.add_theme_color_override("font_color", Color("#ffd27a"))
+	_villager_hint.visible = false
+	box.add_child(_villager_hint)
 	var hint := Label.new()
 	hint.text = tr("ABILITIES_HINT")
 	hint.add_theme_font_size_override("font_size", 13)
@@ -129,6 +136,7 @@ func show_for(class_id: String, p_bar: Array, abilities: AbilityDB) -> void:
 		_active_row.add_child(_card(id))
 	for id: String in _passives:
 		_passive_row.add_child(_card(id))
+	_villager_hint.visible = not CharacterCatalog.load_default().is_selectable(class_id)
 	_selected = ""
 	_show_description(_attacks[0] if not _attacks.is_empty() else "")
 	_refresh()
@@ -168,6 +176,11 @@ func click_slot(i: int) -> void:
 
 func bar() -> Array:
 	return _bar.duplicate()
+
+
+## True for a villager: the window tells them to talk to Brann.
+func villager_hint_visible() -> bool:
+	return _villager_hint.visible
 
 
 func attack_ids() -> Array:

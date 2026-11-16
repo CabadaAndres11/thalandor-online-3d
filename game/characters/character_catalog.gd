@@ -5,7 +5,8 @@ extends RefCounted
 ## class + appearance into the "look" HumanRig builds.
 
 const KINDS := ["body", "skin", "eyes", "hair_style", "hair_color", "beard"]
-const DEFAULT_CLASS := "warrior"
+## Every character starts as a villager and picks a class in the game (with Brann).
+const DEFAULT_CLASS := "villager"
 const APPEARANCE_PATH := "res://data/characters/appearance.json"
 const CLASSES_PATH := "res://data/characters/classes.json"
 const PIECES_PATH := "res://data/characters/pieces.json"
@@ -39,6 +40,15 @@ func option(kind: String, id: String) -> Dictionary:
 
 func classes() -> Array:
 	return _classes
+
+
+## The classes a villager can choose (not the villager itself).
+func selectable_classes() -> Array:
+	return _classes.filter(func(c: Dictionary) -> bool: return bool(c.get("selectable", true)))
+
+
+func is_selectable(id: Variant) -> bool:
+	return id is String and not class_def(id).is_empty() and bool(class_def(id).get("selectable", true))
 
 
 func class_def(id: String) -> Dictionary:
