@@ -11,9 +11,13 @@ const DEFAULT_DIR := "user://saves/characters"
 var last_error: String = ""
 ## Files of the last load_all() that could not be read as characters.
 var skipped_files: Array[String] = []
+## How many times save() wrote a file (lets tests check the coalescing).
+var writes: int = 0
 
 var _dir: String
 var _catalog: CharacterCatalog
+## Characters waiting for the next frame's write (id -> CharacterData).
+var _pending: Dictionary = {}
 
 
 func _init(dir: String = DEFAULT_DIR, catalog: CharacterCatalog = null) -> void:
@@ -55,8 +59,29 @@ func create(char_name: String, class_id: String, appearance: Dictionary) -> Char
 	return c if save(c) == OK else null
 
 
+## Asks for a save without writing yet: however many times it is called for a character
+## before the next frame (or flush), the file is written once. Progress changes often
+## (experience), so this keeps the disk quiet.
+func queue_save(c: CharacterData) -> void:
+	var first := _pending.is_empty()
+	_pending[c.id] = c
+	if first:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and not (loop as SceneTree).process_frame.is_connected(flush):
+			(loop as SceneTree).process_frame.connect(flush, CONNECT_ONE_SHOT)
+
+
+## Writes the characters waiting in queue_save() now (on leaving the game and on quit).
+func flush() -> void:
+	var list := _pending.values()
+	_pending.clear()
+	for c: CharacterData in list:
+		save(c)
+
+
 func save(c: CharacterData) -> Error:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(_dir))
+	writes += 1
 	var err := _write(_path(c.id), c)
 	if err != OK:
 		last_error = "ERR_SAVE"

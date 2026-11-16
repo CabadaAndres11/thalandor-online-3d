@@ -13,7 +13,7 @@ func _sample() -> CharacterData:
 	c.name = "Andrés"
 	c.class_id = "mage"
 	c.appearance = catalog.sanitize_appearance({"hair_style": "hair_long", "skin": "skin_4"})
-	c.level = 20
+	c.progress.level = 20
 	c.created_at = 1_800_000_000
 	c.bar = AbilityDB.load_default().sanitize_bar("mage", ["mage_fireball", "", "mage_frost_nova", ""], 20)
 	return c
@@ -50,15 +50,7 @@ func test_rejects_invalid_name() -> void:
 	d.name = "x"
 	assert_null(CharacterData.from_dict(d, catalog))
 	d.name = 42
-	assert_null(CharacterData.from_dict(d, catalog))
 
-
-func test_level_is_at_least_one() -> void:
-	var d := _sample().to_dict()
-	d.level = -5
-	assert_eq(CharacterData.from_dict(d, catalog).level, 1)
-	d.level = "lots"
-	assert_eq(CharacterData.from_dict(d, catalog).level, 1)
 
 
 ## A file from before versioning (version 0) used "class" for the class id.
@@ -79,11 +71,11 @@ func test_newer_version_is_rejected() -> void:
 ## Version 1 files had no ability bar: they get the class's default bar.
 func test_migrates_v1_to_v2_with_default_bar() -> void:
 	var old := {"version": 1, "id": "abcdefabcdefabcd", "name": "Lyra", "class_id": "archer",
-		"appearance": {}, "level": 1, "created_at": 5}
+		"appearance": {}, "created_at": 5}
 	var c := CharacterData.from_dict(old, catalog)
 	assert_not_null(c)
 	assert_eq(c.bar, AbilityDB.load_default().default_bar("archer"))
-	assert_eq(c.to_dict().version, 2)
+	assert_eq(c.to_dict().version, CharacterData.VERSION)
 	assert_eq(c.to_dict().bar, c.bar)
 
 
@@ -110,3 +102,49 @@ func test_new_character_is_villager() -> void:
 func test_old_save_keeps_class() -> void:
 	var d := {"version": 2, "id": "c1", "name": "Ana", "class_id": "mage", "appearance": {}, "bar": []}
 	assert_eq(CharacterData.from_dict(d, CharacterCatalog.load_default()).class_id, "mage")
+
+
+func test_progress_roundtrip() -> void:
+	var c := _sample()
+	c.progress.level = 33
+	c.progress.xp = 1234
+	c.progress.attributes["agility"] = 9
+	c.progress.talents = ["might_1", "might_2"]
+	c.progress.masteries = {"might": 2}
+	c.progress.upgrade = "berserker"
+	var back := CharacterData.from_dict(JSON.parse_string(JSON.stringify(c.to_dict())), catalog)
+	assert_eq(back.progress.to_dict(), c.progress.to_dict())
+	assert_eq(back.to_dict().progress.level, 33)
+	assert_false(back.to_dict().has("level"), "the old level field is gone")
+
+
+func test_v2_migrates_to_level_1() -> void:
+	var old := {"version": 2, "id": "abcdefabcdefabcd", "name": "Lyra", "class_id": "archer",
+		"appearance": {}, "level": 1, "created_at": 5, "bar": ["archer_roll", "", "", ""]}
+	var c := CharacterData.from_dict(old, catalog)
+	assert_not_null(c)
+	assert_eq(c.progress.level, 1)
+	assert_eq(c.progress.xp, 0)
+	assert_eq(c.to_dict().version, 3)
+	assert_eq(c.bar.size(), 4)
+	assert_eq(c.name, "Lyra", "nothing else is lost")
+
+
+func test_garbage_progress_loads_defaults() -> void:
+	for junk: Variant in ["x", 5, [1, 2], {"level": "x", "attributes": 3, "talents": "a", "upgrade": 9}, null]:
+		var d := _sample().to_dict()
+		d.progress = junk
+		var c := CharacterData.from_dict(d, catalog)
+		assert_not_null(c, "the character still loads")
+		assert_eq(c.progress.level, 1)
+		assert_eq(c.progress.talents, [])
+		assert_eq(c.progress.upgrade, "")
+
+
+func test_bar_uses_the_progress_level() -> void:
+	var d := _sample().to_dict()
+	d.progress = {"level": 1}
+	d.bar = ["mage_fireball", "mage_frost_nova", "", ""]
+	assert_eq(CharacterData.from_dict(d, catalog).bar, ["", "", "", ""], "locked abilities leave the bar")
+	d.progress = {"level": 10}
+	assert_eq(CharacterData.from_dict(d, catalog).bar, ["mage_fireball", "mage_frost_nova", "", ""])

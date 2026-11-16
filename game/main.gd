@@ -202,8 +202,17 @@ func _on_class_changed(id: int, class_id: String) -> void:
 	if _playing != null:
 		_playing.class_id = class_id
 		_playing.bar = game.client.bar.duplicate()
-		if store.save(_playing) != OK:
-			dialog.show_message(tr(store.last_error))
+		store.queue_save(_playing)
+
+
+## The host sent this player's progress (experience, level, points…): the saved character
+## keeps it. Saves are coalesced per frame (CharacterStore.queue_save).
+func _on_progress_changed() -> void:
+	if game == null or game.client == null or _playing == null:
+		return
+	_playing.progress = game.client.progress.copy()
+	_playing.bar = game.client.bar.duplicate()
+	store.queue_save(_playing)
 
 
 func in_game() -> bool:
@@ -267,7 +276,7 @@ func _on_select_play(id: String) -> void:
 	if c != null:
 		_remember_character(id)
 		_playing = c
-		_on_play(c.name, c.class_id, c.appearance)
+		_on_play(c.name, c.class_id, c.appearance, c.progress.to_dict())
 
 
 func _on_select_join(id: String, code: String) -> void:
@@ -275,7 +284,7 @@ func _on_select_join(id: String, code: String) -> void:
 	if c != null:
 		_remember_character(id)
 		_playing = c
-		_on_join(c.name, code, c.class_id, c.appearance)
+		_on_join(c.name, code, c.class_id, c.appearance, c.progress.to_dict())
 
 
 func _on_select_delete(id: String) -> void:
@@ -352,27 +361,34 @@ func _on_dialog_text(text: String) -> void:
 
 
 func _quit() -> void:
+	store.flush()
 	get_tree().quit()
+
+
+## Closing the window (or Alt+F4) also writes the pending progress.
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST and store != null:
+		store.flush()
 
 
 # --- Game --------------------------------------------------------------------------
 
 func _on_play(player_name: String, class_id: String = CharacterCatalog.DEFAULT_CLASS,
-		appearance: Dictionary = {}) -> void:
+		appearance: Dictionary = {}, progress: Dictionary = {}) -> void:
 	_start_game()
-	game.start_host(player_name, class_id, appearance)
+	game.start_host(player_name, class_id, appearance, progress)
 	_attach_client()
 
 
 func _on_join(player_name: String, code: String, class_id: String = CharacterCatalog.DEFAULT_CLASS,
-		appearance: Dictionary = {}) -> void:
+		appearance: Dictionary = {}, progress: Dictionary = {}) -> void:
 	settings.last_code = code
 	settings.save_to(settings_path)
 	if GroupCode.decode(code) == "":
 		dialog.show_message(tr("ERR_BAD_CODE"))
 		return
 	_start_game()
-	if game.join(code, player_name, class_id, appearance) != OK:
+	if game.join(code, player_name, class_id, appearance, progress) != OK:
 		var key := game.last_error
 		_leave_game()
 		dialog.show_message(tr(key))
@@ -449,6 +465,7 @@ func _attach_client() -> void:
 	client.chat_received.connect(chat.add_message)
 	client.combat_event.connect(_on_game_event)
 	client.class_changed.connect(_on_class_changed)
+	client.progress_changed.connect(_on_progress_changed)
 	debug_overlay.client = client
 	debug_overlay.net_label = game.net_label()
 	combat_hud.bind(client, client.bar, abilities)
@@ -501,6 +518,7 @@ func _on_session_ended(reason: String) -> void:
 
 ## Ends the game (if any) and goes back to the character list.
 func _leave_game() -> void:
+	store.flush()
 	if game != null:
 		game.leave()
 		game.queue_free()

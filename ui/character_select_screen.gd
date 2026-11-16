@@ -120,7 +120,7 @@ func _refresh() -> void:
 		b.visible = i < _characters.size()
 		if b.visible:
 			var slot_char := _characters[i]
-			b.text = tr("CHAR_SLOT") % [slot_char.name, tr(str(catalog.class_def(slot_char.class_id).get("name", ""))), slot_char.level]
+			b.text = tr("CHAR_SLOT") % [slot_char.name, tr(str(catalog.class_def(slot_char.class_id).get("name", ""))), slot_char.progress.level]
 			b.set_pressed_no_signal(slot_char.id == _selected)
 	_empty_label.visible = _characters.is_empty()
 	var has := _selected != ""

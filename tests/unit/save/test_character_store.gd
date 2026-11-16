@@ -171,10 +171,48 @@ func test_new_character_gets_the_default_bar() -> void:
 
 func test_import_keeps_the_saved_bar() -> void:
 	var c := store.create("Barra", "mage", {})
-	c.level = 20
+	c.progress.level = 20
 	c.bar = ["mage_fireball", "mage_frostbolt", "", ""]
 	store.save(c)
 	var path := EXPORT_DIR.path_join("barra.json")
 	assert_eq(store.export_to(c.id, path), OK)
 	store.delete(c.id)
 	assert_eq(store.import_from(path).bar, ["mage_fireball", "mage_frostbolt", "", ""])
+
+
+func test_queue_save_coalesces() -> void:
+	var c := store.create("Aldric", "warrior", {})
+	var before := store.writes
+	c.progress.xp = 5
+	store.queue_save(c)
+	c.progress.xp = 6
+	store.queue_save(c)
+	c.progress.xp = 7
+	store.queue_save(c)
+	assert_eq(store.writes, before, "nothing written yet")
+	store.flush()
+	assert_eq(store.writes, before + 1, "three requests, one write")
+	assert_eq(store.load_all()[0].progress.xp, 7)
+	store.flush()
+	assert_eq(store.writes, before + 1, "nothing pending any more")
+
+
+func test_flush_writes_pending() -> void:
+	var a := store.create("Aldric", "warrior", {})
+	var b := store.create("Bruna", "mage", {})
+	a.progress.level = 4
+	b.progress.level = 6
+	store.queue_save(a)
+	store.queue_save(b)
+	store.flush()
+	var levels := store.load_all().map(func(c: CharacterData) -> int: return c.progress.level)
+	levels.sort()
+	assert_eq(levels, [4, 6])
+
+
+func test_queue_save_writes_by_itself_next_frame() -> void:
+	var c := store.create("Aldric", "warrior", {})
+	c.progress.level = 9
+	store.queue_save(c)
+	await wait_process_frames(2)
+	assert_eq(store.load_all()[0].progress.level, 9)

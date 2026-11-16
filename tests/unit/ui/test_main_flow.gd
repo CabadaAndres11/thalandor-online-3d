@@ -260,15 +260,11 @@ func test_k_toggles_abilities_window_in_game_only() -> void:
 func test_bar_change_sends_set_bar_and_saves() -> void:
 	main._show_create()
 	var c := _create("Brann", "warrior")
-	c.level = 20 # the bar needs unlocked abilities (progress reaches HELLO in Task 8)
+	c.progress.level = 20 # the bar needs unlocked abilities
 	main.store.save(c)
 	main._on_select_play(c.id)
 	await wait_until(func() -> bool: return main.game.client.status == ClientSession.Status.IN_GAME, 3.0)
 	_press("abilities_window")
-	var me: PlayerState = main.game.host.world.players[main.game.client.my_id]
-	me.level = 20
-	me.progress.level = 20
-	main.game.host._players[main.game.client.my_id].bar_level = 20
 	var new_bar := ["warrior_shield_wall", "warrior_charge", "warrior_taunt", ""]
 	main.abilities_window.bar_changed.emit(new_bar)
 	await wait_physics_frames(5)
@@ -280,6 +276,26 @@ func test_bar_change_sends_set_bar_and_saves() -> void:
 	assert_eq(main.game.client.bar, new_bar, "the saved bar is used next time")
 	await wait_until(func() -> bool: return main.game.client.status == ClientSession.Status.IN_GAME, 3.0)
 	await wait_physics_frames(3)
+	assert_eq(main.game.host._players[main.game.client.my_id].bar, new_bar, "and sent in HELLO")
+
+
+func test_progress_is_saved_with_the_character() -> void:
+	main._show_create()
+	var c := _create("Brann", "warrior")
+	c.progress.level = 7
+	c.progress.attributes["strength"] = 3
+	main.store.save(c)
+	main._on_select_play(c.id)
+	await wait_until(func() -> bool: return main.game.client.status == ClientSession.Status.IN_GAME, 3.0)
+	assert_eq(main.game.client.progress.level, 7, "the host echoed the saved progress")
+	var p: PlayerState = main.game.host.world.players[main.game.client.my_id]
+	Xp.award(main.game.host.world, p, 40)
+	await wait_physics_frames(3)
+	main._leave_game()
+	var saved := main.store.load_all()[0]
+	assert_eq(saved.progress.level, 7)
+	assert_gt(saved.progress.xp, 0, "the experience was written")
+	assert_eq(saved.progress.attributes.strength, 3)
 
 
 func test_boss_death_is_announced_in_chat() -> void:
