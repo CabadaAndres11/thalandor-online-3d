@@ -172,6 +172,7 @@ static func _projectile(world: SimWorld, caster: CombatEntity, ability: Dictiona
 		p.radius = float(effect.get("radius", 0.2))
 		p.remaining = float(effect.get("range", 10.0))
 		p.pierce = bool(effect.get("pierce", false))
+		p.max_hits = int(effect.get("pierce_hits", 0))
 		p.effect = effect
 		p.combo_gain = int(ability.get("combo_gain", 0)) if i == 0 else 0
 		world.projectiles.append(p)

@@ -528,3 +528,24 @@ AB_MAGE_PURE_POWER_DESC,"+15 % de probabilidad de crítico con hechizos arcanos.
 UP_PYROMANCER_EVO,"Bola de fuego deja un área en llamas de 3 m durante 4 s."
 UP_CRYOMANCER_EVO,"Nova de escarcha se lanza al cursor, hasta 12 m."
 UP_ARCANIST_EVO,"Explosión arcana es instantánea y un 40 % más grande."
+MON_HUNTER_WOLF,Lobo del cazador
+AB_HUNTER_WOLF_BITE,Mordisco
+AB_HUNTER_WOLF_BITE_DESC,Muerde con fuerza.
+AB_ARCHER_AIMED_SHOT,Disparo apuntado
+AB_ARCHER_AIMED_SHOT_DESC,"Apuntas 1,5 s (te interrumpe moverte) y disparas un virote de gran alcance y daño."
+AB_ARCHER_BURST,Ráfaga
+AB_ARCHER_BURST_DESC,"Tres disparos seguidos muy rápidos."
+AB_ARCHER_WEAK_POINT,Punto débil
+AB_ARCHER_WEAK_POINT_DESC,"+30 % de daño crítico."
+AB_ARCHER_PATIENCE,Paciencia
+AB_ARCHER_PATIENCE_DESC,"+15 % de daño si llevas 1,5 s sin moverte."
+AB_ARCHER_MULTISHOT,Disparo múltiple
+AB_ARCHER_MULTISHOT_DESC,"Cinco virotes en abanico."
+AB_ARCHER_COMPANION,Compañero
+AB_ARCHER_COMPANION_DESC,"Un lobo te acompaña 30 s: te sigue y ataca lo que tú atacas. Solo puede haber uno."
+AB_ARCHER_TRAPPER,Trampero
+AB_ARCHER_TRAPPER_DESC,"Tus trampas se vuelven a armar una vez tras dispararse."
+AB_ARCHER_SURVIVOR,Superviviente
+AB_ARCHER_SURVIVOR_DESC,"+10 % de vida máxima y +10 % de velocidad de movimiento."
+UP_SHARPSHOOTER_EVO,"El disparo cargado al 80 % o más atraviesa hasta 3 enemigos."
+UP_HUNTER_EVO,"La red atrapa a todos los enemigos en 3 m alrededor del cursor."

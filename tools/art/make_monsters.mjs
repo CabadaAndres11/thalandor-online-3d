@@ -37,7 +37,7 @@ const BEASTS = {
   // Marked hound: a cult war-hound. Long body with a spiky ridge, big head, fangs,
   // glowing red eyes and an iron collar with the cult's burning mark (the five-rayed
   // black sun) at the throat.
-  marked_hound() {
+  marked_hound(withCollar = true) {
     const parts = {};
     const body = new Shape();
     body.box(-3, 7, -6, 2, 12, 6, P);
@@ -56,7 +56,7 @@ const BEASTS = {
     head.box(1, 3, 1, 2, 4, 2, DARK).put(2, 5, 1, DARK);
     head.box(-3, 0, 5, -2, 0, 5, GLOW).box(1, 0, 5, 2, 0, 5, GLOW); // eyes
     head.box(-3, 1, 5, -2, 1, 5, DARK).box(1, 1, 5, 2, 1, 5, DARK); // brows
-    collar(head, -4, 3, -3, 0);
+    if (withCollar) collar(head, -4, 3, -3, 0);
     parts.head = { shape: head, pivot: [0, 11, 6] };
 
     const leg = () => {
@@ -123,6 +123,8 @@ const BEASTS = {
     return { parts, palette: { ...PALETTE, [BELLY]: "#8a6a50", [PAW]: "#1b1612", [NOSE]: "#2a1a14" } };
   },
 };
+// The hunter's wolf: the same build as the hound, without the cult's collar (tinted grey in its data).
+BEASTS.hunter_wolf = () => BEASTS.marked_hound(false);
 
 const [outDir] = process.argv.slice(2);
 if (!outDir) {

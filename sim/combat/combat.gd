@@ -34,6 +34,8 @@ static func try_cast(world: SimWorld, caster: CombatEntity, ability_id: String, 
 	ab = ClassRules.shaped(caster, ab)
 	if not mods.is_empty():
 		ab = ClassRules.scale_damage(ab, float(mods.get("damage_mult", 1.0)), float(mods.get("range_mult", 1.0)))
+		if mods.has("pierce_hits"):
+			ab = ClassRules.with_pierce_hits(ab, int(mods.pierce_hits))
 	ab = ClassRules.with_passives(world, caster, ab)
 	caster.resource -= cost
 	# combat_cooldown_s: a longer cooldown when cast in combat (Sigilo's vanish).
@@ -578,7 +580,7 @@ static func _advance_projectile(world: SimWorld, p: Projectile) -> bool:
 				Combat.deal(world, p.owner, o, p.effect, {"id": p.ability_id})
 				if p.combo_gain > 0 and world.cast_hits > 0:
 					ClassRules.after_cast(world.entity(p.owner.id), {"combo_gain": p.combo_gain}, 1)
-				if not p.pierce:
+				if not p.pierce and (p.max_hits <= 0 or p.hit_ids.size() >= p.max_hits):
 					_end_projectile(world, p)
 					return false
 		if p.remaining <= 0.0001:

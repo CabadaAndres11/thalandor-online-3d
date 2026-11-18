@@ -109,6 +109,15 @@ static func after_cast(caster: CombatEntity, ability: Dictionary, hits: int) -> 
 		p.combo = mini(p.combo + gain, MAX_COMBO)
 
 
+## A copy of `ability` whose projectiles stop after `hits` enemies.
+static func with_pierce_hits(ability: Dictionary, hits: int) -> Dictionary:
+	var a := ability.duplicate(true)
+	for e: Dictionary in a.get("effects", []):
+		if e.get("type") == "projectile":
+			e["pierce_hits"] = hits
+	return a
+
+
 ## A copy of `ability` with every damage × mult and every range × range_mult.
 static func scale_damage(ability: Dictionary, mult: float, range_mult: float) -> Dictionary:
 	var a := ability.duplicate(true)
@@ -131,7 +140,7 @@ static func _scale_effect(e: Dictionary, mult: float, range_mult: float) -> void
 ## Archer: fires a held basic shot. ratio 0..1 of the full charge. Below min_ratio (a
 ## quick tap) or without enough focus it is a normal free shot.
 static func release_charged(world: SimWorld, p: PlayerState, ability_id: String, aim: Vector3, ratio: float) -> bool:
-	var ab := world.abilities.get_ability(ability_id)
+	var ab := world.abilities.resolved(ability_id, p.progress.upgrade, world.upgrades)
 	var charge: Dictionary = ab.get("charge", {})
 	var mods := {}
 	if not charge.is_empty() and ratio >= float(charge.get("min_ratio", 0.2)) \
@@ -142,4 +151,7 @@ static func release_charged(world: SimWorld, p: PlayerState, ability_id: String,
 			"range_mult": lerpf(1.0, float(charge.get("range_mult", 1.0)), r),
 			"extra_cost": float(charge.get("cost", 0.0)),
 		}
+		# Tirador certero: a charge of pierce_ratio or more goes through pierce_hits enemies.
+		if int(charge.get("pierce_hits", 0)) > 0 and r >= float(charge.get("pierce_ratio", 0.8)):
+			mods["pierce_hits"] = int(charge.pierce_hits)
 	return Combat.try_cast(world, p, ability_id, aim, mods)

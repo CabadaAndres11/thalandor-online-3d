@@ -1,0 +1,7 @@
+{
+	"id": "hunter_wolf", "name": "MON_HUNTER_WOLF", "model": "rig:hunter_wolf", "tint": "#8d9097", "scale": 0.85, "summon_only": true,
+	"radius": 0.55, "speed": 6.0,
+	"stats": {"max_hp": 80, "armor": 10, "attack_power": 10, "crit_chance": 0.05},
+	"aggro_range": 8, "leash_range": 30, "attack_range": 1.6,
+	"behavior": "melee", "abilities": ["hunter_wolf_bite"]
+}

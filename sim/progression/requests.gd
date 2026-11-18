@@ -68,6 +68,7 @@ static func reset(world: SimWorld, p: PlayerState, what: String, near_trainer: b
 
 ## Removes the upgrade and the ring 2 nodes that depended on it.
 static func clear_upgrade(world: SimWorld, p: PlayerState) -> void:
+	Combat.dismiss_summons(world, p.id) # the hunter wolf leaves with the upgrade
 	# A channelled or repeating ability of the upgrade stops at once.
 	for pc: PendingCast in world.pending_casts.duplicate():
 		if pc.caster_id == p.id:

@@ -12,6 +12,8 @@ var speed: float = 0.0
 var radius: float = 0.2
 var remaining: float = 0.0
 var pierce: bool = false
+## Stops after this many hits when not piercing everything (the evolved charged shot: 3).
+var max_hits: int = 0
 var effect: Dictionary = {}
 var hit_ids: Dictionary = {}
 ## Combo points the caster gets when it hits (assassin knife); 0 = none.

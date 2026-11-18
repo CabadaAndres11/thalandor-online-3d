@@ -425,6 +425,17 @@
 		"tag": "weapon",
 		"hides": []
 	},
+	"weapon_crossbow": {
+		"file": "res://assets/characters/pieces/weapon_crossbow.vox",
+		"part": "hand_right",
+		"offset": [
+			-7,
+			-5,
+			-3
+		],
+		"tag": "weapon",
+		"hides": []
+	},
 	"weapon_dagger_right": {
 		"file": "res://assets/characters/pieces/weapon_dagger_right.vox",
 		"part": "hand_right",

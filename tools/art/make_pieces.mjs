@@ -375,6 +375,17 @@ const WEAPONS = {
     }
     s.box(2, -11, -2, 2, 17, -2, STRING);
   },
+  // A crossbow held in the right fist, pointing forward: stock, rail, a prod across the
+  // front with the limbs bent back, the string and a bolt laid on the rail.
+  weapon_crossbow(f, s) {
+    s.box(2, 1, f.z0 - 1, 3, 3, f.z1 + 9, WOOD).box(2, 1, f.z0 - 1, 3, 1, f.z1 + 9, WOOD_D);
+    s.box(2, 4, f.z0, 3, 4, f.z1 + 8, WOOD_D); // rail
+    s.box(-4, 3, f.z1 + 8, 9, 4, f.z1 + 9, WOOD); // prod
+    s.box(-4, 3, f.z1 + 5, -4, 4, f.z1 + 8, WOOD).box(9, 3, f.z1 + 5, 9, 4, f.z1 + 8, WOOD); // tips bent back
+    s.box(-4, 4, f.z1 + 5, 9, 4, f.z1 + 5, STRING);
+    s.box(2, 5, f.z1 + 5, 3, 5, f.z1 + 12, STEEL).box(2, 5, f.z1 + 13, 3, 5, f.z1 + 13, STEEL_L); // bolt and head
+    s.box(2, 0, f.z0 + 1, 3, 1, f.z0 + 2, LEATHER_D); // trigger guard
+  },
   weapon_dagger_right(f, s) {
     s.box(2, 2, f.z0 - 1, 3, 3, f.z1, LEATHER);
     s.box(2, 0, f.z1 + 1, 3, 5, f.z1 + 1, S);

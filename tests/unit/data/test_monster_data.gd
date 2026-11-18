@@ -13,7 +13,7 @@ func _types() -> Array:
 
 
 func test_prologue_roster() -> void:
-	var ids := _types().map(func(t: Dictionary) -> String: return t.id)
+	var ids := _types().filter(func(t: Dictionary) -> bool: return not t.get("summon_only", false)).map(func(t: Dictionary) -> String: return t.id)
 	ids.sort()
 	assert_eq(ids, ROSTER)
 
@@ -40,3 +40,11 @@ func test_map_spawns_exist() -> void:
 		assert_has(ROSTER, s.type)
 	var boss: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/monsters/guard_beast.json"))
 	assert_has(ROSTER, boss.summon.type)
+
+
+func test_summon_only_monsters_are_not_on_the_map() -> void:
+	var only := _types().filter(func(t: Dictionary) -> bool: return t.get("summon_only", false)).map(func(t: Dictionary) -> String: return t.id)
+	assert_eq(only, ["hunter_wolf"])
+	var map: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/maps/test_arena.json"))
+	for sp: Dictionary in map.spawns:
+		assert_does_not_have(only, sp.type)

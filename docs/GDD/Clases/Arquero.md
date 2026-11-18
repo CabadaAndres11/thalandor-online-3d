@@ -29,7 +29,7 @@ Reglas generales en [[04 Personajes y progresión]].
 | 35 | Ráfaga | Pasiva | Cada 5.º disparo básico es crítico. |
 
 ## Mejoras de clase del nivel 50
-Se elige una de las dos al llegar al nivel 50 (ver [[04 Personajes y progresión|§4.4]]).
+Se elige una de las dos al llegar al nivel 50 (ver [[04 Personajes y progresión|§4.4]]). **[Implementado]** (en el juego se llaman *Tirador certero* y *Cazador*): Disparo apuntado 40 foco/12 s (canalizado 1,5 s, 40 + 2,5 × PA, 30 m); Ráfaga 30/8 s (3 disparos cada 0,12 s); Disparo múltiple 35/8 s (5 virotes, abanico de 40°); Compañero 30/60 s (lobo de 80 vida a nivel 1, mordisco 6 + 0,8 × PA, 30 s, solo uno a la vez; desaparece al reiniciar la mejora). Evoluciones: el disparo cargado al 80 % o más atraviesa 3 enemigos; la red atrapa a todos en 3 m del cursor. El Cazador lleva ballesta (`weapon_crossbow`).
 
 | Mejora | Activas | Pasivas | Evoluciona |
 |---|---|---|---|
