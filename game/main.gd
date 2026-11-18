@@ -59,7 +59,7 @@ func _ready() -> void:
 	_ui.name = "UI"
 	add_child(_ui)
 	var theme := Theme.new()
-	theme.default_font_size = 20
+	theme.default_font_size = 24 # Teko is condensed: a bit larger than the default font
 	HoloTheme.apply(theme)
 
 	title = TitleScreen.new()

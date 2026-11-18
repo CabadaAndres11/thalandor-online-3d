@@ -10,6 +10,7 @@ const TEXT := Color("#e6f3ff")
 const TEXT_DIM := Color(0.78, 0.88, 1.0, 0.72)
 const ACCENT := Color("#ffd27a") # class, recommended stats, warnings
 const SECTION := Color("#8fd0ff")
+const FONT_PATH := "res://assets/fonts/Teko.ttf" # Teko, SIL OFL (assets/fonts/Teko-OFL.txt)
 const SHINE_SHADER := preload("res://assets/ui/holo_shine.gdshader")
 
 
@@ -83,6 +84,9 @@ static func divider() -> HSeparator:
 
 ## Colours and button looks for every control under a theme.
 static func apply(theme: Theme) -> void:
+	var font := font()
+	if font != null:
+		theme.default_font = font
 	for c: String in ["Label", "Button", "CheckBox", "LineEdit"]:
 		theme.set_color("font_color", c, TEXT)
 	theme.set_color("font_hover_color", "Button", Color.WHITE)
@@ -92,6 +96,16 @@ static func apply(theme: Theme) -> void:
 	theme.set_stylebox("pressed", "Button", _button(Color(0.4, 0.65, 1.0, 0.7), 1.0))
 	theme.set_stylebox("disabled", "Button", _button(Color(0.15, 0.25, 0.45, 0.35), 0.25))
 	theme.set_stylebox("focus", "Button", StyleBoxEmpty.new())
+
+
+## The condensed holographic font (null if the file is missing).
+static func font() -> Font:
+	if not ResourceLoader.exists(FONT_PATH):
+		return null
+	var v := FontVariation.new()
+	v.base_font = load(FONT_PATH)
+	v.variation_opentype = {"wght": 500}
+	return v
 
 
 static func _button(bg: Color, border_alpha: float) -> StyleBoxFlat:

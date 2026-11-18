@@ -123,3 +123,9 @@ func test_the_panel_has_a_moving_glow_that_ignores_the_mouse() -> void:
 	assert_not_null(shine)
 	assert_eq(shine.mouse_filter, Control.MOUSE_FILTER_IGNORE)
 	assert_true(shine.material is ShaderMaterial)
+
+
+func test_the_holo_theme_brings_its_font() -> void:
+	var theme := Theme.new()
+	HoloTheme.apply(theme)
+	assert_not_null(theme.default_font)
