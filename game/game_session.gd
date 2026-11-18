@@ -220,6 +220,7 @@ func _start_client(player_name: String, class_id: String, appearance: Dictionary
 	client.disconnected.connect(_on_client_disconnected)
 	client.combat_event.connect(_on_combat_event)
 	client.class_changed.connect(_on_class_changed)
+	client.upgrade_changed.connect(_on_upgrade_changed)
 	client.connect_to(t)
 
 
@@ -280,7 +281,7 @@ func _sync_avatars(delta: float) -> void:
 			var avatar := PlayerAvatar.new()
 			avatar.name = "Player%d" % id
 			avatar.move_speed = balance.move_speed
-			avatar.setup(entry.name, entry.slot, entry.get("class_id", CharacterCatalog.DEFAULT_CLASS), entry.get("appearance", {}))
+			avatar.setup(entry.name, entry.slot, entry.get("class_id", CharacterCatalog.DEFAULT_CLASS), entry.get("appearance", {}), str(entry.get("upgrade", "")))
 			_avatar_root.add_child(avatar)
 			_avatars[id] = avatar
 		var avatar_node := _avatars[id] as PlayerAvatar
@@ -323,6 +324,12 @@ func interaction() -> Dictionary:
 
 ## A player learned a class: their avatar is rebuilt in the new class's clothes.
 func _on_class_changed(id: int, _class_id: String) -> void:
+	if _avatars.has(id):
+		_remove_avatar(id)
+
+
+## A player chose or lost an upgrade: the avatar is rebuilt with its look (helm, crossbow).
+func _on_upgrade_changed(id: int, _upgrade: String) -> void:
 	if _avatars.has(id):
 		_remove_avatar(id)
 

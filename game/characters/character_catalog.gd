@@ -103,20 +103,24 @@ func random_appearance(rng: RandomNumberGenerator) -> Dictionary:
 ## The look HumanRig.build() expects (see there), from untrusted ids: colors and the
 ## voxel pieces (headgear, class outfit and gear, weapons, hair unless the headgear
 ## hides it, beard).
-func resolve(class_id: Variant, appearance: Variant) -> Dictionary:
+## `upgrade`: the class upgrade of the character; its "look" ({headgear?, weapons?, pieces?})
+## changes the headgear and weapons or adds pieces (the Templar helm, the Hunter crossbow).
+func resolve(class_id: Variant, appearance: Variant, upgrade: String = "") -> Dictionary:
 	var c := class_def(sanitize_class(class_id))
 	var app := sanitize_appearance(appearance)
 	var hair := option("hair_style", app.hair_style)
 	var hair_color := Color(str(option("hair_color", app.hair_color).color))
 	var pieces: Array = []
 	var hidden := {}
-	if str(c.get("headgear", "")) != "":
-		for tag: String in piece(c.headgear).get("hides", []):
+	var look: Dictionary = UpgradeDB.load_default().upgrade(upgrade).get("look", {}) if upgrade != "" else {}
+	var headgear := str(look.get("headgear", c.get("headgear", "")))
+	if headgear != "":
+		for tag: String in piece(headgear).get("hides", []):
 			hidden[tag] = true
-		pieces.append(_piece_entry(c.headgear))
-	for id: String in c.get("pieces", []):
+		pieces.append(_piece_entry(headgear))
+	for id: String in c.get("pieces", []) + look.get("pieces", []):
 		pieces.append(_piece_entry(id))
-	for id: String in c.get("weapons", []):
+	for id: String in look.get("weapons", c.get("weapons", [])):
 		pieces.append(_piece_entry(id))
 	for id: String in hair.get("pieces", []):
 		if not hidden.has(str(piece(id).get("tag", ""))):

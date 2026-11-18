@@ -29,7 +29,10 @@ Reglas generales en [[04 Personajes y progresión]].
 | 35 | Eco de luz | Pasiva | Las curaciones dejan una curación extra en el tiempo. |
 
 ## Mejoras de clase del nivel 50
-Se elige una de las dos al llegar al nivel 50 (ver [[04 Personajes y progresión|§4.4]]).
+Se elige una de las dos al llegar al nivel 50 (ver [[04 Personajes y progresión|§4.4]]). **[Implementado]** (datos en `data/upgrades/cleric.json`):
+
+- **Sanador:** Círculo de sanación (40 maná, 20 s; 5 m, 5 pulsos de 8 + 0,5 × PH); Himno divino (60 maná, 60 s; canalizado 6 s, 12 + 0,6 × PH a los aliados a 15 m); Ángel guardián (20 m, 25 % de vida, 120 s); Gracia mayor (+20 % curación). Evolución: Sanar rebota a un aliado a 10 m al 50 %.
+- **Templario** (casco nuevo `helm_templar`): Golpe del cruzado (15 maná, 4 s; 16 + 1,2 × PH, roba el 30 %); Consagración (35 maná, 18 s; 8 pulsos de 6 + 0,4 × PH y curación 3 + 0,2 × PH); Armadura de fe (+40 % armadura, +15 % vida); Celo (+4 maná por golpe cuerpo a cuerpo). Evolución: Destello sagrado es un golpe de 2,5 m, 100°, con un 15 % más de daño.
 
 | Mejora | Activas | Pasivas | Evoluciona |
 |---|---|---|---|

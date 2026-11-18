@@ -2,7 +2,7 @@ extends GutTest
 ## data/upgrades: every class has its upgrades with texts, and what they name exists.
 ## Classes whose content is not written yet are listed in PENDING (a task each).
 
-const PENDING := ["cleric", "mage", "archer", "assassin"]
+const PENDING := ["mage", "archer", "assassin"]
 const EXPECTED := {"warrior": 2, "cleric": 2, "mage": 3, "archer": 2, "assassin": 2}
 
 var ups: UpgradeDB

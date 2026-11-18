@@ -483,3 +483,21 @@ AB_WARRIOR_MASSACRE,Masacre
 AB_WARRIOR_MASSACRE_DESC,"Cada muerte reinicia la recarga de Carga y te cura un 5 % de la vida."
 UP_PROTECTOR_EVO,"Muro de escudo también protege a los aliados a 8 m (−50 % de daño)."
 UP_BERSERKER_EVO,"El ataque básico golpea dos veces, cada golpe al 70 % del daño."
+AB_CLERIC_HEALING_CIRCLE,Círculo de sanación
+AB_CLERIC_HEALING_CIRCLE_DESC,"Un círculo de 5 m en el cursor que cura a los aliados dentro cada segundo durante 5 s."
+AB_CLERIC_DIVINE_HYMN,Himno divino
+AB_CLERIC_DIVINE_HYMN_DESC,"Canalizas 6 s: cada segundo curas a todos los aliados a 15 m. Te interrumpe moverte."
+AB_CLERIC_GUARDIAN_ANGEL,Ángel guardián
+AB_CLERIC_GUARDIAN_ANGEL_DESC,"Un aliado a 20 m que recibiría un golpe mortal se salva con el 25 % de su vida (una vez cada 2 minutos)."
+AB_CLERIC_GREATER_GRACE,Gracia mayor
+AB_CLERIC_GREATER_GRACE_DESC,"+20 % de curación realizada."
+AB_CLERIC_CRUSADER_STRIKE,Golpe del cruzado
+AB_CLERIC_CRUSADER_STRIKE_DESC,"Golpe cuerpo a cuerpo mágico que te cura el 30 % del daño causado."
+AB_CLERIC_CONSECRATION,Consagración
+AB_CLERIC_CONSECRATION_DESC,"Un área de 5 m a tu alrededor durante 8 s: daña a los enemigos y cura a los aliados dentro."
+AB_CLERIC_ARMOR_OF_FAITH,Armadura de fe
+AB_CLERIC_ARMOR_OF_FAITH_DESC,"+40 % de armadura y +15 % de vida máxima."
+AB_CLERIC_ZEAL,Celo
+AB_CLERIC_ZEAL_DESC,"Cada golpe cuerpo a cuerpo te devuelve 4 de maná."
+UP_HEALER_EVO,"Sanar también cura a un segundo aliado a 10 m con la mitad del efecto."
+UP_TEMPLAR_EVO,"Destello sagrado pasa a ser un golpe cuerpo a cuerpo de 2,5 m con un 15 % más de daño."

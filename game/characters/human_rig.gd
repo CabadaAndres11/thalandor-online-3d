@@ -51,9 +51,9 @@ var auto_update: bool = true
 ## trousers (Color; trousers default to a darker primary); body_scale ({"torso"|"arm"|"leg": [x, y, z]}); pieces ([{id, file, part,
 ## offset: [x, y, z] voxels from the part's pivot}]).
 ## A character of a class with an appearance (ids; untrusted values are sanitized).
-static func create(class_id: String, appearance: Dictionary, catalog: CharacterCatalog = null) -> HumanRig:
+static func create(class_id: String, appearance: Dictionary, catalog: CharacterCatalog = null, upgrade: String = "") -> HumanRig:
 	var cat := catalog if catalog != null else CharacterCatalog.load_default()
-	return build(cat.resolve(class_id, appearance))
+	return build(cat.resolve(class_id, appearance, upgrade))
 
 
 static func build(look: Dictionary) -> HumanRig:

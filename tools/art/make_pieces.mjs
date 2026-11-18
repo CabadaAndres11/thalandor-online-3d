@@ -218,6 +218,22 @@ const GEAR = {
       s.box(a, f.y1 - 2, f.z0 - 3, b, f.y1 + 2, f.z0 - 2, P); // point
     },
   },
+  // Templar's steel helm: dome, brow band, cheek guards and a nasal bar; the face stays
+  // open and a gold crest runs over the top.
+  helm_templar: {
+    frame: HEAD, tag: "headgear", hides: ["hair", "hair_cap"], palette: KIT,
+    build(f, s) {
+      s.box(f.x0 - 1, f.y1 + 1, f.z0 - 1, f.x1 + 1, f.y1 + 1, f.z1 + 1, STEEL_L); // dome top
+      s.box(f.x0 - 1, f.y0 + 1, f.z0 - 1, f.x1 + 1, f.y1, f.z0 - 1, STEEL_D); // back
+      s.box(f.x0 - 1, f.y0 + 1, f.z0, f.x0 - 1, f.y1, f.z1 + 1, STEEL); // sides
+      s.box(f.x1 + 1, f.y0 + 1, f.z0, f.x1 + 1, f.y1, f.z1 + 1, STEEL);
+      s.box(f.x0 - 1, f.y1 - 1, f.z1 + 1, f.x1 + 1, f.y1, f.z1 + 1, STEEL); // brow band
+      const [a, b] = mid(f);
+      s.box(a, f.y1 - 5, f.z1 + 1, b, f.y1 - 2, f.z1 + 1, STEEL_L); // nasal bar
+      s.box(f.x0 - 1, f.y0 + 1, f.z1, f.x0 - 1, f.y0 + 3, f.z1 + 1, STEEL_D).box(f.x1 + 1, f.y0 + 1, f.z1, f.x1 + 1, f.y0 + 3, f.z1 + 1, STEEL_D); // cheek guards
+      s.box(a, f.y1 + 2, f.z0, b, f.y1 + 3, f.z1, GOLD); // crest
+    },
+  },
   // Assassin's scarf over the nose and mouth, knotted at the back.
   mask_assassin: {
     frame: HEAD, tag: "headgear", palette: KIT,

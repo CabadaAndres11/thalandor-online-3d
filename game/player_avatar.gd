@@ -32,9 +32,9 @@ var _action_left: float = 0.0
 var _dead: bool = false
 
 
-func setup(player_name: String, slot: int, class_id: String, appearance: Dictionary) -> void:
+func setup(player_name: String, slot: int, class_id: String, appearance: Dictionary, upgrade: String = "") -> void:
 	var color: Color = SLOT_COLORS[clampi(slot, 0, SLOT_COLORS.size() - 1)]
-	rig = HumanRig.create(class_id, appearance)
+	rig = HumanRig.create(class_id, appearance, null, upgrade)
 	rig.auto_update = false
 	add_child(rig)
 	rig.set_moving_speed(0.0, move_speed)
