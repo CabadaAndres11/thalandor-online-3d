@@ -302,6 +302,31 @@ static func ice_color(rng: RandomNumberGenerator, edge: bool = false) -> Color:
 	return base
 
 
+## A whirlwind of ice: a funnel narrow at the ground and wide at the top, built of sparse cubes
+## along spiral arms so it reads as turning when it spins. Sizes in cells of `cube` meters.
+static func ice_tornado(radius_m: float, height_m: float, cube: float = 0.18, seed_value: int = 11) -> Dictionary:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed_value
+	var cells := {}
+	var levels := maxi(int(height_m / cube), 4)
+	for y in levels:
+		var k := float(y) / float(levels - 1)
+		var ring_m := lerpf(0.25, radius_m, pow(k, 0.8)) # the funnel opens upward
+		var ring := ring_m / cube
+		var arms := 3
+		for arm in arms:
+			var a := TAU * float(arm) / float(arms) + float(y) * 0.3 # the arms wind around
+			var span := maxi(int(ring * 0.9), 1)
+			for s in span:
+				var aa := a + float(s) / float(span) * (TAU / float(arms)) * 0.55
+				if rng.randf() < 0.3:
+					continue
+				var jitter := rng.randf_range(-0.6, 0.6)
+				var c := Vector3i(roundi(cos(aa) * (ring + jitter)), y, roundi(sin(aa) * (ring + jitter)))
+				cells[c] = ice_color(rng, k > 0.7).lerp(Color.WHITE, 0.25 + 0.4 * k)
+	return cells
+
+
 ## An arrow along +Z: a wooden shaft, a steel head and red and white fletching.
 static func arrow() -> Dictionary:
 	var cells := {}

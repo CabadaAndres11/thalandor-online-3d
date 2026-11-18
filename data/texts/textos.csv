@@ -590,8 +590,11 @@ STATUS_DAMAGE_REDUCTION,Menos daño recibido
 STATUS_EVASION,Evasión
 STATUS_TAUNTED,Provocado
 STATUS_FOCUS,Concentración
+STATUS_FOCUS_DESC,Más poder de hechizo mientras no te golpeen.
 STATUS_STEADY,Pulso firme
+STATUS_STEADY_DESC,Más daño mientras te quedas quieto.
 STATUS_COMBAT_REGEN,Regeneración en combate
+STATUS_COMBAT_REGEN_DESC,Recuperas más maná mientras luchas.
 STATUS_STEALTH,Sigilo
 STATUS_INVULNERABLE,Invulnerable
 STATUS_HOT,Curación continua

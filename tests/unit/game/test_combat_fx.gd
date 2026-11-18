@@ -379,6 +379,25 @@ func test_an_ice_field_does_not_restart_on_every_pulse() -> void:
 	assert_eq(fx.mark_count(), 1)
 
 
+func test_the_blizzard_is_a_fixed_field_with_a_spinning_ice_whirlwind() -> void:
+	fx.handle(["area", 64, Vector3(8, 0, 8), 5.0, "mage_blizzard", 7, 1.0, []])
+	var entry: Dictionary = fx._marks[64]
+	assert_eq(entry.grow, 0.0, "it does not grow up from nothing")
+	assert_ne(entry.spin, 0.0, "the whirlwind turns")
+	assert_eq((entry.node as Node3D).scale, Vector3.ONE)
+	var tornado := VoxelFx.ice_tornado(2.5, 4.0, 0.16)
+	assert_gt(tornado.size(), 100)
+	var low := 0.0
+	var high := 0.0
+	for c: Vector3i in tornado:
+		var r := Vector2(c.x, c.z).length()
+		if c.y < 5:
+			low = maxf(low, r)
+		elif c.y > 20:
+			high = maxf(high, r)
+	assert_gt(high, low * 2.0, "narrow at the ground, wide at the top")
+
+
 func test_a_net_falls_over_a_rooted_target_for_the_root() -> void:
 	fx.handle(["status", 1000, "root", latest_tick + 90])
 	assert_gt(fx.decor_count(), 0)

@@ -1032,20 +1032,43 @@ func _ground_mark(area_id: int, pos: Vector3, radius: float, element: String, st
 			holder.add_child(flames)
 			entry = _add_decor(holder, life, 0.2, Vector3.ONE, 0.7, 0.9, true)
 		_:
+			# A field of ice that stays put (no growing from nothing) with an icy whirlwind turning
+			# in the middle and snow swirling around it.
 			var ice := _disc(radius, VoxelFx.ICE, 0.3)
 			holder.add_child(ice)
-			var rng := RandomNumberGenerator.new()
-			rng.seed = int(r * 10.0)
-			for i in clampi(int(radius * 5.0), 6, 22):
-				var a := rng.randf() * TAU
-				var d := sqrt(rng.randf()) * radius * 0.9
-				var h := rng.randi_range(3, 7)
-				var spike := _voxel("spike_%d" % h, func() -> Dictionary: return VoxelFx.ice_spike(h), false, 0.9)
-				spike.position = Vector3(cos(a) * d, 0, sin(a) * d)
-				spike.rotation.y = rng.randf() * TAU
-				holder.add_child(spike)
-			entry = _add_decor(holder, life, 0.25, Vector3.ONE, 0.7, 1.0)
+			var funnel_r := clampf(radius * 0.55, 0.8, 3.2)
+			var funnel := _voxel("tornado_%s" % r, func() -> Dictionary: return VoxelFx.ice_tornado(funnel_r, 4.2, 0.16), false, 0.8, 0.16)
+			holder.add_child(funnel)
+			holder.add_child(_storm_snow(radius))
+			entry = _add_decor(holder, life, 0.0, Vector3.ONE, 0.7, 1.0, false, 1.8)
 	_marks[area_id] = entry
+
+
+## Flakes whipped around and upward over a whole area: the blizzard's air.
+func _storm_snow(radius: float) -> CPUParticles3D:
+	var p := CPUParticles3D.new()
+	p.amount = clampi(int(radius * 14.0), 30, 90)
+	p.lifetime = 1.6
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_RING
+	p.emission_ring_axis = Vector3.UP
+	p.emission_ring_radius = radius * 0.9
+	p.emission_ring_inner_radius = radius * 0.2
+	p.emission_ring_height = 0.2
+	p.direction = Vector3.UP
+	p.spread = 10.0
+	p.initial_velocity_min = 1.0
+	p.initial_velocity_max = 2.4
+	p.gravity = Vector3.ZERO
+	p.tangential_accel_min = 2.0
+	p.tangential_accel_max = 4.0
+	var flake := SphereMesh.new()
+	flake.radius = 0.05
+	flake.height = 0.1
+	flake.radial_segments = 6
+	flake.rings = 3
+	p.mesh = flake
+	p.material_override = _material(Color(0.92, 0.97, 1.0), 0.9)
+	return p
 
 
 ## A beam (the arcane laser, any line attack): a glowing tube from the caster to where it ends,

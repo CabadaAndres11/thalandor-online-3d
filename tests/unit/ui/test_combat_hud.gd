@@ -257,6 +257,7 @@ func test_conditional_passive_buffs_show_while_on_and_leave_when_off() -> void:
 	hud.advance(0.1)
 	assert_eq(hud.status_tiles.kinds(), ["focus"])
 	assert_false(StatusTiles.is_debuff("focus"))
+	assert_true(hud.status_tiles.tooltip("focus").contains("\n"), "name plus a short explanation")
 	c.combat_event.emit(["buff", 2, "focus", 0]) # somebody else's
 	hud.advance(0.1)
 	assert_eq(hud.status_tiles.kinds(), ["focus"])

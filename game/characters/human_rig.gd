@@ -54,6 +54,9 @@ var _action: String = "idle"
 var _action_t: float = 0.0
 ## How the right hand holds its weapon at rest ("staff": leaning forward over the arm).
 var _grip: String = ""
+var _bow_charging: bool = false
+var _bow_drawn: bool = true # starts in the hand; _update_bow stows it
+var _bow_hand_pos: Vector3 = Vector3.ZERO
 ## False when an avatar drives update() itself (from its state updates).
 var auto_update: bool = true
 
@@ -232,6 +235,8 @@ func _setup(look: Dictionary) -> void:
 		_rest[part_name] = pivot.position
 	for p: Dictionary in look.get("pieces", []):
 		_attach_piece(p, tints)
+	if _pieces.has("weapon_bow"):
+		_bow_hand_pos = (_pieces["weapon_bow"] as Node3D).position
 	_pose()
 
 
@@ -271,7 +276,49 @@ static func _load_rig() -> Dictionary:
 
 # --- Poses ---------------------------------------------------------------------------
 
+## The archer holds the bow only while charging a shot (and during the shot); otherwise it rides
+## on the back.
+func set_bow_charging(on: bool) -> void:
+	_bow_charging = on
+
+
+func bow_in_hand() -> bool:
+	return _bow_drawn
+
+
+func _update_bow() -> void:
+	if _grip != "bow":
+		return
+	var bow: MeshInstance3D = _pieces.get("weapon_bow")
+	if bow == null:
+		return
+	var want := _bow_charging or _action == "shoot"
+	if want == _bow_drawn and bow.get_parent() != null:
+		return
+	_bow_drawn = want
+	bow.get_parent().remove_child(bow)
+	if want:
+		(part("hand_left") as Node3D).add_child(bow)
+		bow.basis = Basis.IDENTITY
+		bow.position = _bow_hand_pos
+	else:
+		var torso := part("torso")
+		torso.add_child(bow)
+		# Flat across the back, slanted, with the belly of the bow facing away from the body.
+		var b := Basis(Vector3.BACK, 0.55) * Basis(Vector3.UP, PI)
+		var box := bow.mesh.get_aabb()
+		var centre := box.position + box.size / 2.0
+		var tm := _meshes["torso"] as MeshInstance3D
+		var tbox := tm.mesh.get_aabb()
+		var sc := (tm.get_parent() as Node3D).scale
+		var target := tm.position + (tbox.position + tbox.size / 2.0) * sc
+		target.z = tm.position.z + tbox.position.z * sc.z - box.size.z * 0.5 - 0.02
+		bow.basis = b
+		bow.position = target - b * centre
+
+
 func _pose() -> void:
+	_update_bow()
 	for part_name: String in _parts:
 		var p: Node3D = _parts[part_name]
 		p.rotation = Vector3.ZERO
@@ -314,7 +361,7 @@ func _locomotion(walk: float) -> void:
 	(_parts["hips"] as Node3D).position.y += absf(sin(_phase)) * 0.04 * walk
 	_rot("hand_left", 0.1)
 	_rot("hand_right", 0.1)
-	if _grip == "bow":
+	if _grip == "bow" and _bow_drawn:
 		# The bow is held out in front at chest height, upright, not dangling from the hand.
 		_rot("arm_left", BOW_ARM - swing * 0.15)
 		_rot("forearm_left", BOW_FOREARM)

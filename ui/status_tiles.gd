@@ -24,6 +24,18 @@ static func is_debuff(kind: String) -> bool:
 	return kind in DEBUFFS
 
 
+## The name of the effect and, when it has one, a very short line on what it does.
+func tooltip_of(kind: String) -> String:
+	var name_key := "STATUS_" + kind.to_upper()
+	var desc_key := name_key + "_DESC"
+	var desc := tr(desc_key)
+	return tr(name_key) if desc == desc_key else "%s\n%s" % [tr(name_key), desc]
+
+
+func tooltip(kind: String) -> String:
+	return (_tiles[kind].panel as Control).tooltip_text if _tiles.has(kind) else ""
+
+
 ## entries: kind -> seconds left. `clock` drives the blinking.
 func show_statuses(entries: Dictionary, clock: float) -> void:
 	for kind: String in _tiles.keys():
@@ -61,7 +73,7 @@ func _make_tile(kind: String) -> Dictionary:
 	var panel := Panel.new()
 	panel.custom_minimum_size = Vector2(TILE, TILE)
 	panel.mouse_filter = MOUSE_FILTER_STOP # for the tooltip
-	panel.tooltip_text = tr("STATUS_" + kind.to_upper())
+	panel.tooltip_text = tooltip_of(kind)
 	var s := StyleBoxFlat.new()
 	s.bg_color = Color(0.05, 0.1, 0.2, 0.4)
 	s.set_corner_radius_all(7)

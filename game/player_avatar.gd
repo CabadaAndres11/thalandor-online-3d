@@ -121,6 +121,12 @@ func play_action(kind: String) -> void:
 	_dead = kind == "die" or kind == "downed"
 
 
+## The archer draws the bow from the back while charging a shot.
+func set_charging(on: bool) -> void:
+	if rig != null:
+		rig.set_bow_charging(on)
+
+
 ## A long cast (a cast time or a channel): arms up and the staff spinning for `seconds`.
 func play_long_cast(seconds: float) -> void:
 	if rig == null or _dead:

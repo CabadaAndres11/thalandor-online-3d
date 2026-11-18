@@ -6,7 +6,7 @@ extends Camera3D
 enum Mode { ISOMETRIC, THIRD_PERSON }
 
 const ISO := {"pitch": 55.0, "distance": 18.0, "min": 10.0, "max": 30.0, "fov": 40.0}
-const THIRD := {"pitch": 24.0, "distance": 8.0, "min": 4.0, "max": 16.0, "fov": 65.0}
+const THIRD := {"pitch": 42.0, "distance": 9.0, "min": 4.0, "max": 16.0, "fov": 65.0}
 const TURN_SPEED := 2.2 # rad/s with Z/X
 const DRAG_SENSITIVITY := 0.006 # rad/px with the middle button
 
@@ -20,7 +20,7 @@ const DRAG_SENSITIVITY := 0.006 # rad/px with the middle button
 var mode: Mode = Mode.ISOMETRIC
 var _target: Vector3 = Vector3.ZERO
 var _dragging: bool = false
-var _distances: Dictionary = {Mode.ISOMETRIC: 18.0, Mode.THIRD_PERSON: 8.0}
+var _distances: Dictionary = {Mode.ISOMETRIC: 18.0, Mode.THIRD_PERSON: 9.0}
 
 
 func _ready() -> void:

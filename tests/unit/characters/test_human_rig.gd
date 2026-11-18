@@ -198,6 +198,7 @@ func test_the_bow_is_held_upright_in_front_not_dangling() -> void:
 	look["grip"] = "bow"
 	var rig := HumanRig.build(look)
 	add_child_autofree(rig)
+	rig.set_bow_charging(true)
 	rig.update(0.1)
 	var up := rig.part("hand_left").global_transform.basis.y.normalized()
 	assert_gt(up.dot(Vector3.UP), 0.9, "the bow stands upright")
@@ -207,6 +208,25 @@ func test_the_bow_is_held_upright_in_front_not_dangling() -> void:
 	rig.update(0.01)
 	var start := rig.part("arm_left").rotation.x
 	assert_almost_eq(start, HumanRig.BOW_ARM, 0.15, "the shot starts from the held pose, no snap")
+
+
+func test_the_bow_rides_on_the_back_until_a_shot_is_charged() -> void:
+	var archer := CharacterCatalog.load_default().resolve("archer", {})
+	var rig := HumanRig.build(archer)
+	add_child_autofree(rig)
+	rig.update(0.1)
+	var bow := rig.piece_node("weapon_bow")
+	assert_not_null(bow)
+	assert_false(rig.bow_in_hand())
+	assert_eq(bow.get_parent(), rig.part("torso"), "on the back")
+	assert_lt(rig.part("arm_left").rotation.x, 0.5, "the arm is free")
+	rig.set_bow_charging(true)
+	rig.update(0.1)
+	assert_true(rig.bow_in_hand())
+	assert_eq(bow.get_parent(), rig.part("hand_left"))
+	rig.set_bow_charging(false)
+	rig.update(0.1)
+	assert_eq(bow.get_parent(), rig.part("torso"), "back again after the shot")
 
 
 func test_the_archer_has_the_bow_grip() -> void:

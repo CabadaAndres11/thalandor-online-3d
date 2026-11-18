@@ -293,6 +293,7 @@ func _sync_avatars(delta: float) -> void:
 			avatar_node.set_health(float(c.hp), float(c.max_hp), int(c.life) == CombatEntity.ALIVE)
 			avatar_node.set_statuses(int(c.status_bits))
 			avatar_node.set_level(int(c.get("level", 1)))
+			avatar_node.set_charging(float(c.get("charge", 0.0)) > 0.0)
 
 
 func _remove_avatar(id: int) -> void:
