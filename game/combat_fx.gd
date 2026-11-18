@@ -26,6 +26,11 @@ const NUMBER_TIME := 0.9
 const NUMBER_RISE := 1.2
 const FLASH_TIME := 0.2
 const HEAD_HEIGHT := 2.0
+## Colours of the magic schools (damage element of the ability).
+const ELEMENT_COLORS := {
+	"fire": Color("#ff7a2a"), "frost": Color("#7fd8ff"), "arcane": Color("#c07bff"), "nature": Color("#7be07b"),
+	"holy": Color("#ffe48a"), "shadow": Color("#9a6bd8"), "poison": Color("#8ee05a"),
+}
 
 var _position_of: Callable # id -> Vector3 or null
 var _tick_now: Callable # -> int (latest snapshot tick)
@@ -37,6 +42,7 @@ var _telegraphs: Dictionary = {} # id -> {node, fill, t, duration}
 var _flashes: Array = [] # {node, t}
 var _numbers: Array = [] # {node, t, base_y}
 var _shields: Dictionary = {} # entity id -> {node, t, duration}
+var _charges: Dictionary = {} # caster id -> {node, t, duration} (cast times and channels)
 
 
 func setup(position_of: Callable, tick_now: Callable, abilities: AbilityDB, tick_rate: int) -> void:
@@ -60,6 +66,10 @@ func handle(ev: Array) -> void:
 			_remove_projectile(int(ev[1]))
 		"cast":
 			_cast_flash(ev)
+		"channel":
+			_start_charge(int(ev[1]), str(ev[2]), float(ev[3]))
+		"channel_end":
+			_end_charge(int(ev[1]))
 		"telegraph_line":
 			_add_line_telegraph(ev)
 		"charge", "charge_cancel":
@@ -69,7 +79,7 @@ func handle(ev: Array) -> void:
 		"level_up":
 			level_up(int(ev[1]), int(ev[2]))
 		"area":
-			_area_flash(ev[2], float(ev[3]))
+			_area_flash(ev[2], float(ev[3]), str(ev[4]) if ev.size() > 4 else "")
 		"status":
 			if str(ev[2]) == "shield":
 				_add_shield(int(ev[1]), int(ev[3]))
@@ -130,6 +140,14 @@ func advance(dt: float) -> void:
 		else:
 			label.position.y = n.base_y + NUMBER_RISE * (n.t / NUMBER_TIME)
 			label.modulate.a = 1.0 - maxf(0.0, (n.t / NUMBER_TIME - 0.6) / 0.4)
+	for id: int in _charges.keys():
+		var c: Dictionary = _charges[id]
+		c.t += dt
+		var at: Variant = _position_of.call(id)
+		if c.t >= c.duration or at == null:
+			_end_charge(id)
+		else:
+			(c.node as Node3D).position = (at as Vector3) + Vector3(0, 0.9, 0)
 	for id: int in _shields.keys():
 		var s: Dictionary = _shields[id]
 		s.t += dt
@@ -173,10 +191,36 @@ func shield_count() -> int:
 
 # --- Builders -----------------------------------------------------------------------
 
+## The damage element of an ability ("" when it has none), looking inside nested effects.
+static func element_of(node: Variant) -> String:
+	if node is Dictionary:
+		var d := node as Dictionary
+		if d.has("element") and d.element is String:
+			return d.element
+		for k: Variant in d:
+			var found := element_of(d[k])
+			if found != "":
+				return found
+	elif node is Array:
+		for v: Variant in node:
+			var found := element_of(v)
+			if found != "":
+				return found
+	return ""
+
+
+func _is_magic(ability_id: String) -> bool:
+	var ab := _abilities.get_ability(ability_id)
+	return element_of(ab.get("effects", [])) != "" or str(ab.get("class", "")) in ["mage", "cleric"]
+
+
 func _color_of(ability_id: String) -> Color:
 	var ab := _abilities.get_ability(ability_id)
 	if ab.has("fx_color"):
 		return Color(str(ab.fx_color))
+	var element := element_of(ab.get("effects", []))
+	if ELEMENT_COLORS.has(element):
+		return ELEMENT_COLORS[element]
 	return CLASS_COLORS.get(str(ab.get("class", "")), MONSTER_COLOR)
 
 
@@ -186,6 +230,13 @@ func _material(color: Color, alpha: float) -> StandardMaterial3D:
 	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	m.albedo_color = Color(color, alpha)
 	m.cull_mode = BaseMaterial3D.CULL_DISABLED
+	return m
+
+
+## Additive, unshaded material: it glows over whatever is behind it.
+func _glow(color: Color, alpha: float) -> StandardMaterial3D:
+	var m := _material(color, alpha)
+	m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
 	return m
 
 
@@ -205,7 +256,28 @@ func _add_projectile(ev: Array) -> void:
 	bolt.material_override = _material(color.lightened(0.3), 1.0)
 	bolt.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	node.add_child(bolt)
-	node.add_child(_trail(color))
+	if _is_magic(str(ev[3])):
+		var core := SphereMesh.new()
+		core.radius = 0.14
+		core.height = 0.28
+		bolt.mesh = core
+		bolt.material_override = _glow(color.lightened(0.55), 1.0)
+		var halo := MeshInstance3D.new()
+		var hm := SphereMesh.new()
+		hm.radius = 0.32
+		hm.height = 0.64
+		halo.mesh = hm
+		halo.material_override = _glow(color, 0.35)
+		halo.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		node.add_child(halo)
+		var light := OmniLight3D.new()
+		light.light_color = color
+		light.light_energy = 1.4
+		light.omni_range = 4.0
+		node.add_child(light)
+		node.add_child(_trail(color, true))
+	else:
+		node.add_child(_trail(color))
 	var start := from + Vector3(0, 1.1, 0)
 	node.position = start
 	add_child(node)
@@ -299,11 +371,81 @@ func _remove_telegraph(id: int) -> void:
 		_telegraphs.erase(id)
 
 
-func _area_flash(pos: Vector3, radius: float) -> void:
-	var d := _disc(radius, Color(1, 0.9, 0.6), 0.6)
+func _area_flash(pos: Vector3, radius: float, ability_id: String = "") -> void:
+	var magic := ability_id != "" and _is_magic(ability_id)
+	var color := _color_of(ability_id).lightened(0.35) if magic else Color(1, 0.9, 0.6)
+	var d := _disc(radius, color, 0.6)
 	d.position = pos + Vector3(0, 0.05, 0)
 	add_child(d)
 	_flashes.append({"node": d, "t": 0.0})
+	if magic:
+		_burst(pos, radius, color)
+
+
+## A burst of glowing motes rising from an area that went off.
+func _burst(pos: Vector3, radius: float, color: Color) -> void:
+	var p := CPUParticles3D.new()
+	p.one_shot = true
+	p.emitting = true
+	p.amount = clampi(int(radius * 14.0), 16, 90)
+	p.lifetime = 0.7
+	p.explosiveness = 0.9
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_SPHERE
+	p.emission_sphere_radius = maxf(radius * 0.8, 0.2)
+	p.direction = Vector3.UP
+	p.spread = 25.0
+	p.initial_velocity_min = 1.2
+	p.initial_velocity_max = 3.2
+	p.gravity = Vector3(0, 1.0, 0)
+	var mesh := SphereMesh.new()
+	mesh.radius = 0.07
+	mesh.height = 0.14
+	p.mesh = mesh
+	p.material_override = _glow(color, 0.9)
+	p.color_ramp = _fade_ramp(color)
+	p.position = pos + Vector3(0, 0.2, 0)
+	add_child(p)
+	_flashes.append({"node": p, "t": -0.5}) # freed with the flashes, once the motes are gone
+
+
+## Motes spiralling into the caster while a cast time or a channel lasts.
+func _start_charge(id: int, ability_id: String, total: float) -> void:
+	_end_charge(id)
+	var at: Variant = _position_of.call(id)
+	if at == null or total <= 0.0:
+		return
+	var color := _color_of(ability_id).lightened(0.3)
+	var p := CPUParticles3D.new()
+	p.amount = 30
+	p.lifetime = 0.5
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_SPHERE
+	p.emission_sphere_radius = 1.1
+	p.gravity = Vector3.ZERO
+	p.initial_velocity_min = 0.0
+	p.initial_velocity_max = 0.2
+	p.radial_accel_min = -5.0
+	p.radial_accel_max = -3.0
+	p.tangential_accel_min = 2.0
+	p.tangential_accel_max = 4.0
+	var mesh := SphereMesh.new()
+	mesh.radius = 0.05
+	mesh.height = 0.1
+	p.mesh = mesh
+	p.material_override = _glow(color, 0.9)
+	p.color_ramp = _fade_ramp(color)
+	p.position = (at as Vector3) + Vector3(0, 0.9, 0)
+	add_child(p)
+	_charges[id] = {"node": p, "t": 0.0, "duration": total}
+
+
+func _end_charge(id: int) -> void:
+	if _charges.has(id):
+		(_charges[id].node as Node).queue_free()
+		_charges.erase(id)
+
+
+func charge_count() -> int:
+	return _charges.size()
 
 
 ## Melee arcs flash in front of the caster, toward the aim point.
@@ -402,10 +544,10 @@ func _ring(radius: float, color: Color) -> MeshInstance3D:
 
 
 ## Particles left behind a projectile (in world space, so they trail).
-func _trail(color: Color) -> CPUParticles3D:
+func _trail(color: Color, magic: bool = false) -> CPUParticles3D:
 	var p := CPUParticles3D.new()
-	p.amount = 24
-	p.lifetime = 0.25
+	p.amount = 48 if magic else 24
+	p.lifetime = 0.45 if magic else 0.25
 	p.local_coords = false
 	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_SPHERE
 	p.emission_sphere_radius = 0.05
@@ -418,7 +560,7 @@ func _trail(color: Color) -> CPUParticles3D:
 	quad.radius = 0.05
 	quad.height = 0.1
 	p.mesh = quad
-	p.material_override = _material(color, 0.7)
+	p.material_override = _glow(color, 0.8) if magic else _material(color, 0.7)
 	p.color_ramp = _fade_ramp(color)
 	return p
 

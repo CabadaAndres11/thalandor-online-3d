@@ -118,3 +118,33 @@ func test_level_up_shows_a_number_and_a_flash() -> void:
 	assert_eq((fx.floating_labels()[numbers] as Label3D).text, tr("FX_LEVEL_UP") % 6)
 	fx.advance(2.0)
 	assert_eq(fx.floating_labels().size(), numbers, "it fades away")
+
+
+func test_magic_colours_follow_the_element() -> void:
+	assert_eq(CombatFX.element_of(AbilityDB.load_default().get_ability("mage_fireball").effects), "fire")
+	assert_eq(CombatFX.element_of(AbilityDB.load_default().get_ability("mage_frostbolt").effects), "frost")
+	assert_eq(CombatFX.element_of([]), "")
+
+
+func test_magic_projectile_glows_with_a_light() -> void:
+	fx.handle(["projectile", 8, 1, "mage_fireball", Vector3(5, 0, 5), Vector2(1, 0), 20.0, 20.0])
+	var node := fx.get_child(0) as Node3D
+	assert_not_null(node.find_children("*", "OmniLight3D", true, false).front() if not node.find_children("*", "OmniLight3D", true, false).is_empty() else null)
+
+
+func test_cast_time_shows_a_charge_until_it_ends() -> void:
+	fx.handle(["channel", 1, "mage_fireball", 1.2])
+	assert_eq(fx.charge_count(), 1)
+	fx.advance(0.5)
+	assert_eq(fx.charge_count(), 1)
+	fx.handle(["channel_end", 1])
+	assert_eq(fx.charge_count(), 0)
+	fx.handle(["channel", 1, "mage_fireball", 0.3])
+	fx.advance(0.4)
+	assert_eq(fx.charge_count(), 0, "it ends by itself")
+
+
+func test_magic_area_bursts_with_motes() -> void:
+	fx.handle(["area", 3, Vector3(5, 0, 5), 3.0, "mage_fireball"])
+	var parts := fx.find_children("*", "CPUParticles3D", true, false)
+	assert_eq(parts.size(), 1)

@@ -654,7 +654,7 @@ static func fire_area(world: SimWorld, a: PendingArea) -> void:
 			Combat.heal(world, live_owner if live_owner != null else a.owner, ally, amount)
 	a.pulses_left -= 1
 	a.fire_tick = world.tick + maxi(a.interval, 1)
-	world.emit(["area", a.id, a.pos, float(a.effect.get("radius", 1.0))])
+	world.emit(["area", a.id, a.pos, float(a.effect.get("radius", 1.0)), a.ability_id])
 
 
 ## A leaping caster (the boss jump) lands on the area when it goes off; false when it

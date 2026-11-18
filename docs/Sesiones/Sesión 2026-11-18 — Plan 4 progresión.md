@@ -29,6 +29,7 @@ Implementar el [[Plan 4 — Progresión (spec)|Plan 4]]: experiencia y niveles s
 - Monstruos y aliados invocados exigen línea de visión para atacar.
 - Nombre del jugador en tamaño de mundo.
 - Tema holográfico azul, ventana C con modelo y huecos de objetos, ventana K en lista.
+- Escalado de monstruos subido (vida 0,17 y daño 0,115 por nivel), casteo del mago con `repeat.cast`, efectos de magia mejorados y cadáveres de bestias corregidos.
 
 ## Siguiente paso
 - Prueba del usuario, revisión de arte (casco templario, ballesta, lobo, iconos) y publicación de la 0.6.0.
