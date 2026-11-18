@@ -46,8 +46,8 @@ func _choose(c: MemoryTransport, class_id: String) -> void:
 
 func test_choose_class_roundtrip() -> void:
 	assert_eq(Protocol.decode(Protocol.choose_class("mage")), {"type": Protocol.Msg.CHOOSE_CLASS, "class_id": "mage"})
-	var m := Protocol.decode(Protocol.player_class(3, "archer", ["a", "", "", ""]))
-	assert_eq([m.id, m.class_id, m.bar], [3, "archer", ["a", "", "", ""]])
+	var m := Protocol.decode(Protocol.player_class(3, "archer", ["a", "", "", "", "", "", "", "", ""]))
+	assert_eq([m.id, m.class_id, m.bar], [3, "archer", ["a", "", "", "", "", "", "", "", ""]])
 
 
 func test_host_accepts_a_villager_next_to_brann() -> void:

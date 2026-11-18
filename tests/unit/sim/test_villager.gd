@@ -23,5 +23,5 @@ func test_villager_kit() -> void:
 
 func test_villager_bar_is_empty_even_from_an_old_bar() -> void:
 	var db := AbilityDB.load_default()
-	assert_eq(db.sanitize_bar("villager", ["warrior_charge", "warrior_battle_cry", "", ""]), ["", "", "", ""])
-	assert_eq(db.sanitize_bar("villager", []), ["", "", "", ""])
+	assert_eq(db.sanitize_bar("villager", ["warrior_charge", "warrior_battle_cry", "", "", "", "", "", "", ""]), ["", "", "", "", "", "", "", "", ""])
+	assert_eq(db.sanitize_bar("villager", []), ["", "", "", "", "", "", "", "", ""])

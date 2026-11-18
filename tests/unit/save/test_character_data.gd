@@ -15,7 +15,7 @@ func _sample() -> CharacterData:
 	c.appearance = catalog.sanitize_appearance({"hair_style": "hair_long", "skin": "skin_4"})
 	c.progress.level = 20
 	c.created_at = 1_800_000_000
-	c.bar = AbilityDB.load_default().sanitize_bar("mage", ["mage_fireball", "", "mage_frost_nova", ""], 20)
+	c.bar = AbilityDB.load_default().sanitize_bar("mage", ["mage_fireball", "", "mage_frost_nova", "", "", "", "", "", ""], 20)
 	return c
 
 
@@ -83,13 +83,13 @@ func test_bar_sanitized_to_class_abilities() -> void:
 	var d := _sample().to_dict()
 	d.bar = ["mage_fireball", "warrior_whirlwind", "mage_fireball", 5, "mage_frostbolt"]
 	var c := CharacterData.from_dict(d, catalog)
-	assert_eq(c.bar, ["mage_fireball", "", "", ""],
-		"other classes' abilities, duplicates, non-strings and extra slots are dropped")
+	assert_eq(c.bar, ["mage_fireball", "", "", "", "mage_frostbolt", "", "", "", ""],
+		"other classes' abilities, duplicates and non-strings are dropped")
 	d.bar = "nope"
 	assert_eq(CharacterData.from_dict(d, catalog).bar, AbilityDB.load_default().default_bar("mage", 20))
 	d.class_id = "warrior"
-	d.bar = ["mage_fireball", "", "", ""]
-	assert_eq(CharacterData.from_dict(d, catalog).bar, ["", "", "", ""], "the bar follows the class")
+	d.bar = ["mage_fireball", "", "", "", "", "", "", "", ""]
+	assert_eq(CharacterData.from_dict(d, catalog).bar, ["", "", "", "", "", "", "", "", ""], "the bar follows the class")
 
 
 func test_new_character_is_villager() -> void:
@@ -120,13 +120,13 @@ func test_progress_roundtrip() -> void:
 
 func test_v2_migrates_to_level_1() -> void:
 	var old := {"version": 2, "id": "abcdefabcdefabcd", "name": "Lyra", "class_id": "archer",
-		"appearance": {}, "level": 1, "created_at": 5, "bar": ["archer_roll", "", "", ""]}
+		"appearance": {}, "level": 1, "created_at": 5, "bar": ["archer_roll", "", "", "", "", "", "", "", ""]}
 	var c := CharacterData.from_dict(old, catalog)
 	assert_not_null(c)
 	assert_eq(c.progress.level, 1)
 	assert_eq(c.progress.xp, 0)
 	assert_eq(c.to_dict().version, 3)
-	assert_eq(c.bar.size(), 4)
+	assert_eq(c.bar.size(), 9)
 	assert_eq(c.name, "Lyra", "nothing else is lost")
 
 
@@ -144,7 +144,7 @@ func test_garbage_progress_loads_defaults() -> void:
 func test_bar_uses_the_progress_level() -> void:
 	var d := _sample().to_dict()
 	d.progress = {"level": 1}
-	d.bar = ["mage_fireball", "mage_frost_nova", "", ""]
-	assert_eq(CharacterData.from_dict(d, catalog).bar, ["", "", "", ""], "locked abilities leave the bar")
+	d.bar = ["mage_fireball", "mage_frost_nova", "", "", "", "", "", "", ""]
+	assert_eq(CharacterData.from_dict(d, catalog).bar, ["", "", "", "", "", "", "", "", ""], "locked abilities leave the bar")
 	d.progress = {"level": 10}
-	assert_eq(CharacterData.from_dict(d, catalog).bar, ["mage_fireball", "mage_frost_nova", "", ""])
+	assert_eq(CharacterData.from_dict(d, catalog).bar, ["mage_fireball", "mage_frost_nova", "", "", "", "", "", "", ""])

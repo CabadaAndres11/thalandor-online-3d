@@ -83,7 +83,7 @@ func class_abilities(owner_id: String) -> Array:
 	return out
 
 
-const BAR_SIZE := 4
+const BAR_SIZE := 9
 
 
 ## Id of the class's ability of this kind ("basic" or "secondary"), or "".

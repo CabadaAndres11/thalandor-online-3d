@@ -57,6 +57,6 @@ func test_read_buttons_maps_actions_to_bits() -> void:
 
 func test_default_bindings_include_combat_actions() -> void:
 	InputSetup.ensure_actions()
-	for action: String in ["attack_basic", "attack_secondary", "slot_1", "slot_2", "slot_3", "slot_4", "dodge", "interact"]:
+	for action: String in ["attack_basic", "attack_secondary", "slot_1", "slot_2", "slot_3", "slot_4", "slot_5", "slot_6", "slot_7", "slot_8", "slot_9", "dodge", "interact"]:
 		assert_true(InputMap.has_action(action), action)
 		assert_false(InputMap.action_get_events(action).is_empty(), action)

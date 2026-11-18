@@ -10,7 +10,7 @@ signal bar_changed(bar: Array)
 
 const ROW := Vector2(270, 42)
 const ICON := 32
-const BAR_SLOT := 64.0
+const BAR_SLOT := 56.0
 const DESC_LINES := 11
 
 var _abilities: AbilityDB

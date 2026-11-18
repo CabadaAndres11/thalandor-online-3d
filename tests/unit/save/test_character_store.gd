@@ -172,12 +172,12 @@ func test_new_character_gets_the_default_bar() -> void:
 func test_import_keeps_the_saved_bar() -> void:
 	var c := store.create("Barra", "mage", {})
 	c.progress.level = 20
-	c.bar = ["mage_fireball", "mage_frostbolt", "", ""]
+	c.bar = ["mage_fireball", "mage_frostbolt", "", "", "", "", "", "", ""]
 	store.save(c)
 	var path := EXPORT_DIR.path_join("barra.json")
 	assert_eq(store.export_to(c.id, path), OK)
 	store.delete(c.id)
-	assert_eq(store.import_from(path).bar, ["mage_fireball", "mage_frostbolt", "", ""])
+	assert_eq(store.import_from(path).bar, ["mage_fireball", "mage_frostbolt", "", "", "", "", "", "", ""])
 
 
 func test_queue_save_coalesces() -> void:

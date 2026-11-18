@@ -7,10 +7,10 @@ extends Control
 ## (the host does not send them); the dodge cooldown comes from the client's
 ## prediction. A fighting boss gets a big bar at the top with its name and phase.
 
-const SLOT := 56.0
-const GAP := 6.0
-const SLOTS := 7
-const DODGE_SLOT := 6
+const SLOT := 46.0
+const GAP := 4.0
+const SLOTS := 2 + AbilityDB.BAR_SIZE + 1 # CI, CD, the bar and the dodge
+const DODGE_SLOT := SLOTS - 1
 const MARGIN_BOTTOM := 16.0
 const ICON_DIR := "res://assets/icons/%s.png"
 const RESOURCE_COLORS := {
@@ -154,7 +154,10 @@ func bind(client: ClientSession, bar: Array, abilities: AbilityDB) -> void:
 	for i in AbilityDB.BAR_SIZE:
 		_slot_ids.append(str(bar[i]) if i < bar.size() else "")
 	_slot_ids.append("dodge")
-	var keys := [tr("HUD_KEY_LMB"), tr("HUD_KEY_RMB"), "1", "2", "3", "4", tr("HUD_KEY_SPACE")]
+	var keys := [tr("HUD_KEY_LMB"), tr("HUD_KEY_RMB")]
+	for i in AbilityDB.BAR_SIZE:
+		keys.append(str(i + 1))
+	keys.append(tr("HUD_KEY_SPACE"))
 	for i in SLOTS:
 		var s: Dictionary = _slots[i]
 		var id := _slot_ids[i]

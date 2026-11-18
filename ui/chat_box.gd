@@ -9,7 +9,7 @@ signal typing_changed(is_typing: bool)
 const MAX_LINES := 8
 const VISIBLE_SECONDS := 10.0
 const FADE_SECONDS := 1.0
-const WIDTH := 400.0 # ends left of the combat HUD (bottom centre)
+const WIDTH := 320.0 # ends left of the combat HUD (bottom centre)
 const MAX_LINES_PER_MESSAGE := 3
 const SYSTEM_COLOR := Color("#f3d36b")
 

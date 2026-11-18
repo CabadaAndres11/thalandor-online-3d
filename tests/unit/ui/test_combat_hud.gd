@@ -35,11 +35,11 @@ func test_slots_follow_class_and_bar() -> void:
 	var c := _client("mage")
 	var hud := _hud(c)
 	var db := AbilityDB.load_default()
-	assert_eq(hud.slot_count(), 7, "CI, CD, 1-4 and Espacio")
+	assert_eq(hud.slot_count(), 12, "CI, CD, 1-9 and Espacio")
 	assert_eq(hud.slot_ability(0), db.kind_of("mage", "basic"))
 	assert_eq(hud.slot_ability(1), db.kind_of("mage", "secondary"))
 	assert_eq(hud.slot_ability(2), c.bar[0])
-	assert_eq(hud.slot_key(6), tr("HUD_KEY_SPACE"))
+	assert_eq(hud.slot_key(11), tr("HUD_KEY_SPACE"))
 
 
 func test_slot_dims_without_resource() -> void:

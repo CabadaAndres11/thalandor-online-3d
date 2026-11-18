@@ -203,13 +203,13 @@ func test_level_up_is_sent_at_once() -> void:
 func test_level_up_places_new_ability_in_bar() -> void:
 	var a := _guest("Ana", {"level": 2, "xp": 0})
 	var first := _msgs(a, Protocol.Msg.PROGRESS)
-	assert_eq(first[0].bar, ["warrior_charge", "", "", ""])
+	assert_eq(first[0].bar, ["warrior_charge", "", "", "", "", "", "", "", ""])
 	host.world.players[1].progress.xp = Xp.to_next(2, balance) - 1
 	_kill_cultist()
 	host.tick()
 	var got := _msgs(a, Protocol.Msg.PROGRESS)
-	assert_eq(got[0].bar, ["warrior_charge", "warrior_battle_cry", "", ""])
-	assert_eq(host._players[1].bar, ["warrior_charge", "warrior_battle_cry", "", ""])
+	assert_eq(got[0].bar, ["warrior_charge", "warrior_battle_cry", "", "", "", "", "", "", ""])
+	assert_eq(host._players[1].bar, ["warrior_charge", "warrior_battle_cry", "", "", "", "", "", "", ""])
 
 
 func test_arena_level_in_welcome() -> void:

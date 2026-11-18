@@ -93,8 +93,8 @@ func test_flurry_hits_four_times_two_combo() -> void:
 
 
 func test_saved_bar_with_evasion_sanitized() -> void:
-	assert_eq(_db().sanitize_bar("assassin", ["assassin_evasion", "assassin_shadowstep", "", ""], 50),
-		["", "assassin_shadowstep", "", ""])
+	assert_eq(_db().sanitize_bar("assassin", ["assassin_evasion", "assassin_shadowstep", "", "", "", "", "", "", ""], 50),
+		["", "assassin_shadowstep", "", "", "", "", "", "", ""])
 	assert_false(_db().has("assassin_evasion"))
 
 

@@ -30,10 +30,10 @@ func test_level1_has_three_actives() -> void:
 
 
 func test_sanitize_clears_locked() -> void:
-	assert_eq(_db().sanitize_bar("warrior", ["warrior_charge", "warrior_battle_cry", "", ""], 1), ["warrior_charge", "", "", ""])
-	assert_eq(_db().sanitize_bar("warrior", ["warrior_charge", "warrior_battle_cry", "", ""], 3), ["warrior_charge", "warrior_battle_cry", "", ""])
-	assert_eq(_db().sanitize_bar("warrior", [], 6), ["warrior_charge", "warrior_battle_cry", "warrior_whirlwind", ""])
-	assert_eq(_db().default_bar("warrior"), ["warrior_charge", "", "", ""])
+	assert_eq(_db().sanitize_bar("warrior", ["warrior_charge", "warrior_battle_cry", "", "", "", "", "", "", ""], 1), ["warrior_charge", "", "", "", "", "", "", "", ""])
+	assert_eq(_db().sanitize_bar("warrior", ["warrior_charge", "warrior_battle_cry", "", "", "", "", "", "", ""], 3), ["warrior_charge", "warrior_battle_cry", "", "", "", "", "", "", ""])
+	assert_eq(_db().sanitize_bar("warrior", [], 6), ["warrior_charge", "warrior_battle_cry", "warrior_whirlwind", "", "", "", "", "", ""])
+	assert_eq(_db().default_bar("warrior"), ["warrior_charge", "", "", "", "", "", "", "", ""])
 
 
 func test_cast_locked_refused() -> void:
@@ -53,15 +53,17 @@ func test_passive_turns_on_at_level() -> void:
 
 
 func test_place_unlocked_fills_free_slot() -> void:
-	assert_eq(_db().place_unlocked(["warrior_charge", "", "", ""], "warrior", 1, 3, ""), ["warrior_charge", "warrior_battle_cry", "", ""])
-	assert_eq(_db().place_unlocked(["warrior_charge", "", "", ""], "warrior", 1, 10, ""),
-		["warrior_charge", "warrior_battle_cry", "warrior_whirlwind", "warrior_taunt"])
+	assert_eq(_db().place_unlocked(["warrior_charge", "", "", "", "", "", "", "", ""], "warrior", 1, 3, ""), ["warrior_charge", "warrior_battle_cry", "", "", "", "", "", "", ""])
+	var want: Array = _db().unlocked("warrior", 10)
+	while want.size() < AbilityDB.BAR_SIZE:
+		want.append("")
+	assert_eq(_db().place_unlocked(["warrior_charge", "", "", "", "", "", "", "", ""], "warrior", 1, 10, ""), want)
 
 
 func test_place_unlocked_keeps_full_bar() -> void:
-	var full := ["warrior_charge", "warrior_battle_cry", "warrior_whirlwind", "warrior_taunt"]
+	var full := ["warrior_charge", "warrior_battle_cry", "warrior_whirlwind", "warrior_taunt", "a", "b", "c", "d", "e"]
 	assert_eq(_db().place_unlocked(full, "warrior", 10, 20, ""), full)
-	assert_eq(_db().place_unlocked(["warrior_charge", "", "", ""], "warrior", 3, 3, ""), ["warrior_charge", "", "", ""])
+	assert_eq(_db().place_unlocked(["warrior_charge", "", "", "", "", "", "", "", ""], "warrior", 3, 3, ""), ["warrior_charge", "", "", "", "", "", "", "", ""])
 
 
 func test_upgrade_abilities_need_their_upgrade() -> void:
@@ -72,8 +74,8 @@ func test_upgrade_abilities_need_their_upgrade() -> void:
 	assert_eq(db.unlocked("warrior", 50), ["a1"])
 	assert_eq(db.unlocked("warrior", 50, "protector"), ["a1", "u1"])
 	assert_eq(db.unlocked("warrior", 49, "protector"), ["a1"])
-	assert_eq(db.place_unlocked(["a1", "", "", ""], "warrior", 49, 50, "berserker"), ["a1", "u2", "", ""])
-	assert_eq(db.sanitize_bar("warrior", ["u1", "u2", "", ""], 50, "protector"), ["u1", "", "", ""])
+	assert_eq(db.place_unlocked(["a1", "", "", "", "", "", "", "", ""], "warrior", 49, 50, "berserker"), ["a1", "u2", "", "", "", "", "", "", ""])
+	assert_eq(db.sanitize_bar("warrior", ["u1", "u2", "", "", "", "", "", "", ""], 50, "protector"), ["u1", "", "", "", "", "", "", "", ""])
 
 
 func test_cast_of_foreign_upgrade_refused() -> void:

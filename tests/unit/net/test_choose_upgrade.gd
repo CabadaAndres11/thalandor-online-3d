@@ -71,12 +71,12 @@ func test_upgrade_reaches_everyone() -> void:
 func test_the_owner_gets_progress_and_the_new_ability_in_the_bar() -> void:
 	var a := _guest("Ana")
 	var first := _msgs(a, Protocol.Msg.PROGRESS)
-	assert_eq(first[0].bar, ["w_a1", "", "", ""])
+	assert_eq(first[0].bar, ["w_a1", "", "", "", "", "", "", "", ""])
 	_send(a, Protocol.choose_upgrade("berserker"))
 	var got := _msgs(a, Protocol.Msg.PROGRESS)
 	assert_eq(got.size(), 1)
 	assert_eq(PlayerProgress.from_dict(got[0].progress).upgrade, "berserker")
-	assert_eq(got[0].bar, ["w_a1", "w_up", "", ""])
+	assert_eq(got[0].bar, ["w_a1", "w_up", "", "", "", "", "", "", ""])
 
 
 func test_rejections_change_nothing() -> void:
@@ -105,8 +105,8 @@ func test_hello_with_upgrade_is_announced_to_the_others() -> void:
 
 func test_reset_removes_the_upgrade_ability_from_the_bar() -> void:
 	var a := _guest("Ana", {"level": 50, "upgrade": "berserker"})
-	assert_eq(host._players[1].bar, ["w_a1", "w_up", "", ""])
+	assert_eq(host._players[1].bar, ["w_a1", "w_up", "", "", "", "", "", "", ""])
 	_msgs(a, Protocol.Msg.PLAYER_UPGRADE)
 	_send(a, Protocol.reset("upgrade"))
-	assert_eq(host._players[1].bar, ["w_a1", "", "", ""])
+	assert_eq(host._players[1].bar, ["w_a1", "", "", "", "", "", "", "", ""])
 	assert_eq(_msgs(a, Protocol.Msg.PLAYER_UPGRADE)[0].upgrade, "")

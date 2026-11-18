@@ -27,18 +27,18 @@ func test_lists_the_class_actives_and_passives() -> void:
 
 
 func test_assign_and_swap_slots() -> void:
-	var start := ["warrior_charge", "warrior_battle_cry", "warrior_whirlwind", ""]
+	var start := ["warrior_charge", "warrior_battle_cry", "warrior_whirlwind", "", "", "", "", "", ""]
 	win.show_for("warrior", start, abilities)
 	win.select_ability("warrior_shield_wall")
 	win.click_slot(3)
-	assert_eq(win.bar(), ["warrior_charge", "warrior_battle_cry", "warrior_whirlwind", "warrior_shield_wall"])
+	assert_eq(win.bar(), ["warrior_charge", "warrior_battle_cry", "warrior_whirlwind", "warrior_shield_wall", "", "", "", "", ""])
 	win.select_ability("warrior_whirlwind")
 	win.click_slot(0)
-	assert_eq(win.bar(), ["warrior_whirlwind", "warrior_battle_cry", "warrior_charge", "warrior_shield_wall"],
+	assert_eq(win.bar(), ["warrior_whirlwind", "warrior_battle_cry", "warrior_charge", "warrior_shield_wall", "", "", "", "", ""],
 		"an ability already on the bar swaps places")
 	win.click_slot(1) # picks the slot's ability up...
 	win.click_slot(3) # ...and drops it on another slot
-	assert_eq(win.bar(), ["warrior_whirlwind", "warrior_shield_wall", "warrior_charge", "warrior_battle_cry"])
+	assert_eq(win.bar(), ["warrior_whirlwind", "warrior_shield_wall", "warrior_charge", "warrior_battle_cry", "", "", "", "", ""])
 	assert_eq(changes.size(), 3)
 	assert_eq(changes[-1], win.bar())
 
@@ -87,7 +87,7 @@ func test_description_has_the_computed_details() -> void:
 
 
 func test_villager_sees_the_strike_and_the_hint() -> void:
-	win.show_for("villager", ["", "", "", ""], abilities)
+	win.show_for("villager", ["", "", "", "", "", "", "", "", ""], abilities)
 	assert_eq(win.attack_ids(), ["villager_strike"])
 	assert_eq(win.active_ids(), [])
 	assert_true(win.villager_hint_visible())
@@ -97,7 +97,7 @@ func test_villager_sees_the_strike_and_the_hint() -> void:
 
 
 func test_locked_abilities_are_marked_and_listed() -> void:
-	win.show_for("warrior", ["warrior_charge", "", "", ""], abilities, 3)
+	win.show_for("warrior", ["warrior_charge", "", "", "", "", "", "", "", ""], abilities, 3)
 	assert_has(win.locked_ids(), "warrior_whirlwind")
 	assert_has(win.locked_ids(), "warrior_contained_fury", "passives unlock by level too")
 	assert_does_not_have(win.locked_ids(), "warrior_battle_cry")
@@ -109,20 +109,20 @@ func test_locked_abilities_are_marked_and_listed() -> void:
 
 
 func test_locked_cannot_be_assigned() -> void:
-	win.show_for("warrior", ["warrior_charge", "", "", ""], abilities, 3)
+	win.show_for("warrior", ["warrior_charge", "", "", "", "", "", "", "", ""], abilities, 3)
 	changes.clear()
 	win.select_ability("warrior_whirlwind")
 	win.click_slot(1)
-	assert_eq(win.bar(), ["warrior_charge", "", "", ""])
+	assert_eq(win.bar(), ["warrior_charge", "", "", "", "", "", "", "", ""])
 	assert_eq(changes.size(), 0)
 	win.select_ability("warrior_battle_cry")
 	win.click_slot(1)
-	assert_eq(win.bar(), ["warrior_charge", "warrior_battle_cry", "", ""])
+	assert_eq(win.bar(), ["warrior_charge", "warrior_battle_cry", "", "", "", "", "", "", ""])
 
 
 func test_a_locked_bar_slot_is_cleared() -> void:
-	win.show_for("warrior", ["warrior_whirlwind", "warrior_charge", "", ""], abilities, 1)
-	assert_eq(win.bar(), ["", "warrior_charge", "", ""])
+	win.show_for("warrior", ["warrior_whirlwind", "warrior_charge", "", "", "", "", "", "", ""], abilities, 1)
+	assert_eq(win.bar(), ["", "warrior_charge", "", "", "", "", "", "", ""])
 
 
 func test_assassin_with_an_upgrade_fits_1280x720() -> void:

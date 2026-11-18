@@ -266,7 +266,7 @@ func test_bar_change_sends_set_bar_and_saves() -> void:
 	main._on_select_play(c.id)
 	await wait_until(func() -> bool: return main.game.client.status == ClientSession.Status.IN_GAME, 3.0)
 	_press("abilities_window")
-	var new_bar := ["warrior_shield_wall", "warrior_charge", "warrior_taunt", ""]
+	var new_bar := ["warrior_shield_wall", "warrior_charge", "warrior_taunt", "", "", "", "", "", ""]
 	main.abilities_window.bar_changed.emit(new_bar)
 	await wait_physics_frames(5)
 	assert_eq(main.game.host._players[main.game.client.my_id].bar, new_bar, "the host got SET_BAR")
