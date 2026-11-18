@@ -18,7 +18,10 @@ extends RefCounted
 ##                it cannot back away)
 ##   boss         phases by health (phase_for): 1 cleaves; from "jump.from_phase" it
 ##                also leaps at a player (a warned area); from "summon.from_phase" it
-##                calls goblins every summon.every_s
+##                calls goblins every summon.every_s; "specials" ([{ability, from_phase,
+##                min_range?, max_range?, at?: "self"}]) are tried in order before its
+##                basic attack, and "phase_abilities" ({"<phase>": ability}) is cast once
+##                on itself when that phase starts
 ## "pack": true monsters wake the IDLE ones of their type within pack_radius.
 
 const REPATH_S := 0.5
@@ -67,7 +70,7 @@ static func tick(world: SimWorld, m: MonsterState) -> void:
 				return
 		"boss":
 			_maybe_summon(world, m)
-			if _try_jump(world, m, target, gap):
+			if _try_phase_ability(world, m) or _try_jump(world, m, target, gap) or _try_special(world, m, target, gap):
 				m.ai = MonsterState.ATTACK
 				return
 		"charger":
@@ -231,6 +234,7 @@ static func _go_home(world: SimWorld, m: MonsterState) -> void:
 		m.hp = m.stats.max_hp
 		m.statuses.clear()
 		m.threat.clear()
+		m.phase_casts.clear()
 		dismiss_minions(world, m)
 		return
 	if not _move_toward(world, m, m.home):
@@ -325,6 +329,48 @@ static func _try_jump(world: SimWorld, m: MonsterState, target: CombatEntity, ga
 		delay = maxf(delay, float(eff.get("delay_s", 0.0)))
 	m.busy_until = world.tick + world.ticks(delay) + 1
 	return true
+
+
+## Boss: the ability of its current phase ("phase_abilities"), once, aimed at itself.
+static func _try_phase_ability(world: SimWorld, m: MonsterState) -> bool:
+	var id := str((m.def.get("phase_abilities", {}) as Dictionary).get(str(m.phase), ""))
+	if id == "" or m.phase_casts.has(m.phase):
+		return false
+	if not Combat.try_cast(world, m, id, m.position):
+		return false
+	m.phase_casts.append(m.phase)
+	m.busy_until = world.tick + world.ticks(_wait_s(world, id)) + 1
+	return true
+
+
+## Boss: the first ready "specials" entry its phase and the target's distance allow.
+## It stands still while the ability warns (its delay or windup).
+static func _try_special(world: SimWorld, m: MonsterState, target: CombatEntity, gap: float) -> bool:
+	for s: Dictionary in m.def.get("specials", []):
+		var id := str(s.get("ability", ""))
+		if m.phase < int(s.get("from_phase", 1)) or world.tick < int(m.cooldowns.get(id, 0)):
+			continue
+		if gap < float(s.get("min_range", 0.0)) or gap > float(s.get("max_range", INF)):
+			continue
+		var on_self := str(s.get("at", "")) == "self"
+		if not on_self and not world.pathfinder().clear_line(m.position, target.position):
+			continue
+		if not on_self:
+			var to := Effects.flat(target.position) - Effects.flat(m.position)
+			if to.length() > 0.01:
+				m.facing = atan2(to.x, to.y)
+		if Combat.try_cast(world, m, id, m.position if on_self else target.position):
+			m.busy_until = world.tick + world.ticks(_wait_s(world, id)) + 1
+			return true
+	return false
+
+
+## Seconds an ability keeps its caster still: its longest delay or windup.
+static func _wait_s(world: SimWorld, id: String) -> float:
+	var wait := 0.0
+	for eff: Dictionary in world.abilities.get_ability(id).get("effects", []):
+		wait = maxf(wait, maxf(float(eff.get("delay_s", 0.0)), float(eff.get("windup_s", 0.0))))
+	return wait
 
 
 ## Boss call: `count` monsters of summon.type around it, fighting its targets.

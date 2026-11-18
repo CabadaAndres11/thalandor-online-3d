@@ -6,9 +6,9 @@ extends RefCounted
 ## damage_reduction, evasion, taunted, stealth, invulnerable, hot, envenom, bleed, haste (recharges
 ## x (1 - magnitude)), vulnerable (+damage taken), attack_slow (monsters: recharges x (1 + magnitude)),
 ## speed_buff (+movement speed), weaken (-damage done), ice_block (invulnerable and cannot act), contagion (its poison spreads
-## on death, magnitude = radius).
+## on death, magnitude = radius), armor_break (its armour counts magnitude less).
 
-const NEGATIVE := ["stun", "root", "freeze", "slow", "poison", "burn", "mark", "taunted", "bleed", "vulnerable", "attack_slow", "weaken"]
+const NEGATIVE := ["stun", "root", "freeze", "slow", "poison", "burn", "mark", "taunted", "bleed", "vulnerable", "attack_slow", "weaken", "armor_break"]
 
 var kind: String = ""
 var end_tick: int = 0
@@ -73,7 +73,7 @@ static func _periodic(e: CombatEntity, s: StatusEffect, world: SimWorld) -> void
 
 ## Order of the status bits sent in snapshots (for icons and stealth on clients).
 const BIT_KINDS := ["stun", "root", "freeze", "slow", "poison", "burn", "mark", "damage_buff",
-	"damage_reduction", "evasion", "taunted", "stealth", "invulnerable", "hot", "bleed", "haste", "vulnerable", "attack_slow", "weaken", "ice_block"]
+	"damage_reduction", "evasion", "taunted", "stealth", "invulnerable", "hot", "bleed", "haste", "vulnerable", "attack_slow", "weaken", "ice_block", "armor_break"]
 
 
 static func bits_of(e: CombatEntity) -> int:

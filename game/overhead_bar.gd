@@ -64,7 +64,7 @@ func bar_visible() -> bool:
 ## Statuses that get an icon, in the order they are shown (stealth and the dodge's
 ## invulnerability are shown other ways).
 const STATUS_ICON_KINDS := ["stun", "freeze", "root", "slow", "poison", "burn", "mark", "taunted",
-	"damage_buff", "damage_reduction", "evasion", "hot", "bleed", "haste", "vulnerable", "attack_slow", "weaken", "ice_block"]
+	"damage_buff", "damage_reduction", "evasion", "hot", "bleed", "haste", "vulnerable", "attack_slow", "weaken", "armor_break", "ice_block"]
 const MAX_STATUS_ICONS := 4
 const STATUS_ICON_DIR := "res://assets/icons/status/%s.png"
 const STATUS_ICON_SIZE := 0.22

@@ -263,3 +263,25 @@ func test_hp_regen_out_of_combat() -> void:
 	var before := p.hp
 	f.run(1.0)
 	assert_almost_eq(p.hp, before, 0.01)
+
+
+func test_armor_break_lets_more_physical_damage_through() -> void:
+	var a := CombatEntity.new()
+	a.team = CombatEntity.TEAM_MONSTERS
+	a.stats = CombatStats.from_dict({"attack_power": 10, "crit_chance": 0})
+	var t := CombatEntity.new()
+	t.stats = CombatStats.from_dict({"max_hp": 100, "armor": 200})
+	f.world.balance.damage_variance = 0.0
+	var spec := {"base": 100.0, "kind": "physical", "can_crit": false}
+	var whole := float(Damage.roll(a, t, spec, f.world).amount)
+	t.statuses.append(StatusEffect.make("armor_break", f.world.tick + 100, 0.4))
+	var broken := float(Damage.roll(a, t, spec, f.world).amount)
+	assert_gt(broken, whole, "its armour counts for less")
+	assert_almost_eq(broken, 100.0 * (1.0 - Damage.mitigation(120.0, f.world.balance, a.level)), 0.01, "40 % of 200 armour gone")
+	var magic := float(Damage.roll(a, t, {"base": 100.0, "kind": "magic", "can_crit": false}, f.world).amount)
+	assert_almost_eq(magic, 100.0, 0.01, "magic ignores armour anyway")
+	assert_true(StatusEffect.make("armor_break", 0).is_negative())
+	assert_has(StatusEffect.BIT_KINDS, "armor_break")
+	assert_true(StatusTiles.is_debuff("armor_break"))
+	assert_true(FileAccess.file_exists("res://assets/icons/status/armor_break.png"))
+	assert_ne(tr("STATUS_ARMOR_BREAK"), "STATUS_ARMOR_BREAK")

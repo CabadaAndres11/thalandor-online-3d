@@ -1,7 +1,7 @@
 extends GutTest
 ## The prologue's bestiary (the night the cult attacks the village) as data.
 
-const ROSTER := ["cult_acolyte", "cult_archer", "cultist", "marked_boar", "marked_hound"]
+const ROSTER := ["cult_acolyte", "cult_archer", "cultist", "marked_boar", "marked_hound", "nhazar", "vaelthar"]
 
 
 func _types() -> Array:

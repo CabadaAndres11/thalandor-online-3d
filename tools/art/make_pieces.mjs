@@ -408,6 +408,18 @@ const CULT_KIT = {
 // The acolyte: the same robes with brighter old gold and claws.
 const GOLD_L = 70, CLAW = 71, CLAW_D = 72;
 const ACOLYTE_KIT = { ...CULT_KIT, [GOLD]: "#b8995a", [GOLD_D]: "#7a6539", [GOLD_L]: "#dcc184", [CLAW]: "#141217", [CLAW_D]: "#0b0a0c", [GLOW]: "#ffcf6a" };
+// Vaelthar: the same robes, a red underrobe, maroon tentacles, black hair and veil.
+const RED = 73, RED_D = 74, TENT = 75, TENT_D = 76, TENT_L = 77, MASK = 78, MASK_L = 79, BLOOD = 80, HAIR_K = 81, HAIR_D = 82, FACE = 83, FACE_D = 84, HAIR_L = 85, SUCKER = 86;
+const VAEL_KIT = {
+  ...ACOLYTE_KIT, [RED]: "#5e1216", [RED_D]: "#3a0a0d", [TENT]: "#4a121a", [TENT_D]: "#2a070c", [TENT_L]: "#6e2430",
+  [MASK]: "#0d0c0f", [MASK_L]: "#1d1b20", [BLOOD]: "#a3201c", [HAIR_K]: "#77717d", [HAIR_D]: "#5b5562", [HAIR_L]: "#a39dab", [SUCKER]: "#8e4650", [FACE]: "#c4b2a0", [FACE_D]: "#8f7d6e", [GLOW]: "#ffbf3a",
+};
+// Nhazar: a black-brown mass of curls, pale stone masks, the cult's gold.
+const CURL = 87, CURL_D = 88, CURL_L = 89, STONE = 90, STONE_D = 91, STONE_L = 92;
+const NHAZ_KIT = {
+  ...ACOLYTE_KIT, [CURL]: "#1d1517", [CURL_D]: "#0e0a0c", [CURL_L]: "#36282a", [STONE]: "#9a9088", [STONE_D]: "#5e5650",
+  [STONE_L]: "#c2b8ae", [GLOW]: "#ffb84a",
+};
 // Forearms x -2..1, y -8..0, z -2..1.
 const FORE_L = { x0: 1, x1: 4, y0: 1, y1: 9, z0: 1, z1: 4, part: "forearm_left", origin: [-3, -9, -3] };
 const FORE_R = { ...FORE_L, part: "forearm_right" };
@@ -658,6 +670,305 @@ const MONSTER = {
   acolyte_claws_left: { frame: HAND_L, tag: "monster", palette: ACOLYTE_KIT, build: (f, s) => claws(f, s, 1) },
   acolyte_claws_right: { frame: HAND_R, tag: "monster", palette: ACOLYTE_KIT, build: (f, s) => claws(f, s, -1) },
 };
+// --- Vaelthar, the First Apostle (boss; the user's reference sheet) -------------------
+// A long ash-grey mane around a pale face (a red stripe down the brow, burning gold eyes, a
+// black veil over the mouth), a great spiked halo; a vast layered robe over a
+// blood-red underrobe, ragged; thick tentacles out of the shoulders. It floats.
+const VAEL = {
+  mane: {
+    frame: HEAD, tag: "monster", palette: VAEL_KIT,
+    build(f, s) {
+      // A long ash-grey mane: a crown over the head, curtains down both sides onto the
+      // shoulders, locks framing the face down the chest and a mass down the back,
+      // flaring out and ending in ragged tips. Strands alternate tones, a few catch light.
+      const strand = (x, y) => ((x * 3 + Math.floor(y / 3)) % 5 === 0 ? HAIR_L : (x + Math.floor(y / 4)) % 2 ? HAIR_D : HAIR_K);
+      const tipOf = (x, z, base, spread) => base - ((x * 7 + z * 5) % spread); // ragged ends
+      s.box(f.x0 - 1, f.y1 + 1, f.z0 - 1, f.x1 + 1, f.y1 + 2, f.z1 + 1, HAIR_K); // crown
+      s.box(f.x0, f.y1 + 3, f.z0, f.x1, f.y1 + 3, f.z1 - 1, HAIR_D);
+      for (let x = f.x0 - 1; x <= f.x1 + 1; x++) s.put(x, f.y1 + 2, f.z1 + 1, strand(x, f.y1));
+      const [ma, mb] = mid(f);
+      s.box(ma, f.y1 + 1, f.z1 - 2, mb, f.y1 + 3, f.z1 + 1, HAIR_L).box(ma, f.y1 + 1, f.z1 - 2, ma, f.y1 + 3, f.z1 + 1, HAIR_K); // the parting
+      for (const side of [-1, 1]) { // side curtains, thicker as they fall
+        const edge = side < 0 ? f.x0 - 1 : f.x1 + 1;
+        for (let z = f.z0 - 1; z <= f.z1; z++) {
+          const end = tipOf(edge, z, f.y0 - 12, 4);
+          for (let y = end; y <= f.y1 + 1; y++) {
+            const thick = 2;
+            for (let k = 0; k < thick; k++) s.put(edge + side * k, y, z, strand(z, y));
+          }
+        }
+      }
+      for (const x of [f.x0 - 1, f.x0 - 2, f.x1 + 1, f.x1 + 2]) { // locks over the shoulders, down the chest
+        const end = tipOf(x, 1, f.y0 - 16, 5);
+        for (let y = end; y <= f.y1; y++) s.put(x, y, f.z1 + 1, strand(x, y)).put(x, y, f.z1 + 2, y < f.y0 ? strand(x + 1, y) : HAIR_K);
+      }
+      for (let y = f.y1 + 2; y >= f.y0 - 26; y--) { // the back, flaring outwards and away
+        const drop = f.y1 + 2 - y;
+        const w = Math.floor(drop / 6), back = f.z0 - 1 - Math.floor(drop / 5);
+        for (let x = f.x0 - 1 - w; x <= f.x1 + 1 + w; x++) {
+          if (y < tipOf(x, 0, f.y0 - 18, 9)) continue;
+          s.put(x, y, back, strand(x, y)).put(x, y, back + 1, HAIR_K);
+        }
+      }
+      // A pale face painted over the head.
+      s.box(f.x0, f.y0 + 5, f.z1 + 1, f.x1, f.y1 - 1, f.z1 + 1, FACE);
+      s.box(f.x0, f.y0 + 4, f.z1 + 1, f.x1, f.y0 + 4, f.z1 + 1, FACE_D);
+      // The black veil from below the eyes, hanging in a point down the chest.
+      s.box(f.x0, f.y0 - 1, f.z1 + 1, f.x1, f.y0 + 3, f.z1 + 1, MASK);
+      const [a, b] = mid(f);
+      s.box(f.x0, f.y0 - 5, f.z1 + 1, f.x1, f.y0 - 2, f.z1 + 1, MASK).box(a - 2, f.y0 - 8, f.z1 + 1, b + 2, f.y0 - 6, f.z1 + 1, MASK).box(a, f.y0 - 10, f.z1 + 1, b, f.y0 - 9, f.z1 + 1, MASK);
+      s.box(f.x0 + 1, f.y0 + 3, f.z1 + 2, f.x1 - 1, f.y0 + 3, f.z1 + 2, MASK_L);
+      s.box(a, f.y0 + 6, f.z1 + 1, b, f.y1 - 1, f.z1 + 1, BLOOD).put(a, f.y0 + 5, f.z1 + 1, BLOOD); // the red stripe down the brow
+      s.box(f.x0 + 1, f.y0 + 5, f.z1 + 1, f.x0 + 2, f.y0 + 5, f.z1 + 1, GLOW).box(f.x1 - 2, f.y0 + 5, f.z1 + 1, f.x1 - 1, f.y0 + 5, f.z1 + 1, GLOW); // eyes
+      halo(s, (f.x0 + f.x1) / 2, f.y0 + 9, f.z0 - 5, 14, true);
+    },
+  },
+  robe: {
+    frame: TORSO, tag: "monster", palette: VAEL_KIT,
+    build(f, s) {
+      const [a, b] = mid(f);
+      s.box(f.x0 - 1, f.y0 + 3, f.z0 - 1, f.x1 + 1, f.y1, f.z1 + 1, ROBE);
+      const bottom = f.y0 - 25;
+      const flareAt = (y) => Math.floor((f.y0 + 2 - y) / 3);
+      for (let y = bottom; y <= f.y0 + 2; y++) { // the outer robe, open at the front
+        const fl = flareAt(y);
+        const x0 = f.x0 - 2 - fl, x1 = f.x1 + 2 + fl, z0 = f.z0 - 1 - fl, z1 = f.z1 + 1 + fl;
+        s.box(x0, y, z0, x1, y, z1, ROBE);
+        s.remove(x0 + 1, y, z0 + 1, x1 - 1, y, z1 - 1);
+        const gap = Math.floor(fl * 0.8) + 2; // the opening widens downwards
+        s.box(a - gap, y, z1, b + gap, y, z1, y % 3 === 0 ? RED_D : RED); // red underrobe
+        s.box(a - gap - 1, y, z1, a - gap - 1, y, z1, GOLD).box(b + gap + 1, y, z1, b + gap + 1, y, z1, GOLD); // gold edges
+        for (let x = x0 + 2; x <= x1 - 1; x += 3) if (x < a - gap - 1 || x > b + gap + 1) s.put(x, y, z1, ROBE_D);
+        for (let x = x0 + 2; x <= x1 - 1; x += 3) s.put(x, y, z0, ROBE_D);
+        for (let zz = z0 + 2; zz <= z1 - 1; zz += 3) s.put(x0, y, zz, ROBE_D).put(x1, y, zz, ROBE_D);
+      }
+      // Ragged hem: tongues of cloth of different lengths, black over red.
+      for (const v of [...s.cells.values()].filter((c) => c[1] === bottom)) {
+        const h = (v[0] * 7 + v[2] * 5) % 6;
+        const red = s.cells.get(`${v[0]},${v[1]},${v[2]}`)[3] === RED || s.cells.get(`${v[0]},${v[1]},${v[2]}`)[3] === RED_D;
+        for (let d = 1; d <= h - 2; d++) s.put(v[0], bottom - d, v[2], red ? RED_D : ROBE_D);
+        if (!red && h === 0) s.put(v[0], bottom, v[2], GOLD_D);
+      }
+      // Three stepped mantle layers with gold edges.
+      for (const [dy, w] of [[0, 3], [-4, 4], [-8, 5]]) {
+        const y0 = f.y1 - 4 + dy, y1 = f.y1 + 1 + dy - (dy ? 2 : 0);
+        s.box(f.x0 - w, y0, f.z0 - 2 - (w - 3), f.x1 + w, y1, f.z1 + 1 + (w - 3), ROBE);
+        s.remove(f.x0 - w + 1, y0, f.z0 - 1 - (w - 3), f.x1 + w - 1, y1, f.z1 + (w - 3));
+        s.box(f.x0 - w, y0, f.z0 - 2 - (w - 3), f.x1 + w, y0, f.z1 + 1 + (w - 3), GOLD);
+        s.remove(f.x0 - w + 1, y0, f.z0 - 1 - (w - 3), f.x1 + w - 1, y0, f.z1 + (w - 3));
+      }
+      s.box(f.x0 - 3, f.y1 + 1, f.z0 - 2, f.x1 + 3, f.y1 + 1, f.z1 + 1, ROBE_L);
+      s.box(a - 3, f.y1 + 2, f.z0 + 1, b + 3, f.y1 + 2, f.z1, MASK); // high collar over the neck
+      s.box(a - 2, f.y1 - 3, f.z1 + 2, b + 2, f.y1 + 1, f.z1 + 2, MASK); // and over the open shirt collar
+      // Front tabard over the red: chest to below the knees, ending in a point.
+      const tz = (y) => (y > f.y0 + 2 ? f.z1 + 2 : f.z1 + 2 + flareAt(y));
+      const tip = bottom + 6;
+      for (let y = tip; y <= f.y1 - 3; y++) {
+        const narrow = Math.max(0, 3 - (y - tip));
+        const xa = a - 3 + narrow, xb = b + 3 - narrow;
+        s.box(xa, y, tz(y), xb, y, tz(y), GOLD);
+        if (xb - xa >= 2) s.box(xa + 1, y, tz(y), xb - 1, y, tz(y), PANEL);
+      }
+      const mark = (cy, zf, big) => {
+        const zz = zf(cy) + 1;
+        s.box(a, cy - 1, zz, b, cy + 1, zz, GOLD).box(a - 1, cy, zz, b + 1, cy, zz, GOLD);
+        if (big) s.box(a, cy - 3, zz, b, cy + 3, zz, GOLD_D).box(a - 2, cy, zz, b + 2, cy, zz, GOLD_D).put(a, cy, zz, VOID).put(b, cy, zz, VOID);
+      };
+      mark(f.y0 - 6, tz, true);
+      for (const y of [f.y0 - 12, f.y0 - 15]) s.box(a, y, tz(y) + 1, b, y, tz(y) + 1, GOLD_D).put(a - 1, y + 1, tz(y) + 1, GOLD_D).put(b + 1, y + 1, tz(y) + 1, GOLD_D); // diamonds
+      // Back banner with a big sun.
+      const bz = (y) => (y > f.y0 + 2 ? f.z0 - 2 : f.z0 - 2 - flareAt(y));
+      for (let y = bottom + 4; y <= f.y1 - 2; y++) {
+        const narrow = Math.max(0, 3 - (y - bottom - 4));
+        s.box(a - 3 + narrow, y, bz(y), b + 3 - narrow, y, bz(y), GOLD);
+        if (narrow < 2) s.box(a - 2 + narrow, y, bz(y), b + 2 - narrow, y, bz(y), PANEL);
+      }
+      mark(f.y0 - 4, (y) => bz(y) - 2, true);
+      // Belt and the chain with the sun medallion.
+      s.box(f.x0 - 3, f.y0 + 1, f.z0 - 2, f.x1 + 3, f.y0 + 2, f.z1 + 2, ROPE);
+      s.remove(f.x0 - 2, f.y0 + 1, f.z0 - 1, f.x1 + 2, f.y0 + 2, f.z1 + 1);
+      for (let i = 0; i <= 8; i++) {
+        const dy = Math.round(Math.sin((i / 8) * Math.PI) * 5);
+        s.put(f.x0 + 1 + i, f.y1 - 1 - dy, f.z1 + 2, i % 2 ? GOLD_D : GOLD).put(f.x1 - 1 - i, f.y1 - 1 - dy, f.z1 + 2, i % 2 ? GOLD_D : GOLD);
+      }
+      const my = f.y1 - 8, mz = f.z1 + 3;
+      for (let x = a - 4; x <= b + 4; x++) for (let y = my - 4; y <= my + 4; y++) {
+        const d = Math.hypot(x - (a + b) / 2, y - my);
+        if (d <= 1.6) s.put(x, y, mz + 1, VOID);
+        else if (d <= 2.6) s.put(x, y, mz, GOLD);
+      }
+      for (const [dx, dy] of [[0, 4], [0, -4], [4, 0], [-4, 0], [3, 3], [-3, 3], [3, -3], [-3, -3]]) s.put(Math.round((a + b) / 2 + dx), my + dy, mz, Math.abs(dx) === Math.abs(dy) ? GOLD_D : GOLD);
+      s.put(a, my, mz + 1, GLOW);
+    },
+  },
+};
+// The spiked halo behind a head: a gold ring with `spikes` all around, long ones at the
+// four points crossed like stars (`cross`), spokes to the mount.
+function halo(s, cx, hy, hz, R, cross) {
+  for (let x = Math.floor(cx) - R - 8; x <= Math.ceil(cx) + R + 8; x++) {
+    for (let y = Math.floor(hy) - R - 8; y <= Math.ceil(hy) + R + 8; y++) {
+      const d = Math.hypot(x - cx, y - hy);
+      if (Math.abs(d - R) <= 0.75) s.put(x, y, hz, GOLD).put(x, y, hz - 1, GOLD_D);
+    }
+  }
+  for (let k = 0; k < 16; k++) {
+    const ang = (k * Math.PI) / 8;
+    const big = cross && k % 4 === 0;
+    const len = big ? 8 : k % 2 === 0 ? 5 : 3;
+    for (let t = R + 1; t <= R + len; t += 0.3) {
+      const x = Math.round(cx + Math.cos(ang) * t), y = Math.round(hy + Math.sin(ang) * t);
+      s.put(x, y, hz, t > R + len - 1 ? GOLD_L : GOLD);
+      if (k % 2 === 0 && t < R + 2.5) s.put(x + Math.round(-Math.sin(ang)), y + Math.round(Math.cos(ang)), hz, GOLD_D);
+    }
+    if (big) { // a crossbar near the tip
+      const t = R + len - 2.5, x = cx + Math.cos(ang) * t, y = hy + Math.sin(ang) * t;
+      for (let u = -2; u <= 2; u++) s.put(Math.round(x - Math.sin(ang) * u), Math.round(y + Math.cos(ang) * u), hz, GOLD);
+    }
+  }
+  for (let k = 0; k < 8; k++) {
+    const ang = (k * Math.PI) / 4 + Math.PI / 8;
+    for (let t = 7; t <= R - 1; t += 0.4) s.put(Math.round(cx + Math.cos(ang) * t), Math.round(hy + Math.sin(ang) * t), hz + 1, GOLD_D);
+  }
+}
+// Vaelthar's sleeve, cut at the elbow: it wraps the shoulder and opens into a wide mouth
+// with a torn gold hem, hollow so the tentacles inside show as they come out.
+function vaelSleeve(f, s) {
+  for (let y = f.y0 - 2; y <= f.y1 + 1; y++) {
+    const w = y > f.y1 - 3 ? 2 : y > f.y0 + 2 ? 2 : 3; // wider at the mouth
+    s.box(f.x0 - w, y, f.z0 - w, f.x1 + w, y, f.z1 + w, ROBE);
+    if (y <= f.y1 - 1) s.remove(f.x0 - w + 1, y, f.z0 - w + 1, f.x1 + w - 1, y, f.z1 + w - 1);
+  }
+  s.box(f.x0 - 2, f.y1 + 1, f.z0 - 2, f.x1 + 2, f.y1 + 1, f.z1 + 2, ROBE_L);
+  s.box(f.x0 - 2, f.y1 - 2, f.z0 - 2, f.x1 + 2, f.y1 - 2, f.z1 + 2, GOLD_D); // seam at the shoulder
+  s.remove(f.x0 - 1, f.y1 - 2, f.z0 - 1, f.x1 + 1, f.y1 - 2, f.z1 + 1);
+  for (const v of [...s.cells.values()].filter((c) => c[1] <= f.y0 - 1)) { // torn gold hem
+    const h = (v[0] * 5 + v[2] * 3) % 4;
+    if (v[1] === f.y0 - 2 && h === 0) s.remove(v[0], v[1], v[2], v[0], v[1], v[2]);
+    else s.put(v[0], v[1], v[2], v[1] === f.y0 - 2 ? GOLD : h === 1 ? ROBE : GOLD_D);
+  }
+  for (let y = f.y0; y <= f.y1 - 3; y += 1) s.put(f.x0 - 2, y, f.z0 - 2, ROBE_D).put(f.x1 + 2, y, f.z1 + 2, ROBE_D); // folds
+}
+// Thick tentacles that grow from the shoulder inside the sleeve and pour out of its
+// mouth at the elbow (the forearm and hand are gone): they hang in S-curves, sway out
+// and curl at the tips; dark underside, pale suckers on the inner side.
+function tentacles(f, s, outer) {
+  const cx = (f.x0 + f.x1) / 2, cz = (f.z0 + f.z1) / 2;
+  s.box(f.x0, f.y0 - 1, f.z0, f.x1, f.y1 - 1, f.z1, TENT_D); // the root, inside the sleeve
+  // [heading from straight out (+ forward), drop, reach, sway phase, start offset x, z]
+  const arms = [[0.2, 30, 9, 0, 1, 0], [1.2, 26, 7, 1.6, 0, 1], [-1.0, 28, 8, 3.0, 0, -1]];
+  arms.forEach(([ang, drop, reach, ph, ox, oz]) => {
+    const sx = cx + outer * ox, sy = f.y0 + 1, sz = cz + oz;
+    const steps = 80;
+    for (let k = 0; k <= steps; k++) {
+      const u = k / steps;
+      const a = ang + Math.sin(u * 6 + ph) * 0.35 * u;
+      let out = reach * Math.pow(u, 0.8) + Math.sin(u * 9 + ph) * 1.5 * u; // S-curves as it hangs
+      let y = sy - drop * Math.pow(u, 1.1);
+      if (u > 0.8) { // the tip curls outwards and up
+        const c = (u - 0.8) / 0.2;
+        out += Math.sin(c * Math.PI) * 4;
+        y += c * c * 9;
+      }
+      const x = sx + outer * Math.cos(a) * out, z = sz + Math.sin(a) * out;
+      const r = u < 0.35 ? 2 : u < 0.75 ? 1 : 0; // thick, tapering
+      const X = Math.round(x), Y = Math.round(y), Z = Math.round(z);
+      s.box(X - r, Y - r, Z - r, X + r, Y + r, Z + r, k % 9 === 0 && r > 0 ? TENT_L : TENT);
+      if (r > 0) s.box(X - r, Y - r, Z - r, X + r, Y - r, Z + r, TENT_D); // underside
+      if (r > 0 && k % 6 === 0) s.put(X - outer * r, Y, Z, SUCKER); // suckers on the inner side
+    }
+  });
+}
+// --- Nhazar, the Bishop of a Thousand Voices (boss; the user's reference sheet) -------
+// His head is a vast mass of black curls, far bigger than the body, full of pale masks
+// that scream, wail, rage and grin; gold crosses stand out of it. Chains with gold weights hang from his hands.
+function nhazarHead(f, s) {
+  const cx = (f.x0 + f.x1) / 2, cz = (f.z0 + f.z1) / 2, R = 38, cy = f.y0 + R * 0.95;
+  for (let x = Math.floor(cx - R - 6); x <= Math.ceil(cx + R + 6); x++) {
+    for (let y = Math.floor(cy - R - 6); y <= Math.ceil(cy + R + 6); y++) {
+      for (let z = Math.floor(cz - R - 6); z <= Math.ceil(cz + R + 6); z++) {
+        const d = Math.hypot(x - cx, y - cy, z - cz) || 1;
+        const nx = (x - cx) / d, ny = (y - cy) / d, nz = (z - cz) / d;
+        const bump = Math.sin(nx * 11 + ny * 3) * 2.2 + Math.sin(ny * 13 - nz * 5) * 1.9 + Math.sin(nz * 10 + nx * 4) * 2.0;
+        const r = R + bump;
+        if (d > r || d < r - 2) continue; // a shell (the inside is never seen)
+        const curl = Math.sin(x * 1.3 + y * 0.7) + Math.sin(z * 1.1 - y * 0.9);
+        const c = d > r - 0.8 ? (curl > 0.9 ? CURL_L : curl < -1.1 ? CURL_D : CURL) : CURL_D;
+        s.put(x, y, z, ny > 0.55 && curl > 0.4 ? CURL_L : c);
+      }
+    }
+  }
+  for (let k = 0; k < 30; k++) { // loose curls drifting around the mass
+    const th = k * 2.4, ph = Math.acos(1 - 2 * ((k + 0.5) / 30));
+    const nx = Math.sin(ph) * Math.cos(th), ny = Math.cos(ph), nz = Math.sin(ph) * Math.sin(th);
+    const px = Math.round(cx + nx * (R + 8)), py = Math.round(cy + ny * (R + 8)), pz = Math.round(cz + nz * (R + 8));
+    s.box(px, py, pz, px + 2, py + 1, pz + 1, CURL).box(px + 2, py + 2, pz, px + 2, py + 3, pz, CURL_D).put(px - 1, py, pz, CURL_D);
+  }
+  // The masks: big pale stone faces pressed into the curls, each with a face of its own:
+  // screaming, wailing in sorrow, raging with burning eyes, grinning madly.
+  // S stone, L light, D shade, h hole, N nose (stands out), G glowing.
+  const FACES = {
+    scream: ["  SSSSS  ", " SLLLLLS ", "SDDSLSDDS", "SSSSLSSSS", "ShhSNShhS", "ShhSNShhS", "SSSDNDSSS", "SDhhhhhDS", "SShhhhhSS", " SShhhSS ", "  SDDDS  "],
+    sorrow: ["  SSSSS  ", " SSSLSSS ", "SSSDLDSSS", "SDDSLSDDS", "SShSNShSS", "ShhSNShhS", "SSSDNDSSS", "SSShhhSSS", "SSShhhSSS", " SShhhSS ", "  SSDSS  "],
+    rage: ["  SSSSS  ", " SSSLSSS ", "SDDSLSDDS", "SSDDLDDSS", "ShGSNSGhS", "SShSNShSS", "SSDDNDDSS", "ShLhLhLhS", "ShhhhhhhS", " SLhLhLS ", "  SDDDS  "],
+    grin: ["  SSSSS  ", " SSLLLSS ", "SSDSLSDSS", "SSSSLSSSS", "ShhSNShhS", "SShSNShSS", "hSSDNDSSh", "ShSSSSShS", "SShhhhhSS", " SSShSSS ", "  SSSSS  "],
+  };
+  const KINDS = ["scream", "sorrow", "rage", "scream", "grin", "sorrow"];
+  const COLOR = { S: STONE, L: STONE_L, D: STONE_D, h: CURL_D, N: STONE_L, G: GLOW };
+  const masks = [];
+  for (let k = 0; k < 34; k++) { // spread evenly over the mass (fewer underneath)
+    const ph = Math.acos(1 - 1.7 * ((k + 0.5) / 34)), th = k * 2.39996;
+    masks.push([Math.sin(ph) * Math.cos(th), Math.cos(ph), Math.sin(ph) * Math.sin(th)]);
+  }
+  masks.forEach(([nx, ny, nz], i) => {
+    const axis = Math.abs(nz) >= Math.abs(nx) ? "z" : "x"; // the mask faces the nearest side
+    const sgn = axis === "z" ? Math.sign(nz) || 1 : Math.sign(nx) || 1;
+    const px = cx + nx * (R - 0.5), py = cy + ny * (R - 0.5), pz = cz + nz * (R - 0.5);
+    const face = FACES[KINDS[i % KINDS.length]];
+    for (let row = 0; row < 11; row++) for (let col = 0; col < 9; col++) {
+      const ch = face[row][col];
+      if (ch === " ") continue;
+      const u = col - 4, v = 5 - row;
+      const X = Math.round(axis === "x" ? px : px + u * sgn), Y = Math.round(py + v), Z = Math.round(axis === "z" ? pz : pz - u * sgn);
+      const out = (k) => [axis === "x" ? X + sgn * k : X, Y, axis === "z" ? Z + sgn * k : Z];
+      for (let k = -2; k <= 0; k++) s.put(...out(k), k < 0 ? STONE_D : COLOR[ch]); // a thick plate, set into the curls
+      if (ch === "N") s.put(...out(1), STONE_L); // the nose stands out
+      if (ch === "h" || ch === "G") s.put(...out(-1), ch === "G" ? GLOW : CURL_D); // deep holes
+    }
+  });
+  // Gold crosses standing out of the top, and a broken gold ring behind the mass.
+  for (let k = 0; k < 9; k++) { // on the crown, between the masks
+    const nx = Math.sin((k - 4) * 0.2), ny = Math.cos((k - 4) * 0.2);
+    const bx = Math.round(cx + nx * (R + 1)), by = Math.round(cy + ny * (R + 1)), bz = Math.round(cz + (k % 2 ? -9 : 7));
+    s.box(bx, by, bz, bx + 1, by + 11, bz, GOLD).box(bx - 3, by + 8, bz, bx + 4, by + 8, bz, GOLD).box(bx, by + 11, bz, bx + 1, by + 11, bz, GOLD_L).put(bx, by, bz, GOLD_D);
+  }
+  for (let k = 0; k < 120; k++) {
+    if (k % 30 > 21) continue; // broken
+    const a = (k / 120) * Math.PI * 2;
+    const x = Math.round(cx + Math.cos(a) * (R + 7)), y = Math.round(cy + Math.sin(a) * (R + 7)), z = Math.round(cz - R + 6);
+    s.box(x, y, z, x, y, z + 1, k % 5 ? GOLD : GOLD_D);
+  }
+}
+// Gold-weighted chains hanging from the outside of the bell cuff (forearm frame): links,
+// then a weight like a small censer.
+function nhazarChains(f, s, outer) {
+  const edge = outer > 0 ? f.x1 + 4 : f.x0 - 4;
+  for (const [dz, len] of [[1, 12], [-2, 8]]) {
+    const x = edge, z = Math.round((f.z0 + f.z1) / 2) + dz;
+    for (let k = 0; k < len; k++) s.put(x, f.y0 - k, z, k % 2 ? GOLD_D : GOLD).put(x, f.y0 - k, z + (k % 2), k % 2 ? GOLD_D : GOLD);
+    const wy = f.y0 - len;
+    s.box(x - 1, wy - 3, z - 1, x + 1, wy - 1, z + 1, GOLD).box(x - 1, wy - 2, z - 1, x + 1, wy - 2, z + 1, GOLD_D).put(x, wy - 2, z + 2, GLOW);
+    s.put(x, wy - 4, z, GOLD_D);
+  }
+}
+// The high collar that closes the robe around the neck.
+function nhazarCollar(f, s) {
+  const [a, b] = mid(f);
+  s.box(a - 3, f.y1 + 1, f.z0, b + 3, f.y1 + 3, f.z1 + 1, ROBE);
+  s.remove(a - 2, f.y1 + 1, f.z0 + 1, b + 2, f.y1 + 3, f.z1);
+  s.box(a - 3, f.y1 + 3, f.z0, b + 3, f.y1 + 3, f.z1 + 1, GOLD);
+  s.box(a - 2, f.y1 - 3, f.z1 + 2, b + 2, f.y1 + 1, f.z1 + 2, ROBE_D); // over the open shirt collar
+  s.box(a - 2, f.y1 + 1, f.z0 + 1, b + 2, f.y1 + 2, f.z1, VOID); // the dark inside
+}
 function acolyteSleeve(f, s) {
   s.box(f.x0 - 2, f.y0 - 1, f.z0 - 2, f.x1 + 2, f.y1 + 1, f.z1 + 2, ROBE);
   s.box(f.x0 - 2, f.y1 + 1, f.z0 - 2, f.x1 + 2, f.y1 + 1, f.z1 + 2, ROBE_L);
@@ -698,7 +1009,18 @@ function claws(f, s, inner) {
 }
 
 // --- Table -------------------------------------------------------------------------------
-const PIECES = { ...GEAR, ...MONSTER };
+const PIECES = {
+  ...GEAR, ...MONSTER,
+  vaelthar_mane: VAEL.mane, vaelthar_robe: VAEL.robe,
+  nhazar_head: { frame: HEAD, tag: "monster", palette: NHAZ_KIT, build: (f, s) => nhazarHead(f, s) },
+  nhazar_collar: { frame: TORSO, tag: "monster", palette: NHAZ_KIT, build: (f, s) => nhazarCollar(f, s) },
+  nhazar_chains_left: { frame: FORE_L, tag: "monster", palette: NHAZ_KIT, build: (f, s) => nhazarChains(f, s, 1) },
+  nhazar_chains_right: { frame: FORE_R, tag: "monster", palette: NHAZ_KIT, build: (f, s) => nhazarChains(f, s, -1) },
+  vaelthar_sleeve_left: { frame: ARM_L, tag: "monster", palette: VAEL_KIT, build: (f, s) => vaelSleeve(f, s) },
+  vaelthar_sleeve_right: { frame: ARM_R, tag: "monster", palette: VAEL_KIT, build: (f, s) => vaelSleeve(f, s) },
+  vaelthar_tentacles_left: { frame: ARM_L, tag: "monster", palette: VAEL_KIT, build: (f, s) => tentacles(f, s, 1) },
+  vaelthar_tentacles_right: { frame: ARM_R, tag: "monster", palette: VAEL_KIT, build: (f, s) => tentacles(f, s, -1) },
+};
 for (const [id, def] of Object.entries(HAIR)) PIECES[id] = { frame: HEAD, tag: def.tag, build: def.build };
 for (const [id, build] of Object.entries(BEARDS)) PIECES[id] = { frame: HEAD, tag: "beard", build };
 for (const [id, build] of Object.entries(WEAPONS)) {

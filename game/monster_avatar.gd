@@ -5,6 +5,8 @@ extends Node3D
 ##   "humanoid:<id>" a voxel humanoid (HumanRig) from the type's "look".
 ## Elites are bigger, have an ember aura on the ground and "élite" in their name.
 ## Attacks (lunge, bite) and deaths (fall over) are tweens on the body holder.
+## "hover" (meters): the humanoid floats that high above the ground, bobbing gently;
+## "hide_parts": HumanRig parts not drawn (legs under a floating robe).
 
 
 const SPEED_SMOOTHING_S := 0.1
@@ -13,6 +15,8 @@ const DISSOLVE_S := 1.1
 const HIT_FLASH_S := 0.14
 const HIT_RECOIL := 0.28
 const BINARY_DIGITS := 36
+const HOVER_BOB := 0.07 # meters up and down
+const HOVER_BOB_SPEED := 1.8 # radians per second
 
 var body: Node3D
 var bar: OverheadBar
@@ -31,6 +35,8 @@ var _height: float = 1.0
 var _last_position: Variant = null
 var _speed: float = 0.0
 var _move_speed: float = 3.0
+var _hover: float = 0.0
+var _scale: float = 1.0
 var _time: float = 0.0
 var _rest: Vector3 = Vector3.ZERO
 
@@ -54,7 +60,14 @@ func setup(type: Dictionary, elite: bool = false, elite_scale: float = 1.3, ally
 		body.add_child(_humanoid)
 		body.scale = Vector3.ONE * scale_f
 		_move_speed = float(type.get("speed", 3.0))
-		_height = 1.9 * scale_f
+		_hover = float(type.get("hover", 0.0))
+		_scale = scale_f
+		_humanoid.position.y = _hover / scale_f
+		for part_name: String in type.get("hide_parts", []): # e.g. legs under a floating robe
+			var mesh := _humanoid.part_mesh(part_name)
+			if mesh != null:
+				mesh.visible = false
+		_height = float(type.get("bar_height", 1.9)) * scale_f + _hover
 	else:
 		_kind = "box"
 		body = MeshInstance3D.new()
@@ -127,6 +140,13 @@ func apply_state(state: Dictionary, info: Dictionary, delta: float) -> void:
 	elif _humanoid != null:
 		_humanoid.set_moving_speed(_speed, _move_speed)
 		_humanoid.update(delta)
+		if _hover > 0.0:
+			_humanoid.position.y = (_hover + sin(_time * HOVER_BOB_SPEED) * HOVER_BOB) / _scale
+
+
+## Meters the body floats above the ground (0 = it stands on it).
+func hover_height() -> float:
+	return _humanoid.position.y * _scale if _humanoid != null else 0.0
 
 
 func current_animation() -> String:

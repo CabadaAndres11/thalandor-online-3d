@@ -304,6 +304,116 @@
 		"tag": "monster",
 		"hides": []
 	},
+	"vaelthar_mane": {
+		"file": "res://assets/characters/pieces/vaelthar_mane.vox",
+		"part": "head",
+		"offset": [
+			-22,
+			-26,
+			-13
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"vaelthar_robe": {
+		"file": "res://assets/characters/pieces/vaelthar_robe.vox",
+		"part": "torso",
+		"offset": [
+			-17,
+			-28,
+			-14
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"nhazar_head": {
+		"file": "res://assets/characters/pieces/nhazar_head.vox",
+		"part": "head",
+		"offset": [
+			-47,
+			-9,
+			-47
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"nhazar_collar": {
+		"file": "res://assets/characters/pieces/nhazar_collar.vox",
+		"part": "torso",
+		"offset": [
+			-4,
+			8,
+			-4
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"nhazar_chains_left": {
+		"file": "res://assets/characters/pieces/nhazar_chains_left.vox",
+		"part": "forearm_left",
+		"offset": [
+			4,
+			-24,
+			-3
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"nhazar_chains_right": {
+		"file": "res://assets/characters/pieces/nhazar_chains_right.vox",
+		"part": "forearm_right",
+		"offset": [
+			-7,
+			-24,
+			-3
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"vaelthar_sleeve_left": {
+		"file": "res://assets/characters/pieces/vaelthar_sleeve_left.vox",
+		"part": "arm_left",
+		"offset": [
+			-5,
+			-11,
+			-5
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"vaelthar_sleeve_right": {
+		"file": "res://assets/characters/pieces/vaelthar_sleeve_right.vox",
+		"part": "arm_right",
+		"offset": [
+			-5,
+			-11,
+			-5
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"vaelthar_tentacles_left": {
+		"file": "res://assets/characters/pieces/vaelthar_tentacles_left.vox",
+		"part": "arm_left",
+		"offset": [
+			-2,
+			-33,
+			-8
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"vaelthar_tentacles_right": {
+		"file": "res://assets/characters/pieces/vaelthar_tentacles_right.vox",
+		"part": "arm_right",
+		"offset": [
+			-15,
+			-33,
+			-8
+		],
+		"tag": "monster",
+		"hides": []
+	},
 	"hair_short": {
 		"file": "res://assets/characters/pieces/hair_short.vox",
 		"part": "head",

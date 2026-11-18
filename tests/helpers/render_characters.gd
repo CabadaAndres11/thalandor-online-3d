@@ -23,8 +23,8 @@ func _initialize() -> void:
 	if _name == "boss":
 		_boss_scene()
 		return
-	if _name == "acolyte":
-		_turnaround("cult_acolyte")
+	if _name in ["acolyte", "vaelthar", "nhazar"]:
+		_turnaround({"acolyte": "cult_acolyte"}.get(_name, _name))
 		return
 	if _name == "monsters_b":
 		_monsters_b()
@@ -255,7 +255,8 @@ func _monsters_b() -> void:
 ## A monster seen from the front, its left, the back and its right, with a cultist for scale.
 func _turnaround(type_id: String) -> void:
 	var db := MonsterDB.load_default()
-	var spacing := 3.0
+	var tall := float(db.get_type(type_id).get("bar_height", 1.9)) / 1.9 # a big head needs room and a wider shot
+	var spacing := 3.0 * maxf(1.0, tall * 0.95)
 	var row := [[type_id, 0.0], [type_id, -PI / 2.0], [type_id, PI], [type_id, PI / 2.0], ["cultist", 0.0]]
 	for i in row.size():
 		var a := MonsterAvatar.new()
@@ -267,7 +268,7 @@ func _turnaround(type_id: String) -> void:
 	var cam := Camera3D.new()
 	cam.fov = 40
 	root.add_child(cam)
-	cam.look_at_from_position(Vector3(20.0, 3.4, 34.0), Vector3(20.0, 2.2, 20.0))
+	cam.look_at_from_position(Vector3(20.0, 3.4 * tall, 34.0 + 10.0 * (tall - 1.0)), Vector3(20.0, 2.0 * tall, 20.0))
 
 
 ## Task 13 set: the orc king facing two heroes, warning its jump on one of them,

@@ -102,7 +102,39 @@ AB_CULT_ACOLYTE_CLAW,Zarpa del eclipse
 AB_CULT_ACOLYTE_CLAW_DESC,Desgarra con las garras en un arco ancho delante de él.
 AB_CULT_ACOLYTE_LEAP,Caída del sol negro
 AB_CULT_ACOLYTE_LEAP_DESC,"Salta hacia un jugador y cae sobre él: el área de 4 m se avisa en el suelo."
-CHAT_BOSS_DOWN,¡El %s ha caído!
+MON_VAELTHAR,"Vaelthar, Primer Apóstol"
+AB_VAELTHAR_LASH,Azote de tentáculos
+AB_VAELTHAR_LASH_DESC,"Barre con los tentáculos un arco amplio delante de él: daño y sangrado."
+AB_VAELTHAR_TEARS,Lágrimas del sol negro
+AB_VAELTHAR_TEARS_DESC,"Lanza un abanico de cinco lágrimas de sombra que queman."
+AB_VAELTHAR_EMBRACE,Abrazo del abismo
+AB_VAELTHAR_EMBRACE_DESC,"Los tentáculos brotan bajo un jugador: el área de 3 m se avisa en el suelo; daña y enraíza."
+AB_VAELTHAR_HALO,Halo del eclipse
+AB_VAELTHAR_HALO_DESC,"El halo estalla a su alrededor: aléjate 7 m antes de que acabe el aviso o recibirás mucho daño y quedarás debilitado."
+AB_VAELTHAR_POOL,Charca de corrupción
+AB_VAELTHAR_POOL_DESC,"Deja bajo un jugador un charco que envenena y ralentiza durante 4 s."
+AB_VAELTHAR_FERVOR,Fervor del Apóstol
+AB_VAELTHAR_FERVOR_DESC,"Al quedarle un tercio de vida se acelera y golpea más fuerte hasta el final del combate."
+MON_NHAZAR,"Nhazar, Obispo de las Mil Voces"
+AB_NHAZAR_CHAIN,Cadena penitente
+AB_NHAZAR_CHAIN_DESC,"Barre con sus cadenas lastradas un arco amplio delante de él: daño, ralentiza y resquebraja la armadura."
+AB_NHAZAR_CHORUS,Coro de lamentos
+AB_NHAZAR_CHORUS_DESC,"Siete voces salen de las máscaras en abanico y atraviesan a todos a su paso: daño de sombra y debilitan."
+AB_NHAZAR_WHISPER,Mil susurros
+AB_NHAZAR_WHISPER_DESC,"Las voces susurran al oído de un jugador: recibe un 25 % más de daño durante 6 s."
+AB_NHAZAR_MASKS,Lluvia de máscaras
+AB_NHAZAR_MASKS_DESC,"Las máscaras caen del cielo sobre un jugador: el área de 5 m se avisa en el suelo; daña, aturde 1 s y ralentiza."
+AB_NHAZAR_HOWL,Alarido de las mil voces
+AB_NHAZAR_HOWL_DESC,"Todas las bocas gritan a la vez: aléjate 8 m antes de que acabe el aviso o recibirás mucho daño, quedarás aturdido y con la armadura rota."
+AB_NHAZAR_LITANY,Letanía de plomo
+AB_NHAZAR_LITANY_DESC,"Un canto lento cae sobre un jugador durante 5 s: quien se quede en el área de 5 m se mueve y ataca mucho más despacio."
+AB_NHAZAR_CONFESSION,Confesión forzada
+AB_NHAZAR_CONFESSION_DESC,"Las voces exigen confesión: en el área de 4 m avisada, la armadura protege un 40 % menos y el daño baja un 20 % durante 8 s."
+AB_NHAZAR_CHANT,Cántico sin fin
+AB_NHAZAR_CHANT_DESC,"En la última fase entona un cántico que le rodea 6 s: quien esté a 9 m o menos se ralentiza y pierde daño."
+AB_NHAZAR_CHOIR,Coro desatado
+AB_NHAZAR_CHOIR_DESC,"Al quedarle un tercio de vida las voces le sostienen: ataca más rápido y recibe menos daño hasta el final del combate."
+CHAT_BOSS_DOWN,¡%s ha caído!
 HUD_BOSS_PHASE,Fase %d
 AB_MARKED_BOAR_GORE,Cornada
 AB_MARKED_BOAR_GORE_DESC,Embiste con los colmillos al enemigo que tiene delante.
@@ -461,6 +493,7 @@ DETAIL_ST_HASTE,+%s de rapidez de recarga durante %s s
 DETAIL_ST_VULNERABLE,+%s de daño recibido durante %s s
 DETAIL_ST_ATTACK_SLOW,−%s de velocidad de ataque durante %s s
 DETAIL_ST_WEAKEN,−%s de daño realizado durante %s s
+DETAIL_ST_ARMOR_BREAK,−%s de armadura durante %s s
 DETAIL_ST_ICE_BLOCK,bloque de hielo durante %s s (invulnerable e inmóvil)
 DETAIL_ST_CONTAGION,contagio durante %s s
 DETAIL_SCOPE_BEAM,rayo en línea de %s m
@@ -603,6 +636,8 @@ STATUS_HASTE,Celeridad
 STATUS_VULNERABLE,Vulnerable
 STATUS_ATTACK_SLOW,Ataque lento
 STATUS_WEAKEN,Debilitado
+STATUS_ARMOR_BREAK,Armadura rota
+STATUS_ARMOR_BREAK_DESC,Tu armadura protege menos.
 STATUS_ICE_BLOCK,Bloque de hielo
 STATUS_SHIELD,Escudo
 STATUS_SPEED_BUFF,Más velocidad

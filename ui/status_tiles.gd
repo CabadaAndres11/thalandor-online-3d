@@ -7,7 +7,7 @@ extends HBoxContainer
 const TILE := 34.0
 const BLINK_S := 3.0
 const DEBUFFS := ["stun", "root", "freeze", "slow", "poison", "burn", "mark", "taunted", "bleed", "vulnerable",
-	"attack_slow", "weaken", "contagion"]
+	"attack_slow", "weaken", "armor_break", "contagion"]
 const ICON_DIR := "res://assets/icons/status/%s.png"
 
 var _tiles: Dictionary = {} # kind -> {panel, icon, label, remaining}

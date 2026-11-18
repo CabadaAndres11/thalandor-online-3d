@@ -29,6 +29,8 @@ var busy_until: int = 0
 ## monsters it called.
 var next_summon_tick: int = 0
 var minions: Array = []
+## Boss: phases whose "phase_abilities" entry it has already cast (cleared at home).
+var phase_casts: Array = []
 ## Id of the monster or player that called this one (0 = none): it gives no experience.
 var summoned_by: int = 0
 ## Allied summons: the tick they vanish (0 = never).

@@ -56,7 +56,8 @@ static func roll(attacker: CombatEntity, target: CombatEntity, spec: Dictionary,
 	amount *= maxf(0.0, 1.0 - target.status_magnitude("damage_reduction"))
 	amount *= Passives.damage_mult(attacker, target, spec, world)
 	if physical:
-		amount *= 1.0 - mitigation(target.stats.armor, b, attacker.level)
+		# armor_break: the target's armour counts for less.
+		amount *= 1.0 - mitigation(target.stats.armor * maxf(0.0, 1.0 - target.status_magnitude("armor_break")), b, attacker.level)
 	if result.blocked:
 		amount *= float(b.attributes.get("block_reduction", 0.5))
 	result.amount = maxf(amount, 0.0)

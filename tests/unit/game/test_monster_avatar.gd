@@ -171,3 +171,35 @@ func test_binary_digits_start_on_the_body_surface() -> void:
 	for l: Label3D in a._binary:
 		assert_lt(absf(l.position.x), 1.2, "inside the silhouette's width")
 		assert_lt(l.position.y, a._height + 0.5)
+
+
+func test_vaelthar_floats_with_a_mane_and_tentacles_out_of_the_sleeves() -> void:
+	var a := _avatar("vaelthar")
+	var c := a.body.get_child(0) as HumanRig
+	for id: String in ["vaelthar_mane", "vaelthar_robe", "vaelthar_tentacles_left", "vaelthar_tentacles_right"]:
+		assert_not_null(c.piece_node(id), id)
+	assert_eq(CharacterCatalog.load_default().piece("vaelthar_tentacles_left").part, "arm_left", "out of the shoulder")
+	assert_almost_eq(a.hover_height(), 0.7, 0.001, "off the ground")
+	for part: String in ["leg_left", "leg_right", "shin_left", "shin_right"]:
+		assert_false(c.part_mesh(part).visible, part + " hidden under the robe")
+	for part: String in ["forearm_left", "forearm_right", "hand_left", "hand_right"]:
+		assert_false(c.part_mesh(part).visible, part + ": tentacles come out of the sleeve instead")
+	assert_not_null(c.piece_node("vaelthar_sleeve_left"), "the sleeve stays, cut at the elbow")
+	var lowest := INF
+	for i in 40:
+		a.apply_state({"position": Vector3.ZERO, "facing": 0.0}, {"hp": 1.0, "max_hp": 1.0}, 0.05)
+		lowest = minf(lowest, a.hover_height())
+	assert_gt(lowest, 0.55, "it bobs but never touches the ground")
+	assert_eq(_avatar("cultist").hover_height(), 0.0, "others stand on the ground")
+
+
+func test_nhazar_floats_under_a_head_far_bigger_than_its_body() -> void:
+	var a := _avatar("nhazar")
+	var c := a.body.get_child(0) as HumanRig
+	for id: String in ["nhazar_head", "nhazar_collar", "nhazar_chains_left", "nhazar_chains_right", "acolyte_robe"]:
+		assert_not_null(c.piece_node(id), id)
+	assert_almost_eq(a.hover_height(), 0.8, 0.001)
+	var head := c.piece_node("nhazar_head").get_aabb().size.x
+	var robe := c.piece_node("acolyte_robe").get_aabb().size.x
+	assert_gt(head, robe * 1.5, "the mass is much wider than the body")
+	assert_gt(a.bar.position.y, 4.0 * 2.0, "the name floats over the mass")
