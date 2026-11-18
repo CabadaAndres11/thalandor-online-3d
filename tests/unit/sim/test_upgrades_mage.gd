@@ -208,14 +208,17 @@ func test_arcane_lance() -> void:
 	var a := _foe(2000, Vector3(10, 0, 14))
 	var b := _foe(2001, Vector3(10, 0, 27))
 	var off := _foe(2002, Vector3(13, 0, 20))
+	var t0 := f.world.tick
 	assert_true(Combat.try_cast(f.world, p, "mage_arcane_lance", Vector3(10, 0, 20)))
 	assert_eq(p.resource, p.stats.max_resource - 50.0)
+	assert_eq(_lost(a), 0.0, "it is cast first")
+	f.run(0.9)
 	var dmg := 35.0 + 1.8 * p.stats.spell_power
 	assert_almost_eq(_lost(a), dmg, 0.01)
 	assert_almost_eq(_lost(b), dmg * 1.04, 0.01, "the second target already has a charge")
 	assert_eq(off.hp, 50000.0)
 	assert_eq(f.world.abilities.get_ability("mage_arcane_lance").effects[0].width, 1.2)
-	assert_eq(p.cooldowns["mage_arcane_lance"], f.world.tick + f.world.ticks(16.0))
+	assert_eq(p.cooldowns["mage_arcane_lance"], t0 + f.world.ticks(16.0))
 
 
 func test_arcane_charge() -> void:

@@ -52,7 +52,7 @@ static func try_cast(world: SimWorld, caster: CombatEntity, ability_id: String, 
 		caster.facing = atan2(to.x, to.y)
 	world.emit(["cast", caster.id, ability_id, aim, cd_s])
 	if ab.has("repeat"):
-		_start_repeat(world, caster, ab, aim)
+		_start_repeat(world, caster, ab, aim, cost)
 		return true
 	world.cast_hits = 0
 	world.cast_kills = 0
@@ -76,13 +76,16 @@ static func channeling(world: SimWorld, id: int) -> bool:
 ## An ability with {"repeat": {times, interval_s, delay_s?, channel?}} applies its effects
 ## `times` times, `interval_s` apart, the first one after `delay_s`. Cost and cooldown were
 ## already paid. Combo points are counted once when it ends.
-static func _start_repeat(world: SimWorld, caster: CombatEntity, ab: Dictionary, aim: Vector3) -> void:
+static func _start_repeat(world: SimWorld, caster: CombatEntity, ab: Dictionary, aim: Vector3, cost: float = 0.0) -> void:
 	var r: Dictionary = ab.repeat
 	var pc := PendingCast.new()
 	pc.caster_id = caster.id
 	pc.ability = ab
 	pc.aim = aim
 	pc.left = maxi(1, int(r.get("times", 1)))
+	pc.times = pc.left
+	pc.cast_time = bool(r.get("cast", false))
+	pc.cost = cost
 	pc.interval = world.ticks(float(r.get("interval_s", 0.0)))
 	pc.channel = bool(r.get("channel", false))
 	pc.origin = Effects.flat(caster.position)
@@ -150,8 +153,13 @@ static func _step_cast(world: SimWorld, pc: PendingCast) -> void:
 static func _finish_cast(world: SimWorld, pc: PendingCast, caster: CombatEntity, erase := true) -> void:
 	if erase:
 		world.pending_casts.erase(pc)
+	var cut_early := erase and pc.cast_time and pc.left == pc.times
 	pc.left = 0
-	if caster != null and caster.is_alive():
+	if cut_early and caster != null:
+		caster.resource = minf(caster.resource + pc.cost, caster.stats.max_resource) # interrupted: nothing was spent
+		caster.cooldowns.erase(str(pc.ability.get("id", "")))
+		caster.gcd_end = 0
+	elif caster != null and caster.is_alive():
 		ClassRules.after_cast(caster, pc.ability, pc.hits)
 	if pc.channel:
 		world.emit(["channel_end", pc.caster_id])

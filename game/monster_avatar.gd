@@ -199,9 +199,10 @@ func play_death() -> Tween:
 		_humanoid.play_action("die")
 		t.tween_property(body, "position:y", _rest.y - 0.05, 0.9)
 		return t
-	t.tween_property(body, "rotation_degrees:z", 90.0, 0.5)
-	t.tween_property(body, "scale:y", body.scale.y * 0.2, 0.9)
-	t.tween_property(body, "position:y", _rest.y - 0.2, 0.9)
+	# Tips over onto its side without turning all the way and stays above the ground.
+	t.tween_property(body, "rotation_degrees:z", 55.0, 0.5)
+	t.tween_property(body, "scale:y", body.scale.y * 0.4, 0.9)
+	t.tween_property(body, "position:y", _rest.y + _height * 0.12, 0.9)
 	return t
 
 

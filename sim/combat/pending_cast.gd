@@ -15,3 +15,8 @@ var channel: bool = false
 var origin: Vector2 = Vector2.ZERO
 ## Hits that landed so far (combo points are counted once at the end).
 var hits: int = 0
+## Cast time ("repeat": {cast: true}): nothing happens until it ends, and a cast cut before
+## then gives its cost and cooldown back.
+var cast_time: bool = false
+var times: int = 1
+var cost: float = 0.0

@@ -19,11 +19,11 @@ func _cultist(level: int, elite := false) -> MonsterState:
 func test_level_scales_stats() -> void:
 	var m := MonsterDB.load_default().make("cultist", 1500, Vector3.ZERO, f.world, 11)
 	assert_eq(m.level, 11)
-	assert_almost_eq(m.stats.max_hp, 55.0 * 2.2, 0.01)
-	assert_almost_eq(m.base_max_hp, 55.0 * 2.2, 0.01)
-	assert_almost_eq(m.hp, 55.0 * 2.2, 0.01)
+	assert_almost_eq(m.stats.max_hp, 55.0 * 2.7, 0.01)
+	assert_almost_eq(m.base_max_hp, 55.0 * 2.7, 0.01)
+	assert_almost_eq(m.hp, 55.0 * 2.7, 0.01)
 	assert_almost_eq(m.stats.armor, 5.0 * 1.6, 0.01)
-	assert_almost_eq(m.stats.damage_done_mult, 1.8, 0.001)
+	assert_almost_eq(m.stats.damage_done_mult, 2.15, 0.001)
 
 
 func test_level_one_is_unchanged() -> void:
@@ -47,7 +47,7 @@ func test_set_arena_level_respawns_idle_only() -> void:
 	f.world.set_arena_level(11)
 	assert_eq(f.world.arena_level, 11)
 	assert_eq(idle.level, 11)
-	assert_almost_eq(idle.stats.max_hp, 55.0 * 2.2, 0.01)
+	assert_almost_eq(idle.stats.max_hp, 55.0 * 2.7, 0.01)
 	assert_almost_eq(idle.hp, idle.stats.max_hp, 0.01)
 	assert_eq(busy.level, 1)
 	assert_true(f.world.events.any(func(e: Array) -> bool: return e == ["arena_level", 11]))
@@ -64,8 +64,8 @@ func test_elite_keeps_elite_on_rescale() -> void:
 	var m := _cultist(1, true)
 	f.world.set_arena_level(11)
 	assert_true(m.elite)
-	assert_almost_eq(m.stats.max_hp, 55.0 * 2.2 * f.world.balance.elite_hp_mult, 0.01)
-	assert_almost_eq(m.stats.damage_done_mult, 1.8 * f.world.balance.elite_damage_mult, 0.001)
+	assert_almost_eq(m.stats.max_hp, 55.0 * 2.7 * f.world.balance.elite_hp_mult, 0.01)
+	assert_almost_eq(m.stats.damage_done_mult, 2.15 * f.world.balance.elite_damage_mult, 0.001)
 
 
 func test_group_rescale_keeps_level() -> void:
@@ -74,7 +74,7 @@ func test_group_rescale_keeps_level() -> void:
 	f.player(1, Vector3(5, 0, 5))
 	f.player(2, Vector3(6, 0, 5))
 	assert_eq(m.level, 11)
-	assert_almost_eq(m.stats.max_hp, 55.0 * 2.2 * (1.0 + f.world.balance.group_hp_scale), 0.01)
+	assert_almost_eq(m.stats.max_hp, 55.0 * 2.7 * (1.0 + f.world.balance.group_hp_scale), 0.01)
 
 
 func test_spawner_uses_arena_level() -> void:

@@ -194,7 +194,7 @@ func test_mage_full_kit() -> void:
 	var hit := _target(Vector3(5, 0, 36))
 	var side := _target(Vector3(7, 0, 36))
 	assert_true(Combat.try_cast(f.world, m3, "mage_fireball", hit.position))
-	f.run(1.0)
+	f.run(2.2) # 1.2 s of casting, then the flight
 	assert_almost_eq(1000.0 - side.hp, 15 + 0.6 * 20, 0.01, "caught by the explosion")
 	assert_almost_eq(1000.0 - hit.hp, 30 + 1.3 * 20 + 15 + 0.6 * 20, 0.01, "hit and explosion")
 	assert_eq(_db().get_ability("mage_fireball").effects[0].damage.element, "fire", "Ignición reads it")
@@ -202,7 +202,7 @@ func test_mage_full_kit() -> void:
 	var m4 := _hero("mage", 4, Vector3(30, 0, 30))
 	var slowed := _target(Vector3(30, 0, 36))
 	assert_true(Combat.try_cast(f.world, m4, "mage_frostbolt", slowed.position))
-	f.run(1.0)
+	f.run(2.0) # 1 s of casting, then the flight
 	assert_almost_eq(1000.0 - slowed.hp, 35 + 1.4 * 20, 0.01)
 	assert_true(slowed.has_status("slow"))
 
@@ -274,3 +274,19 @@ func test_assassin_full_kit() -> void:
 		assert_true(Combat.try_cast(f.world, s4, "assassin_stab", victim.position))
 		f.run(0.6)
 	assert_eq(_status(victim, "poison").stacks, 5, "capped at 5")
+
+
+func test_mage_cast_time_waits_and_moving_cancels_it() -> void:
+	var m := _hero("mage", 1, Vector3(5, 0, 5))
+	m.level = 10
+	var foe := _target(Vector3(5, 0, 11))
+	var mana := m.resource
+	assert_true(Combat.try_cast(f.world, m, "mage_fireball", foe.position))
+	assert_true(Combat.channeling(f.world, m.id), "busy casting")
+	f.run(0.6)
+	assert_eq(foe.hp, 1000.0, "nothing lands before the cast ends")
+	m.position += Vector3(1, 0, 0) # moves: the cast breaks
+	f.run(1.0)
+	assert_eq(foe.hp, 1000.0, "interrupted")
+	assert_almost_eq(m.resource, mana, 0.01, "an interrupted cast costs nothing")
+	assert_false(m.cooldowns.has("mage_fireball"), "and has no cooldown")

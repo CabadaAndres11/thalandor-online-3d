@@ -578,3 +578,4 @@ EQUIP_RING,Anillo
 EQUIP_NECK,Amuleto
 EQUIP_EMPTY,Vacío (los objetos llegarán en un plan futuro)
 CHAR_RECOMMENDED,Recomendado para tu clase
+DETAIL_CAST,Lanzamiento: %s s (se interrumpe si te mueves)

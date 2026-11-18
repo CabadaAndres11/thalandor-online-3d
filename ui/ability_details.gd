@@ -31,7 +31,9 @@ static func lines(ability: Dictionary, stats: CombatStats, resource_kind: String
 		out.append(_tr("DETAIL_COMBO_GAIN") % int(ability.combo_gain))
 	if int(ability.get("combo_per_hit", 0)) > 0:
 		out.append(_tr("DETAIL_COMBO_PER_HIT") % int(ability.combo_per_hit))
-	if ability.has("repeat"):
+	if ability.has("repeat") and bool(ability.repeat.get("cast", false)):
+		out.append(_tr("DETAIL_CAST") % num(ability.repeat.get("delay_s", 0)))
+	elif ability.has("repeat"):
 		out.append(_tr("DETAIL_REPEAT") % [int(ability.repeat.get("times", 1)), num(ability.repeat.get("interval_s", 0))])
 	var charge: Dictionary = ability.get("charge", {})
 	if not charge.is_empty():

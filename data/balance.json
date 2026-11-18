@@ -35,7 +35,7 @@
 	"elite_hp_mult": 2.5,
 	"elite_damage_mult": 1.4,
 	"xp": {"base": 100, "exponent": 1.6, "linear_from": 50, "linear_step": 2500, "monster_base": 8, "monster_exponent": 1.2, "elite_mult": 4, "boss_mult": 10, "level_grace": 2, "level_penalty": 0.2, "min_factor": 0.1, "share_range": 30.0, "group_bonus": 0.1},
-	"monster_scaling": {"hp": 0.12, "damage": 0.08, "armor": 0.06, "boss_level_bonus": 2, "arena_min": 1, "arena_max": 60},
+	"monster_scaling": {"hp": 0.17, "damage": 0.115, "armor": 0.06, "boss_level_bonus": 2, "arena_min": 1, "arena_max": 60},
 	"armor_k_per_level": 6.0,
 	"attributes": {"points_per_level": 5, "auto_per_level": 5, "attack_power": 0.5, "spell_power": 0.5, "max_hp": 5.0, "max_mana": 2.0, "crit": 0.0005, "dodge": 0.0003, "block": 0.002, "hp_regen": 0.05, "mana_regen": 0.03, "soft_caps": [[200, 0.5], [500, 0.25]], "crit_cap": 0.4, "dodge_cap": 0.25, "block_cap": 0.3, "cooldown_cap": 0.4, "block_reduction": 0.5},
 	"masteries": {"might": {"stat": "attack_power_pct", "value": 0.001}, "celerity": {"stat": "move_speed_pct", "value": 0.0005}, "vitality": {"stat": "healing_received_pct", "value": 0.001}, "bastion": {"stat": "max_hp_pct", "value": 0.001}, "arcane": {"stat": "spell_power_pct", "value": 0.001}, "half_at": 100}
