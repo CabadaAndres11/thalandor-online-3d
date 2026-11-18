@@ -18,5 +18,7 @@ var hits: int = 0
 ## Cast time ("repeat": {cast: true}): nothing happens until it ends, and a cast cut before
 ## then gives its cost and cooldown back.
 var cast_time: bool = false
+## A channel that follows the caster's cursor on every hit (the arcane laser).
+var follow_aim: bool = false
 var times: int = 1
 var cost: float = 0.0

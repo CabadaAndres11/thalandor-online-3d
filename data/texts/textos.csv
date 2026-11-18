@@ -519,8 +519,8 @@ AB_MAGE_FROZEN_HEART,Corazón helado
 AB_MAGE_FROZEN_HEART_DESC,"Cada enemigo que congelas te devuelve 1 s de recarga (hasta 3 s por lanzamiento)."
 AB_MAGE_ARCANE_MISSILES,Misiles arcanos
 AB_MAGE_ARCANE_MISSILES_DESC,"Canalizas 1,5 s: 5 misiles arcanos hacia el cursor. Te interrumpe moverte."
-AB_MAGE_ARCANE_LANCE,Lanza arcana
-AB_MAGE_ARCANE_LANCE_DESC,"Un rayo arcano de 18 m que atraviesa a todos los enemigos en línea."
+AB_MAGE_ARCANE_LASER,Láser arcano
+AB_MAGE_ARCANE_LASER_DESC,"Un láser arcano de 18 m durante 4 s que sigue a tu cursor y atraviesa a todos los enemigos en línea. Te quedas quieto mientras dura."
 AB_MAGE_ARCANE_CHARGE,Carga arcana
 AB_MAGE_ARCANE_CHARGE_DESC,"Cada hechizo arcano suma +4 % de daño arcano durante 6 s (hasta 5 cargas)."
 AB_MAGE_PURE_POWER,Poder puro

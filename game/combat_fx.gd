@@ -32,6 +32,7 @@ const NUMBER_RISE := 1.2
 const FLASH_TIME := 0.2
 const HEAD_HEIGHT := 2.0
 const SPIKE_SPACING := 0.8
+const BEAM_HOLD_S := 0.35 # a beam stays until the next pulse of the channel (or this long)
 const MARK_LINGER := 0.3 # how long a mark outlasts its last pulse
 const MARK_MIN_LIFE := 0.7
 ## Colours of the magic schools (damage element of the ability).
@@ -57,6 +58,7 @@ var _marks: Dictionary = {} # area id -> decor entry of its ground mark
 var _mesh_cache: Dictionary = {}
 ## id -> bool: casters whose swing is drawn by a SlashFx (set by the game session).
 var slash_owners: Callable
+var _beams: Dictionary = {} # caster id -> {node, t}
 
 
 func setup(position_of: Callable, tick_now: Callable, abilities: AbilityDB, tick_rate: int) -> void:
@@ -76,6 +78,8 @@ func handle(ev: Array) -> void:
 	match str(ev[0]):
 		"projectile":
 			_add_projectile(ev)
+		"beam":
+			_beam(ev)
 		"projectile_end":
 			_end_projectile(int(ev[1]), ev[2] if ev.size() > 2 else null)
 		"cast":
@@ -167,6 +171,15 @@ func advance(dt: float) -> void:
 		else:
 			label.position.y = n.base_y + NUMBER_RISE * (n.t / NUMBER_TIME)
 			label.modulate.a = 1.0 - maxf(0.0, (n.t / NUMBER_TIME - 0.6) / 0.4)
+	for id: int in _beams.keys():
+		var bm: Dictionary = _beams[id]
+		bm.t += dt
+		if bm.t >= BEAM_HOLD_S:
+			(bm.node as Node).queue_free()
+			_beams.erase(id)
+		else:
+			var flick := 1.0 + 0.12 * sin(bm.t * 60.0 + float(id))
+			(bm.core as Node3D).scale = Vector3(flick, 1.0, flick)
 	for id: int in _charges.keys():
 		var c: Dictionary = _charges[id]
 		c.t += dt
@@ -967,6 +980,61 @@ func _ground_mark(area_id: int, pos: Vector3, radius: float, element: String, st
 				holder.add_child(spike)
 			entry = _add_decor(holder, life, 0.25, Vector3.ONE, 0.7, 1.0)
 	_marks[area_id] = entry
+
+
+## A beam (the arcane laser, any line attack): a glowing tube from the caster to where it ends,
+## kept alive while pulses keep coming and turning with each one.
+func _beam(ev: Array) -> void:
+	var id := int(ev[1])
+	var from: Vector3 = (ev[2] as Vector3) + Vector3(0, 1.2, 0)
+	var end: Vector3 = (ev[3] as Vector3) + Vector3(0, 1.2, 0)
+	var width := float(ev[4])
+	var length := from.distance_to(end)
+	if length < 0.1:
+		return
+	if not _beams.has(id):
+		var holder := Node3D.new()
+		var glow := MeshInstance3D.new()
+		var outer := CylinderMesh.new()
+		outer.top_radius = 1.0
+		outer.bottom_radius = 1.0
+		outer.height = 1.0
+		outer.radial_segments = 12
+		glow.mesh = outer
+		glow.material_override = _glow(ELEMENT_COLORS["arcane"], 0.45)
+		glow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		holder.add_child(glow)
+		var core := MeshInstance3D.new()
+		var inner := CylinderMesh.new()
+		inner.top_radius = 1.0
+		inner.bottom_radius = 1.0
+		inner.height = 1.0
+		inner.radial_segments = 8
+		core.mesh = inner
+		core.material_override = _glow(Color("#f2e0ff"), 0.95)
+		core.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		holder.add_child(core)
+		var light := OmniLight3D.new()
+		light.light_color = ELEMENT_COLORS["arcane"]
+		light.light_energy = 1.2
+		light.omni_range = 5.0
+		holder.add_child(light)
+		add_child(holder)
+		_beams[id] = {"node": holder, "glow": glow, "core": core, "light": light, "t": 0.0}
+	var b: Dictionary = _beams[id]
+	b.t = 0.0
+	var holder_node: Node3D = b.node
+	holder_node.position = (from + end) / 2.0
+	var dir := (end - from).normalized()
+	holder_node.basis = Basis(Quaternion(Vector3.UP, dir)) # the tubes' axis (Y) along the beam
+	(b.glow as Node3D).scale = Vector3(width * 0.45, length, width * 0.45)
+	(b.core as Node3D).scale = Vector3(width * 0.16, length, width * 0.16)
+	(b.light as Node3D).position = Vector3.ZERO
+	_shards(end - Vector3(0, 1.0, 0) + Vector3(0, 0.3, 0), ELEMENT_COLORS["arcane"], 6) # sparks where it ends
+
+
+func beam_count() -> int:
+	return _beams.size()
 
 
 ## A short burst of sparks where something got hit.

@@ -288,3 +288,14 @@ func test_ice_is_not_a_flat_colour() -> void:
 	for c: Vector3i in VoxelFx.ice_spike(10):
 		colors[(VoxelFx.ice_spike(10)[c] as Color).to_html()] = true
 	assert_gt(colors.size(), 6)
+
+
+func test_a_beam_is_one_glowing_tube_that_turns_and_expires() -> void:
+	fx.handle(["beam", 1, Vector3(5, 0, 5), Vector3(5, 0, 20), 1.2])
+	assert_eq(fx.beam_count(), 1)
+	fx.handle(["beam", 1, Vector3(5, 0, 5), Vector3(20, 0, 5), 1.2])
+	assert_eq(fx.beam_count(), 1, "the same caster keeps one beam")
+	fx.advance(0.2)
+	assert_eq(fx.beam_count(), 1)
+	fx.advance(0.3)
+	assert_eq(fx.beam_count(), 0, "gone when the pulses stop")

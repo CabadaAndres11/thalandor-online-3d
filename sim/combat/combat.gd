@@ -85,6 +85,7 @@ static func _start_repeat(world: SimWorld, caster: CombatEntity, ab: Dictionary,
 	pc.left = maxi(1, int(r.get("times", 1)))
 	pc.times = pc.left
 	pc.cast_time = bool(r.get("cast", false))
+	pc.follow_aim = bool(r.get("follow_aim", false))
 	pc.cost = cost
 	pc.interval = world.ticks(float(r.get("interval_s", 0.0)))
 	pc.channel = bool(r.get("channel", false))
@@ -138,6 +139,8 @@ static func _step_cast(world: SimWorld, pc: PendingCast) -> void:
 	var caster := world.entity(pc.caster_id)
 	if caster == null:
 		return
+	if pc.follow_aim and caster is PlayerState:
+		pc.aim = (caster as PlayerState).aim # the laser turns with the cursor
 	world.cast_hits = 0
 	var ctx := {"aim": pc.aim, "target": null}
 	for e: Dictionary in pc.ability.get("effects", []):

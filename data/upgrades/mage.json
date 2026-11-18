@@ -14,7 +14,7 @@
 		"effects": [{"type": "area", "at": "cursor", "radius": 4, "delay_s": 0, "telegraph": false,
 			"damage": {"base": 8, "coef": 0.4, "kind": "magic", "school": "frost"}, "statuses": [{"kind": "freeze", "duration_s": 2}]}]}},
 	{"id": "arcanist", "class": "mage", "name": "UP_ARCANIST", "desc": "UP_ARCANIST_DESC",
-	 "actives": ["mage_arcane_missiles", "mage_arcane_lance"], "passives": ["mage_arcane_charge", "mage_pure_power"],
+	 "actives": ["mage_arcane_missiles", "mage_arcane_laser"], "passives": ["mage_arcane_charge", "mage_pure_power"],
 	 "evolves": {"ability": "mage_blast", "desc": "UP_ARCANIST_EVO",
 		"effects": [{"type": "area", "at": "cursor", "radius": 3.5, "delay_s": 0, "telegraph": false,
 			"damage": {"base": 26, "coef": 1.1, "kind": "magic", "school": "arcane"}}]}}

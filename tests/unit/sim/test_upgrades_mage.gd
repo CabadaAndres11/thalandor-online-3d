@@ -222,23 +222,42 @@ func test_arcane_missiles_stop_when_moving() -> void:
 	assert_eq(shots, 2, "only the missiles fired before the move")
 
 
-func test_arcane_lance() -> void:
+func test_arcane_laser_lasts_and_follows_the_cursor() -> void:
 	var p := _hero("arcanist")
 	_no_school_crit(p)
-	var a := _foe(2000, Vector3(10, 0, 14))
-	var b := _foe(2001, Vector3(10, 0, 27))
+	var a := _foe(2000, Vector3(10, 0, 14)) # ahead
+	var side := _foe(2001, Vector3(20, 0, 10)) # to the +X side of the caster
 	var off := _foe(2002, Vector3(13, 0, 20))
 	var t0 := f.world.tick
-	assert_true(Combat.try_cast(f.world, p, "mage_arcane_lance", Vector3(10, 0, 20)))
-	assert_eq(p.resource, p.stats.max_resource - 50.0)
-	assert_eq(_lost(a), 0.0, "it is cast first")
-	f.run(0.9)
-	var dmg := 35.0 + 1.8 * p.stats.spell_power
-	assert_almost_eq(_lost(a), dmg, 0.01)
-	assert_almost_eq(_lost(b), dmg * 1.04, 0.01, "the second target already has a charge")
+	p.aim = Vector3(10, 0, 20)
+	assert_true(Combat.try_cast(f.world, p, "mage_arcane_laser", Vector3(10, 0, 20)))
+	assert_eq(p.resource, p.stats.max_resource - 60.0)
+	assert_true(Combat.channeling(f.world, p.id), "it is a long channel")
+	f.run(1.0)
+	var one := 6.0 + 0.4 * p.stats.spell_power
+	assert_gt(_lost(a), one * 3.0, "several pulses already")
+	assert_eq(side.hp, 50000.0, "it points where the cursor was")
+	p.aim = Vector3(20, 0, 10) # the cursor moves to the side: the laser turns
+	var lost_a := _lost(a)
+	f.run(1.0)
+	assert_eq(_lost(a), lost_a, "it left the first enemy")
+	assert_gt(_lost(side), one * 3.0, "and follows the cursor")
 	assert_eq(off.hp, 50000.0)
-	assert_eq(f.world.abilities.get_ability("mage_arcane_lance").effects[0].width, 1.2)
-	assert_eq(p.cooldowns["mage_arcane_lance"], t0 + f.world.ticks(16.0))
+	f.run(2.5)
+	assert_false(Combat.channeling(f.world, p.id), "about 4 s in all")
+	assert_eq(p.cooldowns["mage_arcane_laser"], t0 + f.world.ticks(20.0))
+
+
+func test_arcane_laser_stops_when_the_mage_moves() -> void:
+	var p := _hero("arcanist")
+	var foe := _foe(2000, Vector3(10, 0, 14))
+	p.aim = Vector3(10, 0, 20)
+	assert_true(Combat.try_cast(f.world, p, "mage_arcane_laser", Vector3(10, 0, 20)))
+	f.run(0.6)
+	p.position += Vector3(1, 0, 0)
+	var lost := 50000.0 - foe.hp
+	f.run(2.0)
+	assert_eq(50000.0 - foe.hp, lost, "it only lasts while she stands still")
 
 
 func test_arcane_charge() -> void:
