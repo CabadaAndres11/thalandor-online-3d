@@ -359,7 +359,7 @@ func _sync_monsters(delta: float) -> void:
 			var avatar := MonsterAvatar.new()
 			avatar.name = "Monster%d" % id
 			_avatar_root.add_child(avatar)
-			avatar.setup(MonsterDB.load_default().get_type(str(info.type)), bool(info.get("elite", false)), client.balance.elite_scale)
+			avatar.setup(MonsterDB.load_default().get_type(str(info.type)), bool(info.get("elite", false)), client.balance.elite_scale, bool(info.get("ally", false)))
 			_monster_avatars[id] = avatar
 		(_monster_avatars[id] as MonsterAvatar).apply_state(client.monster_render_state(id), info, delta)
 

@@ -457,3 +457,11 @@ UPGRADE_PASSIVES,Pasivas
 UPGRADE_EVOLUTION,Evolución
 CHAT_UPGRADE_HINT,Habla con Brann para elegir tu mejora de clase
 CHAT_UPGRADE_CHOSEN,%s ha elegido la mejora «%s»
+DETAIL_ST_HASTE,+%s de rapidez de recarga durante %s s
+DETAIL_ST_VULNERABLE,+%s de daño recibido durante %s s
+DETAIL_ST_ATTACK_SLOW,−%s de velocidad de ataque durante %s s
+DETAIL_ST_WEAKEN,−%s de daño realizado durante %s s
+DETAIL_ST_ICE_BLOCK,bloque de hielo durante %s s (invulnerable e inmóvil)
+DETAIL_ST_CONTAGION,contagio durante %s s
+DETAIL_SCOPE_BEAM,rayo en línea de %s m
+DETAIL_SUMMON,invoca un aliado durante %s s

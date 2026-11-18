@@ -389,8 +389,9 @@ func _monster_rows(viewer: Vector3) -> Array:
 		list = list.slice(0, cap)
 	var rows := []
 	for e: CombatEntity in list:
-		var elite := 1 if (e is MonsterState and (e as MonsterState).elite) else 0
-		rows.append([e.id, e.type_id, e.position, e.facing, e.hp, e.stats.max_hp, StatusEffect.bits_of(e), e.target_id, elite, e.level])
+		# flags: bit 0 elite, bit 1 allied (a player summon)
+		var flags := (1 if (e is MonsterState and (e as MonsterState).elite) else 0) | (2 if e.team == CombatEntity.TEAM_PLAYERS else 0)
+		rows.append([e.id, e.type_id, e.position, e.facing, e.hp, e.stats.max_hp, StatusEffect.bits_of(e), e.target_id, flags, e.level])
 	return rows
 
 

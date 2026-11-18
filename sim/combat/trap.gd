@@ -11,3 +11,5 @@ var pos: Vector3 = Vector3.ZERO
 var armed_tick: int = 0
 var end_tick: int = 0
 var effect: Dictionary = {}
+## Times it arms itself again after going off (Trampero).
+var rearms: int = 0

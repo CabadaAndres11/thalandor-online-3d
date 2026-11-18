@@ -14,6 +14,7 @@ var _quad: MeshInstance3D
 var _material: ShaderMaterial
 var _hide_when_full: bool = false
 var _fraction: float = 1.0
+var _fill_color: Color = Color(0.85, 0.2, 0.2)
 
 
 func setup(display_name: String, hide_when_full: bool, color := Color(0.85, 0.2, 0.2)) -> void:
@@ -37,6 +38,7 @@ func setup(display_name: String, hide_when_full: bool, color := Color(0.85, 0.2,
 	_quad.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_material = ShaderMaterial.new()
 	_material.shader = SHADER
+	_fill_color = color
 	_material.set_shader_parameter("fill_color", color)
 	_quad.material_override = _material
 	add_child(_quad)
@@ -62,7 +64,7 @@ func bar_visible() -> bool:
 ## Statuses that get an icon, in the order they are shown (stealth and the dodge's
 ## invulnerability are shown other ways).
 const STATUS_ICON_KINDS := ["stun", "freeze", "root", "slow", "poison", "burn", "mark", "taunted",
-	"damage_buff", "damage_reduction", "evasion", "hot", "bleed"]
+	"damage_buff", "damage_reduction", "evasion", "hot", "bleed", "haste", "vulnerable", "attack_slow", "weaken", "ice_block"]
 const MAX_STATUS_ICONS := 4
 const STATUS_ICON_DIR := "res://assets/icons/status/%s.png"
 const STATUS_ICON_SIZE := 0.22
@@ -124,3 +126,7 @@ func set_level(level: int) -> void:
 
 func label_text() -> String:
 	return _label.text if _label != null else ""
+
+
+func fill_color() -> Color:
+	return _fill_color

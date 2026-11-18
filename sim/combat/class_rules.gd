@@ -97,6 +97,8 @@ static func after_cast(caster: CombatEntity, ability: Dictionary, hits: int) -> 
 	if p == null:
 		return
 	if bool(ability.get("finisher", false)):
+		for h: Dictionary in Passives.hooks(p, "finisher_refund_per_combo"):
+			Resources.add(p, float(h.get("amount", 0.0)) * float(p.combo)) # Eviscerar: energy back per point
 		p.combo = 0
 	elif hits > 0:
 		var gain := int(ability.get("combo_gain", 0)) + int(ability.get("combo_per_hit", 0)) * hits

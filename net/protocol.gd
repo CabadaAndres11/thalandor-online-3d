@@ -50,10 +50,10 @@ const ROW_SCHEMAS := {
 ##            last_seq s32, hp, max_hp, resource, max_resource f32, life u8,
 ##            status_bits u32, dash_ticks u16, dash_dir 2×f32, dodge_ready_seq s32,
 ##            move_mult f32, combo u8, charge f32, level u16.
-##   monsters: [id, type, position, facing, hp, max_hp, status_bits, target_id, elite (0|1), level]
+##   monsters: [id, type, position, facing, hp, max_hp, status_bits, target_id, flags (bit 0 elite, bit 1 allied), level]
 ##            MONSTER_RECORD bytes: id u32, type u8 (index in monster_types(), 255
 ##            unknown), position 3×f32, facing u16 (angle / TAU), hp f32, max_hp f32,
-##            status_bits u32, target_id u32, elite u8, level u16.
+##            status_bits u32, target_id u32, flags u8, level u16.
 const PLAYER_RECORD := 82
 const MONSTER_RECORD := 38
 
@@ -245,7 +245,7 @@ static func pack_monsters(rows: Array) -> PackedByteArray:
 		buf.put_float(float(row[5]))
 		buf.put_u32(int(row[6]))
 		buf.put_u32(int(row[7]))
-		buf.put_u8(1 if int(row[8]) != 0 else 0)
+		buf.put_u8(clampi(int(row[8]), 0, 255))
 		buf.put_u16(clampi(int(row[9]), 0, 65535))
 	return buf.data_array
 

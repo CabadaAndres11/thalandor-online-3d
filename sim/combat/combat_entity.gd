@@ -48,6 +48,13 @@ var passives: Array = []
 var last_hurt_tick: int = -100000
 ## Basic attacks cast so far (Ráfaga: every n-th is a crit).
 var basic_count: int = 0
+## The last enemy this entity damaged (allied summons attack it).
+var last_target_id: int = 0
+## Fraction of the damage a shield absorbs that goes back to the attacker (Represalia).
+var shield_reflect: float = 0.0
+## Last tick the entity moved, and where it was then (Paciencia: damage when still).
+var still_since: int = 0
+var last_pos: Vector2 = Vector2.INF
 
 
 func is_alive() -> bool:
@@ -56,12 +63,12 @@ func is_alive() -> bool:
 
 ## Alive and not stunned or frozen.
 func can_act(_tick: int) -> bool:
-	return is_alive() and not has_status("stun") and not has_status("freeze")
+	return is_alive() and not has_status("stun") and not has_status("freeze") and not has_status("ice_block")
 
 
 ## Movement speed factor from statuses (rooted, stunned or frozen = 0).
 func move_mult() -> float:
-	if not is_alive() or has_status("stun") or has_status("freeze") or has_status("root"):
+	if not is_alive() or has_status("stun") or has_status("freeze") or has_status("root") or has_status("ice_block"):
 		return 0.0
 	return stats.move_speed_mult * maxf(0.0, 1.0 - status_magnitude("slow"))
 
@@ -102,6 +109,14 @@ func status_magnitude(kind: String) -> float:
 		if s.kind == kind:
 			total += s.magnitude * s.stacks
 	return total
+
+
+## Stacks of a status of this kind (0 if none).
+func status_stacks(kind: String) -> int:
+	for s: StatusEffect in statuses:
+		if s.kind == kind:
+			return s.stacks
+	return 0
 
 
 func remove_status(kind: String) -> void:

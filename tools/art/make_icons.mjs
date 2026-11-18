@@ -141,6 +141,11 @@ const STATUS = {
   evasion: ["#a6dc6e", (i) => { for (const x of [18, 32]) { line(i, x, 18, x + 12, 32, 5, K); line(i, x + 12, 32, x, 46, 5, K); } }],
   hot: ["#5fe08a", (i) => { line(i, 32, 16, 32, 48, 8, K); line(i, 16, 32, 48, 32, 8, K); }],
   bleed: ["#c0283a", (i) => { tri(i, [32, 12], [22, 36], [42, 36], K); disk(i, 32, 40, 10, K); }],
+  haste: ["#ffe05a", (i) => { tri(i, [18, 16], [18, 48], [38, 32], K); tri(i, [34, 16], [34, 48], [54, 32], K); }],
+  vulnerable: ["#ff6b8a", (i) => { ring(i, 32, 32, 16, 4, K); line(i, 20, 20, 44, 44, 4, K); line(i, 44, 20, 20, 44, 4, K); }],
+  attack_slow: ["#8fa8ff", (i) => { line(i, 18, 48, 42, 20, 6, K); tri(i, [38, 10], [54, 18], [44, 28], K); line(i, 14, 24, 28, 24, 4, K); }],
+  weaken: ["#b08a6a", (i) => { tri(i, [32, 50], [14, 18], [50, 18], K); line(i, 32, 22, 32, 38, 4, [200, 200, 200, 255]); }],
+  ice_block: ["#bfeaff", (i) => { for (let a = 0; a < 3; a++) { const c = Math.cos(a * Math.PI / 3), s = Math.sin(a * Math.PI / 3); line(i, 32 - c * 20, 32 - s * 20, 32 + c * 20, 32 + s * 20, 5, K); } }],
 };
 
 function badge(img, color) {

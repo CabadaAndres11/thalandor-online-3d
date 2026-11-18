@@ -23,10 +23,16 @@ extends RefCounted
 ##   taunt      {radius, duration_s}  (enemies around must attack the caster)
 ##   charge     {distance, width, windup_s, speed, damage, statuses?}  (warns a line
 ##               toward the cursor, then runs along it hitting everyone in the line)
-## damage = {base, coef, kind: "physical"|"magic", can_crit, element?}.
+##   beam       {range, width, damage, statuses?}  (an instant line hit toward the cursor)
+##   summon     {monster, duration_s, max}  (an allied monster of data/monsters that follows and
+##               fights for the caster; it gives no experience and dies with its owner)
+## Extras: area {heal?: {base, coef}, follow_caster?}; projectile {count?, spread_deg?,
+## explode.leave?: {area effect}}; shield {reflect_pct?}; heal {bounce?: {count, radius, pct}};
+## damage {execute?: {below_pct, mult}, lifesteal_pct?, school?}; ability {refund_on_kill?}.
+## damage = {base, coef, kind: "physical"|"magic", can_crit, element?, school?}.
 
 const TYPES := ["melee_arc", "projectile", "area", "dash", "blink", "heal", "shield",
-	"status", "trap", "stealth", "cleanse", "revive", "taunt", "charge"]
+	"status", "trap", "stealth", "cleanse", "revive", "taunt", "charge", "beam", "summon"]
 const TARGET_PICK_RADIUS := 1.5
 
 
@@ -92,6 +98,10 @@ static func apply(world: SimWorld, caster: CombatEntity, ability: Dictionary, ef
 			_taunt(world, caster, effect)
 		"charge":
 			_charge(world, caster, ability, effect, ctx.aim)
+		"beam":
+			_beam(world, caster, ability, effect, ctx.aim)
+		"summon":
+			_summon(world, caster, effect)
 		_:
 			push_error("Effects: unknown effect %s in %s" % [effect.get("type"), ability.get("id")])
 
@@ -144,21 +154,75 @@ static func _melee_arc(world: SimWorld, caster: CombatEntity, ability: Dictionar
 
 
 static func _projectile(world: SimWorld, caster: CombatEntity, ability: Dictionary, effect: Dictionary, aim: Vector3) -> void:
-	var p := Projectile.new()
-	p.id = world.next_object_id()
-	p.owner = Combat.snapshot_of(caster)
-	p.ability_id = str(ability.get("id", ""))
-	p.pos = flat(caster.position)
-	var to := flat(aim) - p.pos
-	p.dir = to.normalized() if to.length() > 0.01 else forward(caster.facing)
-	p.speed = float(effect.get("speed", 15.0))
-	p.radius = float(effect.get("radius", 0.2))
-	p.remaining = float(effect.get("range", 10.0))
-	p.pierce = bool(effect.get("pierce", false))
-	p.effect = effect
-	p.combo_gain = int(ability.get("combo_gain", 0))
-	world.projectiles.append(p)
-	world.emit(["projectile", p.id, caster.id, p.ability_id, caster.position, p.dir, p.speed, p.remaining])
+	var count := maxi(1, int(effect.get("count", 1)))
+	var spread := deg_to_rad(float(effect.get("spread_deg", 0.0)))
+	var to := flat(aim) - flat(caster.position)
+	var base_dir := to.normalized() if to.length() > 0.01 else forward(caster.facing)
+	for i in count:
+		# A fan: the projectiles are spread evenly over spread_deg around the aim.
+		var angle := 0.0 if count == 1 else lerpf(-spread / 2.0, spread / 2.0, float(i) / float(count - 1))
+		var p := Projectile.new()
+		p.id = world.next_object_id()
+		p.owner = Combat.snapshot_of(caster)
+		p.ability_id = str(ability.get("id", ""))
+		p.pos = flat(caster.position)
+		p.dir = base_dir.rotated(angle)
+		p.speed = float(effect.get("speed", 15.0))
+		p.radius = float(effect.get("radius", 0.2))
+		p.remaining = float(effect.get("range", 10.0))
+		p.pierce = bool(effect.get("pierce", false))
+		p.effect = effect
+		p.combo_gain = int(ability.get("combo_gain", 0)) if i == 0 else 0
+		world.projectiles.append(p)
+		world.emit(["projectile", p.id, caster.id, p.ability_id, caster.position, p.dir, p.speed, p.remaining])
+
+
+## Allies of `ref` (its team, alive) within `radius` of a point, the reference included.
+static func allies_in_circle(world: SimWorld, ref: CombatEntity, center: Vector3, radius: float) -> Array:
+	return world.entities().filter(func(o: CombatEntity) -> bool:
+		return o.team == ref.team and o.is_alive() and flat(o.position).distance_to(flat(center)) <= radius + o.radius)
+
+
+## An instant line hit toward the aim: everyone in it takes the damage and statuses.
+static func _beam(world: SimWorld, caster: CombatEntity, ability: Dictionary, effect: Dictionary, aim: Vector3) -> void:
+	var to := flat(aim) - flat(caster.position)
+	var dir := to.normalized() if to.length() > 0.01 else forward(caster.facing)
+	var reach := float(effect.get("range", 10.0))
+	var width := float(effect.get("width", 1.0))
+	var from := Vector3(caster.position.x, 0, caster.position.z)
+	var end := from + Vector3(dir.x, 0, dir.y) * reach
+	caster.facing = atan2(dir.x, dir.y)
+	world.emit(["beam", caster.id, from, end, width])
+	for o: CombatEntity in in_line(world, caster, from, end, width):
+		Combat.deal(world, caster, o, effect, ability)
+
+
+## An allied monster of data/monsters next to the caster: same level, it follows and fights
+## (MonsterAI), vanishes after duration_s or with its owner. At most `max` per caster:
+## a new one replaces the oldest.
+static func _summon(world: SimWorld, caster: CombatEntity, effect: Dictionary) -> void:
+	var type_id := str(effect.get("monster", ""))
+	if MonsterDB.load_default().get_type(type_id).is_empty():
+		push_error("Effects: unknown summon type %s" % type_id)
+		return
+	var mine: Array = []
+	for m: CombatEntity in world.monsters.values():
+		if m is MonsterState and m.team == caster.team and (m as MonsterState).summoned_by == caster.id:
+			mine.append(m)
+	while mine.size() >= maxi(1, int(effect.get("max", 1))):
+		var old: CombatEntity = mine.pop_front()
+		world.remove_entity(old.id)
+		world.emit(["summon_end", old.id])
+	var side := forward(caster.facing).rotated(PI / 2.0) * 1.8
+	var pos := caster.position + Vector3(side.x, 0, side.y)
+	if world.map.is_solid(Vector2i(floori(pos.x), floori(pos.z))):
+		pos = caster.position
+	var s := MonsterDB.load_default().make(type_id, world.next_monster_id(), pos, world, caster.level)
+	s.team = caster.team
+	s.summoned_by = caster.id
+	s.despawn_tick = world.tick + world.ticks(float(effect.get("duration_s", 30.0)))
+	world.add_entity(s)
+	world.emit(["spawned", s.id, s.type_id, s.position])
 
 
 static func _area(world: SimWorld, caster: CombatEntity, ability: Dictionary, effect: Dictionary, aim: Vector3) -> void:
@@ -174,6 +238,8 @@ static func _area(world: SimWorld, caster: CombatEntity, ability: Dictionary, ef
 	a.fire_tick = world.tick + world.ticks(float(effect.get("delay_s", 0.0)))
 	a.pulses_left = maxi(1, int(effect.get("pulses", 1)))
 	a.interval = world.ticks(float(effect.get("interval_s", 0.0)))
+	if bool(effect.get("follow_caster", false)):
+		a.follow_id = caster.id
 	a.effect = effect
 	if bool(effect.get("telegraph", false)):
 		world.emit(["telegraph", a.id, a.pos, float(effect.get("radius", 1.0)), a.fire_tick])
@@ -252,6 +318,9 @@ static func _heal_one(world: SimWorld, caster: CombatEntity, t: CombatEntity, ef
 		add_hot(world, caster, t, amount, float(hot.get("duration_s", 3.0)), float(hot.get("every_s", 1.0)))
 		return
 	var healed := Combat.heal(world, caster, t, amount)
+	var bounce: Dictionary = effect.get("bounce", {})
+	if not bounce.is_empty() and healed > 0.0:
+		_bounce_heal(world, caster, t, amount, bounce)
 	var echo := Passives.has_hook(caster, "heal_leaves_hot") # Eco de luz
 	if not echo.is_empty() and healed > 0.0:
 		add_hot(world, caster, t, amount * float(echo.get("pct", 0.0)), float(echo.get("duration_s", 3.0)),
@@ -300,12 +369,17 @@ static func _trap(world: SimWorld, caster: CombatEntity, ability: Dictionary, ef
 	t.armed_tick = world.tick + world.ticks(float(effect.get("arm_s", 1.0)))
 	t.end_tick = world.tick + world.ticks(float(effect.get("lifetime_s", 30.0)))
 	t.effect = effect
+	for h: Dictionary in Passives.hooks(caster, "traps_rearm"):
+		t.rearms += int(h.get("times", 1))
 	world.traps.append(t)
 	world.emit(["trap", t.id, caster.id, t.pos, float(effect.get("radius", 1.5)), t.armed_tick])
 
 
 static func _stealth(world: SimWorld, caster: CombatEntity, effect: Dictionary) -> void:
-	var st := StatusEffect.make("stealth", world.tick + world.ticks(float(effect.get("duration_s", 10.0))), 0.0, caster.id)
+	var duration := float(effect.get("duration_s", 10.0))
+	for h: Dictionary in Passives.hooks(caster, "stealth_duration_pct"):
+		duration *= 1.0 + float(h.get("pct", 0.0))
+	var st := StatusEffect.make("stealth", world.tick + world.ticks(duration), 0.0, caster.id)
 	caster.add_status(st, 1)
 	world.emit(["status", caster.id, "stealth", st.end_tick])
 	if bool(effect.get("vanish", false)):
@@ -340,6 +414,7 @@ static func _shield(world: SimWorld, caster: CombatEntity, effect: Dictionary, a
 	var t := _support_target(world, caster, effect, aim)
 	t.shield = maxf(t.shield, _amount(caster, effect.get("amount", {})))
 	t.shield_end = world.tick + world.ticks(float(effect.get("duration_s", 5.0)))
+	t.shield_reflect = float(effect.get("reflect_pct", 0.0))
 	world.emit(["status", t.id, "shield", t.shield_end])
 
 
@@ -382,3 +457,14 @@ static func in_line(world: SimWorld, caster: CombatEntity, a: Vector3, b: Vector
 	return enemies_of(world, caster).filter(func(o: CombatEntity) -> bool:
 		var q := Geometry2D.get_closest_point_to_segment(flat(o.position), p0, p1)
 		return q.distance_to(flat(o.position)) <= width / 2.0 + o.radius)
+
+
+## The heal jumps to the `count` most hurt allies within `radius` of the healed one, each
+## for `pct` of the amount.
+static func _bounce_heal(world: SimWorld, caster: CombatEntity, from: CombatEntity, amount: float, bounce: Dictionary) -> void:
+	var others := allies_in_circle(world, caster, from.position, float(bounce.get("radius", 10.0))).filter(
+		func(o: CombatEntity) -> bool: return o != from)
+	others.sort_custom(func(a: CombatEntity, b: CombatEntity) -> bool:
+		return a.hp / maxf(a.stats.max_hp, 1.0) < b.hp / maxf(b.stats.max_hp, 1.0))
+	for o: CombatEntity in others.slice(0, int(bounce.get("count", 1))):
+		Combat.heal(world, caster, o, amount * float(bounce.get("pct", 0.5)))

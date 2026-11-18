@@ -31,6 +31,8 @@ var next_summon_tick: int = 0
 var minions: Array = []
 ## Id of the monster or player that called this one (0 = none): it gives no experience.
 var summoned_by: int = 0
+## Allied summons: the tick they vanish (0 = never).
+var despawn_tick: int = 0
 
 
 func _init() -> void:

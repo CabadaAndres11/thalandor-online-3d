@@ -59,6 +59,10 @@ static func _effect(e: Dictionary, stats: CombatStats, out: PackedStringArray) -
 			scope = _tr("DETAIL_SCOPE_PIERCE" if bool(e.get("pierce", false)) else "DETAIL_SCOPE_PROJECTILE") % num(e.get("range", 10))
 		"area":
 			scope = _tr("DETAIL_SCOPE_CURSOR" if str(e.get("at", "cursor")) == "cursor" else "DETAIL_SCOPE_AROUND") % num(e.get("radius", 1))
+		"beam":
+			scope = _tr("DETAIL_SCOPE_BEAM") % num(e.get("range", 10))
+		"summon":
+			out.append(_tr("DETAIL_SUMMON") % num(e.get("duration_s", 30)))
 		"trap":
 			scope = _tr("DETAIL_SCOPE_TRAP") % num(e.get("radius", 1.5))
 		"heal":
@@ -148,7 +152,7 @@ static func _status(s: Dictionary) -> String:
 	var d := num(s.get("duration_s", 0))
 	var m := float(s.get("magnitude", 0.0))
 	match kind:
-		"slow", "mark", "damage_buff", "damage_reduction", "evasion":
+		"slow", "mark", "damage_buff", "damage_reduction", "evasion", "haste", "vulnerable", "attack_slow", "weaken":
 			return _tr("DETAIL_ST_" + kind.to_upper()) % [pct(m), d]
 		"poison", "burn":
 			return _tr("DETAIL_ST_" + kind.to_upper()) % [num(m), num(s.get("every_s", 1)), d, int(s.get("max_stacks", 1))]

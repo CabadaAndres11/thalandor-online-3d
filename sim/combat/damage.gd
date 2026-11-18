@@ -40,12 +40,17 @@ static func roll(attacker: CombatEntity, target: CombatEntity, spec: Dictionary,
 	var power := attacker.stats.attack_power if physical else attacker.stats.spell_power
 	var amount := float(spec.get("base", 0.0)) + float(spec.get("coef", 0.0)) * power
 	amount *= 1.0 + world.rng.randf_range(-b.damage_variance, b.damage_variance)
-	if bool(spec.get("can_crit", true)) and (bool(spec.get("force_crit", false)) or world.rng.randf() < attacker.stats.crit_chance):
+	var crit_chance := attacker.stats.crit_chance + Passives.school_crit(attacker, str(spec.get("school", "")))
+	if bool(spec.get("can_crit", true)) and (bool(spec.get("force_crit", false)) or world.rng.randf() < crit_chance):
 		result.crit = true
 		amount *= b.crit_multiplier + attacker.stats.crit_damage
 	amount *= attacker.stats.damage_done_mult * target.stats.damage_taken_mult
 	amount *= 1.0 + attacker.status_magnitude("damage_buff")
-	amount *= 1.0 + target.status_magnitude("mark")
+	amount *= 1.0 + target.status_magnitude("mark") + target.status_magnitude("vulnerable")
+	amount *= maxf(0.0, 1.0 - attacker.status_magnitude("weaken"))
+	var execute: Dictionary = spec.get("execute", {})
+	if not execute.is_empty() and target.stats.max_hp > 0.0 and target.hp / target.stats.max_hp < float(execute.get("below_pct", 0.25)):
+		amount *= float(execute.get("mult", 1.0))
 	amount *= maxf(0.0, 1.0 - target.status_magnitude("damage_reduction"))
 	amount *= Passives.damage_mult(attacker, target, spec, world)
 	if physical:
@@ -68,5 +73,27 @@ static func apply(target: CombatEntity, result: Dictionary, world: SimWorld) -> 
 		target.remove_status("stealth")
 		world.emit(["status_end", target.id, "stealth"])
 	target.hp = maxf(target.hp - (amount - absorbed), 0.0)
-	if target.hp <= 0.0 and target.is_alive():
+	if target.hp <= 0.0 and target.is_alive() and not _survives(target, world):
 		world.on_zero_hp(target)
+
+
+## Fénix (cheat_death on the target) or Ángel guardián (an ally with the hook in range)
+## keep a fatal hit from killing: health goes to hp_pct and the hook starts its recharge.
+static func _survives(target: CombatEntity, world: SimWorld) -> bool:
+	for h: Dictionary in Passives.hooks(target, "cheat_death"):
+		if Passives.hook_ready(target, "cheat_death", world):
+			Passives.hook_use(target, "cheat_death", float(h.get("cooldown_s", 180.0)), world)
+			target.hp = maxf(1.0, target.stats.max_hp * float(h.get("hp_pct", 0.3)))
+			world.emit(["cheat_death", target.id])
+			return true
+	for o: CombatEntity in world.entities():
+		if o == target or o.team != target.team or not o.is_alive():
+			continue
+		for h: Dictionary in Passives.hooks(o, "guardian_angel"):
+			if Effects.flat(o.position).distance_to(Effects.flat(target.position)) <= float(h.get("radius", 20.0)) \
+					and Passives.hook_ready(o, "guardian_angel", world):
+				Passives.hook_use(o, "guardian_angel", float(h.get("cooldown_s", 120.0)), world)
+				target.hp = maxf(1.0, target.stats.max_hp * float(h.get("hp_pct", 0.25)))
+				world.emit(["guardian_angel", o.id, target.id])
+				return true
+	return false

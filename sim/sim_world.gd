@@ -24,6 +24,12 @@ var pending_casts: Array = [] # PendingCast (abilities with a repeat block)
 var _next_object_id: int = 1
 ## Hits landed by the cast being resolved (assassin combo points).
 var cast_hits: int = 0
+## Entities that died during the cast being resolved (refund_on_kill), and the id of whoever
+## dealt the damage being applied (on_kill hooks), and cooldown seconds given back by this
+## cast (freeze_reduces_cooldowns).
+var cast_kills: int = 0
+var current_source: int = 0
+var cast_cd_reduced: float = 0.0
 var _next_monster_id: int = 999
 var _pathfinder: Pathfinder
 ## Keeps the map's monster spawn points populated (null when the map has none).
@@ -50,7 +56,7 @@ func set_arena_level(level: int) -> void:
 	arena_level = clampi(level, int(balance.monster_scaling.get("arena_min", 1)), int(balance.monster_scaling.get("arena_max", 60)))
 	for e: CombatEntity in monsters.values():
 		var m := e as MonsterState
-		if m == null or not m.is_alive() or m.target_id != 0 or not m.threat.is_empty():
+		if m == null or not m.is_alive() or m.team != CombatEntity.TEAM_MONSTERS or m.target_id != 0 or not m.threat.is_empty():
 			continue
 		if m.def.is_empty():
 			continue
@@ -159,5 +165,5 @@ func pathfinder() -> Pathfinder:
 func rescale_monsters() -> void:
 	for e: CombatEntity in monsters.values():
 		var m := e as MonsterState
-		if m != null and m.is_alive() and m.stats.max_hp > 0.0:
+		if m != null and m.is_alive() and m.team == CombatEntity.TEAM_MONSTERS and m.stats.max_hp > 0.0:
 			Spawner.scale_health(self, m, m.hp / m.stats.max_hp)

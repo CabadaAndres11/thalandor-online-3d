@@ -29,7 +29,7 @@ var _time: float = 0.0
 var _rest: Vector3 = Vector3.ZERO
 
 
-func setup(type: Dictionary, elite: bool = false, elite_scale: float = 1.3) -> void:
+func setup(type: Dictionary, elite: bool = false, elite_scale: float = 1.3, ally: bool = false) -> void:
 	var model := str(type.get("model", ""))
 	var tint := Color(str(type.get("tint", "#ffffff")))
 	var scale_f := float(type.get("scale", 1.0)) * (elite_scale if elite else 1.0)
@@ -64,7 +64,7 @@ func setup(type: Dictionary, elite: bool = false, elite_scale: float = 1.3) -> v
 	bar = OverheadBar.new()
 	bar.position.y = _height + 0.35
 	add_child(bar)
-	bar.setup(_display_name, true)
+	bar.setup(_display_name, true, Color(0.3, 0.85, 0.35) if ally else Color(0.85, 0.2, 0.2)) # allies: green bar
 
 
 ## A HumanRig look (see HumanRig.build) from a monster's "look" data.

@@ -30,6 +30,9 @@ const TERRAIN_RADIUS := 0.45
 static func tick(world: SimWorld, m: MonsterState) -> void:
 	if not m.is_alive():
 		return
+	if m.team == CombatEntity.TEAM_PLAYERS:
+		_tick_ally(world, m)
+		return
 	if m.ai == MonsterState.RETURN:
 		_go_home(world, m)
 		return
@@ -92,6 +95,51 @@ static func tick(world: SimWorld, m: MonsterState) -> void:
 		m.unreachable_ticks = 0
 
 
+const ALLY_FOLLOW_MAX := 4.0
+const ALLY_TELEPORT := 25.0
+const ALLY_SEE := 20.0
+
+
+## An allied summon: stays near its owner (2-4 m), attacks what the owner last damaged or
+## whoever is attacking the owner, and jumps to the owner when left more than 25 m behind.
+static func _tick_ally(world: SimWorld, m: MonsterState) -> void:
+	var owner := world.entity(m.summoned_by)
+	if owner == null or m.forced_ticks > 0 or world.tick < m.busy_until:
+		return
+	var away := Effects.flat(m.position).distance_to(Effects.flat(owner.position))
+	if away > ALLY_TELEPORT:
+		m.position = owner.position + Vector3(1.5, 0, 0)
+		return
+	var target := _ally_target(world, m, owner)
+	if target != null:
+		m.target_id = target.id
+		var gap := Effects.flat(m.position).distance_to(Effects.flat(target.position)) - target.radius
+		if gap <= float(m.def.get("attack_range", 1.5)):
+			var to := Effects.flat(target.position) - Effects.flat(m.position)
+			if to.length() > 0.01:
+				m.facing = atan2(to.x, to.y)
+			for ab: String in m.def.get("abilities", []):
+				if Combat.try_cast(world, m, ab, target.position):
+					break
+		else:
+			_move_toward(world, m, target.position)
+		return
+	m.target_id = 0
+	if away > ALLY_FOLLOW_MAX:
+		_move_toward(world, m, owner.position)
+
+
+static func _ally_target(world: SimWorld, m: MonsterState, owner: CombatEntity) -> CombatEntity:
+	var last := world.entity(owner.last_target_id)
+	if last != null and last.team != m.team and last.is_alive() \
+			and Effects.flat(last.position).distance_to(Effects.flat(owner.position)) <= ALLY_SEE:
+		return last
+	for o: CombatEntity in Effects.enemies_of(world, m):
+		if o.target_id == owner.id and Effects.flat(o.position).distance_to(Effects.flat(owner.position)) <= ALLY_SEE:
+			return o
+	return null
+
+
 static func _valid_target(e: CombatEntity) -> bool:
 	return e != null and e.team == CombatEntity.TEAM_PLAYERS and e.is_alive() and not e.has_status("stealth")
 
@@ -105,7 +153,7 @@ static func _clean_threat(world: SimWorld, m: MonsterState) -> void:
 static func _nearest_visible(world: SimWorld, m: MonsterState, reach: float) -> CombatEntity:
 	var best: CombatEntity = null
 	var best_d := INF
-	for p: CombatEntity in world.players.values():
+	for p: CombatEntity in Effects.enemies_of(world, m): # players and allied summons
 		if not _valid_target(p):
 			continue
 		var d := Effects.flat(p.position).distance_to(Effects.flat(m.position))

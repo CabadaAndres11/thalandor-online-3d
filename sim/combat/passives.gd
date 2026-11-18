@@ -11,6 +11,16 @@ extends RefCounted
 ##               duration_s, every_s}, bonus_vs_status {statuses, pct}
 ##     archer:   range_pct {pct}, bonus_vs_far {distance, pct}, every_nth_basic_crits {n}
 ##     assassin: back_damage_pct {pct}, stealth_opener_crit_bonus {pct}, after_dodge_combo {combo}
+##   upgrades: damage_per_missing_hp {max_pct}, on_kill {reset_cooldown?, heal_pct?}, low_hp_guard
+##               {below_pct, reduction, duration_s, cooldown_s}, cheat_death {hp_pct, cooldown_s},
+##               guardian_angel {radius, hp_pct, cooldown_s}, melee_hit_restores {amount},
+##               stacking_school_damage {school, pct, max, duration_s}, school_crit {school, add},
+##               slow_adds_attack_slow {pct}, freeze_reduces_cooldowns {seconds, max?}, stationary_damage
+##               {seconds, pct}, traps_rearm {times}, bonus_vs_low_hp {below_pct, pct},
+##               stealth_duration_pct {pct}, poison_max_stacks {max}, poisoned_deal_less {pct},
+##               finisher_refund_per_combo {amount}. (poison spreading on death is the "contagion"
+##               status: its magnitude is the radius in meters.) Internal recharges live in
+##               entity.cooldowns["hook:<name>"].
 ## Hooks are read where their rule lives (Resources, Damage, Combat, Effects, ClassRules).
 
 ## Half-angle (degrees) of the cone behind a target that counts as "from behind".
@@ -77,7 +87,42 @@ static func damage_mult(attacker: CombatEntity, target: CombatEntity, spec: Dict
 	h = has_hook(attacker, "back_damage_pct")
 	if not h.is_empty() and is_behind(attacker, target):
 		mult *= 1.0 + float(h.get("pct", 0.0))
+	# Upgrade hooks.
+	for lh: Dictionary in hooks(attacker, "bonus_vs_low_hp"):
+		if target.stats.max_hp > 0.0 and target.hp / target.stats.max_hp < float(lh.get("below_pct", 0.3)):
+			mult *= 1.0 + float(lh.get("pct", 0.0))
+	for sh: Dictionary in hooks(attacker, "stationary_damage"):
+		if world.tick - attacker.still_since >= world.ticks(float(sh.get("seconds", 1.5))):
+			mult *= 1.0 + float(sh.get("pct", 0.0))
+	for mh: Dictionary in hooks(attacker, "damage_per_missing_hp"):
+		if attacker.stats.max_hp > 0.0:
+			mult *= 1.0 + float(mh.get("max_pct", 0.0)) * (1.0 - clampf(attacker.hp / attacker.stats.max_hp, 0.0, 1.0))
+	var school := str(spec.get("school", ""))
+	if school != "":
+		for st: Dictionary in hooks(attacker, "stacking_school_damage"):
+			if str(st.get("school", "")) == school:
+				mult *= 1.0 + float(st.get("pct", 0.0)) * attacker.status_stacks("stack_" + school)
 	return mult
+
+
+## Crit chance added by school_crit hooks for a damage of this school.
+static func school_crit(attacker: CombatEntity, school: String) -> float:
+	var add := 0.0
+	if school == "":
+		return add
+	for h: Dictionary in hooks(attacker, "school_crit"):
+		if str(h.get("school", "")) == school:
+			add += float(h.get("add", 0.0))
+	return add
+
+
+## Internal recharge of a hook ("hook:<name>" in the entity cooldowns): true when ready.
+static func hook_ready(e: CombatEntity, name: String, world: SimWorld) -> bool:
+	return world.tick >= int(e.cooldowns.get("hook:" + name, 0))
+
+
+static func hook_use(e: CombatEntity, name: String, cooldown_s: float, world: SimWorld) -> void:
+	e.cooldowns["hook:" + name] = world.tick + world.ticks(cooldown_s)
 
 
 ## Whether `attacker` stands in the cone behind where `target` looks.

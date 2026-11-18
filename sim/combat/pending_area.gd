@@ -13,3 +13,5 @@ var interval: int = 0
 var effect: Dictionary = {}
 ## Line areas (a charge): the far end of the line; pos is where it starts.
 var end: Vector3 = Vector3.ZERO
+## Areas that follow their caster (Himno): the caster id (0 = stays put).
+var follow_id: int = 0

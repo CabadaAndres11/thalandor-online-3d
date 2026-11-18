@@ -40,7 +40,7 @@ static func try_cast(world: SimWorld, caster: CombatEntity, ability_id: String, 
 	var cd_s := float(ab.get("cooldown_s", 0.0))
 	if ab.has("combat_cooldown_s") and caster.in_combat(world):
 		cd_s = float(ab.combat_cooldown_s)
-	var cd := world.ticks(cd_s * (1.0 - caster.stats.cooldown_reduction))
+	var cd := world.ticks(cd_s * (1.0 - caster.stats.cooldown_reduction) * maxf(0.0, 1.0 - caster.status_magnitude("haste")) * (1.0 + caster.status_magnitude("attack_slow")))
 	if cd > 0:
 		caster.cooldowns[ability_id] = world.tick + cd
 	if uses_gcd:
@@ -53,9 +53,13 @@ static func try_cast(world: SimWorld, caster: CombatEntity, ability_id: String, 
 		_start_repeat(world, caster, ab, aim)
 		return true
 	world.cast_hits = 0
+	world.cast_kills = 0
+	world.cast_cd_reduced = 0.0
 	for e: Dictionary in ab.get("effects", []):
 		Effects.apply(world, caster, ab, e, ctx)
 	ClassRules.after_cast(caster, ab, world.cast_hits)
+	if bool(ab.get("refund_on_kill", false)) and world.cast_kills > 0:
+		Resources.add(caster, cost) # Ejecutar: a kill gives the cost back
 	return true
 
 
@@ -98,6 +102,18 @@ static func cancel_cast(world: SimWorld, pc: PendingCast) -> void:
 
 ## One tick of every pending repeat: cut by death, a fall, a stun or freeze (and, for a
 ## channel, by moving or dodging), or its next hit.
+## Allied summons end when their time is up or their owner is gone.
+static func _summons(world: SimWorld) -> void:
+	for id: int in world.monsters.keys():
+		var m := world.monsters[id] as MonsterState
+		if m == null or m.team != CombatEntity.TEAM_PLAYERS or m.summoned_by == 0:
+			continue
+		var owner := world.entity(m.summoned_by)
+		if owner == null or not owner.is_alive() or (m.despawn_tick > 0 and world.tick >= m.despawn_tick):
+			world.remove_entity(id)
+			world.emit(["summon_end", id])
+
+
 static func _pending_casts(world: SimWorld) -> void:
 	for pc: PendingCast in world.pending_casts.duplicate():
 		var caster := world.entity(pc.caster_id)
@@ -143,7 +159,7 @@ static func _finish_cast(world: SimWorld, pc: PendingCast, caster: CombatEntity,
 static func deal(world: SimWorld, source: CombatEntity, target: CombatEntity, effect: Dictionary, _ability: Dictionary) -> void:
 	if not target.is_alive():
 		return
-	if target.has_status("invulnerable"):
+	if target.has_status("invulnerable") or target.has_status("ice_block"):
 		_dodged(world, target)
 		return
 	var spec: Dictionary = effect.get("damage", {})
@@ -152,6 +168,12 @@ static func deal(world: SimWorld, source: CombatEntity, target: CombatEntity, ef
 		if r.dodged:
 			_dodged(world, target)
 			return
+		# Projectiles and areas carry a snapshot of their caster: combat time, rage,
+		# healing and hooks go to the live caster when it is still in the world.
+		var live := world.entity(source.id)
+		var attacker := live if live != null else source
+		attacker.last_target_id = target.id if target.team != attacker.team else attacker.last_target_id
+		world.current_source = source.id
 		Damage.apply(target, r, world)
 		world.emit(["hit", target.id, r.amount, r.crit, source.id])
 		world.cast_hits += 1
@@ -160,28 +182,57 @@ static func deal(world: SimWorld, source: CombatEntity, target: CombatEntity, ef
 			_blocked(target)
 		elif r.amount > 0.0 and r.absorbed >= r.amount:
 			_blocked(target)
-		if source.stats.lifesteal > 0.0 and r.amount > 0.0:
-			var live_src := world.entity(source.id)
-			var healer := live_src if live_src != null else source
-			if healer.is_alive():
-				heal(world, healer, healer, r.amount * source.stats.lifesteal)
-		# Projectiles and areas carry a snapshot of their caster: combat time, rage
-		# and healing go to the live caster when it is still in the world.
-		var live := world.entity(source.id)
-		var attacker := live if live != null else source
+		_reflect(world, attacker, target, r.absorbed)
+		var steal := source.stats.lifesteal + float(spec.get("lifesteal_pct", 0.0))
+		if steal > 0.0 and r.amount > 0.0 and attacker.is_alive():
+			heal(world, attacker, attacker, r.amount * steal)
 		Resources.on_damage_dealt(attacker, r.amount, world)
 		Resources.on_damage_taken(target, r.amount, world)
 		if r.crit:
 			_on_crit(world, attacker, source, target, spec)
-		if target is MonsterState and source.team == CombatEntity.TEAM_PLAYERS:
+		if target is MonsterState and source.team == CombatEntity.TEAM_PLAYERS and target.team != source.team:
 			var threat: float = r.amount * source.stats.threat_mult * float(_ability.get("threat_mult", 1.0))
 			(target as MonsterState).add_threat(source.id, maxf(threat, 1.0))
 		# Veneno: while the attacker is envenomed, its hits apply the poison.
 		for st: StatusEffect in source.statuses:
 			if st.kind == "envenom" and not st.on_hit.is_empty() and world.tick < st.end_tick:
 				apply_status(world, source, target, st.on_hit)
+		_hit_hooks(world, attacker, source, target, effect, spec)
 	for s: Dictionary in effect.get("statuses", []):
 		apply_status(world, source, target, s)
+
+
+## Hooks that react to a hit landed: Celo (melee hits restore resource), Carga arcana
+## (stacks of a school) and Último bastión (the target guards itself when low).
+static func _hit_hooks(world: SimWorld, attacker: CombatEntity, source: CombatEntity, target: CombatEntity,
+		effect: Dictionary, spec: Dictionary) -> void:
+	if effect.get("type") == "melee_arc":
+		for h: Dictionary in Passives.hooks(source, "melee_hit_restores"):
+			Resources.add(attacker, float(h.get("amount", 0.0)))
+	var school := str(spec.get("school", ""))
+	if school != "":
+		for h: Dictionary in Passives.hooks(source, "stacking_school_damage"):
+			if str(h.get("school", "")) == school and attacker.is_alive():
+				var st := StatusEffect.make("stack_" + school, world.tick + world.ticks(float(h.get("duration_s", 6.0))), 0.0, attacker.id)
+				attacker.add_status(st, int(h.get("max", 5)))
+	if target.is_alive() and target.stats.max_hp > 0.0:
+		for h: Dictionary in Passives.hooks(target, "low_hp_guard"):
+			if target.hp / target.stats.max_hp < float(h.get("below_pct", 0.2)) and Passives.hook_ready(target, "low_hp_guard", world):
+				Passives.hook_use(target, "low_hp_guard", float(h.get("cooldown_s", 60.0)), world)
+				apply_status(world, target, target, {"kind": "damage_reduction", "magnitude": float(h.get("reduction", 0.4)),
+					"duration_s": float(h.get("duration_s", 8.0))})
+
+
+## Represalia: a shield with shield_reflect sends back that share of what it absorbed
+## (no crit, and it never reflects again).
+static func _reflect(world: SimWorld, attacker: CombatEntity, target: CombatEntity, absorbed: float) -> void:
+	if absorbed <= 0.0 or target.shield_reflect <= 0.0 or attacker == target or attacker.team == target.team or not attacker.is_alive():
+		return
+	var amount := absorbed * target.shield_reflect
+	var r := {"amount": amount, "crit": false, "dodged": false, "absorbed": 0.0}
+	world.current_source = target.id
+	Damage.apply(attacker, r, world)
+	world.emit(["hit", attacker.id, amount, false, target.id])
 
 
 ## A hit avoided (dodge roll, evasion or invulnerability): Bloqueo experto and
@@ -214,13 +265,45 @@ static func _on_crit(world: SimWorld, attacker: CombatEntity, source: CombatEnti
 static func apply_status(world: SimWorld, source: CombatEntity, target: CombatEntity, s: Dictionary) -> void:
 	if not target.is_alive():
 		return
+	var kind := str(s.get("kind", ""))
 	# "coef": the magnitude grows with the source's attack power (bleed).
 	var magnitude := float(s.get("magnitude", 0.0)) + float(s.get("coef", 0.0)) * source.stats.attack_power
-	var st := StatusEffect.make(str(s.get("kind", "")), world.tick + world.ticks(float(s.get("duration_s", 1.0))),
+	var max_stacks := int(s.get("max_stacks", 1))
+	if kind == "poison":
+		for h: Dictionary in Passives.hooks(source, "poison_max_stacks"):
+			max_stacks = maxi(max_stacks, int(h.get("max", max_stacks)))
+	var st := StatusEffect.make(kind, world.tick + world.ticks(float(s.get("duration_s", 1.0))),
 		magnitude, source.id, int(s.get("stacks", 1)), world.ticks(float(s.get("every_s", 0.0))))
 	st.on_hit = s.get("on_hit", {})
-	target.add_status(st, int(s.get("max_stacks", 1)))
+	target.add_status(st, max_stacks)
 	world.emit(["status", target.id, st.kind, st.end_tick])
+	_status_hooks(world, source, target, kind, s)
+
+
+## Hooks of the source that add to a status it applies: Sangre corrupta (poisoned enemies
+## deal less), Escalofrío (slowed ones attack slower) and Corazón helado (a freeze gives
+## recharge back, at most `max` seconds per cast).
+static func _status_hooks(world: SimWorld, source: CombatEntity, target: CombatEntity, kind: String, s: Dictionary) -> void:
+	var duration := float(s.get("duration_s", 1.0))
+	match kind:
+		"poison":
+			for h: Dictionary in Passives.hooks(source, "poisoned_deal_less"):
+				apply_status(world, source, target, {"kind": "weaken", "magnitude": float(h.get("pct", 0.1)), "duration_s": duration})
+		"slow":
+			for h: Dictionary in Passives.hooks(source, "slow_adds_attack_slow"):
+				apply_status(world, source, target, {"kind": "attack_slow", "magnitude": float(h.get("pct", 0.25)), "duration_s": duration})
+		"freeze":
+			var live := world.entity(source.id)
+			for h: Dictionary in Passives.hooks(source, "freeze_reduces_cooldowns"):
+				if live == null:
+					continue
+				var give := minf(float(h.get("seconds", 1.0)), float(h.get("max", 3.0)) - world.cast_cd_reduced)
+				if give <= 0.0:
+					continue
+				world.cast_cd_reduced += give
+				for k: String in live.cooldowns.keys():
+					if not k.begins_with("hook:"):
+						live.cooldowns[k] = maxi(world.tick, int(live.cooldowns[k]) - world.ticks(give))
 
 
 ## A detached copy of an entity for things that outlive their caster (projectiles,
@@ -236,14 +319,20 @@ static func snapshot_of(e: CombatEntity) -> CombatEntity:
 	s.passives = e.passives
 	s.statuses = e.statuses.duplicate()
 	s.last_hurt_tick = e.last_hurt_tick
+	s.still_since = e.still_since
 	return s
 
 
 static func on_zero_hp(world: SimWorld, e: CombatEntity) -> void:
+	world.cast_kills += 1
+	_on_kill_hooks(world, e)
+	_spread_contagion(world, e)
 	e.statuses.clear()
 	e.shield = 0.0
+	e.shield_reflect = 0.0
 	e.forced_ticks = 0
 	if e is PlayerState:
+		dismiss_summons(world, e.id)
 		var p := e as PlayerState
 		p.charge_start = -1
 		p.combo = 0
@@ -266,6 +355,49 @@ static func on_zero_hp(world: SimWorld, e: CombatEntity) -> void:
 	if e is MonsterState and bool((e as MonsterState).def.get("boss", false)):
 		world.emit(["boss_down", e.type_id])
 		MonsterAI.dismiss_minions(world, e as MonsterState)
+
+
+## Masacre: whoever dealt the killing blow gets a recharge reset and/or a heal.
+static func _on_kill_hooks(world: SimWorld, dead: CombatEntity) -> void:
+	var killer := world.entity(world.current_source)
+	if killer == null or killer.team == dead.team or not killer.is_alive():
+		return
+	for h: Dictionary in Passives.hooks(killer, "on_kill"):
+		var ability := str(h.get("reset_cooldown", ""))
+		if ability != "":
+			killer.cooldowns.erase(ability)
+		if float(h.get("heal_pct", 0.0)) > 0.0:
+			heal(world, killer, killer, killer.stats.max_hp * float(h.heal_pct))
+
+
+## Contagio: an enemy that dies with the "contagion" status passes its poison to the
+## enemies within the status magnitude (meters) of it.
+static func _spread_contagion(world: SimWorld, dead: CombatEntity) -> void:
+	var radius := dead.status_magnitude("contagion")
+	if radius <= 0.0:
+		return
+	var poison: StatusEffect = null
+	for s: StatusEffect in dead.statuses:
+		if s.kind == "poison":
+			poison = s
+	if poison == null:
+		return
+	for o: CombatEntity in world.entities():
+		if o == dead or o.team != dead.team or not o.is_alive():
+			continue
+		if Effects.flat(o.position).distance_to(Effects.flat(dead.position)) <= radius + o.radius:
+			var copy := StatusEffect.make("poison", poison.end_tick, poison.magnitude, poison.source_id, poison.stacks, poison.tick_every)
+			o.add_status(copy, 10)
+			world.emit(["status", o.id, "poison", copy.end_tick])
+
+
+## Allied summons of an owner vanish (the owner died, changed upgrade or left).
+static func dismiss_summons(world: SimWorld, owner_id: int) -> void:
+	for id: int in world.monsters.keys():
+		var m := world.monsters[id] as MonsterState
+		if m != null and m.team == CombatEntity.TEAM_PLAYERS and m.summoned_by == owner_id:
+			world.remove_entity(id)
+			world.emit(["summon_end", id])
 
 
 static func _someone_standing(world: SimWorld, except: PlayerState) -> bool:
@@ -349,10 +481,16 @@ static func tick(world: SimWorld) -> void:
 			_die(world, p) # bled out
 		if p.life == CombatEntity.DEAD and p.respawn_tick >= 0 and world.tick >= p.respawn_tick:
 			respawn(world, p)
+	_summons(world)
 	for e: CombatEntity in world.entities():
+		var here := Effects.flat(e.position)
+		if here.distance_to(e.last_pos) > 0.01:
+			e.still_since = world.tick
+			e.last_pos = here
 		StatusEffect.tick_entity(e, world)
 		if e.shield > 0.0 and world.tick >= e.shield_end:
 			e.shield = 0.0
+			e.shield_reflect = 0.0
 		Resources.tick(e, world)
 		_forced_move(world, e)
 	_pending_casts(world)
@@ -372,6 +510,10 @@ static func _traps(world: SimWorld) -> void:
 			for o: CombatEntity in Effects.in_circle(world, t.owner, t.pos, radius):
 				deal(world, t.owner, o, t.effect, {"id": t.ability_id})
 			world.emit(["trap_fired", t.id, t.pos, radius])
+			if t.rearms > 0:
+				t.rearms -= 1
+				t.armed_tick = world.tick + world.ticks(float(t.effect.get("arm_s", 1.0)))
+				kept.append(t)
 			continue
 		kept.append(t)
 	world.traps = kept
@@ -451,6 +593,21 @@ static func _end_projectile(world: SimWorld, p: Projectile) -> void:
 	if not explode.is_empty():
 		for o: CombatEntity in Effects.in_circle(world, p.owner, at, float(explode.get("radius", 2.0))):
 			Combat.deal(world, p.owner, o, explode, {"id": p.ability_id})
+	var leave: Dictionary = explode.get("leave", {})
+	if not leave.is_empty():
+		var a := PendingArea.new()
+		a.id = world.next_object_id()
+		a.owner = p.owner
+		a.ability_id = p.ability_id
+		a.pos = at
+		a.fire_tick = world.tick + world.ticks(float(leave.get("delay_s", 0.0)))
+		a.pulses_left = maxi(1, int(leave.get("pulses", 1)))
+		a.interval = world.ticks(float(leave.get("interval_s", 0.0)))
+		a.effect = leave
+		if a.fire_tick <= world.tick:
+			fire_area(world, a)
+		if a.pulses_left > 0:
+			world.pending_areas.append(a)
 	world.emit(["projectile_end", p.id, at])
 
 
@@ -474,8 +631,17 @@ static func fire_area(world: SimWorld, a: PendingArea) -> void:
 		if jumper != null:
 			world.emit(["leap", jumper.id, jumper.position, jumper.position]) # comes down where it is
 		return
+	var live_owner := world.entity(a.owner.id)
+	if a.follow_id != 0 and live_owner != null:
+		a.pos = Vector3(live_owner.position.x, 0, live_owner.position.z) # Himno: the area goes with the caster
 	for o: CombatEntity in Effects.in_circle(world, a.owner, a.pos, float(a.effect.get("radius", 1.0))):
 		Combat.deal(world, a.owner, o, a.effect, {"id": a.ability_id})
+	var heal: Dictionary = a.effect.get("heal", {})
+	if not heal.is_empty():
+		for ally: CombatEntity in Effects.allies_in_circle(world, a.owner, a.pos, float(a.effect.get("radius", 1.0))):
+			var amount := (float(heal.get("base", 0.0)) + float(heal.get("coef", 0.0)) * a.owner.stats.spell_power) \
+				* a.owner.stats.healing_done_mult * ally.stats.healing_received_mult
+			Combat.heal(world, live_owner if live_owner != null else a.owner, ally, amount)
 	a.pulses_left -= 1
 	a.fire_tick = world.tick + maxi(a.interval, 1)
 	world.emit(["area", a.id, a.pos, float(a.effect.get("radius", 1.0))])
