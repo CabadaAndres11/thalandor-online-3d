@@ -299,3 +299,74 @@ func test_a_beam_is_one_glowing_tube_that_turns_and_expires() -> void:
 	assert_eq(fx.beam_count(), 1)
 	fx.advance(0.3)
 	assert_eq(fx.beam_count(), 0, "gone when the pulses stop")
+
+
+func test_archer_arrows_and_assassin_knives_are_voxel_models() -> void:
+	fx.handle(["projectile", 50, 1, "archer_shot", Vector3(5, 0, 5), Vector2(1, 0), 20.0, 20.0])
+	var arrow := (fx.get_child(0) as Node3D).get_child(0) as MeshInstance3D
+	assert_gt(arrow.mesh.get_surface_count(), 0, "a voxel arrow")
+	fx.handle(["projectile", 51, 1, "assassin_throw_knife", Vector3(5, 0, 5), Vector2(1, 0), 20.0, 20.0])
+	var knife := (fx.get_child(1) as Node3D).get_child(0) as MeshInstance3D
+	var before := knife.rotation.x
+	fx.advance(0.1)
+	assert_ne(knife.rotation.x, before, "the knife spins in flight")
+
+
+func test_arrow_rain_pours_arrows_per_pulse_and_they_stick_then_go() -> void:
+	fx.handle(["area", 60, Vector3(8, 0, 8), 3.0, "archer_arrow_rain", 2, 0.5, []])
+	assert_gt(fx.decor_count(), 10, "a volley")
+	fx.advance(0.5)
+	assert_gt(fx.decor_count(), 5, "stuck in the ground for a moment")
+	fx.advance(1.5)
+	assert_eq(fx.decor_count(), 0)
+	await wait_frames(2)
+	assert_eq(fx.find_children("*", "MeshInstance3D", false, false).size(), 0, "the nodes are freed too")
+
+
+func test_areas_leave_no_glowing_disc_under_them() -> void:
+	fx.handle(["area", 61, Vector3(8, 0, 8), 3.0, "warrior_whirlwind", 0, 0.0, []])
+	assert_eq(fx.find_children("*", "MeshInstance3D", false, false).size(), 0)
+	fx.handle(["area", 62, Vector3(8, 0, 8), 3.0, "mage_blizzard", 5, 1.0, []])
+	var cylinders := fx.find_children("*", "MeshInstance3D", true, false).filter(func(n: Node) -> bool: return (n as MeshInstance3D).mesh is CylinderMesh)
+	assert_eq(cylinders.size(), 1, "only the ice disc of its mark")
+
+
+func test_an_ice_field_does_not_restart_on_every_pulse() -> void:
+	fx.handle(["area", 63, Vector3(8, 0, 8), 4.0, "mage_blizzard", 6, 1.0, []])
+	var bursts := fx.find_children("*", "CPUParticles3D", false, false).size()
+	var decor := fx.decor_count()
+	for i in 4:
+		fx.advance(1.0)
+		fx.handle(["area", 63, Vector3(8, 0, 8), 4.0, "mage_blizzard", 5 - i, 1.0, []])
+	assert_eq(fx.find_children("*", "CPUParticles3D", false, false).size(), bursts, "no new bursts")
+	assert_eq(fx.decor_count(), decor, "the same field the whole time")
+	assert_eq(fx.mark_count(), 1)
+
+
+func test_a_net_falls_over_a_rooted_target_for_the_root() -> void:
+	fx.handle(["status", 1000, "root", latest_tick + 90])
+	assert_gt(fx.decor_count(), 0)
+	fx.advance(2.0)
+	assert_gt(fx.decor_count(), 0, "still on while rooted")
+	fx.advance(1.5)
+	assert_eq(fx.decor_count(), 0)
+
+
+func test_a_trap_is_visible_on_the_map_until_it_goes_off() -> void:
+	fx.handle(["trap", 7, 1, Vector3(9, 0, 9), 1.5, latest_tick + 30])
+	assert_eq(fx.trap_count(), 1)
+	fx.advance(5.0)
+	assert_eq(fx.trap_count(), 1, "it stays")
+	fx.handle(["trap_fired", 7, Vector3(9, 0, 9), 1.5])
+	assert_eq(fx.trap_count(), 0)
+	assert_gt(fx.decor_count(), 1, "an explosion")
+	fx.handle(["trap", 8, 1, Vector3(9, 0, 9), 1.5, latest_tick + 30])
+	fx.handle(["trap_end", 8])
+	assert_eq(fx.trap_count(), 0)
+
+
+func test_a_teleport_leaves_a_streak_and_flashes() -> void:
+	fx.handle(["blink", 1, Vector3(5, 0, 5), Vector3(14, 0, 5), "mage_blink"])
+	assert_gt(fx.decor_count(), 8, "motes along the way and two flashes")
+	fx.advance(1.5)
+	assert_eq(fx.decor_count(), 0)

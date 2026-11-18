@@ -59,6 +59,7 @@ var _mesh_cache: Dictionary = {}
 ## id -> bool: casters whose swing is drawn by a SlashFx (set by the game session).
 var slash_owners: Callable
 var _beams: Dictionary = {} # caster id -> {node, t}
+var _trap_nodes: Dictionary = {} # trap id -> {node, light, armed_tick}
 
 
 func setup(position_of: Callable, tick_now: Callable, abilities: AbilityDB, tick_rate: int) -> void:
@@ -80,6 +81,14 @@ func handle(ev: Array) -> void:
 			_add_projectile(ev)
 		"beam":
 			_beam(ev)
+		"blink":
+			_blink_fx(ev[2], ev[3], str(ev[4]) if ev.size() > 4 else "")
+		"trap":
+			_trap_placed(int(ev[1]), ev[3], int(ev[5]))
+		"trap_fired":
+			_trap_fired(int(ev[1]), ev[2], float(ev[3]))
+		"trap_end":
+			_trap_remove(int(ev[1]))
 		"projectile_end":
 			_end_projectile(int(ev[1]), ev[2] if ev.size() > 2 else null)
 		"cast":
@@ -106,6 +115,8 @@ func handle(ev: Array) -> void:
 		"status":
 			if str(ev[2]) == "shield":
 				_add_shield(int(ev[1]), int(ev[3]))
+			elif str(ev[2]) == "root":
+				_net(int(ev[1]), int(ev[3]))
 			elif str(ev[2]) == "ice_block":
 				_ice_block(int(ev[1]), int(ev[3]))
 			elif str(ev[2]) in ["slow", "freeze"]:
@@ -142,6 +153,8 @@ func advance(dt: float) -> void:
 			_remove_projectile(pid)
 		else:
 			(p.node as Node3D).position = p.from + p.dir * travelled
+			if p.spin != null:
+				(p.spin as Node3D).rotation.x += dt * 22.0
 			if p.element == "frost":
 				while travelled >= p.next_spike and p.next_spike < p.range:
 					_ice_spikes_at(p, p.next_spike)
@@ -192,6 +205,10 @@ func advance(dt: float) -> void:
 				(c.extra as Node3D).position = (at as Vector3) + Vector3(0, 0.1, 0)
 			_grow_charge_orb(c, id, at as Vector3)
 	_advance_decor(dt)
+	for tid: int in _trap_nodes.keys():
+		var tn: Dictionary = _trap_nodes[tid]
+		var armed := int(_tick_now.call()) >= int(tn.armed_tick)
+		(tn.light as Node3D).visible = (sin(Time.get_ticks_msec() / 1000.0 * 8.0) > 0.0) if armed else true # it blinks once armed
 	for id: int in _shields.keys():
 		var s: Dictionary = _shields[id]
 		s.t += dt
@@ -315,6 +332,17 @@ func _glow(color: Color, alpha: float) -> StandardMaterial3D:
 	return m
 
 
+## The voxel model of a physical projectile ("" = the plain bolt): archers shoot arrows, assassins
+## throw knives; an ability can name its own with "fx_model".
+func _projectile_model(ability_id: String) -> String:
+	if _abilities == null or not _abilities.has(ability_id):
+		return ""
+	var ab := _abilities.get_ability(ability_id)
+	if ab.has("fx_model"):
+		return str(ab.fx_model)
+	return {"archer": "arrow", "assassin": "knife"}.get(str(ab.get("class", "")), "")
+
+
 func _add_projectile(ev: Array) -> void:
 	var pid := int(ev[1])
 	var from: Vector3 = ev[4]
@@ -322,7 +350,15 @@ func _add_projectile(ev: Array) -> void:
 	var color := _color_of(str(ev[3]))
 	var element := _element_of_ability(str(ev[3]))
 	var node := Node3D.new()
-	if element == "":
+	var model := _projectile_model(str(ev[3]))
+	var spin: Node3D = null
+	if element == "" and model != "":
+		var shape := _voxel("proj_" + model, func() -> Dictionary: return VoxelFx.arrow() if model == "arrow" else VoxelFx.knife(), false, 1.0, 0.07)
+		node.add_child(shape)
+		if model == "knife":
+			spin = shape # a thrown knife turns end over end
+		node.add_child(_trail(Color(0.85, 0.88, 0.92)))
+	elif element == "":
 		# A stretched glowing bolt along its flight, with a fading trail behind.
 		var bolt := MeshInstance3D.new()
 		var mesh := CapsuleMesh.new()
@@ -351,7 +387,7 @@ func _add_projectile(ev: Array) -> void:
 	if dir2.length() > 0.001:
 		node.rotation.y = atan2(dir2.x, dir2.y)
 	_projectiles[pid] = {"node": node, "from": start, "dir": Vector3(dir2.x, 0, dir2.y),
-		"speed": float(ev[6]), "range": float(ev[7]), "t": 0.0, "element": element, "color": color, "next_spike": 0.6}
+		"speed": float(ev[6]), "range": float(ev[7]), "t": 0.0, "element": element, "color": color, "next_spike": 0.6, "spin": spin}
 
 
 func _remove_projectile(pid: int) -> void:
@@ -452,13 +488,17 @@ func _remove_telegraph(id: int) -> void:
 func _area_flash(pos: Vector3, radius: float, ability_id: String = "", area_id: int = 0, still_going_s: float = 0.0, wall: Array = []) -> void:
 	var magic := ability_id != "" and _is_magic(ability_id)
 	var color := _color_of(ability_id).lightened(0.35) if magic else Color(1, 0.9, 0.6)
-	if wall.is_empty():
+	if ability_id == "": # a level-up flash; areas of abilities do not glow under their targets
 		var d := _disc(radius, color, 0.6)
 		d.position = pos + Vector3(0, 0.05, 0)
 		add_child(d)
 		_flashes.append({"node": d, "t": 0.0})
+	var again: bool = _marks.has(area_id) and is_instance_valid(_marks[area_id].node) and _marks[area_id] in _decor
+	if _fx_style(ability_id) == "arrow_rain":
+		_arrow_volley(pos, radius)
 	if magic:
-		_burst(pos, radius, color, wall)
+		if not again: # the effect stays in the field: only its first pulse bursts
+			_burst(pos, radius, color, wall)
 		_ground_mark(area_id, pos, radius, _element_of_ability(ability_id), still_going_s, wall)
 		if _fx_style(ability_id) == "meteor":
 			_explosion(pos, color, "fire", radius / 2.0)
@@ -735,27 +775,34 @@ func _advance_decor(dt: float) -> void:
 	for d: Dictionary in _decor.duplicate():
 		d.t += dt
 		var node: Node3D = d.node
-		if d.t >= d.life or not is_instance_valid(node):
-			if is_instance_valid(node):
-				node.queue_free()
+		if not is_instance_valid(node):
+			_decor.erase(d)
+			continue
+		var lt: float = d.t - float(d.get("delay", 0.0)) # time since it started (it can wait first)
+		if lt < 0.0:
+			node.visible = false
+			continue
+		node.visible = true
+		if lt >= d.life:
+			node.queue_free()
 			_decor.erase(d)
 			continue
 		if d.has("fall"):
-			var fk := clampf(d.t / maxf(float(d.life), 0.01), 0.0, 1.0)
+			var fk := clampf(lt / maxf(float(d.fall.get("dur", d.life)), 0.01), 0.0, 1.0)
 			node.position = (d.fall.from as Vector3).lerp(d.fall.to as Vector3, fk * fk) # it speeds up as it falls
 		if d.has("follow"):
 			var fp: Variant = _position_of.call(int(d.follow))
 			if fp != null:
 				node.position = (fp as Vector3) + Vector3(0, 0.95, 0)
 		if d.grow > 0.0:
-			var k := clampf(d.t / d.grow, 0.0, 1.0)
+			var k := clampf(lt / d.grow, 0.0, 1.0)
 			node.scale = (d.target as Vector3) * (1.0 - pow(1.0 - k, 3.0)) # eases out
 		if d.flicker:
-			var f := 0.85 + 0.25 * sin(d.t * 11.0 + d.phase)
+			var f := 0.85 + 0.25 * sin(lt * 11.0 + d.phase)
 			node.scale = Vector3((d.target as Vector3).x, (d.target as Vector3).y * f, (d.target as Vector3).z)
 		if d.spin != 0.0:
 			node.rotation.y += float(d.spin) * dt
-		var remaining: float = d.life - d.t
+		var remaining: float = d.life - lt
 		if d.fade > 0.0 and remaining < d.fade:
 			_set_decor_alpha(node, float(d.base) * remaining / float(d.fade))
 
@@ -1035,6 +1082,84 @@ func _beam(ev: Array) -> void:
 
 func beam_count() -> int:
 	return _beams.size()
+
+
+## Arrows falling out of the sky over an area, one volley per pulse; they stick in the ground
+## for a moment.
+func _arrow_volley(pos: Vector3, radius: float) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = int(pos.x * 31.0 + pos.z * 17.0) + Engine.get_physics_frames()
+	for i in clampi(int(radius * 6.0), 8, 28):
+		var a := rng.randf() * TAU
+		var d := sqrt(rng.randf()) * radius
+		var target := pos + Vector3(cos(a) * d, 0.0, sin(a) * d)
+		var arrow := _voxel("proj_arrow", func() -> Dictionary: return VoxelFx.arrow(), false, 1.0, 0.07)
+		arrow.rotation = Vector3(PI / 2.0 + rng.randf_range(-0.15, 0.15), rng.randf() * TAU, 0) # pointing down
+		var from := target + Vector3(rng.randf_range(-1.0, 1.0), 13.0, rng.randf_range(-1.0, 1.0))
+		arrow.position = from
+		var dec := _add_decor(arrow, 0.9, 0.0, Vector3.ONE, 0.35)
+		dec.fall = {"from": from, "to": target + Vector3(0, 0.25, 0), "dur": 0.22}
+		dec.delay = rng.randf_range(0.0, 0.3)
+
+
+## A net that falls over a rooted target and stays while the root lasts.
+func _net(id: int, end_tick: int) -> void:
+	var at: Variant = _position_of.call(id)
+	if at == null:
+		return
+	var seconds := clampf(float(end_tick - int(_tick_now.call())) / float(_tick_rate), 0.3, 8.0)
+	var mesh := _voxel("net", func() -> Dictionary: return VoxelFx.net(), false, 0.95, 0.13)
+	var to := (at as Vector3) + Vector3(0, 0.1, 0)
+	var from := to + Vector3(0, 2.8, 0)
+	mesh.position = from
+	var dec := _add_decor(mesh, seconds, 0.0, Vector3.ONE, 0.4)
+	dec.fall = {"from": from, "to": to, "dur": 0.25}
+
+
+## A trap lying on the ground from the moment it is set until it goes off or runs out.
+func _trap_placed(id: int, pos: Vector3, armed_tick: int) -> void:
+	_trap_remove(id)
+	var holder := Node3D.new()
+	holder.position = Vector3(pos.x, 0.03, pos.z)
+	var body := _voxel("trap", func() -> Dictionary: return VoxelFx.trap(), false, 1.0, 0.1)
+	holder.add_child(body)
+	var light := _voxel("trap_light", func() -> Dictionary: return VoxelFx.orb(Color("#ff3b2f"), 1.3), true, 1.0, 0.1)
+	light.position = Vector3(0, 0.4, 0)
+	holder.add_child(light)
+	add_child(holder)
+	_trap_nodes[id] = {"node": holder, "light": light, "armed_tick": armed_tick}
+
+
+func _trap_fired(id: int, pos: Vector3, radius: float) -> void:
+	_trap_remove(id)
+	_explosion(pos, Color("#ff9a2a"), "fire", maxf(radius / 1.5, 0.8))
+
+
+func _trap_remove(id: int) -> void:
+	if _trap_nodes.has(id):
+		(_trap_nodes[id].node as Node).queue_free()
+		_trap_nodes.erase(id)
+
+
+func trap_count() -> int:
+	return _trap_nodes.size()
+
+
+## A teleport: a flash where it started, a streak of glowing motes along the way that fades from
+## the start to the end, and a brighter flash where it arrives.
+func _blink_fx(from: Vector3, to: Vector3, ability_id: String) -> void:
+	var color := _color_of(ability_id).lightened(0.2) if ability_id != "" else Color("#c07bff")
+	var dist := from.distance_to(to)
+	var n := clampi(int(dist / 0.6), 4, 24)
+	for i in n:
+		var t := float(i) / float(n - 1)
+		var mote := _voxel("blink_mote_%s" % color.to_html(), func() -> Dictionary: return VoxelFx.orb(color, 1.6), true, 0.85, 0.1)
+		mote.position = from.lerp(to, t) + Vector3(0, 1.0, 0)
+		var dec := _add_decor(mote, 0.45, 0.12, Vector3.ONE * lerpf(1.2, 0.6, t), 0.35, 0.85)
+		dec.delay = t * 0.12
+	_flash_orb(from + Vector3(0, 1.0, 0), color, 1.2)
+	_flash_orb(to + Vector3(0, 1.0, 0), color.lightened(0.3), 1.7)
+	_shards(to + Vector3(0, 1.0, 0), color, 18)
 
 
 ## A short burst of sparks where something got hit.

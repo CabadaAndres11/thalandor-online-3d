@@ -302,6 +302,75 @@ static func ice_color(rng: RandomNumberGenerator, edge: bool = false) -> Color:
 	return base
 
 
+## An arrow along +Z: a wooden shaft, a steel head and red and white fletching.
+static func arrow() -> Dictionary:
+	var cells := {}
+	for z in range(-5, 5):
+		cells[Vector3i(0, 0, z)] = Color("#8a5a2b")
+	for z in range(5, 8):
+		var r := 1 if z == 5 else 0
+		for x in range(-r, r + 1):
+			for y in range(-r, r + 1):
+				if absi(x) + absi(y) <= r:
+					cells[Vector3i(x, y, z)] = Color("#d4d9df") if z < 7 else Color("#f4f7fa")
+	for z in range(-5, -2):
+		var col := Color("#d94a3a") if z != -4 else Color.WHITE
+		for off: Vector2i in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
+			cells[Vector3i(off.x, off.y, z)] = col
+	return cells
+
+
+## A throwing knife along +Z: a flat steel blade, a golden guard and a dark handle.
+static func knife() -> Dictionary:
+	var cells := {}
+	for z in range(1, 8):
+		var h := 1 if z < 6 else 0
+		for y in range(-h, h + 1):
+			cells[Vector3i(0, y, z)] = Color("#eef2f6") if y == 0 else Color("#b9c1ca")
+	for x in range(-2, 3):
+		cells[Vector3i(x, 0, 0)] = Color("#c9a13a")
+	for z in range(-4, 0):
+		cells[Vector3i(0, 0, z)] = Color("#4a3020")
+	cells[Vector3i(0, 0, -5)] = Color("#c9a13a")
+	return cells
+
+
+## A net: a dome of rope strands with knots where they cross, to fall over a target.
+static func net(radius_cells: int = 7) -> Dictionary:
+	var cells := {}
+	var r := float(radius_cells)
+	for x in range(-radius_cells, radius_cells + 1):
+		for y in range(0, radius_cells + 1):
+			for z in range(-radius_cells, radius_cells + 1):
+				var d := Vector3(x, y, z).length()
+				if absf(d - r) > 0.7:
+					continue
+				var strand_a := posmod(x + z, 3) == 0
+				var strand_b := posmod(x - z, 3) == 0
+				if strand_a or strand_b:
+					cells[Vector3i(x, y, z)] = Color("#e0c48a") if (strand_a and strand_b) else Color("#b08d52")
+	return cells
+
+
+## A bear trap lying on the ground: a dark plate with a ring of steel teeth.
+static func trap(radius_cells: int = 5) -> Dictionary:
+	var cells := {}
+	for x in range(-radius_cells, radius_cells + 1):
+		for z in range(-radius_cells, radius_cells + 1):
+			var d := Vector2(x, z).length()
+			if d <= float(radius_cells) - 0.5:
+				cells[Vector3i(x, 0, z)] = Color("#8a9099") if d > float(radius_cells) - 1.6 else Color("#4a4f58")
+	for i in 10:
+		var a := TAU * float(i) / 10.0
+		var c := Vector3i(roundi(cos(a) * float(radius_cells - 1)), 0, roundi(sin(a) * float(radius_cells - 1)))
+		for h in range(1, 4):
+			cells[Vector3i(c.x, h, c.z)] = Color("#c8ced6") if h < 3 else Color("#f0f3f6")
+	for x in range(-1, 2):
+		for z in range(-1, 2):
+			cells[Vector3i(x, 1, z)] = Color("#2f333a")
+	return cells
+
+
 ## A ball of cubes of one colour with a pale core (holy, nature, shadow and the rest).
 static func orb(color: Color, radius_cubes: float = 2.0, seed_value: int = 5) -> Dictionary:
 	var rng := RandomNumberGenerator.new()
