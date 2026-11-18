@@ -70,7 +70,7 @@ func can_act(_tick: int) -> bool:
 func move_mult() -> float:
 	if not is_alive() or has_status("stun") or has_status("freeze") or has_status("root") or has_status("ice_block"):
 		return 0.0
-	return stats.move_speed_mult * maxf(0.0, 1.0 - status_magnitude("slow"))
+	return stats.move_speed_mult * (1.0 + status_magnitude("speed_buff")) * maxf(0.0, 1.0 - status_magnitude("slow"))
 
 
 func is_dashing() -> bool:

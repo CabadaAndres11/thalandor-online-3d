@@ -31,7 +31,7 @@ func _dummy(pos: Vector3) -> CombatEntity:
 
 
 func test_kit_has_nine_usable_and_levels() -> void:
-	var all := _db().class_abilities("assassin")
+	var all := _db().class_abilities("assassin").filter(func(a: Dictionary) -> bool: return not a.has("upgrade"))
 	var usable := all.filter(func(a: Dictionary) -> bool: return a.get("kind") != "passive")
 	assert_eq(usable.size(), 9)
 	assert_eq(_db().actives("assassin").map(func(id: String) -> int: return int(_db().get_ability(id).level)),

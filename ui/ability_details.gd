@@ -152,7 +152,7 @@ static func _status(s: Dictionary) -> String:
 	var d := num(s.get("duration_s", 0))
 	var m := float(s.get("magnitude", 0.0))
 	match kind:
-		"slow", "mark", "damage_buff", "damage_reduction", "evasion", "haste", "vulnerable", "attack_slow", "weaken":
+		"slow", "mark", "damage_buff", "damage_reduction", "evasion", "haste", "vulnerable", "attack_slow", "weaken", "speed_buff":
 			return _tr("DETAIL_ST_" + kind.to_upper()) % [pct(m), d]
 		"poison", "burn":
 			return _tr("DETAIL_ST_" + kind.to_upper()) % [num(m), num(s.get("every_s", 1)), d, int(s.get("max_stacks", 1))]

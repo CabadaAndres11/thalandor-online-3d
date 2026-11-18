@@ -549,3 +549,22 @@ AB_ARCHER_SURVIVOR,Superviviente
 AB_ARCHER_SURVIVOR_DESC,"+10 % de vida máxima y +10 % de velocidad de movimiento."
 UP_SHARPSHOOTER_EVO,"El disparo cargado al 80 % o más atraviesa hasta 3 enemigos."
 UP_HUNTER_EVO,"La red atrapa a todos los enemigos en 3 m alrededor del cursor."
+AB_ASSASSIN_VANISH,Desvanecer
+AB_ASSASSIN_VANISH_DESC,"Desapareces 8 s (también en combate) y corres un 30 % más rápido durante 3 s. No gasta el tiempo global."
+AB_ASSASSIN_SHADOW_STRIKE,Golpe sombrío
+AB_ASSASSIN_SHADOW_STRIKE_DESC,"Te teletransportas tras el objetivo y le das un golpe crítico seguro. Da 2 puntos de combo."
+AB_ASSASSIN_BORN_KILLER,Asesino nato
+AB_ASSASSIN_BORN_KILLER_DESC,"+20 % de daño a objetivos por debajo del 30 % de vida."
+AB_ASSASSIN_VEIL,Velo
+AB_ASSASSIN_VEIL_DESC,"+50 % de duración del sigilo."
+AB_ASSASSIN_TOXIC_CLOUD,Nube tóxica
+AB_ASSASSIN_TOXIC_CLOUD_DESC,"Una nube de 4 m en el cursor durante 8 s que aplica una acumulación de veneno cada segundo."
+AB_ASSASSIN_CONTAGION,Contagio
+AB_ASSASSIN_CONTAGION_DESC,"Marca a un enemigo 10 s: si muere envenenado, su veneno salta a los enemigos a 6 m."
+AB_ASSASSIN_TOXICOLOGY,Toxicología
+AB_ASSASSIN_TOXICOLOGY_DESC,"El veneno se acumula hasta 10 veces."
+AB_ASSASSIN_CORRUPT_BLOOD,Sangre corrupta
+AB_ASSASSIN_CORRUPT_BLOOD_DESC,"Los enemigos envenenados por ti hacen un 10 % menos de daño."
+UP_SHADOW_EVO,"Eviscerar devuelve 8 de energía por cada punto de combo gastado."
+UP_VENOMANCER_EVO,"Cuchillada aplica siempre una acumulación de veneno."
+DETAIL_ST_SPEED_BUFF,+%s de velocidad de movimiento durante %s s
