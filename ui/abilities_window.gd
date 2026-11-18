@@ -1,15 +1,17 @@
 class_name AbilitiesWindow
 extends Control
-## Abilities window (K): the class's mouse attacks (CI, CD), actives and passives with
-## their description and computed details (AbilityDetails), and
-## the bar of slots 1-4. Click an active, then a slot; an ability already on the bar
-## swaps places. Clicking a slot with nothing selected picks its ability up.
+## Abilities window (K): the class's abilities as lists (mouse attacks and actives, then
+## passives; the lists grow with abilities from outside the class later) with the selected
+## one's description and computed details (AbilityDetails) and the bar of slots 1-4.
+## Click an active, then a slot; an ability already on the bar swaps places. Clicking a
+## slot with nothing selected picks its ability up.
 
 signal bar_changed(bar: Array)
 
-const CARD := Vector2(100, 86)
+const ROW := Vector2(270, 42)
+const ICON := 32
 const BAR_SLOT := 64.0
-const DESC_LINES := 9
+const DESC_LINES := 11
 
 var _abilities: AbilityDB
 var _class_id: String = ""
@@ -22,9 +24,9 @@ var _actives: Array = []
 var _passives: Array = []
 var _selected: String = ""
 var _panel: PanelContainer
-var _attack_row: HBoxContainer
-var _active_row: HBoxContainer
-var _passive_row: HBoxContainer
+var _attack_row: VBoxContainer
+var _active_row: VBoxContainer
+var _passive_row: VBoxContainer
 var _bar_row: HBoxContainer
 var _cards: Dictionary = {} # ability id -> Button
 var _slots: Array = [] # Button per bar slot
@@ -54,23 +56,33 @@ func _init() -> void:
 
 	var header := HBoxContainer.new()
 	box.add_child(header)
-	var title := Label.new()
-	title.text = tr("ABILITIES_TITLE")
-	title.add_theme_font_size_override("font_size", 28)
-	title.size_flags_horizontal = SIZE_EXPAND_FILL
-	header.add_child(title)
+	header.add_child(HoloTheme.title(tr("ABILITIES_TITLE")))
 	var close := Button.new()
 	close.text = tr("BTN_CLOSE")
 	close.pressed.connect(func() -> void: visible = false)
 	header.add_child(close)
+	box.add_child(HoloTheme.divider())
 
-	# Row 1: the mouse attacks (CI, CD) and the actives; row 2: passives and the bar.
-	var row1 := _row(box)
-	_attack_row = _block(row1, tr("ABILITIES_ATTACKS"))
-	_active_row = _block(row1, tr("ABILITIES_ACTIVES"))
-	var row2 := _row(box)
-	_passive_row = _block(row2, tr("ABILITIES_PASSIVES"))
-	_bar_row = _block(row2, tr("ABILITIES_BAR"))
+	# Lists on the left, the bar and the description of the selected ability on the right.
+	var body := HBoxContainer.new()
+	body.add_theme_constant_override("separation", 22)
+	box.add_child(body)
+	var list_col := VBoxContainer.new()
+	list_col.add_theme_constant_override("separation", 4)
+	body.add_child(list_col)
+	_attack_row = _list(list_col, tr("ABILITIES_ATTACKS"))
+	_active_row = _list(list_col, tr("ABILITIES_ACTIVES"))
+	var passive_col := VBoxContainer.new()
+	passive_col.add_theme_constant_override("separation", 4)
+	body.add_child(passive_col)
+	_passive_row = _list(passive_col, tr("ABILITIES_PASSIVES"))
+	var side := VBoxContainer.new()
+	side.add_theme_constant_override("separation", 6)
+	body.add_child(side)
+	side.add_child(HoloTheme.section(tr("ABILITIES_BAR")))
+	_bar_row = HBoxContainer.new()
+	_bar_row.add_theme_constant_override("separation", 6)
+	side.add_child(_bar_row)
 	for i in AbilityDB.BAR_SIZE:
 		var slot := Button.new()
 		slot.custom_minimum_size = Vector2(BAR_SLOT, BAR_SLOT)
@@ -82,16 +94,17 @@ func _init() -> void:
 		slot.pressed.connect(click_slot.bind(i))
 		_bar_row.add_child(slot)
 		_slots.append(slot)
-
+	side.add_child(HoloTheme.divider())
 	_name_label = Label.new()
 	_name_label.add_theme_font_size_override("font_size", 18)
-	box.add_child(_name_label)
+	_name_label.add_theme_color_override("font_color", HoloTheme.ACCENT)
+	side.add_child(_name_label)
 	_desc = Label.new()
 	_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_desc.add_theme_font_size_override("font_size", 15)
-	_desc.custom_minimum_size = Vector2(7 * CARD.x + 6 * 6 + 24, DESC_LINES * 21)
+	_desc.custom_minimum_size = Vector2(560, DESC_LINES * 21)
 	_desc.vertical_alignment = VERTICAL_ALIGNMENT_TOP
-	box.add_child(_desc)
+	side.add_child(_desc)
 	_villager_hint = Label.new()
 	_villager_hint.text = tr("ABILITIES_VILLAGER_HINT")
 	_villager_hint.add_theme_font_size_override("font_size", 16)
@@ -124,7 +137,7 @@ func show_for(class_id: String, p_bar: Array, abilities: AbilityDB, level: int =
 		func(a: Dictionary) -> bool: return a.get("kind") == "passive" and AbilityDB.upgrade_ok(a, upgrade)).map(
 		func(a: Dictionary) -> String: return a.id)
 	_cards.clear()
-	for row: HBoxContainer in [_attack_row, _active_row, _passive_row]:
+	for row: VBoxContainer in [_attack_row, _active_row, _passive_row]:
 		for child in row.get_children():
 			row.remove_child(child)
 			child.queue_free()
@@ -228,44 +241,27 @@ func description_fits() -> bool:
 
 # --- Building ---
 
-func _section(text: String) -> Label:
-	var l := Label.new()
-	l.text = text
-	l.add_theme_font_size_override("font_size", 15)
-	l.modulate = HoloTheme.SECTION
-	return l
-
-
-func _row(box: VBoxContainer) -> HBoxContainer:
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 24)
-	box.add_child(row)
-	return row
-
-
-## A labelled group of cards inside a row; returns the cards' row.
-func _block(row: HBoxContainer, title: String) -> HBoxContainer:
-	var col := VBoxContainer.new()
-	col.add_theme_constant_override("separation", 4)
-	row.add_child(col)
-	col.add_child(_section(title))
-	var cards := HBoxContainer.new()
-	cards.add_theme_constant_override("separation", 6)
-	col.add_child(cards)
-	return cards
+## A titled vertical list of ability rows; returns the rows' container.
+func _list(col: VBoxContainer, title: String) -> VBoxContainer:
+	col.add_child(HoloTheme.section(title))
+	var rows := VBoxContainer.new()
+	rows.add_theme_constant_override("separation", 3)
+	col.add_child(rows)
+	return rows
 
 
 func _card(id: String) -> Button:
 	var a := _abilities.get_ability(id)
 	var b := Button.new()
-	b.custom_minimum_size = CARD
+	b.custom_minimum_size = ROW
 	b.icon = _icon(id)
 	b.expand_icon = true
-	b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	b.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
+	b.add_theme_constant_override("icon_max_width", ICON)
+	b.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	b.clip_text = true
 	b.text = tr(str(a.get("name", id)))
-	b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	b.add_theme_font_size_override("font_size", 13)
+	b.add_theme_font_size_override("font_size", 14)
 	b.tooltip_text = tr(str(a.get("desc", "")))
 	if is_locked(id):
 		b.text += "\n" + tr("ABILITIES_LEVEL") % int(a.get("level", 1))

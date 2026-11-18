@@ -24,6 +24,12 @@ Implementar el [[Plan 4 — Progresión (spec)|Plan 4]]: experiencia y niveles s
 - La evolución del Templario apuntaba a `cleric_holy_flash`, que no existe: es `cleric_smite`.
 - El proyectil «virote» no tiene dibujo propio.
 
+## Ajustes tras la prueba
+- Mejora de nivel 50 obligatoria (ventana automática, Esc no la cierra, sin Brann para la primera elección).
+- Monstruos y aliados invocados exigen línea de visión para atacar.
+- Nombre del jugador en tamaño de mundo.
+- Tema holográfico azul, ventana C con modelo y huecos de objetos, ventana K en lista.
+
 ## Siguiente paso
 - Prueba del usuario, revisión de arte (casco templario, ballesta, lobo, iconos) y publicación de la 0.6.0.
 
