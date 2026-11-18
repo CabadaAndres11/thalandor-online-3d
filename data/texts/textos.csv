@@ -212,8 +212,6 @@ AB_ASSASSIN_BLADE_FAN,Abanico de cuchillas
 AB_ASSASSIN_BLADE_FAN_DESC,Dañas a los enemigos a 3 m y ganas 1 punto de combo por cada uno.
 AB_ASSASSIN_POISON,Veneno
 AB_ASSASSIN_POISON_DESC,"Durante 30 s, tus golpes envenenan; el veneno se acumula hasta 5 veces."
-AB_ASSASSIN_EVASION,Evasión
-AB_ASSASSIN_EVASION_DESC,+50 % de esquiva durante 5 s.
 AB_ASSASSIN_BACKSTAB,Golpe por la espalda
 AB_ASSASSIN_BACKSTAB_DESC,+20 % de daño por la espalda.
 AB_ASSASSIN_AMBUSH,Emboscada
@@ -421,3 +419,11 @@ ARENA_DESC,Los monstruos aparecerán con este nivel (los jefes, con dos más).
 ARENA_CONFIRM,Fijar
 ARENA_LEVEL_SET,La arena ahora es de nivel %d
 RESET_DONE,Reinicio hecho.
+AB_ASSASSIN_THROW_KNIFE,Lanzar cuchillo
+AB_ASSASSIN_THROW_KNIFE_DESC,Arroja un cuchillo que daña y ralentiza al objetivo. Da 1 punto de combo.
+AB_ASSASSIN_REND,Desgarro
+AB_ASSASSIN_REND_DESC,Un tajo profundo que deja una hemorragia. Da 2 puntos de combo.
+AB_ASSASSIN_FLURRY,Aluvión
+AB_ASSASSIN_FLURRY_DESC,Cuatro cuchilladas muy rápidas. Da 2 puntos de combo en total.
+DETAIL_ST_BLEED,hemorragia del %s %% del poder de ataque cada %s s durante %s s
+DETAIL_REPEAT,%d golpes cada %s s

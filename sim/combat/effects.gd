@@ -156,6 +156,7 @@ static func _projectile(world: SimWorld, caster: CombatEntity, ability: Dictiona
 	p.remaining = float(effect.get("range", 10.0))
 	p.pierce = bool(effect.get("pierce", false))
 	p.effect = effect
+	p.combo_gain = int(ability.get("combo_gain", 0))
 	world.projectiles.append(p)
 	world.emit(["projectile", p.id, caster.id, p.ability_id, caster.position, p.dir, p.speed, p.remaining])
 

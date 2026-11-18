@@ -16,6 +16,8 @@ static func try_cast(world: SimWorld, caster: CombatEntity, ability_id: String, 
 		return false
 	if world.tick < int(caster.cooldowns.get(ability_id, 0)):
 		return false
+	if channeling(world, caster.id):
+		return false # busy with a channelled ability
 	var uses_gcd := bool(ab.get("gcd", false))
 	if uses_gcd and world.tick < caster.gcd_end:
 		return false
@@ -46,11 +48,89 @@ static func try_cast(world: SimWorld, caster: CombatEntity, ability_id: String, 
 	if to.length() > 0.01:
 		caster.facing = atan2(to.x, to.y)
 	world.emit(["cast", caster.id, ability_id, aim, cd_s])
+	if ab.has("repeat"):
+		_start_repeat(world, caster, ab, aim)
+		return true
 	world.cast_hits = 0
 	for e: Dictionary in ab.get("effects", []):
 		Effects.apply(world, caster, ab, e, ctx)
 	ClassRules.after_cast(caster, ab, world.cast_hits)
 	return true
+
+
+## Whether this entity is in the middle of a channelled ability.
+static func channeling(world: SimWorld, id: int) -> bool:
+	for pc: PendingCast in world.pending_casts:
+		if pc.channel and pc.caster_id == id:
+			return true
+	return false
+
+
+## An ability with {"repeat": {times, interval_s, delay_s?, channel?}} applies its effects
+## `times` times, `interval_s` apart, the first one after `delay_s`. Cost and cooldown were
+## already paid. Combo points are counted once when it ends.
+static func _start_repeat(world: SimWorld, caster: CombatEntity, ab: Dictionary, aim: Vector3) -> void:
+	var r: Dictionary = ab.repeat
+	var pc := PendingCast.new()
+	pc.caster_id = caster.id
+	pc.ability = ab
+	pc.aim = aim
+	pc.left = maxi(1, int(r.get("times", 1)))
+	pc.interval = world.ticks(float(r.get("interval_s", 0.0)))
+	pc.channel = bool(r.get("channel", false))
+	pc.origin = Effects.flat(caster.position)
+	pc.next_tick = world.tick + world.ticks(float(r.get("delay_s", 0.0)))
+	world.pending_casts.append(pc)
+	if pc.channel:
+		var total := float(r.get("delay_s", 0.0)) + float(r.get("interval_s", 0.0)) * float(pc.left - 1)
+		world.emit(["channel", caster.id, str(ab.get("id", "")), total])
+	if pc.next_tick <= world.tick:
+		_step_cast(world, pc)
+		if pc.left <= 0:
+			world.pending_casts.erase(pc)
+
+
+## One tick of every pending repeat: cut by death, a fall, a stun or freeze (and, for a
+## channel, by moving or dodging), or its next hit.
+static func _pending_casts(world: SimWorld) -> void:
+	for pc: PendingCast in world.pending_casts.duplicate():
+		var caster := world.entity(pc.caster_id)
+		var cut := caster == null or not caster.is_alive() or not caster.can_act(world.tick)
+		if not cut and pc.channel:
+			cut = Effects.flat(caster.position).distance_to(pc.origin) > 0.05 or caster.is_dashing() or caster.forced_ticks > 0
+		if cut:
+			_finish_cast(world, pc, caster)
+			continue
+		if world.tick >= pc.next_tick:
+			_step_cast(world, pc)
+			if pc.left <= 0:
+				world.pending_casts.erase(pc)
+
+
+static func _step_cast(world: SimWorld, pc: PendingCast) -> void:
+	var caster := world.entity(pc.caster_id)
+	if caster == null:
+		return
+	world.cast_hits = 0
+	var ctx := {"aim": pc.aim, "target": null}
+	for e: Dictionary in pc.ability.get("effects", []):
+		Effects.apply(world, caster, pc.ability, e, ctx)
+	pc.hits += world.cast_hits
+	pc.left -= 1
+	pc.next_tick += pc.interval
+	if pc.left <= 0:
+		_finish_cast(world, pc, caster, false)
+
+
+## Ends a repeat (all hits done, or cut): the combo points of the hits so far are counted.
+static func _finish_cast(world: SimWorld, pc: PendingCast, caster: CombatEntity, erase := true) -> void:
+	if erase:
+		world.pending_casts.erase(pc)
+	pc.left = 0
+	if caster != null and caster.is_alive():
+		ClassRules.after_cast(caster, pc.ability, pc.hits)
+	if pc.channel:
+		world.emit(["channel_end", pc.caster_id])
 
 
 ## Rolls and applies the damage (and statuses) of `effect` from source to target.
@@ -128,8 +208,10 @@ static func _on_crit(world: SimWorld, attacker: CombatEntity, source: CombatEnti
 static func apply_status(world: SimWorld, source: CombatEntity, target: CombatEntity, s: Dictionary) -> void:
 	if not target.is_alive():
 		return
+	# "coef": the magnitude grows with the source's attack power (bleed).
+	var magnitude := float(s.get("magnitude", 0.0)) + float(s.get("coef", 0.0)) * source.stats.attack_power
 	var st := StatusEffect.make(str(s.get("kind", "")), world.tick + world.ticks(float(s.get("duration_s", 1.0))),
-		float(s.get("magnitude", 0.0)), source.id, int(s.get("stacks", 1)), world.ticks(float(s.get("every_s", 0.0))))
+		magnitude, source.id, int(s.get("stacks", 1)), world.ticks(float(s.get("every_s", 0.0))))
 	st.on_hit = s.get("on_hit", {})
 	target.add_status(st, int(s.get("max_stacks", 1)))
 	world.emit(["status", target.id, st.kind, st.end_tick])
@@ -267,6 +349,7 @@ static func tick(world: SimWorld) -> void:
 			e.shield = 0.0
 		Resources.tick(e, world)
 		_forced_move(world, e)
+	_pending_casts(world)
 	_projectiles(world)
 	_areas(world)
 	_traps(world)
@@ -343,7 +426,10 @@ static func _advance_projectile(world: SimWorld, p: Projectile) -> bool:
 				continue
 			if Effects.flat(o.position).distance_to(p.pos) <= p.radius + o.radius:
 				p.hit_ids[o.id] = true
+				world.cast_hits = 0
 				Combat.deal(world, p.owner, o, p.effect, {"id": p.ability_id})
+				if p.combo_gain > 0 and world.cast_hits > 0:
+					ClassRules.after_cast(world.entity(p.owner.id), {"combo_gain": p.combo_gain}, 1)
 				if not p.pierce:
 					_end_projectile(world, p)
 					return false

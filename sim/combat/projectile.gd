@@ -14,3 +14,5 @@ var remaining: float = 0.0
 var pierce: bool = false
 var effect: Dictionary = {}
 var hit_ids: Dictionary = {}
+## Combo points the caster gets when it hits (assassin knife); 0 = none.
+var combo_gain: int = 0

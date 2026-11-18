@@ -20,6 +20,7 @@ var monsters: Dictionary = {}
 var projectiles: Array = [] # Projectile
 var pending_areas: Array = [] # PendingArea
 var traps: Array = [] # Trap
+var pending_casts: Array = [] # PendingCast (abilities with a repeat block)
 var _next_object_id: int = 1
 ## Hits landed by the cast being resolved (assassin combo points).
 var cast_hits: int = 0

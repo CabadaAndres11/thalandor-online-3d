@@ -31,6 +31,8 @@ static func lines(ability: Dictionary, stats: CombatStats, resource_kind: String
 		out.append(_tr("DETAIL_COMBO_GAIN") % int(ability.combo_gain))
 	if int(ability.get("combo_per_hit", 0)) > 0:
 		out.append(_tr("DETAIL_COMBO_PER_HIT") % int(ability.combo_per_hit))
+	if ability.has("repeat"):
+		out.append(_tr("DETAIL_REPEAT") % [int(ability.repeat.get("times", 1)), num(ability.repeat.get("interval_s", 0))])
 	var charge: Dictionary = ability.get("charge", {})
 	if not charge.is_empty():
 		out.append(_tr("DETAIL_CHARGE") % [num(charge.get("max_s", 1.5)), num(charge.get("damage_mult", 1.0)),
@@ -150,6 +152,8 @@ static func _status(s: Dictionary) -> String:
 			return _tr("DETAIL_ST_" + kind.to_upper()) % [pct(m), d]
 		"poison", "burn":
 			return _tr("DETAIL_ST_" + kind.to_upper()) % [num(m), num(s.get("every_s", 1)), d, int(s.get("max_stacks", 1))]
+		"bleed":
+			return _tr("DETAIL_ST_BLEED") % [num(float(s.get("coef", 0.0)) * 100.0), num(s.get("every_s", 1)), d]
 		"envenom":
 			return _tr("DETAIL_ST_ENVENOM") % d
 	return _tr("DETAIL_ST_" + kind.to_upper()) % d

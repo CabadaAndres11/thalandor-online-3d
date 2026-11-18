@@ -47,10 +47,10 @@ func test_every_class_has_7_actives_4_passives() -> void:
 		var all := _db().class_abilities(c)
 		var usable := all.filter(func(a: Dictionary) -> bool: return a.get("kind") != "passive")
 		var passives := all.filter(func(a: Dictionary) -> bool: return a.get("kind") == "passive")
-		assert_eq(usable.size(), 7, c + ": basic, secondary and 5 actives")
+		assert_eq(usable.size(), 9 if c == "assassin" else 7, c + ": basic, secondary and the actives")
 		assert_eq(passives.size(), 4, c + ": 4 passives")
 		assert_eq(_db().actives(c).map(func(id: String) -> int: return int(_db().get_ability(id).level)),
-			[1, 3, 6, 10, 20], c + " active levels")
+			[1, 3, 6, 10, 15, 20, 30] if c == "assassin" else [1, 3, 6, 10, 20], c + " active levels")
 		assert_eq(passives.map(func(a: Dictionary) -> int: return int(a.level)), [5, 15, 25, 35], c + " passive levels")
 		for a: Dictionary in passives:
 			assert_false((a.get("passive", []) as Array).is_empty(), str(a.id) + " has modifiers")
@@ -64,6 +64,9 @@ func test_active_cooldowns_and_costs_in_range() -> void:
 			if lvl == 1:
 				continue
 			var cd := float(a.cooldown_s)
+			if c == "assassin":
+				assert_between(cd, 6.0, 60.0, id + " cooldown (the assassin kit is built on short ones)")
+				continue
 			if lvl <= 10:
 				assert_between(cd, 8.0, 20.0, id + " cooldown")
 			else:
@@ -271,9 +274,3 @@ func test_assassin_full_kit() -> void:
 		assert_true(Combat.try_cast(f.world, s4, "assassin_stab", victim.position))
 		f.run(0.6)
 	assert_eq(_status(victim, "poison").stacks, 5, "capped at 5")
-	# Evasión: +50 % dodge for 5 s.
-	var s5 := _hero("assassin", 5, Vector3(45, 0, 45))
-	assert_true(Combat.try_cast(f.world, s5, "assassin_evasion", s5.position))
-	assert_almost_eq(s5.status_magnitude("evasion"), 0.5, 0.001)
-	f.run(5.2)
-	assert_false(s5.has_status("evasion"), "5 s")

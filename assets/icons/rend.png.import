@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://lw6owitmxoq"
-path="res://.godot/imported/evasion.png-4070b1faf98aaea7173e0ca7c9a2891d.ctex"
+uid="uid://bwb5k0un4xhjt"
+path="res://.godot/imported/rend.png-20b8f772b518776496474a2887e4b25c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/icons/evasion.png"
-dest_files=["res://.godot/imported/evasion.png-4070b1faf98aaea7173e0ca7c9a2891d.ctex"]
+source_file="res://assets/icons/rend.png"
+dest_files=["res://.godot/imported/rend.png-20b8f772b518776496474a2887e4b25c.ctex"]
 
 [params]
 

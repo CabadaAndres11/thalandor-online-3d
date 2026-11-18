@@ -3,9 +3,9 @@ extends RefCounted
 ## A timed effect on an entity. Periodic ones (poison, burn, hot) act every
 ## `tick_every` ticks with magnitude × stacks.
 ## Kinds: stun, root, freeze, slow, poison, burn, mark, damage_buff,
-## damage_reduction, evasion, taunted, stealth, invulnerable, hot, envenom.
+## damage_reduction, evasion, taunted, stealth, invulnerable, hot, envenom, bleed.
 
-const NEGATIVE := ["stun", "root", "freeze", "slow", "poison", "burn", "mark", "taunted"]
+const NEGATIVE := ["stun", "root", "freeze", "slow", "poison", "burn", "mark", "taunted", "bleed"]
 
 var kind: String = ""
 var end_tick: int = 0
@@ -55,7 +55,7 @@ static func _periodic(e: CombatEntity, s: StatusEffect, world: SimWorld) -> void
 		return
 	var amount := s.magnitude * s.stacks
 	match s.kind:
-		"poison", "burn":
+		"poison", "burn", "bleed":
 			var r := {"amount": amount, "crit": false, "dodged": false, "absorbed": 0.0}
 			Damage.apply(e, r, world)
 			world.emit(["hit", e.id, amount, false, s.source_id])
@@ -69,7 +69,7 @@ static func _periodic(e: CombatEntity, s: StatusEffect, world: SimWorld) -> void
 
 ## Order of the status bits sent in snapshots (for icons and stealth on clients).
 const BIT_KINDS := ["stun", "root", "freeze", "slow", "poison", "burn", "mark", "damage_buff",
-	"damage_reduction", "evasion", "taunted", "stealth", "invulnerable", "hot"]
+	"damage_reduction", "evasion", "taunted", "stealth", "invulnerable", "hot", "bleed"]
 
 
 static func bits_of(e: CombatEntity) -> int:

@@ -114,7 +114,9 @@ const ICONS = {
   stealth: ["assassin", (i, c) => { disk(i, 32, 22, 9, [60, 62, 74, 255]); tri(i, [18, 52], [46, 52], [32, 28], [60, 62, 74, 255]); ring(i, 32, 32, 24, 2, c, Math.PI * 0.1, Math.PI * 0.9); disk(i, 28, 22, 2, W); disk(i, 36, 22, 2, W); }],
   blade_fan: ["assassin", (i, c) => { for (let a = 0; a < 5; a++) { const t = Math.PI * (1.1 + a * 0.2); line(i, 32, 46, 32 + Math.cos(t) * 26, 46 + Math.sin(t) * 26, 4, a === 2 ? W : c); } }],
   poison: ["assassin", (i, c) => { tri(i, [44, 12], [22, 40], [28, 44], W); disk(i, 22, 50, 6, [111, 208, 74, 255]); tri(i, [22, 38], [17, 49], [27, 49], [111, 208, 74, 255]); }],
-  evasion: ["assassin", (i, c) => { for (const [x, col] of [[16, [60, 62, 74, 255]], [26, c], [38, W]]) { disk(i, x + 4, 20, 6, col); line(i, x + 4, 26, x, 48, 6, col); } }],
+  throw_knife: ["assassin", (i, c) => { line(i, 14, 50, 40, 24, 4, W); tri(i, [52, 12], [38, 22], [44, 28], c); line(i, 12, 52, 20, 44, 6, [90, 60, 40, 255]); for (const [x, y] of [[10, 34], [14, 40], [8, 44]]) line(i, x, y, x + 8, y, 2, c); }],
+  rend: ["assassin", (i, c) => { for (const x of [18, 30, 42]) { line(i, x, 12, x + 14, 52, 5, x === 30 ? W : c); } disk(i, 24, 52, 3, [200, 40, 50, 255]); disk(i, 38, 56, 2, [200, 40, 50, 255]); }],
+  flurry: ["assassin", (i, c) => { for (let a = 0; a < 4; a++) { const y = 14 + a * 11; line(i, 12 + a * 3, y + 10, 50 + a * 2, y - 4, 4, a % 2 ? W : c); } }],
   passive_warrior: ["warrior", (i, c) => { tri(i, [16, 14], [48, 14], [32, 52], c); tri(i, [22, 19], [42, 19], [32, 42], [26, 27, 34, 255]); line(i, 32, 22, 32, 38, 3, W); }],
   passive_cleric: ["cleric", (i, c) => { ring(i, 32, 32, 18, 4, c); line(i, 32, 18, 32, 46, 4, W); line(i, 22, 28, 42, 28, 4, W); }],
   passive_mage: ["mage", (i, c) => { tri(i, [32, 10], [20, 32], [44, 32], c); tri(i, [32, 54], [20, 32], [44, 32], c); disk(i, 32, 32, 5, W); }],
@@ -138,6 +140,7 @@ const STATUS = {
   damage_reduction: ["#c9d0d8", (i) => { tri(i, [16, 16], [48, 16], [32, 52], K); }],
   evasion: ["#a6dc6e", (i) => { for (const x of [18, 32]) { line(i, x, 18, x + 12, 32, 5, K); line(i, x + 12, 32, x, 46, 5, K); } }],
   hot: ["#5fe08a", (i) => { line(i, 32, 16, 32, 48, 8, K); line(i, 16, 32, 48, 32, 8, K); }],
+  bleed: ["#c0283a", (i) => { tri(i, [32, 12], [22, 36], [42, 36], K); disk(i, 32, 40, 10, K); }],
 };
 
 function badge(img, color) {
