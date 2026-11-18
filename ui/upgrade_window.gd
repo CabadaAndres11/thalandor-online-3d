@@ -9,6 +9,8 @@ signal confirmed(id: String)
 const COLUMN_WIDTH := 330.0
 
 var confirm_button: Button
+## Forced choice (level 50 without an upgrade): Esc does not close it.
+var mandatory: bool = false
 
 var _panel: PanelContainer
 var _columns: HBoxContainer
@@ -99,6 +101,7 @@ func _on_confirm() -> void:
 	if _selected == "":
 		return
 	visible = false
+	mandatory = false
 	confirmed.emit(_selected)
 
 

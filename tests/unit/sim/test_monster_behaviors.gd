@@ -178,3 +178,16 @@ func test_spawner_makes_elites_by_chance() -> void:
 		else:
 			assert_false(m.elite)
 			assert_almost_eq(m.stats.max_hp, base, 0.01)
+
+
+func test_melee_monster_does_not_hit_through_a_wall() -> void:
+	var wall := []
+	for z in 48:
+		wall.append([20, z, 1])
+	var f := _fixture(wall)
+	var p := f.player(1, Vector3(21.4, 0, 20.5), 500.0)
+	var m := _monster(f, "guard_beast", Vector3(19.0, 0, 20.5))
+	m.threat[p.id] = 10.0
+	var hp := p.hp
+	_steps(f, 1.5)
+	assert_eq(p.hp, hp, "the wall is in the way, not a clear line")

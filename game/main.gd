@@ -35,6 +35,7 @@ var character_window: CharacterWindow
 var talents_window: TalentsWindow
 var trainer_menu: TrainerMenu
 var upgrade_window: UpgradeWindow
+var _upgrade_sent_at: int = -10000
 var abilities: AbilityDB
 var dialog: MessageDialog
 var debug_overlay: DebugOverlay
@@ -215,6 +216,8 @@ func _modal_open() -> bool:
 func _close_open_window() -> bool:
 	for w: Control in [class_choice_window, trainer_menu, upgrade_window] + _panel_windows():
 		if w.visible:
+			if w == upgrade_window and upgrade_window.mandatory:
+				return true # the choice cannot be skipped
 			w.visible = false
 			return true
 	return false
@@ -291,8 +294,22 @@ func _open_upgrade_window() -> void:
 	upgrade_window.show_for(game.client.class_id, abilities, UpgradeDB.load_default())
 
 
+## Level 50 without an upgrade: the choice window opens by itself and cannot be skipped.
+func _require_upgrade() -> void:
+	var c := game.client
+	if upgrade_window.visible or c.progress.level < ProgressRequests.UPGRADE_LEVEL or c.progress.upgrade != "" \
+			or not CharacterCatalog.load_default().is_selectable(c.class_id) \
+			or UpgradeDB.load_default().for_class(c.class_id).is_empty() \
+			or Time.get_ticks_msec() - _upgrade_sent_at < 2000:
+		return
+	trainer_menu.visible = false
+	_open_upgrade_window()
+	upgrade_window.mandatory = true
+
+
 func _on_upgrade_confirmed(id: String) -> void:
 	if game != null and game.client != null:
+		_upgrade_sent_at = Time.get_ticks_msec()
 		game.client.choose_upgrade(id)
 
 
@@ -340,6 +357,7 @@ func _on_leveled_up(id: int, level: int) -> void:
 			and CharacterCatalog.load_default().is_selectable(game.client.class_id) \
 			and not UpgradeDB.load_default().for_class(game.client.class_id).is_empty():
 		chat.add_message("", tr("CHAT_UPGRADE_HINT"), true)
+		_require_upgrade()
 
 
 func _on_class_confirmed(class_id: String) -> void:
@@ -373,6 +391,7 @@ func _on_progress_changed() -> void:
 		return
 	var c := game.client
 	combat_hud.bind(c, c.bar, abilities) # a level-up can add an ability to the bar
+	_require_upgrade()
 	if character_window.visible:
 		_show_character()
 	if talents_window.visible:

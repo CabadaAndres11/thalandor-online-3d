@@ -40,9 +40,9 @@ func test_choose_needs_level_50() -> void:
 	assert_eq(p.progress.upgrade, "")
 
 
-func test_choose_needs_trainer() -> void:
+func test_first_choice_needs_no_trainer() -> void:
 	var p := _hero(50)
-	assert_false(ProgressRequests.choose_upgrade(f.world, p, "berserker", false))
+	assert_true(ProgressRequests.choose_upgrade(f.world, p, "berserker", false))
 
 
 func test_choose_rejects_other_class() -> void:

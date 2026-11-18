@@ -31,10 +31,11 @@ static func buy_mastery(world: SimWorld, p: PlayerState, dir: String) -> bool:
 	return _accept(world, p)
 
 
-## Level 50, no upgrade yet, one of the player's class, next to the trainer, alive.
-static func choose_upgrade(world: SimWorld, p: PlayerState, id: String, near_trainer: bool) -> bool:
+## Level 50, no upgrade yet, one of the player's class, alive. The first choice is forced on
+## the player wherever they are; only a reset needs Brann.
+static func choose_upgrade(world: SimWorld, p: PlayerState, id: String, _near_trainer: bool = true) -> bool:
 	var u := world.upgrades.upgrade(id)
-	if not near_trainer or p.life != CombatEntity.ALIVE or p.progress.level < UPGRADE_LEVEL \
+	if p.life != CombatEntity.ALIVE or p.progress.level < UPGRADE_LEVEL \
 			or p.progress.upgrade != "" or u.is_empty() or str(u.get("class", "")) != p.class_id:
 		return false
 	p.progress.upgrade = id

@@ -74,9 +74,8 @@ static func tick(world: SimWorld, m: MonsterState) -> void:
 			if _try_charge(world, m, target, gap):
 				m.ai = MonsterState.ATTACK
 				return
-	var ranged := str(m.def.get("behavior", "")) == "ranged_kite"
-	# Archers need a clear shot; otherwise they walk closer around the obstacle.
-	if gap <= float(m.def.get("attack_range", 1.5)) and (not ranged or world.pathfinder().clear_line(m.position, target.position)):
+	# Nobody attacks through a wall: without a clear line they walk closer around the obstacle.
+	if gap <= float(m.def.get("attack_range", 1.5)) and world.pathfinder().clear_line(m.position, target.position):
 		m.ai = MonsterState.ATTACK
 		m.unreachable_ticks = 0
 		var to := Effects.flat(target.position) - Effects.flat(m.position)
@@ -114,7 +113,7 @@ static func _tick_ally(world: SimWorld, m: MonsterState) -> void:
 	if target != null:
 		m.target_id = target.id
 		var gap := Effects.flat(m.position).distance_to(Effects.flat(target.position)) - target.radius
-		if gap <= float(m.def.get("attack_range", 1.5)):
+		if gap <= float(m.def.get("attack_range", 1.5)) and world.pathfinder().clear_line(m.position, target.position):
 			var to := Effects.flat(target.position) - Effects.flat(m.position)
 			if to.length() > 0.01:
 				m.facing = atan2(to.x, to.y)
