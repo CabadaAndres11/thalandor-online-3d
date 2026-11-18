@@ -69,3 +69,78 @@ func test_the_whole_body_changes_posture_in_a_melee_swing() -> void:
 	rig.update(0.45 * 0.5) # mid swing
 	for n: String in ["torso", "hips", "leg_left", "leg_right", "arm_left", "head"]:
 		assert_ne(rig.part(n).rotation, idle[n], "%s moves" % n)
+
+
+func _dual(class_id := "assassin") -> HumanRig:
+	var r := HumanRig.create(class_id, {})
+	r.auto_update = false
+	add_child_autofree(r)
+	return r
+
+
+func test_the_assassin_holds_a_dagger_in_each_hand() -> void:
+	var r := _dual()
+	assert_eq(r.weapon_points("right").size(), 2)
+	assert_eq(r.weapon_points("left").size(), 2)
+	assert_eq(rig.weapon_points("left").size(), 0, "a warrior has one weapon")
+
+
+func test_each_melee_attack_has_its_own_animation() -> void:
+	var r := _dual()
+	var seen := {}
+	for kind: String in ["melee", "stab_right", "stab_left", "overhead", "spin", "flurry"]:
+		r.play_action(kind)
+		assert_eq(r.current_action(), kind)
+		r.update(r.ACTIONS[kind] * 0.5)
+		var sig := []
+		for n: String in ["torso", "hips", "arm_right", "arm_left", "leg_left", "leg_right"]:
+			sig.append(r.part(n).rotation)
+		sig.append(r.get_child(0).rotation if r.get_child_count() > 0 else Vector3.ZERO)
+		seen[str(sig)] = true
+	assert_eq(seen.size(), 6, "six different poses")
+
+
+func test_stab_alternates_which_hand_leads() -> void:
+	var r := _dual()
+	r.play_action("stab_right")
+	r.update(0.32 * 0.5)
+	var right_arm := r.part("arm_right").rotation.x
+	var left_arm := r.part("arm_left").rotation.x
+	assert_lt(right_arm, left_arm, "the right arm is the one reaching out")
+	r.play_action("stab_left")
+	r.update(0.32 * 0.5)
+	assert_lt(r.part("arm_left").rotation.x, r.part("arm_right").rotation.x)
+
+
+func test_a_spin_turns_the_whole_body_and_traces_a_circle() -> void:
+	var r := _dual()
+	var s := SlashFx.new()
+	add_child_autofree(s)
+	s.setup(r, Color.WHITE, "right")
+	r.play_action("spin")
+	var tips: Array[Vector3] = []
+	var t := 0.0
+	while t < 0.58:
+		r.update(1.0 / 60.0)
+		s.advance(1.0 / 60.0)
+		if not r.weapon_points("right").is_empty():
+			tips.append(r.weapon_points("right")[1])
+		t += 1.0 / 60.0
+	assert_gt(s.sample_count(), 10, "a long ribbon")
+	var far := 0.0
+	for a: Vector3 in tips:
+		for b: Vector3 in tips:
+			far = maxf(far, a.distance_to(b))
+	assert_gt(far, 0.9, "the weapon goes right around the body")
+
+
+func test_the_left_hand_has_its_own_cut() -> void:
+	var r := _dual()
+	var s := SlashFx.new()
+	add_child_autofree(s)
+	s.setup(r, Color.WHITE, "left")
+	r.play_action("stab_left")
+	for i in 14:
+		r.update(1.0 / 60.0)
+		s.advance(1.0 / 60.0)
+	assert_gt(s.sample_count(), 2)

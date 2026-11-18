@@ -19,8 +19,15 @@ const SCALE_GROUP := {
 	"leg_left": "leg", "leg_right": "leg", "shin_left": "leg", "shin_right": "leg",
 }
 ## Seconds each action lasts; downed and die then stay.
-const ACTIONS := {"melee": 0.45, "shoot": 0.65, "cast": 0.6, "dash": 0.35, "downed": 0.5, "die": 0.7, "cast_long": 1.0}
+const ACTIONS := {"melee": 0.45, "shoot": 0.65, "cast": 0.6, "dash": 0.35, "downed": 0.5, "die": 0.7, "cast_long": 1.0,
+	"stab_right": 0.32, "stab_left": 0.32, "overhead": 0.6, "spin": 0.6, "flurry": 0.7}
 const LASTING := ["downed", "die"]
+## Melee swings (the weapon's path is traced by a SlashFx): action -> [start, end] of the swing in
+## the animation, as a share of its length.
+const SWINGS := {
+	"melee": [0.26, 0.72], "stab_right": [0.2, 0.7], "stab_left": [0.2, 0.7], "overhead": [0.28, 0.75],
+	"spin": [0.05, 0.97], "flurry": [0.04, 0.98],
+}
 ## Actions that repeat until another one starts (a long cast: arms up, the staff spinning).
 const LOOPING := ["cast_long"]
 ## Trousers default to the primary color this much darker.
@@ -110,10 +117,10 @@ func action_progress() -> float:
 	return clampf(_action_t / float(ACTIONS[_action]), 0.0, 1.0)
 
 
-## Where the weapon in the right hand is now: [hand, tip] in global space ([] without one).
+## Where the weapon in the hand ("right" or "left") is now: [hand, tip] in global space ([] without one).
 ## The tip is the corner of the weapon's box farthest from the hand.
-func weapon_points() -> Array:
-	var hand := part("hand_right")
+func weapon_points(side: String = "right") -> Array:
+	var hand := part("hand_" + side)
 	if hand == null or not hand.is_inside_tree():
 		return []
 	for id: String in _pieces:
@@ -277,6 +284,11 @@ func _pose() -> void:
 		"shoot": _shoot(k)
 		"cast": _cast(k)
 		"cast_long": _cast_long()
+		"stab_right": _stab(k, true)
+		"stab_left": _stab(k, false)
+		"overhead": _overhead(k)
+		"spin": _spin(k)
+		"flurry": _flurry(k)
 		"dash": _dash(k)
 		"downed": _fall(_ease(k), true)
 		"die": _fall(_ease(k), false)
@@ -328,6 +340,65 @@ func _melee(k: float) -> void:
 	(_parts["head"] as Node3D).rotation.y = -twist * 0.5 # the eyes stay on the target
 	_body.position.z = _keys(k, 0.0, -0.04, 0.18, 0.0) # a lunge
 	_body.position.y = _keys(k, 0.0, 0.0, -0.07, 0.0) # sinking into the stance
+
+
+## A quick thrust with one hand (the other guards), a step into it and a turn of the torso.
+func _stab(k: float, right: bool) -> void:
+	var s := 1.0 if right else -1.0
+	var arm := "arm_right" if right else "arm_left"
+	var fore := "forearm_right" if right else "forearm_left"
+	var guard := "arm_left" if right else "arm_right"
+	_rot(arm, _keys(k, 0.0, 0.5, -1.55, 0.0)) # the elbow pulls back, then the arm shoots out
+	_rot(fore, _keys(k, -0.18, -1.2, -0.1, -0.18))
+	_rot(guard, _keys(k, 0.0, 0.5, 0.7, 0.0))
+	(_parts["torso"] as Node3D).rotation.y = s * _keys(k, 0.0, 0.3, -0.38, 0.0)
+	(_parts["torso"] as Node3D).rotation.x = _keys(k, 0.0, -0.06, 0.3, 0.0)
+	(_parts["hips"] as Node3D).rotation.y = s * _keys(k, 0.0, 0.18, -0.22, 0.0)
+	_rot("leg_left" if right else "leg_right", _keys(k, 0.0, 0.1, -0.55, 0.0))
+	_rot("leg_right" if right else "leg_left", _keys(k, 0.0, -0.2, 0.4, 0.0))
+	_rot("shin_right" if right else "shin_left", _keys(k, 0.05, 0.4, 0.6, 0.05))
+	(_parts["head"] as Node3D).rotation.y = -s * _keys(k, 0.0, 0.1, -0.3, 0.0)
+	_body.position.z = _keys(k, 0.0, -0.03, 0.22, 0.0)
+	_body.position.y = _keys(k, 0.0, 0.0, -0.05, 0.0)
+
+
+## A heavy blow from above with both arms: up, a wide stance, then down with the whole weight.
+func _overhead(k: float) -> void:
+	var arms := _keys(k, 0.0, -2.9, 0.5, 0.0)
+	_rot("arm_right", arms)
+	_rot("arm_left", arms)
+	_rot("forearm_right", _keys(k, -0.18, -0.5, -0.1, -0.18))
+	_rot("forearm_left", _keys(k, -0.18, -0.5, -0.1, -0.18))
+	(_parts["torso"] as Node3D).rotation.x = _keys(k, 0.0, -0.32, 0.55, 0.0)
+	(_parts["head"] as Node3D).rotation.x = _keys(k, 0.0, 0.15, -0.2, 0.0)
+	_rot("leg_left", _keys(k, 0.0, 0.2, -0.5, 0.0))
+	_rot("leg_right", _keys(k, 0.0, -0.1, 0.45, 0.0))
+	_rot("shin_right", _keys(k, 0.05, 0.3, 0.9, 0.05))
+	_body.position.y = _keys(k, 0.0, 0.03, -0.14, 0.0)
+	_body.position.z = _keys(k, 0.0, -0.05, 0.2, 0.0)
+
+
+## A full turn on the spot with the arms out, the weapons sweeping a circle around the body.
+func _spin(k: float) -> void:
+	var out := sin(clampf(k, 0.0, 1.0) * PI) # arms open and close with the turn
+	_body.rotation.y = TAU * _ease(clampf((k - 0.05) / 0.9, 0.0, 1.0))
+	(_parts["arm_right"] as Node3D).rotation.z = -1.45 * out
+	(_parts["arm_left"] as Node3D).rotation.z = 1.45 * out
+	_rot("arm_right", -0.25 * out)
+	_rot("arm_left", -0.25 * out)
+	(_parts["torso"] as Node3D).rotation.x = 0.22 * out
+	_rot("leg_left", -0.35 * out)
+	_rot("leg_right", 0.3 * out)
+	_rot("shin_right", 0.5 * out)
+	_body.position.y = -0.06 * out
+
+
+## Four quick strikes, hand after hand: each one a short thrust, the body riding from one to the next.
+func _flurry(k: float) -> void:
+	var phase := clampf(k, 0.0, 0.9999) * 4.0
+	var index := int(floor(phase))
+	_stab(phase - float(index), index % 2 == 0)
+	_body.rotation.y = 0.12 * sin(phase * PI)
 
 
 ## Eased interpolation through values at k = 0, 0.3, 0.55 and 1.

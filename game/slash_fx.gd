@@ -7,14 +7,13 @@ extends MeshInstance3D
 
 const SHADER := preload("res://assets/fx/slash.gdshader")
 const MAX_SAMPLES := 30
-const START_K := 0.26 # of the melee animation: the swing starts here
-const END_K := 0.72
 const FADE_S := 0.22
 const WAIT_LIMIT_S := 0.8
 
 static var _texture: ImageTexture
 
 var _rig: HumanRig
+var _hand: String = "right"
 var _samples: Array = [] # [base: Vector3, tip: Vector3]
 var _phase: String = "wait" # wait -> record -> fade
 var _t: float = 0.0
@@ -22,8 +21,9 @@ var _mat: ShaderMaterial
 var _im: ImmediateMesh
 
 
-func setup(rig: HumanRig, color: Color) -> void:
+func setup(rig: HumanRig, color: Color, hand: String = "right") -> void:
 	_rig = rig
+	_hand = hand
 	top_level = true # points are in world space
 	global_transform = Transform3D.IDENTITY
 	cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
@@ -44,22 +44,23 @@ func _process(delta: float) -> void:
 
 func advance(dt: float) -> void:
 	_t += dt
-	var melee := is_instance_valid(_rig) and _rig.current_action() == "melee"
+	var melee := is_instance_valid(_rig) and HumanRig.SWINGS.has(_rig.current_action())
 	var k := _rig.action_progress() if melee else 0.0
+	var window: Array = HumanRig.SWINGS.get(_rig.current_action() if melee else "melee", [0.26, 0.72])
 	match _phase:
 		"wait":
-			if melee and k >= START_K:
+			if melee and k >= float(window[0]):
 				_phase = "record"
 			elif _t > WAIT_LIMIT_S or not is_instance_valid(_rig):
 				queue_free()
 				return
 	if _phase == "record":
-		var pts: Array = _rig.weapon_points() if is_instance_valid(_rig) else []
+		var pts: Array = _rig.weapon_points(_hand) if is_instance_valid(_rig) else []
 		if not pts.is_empty():
 			_samples.append(pts)
 			if _samples.size() > MAX_SAMPLES:
 				_samples.pop_front()
-		if not melee or k >= END_K:
+		if not melee or k >= float(window[1]):
 			_phase = "fade"
 			_t = 0.0
 	elif _phase == "fade":

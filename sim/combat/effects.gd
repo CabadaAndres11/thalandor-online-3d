@@ -78,7 +78,10 @@ static func apply(world: SimWorld, caster: CombatEntity, ability: Dictionary, ef
 		"dash":
 			_dash(world, caster, effect, ctx.aim)
 		"blink":
+			var from_pos := caster.position
 			_blink(world, caster, effect, ctx)
+			if caster.position.distance_to(from_pos) > 0.1:
+				world.emit(["blink", caster.id, from_pos, caster.position, str(ability.get("id", ""))])
 		"heal":
 			_heal(world, caster, effect, ctx.aim)
 		"shield":

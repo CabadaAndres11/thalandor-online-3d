@@ -30,6 +30,7 @@ var arena: Arena
 var camera: IsoCamera
 var _avatars: Dictionary = {} # id -> PlayerAvatar
 var _monster_avatars: Dictionary = {} # id -> MonsterAvatar
+var _stab_right: Dictionary = {} # player id -> whether the next dagger stab is the right hand
 var _npc_avatars: Array = [] # NpcAvatar
 ## Combat visuals (projectiles, warnings, numbers…) driven by host events.
 var fx: CombatFX
@@ -388,11 +389,19 @@ func _on_combat_event(ev: Array) -> void:
 			elif _avatars.has(who):
 				var ab := AbilityDB.load_default().get_ability(str(ev[2]))
 				var pa := _avatars[who] as PlayerAvatar
-				pa.play_action(str(ab.get("anim", "")))
-				if str(ab.get("anim", "")) == "melee" and pa.rig != null:
-					var slash := SlashFx.new()
-					_avatar_root.add_child(slash)
-					slash.setup(pa.rig, (CombatFX.CLASS_COLORS.get(str(ab.get("class", "")), Color.WHITE) as Color).lightened(0.3))
+				var anim := str(ab.get("anim", ""))
+				if anim == "stab": # the dagger attack alternates hands
+					_stab_right[who] = not bool(_stab_right.get(who, false))
+					anim = "stab_right" if _stab_right[who] else "stab_left"
+				pa.play_action(anim)
+				if HumanRig.SWINGS.has(anim) and pa.rig != null:
+					var hands: Array = ["left"] if anim == "stab_left" else (["right", "left"] if anim in ["spin", "flurry"] else ["right"])
+					for hand: String in hands:
+						if pa.rig.weapon_points(hand).is_empty():
+							continue
+						var slash := SlashFx.new()
+						_avatar_root.add_child(slash)
+						slash.setup(pa.rig, (CombatFX.CLASS_COLORS.get(str(ab.get("class", "")), Color.WHITE) as Color).lightened(0.3), hand)
 		"channel":
 			if _avatars.has(int(ev[1])):
 				(_avatars[int(ev[1])] as PlayerAvatar).play_long_cast(float(ev[3]))
