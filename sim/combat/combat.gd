@@ -8,7 +8,8 @@ extends RefCounted
 ## no cooldown). Returns whether it was cast.
 ## mods (archer charged shot): {damage_mult, range_mult, extra_cost}.
 static func try_cast(world: SimWorld, caster: CombatEntity, ability_id: String, aim: Vector3, mods: Dictionary = {}) -> bool:
-	var ab := world.abilities.get_ability(ability_id)
+	var upgrade := (caster as PlayerState).progress.upgrade if caster is PlayerState else ""
+	var ab := world.abilities.resolved(ability_id, upgrade, world.upgrades)
 	if ab.is_empty() or ab.get("kind") == "passive" or not caster.can_act(world.tick):
 		return false
 	if caster is PlayerState and (int(ab.get("level", 1)) > caster.level \
@@ -88,6 +89,11 @@ static func _start_repeat(world: SimWorld, caster: CombatEntity, ab: Dictionary,
 		_step_cast(world, pc)
 		if pc.left <= 0:
 			world.pending_casts.erase(pc)
+
+
+## Stops a pending repeat now (the upgrade it belongs to was reset).
+static func cancel_cast(world: SimWorld, pc: PendingCast) -> void:
+	_finish_cast(world, pc, world.entity(pc.caster_id))
 
 
 ## One tick of every pending repeat: cut by death, a fall, a stun or freeze (and, for a

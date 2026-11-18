@@ -49,6 +49,26 @@ func get_ability(id: String) -> Dictionary:
 	return _by_id.get(id, {})
 
 
+## The ability as a player with this upgrade casts it: the upgrade's evolution of this
+## ability ("evolves": {ability, set: {fields}, effects?: [...]}) replaces fields and,
+## when given, the effects list.
+func resolved(id: String, upgrade: String, upgrades: UpgradeDB = null) -> Dictionary:
+	var a := get_ability(id)
+	if a.is_empty() or upgrade == "":
+		return a
+	var u := (upgrades if upgrades != null else UpgradeDB.load_default()).upgrade(upgrade)
+	var ev: Dictionary = u.get("evolves", {})
+	if str(ev.get("ability", "")) != id:
+		return a
+	var out := a.duplicate(true)
+	var set: Dictionary = ev.get("set", {})
+	for k: String in set:
+		out[k] = set[k]
+	if ev.has("effects"):
+		out["effects"] = (ev.effects as Array).duplicate(true)
+	return out
+
+
 func has(id: String) -> bool:
 	return _by_id.has(id)
 

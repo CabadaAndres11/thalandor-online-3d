@@ -5,7 +5,7 @@ extends RefCounted
 const VERSION := 6
 
 enum Msg { HELLO = 1, WELCOME, REJECT, INPUT, SNAPSHOT, PLAYER_JOINED, PLAYER_LEFT, CHAT, EVENTS, SET_BAR, CHOOSE_CLASS, PLAYER_CLASS,
-	SPEND_ATTRIBUTE, BUY_TALENT, BUY_MASTERY, RESET, SET_ARENA_LEVEL, PROGRESS, ARENA_LEVEL }
+	SPEND_ATTRIBUTE, BUY_TALENT, BUY_MASTERY, RESET, SET_ARENA_LEVEL, PROGRESS, ARENA_LEVEL, CHOOSE_UPGRADE, PLAYER_UPGRADE }
 
 ## Field names and Variant types per message type.
 const SCHEMAS := {
@@ -20,7 +20,7 @@ const SCHEMAS := {
 	Msg.CHOOSE_CLASS: [["class_id", TYPE_STRING]],
 	Msg.PLAYER_CLASS: [["id", TYPE_INT], ["class_id", TYPE_STRING], ["bar", TYPE_ARRAY]],
 	Msg.PLAYER_JOINED: [["id", TYPE_INT], ["name", TYPE_STRING], ["slot", TYPE_INT],
-		["class_id", TYPE_STRING], ["appearance", TYPE_DICTIONARY]],
+		["class_id", TYPE_STRING], ["appearance", TYPE_DICTIONARY], ["upgrade", TYPE_STRING]],
 	Msg.PLAYER_LEFT: [["id", TYPE_INT]],
 	Msg.CHAT: [["from_id", TYPE_INT], ["text", TYPE_STRING]],
 	Msg.SPEND_ATTRIBUTE: [["attr", TYPE_STRING]],
@@ -30,11 +30,13 @@ const SCHEMAS := {
 	Msg.SET_ARENA_LEVEL: [["level", TYPE_INT]],
 	Msg.PROGRESS: [["progress", TYPE_DICTIONARY], ["bar", TYPE_ARRAY]],
 	Msg.ARENA_LEVEL: [["level", TYPE_INT]],
+	Msg.CHOOSE_UPGRADE: [["id", TYPE_STRING]],
+	Msg.PLAYER_UPGRADE: [["id", TYPE_INT], ["upgrade", TYPE_STRING]],
 }
 
 ## Element types of the nested arrays.
 const ROW_SCHEMAS := {
-	"roster": [TYPE_INT, TYPE_STRING, TYPE_INT, TYPE_STRING, TYPE_DICTIONARY],
+	"roster": [TYPE_INT, TYPE_STRING, TYPE_INT, TYPE_STRING, TYPE_DICTIONARY, TYPE_STRING],
 	"inputs": [TYPE_INT, TYPE_VECTOR2, TYPE_VECTOR3, TYPE_INT],
 }
 
@@ -116,8 +118,8 @@ static func player_class(id: int, class_id: String, bar: Array) -> PackedByteArr
 
 
 static func player_joined(id: int, name: String, slot: int, class_id: String,
-		appearance: Dictionary) -> PackedByteArray:
-	return pack([Msg.PLAYER_JOINED, id, name, slot, class_id, appearance])
+		appearance: Dictionary, upgrade: String = "") -> PackedByteArray:
+	return pack([Msg.PLAYER_JOINED, id, name, slot, class_id, appearance, upgrade])
 
 
 static func player_left(id: int) -> PackedByteArray:
@@ -325,3 +327,13 @@ static func unpack_players(data: PackedByteArray) -> Variant:
 		rows.append([id, pos, aim, facing, seq, hp, max_hp, res, max_res, life, bits, dash_ticks, dash_dir,
 			dodge, move_mult, combo, charge, level])
 	return rows
+
+
+## A level 50 player asks Brann for a class upgrade.
+static func choose_upgrade(id: String) -> PackedByteArray:
+	return pack([Msg.CHOOSE_UPGRADE, id])
+
+
+## The host tells everyone a player's upgrade ("" = none).
+static func player_upgrade(id: int, upgrade: String) -> PackedByteArray:
+	return pack([Msg.PLAYER_UPGRADE, id, upgrade])

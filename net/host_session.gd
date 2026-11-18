@@ -124,7 +124,7 @@ func roster() -> Array:
 	var rows := []
 	for id: int in _players:
 		var p: Dictionary = _players[id]
-		rows.append([id, p.name, p.slot, p.class_id, p.appearance])
+		rows.append([id, p.name, p.slot, p.class_id, p.appearance, p.upgrade])
 	return rows
 
 
@@ -151,6 +151,10 @@ func _handle(index: int, peer: int, data: PackedByteArray) -> void:
 			_on_choose_class(rec, msg.class_id)
 		Protocol.Msg.SPEND_ATTRIBUTE, Protocol.Msg.BUY_TALENT, Protocol.Msg.BUY_MASTERY, Protocol.Msg.RESET:
 			_on_progress_request(rec, msg)
+		Protocol.Msg.CHOOSE_UPGRADE:
+			var cp: PlayerState = world.players.get(rec.id)
+			if cp != null:
+				ProgressRequests.choose_upgrade(world, cp, msg.id, NpcDB.load_default().near_with_role(map, cp.position, "class_trainer") != "")
 		Protocol.Msg.SET_ARENA_LEVEL:
 			_on_set_arena_level(rec, msg.level)
 		Protocol.Msg.CHAT:
@@ -192,7 +196,7 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 		"secondary_id": world.abilities.kind_of(class_id, "secondary"),
 		"bar": bar,
 		# What the owner was last sent (PROGRESS), to send only what changed.
-		"bar_level": player.progress.level, "sent_other": _without_xp(player.progress.to_dict()),
+		"upgrade": player.progress.upgrade, "bar_level": player.progress.level, "sent_other": _without_xp(player.progress.to_dict()),
 		"sent_bar": bar.duplicate(), "sent_tick": -100000,
 	}
 	if _host_player_id == 0:
@@ -202,7 +206,7 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 	t.send(peer, Protocol.progress(player.progress.to_dict(), bar), true)
 	for other: int in _players:
 		if other != id:
-			_send_to(other, Protocol.player_joined(id, name, slot, class_id, appearance), true)
+			_send_to(other, Protocol.player_joined(id, name, slot, class_id, appearance, player.progress.upgrade), true)
 	player_joined.emit(id, name)
 
 
@@ -290,6 +294,15 @@ func _flush_progress() -> void:
 		var p: PlayerState = world.players.get(id)
 		if p == null:
 			continue
+		if p.progress.upgrade != rec.upgrade:
+			# An upgrade was chosen (its abilities go to free slots) or reset (they leave the bar).
+			var old_upgrade: String = rec.upgrade
+			rec.upgrade = p.progress.upgrade
+			rec.bar = world.abilities.sanitize_bar(rec.class_id, rec.bar, p.level, p.progress.upgrade)
+			if old_upgrade == "":
+				rec.bar = world.abilities.place_unlocked(rec.bar, rec.class_id, ProgressRequests.UPGRADE_LEVEL - 1, p.level, p.progress.upgrade)
+			p.progress_dirty = true
+			_broadcast(Protocol.player_upgrade(id, p.progress.upgrade), true)
 		if p.progress.level != rec.bar_level:
 			rec.bar = world.abilities.place_unlocked(rec.bar, rec.class_id, rec.bar_level, p.progress.level, p.progress.upgrade)
 			rec.bar_level = p.progress.level

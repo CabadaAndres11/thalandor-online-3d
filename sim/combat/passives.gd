@@ -17,11 +17,11 @@ extends RefCounted
 const BACK_HALF_ANGLE := 60.0
 
 
-## Modifiers of the class's passives unlocked at `level`.
-static func collect(db: AbilityDB, class_id: String, level: int) -> Array:
+## Modifiers of the class passives unlocked at `level` (those of an upgrade only with it).
+static func collect(db: AbilityDB, class_id: String, level: int, upgrade: String = "") -> Array:
 	var out: Array = []
 	for a: Dictionary in db.class_abilities(class_id):
-		if a.get("kind") == "passive" and int(a.get("level", 1)) <= level:
+		if a.get("kind") == "passive" and int(a.get("level", 1)) <= level and AbilityDB.upgrade_ok(a, upgrade):
 			for m: Variant in a.get("passive", []):
 				if m is Dictionary:
 					out.append(m)

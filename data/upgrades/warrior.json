@@ -1,0 +1,3 @@
+[
+ { "id": "protector", "class": "warrior", "name": "UP_PROTECTOR", "desc": "UP_PROTECTOR_DESC", "actives": [], "passives": [], "evolves": {} }, { "id": "berserker", "class": "warrior", "name": "UP_BERSERKER", "desc": "UP_BERSERKER_DESC", "actives": [], "passives": [], "evolves": {} }
+]

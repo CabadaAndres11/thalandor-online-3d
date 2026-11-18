@@ -1,0 +1,3 @@
+[
+ { "id": "healer", "class": "cleric", "name": "UP_HEALER", "desc": "UP_HEALER_DESC", "actives": [], "passives": [], "evolves": {} }, { "id": "templar", "class": "cleric", "name": "UP_TEMPLAR", "desc": "UP_TEMPLAR_DESC", "actives": [], "passives": [], "evolves": {} }
+]

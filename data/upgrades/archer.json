@@ -1,0 +1,3 @@
+[
+ { "id": "sharpshooter", "class": "archer", "name": "UP_SHARPSHOOTER", "desc": "UP_SHARPSHOOTER_DESC", "actives": [], "passives": [], "evolves": {} }, { "id": "hunter", "class": "archer", "name": "UP_HUNTER", "desc": "UP_HUNTER_DESC", "actives": [], "passives": [], "evolves": {} }
+]

@@ -1,0 +1,3 @@
+[
+ { "id": "shadow", "class": "assassin", "name": "UP_SHADOW", "desc": "UP_SHADOW_DESC", "actives": [], "passives": [], "evolves": {} }, { "id": "venomancer", "class": "assassin", "name": "UP_VENOMANCER", "desc": "UP_VENOMANCER_DESC", "actives": [], "passives": [], "evolves": {} }
+]

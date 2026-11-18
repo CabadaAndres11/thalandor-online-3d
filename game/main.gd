@@ -34,6 +34,7 @@ var class_choice_window: ClassChoiceWindow
 var character_window: CharacterWindow
 var talents_window: TalentsWindow
 var trainer_menu: TrainerMenu
+var upgrade_window: UpgradeWindow
 var abilities: AbilityDB
 var dialog: MessageDialog
 var debug_overlay: DebugOverlay
@@ -136,6 +137,12 @@ func _ready() -> void:
 	talents_window.mastery_bought.connect(_on_mastery_bought)
 	_ui.add_child(talents_window)
 
+	upgrade_window = UpgradeWindow.new()
+	upgrade_window.theme = theme
+	upgrade_window.confirmed.connect(_on_upgrade_confirmed)
+	upgrade_window.visibility_changed.connect(_update_input_block)
+	_ui.add_child(upgrade_window)
+
 	trainer_menu = TrainerMenu.new()
 	trainer_menu.theme = theme
 	trainer_menu.chosen.connect(_on_trainer_choice)
@@ -201,12 +208,12 @@ func _panel_open() -> bool:
 
 ## Class choice and Brann's menu take the whole input while they are open.
 func _modal_open() -> bool:
-	return class_choice_window.visible or trainer_menu.visible
+	return class_choice_window.visible or trainer_menu.visible or upgrade_window.visible
 
 
 ## Esc: closes whatever window is open and says whether there was one.
 func _close_open_window() -> bool:
-	for w: Control in [class_choice_window, trainer_menu] + _panel_windows():
+	for w: Control in [class_choice_window, trainer_menu, upgrade_window] + _panel_windows():
 		if w.visible:
 			w.visible = false
 			return true
@@ -279,9 +286,24 @@ func _on_trainer_choice(option: String) -> void:
 			trainer_menu.show_arena_selector(game.client.arena_level)
 
 
-## The class upgrade window arrives with the upgrades (Task 12).
+## Brann's upgrade window for the player's class.
 func _open_upgrade_window() -> void:
-	pass
+	upgrade_window.show_for(game.client.class_id, abilities, UpgradeDB.load_default())
+
+
+func _on_upgrade_confirmed(id: String) -> void:
+	if game != null and game.client != null:
+		game.client.choose_upgrade(id)
+
+
+## Somebody chose or lost an upgrade: the chat says it, the abilities window follows.
+func _on_upgrade_changed(id: int, upgrade: String) -> void:
+	if game == null or game.client == null:
+		return
+	if upgrade != "":
+		var who: String = game.client.roster[id].name if game.client.roster.has(id) else "?"
+		var name := tr(str(UpgradeDB.load_default().upgrade(upgrade).get("name", upgrade)))
+		chat.add_message("", tr("CHAT_UPGRADE_CHOSEN") % [who, name], true)
 
 
 func _on_arena_level_confirmed(level: int) -> void:
@@ -314,6 +336,10 @@ func _on_leveled_up(id: int, level: int) -> void:
 		return
 	var who: String = game.client.roster[id].name if game.client.roster.has(id) else "?"
 	chat.add_message("", tr("CHAT_LEVEL_UP") % [who, level], true)
+	if id == game.client.my_id and level >= ProgressRequests.UPGRADE_LEVEL and game.client.progress.upgrade == "" \
+			and CharacterCatalog.load_default().is_selectable(game.client.class_id) \
+			and not UpgradeDB.load_default().for_class(game.client.class_id).is_empty():
+		chat.add_message("", tr("CHAT_UPGRADE_HINT"), true)
 
 
 func _on_class_confirmed(class_id: String) -> void:
@@ -578,7 +604,7 @@ func _on_typing_changed(_is_typing: bool) -> void:
 func _update_input_block() -> void:
 	if game != null:
 		game.input_blocked = chat.is_typing() or pause_menu.visible or dialog.visible or class_choice_window.visible \
-			or trainer_menu.visible
+			or trainer_menu.visible or upgrade_window.visible
 		game.attacks_blocked = _panel_open()
 
 
@@ -615,6 +641,7 @@ func _attach_client() -> void:
 	client.class_changed.connect(_on_class_changed)
 	client.progress_changed.connect(_on_progress_changed)
 	client.leveled_up.connect(_on_leveled_up)
+	client.upgrade_changed.connect(_on_upgrade_changed)
 	client.arena_level_changed.connect(_on_arena_level_changed)
 	debug_overlay.client = client
 	debug_overlay.net_label = game.net_label()
@@ -675,7 +702,7 @@ func _leave_game() -> void:
 		game = null
 	debug_overlay.client = null
 	_playing = null
-	for w: Control in _panel_windows() + [class_choice_window, trainer_menu]:
+	for w: Control in _panel_windows() + [class_choice_window, trainer_menu, upgrade_window]:
 		w.visible = false
 	combat_hud.unbind()
 	combat_hud.visible = false

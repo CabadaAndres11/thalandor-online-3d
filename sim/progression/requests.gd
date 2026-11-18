@@ -31,6 +31,16 @@ static func buy_mastery(world: SimWorld, p: PlayerState, dir: String) -> bool:
 	return _accept(world, p)
 
 
+## Level 50, no upgrade yet, one of the player's class, next to the trainer, alive.
+static func choose_upgrade(world: SimWorld, p: PlayerState, id: String, near_trainer: bool) -> bool:
+	var u := world.upgrades.upgrade(id)
+	if not near_trainer or p.life != CombatEntity.ALIVE or p.progress.level < UPGRADE_LEVEL \
+			or p.progress.upgrade != "" or u.is_empty() or str(u.get("class", "")) != p.class_id:
+		return false
+	p.progress.upgrade = id
+	return _accept(world, p)
+
+
 ## what: "attributes", "talents" or "upgrade". Needs the class trainer nearby, a player on
 ## their feet and out of combat. Returns false when there is nothing to reset.
 static func reset(world: SimWorld, p: PlayerState, what: String, near_trainer: bool) -> bool:
@@ -57,7 +67,11 @@ static func reset(world: SimWorld, p: PlayerState, what: String, near_trainer: b
 
 
 ## Removes the upgrade and the ring 2 nodes that depended on it.
-static func clear_upgrade(_world: SimWorld, p: PlayerState) -> void:
+static func clear_upgrade(world: SimWorld, p: PlayerState) -> void:
+	# A channelled or repeating ability of the upgrade stops at once.
+	for pc: PendingCast in world.pending_casts.duplicate():
+		if pc.caster_id == p.id:
+			Combat.cancel_cast(world, pc)
 	var db := TalentDB.load_default()
 	p.progress.upgrade = ""
 	p.progress.talents = p.progress.talents.filter(func(id: String) -> bool: return int(db.node(id).get("ring", 1)) != 2)

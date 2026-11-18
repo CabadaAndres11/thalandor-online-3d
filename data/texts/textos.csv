@@ -427,3 +427,33 @@ AB_ASSASSIN_FLURRY,Aluvión
 AB_ASSASSIN_FLURRY_DESC,Cuatro cuchilladas muy rápidas. Da 2 puntos de combo en total.
 DETAIL_ST_BLEED,hemorragia del %s %% del poder de ataque cada %s s durante %s s
 DETAIL_REPEAT,%d golpes cada %s s
+UP_PROTECTOR,Protector
+UP_PROTECTOR_DESC,"Defiende al grupo: provoca, resiste y devuelve el daño."
+UP_BERSERKER,Berserker
+UP_BERSERKER_DESC,"Furia pura: más daño a cambio de más riesgo."
+UP_HEALER,Sanador
+UP_HEALER_DESC,"Curas potentes para todo el grupo."
+UP_TEMPLAR,Templario
+UP_TEMPLAR_DESC,"Combate cuerpo a cuerpo con fe y armadura."
+UP_PYROMANCER,Piromante
+UP_PYROMANCER_DESC,"Fuego: daño continuo y explosiones."
+UP_CRYOMANCER,Criomante
+UP_CRYOMANCER_DESC,"Hielo: control y supervivencia."
+UP_ARCANIST,Arcanista
+UP_ARCANIST_DESC,"Magia arcana: precisión y poder acumulado."
+UP_SHARPSHOOTER,Tirador certero
+UP_SHARPSHOOTER_DESC,"Disparos únicos y devastadores."
+UP_HUNTER,Cazador
+UP_HUNTER_DESC,"Ballesta, trampas y un lobo compañero."
+UP_SHADOW,Sombra
+UP_SHADOW_DESC,"Sigilo, teletransporte y golpes críticos."
+UP_VENOMANCER,Venenero
+UP_VENOMANCER_DESC,"Veneno que se acumula y se contagia."
+UPGRADE_TITLE,Mejora de clase
+UPGRADE_WARNING,Tu elección es definitiva hasta que Brann la reinicie.
+UPGRADE_CONFIRM,Elegir esta mejora
+UPGRADE_ACTIVES,Habilidades
+UPGRADE_PASSIVES,Pasivas
+UPGRADE_EVOLUTION,Evolución
+CHAT_UPGRADE_HINT,Habla con Brann para elegir tu mejora de clase
+CHAT_UPGRADE_CHOSEN,%s ha elegido la mejora «%s»

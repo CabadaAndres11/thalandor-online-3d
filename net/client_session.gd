@@ -17,6 +17,8 @@ signal progress_changed()
 ## A player (maybe this one) reached a new level.
 signal leveled_up(id: int, level: int)
 signal arena_level_changed(level: int)
+## A player (maybe this one) chose or lost a class upgrade ("" = none).
+signal upgrade_changed(id: int, upgrade: String)
 
 enum Status { CONNECTING, IN_GAME, CLOSED }
 
@@ -202,7 +204,7 @@ func _handle(msg: Dictionary) -> void:
 			arena_level = msg.arena_level
 			status = Status.IN_GAME
 			for row: Array in msg.roster:
-				roster[row[0]] = {"name": row[1], "slot": row[2], "class_id": row[3], "appearance": row[4]}
+				roster[row[0]] = {"name": row[1], "slot": row[2], "class_id": row[3], "appearance": row[4], "upgrade": row[5]}
 			welcomed.emit(my_id)
 			roster_changed.emit()
 		Protocol.Msg.REJECT:
@@ -220,7 +222,7 @@ func _handle(msg: Dictionary) -> void:
 							combat[ev[1]].level = ev[2]
 						leveled_up.emit(ev[1], ev[2])
 		Protocol.Msg.PLAYER_JOINED:
-			roster[msg.id] = {"name": msg.name, "slot": msg.slot, "class_id": msg.class_id, "appearance": msg.appearance}
+			roster[msg.id] = {"name": msg.name, "slot": msg.slot, "class_id": msg.class_id, "appearance": msg.appearance, "upgrade": msg.upgrade}
 			roster_changed.emit()
 			chat_received.emit("", tr_text("CHAT_JOINED") % msg.name, true)
 		Protocol.Msg.PLAYER_CLASS:
@@ -230,6 +232,10 @@ func _handle(msg: Dictionary) -> void:
 				class_id = msg.class_id
 				bar = (msg.bar as Array).duplicate()
 			class_changed.emit(msg.id, msg.class_id)
+		Protocol.Msg.PLAYER_UPGRADE:
+			if roster.has(msg.id):
+				roster[msg.id].upgrade = msg.upgrade
+			upgrade_changed.emit(msg.id, msg.upgrade)
 		Protocol.Msg.PROGRESS:
 			progress = PlayerProgress.from_dict(msg.progress)
 			bar = (msg.bar as Array).duplicate()
@@ -335,6 +341,12 @@ func reset_progress(what: String) -> void:
 func set_arena_level(level: int) -> void:
 	if status == Status.IN_GAME:
 		_transport.send(Transport.HOST_PEER, Protocol.set_arena_level(level), true)
+
+
+## Asks Brann for a class upgrade (level 50, next to him); upgrade_changed follows.
+func choose_upgrade(id: String) -> void:
+	if status == Status.IN_GAME:
+		_transport.send(Transport.HOST_PEER, Protocol.choose_upgrade(id), true)
 
 
 ## Replaces slots 1-4 (the host checks they are this class's abilities).

@@ -1,0 +1,3 @@
+[
+ { "id": "pyromancer", "class": "mage", "name": "UP_PYROMANCER", "desc": "UP_PYROMANCER_DESC", "actives": [], "passives": [], "evolves": {} }, { "id": "cryomancer", "class": "mage", "name": "UP_CRYOMANCER", "desc": "UP_CRYOMANCER_DESC", "actives": [], "passives": [], "evolves": {} }, { "id": "arcanist", "class": "mage", "name": "UP_ARCANIST", "desc": "UP_ARCANIST_DESC", "actives": [], "passives": [], "evolves": {} }
+]

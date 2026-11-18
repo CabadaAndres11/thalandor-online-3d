@@ -10,7 +10,7 @@ func test_roundtrip_hello() -> void:
 
 
 func test_roundtrip_welcome() -> void:
-	var roster := [[1, "Ana", 0, "warrior", {}], [2, "Bea", 1, "mage", {"skin": "skin_2"}]]
+	var roster := [[1, "Ana", 0, "warrior", {}, ""], [2, "Bea", 1, "mage", {"skin": "skin_2"}, "arcanist"]]
 	var m := Protocol.decode(Protocol.welcome(2, 77, roster))
 	assert_eq(m.type, Protocol.Msg.WELCOME)
 	assert_eq(m.player_id, 2)
@@ -111,7 +111,7 @@ func test_player_joined_carries_class_and_appearance() -> void:
 
 
 func test_roster_rows_carry_class_and_appearance() -> void:
-	var rows := [[1, "Ana", 0, "mage", {"skin": "skin_2"}]]
+	var rows := [[1, "Ana", 0, "mage", {"skin": "skin_2"}, ""]]
 	var m := Protocol.decode(Protocol.welcome(1, 10, rows))
 	assert_eq(m.roster, rows)
 	var short_rows := Protocol.pack([Protocol.Msg.WELCOME, 1, 10, [[1, "Ana", 0]]])

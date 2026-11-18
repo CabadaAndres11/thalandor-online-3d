@@ -33,7 +33,7 @@ static func preview_stats(class_id: String, progress: PlayerProgress, b: Balance
 static func modifiers(p: PlayerState, world: SimWorld) -> Array:
 	var db := world.abilities if world != null else AbilityDB.load_default()
 	var b := world.balance if world != null else Balance.load_from()
-	var out := Passives.collect(db, p.class_id, p.progress.level)
+	var out := Passives.collect(db, p.class_id, p.progress.level, p.progress.upgrade)
 	out.append_array(Talents.mods(p.progress, TalentDB.load_default(), b))
 	return out
 
