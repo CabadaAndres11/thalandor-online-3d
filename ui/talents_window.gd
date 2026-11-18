@@ -10,7 +10,7 @@ signal mastery_bought(dir: String)
 const CANVAS := 520.0
 const NODE_RADIUS := {"start": 11.0, "minor": 7.0, "notable": 10.0, "keystone": 12.0}
 const STATE_COLORS := {
-	"owned": Color("#e8c66a"), "available": Color("#6fd08c"), "locked": Color("#4a4a55"), "ring_locked": Color("#2c2c36"),
+	"owned": HoloTheme.SECTION, "available": Color("#6fd08c"), "locked": Color("#4a4a55"), "ring_locked": Color("#2c2c36"),
 }
 const DIR_KEYS := {"might": "TALENT_DIR_MIGHT", "celerity": "TALENT_DIR_CELERITY", "vitality": "TALENT_DIR_VITALITY",
 	"bastion": "TALENT_DIR_BASTION", "arcane": "TALENT_DIR_ARCANE"}
@@ -43,13 +43,7 @@ func _init() -> void:
 	center.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	add_child(center)
 	_panel = PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.07, 0.07, 0.09, 0.96)
-	style.set_corner_radius_all(8)
-	style.set_content_margin_all(14)
-	style.border_color = Color("#8a6d2f")
-	style.set_border_width_all(1)
-	_panel.add_theme_stylebox_override("panel", style)
+	_panel.add_theme_stylebox_override("panel", HoloTheme.panel_style(14))
 	center.add_child(_panel)
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 6)
@@ -63,7 +57,7 @@ func _init() -> void:
 	title.size_flags_horizontal = SIZE_EXPAND_FILL
 	header.add_child(title)
 	_points_label = Label.new()
-	_points_label.add_theme_color_override("font_color", Color("#ffd27a"))
+	_points_label.add_theme_color_override("font_color", HoloTheme.ACCENT)
 	header.add_child(_points_label)
 	var close := Button.new()
 	close.text = tr("BTN_CLOSE")
@@ -106,7 +100,7 @@ func _init() -> void:
 	side.add_child(_mastery_box)
 	var mt := Label.new()
 	mt.text = tr("MASTERIES_TITLE")
-	mt.modulate = Color("#e8c66a")
+	mt.modulate = HoloTheme.SECTION
 	_mastery_box.add_child(mt)
 	var mh := Label.new()
 	mh.text = tr("MASTERIES_HINT")

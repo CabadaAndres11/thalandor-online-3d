@@ -30,13 +30,7 @@ func _init() -> void:
 	center.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	add_child(center)
 	_panel = PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.07, 0.07, 0.09, 0.96)
-	style.set_corner_radius_all(8)
-	style.set_content_margin_all(14)
-	style.border_color = Color("#8a6d2f")
-	style.set_border_width_all(1)
-	_panel.add_theme_stylebox_override("panel", style)
+	_panel.add_theme_stylebox_override("panel", HoloTheme.panel_style(14))
 	center.add_child(_panel)
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 8)
@@ -50,7 +44,7 @@ func _init() -> void:
 	box.add_child(_columns)
 	var warning := Label.new()
 	warning.text = tr("UPGRADE_WARNING")
-	warning.add_theme_color_override("font_color", Color("#ffd27a"))
+	warning.add_theme_color_override("font_color", HoloTheme.ACCENT)
 	warning.add_theme_font_size_override("font_size", 14)
 	box.add_child(warning)
 	confirm_button = Button.new()
@@ -117,15 +111,15 @@ func _column(u: Dictionary, abilities: AbilityDB) -> Control:
 	col.add_child(b)
 	_buttons[str(u.id)] = b
 	col.add_child(_text(tr(str(u.get("desc", ""))), 15, Color(1, 1, 1, 0.85)))
-	col.add_child(_text(tr("UPGRADE_ACTIVES"), 14, Color("#e8c66a")))
+	col.add_child(_text(tr("UPGRADE_ACTIVES"), 14, HoloTheme.SECTION))
 	for id: Variant in u.get("actives", []):
 		col.add_child(_ability_line(abilities, str(id)))
-	col.add_child(_text(tr("UPGRADE_PASSIVES"), 14, Color("#e8c66a")))
+	col.add_child(_text(tr("UPGRADE_PASSIVES"), 14, HoloTheme.SECTION))
 	for id: Variant in u.get("passives", []):
 		col.add_child(_ability_line(abilities, str(id)))
 	var ev: Dictionary = u.get("evolves", {})
 	if not ev.is_empty():
-		col.add_child(_text(tr("UPGRADE_EVOLUTION"), 14, Color("#e8c66a")))
+		col.add_child(_text(tr("UPGRADE_EVOLUTION"), 14, HoloTheme.SECTION))
 		var target := abilities.get_ability(str(ev.get("ability", "")))
 		var line := tr(str(target.get("name", ev.get("ability", ""))))
 		if ev.has("desc"):

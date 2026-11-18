@@ -46,13 +46,7 @@ func _init() -> void:
 	center.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	add_child(center)
 	_panel = PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.07, 0.07, 0.09, 0.96)
-	style.set_corner_radius_all(8)
-	style.set_content_margin_all(16)
-	style.border_color = Color("#8a6d2f")
-	style.set_border_width_all(1)
-	_panel.add_theme_stylebox_override("panel", style)
+	_panel.add_theme_stylebox_override("panel", HoloTheme.panel_style(16))
 	center.add_child(_panel)
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 8)
@@ -101,7 +95,7 @@ func _init() -> void:
 	_villager_hint = Label.new()
 	_villager_hint.text = tr("ABILITIES_VILLAGER_HINT")
 	_villager_hint.add_theme_font_size_override("font_size", 16)
-	_villager_hint.add_theme_color_override("font_color", Color("#ffd27a"))
+	_villager_hint.add_theme_color_override("font_color", HoloTheme.ACCENT)
 	_villager_hint.visible = false
 	box.add_child(_villager_hint)
 	var hint := Label.new()
@@ -238,7 +232,7 @@ func _section(text: String) -> Label:
 	var l := Label.new()
 	l.text = text
 	l.add_theme_font_size_override("font_size", 15)
-	l.modulate = Color("#e8c66a")
+	l.modulate = HoloTheme.SECTION
 	return l
 
 

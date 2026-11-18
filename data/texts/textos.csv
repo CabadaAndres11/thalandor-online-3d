@@ -568,3 +568,13 @@ AB_ASSASSIN_CORRUPT_BLOOD_DESC,"Los enemigos envenenados por ti hacen un 10 % me
 UP_SHADOW_EVO,"Eviscerar devuelve 8 de energía por cada punto de combo gastado."
 UP_VENOMANCER_EVO,"Cuchillada aplica siempre una acumulación de veneno."
 DETAIL_ST_SPEED_BUFF,+%s de velocidad de movimiento durante %s s
+EQUIP_HEAD,Cabeza
+EQUIP_CHEST,Torso
+EQUIP_HANDS,Manos
+EQUIP_FEET,Pies
+EQUIP_WEAPON,Arma
+EQUIP_OFFHAND,Mano secundaria
+EQUIP_RING,Anillo
+EQUIP_NECK,Amuleto
+EQUIP_EMPTY,Vacío (los objetos llegarán en un plan futuro)
+CHAR_RECOMMENDED,Recomendado para tu clase

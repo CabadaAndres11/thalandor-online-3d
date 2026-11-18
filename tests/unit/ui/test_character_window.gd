@@ -78,7 +78,8 @@ func test_every_text_key_is_translated() -> void:
 			"ATTR_STRENGTH_DESC", "ATTR_AGILITY_DESC", "ATTR_INTELLECT_DESC", "ATTR_STAMINA_DESC", "ATTR_SPIRIT_DESC",
 			"STAT_ROW_HP", "STAT_ROW_RESOURCE", "STAT_ROW_ATTACK", "STAT_ROW_SPELL", "STAT_ROW_ARMOR", "STAT_ROW_CRIT",
 			"STAT_ROW_CRIT_DAMAGE", "STAT_ROW_DODGE", "STAT_ROW_BLOCK", "STAT_ROW_SPEED", "STAT_ROW_COOLDOWN",
-			"STAT_ROW_LIFESTEAL", "STAT_ROW_REGEN"]:
+			"STAT_ROW_LIFESTEAL", "STAT_ROW_REGEN", "CHAR_RECOMMENDED", "EQUIP_EMPTY", "EQUIP_HEAD", "EQUIP_CHEST",
+			"EQUIP_HANDS", "EQUIP_FEET", "EQUIP_WEAPON", "EQUIP_OFFHAND", "EQUIP_RING", "EQUIP_NECK"]:
 		assert_ne(tr(key), key, key)
 
 
@@ -90,3 +91,23 @@ func test_stat_text_covers_every_modifier_stat() -> void:
 	assert_eq(StatText.describe({"stat": "armor_add", "value": 15}), "+15 armadura")
 	assert_eq(StatText.describe({"stat": "hp_regen_add", "value": 0.6}), "+0.6 vida por segundo")
 	assert_eq(StatText.describe({"stat": "crit_add", "value": 0.01}), "+1 % crítico")
+
+
+func test_shows_the_model_and_reserves_eight_item_slots() -> void:
+	_show(1)
+	assert_true(win.has_model())
+	assert_eq(win.slot_ids().size(), 8)
+	for id: String in ["head", "chest", "hands", "feet", "weapon", "offhand", "ring", "neck"]:
+		assert_has(win.slot_ids(), id)
+
+
+func test_main_attributes_of_the_class_are_in_gold() -> void:
+	_show(1)
+	assert_eq(win.recommended_attributes(), ["strength", "stamina"])
+	assert_eq(win.attribute_color("strength"), HoloTheme.ACCENT)
+	assert_eq(win.attribute_color("stamina"), HoloTheme.ACCENT)
+	assert_eq(win.attribute_color("spirit"), HoloTheme.TEXT)
+	var pr := PlayerProgress.new()
+	win.show_for("Bea", "mage", pr, Progression.preview_stats("mage", pr, balance), balance)
+	assert_eq(win.attribute_color("strength"), HoloTheme.TEXT)
+	assert_eq(win.attribute_color("intellect"), HoloTheme.ACCENT)

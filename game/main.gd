@@ -60,6 +60,7 @@ func _ready() -> void:
 	add_child(_ui)
 	var theme := Theme.new()
 	theme.default_font_size = 20
+	HoloTheme.apply(theme)
 
 	title = TitleScreen.new()
 	title.theme = theme
@@ -243,7 +244,7 @@ func _toggle_window(w: Control) -> void:
 func _show_character() -> void:
 	var c := game.client
 	var char_name: String = c.roster[c.my_id].name if c.roster.has(c.my_id) else c.player_name
-	character_window.show_for(char_name, c.class_id, c.progress, Progression.preview_stats(c.class_id, c.progress, c.balance), c.balance)
+	character_window.show_for(char_name, c.class_id, c.progress, Progression.preview_stats(c.class_id, c.progress, c.balance), c.balance, c.appearance)
 
 
 ## E next to an NPC: a villager by Brann chooses a class; anyone else gets Brann's menu

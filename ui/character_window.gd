@@ -1,21 +1,32 @@
 class_name CharacterWindow
 extends Control
-## Character window (C): name, class, level and experience, the five attributes with
-## their "+" buttons (free points to spend) and the computed stats. The host does the
-## spending; this window only reports `attribute_spent`.
+## Character window (C): the character's 3D model between the equipment slots (empty until
+## items exist), name, class, level and experience, the five attributes with their "+"
+## buttons (the ones recommended for the class in gold) and the computed stats. The host
+## does the spending; this window only reports `attribute_spent`.
 
 signal attribute_spent(attr: String)
+
+const SLOTS_LEFT := ["head", "chest", "hands", "feet"]
+const SLOTS_RIGHT := ["weapon", "offhand", "ring", "neck"]
+const SLOT_SIZE := 60.0
+const PREVIEW_SIZE := Vector2(220, 330)
 
 var _panel: PanelContainer
 var _name_label: Label
 var _level_label: Label
 var _xp_label: Label
 var _points_label: Label
+var _attr_names: Dictionary = {} # attr -> Label
 var _attr_values: Dictionary = {} # attr -> Label
 var _attr_plus: Dictionary = {} # attr -> Button
 var _stats_grid: GridContainer
 var _free: int = 0
 var _rows: Array = []
+var _recommended: Array = []
+var _preview: CharacterPreview
+var _preview_key: String = ""
+var _slot_boxes: Dictionary = {} # slot id -> PanelContainer
 
 
 func _init() -> void:
@@ -23,56 +34,59 @@ func _init() -> void:
 	mouse_filter = MOUSE_FILTER_STOP
 	set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	var dim := ColorRect.new()
-	dim.color = Color(0, 0, 0, 0.35)
+	dim.color = Color(0, 0.03, 0.1, 0.45)
 	dim.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	add_child(dim)
 	var center := CenterContainer.new()
 	center.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	add_child(center)
 	_panel = PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.07, 0.07, 0.09, 0.96)
-	style.set_corner_radius_all(8)
-	style.set_content_margin_all(16)
-	style.border_color = Color("#8a6d2f")
-	style.set_border_width_all(1)
-	_panel.add_theme_stylebox_override("panel", style)
+	_panel.add_theme_stylebox_override("panel", HoloTheme.panel_style(16))
 	center.add_child(_panel)
 	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 10)
+	box.add_theme_constant_override("separation", 8)
 	_panel.add_child(box)
 
 	var header := HBoxContainer.new()
 	box.add_child(header)
-	var title := Label.new()
-	title.text = tr("CHAR_TITLE")
-	title.add_theme_font_size_override("font_size", 28)
-	title.size_flags_horizontal = SIZE_EXPAND_FILL
-	header.add_child(title)
+	header.add_child(HoloTheme.title(tr("CHAR_TITLE")))
 	var close := Button.new()
 	close.text = tr("BTN_CLOSE")
 	close.pressed.connect(func() -> void: visible = false)
 	header.add_child(close)
+	box.add_child(HoloTheme.divider())
 
 	var body := HBoxContainer.new()
-	body.add_theme_constant_override("separation", 32)
+	body.add_theme_constant_override("separation", 22)
 	box.add_child(body)
 
+	# Model flanked by the equipment slots.
+	var model := HBoxContainer.new()
+	model.add_theme_constant_override("separation", 8)
+	body.add_child(model)
+	model.add_child(_slot_column(SLOTS_LEFT))
+	_preview = CharacterPreview.new()
+	_preview.custom_minimum_size = PREVIEW_SIZE
+	model.add_child(_preview)
+	model.add_child(_slot_column(SLOTS_RIGHT))
+
 	var left := VBoxContainer.new()
-	left.custom_minimum_size = Vector2(330, 0)
+	left.custom_minimum_size = Vector2(300, 0)
 	left.add_theme_constant_override("separation", 6)
 	body.add_child(left)
 	_name_label = Label.new()
 	_name_label.add_theme_font_size_override("font_size", 22)
+	_name_label.add_theme_color_override("font_color", HoloTheme.ACCENT)
 	left.add_child(_name_label)
 	_level_label = Label.new()
 	left.add_child(_level_label)
 	_xp_label = Label.new()
 	_xp_label.modulate = Color(1, 1, 1, 0.75)
 	left.add_child(_xp_label)
-	left.add_child(_section(tr("CHAR_ATTRIBUTES")))
+	left.add_child(HoloTheme.divider())
+	left.add_child(HoloTheme.section(tr("CHAR_ATTRIBUTES")))
 	_points_label = Label.new()
-	_points_label.add_theme_color_override("font_color", Color("#ffd27a"))
+	_points_label.add_theme_color_override("font_color", HoloTheme.ACCENT)
 	left.add_child(_points_label)
 	for a: String in PlayerProgress.ATTRIBUTES:
 		var row := HBoxContainer.new()
@@ -82,8 +96,9 @@ func _init() -> void:
 		name_label.text = tr("ATTR_" + a.to_upper())
 		name_label.tooltip_text = tr("ATTR_%s_DESC" % a.to_upper())
 		name_label.mouse_filter = MOUSE_FILTER_STOP
-		name_label.custom_minimum_size.x = 150
+		name_label.custom_minimum_size.x = 130
 		row.add_child(name_label)
+		_attr_names[a] = name_label
 		var value := Label.new()
 		value.custom_minimum_size.x = 56
 		value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -97,16 +112,18 @@ func _init() -> void:
 		_attr_plus[a] = plus
 
 	var right := VBoxContainer.new()
-	right.custom_minimum_size = Vector2(380, 0)
+	right.custom_minimum_size = Vector2(330, 0)
 	right.add_theme_constant_override("separation", 6)
 	body.add_child(right)
-	right.add_child(_section(tr("CHAR_STATS")))
+	right.add_child(HoloTheme.section(tr("CHAR_STATS")))
+	right.add_child(HoloTheme.divider())
 	_stats_grid = GridContainer.new()
 	_stats_grid.columns = 2
 	_stats_grid.add_theme_constant_override("h_separation", 16)
 	_stats_grid.add_theme_constant_override("v_separation", 3)
 	right.add_child(_stats_grid)
 
+	box.add_child(HoloTheme.divider())
 	var hint := Label.new()
 	hint.text = tr("CHAR_HINT")
 	hint.add_theme_font_size_override("font_size", 13)
@@ -115,17 +132,24 @@ func _init() -> void:
 
 
 ## Fills the window and opens it. `stats` are the computed stats of the character.
-func show_for(char_name: String, class_id: String, progress: PlayerProgress, stats: CombatStats, balance: Balance) -> void:
+func show_for(char_name: String, class_id: String, progress: PlayerProgress, stats: CombatStats, balance: Balance,
+		appearance: Dictionary = {}) -> void:
 	var def := CharacterCatalog.load_default().class_def(class_id)
 	_name_label.text = "%s · %s" % [char_name, tr(str(def.get("name", class_id)))]
 	_level_label.text = tr("CHAR_LEVEL") % progress.level
 	_xp_label.text = tr("CHAR_XP") % [progress.xp, Xp.to_next(progress.level, balance)]
 	_free = Attributes.free_points(progress, balance)
 	_points_label.text = tr("CHAR_FREE_POINTS") % _free
+	_recommended = (def.get("main_attributes", []) as Array).duplicate()
 	var totals := Attributes.totals(progress, def, balance)
 	for a: String in PlayerProgress.ATTRIBUTES:
+		var rec := a in _recommended
 		(_attr_values[a] as Label).text = str(totals[a])
 		(_attr_plus[a] as Button).disabled = _free <= 0
+		for l: Label in [_attr_names[a], _attr_values[a]]:
+			l.add_theme_color_override("font_color", HoloTheme.ACCENT if rec else HoloTheme.TEXT)
+		(_attr_names[a] as Label).tooltip_text = tr("ATTR_%s_DESC" % a.to_upper()) \
+			+ ("\n" + tr("CHAR_RECOMMENDED") if rec else "")
 	_rows = _stat_rows(stats, str((def.get("resource", {}) as Dictionary).get("kind", "")), balance)
 	for child in _stats_grid.get_children():
 		_stats_grid.remove_child(child)
@@ -140,6 +164,11 @@ func show_for(char_name: String, class_id: String, progress: PlayerProgress, sta
 		value.text = r[1]
 		value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		_stats_grid.add_child(value)
+	# The model is rebuilt only when the class or the look changes (progress updates keep it turning).
+	var key := class_id + JSON.stringify(appearance)
+	if key != _preview_key:
+		_preview_key = key
+		_preview.show_character(class_id, appearance)
 	visible = true
 
 
@@ -165,6 +194,30 @@ func _stat_rows(s: CombatStats, resource_kind: String, balance: Balance) -> Arra
 
 static func _pct(v: float) -> String:
 	return "%s %%" % snappedf(v * 100.0, 0.1)
+
+
+# --- Equipment slots (reserved: items come in a later plan) ---
+
+func _slot_column(ids: Array) -> VBoxContainer:
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 8)
+	col.alignment = BoxContainer.ALIGNMENT_CENTER
+	for id: String in ids:
+		var slot := PanelContainer.new()
+		slot.custom_minimum_size = Vector2(SLOT_SIZE, SLOT_SIZE)
+		slot.add_theme_stylebox_override("panel", HoloTheme.box_style())
+		slot.tooltip_text = "%s\n%s" % [tr("EQUIP_" + id.to_upper()), tr("EQUIP_EMPTY")]
+		slot.mouse_filter = MOUSE_FILTER_STOP
+		var l := Label.new()
+		l.text = tr("EQUIP_" + id.to_upper()).left(4)
+		l.modulate = Color(1, 1, 1, 0.35)
+		l.add_theme_font_size_override("font_size", 12)
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		slot.add_child(l)
+		col.add_child(slot)
+		_slot_boxes[id] = slot
+	return col
 
 
 # --- Readable state (tests) ---
@@ -194,13 +247,22 @@ func press_plus(attr: String) -> void:
 		attribute_spent.emit(attr)
 
 
+## Attributes shown in gold (the class's main ones).
+func recommended_attributes() -> Array:
+	return _recommended.duplicate()
+
+
+func attribute_color(attr: String) -> Color:
+	return (_attr_names[attr] as Label).get_theme_color("font_color")
+
+
+func slot_ids() -> Array:
+	return _slot_boxes.keys()
+
+
+func has_model() -> bool:
+	return _preview.rig != null
+
+
 func panel_rect() -> Rect2:
 	return _panel.get_global_rect()
-
-
-func _section(text: String) -> Label:
-	var l := Label.new()
-	l.text = text
-	l.add_theme_font_size_override("font_size", 15)
-	l.modulate = Color("#e8c66a")
-	return l
