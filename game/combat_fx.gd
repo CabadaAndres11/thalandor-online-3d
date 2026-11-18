@@ -32,7 +32,8 @@ const NUMBER_RISE := 1.2
 const FLASH_TIME := 0.2
 const HEAD_HEIGHT := 2.0
 const SPIKE_SPACING := 0.8
-const MARK_LIFE := 3.0
+const MARK_LINGER := 0.3 # how long a mark outlasts its last pulse
+const MARK_MIN_LIFE := 0.7
 ## Colours of the magic schools (damage element of the ability).
 const ELEMENT_COLORS := {
 	"fire": Color("#ff7a2a"), "frost": Color("#7fd8ff"), "arcane": Color("#c07bff"), "nature": Color("#7be07b"),
@@ -92,10 +93,13 @@ func handle(ev: Array) -> void:
 		"level_up":
 			level_up(int(ev[1]), int(ev[2]))
 		"area":
-			_area_flash(ev[2], float(ev[3]), str(ev[4]) if ev.size() > 4 else "", int(ev[1]))
+			_area_flash(ev[2], float(ev[3]), str(ev[4]) if ev.size() > 4 else "", int(ev[1]),
+				(int(ev[5]) * float(ev[6])) if ev.size() > 6 else 0.0)
 		"status":
 			if str(ev[2]) == "shield":
 				_add_shield(int(ev[1]), int(ev[3]))
+			elif str(ev[2]) == "ice_block":
+				_ice_block(int(ev[1]), int(ev[3]))
 			elif str(ev[2]) in ["slow", "freeze"]:
 				_snow(int(ev[1]), str(ev[2]) == "freeze", int(ev[3]) if ev.size() > 3 else 0)
 		"hit":
@@ -422,7 +426,7 @@ func _remove_telegraph(id: int) -> void:
 		_telegraphs.erase(id)
 
 
-func _area_flash(pos: Vector3, radius: float, ability_id: String = "", area_id: int = 0) -> void:
+func _area_flash(pos: Vector3, radius: float, ability_id: String = "", area_id: int = 0, still_going_s: float = 0.0) -> void:
 	var magic := ability_id != "" and _is_magic(ability_id)
 	var color := _color_of(ability_id).lightened(0.35) if magic else Color(1, 0.9, 0.6)
 	var d := _disc(radius, color, 0.6)
@@ -431,7 +435,7 @@ func _area_flash(pos: Vector3, radius: float, ability_id: String = "", area_id: 
 	_flashes.append({"node": d, "t": 0.0})
 	if magic:
 		_burst(pos, radius, color)
-		_ground_mark(area_id, pos, radius, _element_of_ability(ability_id))
+		_ground_mark(area_id, pos, radius, _element_of_ability(ability_id), still_going_s)
 
 
 ## A burst of glowing motes rising from an area that went off.
@@ -666,6 +670,10 @@ func _advance_decor(dt: float) -> void:
 				node.queue_free()
 			_decor.erase(d)
 			continue
+		if d.has("follow"):
+			var fp: Variant = _position_of.call(int(d.follow))
+			if fp != null:
+				node.position = (fp as Vector3) + Vector3(0, 0.95, 0)
 		if d.grow > 0.0:
 			var k := clampf(d.t / d.grow, 0.0, 1.0)
 			node.scale = (d.target as Vector3) * (1.0 - pow(1.0 - k, 3.0)) # eases out
@@ -817,17 +825,32 @@ func _snow(id: int, frozen: bool, end_tick: int) -> void:
 		_add_decor(shell, seconds, 0.0, Vector3(1.0, 1.4, 1.0), 0.4, 0.4)
 
 
+## A block of ice around the caster for as long as the status lasts.
+func _ice_block(id: int, end_tick: int) -> void:
+	var at: Variant = _position_of.call(id)
+	if at == null:
+		return
+	var seconds := clampf(float(end_tick - int(_tick_now.call())) / float(_tick_rate), 0.3, 10.0)
+	var block := _voxel("iceblock", func() -> Dictionary: return VoxelFx.ice_block(), false, 0.5, 0.22)
+	block.position = (at as Vector3) + Vector3(0, 0.95, 0)
+	var d := _add_decor(block, seconds, 0.25, Vector3.ONE, 0.5, 0.5)
+	d.follow = id
+	_snow_burst((at as Vector3) + Vector3(0, 2.2, 0))
+
+
 ## What an area leaves on the ground: arcane a pentagram, fire burning ground, frost ice spikes.
-func _ground_mark(area_id: int, pos: Vector3, radius: float, element: String) -> void:
+func _ground_mark(area_id: int, pos: Vector3, radius: float, element: String, still_going_s: float = 0.0) -> void:
 	if not element in ["arcane", "fire", "frost"]:
 		return
+	var life_left := maxf(still_going_s + MARK_LINGER, MARK_MIN_LIFE) # only while the area still does something
 	if _marks.has(area_id) and is_instance_valid(_marks[area_id].node) and _marks[area_id] in _decor:
-		_marks[area_id].t = 0.0 # a pulse of the same area: the mark lasts longer
+		_marks[area_id].t = 0.0
+		_marks[area_id].life = life_left
 		return
 	var r := snappedf(radius, 0.5)
 	var holder := Node3D.new()
 	holder.position = Vector3(pos.x, 0.04, pos.z)
-	var life := MARK_LIFE
+	var life := life_left
 	var entry: Dictionary
 	match element:
 		"arcane":

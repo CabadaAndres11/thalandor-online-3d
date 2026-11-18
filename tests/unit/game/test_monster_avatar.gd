@@ -143,3 +143,31 @@ func test_monster_level_is_in_its_label() -> void:
 	assert_eq(a.bar.label_text(), tr("OVERHEAD_LEVEL") % [12, tr("MON_CULTIST")])
 	a.apply_state({"position": Vector3.ZERO, "facing": 0.0}, {"hp": 55.0, "max_hp": 55.0, "status_bits": 0, "level": 13}, DT)
 	assert_eq(a.bar.label_text(), tr("OVERHEAD_LEVEL") % [13, tr("MON_CULTIST")])
+
+
+func test_a_hit_flashes_bleeds_and_steps_back() -> void:
+	var a := _avatar("marked_hound")
+	var rest := a.body.position
+	a.react_to_hit(a.position + Vector3(0, 0, -3)) # struck from behind its +Z side... away is +Z
+	var flashed := a.body.find_children("*", "GeometryInstance3D", true, false).filter(
+		func(n: Node) -> bool: return (n as GeometryInstance3D).material_overlay != null)
+	assert_gt(flashed.size(), 0, "white flash")
+	assert_eq(a.find_children("*", "CPUParticles3D", false, false).size(), 1, "blood")
+	assert_ne(a.body.position, rest, "it is pushed back")
+	assert_false(a.dying)
+
+
+func test_dying_monsters_ignore_hits() -> void:
+	var a := _avatar("marked_hound")
+	a.play_death()
+	a.react_to_hit(Vector3.ZERO)
+	assert_eq(a.find_children("*", "CPUParticles3D", false, false).size(), 0)
+
+
+func test_binary_digits_start_on_the_body_surface() -> void:
+	var a := _avatar("cultist")
+	a.play_death()
+	assert_eq(a.binary_digit_count(), MonsterAvatar.BINARY_DIGITS)
+	for l: Label3D in a._binary:
+		assert_lt(absf(l.position.x), 1.2, "inside the silhouette's width")
+		assert_lt(l.position.y, a._height + 0.5)

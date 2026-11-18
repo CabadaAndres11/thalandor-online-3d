@@ -103,25 +103,29 @@ static func fire_orb(seed_value: int = 1) -> Dictionary:
 
 ## A faceted ice crystal (an octahedron), pale in the middle.
 static func ice_crystal() -> Dictionary:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 21
 	var cells := {}
 	for x in range(-3, 4):
 		for y in range(-3, 4):
 			for z in range(-3, 4):
 				var d := absi(x) + absi(y) + absi(z)
 				if d <= 3:
-					cells[Vector3i(x, y, z)] = ICE_LIGHT if d <= 1 else ICE.lerp(ICE_LIGHT, 0.2 * float(3 - d))
+					cells[Vector3i(x, y, z)] = ICE_LIGHT if d <= 1 else ice_color(rng, d == 3)
 	return cells
 
 
 ## An ice spike `height` cubes tall: a 3x3 base that tapers to one cube, whiter at the tip.
 static func ice_spike(height: int) -> Dictionary:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 31 + height
 	var cells := {}
 	height = maxi(height, 2)
 	for y in height:
 		var half := int(floor(float(height - y) * 1.6 / float(height)))
 		for x in range(-half, half + 1):
 			for z in range(-half, half + 1):
-				cells[Vector3i(x, y, z)] = ICE.lerp(ICE_LIGHT, float(y) / float(height))
+				cells[Vector3i(x, y, z)] = ice_color(rng, y >= height - 2).lerp(ICE_LIGHT, float(y) / float(height) * 0.7)
 	return cells
 
 
@@ -164,6 +168,31 @@ static func pentagram(radius_m: float, cube: float = 0.12) -> Dictionary:
 			var p := from.lerp(to, float(i) / float(n))
 			cells[Vector3i(roundi(p.x), 0, roundi(p.y))] = ARCANE_LIGHT
 	return cells
+
+
+## A block of ice that fits a standing character: a faceted slab with cut corners, with
+## clear and deeper blue cubes mixed in so it is not one flat colour.
+static func ice_block(half_x: int = 3, half_y: int = 4, seed_value: int = 11) -> Dictionary:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed_value
+	var cells := {}
+	for x in range(-half_x, half_x + 1):
+		for y in range(-half_y, half_y + 1):
+			for z in range(-half_x, half_x + 1):
+				var edges := int(absi(x) == half_x) + int(absi(y) == half_y) + int(absi(z) == half_x)
+				if edges >= 3:
+					continue # cut corners
+				if edges == 0 and rng.randf() < 0.55:
+					continue # hollow: you see the character inside
+				cells[Vector3i(x, y, z)] = ice_color(rng, edges >= 2)
+	return cells
+
+
+## An ice colour with variation: deep blue, cyan, pale and white, brighter on edges.
+static func ice_color(rng: RandomNumberGenerator, edge: bool = false) -> Color:
+	var base := Color("#3f9be0").lerp(ICE, rng.randf())
+	base = base.lerp(ICE_LIGHT, 0.55 if edge else rng.randf() * 0.35)
+	return base
 
 
 ## A ball of cubes of one colour with a pale core (holy, nature, shadow and the rest).

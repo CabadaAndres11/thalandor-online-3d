@@ -10,12 +10,15 @@ extends Node3D
 const SPEED_SMOOTHING_S := 0.1
 const TELEPORT_DISTANCE := 2.0
 const DISSOLVE_S := 1.1
+const HIT_FLASH_S := 0.14
+const HIT_RECOIL := 0.28
 const BINARY_DIGITS := 36
 
 var body: Node3D
 var bar: OverheadBar
 var dying: bool = false
 var _binary: Array[Label3D] = []
+var _recoil: Tween
 var _rig: BeastRig
 var _humanoid: HumanRig
 var _aura: Node3D
@@ -188,6 +191,68 @@ func land() -> Tween:
 
 
 
+## A hit lands: a white flash, a spray of blood and a small step back away from the attacker.
+func react_to_hit(from: Variant = null) -> void:
+	if dying or body == null:
+		return
+	# 1. White flash over the whole body.
+	var overlay := StandardMaterial3D.new()
+	overlay.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	overlay.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	overlay.albedo_color = Color(1, 1, 1, 0.85)
+	var meshes := body.find_children("*", "GeometryInstance3D", true, false)
+	for n: Node in meshes:
+		(n as GeometryInstance3D).material_overlay = overlay
+	var flash := create_tween()
+	flash.tween_property(overlay, "albedo_color:a", 0.0, HIT_FLASH_S)
+	flash.tween_callback(func() -> void:
+		for n: Node in meshes:
+			if is_instance_valid(n):
+				(n as GeometryInstance3D).material_overlay = null)
+	# 2. Blood.
+	var away := Vector3.ZERO
+	if from is Vector3:
+		away = position - (from as Vector3)
+		away.y = 0.0
+	away = away.normalized() if away.length() > 0.01 else Vector3.ZERO
+	_blood(away)
+	# 3. A small step back (visual only), eased out.
+	if away != Vector3.ZERO and not dying:
+		var local := away.rotated(Vector3.UP, -rotation.y) * HIT_RECOIL
+		if _recoil != null and _recoil.is_valid():
+			_recoil.kill()
+		body.position = _rest + local
+		_recoil = create_tween()
+		_recoil.tween_property(body, "position", _rest, 0.18).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+
+
+func _blood(away: Vector3) -> void:
+	var p := CPUParticles3D.new()
+	p.one_shot = true
+	p.emitting = true
+	p.amount = 14
+	p.lifetime = 0.55
+	p.explosiveness = 1.0
+	p.direction = (away + Vector3.UP).normalized() if away != Vector3.ZERO else Vector3.UP
+	p.spread = 45.0
+	p.initial_velocity_min = 1.5
+	p.initial_velocity_max = 3.5
+	p.gravity = Vector3(0, -9.0, 0)
+	var drop := SphereMesh.new() # round drops, not squares
+	drop.radius = 0.035
+	drop.height = 0.07
+	drop.radial_segments = 6
+	drop.rings = 3
+	p.mesh = drop
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.albedo_color = Color(0.72, 0.05, 0.07)
+	p.material_override = m
+	p.position = Vector3(0, _height * 0.55, 0)
+	add_child(p)
+	get_tree().create_timer(1.0).timeout.connect(p.queue_free) if is_inside_tree() else p.queue_free()
+
+
 ## The body dissolves into binary code: it fades out in place while 0s and 1s rise from it
 ## (humanoids also play their fall). The node is removed when the monster leaves the snapshot.
 func play_death() -> Tween:
@@ -206,29 +271,59 @@ func play_death() -> Tween:
 	return t
 
 
-## Digits (green 0 and 1) that rise from the body and fade while it dissolves.
+## Digits (green 0 and 1) that appear on the body's own surface and fade as it dissolves, so
+## they stay inside its silhouette.
 func _spawn_binary(t: Tween) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = int(position.x * 73.0 + position.z * 131.0) # visual only: not the simulation's rng
-	var half := maxf(_height * 0.3, 0.3)
-	for i in BINARY_DIGITS:
+	var points := _surface_points(rng, BINARY_DIGITS)
+	for from: Vector3 in points:
 		var l := Label3D.new()
 		l.text = "1" if rng.randf() < 0.5 else "0"
 		l.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 		l.no_depth_test = true
 		l.fixed_size = false
-		l.pixel_size = 0.008
+		l.pixel_size = 0.006
 		l.font_size = 40
 		l.outline_size = 6
 		l.modulate = Color(0.35, 1.0, 0.65, 0.0)
-		var from := Vector3(rng.randf_range(-half, half), rng.randf_range(0.1, _height), rng.randf_range(-half, half))
 		l.position = from
 		add_child(l)
 		_binary.append(l)
-		var delay := rng.randf_range(0.0, 0.6)
+		var delay := rng.randf_range(0.0, 0.7)
 		t.tween_property(l, "modulate:a", 1.0, 0.15).set_delay(delay)
-		t.tween_property(l, "position:y", from.y + rng.randf_range(0.8, 1.6), 0.9).set_delay(delay)
-		t.tween_property(l, "modulate:a", 0.0, 0.35).set_delay(delay + 0.6)
+		t.tween_property(l, "position:y", from.y + rng.randf_range(0.1, 0.3), 0.7).set_delay(delay)
+		t.tween_property(l, "modulate:a", 0.0, 0.3).set_delay(delay + 0.5)
+
+
+## Random points on the model's surface, in this node's space.
+func _surface_points(rng: RandomNumberGenerator, count: int) -> Array[Vector3]:
+	var out: Array[Vector3] = []
+	var verts: Array = [] # [MeshInstance3D, PackedVector3Array]
+	for n: Node in body.find_children("*", "MeshInstance3D", true, false):
+		var mi := n as MeshInstance3D
+		if mi.mesh != null and mi.visible:
+			var faces := mi.mesh.get_faces()
+			if faces.size() > 0:
+				verts.append([mi, faces])
+	if verts.is_empty():
+		for i in count:
+			out.append(Vector3(0, rng.randf_range(0.2, _height), 0))
+		return out
+	for i in count:
+		var pick: Array = verts[rng.randi() % verts.size()]
+		var faces: PackedVector3Array = pick[1]
+		var v := faces[rng.randi() % faces.size()]
+		var mi := pick[0] as MeshInstance3D
+		# Up to the avatar: through every transform between the mesh and this node.
+		var xf := Transform3D.IDENTITY
+		var node: Node = mi
+		while node != null and node != self:
+			if node is Node3D:
+				xf = (node as Node3D).transform * xf
+			node = node.get_parent()
+		out.append(xf * v)
+	return out
 
 
 func binary_digit_count() -> int:

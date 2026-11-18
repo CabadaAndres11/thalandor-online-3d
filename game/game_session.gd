@@ -387,6 +387,9 @@ func _on_combat_event(ev: Array) -> void:
 			elif _avatars.has(who):
 				var ab := AbilityDB.load_default().get_ability(str(ev[2]))
 				(_avatars[who] as PlayerAvatar).play_action(str(ab.get("anim", "")))
+		"hit":
+			if _monster_avatars.has(int(ev[1])):
+				(_monster_avatars[int(ev[1])] as MonsterAvatar).react_to_hit(_entity_position(int(ev[4])) if ev.size() > 4 else null)
 		"leap":
 			var jumper := int(ev[1])
 			if _monster_avatars.has(jumper):

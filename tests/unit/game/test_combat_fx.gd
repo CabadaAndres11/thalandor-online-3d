@@ -190,21 +190,41 @@ func test_frozen_target_gets_snow_and_an_ice_shell() -> void:
 
 
 func test_ground_marks_by_element() -> void:
-	fx.handle(["area", 20, Vector3(5, 0, 5), 3.0, "mage_fireball"])
+	fx.handle(["area", 20, Vector3(5, 0, 5), 3.0, "mage_fireball", 2, 1.0])
 	assert_eq(fx.mark_count(), 1, "burning ground")
-	fx.handle(["area", 20, Vector3(5, 0, 5), 3.0, "mage_fireball"])
+	fx.handle(["area", 20, Vector3(5, 0, 5), 3.0, "mage_fireball", 1, 1.0])
 	assert_eq(fx.mark_count(), 1, "a pulse of the same area refreshes it")
-	fx.handle(["area", 21, Vector3(9, 0, 5), 3.0, "mage_frost_nova"])
+	fx.handle(["area", 21, Vector3(9, 0, 5), 3.0, "mage_frost_nova", 0, 0.0])
 	assert_eq(fx.mark_count(), 2, "ice spikes")
-	fx.handle(["area", 22, Vector3(9, 0, 9), 3.0, "warrior_whirlwind"])
+	fx.handle(["area", 22, Vector3(9, 0, 9), 3.0, "warrior_whirlwind", 0, 0.0])
 	assert_eq(fx.mark_count(), 2, "no mark for physical areas")
-	fx.advance(CombatFX.MARK_LIFE + 0.5)
-	assert_eq(fx.mark_count(), 2)
-	assert_eq(fx.decor_count(), 0, "all gone")
+	fx.advance(1.0)
+	assert_eq(fx.decor_count(), 1, "the instant area's mark is gone, the one with a pulse left stays")
+	fx.advance(0.5)
+	assert_eq(fx.decor_count(), 0, "it ends with its last pulse")
+
+
+func test_a_mark_lasts_only_while_the_area_has_pulses_left() -> void:
+	fx.handle(["area", 40, Vector3(5, 0, 5), 3.0, "mage_fireball", 5, 1.0])
+	fx.advance(4.0)
+	assert_eq(fx.mark_count(), 1)
+	assert_eq(fx.decor_count(), 1, "5 more seconds of damage: still burning")
+	fx.handle(["area", 40, Vector3(5, 0, 5), 3.0, "mage_fireball", 0, 1.0])
+	fx.advance(1.2)
+	assert_eq(fx.decor_count(), 0, "the last pulse went off")
+
+
+func test_ice_block_surrounds_the_caster_for_its_duration() -> void:
+	fx.handle(["status", 1, "ice_block", latest_tick + 60])
+	assert_gt(fx.decor_count(), 1)
+	fx.advance(1.0)
+	assert_gt(fx.decor_count(), 0)
+	fx.advance(2.5)
+	assert_eq(fx.decor_count(), 0, "it goes with the status")
 
 
 func test_arcane_area_leaves_a_pentagram() -> void:
-	fx.handle(["area", 30, Vector3(5, 0, 5), 3.0, "mage_arcane_charge"])
+	fx.handle(["area", 30, Vector3(5, 0, 5), 3.0, "mage_arcane_charge", 1, 1.0])
 	assert_eq(fx.mark_count(), 1)
 
 
