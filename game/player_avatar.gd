@@ -1,12 +1,11 @@
 class_name PlayerAvatar
 extends Node3D
 ## A player in the world: their voxel character (HumanRig), their name above it in
-## their slot color and an aim arrow on the ground. Plays idle or walk from how fast
+## their slot color. Plays idle or walk from how fast
 ## its drawn position moves.
 
 const SLOT_COLORS := [Color("#E5533D"), Color("#3D8BE5"), Color("#4CC26A"), Color("#E5C33D")]
 const NAME_HEIGHT := 2.25
-const ARROW_DISTANCE := 0.75
 ## Speed smoothing time constant: drawn positions of the own player only change on
 ## physics ticks, so raw per-frame speed alternates between 0 and double.
 const SPEED_SMOOTHING_S := 0.1
@@ -38,19 +37,6 @@ func setup(player_name: String, slot: int, class_id: String, appearance: Diction
 	rig.auto_update = false
 	add_child(rig)
 	rig.set_moving_speed(0.0, move_speed)
-
-	var arrow := MeshInstance3D.new()
-	var prism := PrismMesh.new()
-	prism.size = Vector3(0.5, 0.7, 0.05)
-	var arrow_mat := StandardMaterial3D.new()
-	arrow_mat.albedo_color = color.lightened(0.4)
-	arrow_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	prism.material = arrow_mat
-	arrow.mesh = prism
-	# Lay the prism flat on the ground with its tip pointing to local +Z, in front of the body.
-	arrow.rotation_degrees = Vector3(90, 0, 0)
-	arrow.position = Vector3(0, 0.03, ARROW_DISTANCE)
-	add_child(arrow)
 
 	_label = Label3D.new()
 	_label.text = player_name

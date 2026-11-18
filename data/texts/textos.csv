@@ -578,3 +578,27 @@ EQUIP_EMPTY,Vacío (los objetos llegarán en un plan futuro)
 CHAR_RECOMMENDED,Recomendado para tu clase
 DETAIL_CAST,Lanzamiento: %s s (se interrumpe si te mueves)
 DETAIL_POWER_ARMOR,armadura
+STATUS_STUN,Aturdido
+STATUS_ROOT,Inmovilizado
+STATUS_FREEZE,Congelado
+STATUS_SLOW,Ralentizado
+STATUS_POISON,Veneno
+STATUS_BURN,Quemadura
+STATUS_MARK,Marcado
+STATUS_DAMAGE_BUFF,Más daño
+STATUS_DAMAGE_REDUCTION,Menos daño recibido
+STATUS_EVASION,Evasión
+STATUS_TAUNTED,Provocado
+STATUS_STEALTH,Sigilo
+STATUS_INVULNERABLE,Invulnerable
+STATUS_HOT,Curación continua
+STATUS_BLEED,Sangrado
+STATUS_HASTE,Celeridad
+STATUS_VULNERABLE,Vulnerable
+STATUS_ATTACK_SLOW,Ataque lento
+STATUS_WEAKEN,Debilitado
+STATUS_ICE_BLOCK,Bloque de hielo
+STATUS_SHIELD,Escudo
+STATUS_SPEED_BUFF,Más velocidad
+STATUS_ENVENOM,Filo envenenado
+STATUS_CONTAGION,Contagio

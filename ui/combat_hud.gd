@@ -38,6 +38,9 @@ var _column: VBoxContainer
 var _combo_row: HBoxContainer
 var _pips: Array[ColorRect] = []
 var _charge: ProgressBar
+## Tiles for the effects on this player (buffs, effects left by abilities, enemy debuffs).
+var status_tiles: StatusTiles
+var _statuses: Dictionary = {} # kind -> end tick, from the host's status events
 var _cast: ProgressBar # cast time and channels of this player
 var _cast_label: Label
 var _cast_start: float = 0.0
@@ -94,6 +97,9 @@ func _init() -> void:
 	_cast_label = _bar_label(_cast)
 	_cast.visible = false
 	_column.add_child(_cast)
+
+	status_tiles = StatusTiles.new()
+	_column.add_child(status_tiles)
 
 	_hp = _bar(HP_COLOR, 18)
 	_hp_label = _bar_label(_hp)
@@ -156,6 +162,7 @@ func _init() -> void:
 
 
 func bind(client: ClientSession, bar: Array, abilities: AbilityDB) -> void:
+	InputSetup.ensure_actions() # the slots show the icons of the keys bound to their actions
 	if _client != null and _client.combat_event.is_connected(_on_combat_event):
 		_client.combat_event.disconnect(_on_combat_event)
 	_client = client
@@ -169,12 +176,18 @@ func bind(client: ClientSession, bar: Array, abilities: AbilityDB) -> void:
 	for i in AbilityDB.BAR_SIZE:
 		keys.append(str(i + 1))
 	keys.append(tr("HUD_KEY_SPACE"))
+	# The mouse buttons and the dodge show the icon of what they are bound to; the bar slots, their number.
+	var actions := {0: "attack_basic", 1: "attack_secondary", DODGE_SLOT: "dodge"}
 	for i in SLOTS:
 		var s: Dictionary = _slots[i]
 		var id := _slot_ids[i]
 		var icon := "dodge" if id == "dodge" else str(abilities.get_ability(id).get("icon", "")) if abilities.has(id) else ""
 		(s.icon as TextureRect).texture = load(ICON_DIR % icon) if icon != "" and ResourceLoader.exists(ICON_DIR % icon) else null
 		(s.key as Label).text = keys[i]
+		(s.key as Label).visible = not actions.has(i)
+		(s.key_icon as KeyIcon).visible = actions.has(i)
+		if actions.has(i):
+			(s.key_icon as KeyIcon).show_action(actions[i])
 	_combo_row.visible = false
 	_res.add_theme_stylebox_override("fill", _fill(RESOURCE_COLORS.get(_resource_kind(client.class_id), RESOURCE_COLORS.mana)))
 
@@ -201,6 +214,7 @@ func advance(dt: float) -> void:
 		return
 	_update_boss()
 	_update_cast()
+	_update_statuses()
 	xp_bar.set_progress(_client.progress.level, _client.progress.xp, Xp.to_next(_client.progress.level, _client.balance))
 	var me: Dictionary = _client.combat.get(_client.my_id, {})
 	if me.is_empty():
@@ -250,6 +264,8 @@ func _on_combat_event(ev: Array) -> void:
 			_cd_total[id] = cd
 			if bool(ab.get("gcd", false)):
 				_gcd_end = _clock + _client.balance.gcd_s
+		"status":
+			_statuses[str(ev[2])] = int(ev[3])
 		"channel":
 			var cid := str(ev[2]) if ev.size() > 2 else ""
 			_cast_start = _clock
@@ -263,11 +279,32 @@ func _on_combat_event(ev: Array) -> void:
 			_cast.visible = false
 		"died":
 			_cast.visible = false
+			_statuses.clear()
 			_respawn_at = _clock + _client.balance.respawn_s
 		"respawned":
 			_respawn_at = -1.0
 			_cd_end.clear()
 			_gcd_end = 0.0
+
+
+## Keeps the tiles of the effects that are still on the player: an effect goes when its time
+## is up or when the host's snapshot no longer lists it.
+func _update_statuses() -> void:
+	var now := _client.latest_tick()
+	var rate := float(_client.balance.tick_rate)
+	var me: Dictionary = _client.combat.get(_client.my_id, {})
+	var bits := int(me.get("status_bits", 0))
+	var shown := {}
+	for kind: String in _statuses.keys():
+		var left := 99.0 if now < 0 else (float(int(_statuses[kind]) - now) / rate)
+		var gone := now >= 0 and left <= 0.0
+		if not gone and not me.is_empty() and kind in StatusEffect.BIT_KINDS and not StatusEffect.has_bit(bits, kind):
+			gone = true
+		if gone:
+			_statuses.erase(kind)
+		else:
+			shown[kind] = left
+	status_tiles.show_statuses(shown, _clock)
 
 
 ## Fills the cast bar as the time passes; it hides itself when the time is up.
@@ -306,6 +343,11 @@ func slot_ability(i: int) -> String:
 
 func slot_key(i: int) -> String:
 	return (_slots[i].key as Label).text
+
+
+## The icon kind a slot shows instead of text ("" = just its number).
+func slot_key_icon(i: int) -> String:
+	return (_slots[i].key_icon as KeyIcon).kind if (_slots[i].key_icon as KeyIcon).visible else ""
 
 
 ## 0 when ready, 1 just after casting.
@@ -483,4 +525,8 @@ func _make_slot(row: HBoxContainer) -> Dictionary:
 	key.position = Vector2(4, 1)
 	key.mouse_filter = MOUSE_FILTER_IGNORE
 	panel.add_child(key)
-	return {"panel": panel, "icon": icon, "key": key, "sweep": sweep}
+	var key_icon := KeyIcon.new()
+	key_icon.position = Vector2(3, 2)
+	key_icon.visible = false
+	panel.add_child(key_icon)
+	return {"panel": panel, "icon": icon, "key": key, "key_icon": key_icon, "sweep": sweep}

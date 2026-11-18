@@ -212,3 +212,63 @@ func test_cast_bar_fills_and_hides() -> void:
 	assert_false(hud.cast_visible(), "interrupted")
 	c.combat_event.emit(["channel", 2, "mage_fireball", 1.2])
 	assert_false(hud.cast_visible(), "somebody else's cast")
+
+
+func test_status_tiles_show_effects_and_blink_when_ending() -> void:
+	var c := _client("warrior")
+	c.combat[1].status_bits = (1 << StatusEffect.BIT_KINDS.find("poison")) | (1 << StatusEffect.BIT_KINDS.find("haste"))
+	var hud := _hud(c)
+	c._latest_tick = 100
+	c.combat_event.emit(["status", 1, "poison", 100 + 30 * 10]) # 10 s left
+	c.combat_event.emit(["status", 1, "haste", 100 + 30 * 2]) # 2 s left: about to end
+	hud.advance(0.1)
+	assert_eq(hud.status_tiles.kinds().size(), 2)
+	assert_true(hud.status_tiles.visible)
+	assert_false(hud.status_tiles.is_blinking("poison"))
+	assert_true(hud.status_tiles.is_blinking("haste"), "it will vanish soon")
+	assert_true(StatusTiles.is_debuff("poison"))
+	assert_ne(hud.status_tiles.edge_color("poison"), hud.status_tiles.edge_color("haste"), "red for harm, green for help")
+
+
+func test_a_status_leaves_with_its_time_or_when_the_snapshot_drops_it() -> void:
+	var c := _client("warrior")
+	c.combat[1].status_bits = 1 << StatusEffect.BIT_KINDS.find("slow")
+	var hud := _hud(c)
+	c._latest_tick = 100
+	c.combat_event.emit(["status", 1, "slow", 130])
+	hud.advance(0.1)
+	assert_eq(hud.status_tiles.kinds(), ["slow"])
+	c.combat[1].status_bits = 0 # cleansed
+	hud.advance(0.1)
+	assert_eq(hud.status_tiles.kinds(), [])
+	assert_false(hud.status_tiles.visible)
+	c.combat[1].status_bits = 1 << StatusEffect.BIT_KINDS.find("slow")
+	c.combat_event.emit(["status", 1, "slow", 130])
+	c._latest_tick = 131
+	hud.advance(0.1)
+	assert_eq(hud.status_tiles.kinds(), [], "time is up")
+
+
+func test_slots_show_the_icon_of_their_bound_key_and_numbers_only_numbers() -> void:
+	var hud := _hud(_client("mage"))
+	assert_eq(hud.slot_key_icon(0), "mouse_left")
+	assert_eq(hud.slot_key_icon(1), "mouse_right")
+	assert_eq(hud.slot_key_icon(hud.slot_count() - 1), "space")
+	assert_eq(hud.slot_key_icon(2), "", "a slot shows its number")
+	assert_eq(hud.slot_key(2), "1")
+
+
+func test_key_icons_follow_the_binding() -> void:
+	InputSetup.ensure_actions()
+	assert_eq(KeyIcon.describe("dodge").kind, "space")
+	assert_eq(KeyIcon.describe("attack_basic").kind, "mouse_left")
+	assert_eq(KeyIcon.describe("interact"), {"kind": "key", "text": "E"})
+	var ev := InputEventKey.new()
+	ev.physical_keycode = KEY_Q
+	InputMap.action_erase_events("dodge")
+	InputMap.action_add_event("dodge", ev)
+	assert_eq(KeyIcon.describe("dodge"), {"kind": "key", "text": "Q"}, "rebound")
+	InputMap.action_erase_events("dodge") # put the default back
+	var space := InputEventKey.new()
+	space.physical_keycode = KEY_SPACE
+	InputMap.action_add_event("dodge", space)
