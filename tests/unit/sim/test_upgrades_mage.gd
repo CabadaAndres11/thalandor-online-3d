@@ -56,16 +56,36 @@ func test_meteor() -> void:
 	var p := _hero("pyromancer")
 	var foe := _foe(2000, Vector3(10, 0, 22))
 	var edge := _foe(2001, Vector3(10, 0, 26.5))
+	var t0 := f.world.tick
 	assert_true(Combat.try_cast(f.world, p, "mage_meteor", Vector3(10, 0, 22)))
 	assert_eq(p.resource, p.stats.max_resource - 60.0)
-	assert_eq(f.events_of("telegraph").size() + (f.world.events as Array).filter(func(e: Array) -> bool: return e[0] == "telegraph").size() > 0, true)
-	f.run(1.3)
+	f.run(1.1)
+	assert_eq(f.events_of("telegraph").size(), 0, "still casting")
+	f.run(0.3)
+	assert_gt(f.events_of("telegraph").size(), 0, "the meteor is on its way: the fx sees the ability")
+	assert_eq(f.events_of("telegraph")[0][5], "mage_meteor")
+	f.run(0.5)
 	assert_eq(foe.hp, 50000.0, "still falling")
-	f.run(0.4)
+	f.run(0.5)
 	assert_almost_eq(_lost(foe), 50.0 + 2.5 * p.stats.spell_power, 0.01)
 	assert_true(foe.has_status("stun"))
 	assert_lt(edge.hp, 50000.0, "radius 5")
-	assert_eq(p.cooldowns["mage_meteor"], f.world.tick - f.world.ticks(1.7) + f.world.ticks(30.0))
+	assert_eq(p.cooldowns["mage_meteor"], t0 + f.world.ticks(30.0))
+
+
+func test_flame_wall_is_a_line_across_the_aim() -> void:
+	var p := _hero("pyromancer") # at (10, 0, 10), facing the cursor along +Z
+	var centre := _foe(2000, Vector3(10, 0, 20))
+	var side := _foe(2001, Vector3(14.5, 0, 20)) # 4.5 m along the wall: inside a round 3 m area? no, but in the wall
+	var far_side := _foe(2002, Vector3(16.0, 0, 20)) # 6 m: beyond the 5 m half length
+	var front := _foe(2003, Vector3(10, 0, 22.5)) # 2.5 m in front of the wall: outside its width
+	assert_true(Combat.try_cast(f.world, p, "mage_flame_pillar", Vector3(10, 0, 20)))
+	assert_lt(centre.hp, 50000.0)
+	assert_lt(side.hp, 50000.0, "the wall is long")
+	assert_eq(far_side.hp, 50000.0)
+	assert_eq(front.hp, 50000.0, "and thin")
+	var area_ev: Array = f.events_of("area")[0]
+	assert_eq(area_ev[7].size(), 4, "the fx gets length, width and direction")
 
 
 func test_combustion() -> void:

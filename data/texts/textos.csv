@@ -501,10 +501,10 @@ AB_CLERIC_ZEAL,Celo
 AB_CLERIC_ZEAL_DESC,"Cada golpe cuerpo a cuerpo te devuelve 4 de maná."
 UP_HEALER_EVO,"Sanar también cura a un segundo aliado a 10 m con la mitad del efecto."
 UP_TEMPLAR_EVO,"Destello sagrado pasa a ser un golpe cuerpo a cuerpo de 2,5 m con un 15 % más de daño."
-AB_MAGE_FLAME_PILLAR,Pilar de llamas
-AB_MAGE_FLAME_PILLAR_DESC,"Una columna de fuego de 3 m en el cursor durante 6 s que daña y quema."
+AB_MAGE_FLAME_PILLAR,Muro de fuego
+AB_MAGE_FLAME_PILLAR_DESC,"Un muro de fuego de 10 m de largo, perpendicular a tu dirección, en el cursor durante 6 s: daña y quema."
 AB_MAGE_METEOR,Meteoro
-AB_MAGE_METEOR_DESC,"Tras 1,5 s de aviso, cae un meteoro de 5 m: gran daño de fuego y aturde 1 s."
+AB_MAGE_METEOR_DESC,"Lanzas durante 1,2 s y 1 s después cae un meteoro del cielo en 5 m: gran daño de fuego y aturde 1 s."
 AB_MAGE_COMBUSTION,Combustión
 AB_MAGE_COMBUSTION_DESC,"+10 % de daño a enemigos que arden."
 AB_MAGE_PHOENIX,Fénix

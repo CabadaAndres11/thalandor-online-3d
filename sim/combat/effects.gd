@@ -139,6 +139,13 @@ static func in_circle(world: SimWorld, caster: CombatEntity, center: Vector3, ra
 		return flat(o.position).distance_to(flat(center)) <= radius + o.radius)
 
 
+## Enemies inside a wall: `dir` runs along its length; centred on `center`.
+static func in_wall(world: SimWorld, caster: CombatEntity, center: Vector3, dir: Vector2, length: float, width: float) -> Array:
+	return enemies_of(world, caster).filter(func(o: CombatEntity) -> bool:
+		var r := flat(o.position) - flat(center)
+		return absf(r.dot(dir)) <= length / 2.0 + o.radius and absf(r.dot(Vector2(-dir.y, dir.x))) <= width / 2.0 + o.radius)
+
+
 # --- Effects ----------------------------------------------------------------------
 
 static func _melee_arc(world: SimWorld, caster: CombatEntity, ability: Dictionary, effect: Dictionary) -> void:
@@ -243,8 +250,17 @@ static func _area(world: SimWorld, caster: CombatEntity, ability: Dictionary, ef
 	if bool(effect.get("follow_caster", false)):
 		a.follow_id = caster.id
 	a.effect = effect
+	if effect.has("wall"):
+		# A line across the aim: perpendicular to the way the caster is facing the cursor.
+		var toward := flat(aim) - flat(caster.position)
+		if toward.length() < 0.01:
+			toward = forward(caster.facing)
+		toward = toward.normalized()
+		a.wall_dir = Vector2(-toward.y, toward.x)
+		a.wall_len = float(effect.wall.get("length", 8.0))
+		a.wall_w = float(effect.wall.get("width", 2.0))
 	if bool(effect.get("telegraph", false)):
-		world.emit(["telegraph", a.id, a.pos, float(effect.get("radius", 1.0)), a.fire_tick])
+		world.emit(["telegraph", a.id, a.pos, float(effect.get("radius", 1.0)), a.fire_tick, a.ability_id])
 	if a.fire_tick <= world.tick:
 		Combat.fire_area(world, a)
 	if a.pulses_left > 0:

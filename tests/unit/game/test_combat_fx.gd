@@ -244,3 +244,47 @@ func test_voxel_models_have_cubes() -> void:
 		assert_gt(cells.size(), 5)
 		assert_gt(VoxelFx.mesh_of(cells).get_surface_count(), 0)
 	assert_lt(VoxelFx.pentagram(3.0).size(), 1500, "a ground mark stays light")
+
+
+func test_meteor_falls_from_the_sky_and_lands_with_an_explosion() -> void:
+	fx.handle(["telegraph", 5, Vector3(8, 0, 8), 5.0, latest_tick + 30, "mage_meteor"])
+	assert_eq(fx.decor_count(), 1, "the falling rock")
+	fx.advance(0.5)
+	assert_eq(fx.decor_count(), 1)
+	fx.advance(0.6)
+	assert_eq(fx.decor_count(), 0, "it arrived")
+	fx.handle(["area", 5, Vector3(8, 0, 8), 5.0, "mage_meteor", 0, 0.0, []])
+	assert_gt(fx.decor_count(), 3, "explosion, shockwave, shards and the burning crater")
+
+
+func test_flame_wall_mark_is_turned_along_the_wall() -> void:
+	fx.handle(["area", 6, Vector3(8, 0, 8), 3.0, "mage_flame_pillar", 5, 1.0, [10.0, 2.0, 1.0, 0.0]])
+	assert_eq(fx.mark_count(), 1)
+	var mark: Node3D = fx.get_children().filter(func(n: Node) -> bool: return n is Node3D and n.get_child_count() > 0 and n.get_child(0) is MeshInstance3D and (n.get_child(0) as MeshInstance3D).mesh.get_surface_count() > 0).front()
+	assert_not_null(mark)
+
+
+func test_big_casts_get_an_ember_ring_around_the_caster() -> void:
+	fx.handle(["channel", 1, "mage_meteor", 1.2])
+	assert_eq(fx.find_children("*", "CPUParticles3D", false, false).size(), 2, "motes and the ring of embers")
+	fx.handle(["channel_end", 1])
+	await wait_frames(2)
+	assert_eq(fx.find_children("*", "CPUParticles3D", false, false).size(), 0)
+
+
+func test_fire_models_use_the_reference_palette() -> void:
+	var sprite := VoxelFx.flame_sprite(14, 1)
+	var colors := {}
+	for c: Vector3i in sprite:
+		colors[(sprite[c] as Color).to_html()] = true
+	for want: Color in [VoxelFx.FLAME_RED, VoxelFx.FLAME_ORANGE, VoxelFx.FLAME_YELLOW, VoxelFx.FLAME_CORE]:
+		assert_true(colors.has(want.to_html()), want.to_html())
+	assert_gt(VoxelFx.flame_wall(10.0).size(), 100)
+	assert_lt(VoxelFx.mesh_of(VoxelFx.flame_wall(10.0), 0.18).surface_get_array_len(0), 60000, "hidden faces are not built")
+
+
+func test_ice_is_not_a_flat_colour() -> void:
+	var colors := {}
+	for c: Vector3i in VoxelFx.ice_spike(10):
+		colors[(VoxelFx.ice_spike(10)[c] as Color).to_html()] = true
+	assert_gt(colors.size(), 6)

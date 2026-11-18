@@ -127,3 +127,13 @@ func test_level_is_next_to_the_name() -> void:
 	assert_eq(a.label_text(), tr("OVERHEAD_LEVEL") % [7, "Ana"])
 	a.set_level(8)
 	assert_eq(a.label_text(), tr("OVERHEAD_LEVEL") % [8, "Ana"])
+
+
+func test_long_cast_raises_the_arms_and_ends_when_told() -> void:
+	avatar.setup("Ana", 0, "mage", {})
+	avatar.play_long_cast(2.0)
+	assert_eq(avatar.rig.current_action(), "cast_long")
+	avatar.rig.update(5.0) # a loop never runs out by itself
+	assert_eq(avatar.rig.current_action(), "cast_long")
+	avatar.stop_long_cast()
+	assert_eq(avatar.rig.current_action(), "idle")

@@ -15,3 +15,7 @@ var effect: Dictionary = {}
 var end: Vector3 = Vector3.ZERO
 ## Areas that follow their caster (Himno): the caster id (0 = stays put).
 var follow_id: int = 0
+## Wall areas (a line of fire): direction along the wall, its length and width (0 = round area).
+var wall_dir: Vector2 = Vector2.ZERO
+var wall_len: float = 0.0
+var wall_w: float = 0.0

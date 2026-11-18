@@ -644,7 +644,9 @@ static func fire_area(world: SimWorld, a: PendingArea) -> void:
 	var live_owner := world.entity(a.owner.id)
 	if a.follow_id != 0 and live_owner != null:
 		a.pos = Vector3(live_owner.position.x, 0, live_owner.position.z) # Himno: the area goes with the caster
-	for o: CombatEntity in Effects.in_circle(world, a.owner, a.pos, float(a.effect.get("radius", 1.0))):
+	var hit_list: Array = Effects.in_wall(world, a.owner, a.pos, a.wall_dir, a.wall_len, a.wall_w) if a.wall_len > 0.0 \
+			else Effects.in_circle(world, a.owner, a.pos, float(a.effect.get("radius", 1.0)))
+	for o: CombatEntity in hit_list:
 		Combat.deal(world, a.owner, o, a.effect, {"id": a.ability_id})
 	var heal: Dictionary = a.effect.get("heal", {})
 	if not heal.is_empty():
@@ -655,7 +657,8 @@ static func fire_area(world: SimWorld, a: PendingArea) -> void:
 	a.pulses_left -= 1
 	a.fire_tick = world.tick + maxi(a.interval, 1)
 	world.emit(["area", a.id, a.pos, float(a.effect.get("radius", 1.0)), a.ability_id, a.pulses_left,
-		float(a.interval) / float(world.balance.tick_rate)])
+		float(a.interval) / float(world.balance.tick_rate),
+		[a.wall_len, a.wall_w, a.wall_dir.x, a.wall_dir.y] if a.wall_len > 0.0 else []])
 
 
 ## A leaping caster (the boss jump) lands on the area when it goes off; false when it

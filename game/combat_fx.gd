@@ -90,11 +90,13 @@ func handle(ev: Array) -> void:
 			_remove_telegraph(int(ev[1]))
 		"telegraph":
 			_add_telegraph(ev)
+			if ev.size() > 5 and _fx_style(str(ev[5])) == "meteor":
+				_meteor_fall(ev[2], maxf(float(int(ev[4]) - int(_tick_now.call())) / float(_tick_rate), 0.1))
 		"level_up":
 			level_up(int(ev[1]), int(ev[2]))
 		"area":
 			_area_flash(ev[2], float(ev[3]), str(ev[4]) if ev.size() > 4 else "", int(ev[1]),
-				(int(ev[5]) * float(ev[6])) if ev.size() > 6 else 0.0)
+				(int(ev[5]) * float(ev[6])) if ev.size() > 6 else 0.0, ev[7] if ev.size() > 7 else [])
 		"status":
 			if str(ev[2]) == "shield":
 				_add_shield(int(ev[1]), int(ev[3]))
@@ -171,6 +173,8 @@ func advance(dt: float) -> void:
 			_end_charge(id)
 		else:
 			(c.node as Node3D).position = (at as Vector3) + Vector3(0, 0.9, 0)
+			if c.extra != null:
+				(c.extra as Node3D).position = (at as Vector3) + Vector3(0, 0.1, 0)
 			_grow_charge_orb(c, id, at as Vector3)
 	_advance_decor(dt)
 	for id: int in _shields.keys():
@@ -256,6 +260,10 @@ static func fx_element(ab: Dictionary) -> String:
 	if e != "":
 		return e
 	return {"mage": "arcane", "cleric": "holy"}.get(str(ab.get("class", "")), "")
+
+
+func _fx_style(ability_id: String) -> String:
+	return str(_abilities.get_ability(ability_id).get("fx_style", "")) if _abilities != null and _abilities.has(ability_id) else ""
 
 
 func _element_of_ability(ability_id: String) -> String:
@@ -426,28 +434,38 @@ func _remove_telegraph(id: int) -> void:
 		_telegraphs.erase(id)
 
 
-func _area_flash(pos: Vector3, radius: float, ability_id: String = "", area_id: int = 0, still_going_s: float = 0.0) -> void:
+func _area_flash(pos: Vector3, radius: float, ability_id: String = "", area_id: int = 0, still_going_s: float = 0.0, wall: Array = []) -> void:
 	var magic := ability_id != "" and _is_magic(ability_id)
 	var color := _color_of(ability_id).lightened(0.35) if magic else Color(1, 0.9, 0.6)
-	var d := _disc(radius, color, 0.6)
-	d.position = pos + Vector3(0, 0.05, 0)
-	add_child(d)
-	_flashes.append({"node": d, "t": 0.0})
+	if wall.is_empty():
+		var d := _disc(radius, color, 0.6)
+		d.position = pos + Vector3(0, 0.05, 0)
+		add_child(d)
+		_flashes.append({"node": d, "t": 0.0})
 	if magic:
-		_burst(pos, radius, color)
-		_ground_mark(area_id, pos, radius, _element_of_ability(ability_id), still_going_s)
+		_burst(pos, radius, color, wall)
+		_ground_mark(area_id, pos, radius, _element_of_ability(ability_id), still_going_s, wall)
+		if _fx_style(ability_id) == "meteor":
+			_explosion(pos, color, "fire", radius / 2.0)
+			_shockwave(pos, radius)
 
 
 ## A burst of glowing motes rising from an area that went off.
-func _burst(pos: Vector3, radius: float, color: Color) -> void:
+func _burst(pos: Vector3, radius: float, color: Color, wall: Array = []) -> void:
 	var p := CPUParticles3D.new()
 	p.one_shot = true
 	p.emitting = true
 	p.amount = clampi(int(radius * 14.0), 16, 90)
 	p.lifetime = 0.7
 	p.explosiveness = 0.9
-	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_SPHERE
-	p.emission_sphere_radius = maxf(radius * 0.8, 0.2)
+	if wall.is_empty():
+		p.emission_shape = CPUParticles3D.EMISSION_SHAPE_SPHERE
+		p.emission_sphere_radius = maxf(radius * 0.8, 0.2)
+	else:
+		p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX # a line of embers, not a circle
+		p.emission_box_extents = Vector3(float(wall[0]) / 2.0, 0.1, float(wall[1]) / 2.0)
+		p.rotation.y = atan2(-float(wall[3]), float(wall[2]))
+		p.amount = clampi(int(float(wall[0]) * 6.0), 24, 90)
 	p.direction = Vector3.UP
 	p.spread = 25.0
 	p.initial_velocity_min = 1.2
@@ -497,9 +515,39 @@ func _start_charge(id: int, ability_id: String, total: float) -> void:
 		orb = _voxel("body_" + element, func() -> Dictionary: return VoxelFx.body_for(element, color), true, 0.35)
 		orb.scale = Vector3.ONE * 0.15
 		add_child(orb)
-	_charges[id] = {"node": p, "orb": orb, "t": 0.0, "duration": total, "element": element}
+	var extra: CPUParticles3D = null
+	if _fx_style(ability_id) == "meteor":
+		extra = _embers_ring(color)
+		add_child(extra)
+	_charges[id] = {"node": p, "orb": orb, "extra": extra, "t": 0.0, "duration": total, "element": element}
 	if orb != null:
 		_grow_charge_orb(_charges[id], id, at as Vector3)
+
+
+## A ring of embers rising around the caster during a big cast.
+func _embers_ring(color: Color) -> CPUParticles3D:
+	var p := CPUParticles3D.new()
+	p.amount = 50
+	p.lifetime = 1.0
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_RING
+	p.emission_ring_axis = Vector3.UP
+	p.emission_ring_radius = 1.4
+	p.emission_ring_inner_radius = 1.0
+	p.emission_ring_height = 0.2
+	p.direction = Vector3.UP
+	p.spread = 8.0
+	p.initial_velocity_min = 1.5
+	p.initial_velocity_max = 3.0
+	p.gravity = Vector3.ZERO
+	var drop := SphereMesh.new()
+	drop.radius = 0.06
+	drop.height = 0.12
+	drop.radial_segments = 6
+	drop.rings = 3
+	p.mesh = drop
+	p.material_override = _glow(color, 0.9)
+	p.color_ramp = _fade_ramp(color)
+	return p
 
 
 func _end_charge(id: int) -> void:
@@ -507,6 +555,8 @@ func _end_charge(id: int) -> void:
 		(_charges[id].node as Node).queue_free()
 		if _charges[id].orb != null:
 			(_charges[id].orb as Node).queue_free()
+		if _charges[id].extra != null:
+			(_charges[id].extra as Node).queue_free()
 		_charges.erase(id)
 
 
@@ -623,9 +673,12 @@ func _trail(color: Color, magic: bool = false) -> CPUParticles3D:
 	p.scale_amount_min = 0.5
 	p.scale_amount_max = 1.0
 	if magic:
-		var cube := BoxMesh.new()
-		cube.size = Vector3(0.09, 0.09, 0.09)
-		p.mesh = cube
+		var mote := SphereMesh.new()
+		mote.radius = 0.05
+		mote.height = 0.1
+		mote.radial_segments = 6
+		mote.rings = 3
+		p.mesh = mote
 	else:
 		var quad := SphereMesh.new()
 		quad.radius = 0.05
@@ -670,6 +723,9 @@ func _advance_decor(dt: float) -> void:
 				node.queue_free()
 			_decor.erase(d)
 			continue
+		if d.has("fall"):
+			var fk := clampf(d.t / maxf(float(d.life), 0.01), 0.0, 1.0)
+			node.position = (d.fall.from as Vector3).lerp(d.fall.to as Vector3, fk * fk) # it speeds up as it falls
 		if d.has("follow"):
 			var fp: Variant = _position_of.call(int(d.follow))
 			if fp != null:
@@ -747,16 +803,38 @@ func _ice_finale(pos: Vector3) -> void:
 
 
 ## Fire and arcane impact: a flash that swells and cubes that fly out.
-func _explosion(pos: Vector3, color: Color, element: String) -> void:
+func _explosion(pos: Vector3, color: Color, element: String, scale_k: float = 1.0) -> void:
 	var at := pos + Vector3(0, 0.9, 0)
-	_flash_orb(at, color.lightened(0.4), 2.2)
-	_shards(at, color, 40)
+	_flash_orb(at, color.lightened(0.4), 2.2 * scale_k)
+	_shards(at, color, int(40.0 * scale_k))
 	var light := OmniLight3D.new()
 	light.light_color = color
 	light.light_energy = 3.0
-	light.omni_range = 6.0
+	light.omni_range = 6.0 * scale_k
 	light.position = at
 	_add_decor(light, 0.25, 0.0, Vector3.ONE, 0.0)
+
+
+## A meteor that falls out of the sky onto `pos` and arrives when the area goes off.
+func _meteor_fall(pos: Vector3, seconds: float) -> void:
+	var rock := _voxel("meteor", func() -> Dictionary: return VoxelFx.meteor(), false, 1.0, 0.16)
+	var from := pos + Vector3(7, 22, 7)
+	rock.position = from
+	rock.basis = Basis.looking_at(-(pos - from).normalized(), Vector3.UP) # its tail trails behind
+	var d := _add_decor(rock, seconds, 0.0, Vector3.ONE, 0.0)
+	d.fall = {"from": from, "to": pos + Vector3(0, 0.5, 0)}
+	var light := OmniLight3D.new()
+	light.light_color = Color(1.0, 0.55, 0.2)
+	light.light_energy = 2.0
+	light.omni_range = 8.0
+	rock.add_child(light)
+
+
+## A ring that expands across the ground from an impact.
+func _shockwave(pos: Vector3, radius: float) -> void:
+	var ring := _ring(radius * 0.4, Color(1.0, 0.65, 0.25))
+	ring.position = Vector3(pos.x, 0.08, pos.z)
+	_add_decor(ring, 0.5, 0.5, Vector3(2.5, 1.0, 2.5), 0.5, 0.95)
 
 
 ## A glowing voxel ball that swells and fades (the flash of an impact).
@@ -779,9 +857,9 @@ func _shards(at: Vector3, color: Color, amount: int) -> void:
 	p.initial_velocity_min = 3.0
 	p.initial_velocity_max = 7.0
 	p.gravity = Vector3(0, -8.0, 0)
-	var cube := BoxMesh.new()
-	cube.size = Vector3(0.08, 0.08, 0.08)
-	p.mesh = cube
+	var shard := PrismMesh.new() # shards and sparks are little triangles
+	shard.size = Vector3(0.12, 0.16, 0.04)
+	p.mesh = shard
 	p.material_override = _glow(color, 1.0)
 	p.color_ramp = _fade_ramp(color)
 	p.position = at
@@ -803,9 +881,12 @@ func _snow_burst(at: Vector3) -> void:
 	p.initial_velocity_min = 0.5
 	p.initial_velocity_max = 1.5
 	p.gravity = Vector3(0, -2.0, 0)
-	var cube := BoxMesh.new()
-	cube.size = Vector3(0.06, 0.06, 0.06)
-	p.mesh = cube
+	var flake := SphereMesh.new()
+	flake.radius = 0.035
+	flake.height = 0.07
+	flake.radial_segments = 6
+	flake.rings = 3
+	p.mesh = flake
 	p.material_override = _material(Color(0.92, 0.97, 1.0), 0.95)
 	p.position = at
 	_add_decor(p, 1.5, 0.0, Vector3.ONE, 0.0)
@@ -839,7 +920,7 @@ func _ice_block(id: int, end_tick: int) -> void:
 
 
 ## What an area leaves on the ground: arcane a pentagram, fire burning ground, frost ice spikes.
-func _ground_mark(area_id: int, pos: Vector3, radius: float, element: String, still_going_s: float = 0.0) -> void:
+func _ground_mark(area_id: int, pos: Vector3, radius: float, element: String, still_going_s: float = 0.0, wall: Array = []) -> void:
 	if not element in ["arcane", "fire", "frost"]:
 		return
 	var life_left := maxf(still_going_s + MARK_LINGER, MARK_MIN_LIFE) # only while the area still does something
@@ -858,7 +939,13 @@ func _ground_mark(area_id: int, pos: Vector3, radius: float, element: String, st
 			holder.add_child(star)
 			entry = _add_decor(holder, life, 0.25, Vector3.ONE, 0.7, 0.85, false, 0.5)
 		"fire":
-			var flames := _voxel("flame_%s" % r, func() -> Dictionary: return VoxelFx.flame_patch(r), true, 0.9, 0.18)
+			var flames: MeshInstance3D
+			if wall.is_empty():
+				flames = _voxel("flame_%s" % r, func() -> Dictionary: return VoxelFx.flame_patch(r), false, 0.95, 0.18)
+			else:
+				var len_m := float(wall[0])
+				flames = _voxel("wall_%s" % len_m, func() -> Dictionary: return VoxelFx.flame_wall(len_m), false, 0.95, 0.18)
+				holder.rotation.y = atan2(-float(wall[3]), float(wall[2]))
 			holder.add_child(flames)
 			entry = _add_decor(holder, life, 0.2, Vector3.ONE, 0.7, 0.9, true)
 		_:
@@ -891,8 +978,11 @@ func _sparks(pos: Vector3, color: Color) -> void:
 	p.initial_velocity_min = 2.0
 	p.initial_velocity_max = 4.5
 	p.gravity = Vector3(0, -9.0, 0)
-	var mesh := BoxMesh.new()
-	mesh.size = Vector3(0.06, 0.06, 0.06)
+	var mesh := SphereMesh.new()
+	mesh.radius = 0.035
+	mesh.height = 0.07
+	mesh.radial_segments = 6
+	mesh.rings = 3
 	p.mesh = mesh
 	p.material_override = _material(color, 1.0)
 	p.color_ramp = _fade_ramp(color)

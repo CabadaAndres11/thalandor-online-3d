@@ -19,8 +19,10 @@ const SCALE_GROUP := {
 	"leg_left": "leg", "leg_right": "leg", "shin_left": "leg", "shin_right": "leg",
 }
 ## Seconds each action lasts; downed and die then stay.
-const ACTIONS := {"melee": 0.45, "shoot": 0.65, "cast": 0.6, "dash": 0.35, "downed": 0.5, "die": 0.7}
+const ACTIONS := {"melee": 0.45, "shoot": 0.65, "cast": 0.6, "dash": 0.35, "downed": 0.5, "die": 0.7, "cast_long": 1.0}
 const LASTING := ["downed", "die"]
+## Actions that repeat until another one starts (a long cast: arms up, the staff spinning).
+const LOOPING := ["cast_long"]
 ## Trousers default to the primary color this much darker.
 const TROUSERS_DARKEN := 0.45
 const WALK_MIN_SPEED := 0.2 # m/s
@@ -128,7 +130,9 @@ func update(delta: float) -> void:
 		_phase += _speed * delta / STRIDE * TAU
 	if _action != "idle":
 		_action_t += delta
-		if _action_t >= ACTIONS[_action] and not LASTING.has(_action):
+		if LOOPING.has(_action):
+			_action_t = fmod(_action_t, float(ACTIONS[_action]))
+		elif _action_t >= ACTIONS[_action] and not LASTING.has(_action):
 			_action = "idle"
 			_action_t = 0.0
 	_pose()
@@ -242,6 +246,7 @@ func _pose() -> void:
 		"melee": _melee(k)
 		"shoot": _shoot(k)
 		"cast": _cast(k)
+		"cast_long": _cast_long()
 		"dash": _dash(k)
 		"downed": _fall(_ease(k), true)
 		"die": _fall(_ease(k), false)
@@ -325,6 +330,22 @@ func _cast(k: float) -> void:
 	_rot("hand_right", -arms)
 	(_parts["hand_right"] as Node3D).rotation.z = 0.0
 	(_parts["head"] as Node3D).rotation.x = -0.15 * sin(k * PI)
+
+
+## A long cast: both arms up gathering power, the staff spinning over the head, a slow sway.
+func _cast_long() -> void:
+	var sway := sin(_time * 3.0)
+	_rot("arm_left", -2.7 + 0.12 * sway)
+	_rot("arm_right", -2.7 - 0.12 * sway)
+	_rot("forearm_left", 0.0)
+	_rot("forearm_right", 0.0)
+	_rot("hand_left", 2.7)
+	_rot("hand_right", 2.7)
+	(_parts["hand_right"] as Node3D).rotation.z = 0.0
+	(_parts["hand_right"] as Node3D).rotation.y = _time * 7.0 # the staff spins
+	(_parts["torso"] as Node3D).rotation.y = 0.18 * sway
+	(_parts["head"] as Node3D).rotation.x = -0.2
+	_body.position.y = 0.03 * sin(_time * 5.0)
 
 
 ## A low lunge: lean forward, arms back, legs in a long stride.

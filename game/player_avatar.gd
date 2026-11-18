@@ -92,6 +92,8 @@ func apply_state(state: Dictionary, delta: float) -> void:
 	if rig != null:
 		if _action_left <= 0.0 and not _dead:
 			rig.set_moving_speed(_speed, move_speed)
+			if rig.current_action() == "cast_long":
+				rig.play_action("idle") # the long cast ran out
 		rig.update(delta)
 
 
@@ -131,6 +133,21 @@ func play_action(kind: String) -> void:
 		return
 	_action_left = d
 	_dead = kind == "die" or kind == "downed"
+
+
+## A long cast (a cast time or a channel): arms up and the staff spinning for `seconds`.
+func play_long_cast(seconds: float) -> void:
+	if rig == null or _dead:
+		return
+	rig.play_action("cast_long")
+	_action_left = seconds
+
+
+## The long cast ended or was interrupted.
+func stop_long_cast() -> void:
+	if rig != null and rig.current_action() == "cast_long":
+		rig.play_action("idle")
+		_action_left = 0.0
 
 
 ## "Nv N name" above the character.

@@ -387,6 +387,12 @@ func _on_combat_event(ev: Array) -> void:
 			elif _avatars.has(who):
 				var ab := AbilityDB.load_default().get_ability(str(ev[2]))
 				(_avatars[who] as PlayerAvatar).play_action(str(ab.get("anim", "")))
+		"channel":
+			if _avatars.has(int(ev[1])):
+				(_avatars[int(ev[1])] as PlayerAvatar).play_long_cast(float(ev[3]))
+		"channel_end":
+			if _avatars.has(int(ev[1])):
+				(_avatars[int(ev[1])] as PlayerAvatar).stop_long_cast()
 		"hit":
 			if _monster_avatars.has(int(ev[1])):
 				(_monster_avatars[int(ev[1])] as MonsterAvatar).react_to_hit(_entity_position(int(ev[4])) if ev.size() > 4 else null)
