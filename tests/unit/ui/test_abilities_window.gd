@@ -131,4 +131,4 @@ func test_assassin_with_an_upgrade_fits_1280x720() -> void:
 	await wait_process_frames(2)
 	var r := win.panel_rect()
 	assert_true(Rect2(0, 0, 1280, 720).encloses(r), "panel %s" % r)
-	assert_eq(win.active_ids().size(), 9, "7 base actives and the 2 of the upgrade")
+	assert_eq(win.active_ids().size(), 8, "7 base actives and the 1 of the upgrade")

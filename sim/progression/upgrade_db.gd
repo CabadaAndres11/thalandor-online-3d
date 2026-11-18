@@ -44,7 +44,7 @@ func upgrade(id: String) -> Dictionary:
 
 ## Human-readable problems (empty = all good): the ids it names must exist and belong to
 ## the class, an evolution must point at an ability of the class, and every upgrade has
-## texts. `check_complete`: also 2 actives, 2 passives and an evolution each.
+## texts. `check_complete`: also at least 1 active, 2 passives and an evolution each.
 func validate(abilities: AbilityDB, check_complete: bool = false) -> Array[String]:
 	var errors: Array[String] = []
 	for id: String in _order:
@@ -56,8 +56,8 @@ func validate(abilities: AbilityDB, check_complete: bool = false) -> Array[Strin
 				errors.append("%s: text %s '%s' not translated" % [id, key, k])
 		for kind: String in ["actives", "passives"]:
 			var list: Array = u.get(kind, [])
-			if check_complete and list.size() != 2:
-				errors.append("%s: needs 2 %s, has %d" % [id, kind, list.size()])
+			if check_complete and list.size() < (1 if kind == "actives" else 2):
+				errors.append("%s: needs more %s, has %d" % [id, kind, list.size()])
 			for aid: Variant in list:
 				var a := abilities.get_ability(str(aid))
 				if a.is_empty():

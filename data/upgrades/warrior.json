@@ -1,6 +1,6 @@
 [
 	{"id": "protector", "class": "warrior", "name": "UP_PROTECTOR", "desc": "UP_PROTECTOR_DESC",
-	 "actives": ["warrior_mass_taunt", "warrior_retaliation"], "passives": ["warrior_defensive_stance", "warrior_last_stand"],
+	 "actives": ["warrior_armor_slam", "warrior_retaliation"], "passives": ["warrior_defensive_stance", "warrior_last_stand"],
 	 "evolves": {"ability": "warrior_shield_wall", "desc": "UP_PROTECTOR_EVO",
 		"effects": [{"type": "status", "target": "self", "statuses": [{"kind": "damage_reduction", "duration_s": 6, "magnitude": 0.5}]},
 			{"type": "status", "target": "allies_around", "radius": 8, "statuses": [{"kind": "damage_reduction", "duration_s": 6, "magnitude": 0.5}]}]}},

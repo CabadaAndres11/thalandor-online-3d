@@ -290,3 +290,14 @@ func test_three_complete_upgrades_with_texts_and_icons() -> void:
 			assert_ne(tr(str(a.desc)), str(a.desc), aid)
 			assert_true(ResourceLoader.exists(CombatHud.ICON_DIR % a.icon), aid)
 		assert_ne(tr(str(u.evolves.desc)), str(u.evolves.desc))
+
+
+func test_ice_block_keeps_the_character_facing_where_it_was() -> void:
+	var p := _hero("cryomancer")
+	p.facing = 0.0
+	p.add_status(StatusEffect.make("ice_block", f.world.tick + 300), 1)
+	f.world.step({p.id: PlayerInput.new(1, Vector2.ZERO, Vector3(20, 0, 10), 0)}) # the cursor is to the +X side
+	assert_eq(p.facing, 0.0, "it does not follow the cursor")
+	p.statuses.clear()
+	f.world.step({p.id: PlayerInput.new(2, Vector2.ZERO, Vector3(20, 0, 10), 0)})
+	assert_ne(p.facing, 0.0, "it does once the block is over")

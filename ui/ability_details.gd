@@ -70,7 +70,8 @@ static func _effect(e: Dictionary, stats: CombatStats, out: PackedStringArray) -
 		"heal":
 			_heal(e, stats, out)
 		"shield":
-			out.append(_tr("DETAIL_SHIELD") % [_amount(e.get("amount", {}), stats.spell_power, "DETAIL_POWER_SPELL"),
+			var sp := _power_of(e.get("amount", {}), stats, false)
+			out.append(_tr("DETAIL_SHIELD") % [_amount(e.get("amount", {}), sp[0], sp[1]),
 				num(e.get("duration_s", 0)), _target(e)])
 		"dash":
 			out.append(_tr("DETAIL_DASH_BACK" if str(e.get("to", "")) == "back" else "DETAIL_DASH") % num(e.get("distance", 5)))
@@ -132,11 +133,24 @@ static func _heal(e: Dictionary, stats: CombatStats, out: PackedStringArray) -> 
 
 static func _damage(label_key: String, spec: Dictionary, stats: CombatStats, scope: String) -> String:
 	var physical := str(spec.get("kind", "physical")) == "physical"
-	var power := stats.attack_power if physical else stats.spell_power
+	var pw := _power_of(spec, stats, physical)
 	var text := _tr("DETAIL_DAMAGE_FMT") % [_tr(label_key),
-		_amount(spec, power, "DETAIL_POWER_ATTACK" if physical else "DETAIL_POWER_SPELL"),
+		_amount(spec, pw[0], pw[1]),
 		_tr("DETAIL_PHYSICAL" if physical else "DETAIL_MAGIC")]
 	return text + (", " + scope if scope != "" else "")
+
+
+## The power an amount scales with: [value, text key]. "power": "attack" or "armor" override
+## the default (attack power for physical, spell power otherwise).
+static func _power_of(spec: Dictionary, stats: CombatStats, physical: bool) -> Array:
+	match str(spec.get("power", "")):
+		"armor":
+			return [stats.armor, "DETAIL_POWER_ARMOR"]
+		"attack":
+			return [stats.attack_power, "DETAIL_POWER_ATTACK"]
+		"spell":
+			return [stats.spell_power, "DETAIL_POWER_SPELL"]
+	return [stats.attack_power, "DETAIL_POWER_ATTACK"] if physical else [stats.spell_power, "DETAIL_POWER_SPELL"]
 
 
 ## "18 + 80 % de tu poder de ataque (20) = 34".

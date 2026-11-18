@@ -1,7 +1,7 @@
 [
 	{"id": "archer_shot", "class": "archer", "name": "AB_ARCHER_SHOT", "desc": "AB_ARCHER_SHOT_DESC", "icon": "shot", "kind": "basic", "level": 1,
 	 "cost": 0, "cooldown_s": 0.6, "gcd": false, "range": 20, "anim": "shoot",
-	 "charge": {"max_s": 1.5, "min_ratio": 0.2, "cost": 15, "damage_mult": 2.2, "range_mult": 1.5},
+	 "charge": {"max_s": 1.5, "min_ratio": 0.2, "cost": 15, "damage_mult": 2.2, "range_mult": 2.0},
 	 "effects": [{"type": "projectile", "speed": 26, "radius": 0.2, "range": 20, "pierce": false, "damage": {"base": 9, "coef": 0.6, "kind": "physical"}}]},
 	{"id": "archer_piercing", "class": "archer", "name": "AB_ARCHER_PIERCING", "desc": "AB_ARCHER_PIERCING_DESC", "icon": "piercing", "kind": "secondary", "level": 1,
 	 "cost": 25, "cooldown_s": 6, "gcd": false, "range": 20, "anim": "shoot",

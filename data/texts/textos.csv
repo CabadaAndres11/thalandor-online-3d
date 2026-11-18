@@ -465,8 +465,8 @@ DETAIL_ST_ICE_BLOCK,bloque de hielo durante %s s (invulnerable e inmóvil)
 DETAIL_ST_CONTAGION,contagio durante %s s
 DETAIL_SCOPE_BEAM,rayo en línea de %s m
 DETAIL_SUMMON,invoca un aliado durante %s s
-AB_WARRIOR_MASS_TAUNT,Provocación masiva
-AB_WARRIOR_MASS_TAUNT_DESC,"Los enemigos a 10 m solo pueden atacarte a ti durante 6 s y tu amenaza se triplica."
+AB_WARRIOR_ARMOR_SLAM,Sacudida de coraza
+AB_WARRIOR_ARMOR_SLAM_DESC,"Golpeas el suelo y dañas a los enemigos a 4 m: el daño depende de tu armadura."
 AB_WARRIOR_RETALIATION,Represalia
 AB_WARRIOR_RETALIATION_DESC,"Un escudo de 40 + 2 × poder de ataque durante 8 s que devuelve el 50 % del daño que absorbe."
 AB_WARRIOR_DEFENSIVE_STANCE,Postura defensiva
@@ -549,8 +549,6 @@ AB_ARCHER_SURVIVOR,Superviviente
 AB_ARCHER_SURVIVOR_DESC,"+10 % de vida máxima y +10 % de velocidad de movimiento."
 UP_SHARPSHOOTER_EVO,"El disparo cargado al 80 % o más atraviesa hasta 3 enemigos."
 UP_HUNTER_EVO,"La red atrapa a todos los enemigos en 3 m alrededor del cursor."
-AB_ASSASSIN_VANISH,Desvanecer
-AB_ASSASSIN_VANISH_DESC,"Desapareces 8 s (también en combate) y corres un 30 % más rápido durante 3 s. No gasta el tiempo global."
 AB_ASSASSIN_SHADOW_STRIKE,Golpe sombrío
 AB_ASSASSIN_SHADOW_STRIKE_DESC,"Te teletransportas tras el objetivo y le das un golpe crítico seguro. Da 2 puntos de combo."
 AB_ASSASSIN_BORN_KILLER,Asesino nato
@@ -579,3 +577,4 @@ EQUIP_NECK,Amuleto
 EQUIP_EMPTY,Vacío (los objetos llegarán en un plan futuro)
 CHAR_RECOMMENDED,Recomendado para tu clase
 DETAIL_CAST,Lanzamiento: %s s (se interrumpe si te mueves)
+DETAIL_POWER_ARMOR,armadura

@@ -29,22 +29,9 @@ func _foe(id: int, pos: Vector3, hp := 50000.0) -> CombatEntity:
 
 # --- Shadow ------------------------------------------------------------------------------
 
-func test_vanish() -> void:
-	var p := _hero("shadow")
-	p.last_combat_tick = f.world.tick # in combat
-	assert_true(p.in_combat(f.world))
-	var speed := p.move_mult()
-	assert_true(Combat.try_cast(f.world, p, "assassin_vanish", p.position), "usable in combat")
-	assert_eq(p.resource, p.stats.max_resource, "free")
-	assert_eq(p.gcd_end, 0, "no global cooldown")
-	assert_eq(p.cooldowns["assassin_vanish"], f.world.tick + f.world.ticks(60.0))
-	assert_true(p.has_status("stealth"))
-	assert_false(p.in_combat(f.world), "it leaves combat")
-	var stealth: StatusEffect = p.statuses.filter(func(s: StatusEffect) -> bool: return s.kind == "stealth")[0]
-	assert_eq(stealth.end_tick, f.world.tick + f.world.ticks(8.0 * 1.5), "8 s, +50 % from Velo")
-	assert_almost_eq(p.move_mult(), speed * 1.3, 0.0001)
-	f.run(3.2)
-	assert_almost_eq(p.move_mult(), speed, 0.0001, "the speed lasts 3 s")
+func test_vanish_is_gone_because_stealth_does_the_same() -> void:
+	assert_true(f.world.abilities.get_ability("assassin_vanish").is_empty())
+	assert_eq(f.world.upgrades.upgrade("shadow").actives, ["assassin_shadow_strike"])
 
 
 func test_shadow_strike() -> void:
@@ -184,14 +171,12 @@ func test_stab_evolution_always_poisons() -> void:
 
 func test_speed_buff_is_described() -> void:
 	assert_ne(tr("DETAIL_ST_SPEED_BUFF"), "DETAIL_ST_SPEED_BUFF")
-	var lines := AbilityDetails.lines(f.world.abilities.get_ability("assassin_vanish"), CombatStats.new(), "energy")
-	assert_gt(lines.size(), 2)
 
 
 func test_each_upgrade_is_complete_with_texts_and_icons() -> void:
 	for id: String in ["shadow", "venomancer"]:
 		var u := f.world.upgrades.upgrade(id)
-		assert_eq(u.actives.size(), 2)
+		assert_eq(u.actives.size(), 1 if id == "shadow" else 2)
 		assert_eq(u.passives.size(), 2)
 		assert_false(u.evolves.is_empty())
 		for aid: String in u.actives + u.passives:

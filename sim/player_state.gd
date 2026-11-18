@@ -4,6 +4,9 @@ extends CombatEntity
 ## (copy_from/clone); combat values come from the host.
 
 var aim: Vector3 = Vector3.ZERO
+## True while an effect keeps the character facing where it is (Bloque de hielo): the cursor
+## moves but the body does not turn. Set before Movement.apply, on the host and the client.
+var lock_facing: bool = false
 ## Dodge (predicted): direction, and the input sequence from which it is ready again.
 var dash_dir: Vector2 = Vector2.ZERO
 var dodge_ready_seq: int = 0

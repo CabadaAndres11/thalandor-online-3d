@@ -1,6 +1,6 @@
 [
 	{"id": "shadow", "class": "assassin", "name": "UP_SHADOW", "desc": "UP_SHADOW_DESC",
-	 "actives": ["assassin_vanish", "assassin_shadow_strike"], "passives": ["assassin_born_killer", "assassin_veil"],
+	 "actives": ["assassin_shadow_strike"], "passives": ["assassin_born_killer", "assassin_veil"],
 	 "evolves": {"ability": "assassin_eviscerate", "desc": "UP_SHADOW_EVO", "set": {"refund_per_combo": 8}}},
 	{"id": "venomancer", "class": "assassin", "name": "UP_VENOMANCER", "desc": "UP_VENOMANCER_DESC",
 	 "actives": ["assassin_toxic_cloud", "assassin_contagion"], "passives": ["assassin_toxicology", "assassin_corrupt_blood"],

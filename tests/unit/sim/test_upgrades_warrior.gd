@@ -42,20 +42,22 @@ func _passive(id: String) -> Dictionary:
 
 # --- Protector ---------------------------------------------------------------------------
 
-func test_mass_taunt() -> void:
+func test_armor_slam_scales_with_armor_not_attack() -> void:
 	var p := _hero("protector")
-	var a := _cultist(Vector3(18, 0, 10)) # 8 m
-	var b := _cultist(Vector3(30, 0, 30)) # out of range
-	a.add_threat(99, 100.0)
-	a.add_threat(p.id, 50.0)
-	assert_true(Combat.try_cast(f.world, p, "warrior_mass_taunt", p.position))
-	assert_eq(p.resource, 80.0)
-	assert_true(a.has_status("taunted"))
-	assert_eq(a.statuses[0].end_tick, f.world.tick + f.world.ticks(6.0))
-	assert_eq(a.threat[p.id], 150.0, "50 x 3 beats 100 x 1.1")
-	assert_eq(a.target_id, p.id)
-	assert_false(b.has_status("taunted"))
-	assert_eq(p.cooldowns["warrior_mass_taunt"], f.world.tick + f.world.ticks(20.0))
+	var foe := _foe(2000, Vector3(13, 0, 10), 5000.0) # 3 m
+	var far := _foe(2001, Vector3(20, 0, 10), 5000.0)
+	p.stats.attack_power = 1.0
+	p.stats.armor = 200.0
+	assert_true(Combat.try_cast(f.world, p, "warrior_armor_slam", p.position))
+	assert_eq(p.resource, 75.0)
+	assert_almost_eq(5000.0 - foe.hp, 30.0 + 1.5 * 200.0, 0.01, "armour, not attack power")
+	assert_eq(far.hp, 5000.0)
+	assert_eq(p.cooldowns["warrior_armor_slam"], f.world.tick + f.world.ticks(12.0))
+
+
+func test_protector_abilities_scale_with_armor() -> void:
+	for id: String in ["warrior_armor_slam", "warrior_retaliation"]:
+		assert_true(JSON.stringify(f.world.abilities.get_ability(id).effects).contains('"power":"armor"'), id)
 
 
 func test_retaliation() -> void:
@@ -63,7 +65,7 @@ func test_retaliation() -> void:
 	var foe := _foe(2000, Vector3(11, 0, 10), 5000.0)
 	assert_true(Combat.try_cast(f.world, p, "warrior_retaliation", p.position))
 	assert_eq(p.resource, 75.0)
-	assert_almost_eq(p.shield, 40.0 + 2.0 * p.stats.attack_power, 0.01)
+	assert_almost_eq(p.shield, 40.0 + 2.0 * p.stats.armor, 0.01)
 	var before := p.shield
 	Combat.deal(f.world, foe, p, {"damage": {"base": 60, "coef": 0, "kind": "magic", "can_crit": false}}, {})
 	assert_almost_eq(5000.0 - foe.hp, 30.0, 0.01, "half of what the shield absorbed")
@@ -193,11 +195,11 @@ func test_each_upgrade_is_complete_and_only_its_own_abilities_work() -> void:
 	var p := _hero("protector")
 	assert_false(Combat.try_cast(f.world, p, "warrior_frenzy", p.position), "another upgrade's ability")
 	var q := _hero("")
-	assert_false(Combat.try_cast(f.world, q, "warrior_mass_taunt", q.position), "needs its upgrade")
+	assert_false(Combat.try_cast(f.world, q, "warrior_armor_slam", q.position), "needs its upgrade")
 
 
 func test_new_abilities_have_texts_and_icons() -> void:
-	for id: String in ["warrior_mass_taunt", "warrior_retaliation", "warrior_defensive_stance", "warrior_last_stand",
+	for id: String in ["warrior_armor_slam", "warrior_retaliation", "warrior_defensive_stance", "warrior_last_stand",
 			"warrior_frenzy", "warrior_execute", "warrior_blood_fury", "warrior_massacre"]:
 		var a := f.world.abilities.get_ability(id)
 		assert_eq(int(a.level), 50, id)

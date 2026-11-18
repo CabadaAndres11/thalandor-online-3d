@@ -99,6 +99,7 @@ func tick(move: Vector2, aim: Vector3, buttons: int = 0) -> void:
 		return
 	_seq += 1
 	var input := PlayerInput.new(_seq, move.limit_length(1.0), aim, buttons)
+	_predicted.lock_facing = StatusEffect.has_bit(int((combat.get(my_id, {}) as Dictionary).get("status_bits", 0)), "ice_block")
 	Movement.apply(_predicted, input, balance.dt(), balance, map, _own_move_mult)
 	_pending.append(input)
 	while _pending.size() > MAX_REPLAY:

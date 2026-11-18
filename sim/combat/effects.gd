@@ -311,8 +311,13 @@ static func _support_target(world: SimWorld, caster: CombatEntity, effect: Dicti
 
 
 static func _amount(caster: CombatEntity, spec: Dictionary) -> float:
-	# "power": "attack" scales with attack power instead of spell power (Represalia).
-	var power := caster.stats.attack_power if str(spec.get("power", "spell")) == "attack" else caster.stats.spell_power
+	# "power": "attack" or "armor" scale with that instead of spell power (Represalia).
+	var power := caster.stats.spell_power
+	match str(spec.get("power", "spell")):
+		"attack":
+			power = caster.stats.attack_power
+		"armor":
+			power = caster.stats.armor
 	# "pct_max_hp": a share of the caster's maximum health (Bloque de hielo).
 	return float(spec.get("base", 0.0)) + float(spec.get("coef", 0.0)) * power + float(spec.get("pct_max_hp", 0.0)) * caster.stats.max_hp
 

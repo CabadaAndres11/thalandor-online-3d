@@ -38,6 +38,8 @@ static func roll(attacker: CombatEntity, target: CombatEntity, spec: Dictionary,
 			and world.rng.randf() < target.stats.block_chance:
 		result.blocked = true
 	var power := attacker.stats.attack_power if physical else attacker.stats.spell_power
+	if str(spec.get("power", "")) == "armor":
+		power = attacker.stats.armor # the Protector's abilities scale with armour
 	var amount := float(spec.get("base", 0.0)) + float(spec.get("coef", 0.0)) * power
 	amount *= 1.0 + world.rng.randf_range(-b.damage_variance, b.damage_variance)
 	var crit_chance := attacker.stats.crit_chance + Passives.school_crit(attacker, str(spec.get("school", "")))

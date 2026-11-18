@@ -122,6 +122,7 @@ func step(inputs: Dictionary) -> void:
 			var p: PlayerState = players[id]
 			if p.forced_ticks > 0:
 				continue # an ability is moving this player (Carga, Voltereta…)
+			p.lock_facing = p.has_status("ice_block")
 			Movement.apply(p, inputs[id], dt(), balance, map, p.move_mult())
 			if p.dodge_started:
 				p.dodge_started = false

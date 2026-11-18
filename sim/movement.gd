@@ -24,7 +24,7 @@ static func apply(state: PlayerState, input: PlayerInput, dt: float, balance: Ba
 		state.position = move_circle(state.position, delta, balance.player_radius, map)
 	state.aim = input.aim
 	var to_aim := Vector2(input.aim.x - state.position.x, input.aim.z - state.position.z)
-	if to_aim.length() > MIN_AIM_DISTANCE:
+	if to_aim.length() > MIN_AIM_DISTANCE and not state.lock_facing:
 		state.facing = atan2(to_aim.x, to_aim.y)
 
 
