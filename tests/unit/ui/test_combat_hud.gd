@@ -193,3 +193,22 @@ func test_cooldown_from_the_cast_event_wins() -> void:
 	assert_gt(hud.slot_cooldown(2), 0.7, "still cooling after 10 s of 45")
 	hud.advance(36.0)
 	assert_eq(hud.slot_cooldown(2), 0.0)
+
+
+func test_cast_bar_fills_and_hides() -> void:
+	var c := _client("mage")
+	var hud := _hud(c)
+	hud.advance(0.0)
+	assert_false(hud.cast_visible())
+	c.combat_event.emit(["channel", 1, "mage_fireball", 1.2])
+	assert_true(hud.cast_visible())
+	assert_eq(hud.cast_text(), tr("AB_MAGE_FIREBALL"))
+	hud.advance(0.6)
+	assert_almost_eq(hud.cast_fraction(), 0.5, 0.01)
+	hud.advance(0.7)
+	assert_false(hud.cast_visible(), "the time is up")
+	c.combat_event.emit(["channel", 1, "mage_fireball", 1.2])
+	c.combat_event.emit(["channel_end", 1])
+	assert_false(hud.cast_visible(), "interrupted")
+	c.combat_event.emit(["channel", 2, "mage_fireball", 1.2])
+	assert_false(hud.cast_visible(), "somebody else's cast")

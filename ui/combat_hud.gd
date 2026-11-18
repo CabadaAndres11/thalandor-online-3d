@@ -38,6 +38,10 @@ var _column: VBoxContainer
 var _combo_row: HBoxContainer
 var _pips: Array[ColorRect] = []
 var _charge: ProgressBar
+var _cast: ProgressBar # cast time and channels of this player
+var _cast_label: Label
+var _cast_start: float = 0.0
+var _cast_total: float = 0.0
 var _hp: ProgressBar
 var _hp_label: Label
 var _res: ProgressBar
@@ -83,6 +87,13 @@ func _init() -> void:
 	_charge.custom_minimum_size.x = width * 0.5
 	_charge.size_flags_horizontal = SIZE_SHRINK_CENTER
 	_column.add_child(_charge)
+
+	_cast = _bar(Color("#c07bff"), 18)
+	_cast.custom_minimum_size.x = width * 0.6
+	_cast.size_flags_horizontal = SIZE_SHRINK_CENTER
+	_cast_label = _bar_label(_cast)
+	_cast.visible = false
+	_column.add_child(_cast)
 
 	_hp = _bar(HP_COLOR, 18)
 	_hp_label = _bar_label(_hp)
@@ -189,6 +200,7 @@ func advance(dt: float) -> void:
 	if _client == null:
 		return
 	_update_boss()
+	_update_cast()
 	xp_bar.set_progress(_client.progress.level, _client.progress.xp, Xp.to_next(_client.progress.level, _client.balance))
 	var me: Dictionary = _client.combat.get(_client.my_id, {})
 	if me.is_empty():
@@ -238,7 +250,19 @@ func _on_combat_event(ev: Array) -> void:
 			_cd_total[id] = cd
 			if bool(ab.get("gcd", false)):
 				_gcd_end = _clock + _client.balance.gcd_s
+		"channel":
+			var cid := str(ev[2]) if ev.size() > 2 else ""
+			_cast_start = _clock
+			_cast_total = maxf(float(ev[3]) if ev.size() > 3 else 0.0, 0.01)
+			_cast_label.text = tr(str(_abilities.get_ability(cid).get("name", cid))) if _abilities.has(cid) else ""
+			var col := CombatFX.ELEMENT_COLORS.get(CombatFX.element_of(_abilities.get_ability(cid).get("effects", [])), Color("#c07bff")) as Color
+			_cast.add_theme_stylebox_override("fill", _fill(col))
+			_cast.visible = true
+			_update_cast()
+		"channel_end":
+			_cast.visible = false
 		"died":
+			_cast.visible = false
 			_respawn_at = _clock + _client.balance.respawn_s
 		"respawned":
 			_respawn_at = -1.0
@@ -246,7 +270,31 @@ func _on_combat_event(ev: Array) -> void:
 			_gcd_end = 0.0
 
 
+## Fills the cast bar as the time passes; it hides itself when the time is up.
+func _update_cast() -> void:
+	if not _cast.visible:
+		return
+	var k := (_clock - _cast_start) / _cast_total
+	if k >= 1.0:
+		_cast.visible = false
+		return
+	_cast.max_value = 1.0
+	_cast.value = k
+
+
 # --- Readable state (tests and tooltips) ---
+
+func cast_visible() -> bool:
+	return _cast.visible
+
+
+func cast_text() -> String:
+	return _cast_label.text
+
+
+func cast_fraction() -> float:
+	return _cast.value / _cast.max_value
+
 
 func slot_count() -> int:
 	return SLOTS
