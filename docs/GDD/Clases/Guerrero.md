@@ -31,7 +31,7 @@ Reglas generales en [[04 Personajes y progresión]].
 ## Mejoras de clase del nivel 50
 Se elige una de las dos al llegar al nivel 50 (ver [[04 Personajes y progresión|§4.4]]). **[Implementado]** con estos números (datos en `data/upgrades/warrior.json` y `data/abilities/warrior.json`):
 
-- **Protector:** Provocación masiva (20 ira, 20 s; 10 m, 6 s, amenaza ×3); Represalia (25 ira, 30 s; escudo 40 + 2 × PA durante 8 s, devuelve el 50 %); Postura defensiva (+100 % amenaza, +15 % vida); Último bastión (por debajo del 20 %: −40 % daño 8 s, 60 s de recarga). Evolución: Muro de escudo también da −50 % de daño a los aliados a 8 m.
+- **Protector:** Sacudida de coraza (25 ira, 12 s; daño en 4 m que escala con la armadura); Represalia (25 ira, 30 s; escudo 40 + 2 × PA durante 8 s, devuelve el 50 %); Postura defensiva (+100 % amenaza, +15 % vida); Último bastión (por debajo del 20 %: −40 % daño 8 s, 60 s de recarga). Evolución: Muro de escudo también da −50 % de daño a los aliados a 8 m.
 - **Berserker:** Frenesí (0 ira, 45 s, sin tiempo global; 10 s de +25 % daño, +30 % rapidez, +15 % daño recibido); Ejecutar (30 ira, 6 s; 20 + 1,5 × PA, ×2,5 por debajo del 25 %, devuelve el coste al matar); Furia sangrienta (hasta +25 % de daño); Masacre (matar reinicia Carga y cura un 5 %). Evolución: el ataque básico golpea dos veces al 70 %.
 
 | Mejora | Activas | Pasivas | Evoluciona |

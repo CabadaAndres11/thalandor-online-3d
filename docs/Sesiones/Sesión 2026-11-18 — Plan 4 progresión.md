@@ -32,6 +32,7 @@ Implementar el [[Plan 4 — Progresión (spec)|Plan 4]]: experiencia y niveles s
 - Escalado de monstruos subido (vida 0,17 y daño 0,115 por nivel), casteo del mago con `repeat.cast`, efectos de magia mejorados y cadáveres de bestias corregidos.
 - Barra de lanzamiento, muerte por disolución en binario y efectos de magia con modelos voxel (arcano, fuego, hielo) con marcas en el suelo.
 - Reacción al impacto, muro de fuego en línea, meteoro desde el cielo, bloque de hielo, marcas de suelo ligadas al efecto, fuego voxel de referencia, corte del arma con textura y máscara y postura corporal en melé.
+- Sexta tanda: arquero (flechas, red, lluvia, trampa), asesino (manos alternas, animaciones, sin Desvanecer), láser arcano, Sacudida de coraza, casillas de efectos e iconos de tecla.
 
 ## Siguiente paso
 - Prueba del usuario, revisión de arte (casco templario, ballesta, lobo, iconos) y publicación de la 0.6.0.
