@@ -186,3 +186,22 @@ func test_sanitize_returns_a_copy() -> void:
 	var out := ProgressRequests.sanitize(src, "warrior", f.world)
 	out.attributes.strength = 4
 	assert_eq(src.attributes.strength, 2)
+
+
+func test_sanitize_keeps_masteries_after_choosing_an_upgrade() -> void:
+	f.world.upgrades = UpgradeDB.from_list([{"id": "berserker", "class": "warrior"}])
+	var ids := ["might_1", "might_2", "might_3", "might_4", "might_key"]
+	var pr := _san({"level": 60, "upgrade": "berserker", "talents": ids, "masteries": {"might": 1}})
+	assert_eq(pr.talents, ids)
+	assert_eq(pr.masteries, {"might": 1})
+
+
+func test_reset_upgrade_prunes_nodes_left_without_a_path() -> void:
+	var p := _hero(60)
+	p.progress.upgrade = "berserker"
+	for id: String in ["might_1", "might_2", "might_3", "might_4", "might_key", "might_5", "might_celerity_5", "might_celerity_4"]:
+		assert_true(ProgressRequests.buy_talent(f.world, p, id), id)
+	assert_true(ProgressRequests.reset(f.world, p, "upgrade", true))
+	assert_true(Talents.valid(p.progress, db), "what is left is a legal tree")
+	assert_does_not_have(p.progress.talents, "might_celerity_4")
+	assert_eq(Talents.spent(p.progress), 5)

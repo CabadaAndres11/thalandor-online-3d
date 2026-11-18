@@ -62,7 +62,7 @@ func test_window_fits_1280x720() -> void:
 			await wait_process_frames(1)
 			var r := win.panel_rect()
 			assert_true(Rect2(0, 0, 1280, 720).encloses(r), "%s %s: panel %s" % [class_id, id, r])
-			assert_gt(r.size.x, 800.0, "the panel is laid out (7 cards wide)")
+			assert_gt(r.size.x, 700.0, "the panel is laid out (7 cards wide)")
 			assert_true(win.description_fits(), "%s: the description fits its box" % id)
 
 
@@ -123,3 +123,12 @@ func test_locked_cannot_be_assigned() -> void:
 func test_a_locked_bar_slot_is_cleared() -> void:
 	win.show_for("warrior", ["warrior_whirlwind", "warrior_charge", "", ""], abilities, 1)
 	assert_eq(win.bar(), ["", "warrior_charge", "", ""])
+
+
+func test_assassin_with_an_upgrade_fits_1280x720() -> void:
+	get_tree().root.size = Vector2i(1280, 720)
+	win.show_for("assassin", abilities.default_bar("assassin", 50, "shadow"), abilities, 50, "shadow")
+	await wait_process_frames(2)
+	var r := win.panel_rect()
+	assert_true(Rect2(0, 0, 1280, 720).encloses(r), "panel %s" % r)
+	assert_eq(win.active_ids().size(), 9, "7 base actives and the 2 of the upgrade")

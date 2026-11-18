@@ -110,3 +110,14 @@ func test_minions_are_marked_when_boss_calls_them() -> void:
 	assert_gt(boss.minions.size(), 0)
 	for id: int in boss.minions:
 		assert_eq((f.world.entity(id) as MonsterState).summoned_by, boss.id)
+
+
+func test_level_up_does_not_refill_a_downed_player() -> void:
+	var a := f.player(1, Vector3(21, 0, 20))
+	f.player(2, Vector3(22, 0, 20))
+	a.life = CombatEntity.DOWNED
+	a.hp = 0.0
+	a.progress.xp = 97
+	_kill(_monster())
+	assert_eq(a.progress.level, 2, "it still levels up")
+	assert_eq(a.hp, 0.0, "but stays on the ground")

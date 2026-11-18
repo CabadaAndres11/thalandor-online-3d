@@ -145,3 +145,23 @@ func test_reset_returns_points() -> void:
 	assert_eq(pr.talents, [])
 	assert_eq(pr.masteries, {})
 	assert_eq(Talents.spent(pr), 0)
+
+
+func test_masteries_stay_valid_when_an_upgrade_is_chosen() -> void:
+	var pr := _pr(60)
+	_buy_all(pr, ["might_1", "might_2", "might_3", "might_4", "might_key"])
+	assert_true(Talents.buy_mastery(pr, "might", db))
+	pr.upgrade = "berserker"
+	assert_true(Talents.valid(pr, db), "the ring 2 nodes of the direction are not owed for a mastery already bought")
+	assert_false(Talents.can_buy_mastery(pr, "might", db), "buying more does need the whole direction")
+
+
+func test_prune_orphans_drops_what_lost_its_way_to_the_start() -> void:
+	var pr := _pr(60, "berserker")
+	_buy_all(pr, ["might_1", "might_2", "might_3", "might_4", "might_key", "might_5", "might_celerity_5", "might_celerity_4"])
+	pr.upgrade = ""
+	pr.talents = pr.talents.filter(func(id: String) -> bool: return int(db.node(id).ring) != 2)
+	assert_false(Talents.valid(pr, db))
+	Talents.prune_orphans(pr, db)
+	assert_eq(pr.talents, ["might_1", "might_2", "might_3", "might_4", "might_key"])
+	assert_true(Talents.valid(pr, db))

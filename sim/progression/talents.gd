@@ -37,12 +37,13 @@ static func buy(pr: PlayerProgress, id: String, db: TalentDB) -> bool:
 
 
 ## Every node of a direction that can be bought now (ring 2 only with an upgrade) is owned.
-static func direction_complete(pr: PlayerProgress, dir: String, db: TalentDB) -> bool:
+## `ring1_only`: the outer ring is not asked for (a mastery bought before the upgrade stays legal).
+static func direction_complete(pr: PlayerProgress, dir: String, db: TalentDB, ring1_only: bool = false) -> bool:
 	for id: String in db.ids():
 		var node := db.node(id)
 		if str(node.get("dir", "")) != dir:
 			continue
-		if int(node.get("ring", 1)) == 2 and pr.upgrade == "":
+		if int(node.get("ring", 1)) == 2 and (pr.upgrade == "" or ring1_only):
 			continue
 		if not pr.talents.has(id):
 			return false
@@ -86,9 +87,23 @@ static func valid(pr: PlayerProgress, db: TalentDB) -> bool:
 	for dir: Variant in pr.masteries:
 		if not dir is String or not dir in db.directions() or int(pr.masteries[dir]) < 0:
 			return false
-		if int(pr.masteries[dir]) > 0 and not direction_complete(pr, dir, db):
+		if int(pr.masteries[dir]) > 0 and not direction_complete(pr, dir, db, true):
 			return false
 	return true
+
+
+## Drops the bought nodes that no longer reach the start through bought nodes (after the
+## outer ring left with an upgrade reset). Their points go back to the player.
+static func prune_orphans(pr: PlayerProgress, db: TalentDB) -> void:
+	var reached := {db.start_id(): true}
+	var queue: Array = [db.start_id()]
+	while not queue.is_empty():
+		var cur: String = queue.pop_back()
+		for n: String in db.node(cur).get("links", []):
+			if pr.talents.has(n) and not reached.has(n):
+				reached[n] = true
+				queue.append(n)
+	pr.talents = pr.talents.filter(func(id: Variant) -> bool: return reached.has(id))
 
 
 ## Stat modifiers of the bought nodes and the mastery ranks.

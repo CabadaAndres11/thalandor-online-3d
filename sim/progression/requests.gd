@@ -76,6 +76,7 @@ static func clear_upgrade(world: SimWorld, p: PlayerState) -> void:
 	var db := TalentDB.load_default()
 	p.progress.upgrade = ""
 	p.progress.talents = p.progress.talents.filter(func(id: String) -> bool: return int(db.node(id).get("ring", 1)) != 2)
+	Talents.prune_orphans(p.progress, db)
 
 
 ## A sanitized copy of a progress that came from outside (a saved character in HELLO):
@@ -97,6 +98,9 @@ static func sanitize(pr: PlayerProgress, class_id: String, world: SimWorld) -> P
 		var u := world.upgrades.upgrade(out.upgrade)
 		if u.is_empty() or str(u.get("class", "")) != class_id or out.level < UPGRADE_LEVEL:
 			out.upgrade = ""
-	if not Talents.valid(out, TalentDB.load_default()):
-		Talents.reset(out)
+	var db := TalentDB.load_default()
+	if not Talents.valid(out, db):
+		Talents.prune_orphans(out, db) # keep what is connected before giving up on the rest
+		if not Talents.valid(out, db):
+			Talents.reset(out)
 	return out

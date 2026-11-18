@@ -100,7 +100,8 @@ static func set_level(world: SimWorld, p: PlayerState, level: int) -> void:
 ## Rebuilds the stats for the new level, refills health and resource (not rage) and tells everybody.
 static func _leveled_up(world: SimWorld, p: PlayerState) -> void:
 	Progression.rebuild(p, world)
-	p.hp = p.stats.max_hp
-	if p.resource_kind != "rage":
+	if p.life == CombatEntity.ALIVE: # a downed or dead player levels up but stays down
+		p.hp = p.stats.max_hp
+	if p.resource_kind != "rage" and p.life == CombatEntity.ALIVE:
 		p.resource = p.stats.max_resource
 	world.emit(["level_up", p.id, p.level])

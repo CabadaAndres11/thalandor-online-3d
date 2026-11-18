@@ -7,7 +7,7 @@ extends Control
 
 signal bar_changed(bar: Array)
 
-const CARD := Vector2(124, 86)
+const CARD := Vector2(100, 86)
 const BAR_SLOT := 64.0
 const DESC_LINES := 9
 
