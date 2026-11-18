@@ -45,3 +45,5 @@ Barra de experiencia bajo las habilidades, nivel junto a los nombres, ventana de
 
 ## Estilo holográfico (0.6.0)
 Paneles azules translúcidos con borde celeste fino y brillo, título centrado, líneas separadoras finas y dorado para lo destacado (clase, atributos recomendados, avisos). Se define en `ui/holo_theme.gd` y se aplica a todas las ventanas. Ventana C: modelo 3D entre ocho huecos de objetos (vacíos hasta que existan). Ventana K: habilidades en listas, sin huecos fijos.
+
+Un brillo azul se desplaza despacio por cada ventana (shader `assets/ui/holo_shine.gdshader`). La barra de habilidades tiene 9 huecos (teclas 1–9); los nombres sobre personajes, PNJ y monstruos tienen tamaño de mundo y se encogen con el zoom.

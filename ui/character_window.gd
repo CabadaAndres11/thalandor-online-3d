@@ -42,6 +42,7 @@ func _init() -> void:
 	add_child(center)
 	_panel = PanelContainer.new()
 	_panel.add_theme_stylebox_override("panel", HoloTheme.panel_style(16))
+	HoloTheme.add_shine(_panel)
 	center.add_child(_panel)
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 8)

@@ -75,7 +75,7 @@ Orden de armaduras, de más ligera a más pesada: tela < cuero < malla < placas.
 El detalle de cada mejora está en la nota de su clase y en [[Plan 4 — Progresión (spec)]].
 
 ## 4.5 Atributos **[Implementado]** (0.6.0)
-Cada nivel otorga **5 puntos de atributo** para repartir libremente, y cada clase sube además 2 atributos principales por nivel.
+Cada nivel sube **+5 a cada uno de los cinco atributos** automáticamente y otorga además **5 puntos libres** para repartir. Los atributos principales de cada clase se muestran en dorado en la ventana C como recomendados.
 
 | Atributo | Efecto |
 |---|---|

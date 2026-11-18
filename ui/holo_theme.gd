@@ -10,6 +10,7 @@ const TEXT := Color("#e6f3ff")
 const TEXT_DIM := Color(0.78, 0.88, 1.0, 0.72)
 const ACCENT := Color("#ffd27a") # class, recommended stats, warnings
 const SECTION := Color("#8fd0ff")
+const SHINE_SHADER := preload("res://assets/ui/holo_shine.gdshader")
 
 
 ## Panel of a window: dark translucent blue, thin light border and a soft glow.
@@ -23,6 +24,19 @@ static func panel_style(margin: int = 16) -> StyleBoxFlat:
 	s.shadow_color = Color(0.3, 0.65, 1.0, 0.35)
 	s.shadow_size = 10
 	return s
+
+
+## A glow that drifts across a window panel, under its content (never takes the mouse).
+static func add_shine(panel: Container) -> ColorRect:
+	var r := ColorRect.new()
+	r.name = "Shine"
+	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var m := ShaderMaterial.new()
+	m.shader = SHINE_SHADER
+	r.material = m
+	panel.add_child(r)
+	panel.move_child(r, 0)
+	return r
 
 
 ## A box inside a window (item slots, ability rows): darker, thin border.

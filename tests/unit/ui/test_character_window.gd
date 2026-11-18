@@ -116,3 +116,10 @@ func test_main_attributes_of_the_class_are_in_gold() -> void:
 func test_the_model_stays_fixed() -> void:
 	_show(1)
 	assert_false(win.model_turns())
+
+
+func test_the_panel_has_a_moving_glow_that_ignores_the_mouse() -> void:
+	var shine := win.find_child("Shine", true, false) as ColorRect
+	assert_not_null(shine)
+	assert_eq(shine.mouse_filter, Control.MOUSE_FILTER_IGNORE)
+	assert_true(shine.material is ShaderMaterial)
