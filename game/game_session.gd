@@ -70,6 +70,7 @@ func _init() -> void:
 	fx.name = "CombatFX"
 	add_child(fx)
 	fx.setup(_entity_position, _latest_tick, AbilityDB.load_default(), balance.tick_rate)
+	fx.slash_owners = func(id: int) -> bool: return _avatars.has(id)
 	_aim = map.spawn_point()
 
 
@@ -386,7 +387,12 @@ func _on_combat_event(ev: Array) -> void:
 					avatar.play_attack(str(mab.get("anim", "melee")))
 			elif _avatars.has(who):
 				var ab := AbilityDB.load_default().get_ability(str(ev[2]))
-				(_avatars[who] as PlayerAvatar).play_action(str(ab.get("anim", "")))
+				var pa := _avatars[who] as PlayerAvatar
+				pa.play_action(str(ab.get("anim", "")))
+				if str(ab.get("anim", "")) == "melee" and pa.rig != null:
+					var slash := SlashFx.new()
+					_avatar_root.add_child(slash)
+					slash.setup(pa.rig, (CombatFX.CLASS_COLORS.get(str(ab.get("class", "")), Color.WHITE) as Color).lightened(0.3))
 		"channel":
 			if _avatars.has(int(ev[1])):
 				(_avatars[int(ev[1])] as PlayerAvatar).play_long_cast(float(ev[3]))

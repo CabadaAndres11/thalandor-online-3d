@@ -55,6 +55,8 @@ var _cast_aim: Dictionary = {} # caster id -> where its last cast was aimed
 var _decor: Array = [] # {node, t, life, grow, target, fade, base, flicker, spin}: voxel effects that grow and fade
 var _marks: Dictionary = {} # area id -> decor entry of its ground mark
 var _mesh_cache: Dictionary = {}
+## id -> bool: casters whose swing is drawn by a SlashFx (set by the game session).
+var slash_owners: Callable
 
 
 func setup(position_of: Callable, tick_now: Callable, abilities: AbilityDB, tick_rate: int) -> void:
@@ -574,6 +576,8 @@ func _cast_flash(ev: Array) -> void:
 	var pos: Variant = _position_of.call(int(ev[1]))
 	if arc.is_empty() or pos == null:
 		return
+	if slash_owners.is_valid() and bool(slash_owners.call(int(ev[1]))):
+		return # the weapon's own cut is drawn instead of a flat sector
 	var aim: Vector3 = ev[3]
 	var node := MeshInstance3D.new()
 	node.mesh = _sector(deg_to_rad(float(arc.get("angle_deg", 90.0))), float(arc.get("range", 2.0)))

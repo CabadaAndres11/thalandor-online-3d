@@ -50,3 +50,6 @@ Un brillo azul se desplaza despacio por cada ventana (shader `assets/ui/holo_shi
 
 ## Efectos de magia (0.6.0)
 Los hechizos usan modelos voxel creados en código. Arcano: prisma morado y pentagrama en el suelo. Fuego: bola de llamas y suelo ardiendo. Hielo: sin proyectil, estacas que brotan del suelo y crecen hacia el final, remate grande, nieve y cascarón de hielo en los congelados. Los hechizos con tiempo de lanzamiento muestran una barra en el HUD y una esfera que se forma y brilla delante del personaje.
+
+## Combate cuerpo a cuerpo y reacciones (0.6.0)
+Cada golpe del arma dibuja un corte (`game/slash_fx.gd`, shader `assets/fx/slash.gdshader`): se graban los puntos de la hoja durante el recorrido y una textura de corte con máscara aparece y se desvanece con el movimiento. Todo el cuerpo cambia de postura en el ataque (cadera, torso, piernas, brazo libre, avance). Los enemigos destellan en blanco, sangran y retroceden un poco al recibir daño.

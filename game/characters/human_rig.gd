@@ -103,6 +103,36 @@ func play_action(kind: String) -> float:
 	return ACTIONS[kind]
 
 
+## How far the current action has gone (0 to 1; 0 when idle).
+func action_progress() -> float:
+	if _action == "idle":
+		return 0.0
+	return clampf(_action_t / float(ACTIONS[_action]), 0.0, 1.0)
+
+
+## Where the weapon in the right hand is now: [hand, tip] in global space ([] without one).
+## The tip is the corner of the weapon's box farthest from the hand.
+func weapon_points() -> Array:
+	var hand := part("hand_right")
+	if hand == null or not hand.is_inside_tree():
+		return []
+	for id: String in _pieces:
+		var mi: MeshInstance3D = _pieces[id]
+		if not id.begins_with("weapon_") or mi.get_parent() != hand or mi.mesh == null:
+			continue
+		var box := mi.get_aabb()
+		var origin := hand.global_position
+		var tip := origin
+		var best := -1.0
+		for i in 8:
+			var corner := mi.global_transform * (box.position + box.size * Vector3(i & 1, (i >> 1) & 1, (i >> 2) & 1))
+			if corner.distance_to(origin) > best:
+				best = corner.distance_to(origin)
+				tip = corner
+		return [origin, tip]
+	return []
+
+
 ## How fast the walk cycle runs (speed / move_speed, clamped).
 func walk_rate() -> float:
 	return _rate
@@ -277,27 +307,36 @@ func _locomotion(walk: float) -> void:
 		(_parts["hand_right"] as Node3D).rotation.z = -0.25
 
 
-## Wind up over the shoulder, a heavy diagonal swing with the torso, recover.
+## A full-body swing: weight back and the arm cocked over the shoulder, then a step forward with
+## the hips and torso turning through the blow, the other arm swinging back, and a recovery.
+## Keys at 0, 0.3 (cocked), 0.55 (end of the swing) and 1 (recovered).
 func _melee(k: float) -> void:
-	var arm := 0.0
-	var twist := 0.0
-	if k < 0.3:
-		var e := _ease(k / 0.3)
-		arm = lerpf(0.0, -2.5, e)
-		twist = lerpf(0.0, 0.4, e)
-	elif k < 0.55:
-		var e := _ease((k - 0.3) / 0.25)
-		arm = lerpf(-2.5, 0.6, e)
-		twist = lerpf(0.4, -0.45, e)
-	else:
-		var e := _ease((k - 0.55) / 0.45)
-		arm = lerpf(0.6, 0.0, e)
-		twist = lerpf(-0.45, 0.0, e)
+	var arm := _keys(k, 0.0, -2.5, 0.6, 0.0)
+	var twist := _keys(k, 0.0, 0.55, -0.6, 0.0)
 	_rot("arm_right", arm)
 	_rot("forearm_right", -1.1 * clampf(-arm / 2.5, 0.0, 1.0)) # cocked back, then straight
 	(_parts["arm_right"] as Node3D).rotation.z = -absf(twist) * 0.6
 	(_parts["torso"] as Node3D).rotation.y = twist
-	_rot("arm_left", -twist * 0.6)
+	(_parts["torso"] as Node3D).rotation.x = _keys(k, 0.0, -0.14, 0.36, 0.0) # leans back, then into the blow
+	(_parts["hips"] as Node3D).rotation.y = _keys(k, 0.0, 0.25, -0.3, 0.0) # the hips lead the turn
+	_rot("arm_left", _keys(k, 0.0, -0.7, 1.0, 0.0)) # the free arm balances the swing
+	_rot("leg_left", _keys(k, 0.0, 0.2, -0.7, 0.0)) # the front leg steps forward
+	_rot("leg_right", _keys(k, 0.0, -0.25, 0.55, 0.0))
+	_rot("shin_left", _keys(k, 0.05, 0.1, 0.25, 0.05))
+	_rot("shin_right", _keys(k, 0.05, 0.5, 0.75, 0.05)) # the back leg bends and pushes
+	(_parts["head"] as Node3D).rotation.x = _keys(k, 0.0, 0.05, -0.14, 0.0)
+	(_parts["head"] as Node3D).rotation.y = -twist * 0.5 # the eyes stay on the target
+	_body.position.z = _keys(k, 0.0, -0.04, 0.18, 0.0) # a lunge
+	_body.position.y = _keys(k, 0.0, 0.0, -0.07, 0.0) # sinking into the stance
+
+
+## Eased interpolation through values at k = 0, 0.3, 0.55 and 1.
+static func _keys(k: float, v0: float, v1: float, v2: float, v3: float) -> float:
+	if k < 0.3:
+		return lerpf(v0, v1, _ease(k / 0.3))
+	if k < 0.55:
+		return lerpf(v1, v2, _ease((k - 0.3) / 0.25))
+	return lerpf(v2, v3, _ease((k - 0.55) / 0.45))
 
 
 ## Bow arm up level, draw the string back, hold, let go, lower.
