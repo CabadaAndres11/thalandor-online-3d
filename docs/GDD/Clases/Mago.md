@@ -29,7 +29,7 @@ Reglas generales en [[04 Personajes y progresión]].
 | 35 | Frío penetrante | Pasiva | +20 % de daño a enemigos congelados o ralentizados. |
 
 ## Mejoras de clase del nivel 50
-Se elige una de las tres al llegar al nivel 50 (ver [[04 Personajes y progresión|§4.4]]).
+Se elige una de las tres al llegar al nivel 50 (ver [[04 Personajes y progresión|§4.4]]). **[Implementado]**, con las escuelas `arcane` (proyectil y explosión arcanos), `fire` (bola de fuego) y `frost` (nova y descarga) en el daño de los hechizos. Números exactos en `data/abilities/mage.json` y `data/upgrades/mage.json`: Pilar de llamas 35 maná/14 s, Meteoro 60/30 s (1,5 s de aviso), Ventisca 45/20 s, Bloque de hielo 20/90 s (4 s, cura el 30 %), Misiles arcanos 40/10 s (canalizado 5 × 0,3 s), Lanza arcana 50/16 s (18 m × 1,2 m).
 
 | Mejora | Activas | Pasivas | Evoluciona |
 |---|---|---|---|

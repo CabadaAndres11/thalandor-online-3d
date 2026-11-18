@@ -501,3 +501,30 @@ AB_CLERIC_ZEAL,Celo
 AB_CLERIC_ZEAL_DESC,"Cada golpe cuerpo a cuerpo te devuelve 4 de maná."
 UP_HEALER_EVO,"Sanar también cura a un segundo aliado a 10 m con la mitad del efecto."
 UP_TEMPLAR_EVO,"Destello sagrado pasa a ser un golpe cuerpo a cuerpo de 2,5 m con un 15 % más de daño."
+AB_MAGE_FLAME_PILLAR,Pilar de llamas
+AB_MAGE_FLAME_PILLAR_DESC,"Una columna de fuego de 3 m en el cursor durante 6 s que daña y quema."
+AB_MAGE_METEOR,Meteoro
+AB_MAGE_METEOR_DESC,"Tras 1,5 s de aviso, cae un meteoro de 5 m: gran daño de fuego y aturde 1 s."
+AB_MAGE_COMBUSTION,Combustión
+AB_MAGE_COMBUSTION_DESC,"+10 % de daño a enemigos que arden."
+AB_MAGE_PHOENIX,Fénix
+AB_MAGE_PHOENIX_DESC,"Un golpe mortal te deja con el 30 % de vida (una vez cada 3 minutos)."
+AB_MAGE_BLIZZARD,Ventisca
+AB_MAGE_BLIZZARD_DESC,"Una tormenta de 5 m en el cursor durante 8 s: daña y ralentiza un 40 %."
+AB_MAGE_ICE_BLOCK,Bloque de hielo
+AB_MAGE_ICE_BLOCK_DESC,"Durante 4 s eres invulnerable pero no puedes actuar, y recuperas el 30 % de tu vida. No gasta el tiempo global."
+AB_MAGE_CHILL,Escalofrío
+AB_MAGE_CHILL_DESC,"Los enemigos que ralentizas también atacan un 25 % más despacio."
+AB_MAGE_FROZEN_HEART,Corazón helado
+AB_MAGE_FROZEN_HEART_DESC,"Cada enemigo que congelas te devuelve 1 s de recarga (hasta 3 s por lanzamiento)."
+AB_MAGE_ARCANE_MISSILES,Misiles arcanos
+AB_MAGE_ARCANE_MISSILES_DESC,"Canalizas 1,5 s: 5 misiles arcanos hacia el cursor. Te interrumpe moverte."
+AB_MAGE_ARCANE_LANCE,Lanza arcana
+AB_MAGE_ARCANE_LANCE_DESC,"Un rayo arcano de 18 m que atraviesa a todos los enemigos en línea."
+AB_MAGE_ARCANE_CHARGE,Carga arcana
+AB_MAGE_ARCANE_CHARGE_DESC,"Cada hechizo arcano suma +4 % de daño arcano durante 6 s (hasta 5 cargas)."
+AB_MAGE_PURE_POWER,Poder puro
+AB_MAGE_PURE_POWER_DESC,"+15 % de probabilidad de crítico con hechizos arcanos."
+UP_PYROMANCER_EVO,"Bola de fuego deja un área en llamas de 3 m durante 4 s."
+UP_CRYOMANCER_EVO,"Nova de escarcha se lanza al cursor, hasta 12 m."
+UP_ARCANIST_EVO,"Explosión arcana es instantánea y un 40 % más grande."

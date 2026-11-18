@@ -101,7 +101,8 @@ static func damage_mult(attacker: CombatEntity, target: CombatEntity, spec: Dict
 	if school != "":
 		for st: Dictionary in hooks(attacker, "stacking_school_damage"):
 			if str(st.get("school", "")) == school:
-				mult *= 1.0 + float(st.get("pct", 0.0)) * attacker.status_stacks("stack_" + school)
+				var holder := world.entity(attacker.id) if world.entity(attacker.id) != null else attacker # projectiles carry a snapshot: stacks live on the caster
+				mult *= 1.0 + float(st.get("pct", 0.0)) * holder.status_stacks("stack_" + school)
 	return mult
 
 
