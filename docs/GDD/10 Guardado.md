@@ -11,5 +11,8 @@ actualizado: 2026-11-14
 - **Exportación e importación:** cada personaje se puede exportar e importar como archivo, como copia de seguridad o para jugar desde otro PC.
 - **Versiones del guardado:** cada guardado lleva un número de versión y se migra automáticamente al actualizar el juego. Ninguna actualización puede borrar personajes ni objetos (lo que no quepa va a casillas extra).
 
+## Plan 4 (0.6.0) **[Implementado]**
+Personajes **versión 3**: el nivel suelto pasa a `progress` (nivel, experiencia, atributos, talentos, maestrías y mejora). Los personajes de la 0.5.0 (versión 2) entran a nivel 1 sin perder nada más. El anfitrión sanea cualquier progreso que llegue en el HELLO. Las escrituras se agrupan (como mucho una por personaje y fotograma) y se vuelcan al salir.
+
 ---
 ← [[00 Índice del GDD|Índice del GDD]]

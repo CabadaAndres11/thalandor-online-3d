@@ -14,5 +14,9 @@ actualizado: 2026-11-16
 - **Textos provisionales del prólogo:** la frase de Brann (*Ya has elegido tu camino. Ahora recórrelo.*), la ventana *Elige tu camino* y la máscara del culto (sol negro partido en cinco) quedan por fijar en el guion.
 - Proyección de cámara: perspectiva u ortográfica ([[03 Cámara y controles|§3.1]]), a decidir viendo el resultado.
 
+## Cerradas con el Plan 4
+- Mejoras del nivel 50: [[D-013 Mejoras del nivel 50 revisadas]].
+- Dónde se reinicia y se elige mejora (provisional): [[D-012 Brann como instructor provisional y arena que escala]].
+
 ---
 ← [[00 Índice del GDD|Índice del GDD]]

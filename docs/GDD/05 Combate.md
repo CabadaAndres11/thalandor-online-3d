@@ -26,5 +26,8 @@ actualizado: 2026-11-15
 - **Jefe, la bestia de guardia** (antes Rey orco, mismas reglas): fase 1 tajo en arco; fase 2 (66 %) además salta sobre un jugador con un área de 4 m avisada 1,2 s; fase 3 (33 %) además llama a 3 cultistas cada 20 s. Su muerte se anuncia en el chat y reaparece a los 3 minutos.
 - **Derribo:** en grupo, con algún aliado en pie, a 0 de vida quedas derribado 30 s. Un aliado a menos de 2 m mantiene E 3 s y te levanta con el 30 % de la vida (moverse, recibir daño o soltar lo cancela). Si cae todo el grupo, todos reaparecen a los 3 s.
 
+## Plan 4 (0.6.0) **[Implementado]**
+Monstruos con nivel (vida, daño y armadura crecen con él; la armadura pierde valor contra atacantes de más nivel). Bloqueo (medio daño en golpes físicos cuerpo a cuerpo), robo de vida, reducción de recargas y regeneración. Habilidades que se repiten o se canalizan, rayos, abanicos, invocaciones aliadas y 18 ganchos de pasivas para las mejoras de clase. Los números están en `data/balance.json`.
+
 ---
 ← [[00 Índice del GDD|Índice del GDD]]

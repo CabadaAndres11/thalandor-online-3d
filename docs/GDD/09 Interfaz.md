@@ -36,5 +36,8 @@ actualizado: 2026-11-16
 ## 9.4 Social **[Implementado]**
 - Chat de texto de grupo. Para la voz se usa Discord.
 
+## Plan 4 (0.6.0) **[Implementado]**
+Barra de experiencia bajo las habilidades, nivel junto a los nombres, ventana de personaje (**C**), árbol de talentos (**T**), menú de Brann con reinicios, nivel de la arena y mejora de clase. Las ventanas C, T y K se cierran con Esc y con su tecla, abrir una cierra las otras y bloquean el ataque con el ratón pero no el movimiento. Ninguna necesita scroll a 1280×720.
+
 ---
 ← [[00 Índice del GDD|Índice del GDD]]

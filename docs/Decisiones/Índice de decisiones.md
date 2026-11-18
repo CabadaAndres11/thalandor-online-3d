@@ -19,6 +19,10 @@ Cada decisión importante tiene su nota (plantilla **Decisión**). Las pendiente
 - [[D-009 Repositorio nuevo y publicación en GitHub Releases]]
 - [[D-010 Arte propio hecho por código]]
 - [[D-011 La clase se elige dentro de la partida]]
+- [[D-012 Brann como instructor provisional y arena que escala]]
+- [[D-013 Mejoras del nivel 50 revisadas]]
+- [[D-012 Brann como instructor provisional y arena que escala]]
+- [[D-013 Mejoras del nivel 50 revisadas]]
 
 ---
 ← [[00 Inicio|Inicio]]

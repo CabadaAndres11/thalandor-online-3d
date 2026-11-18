@@ -14,7 +14,7 @@ Cada plan de la [[14 Hoja de ruta]] tiene aquí su **spec** (diseño acordado) y
 | 3 · Combate y clases | [[Plan 3 — Combate y clases (spec)\|Spec]] | [[Plan 3 — Combate y clases (plan)\|Plan]] | Hecho (0.4.0; la primera parte salió en la 0.3.0) |
 | 3.1 · Ajustes tras la 0.4.0 | [[Plan 3.1 — Ajustes tras la 0.4.0 (spec)\|Spec]] | [[Plan 3.1 — Ajustes tras la 0.4.0 (plan)\|Plan]] | Hecho (0.4.1) |
 | 3.2 · Vóxel propio, bestiario del prólogo y clase con Brann | [[Plan 3.2 — Vóxel propio, bestiario del prólogo y clase con Brann (spec)\|Spec]] | [[Plan 3.2 — Vóxel propio, bestiario del prólogo y clase con Brann (plan)\|Plan]] | Hecho (0.5.0) |
-| 4 · Progresión | [[Plan 4 — Progresión (spec)\|Spec]] | [[Plan 4 — Progresión (plan)\|Plan]] | En curso (rama `plan-4-progression`): Fase A (Tasks 1–10) implementada, a la espera de tus pruebas; falta la Fase B (Asesino y mejoras del nivel 50) |
+| 4 · Progresión | [[Plan 4 — Progresión (spec)\|Spec]] | [[Plan 4 — Progresión (plan)\|Plan]] | Implementado (0.6.0), pendiente de tu prueba y de publicar |
 | 5 · Objetos | — | — | Pendiente |
 | 6 · Mundo y misiones | — | — | Pendiente |
 | 7 · Interfaz y audio | — | — | Pendiente |
