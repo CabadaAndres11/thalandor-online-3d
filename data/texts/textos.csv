@@ -465,3 +465,21 @@ DETAIL_ST_ICE_BLOCK,bloque de hielo durante %s s (invulnerable e inmóvil)
 DETAIL_ST_CONTAGION,contagio durante %s s
 DETAIL_SCOPE_BEAM,rayo en línea de %s m
 DETAIL_SUMMON,invoca un aliado durante %s s
+AB_WARRIOR_MASS_TAUNT,Provocación masiva
+AB_WARRIOR_MASS_TAUNT_DESC,"Los enemigos a 10 m solo pueden atacarte a ti durante 6 s y tu amenaza se triplica."
+AB_WARRIOR_RETALIATION,Represalia
+AB_WARRIOR_RETALIATION_DESC,"Un escudo de 40 + 2 × poder de ataque durante 8 s que devuelve el 50 % del daño que absorbe."
+AB_WARRIOR_DEFENSIVE_STANCE,Postura defensiva
+AB_WARRIOR_DEFENSIVE_STANCE_DESC,"+100 % de amenaza y +15 % de vida máxima."
+AB_WARRIOR_LAST_STAND,Último bastión
+AB_WARRIOR_LAST_STAND_DESC,"Por debajo del 20 % de vida, recibes un 40 % menos de daño durante 8 s (una vez por minuto)."
+AB_WARRIOR_FRENZY,Frenesí
+AB_WARRIOR_FRENZY_DESC,"Durante 10 s: +25 % de daño y +30 % de rapidez de recarga, pero recibes un 15 % más de daño. No gasta el tiempo global."
+AB_WARRIOR_EXECUTE,Ejecutar
+AB_WARRIOR_EXECUTE_DESC,"Golpe devastador: ×2,5 de daño contra enemigos por debajo del 25 % de vida. Si mata, devuelve su coste."
+AB_WARRIOR_BLOOD_FURY,Furia sangrienta
+AB_WARRIOR_BLOOD_FURY_DESC,"Hasta +25 % de daño cuanta más vida te falta."
+AB_WARRIOR_MASSACRE,Masacre
+AB_WARRIOR_MASSACRE_DESC,"Cada muerte reinicia la recarga de Carga y te cura un 5 % de la vida."
+UP_PROTECTOR_EVO,"Muro de escudo también protege a los aliados a 8 m (−50 % de daño)."
+UP_BERSERKER_EVO,"El ataque básico golpea dos veces, cada golpe al 70 % del daño."

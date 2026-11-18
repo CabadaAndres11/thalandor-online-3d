@@ -20,7 +20,8 @@ extends RefCounted
 ##               leaves combat and monsters forget the caster)
 ##   cleanse    {target: "ally_or_self"|"self"}  (removes negative statuses)
 ##   revive     {range}  (a downed ally near the cursor stands up with revive_hp_pct)
-##   taunt      {radius, duration_s}  (enemies around must attack the caster)
+##   taunt      {radius, duration_s, threat_mult?}  (enemies around must attack the caster;
+##               threat_mult multiplies the threat the caster already has)
 ##   charge     {distance, width, windup_s, speed, damage, statuses?}  (warns a line
 ##               toward the cursor, then runs along it hitting everyone in the line)
 ##   beam       {range, width, damage, statuses?}  (an instant line hit toward the cursor)
@@ -293,7 +294,9 @@ static func _support_target(world: SimWorld, caster: CombatEntity, effect: Dicti
 
 
 static func _amount(caster: CombatEntity, spec: Dictionary) -> float:
-	return float(spec.get("base", 0.0)) + float(spec.get("coef", 0.0)) * caster.stats.spell_power
+	# "power": "attack" scales with attack power instead of spell power (Represalia).
+	var power := caster.stats.attack_power if str(spec.get("power", "spell")) == "attack" else caster.stats.spell_power
+	return float(spec.get("base", 0.0)) + float(spec.get("coef", 0.0)) * power
 
 
 static func _heal(world: SimWorld, caster: CombatEntity, effect: Dictionary, aim: Vector3) -> void:
@@ -406,7 +409,8 @@ static func _taunt(world: SimWorld, caster: CombatEntity, effect: Dictionary) ->
 			var top := 0.0
 			for id: int in m.threat:
 				top = maxf(top, float(m.threat[id]))
-			m.threat[caster.id] = maxf(maxf(float(m.threat.get(caster.id, 0.0)), top * 1.1), 1.0)
+			var own := float(m.threat.get(caster.id, 0.0)) * float(effect.get("threat_mult", 1.0))
+			m.threat[caster.id] = maxf(maxf(own, top * 1.1), 1.0)
 			m.target_id = caster.id
 
 

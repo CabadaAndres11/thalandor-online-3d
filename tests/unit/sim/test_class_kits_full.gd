@@ -44,7 +44,7 @@ func _status(e: CombatEntity, kind: String) -> StatusEffect:
 
 func test_every_class_has_7_actives_4_passives() -> void:
 	for c: String in CLASSES:
-		var all := _db().class_abilities(c)
+		var all := _db().class_abilities(c).filter(func(a: Dictionary) -> bool: return not a.has("upgrade")) # the level 50 upgrades have their own tests
 		var usable := all.filter(func(a: Dictionary) -> bool: return a.get("kind") != "passive")
 		var passives := all.filter(func(a: Dictionary) -> bool: return a.get("kind") == "passive")
 		assert_eq(usable.size(), 9 if c == "assassin" else 7, c + ": basic, secondary and the actives")
