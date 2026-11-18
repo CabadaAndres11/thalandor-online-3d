@@ -66,6 +66,7 @@ func _init() -> void:
 	body.add_child(model)
 	model.add_child(_slot_column(SLOTS_LEFT))
 	_preview = CharacterPreview.new()
+	_preview.turning = false
 	_preview.custom_minimum_size = PREVIEW_SIZE
 	model.add_child(_preview)
 	model.add_child(_slot_column(SLOTS_RIGHT))
@@ -258,6 +259,10 @@ func attribute_color(attr: String) -> Color:
 
 func slot_ids() -> Array:
 	return _slot_boxes.keys()
+
+
+func model_turns() -> bool:
+	return _preview.turning
 
 
 func has_model() -> bool:

@@ -57,9 +57,9 @@ func setup(player_name: String, slot: int, class_id: String, appearance: Diction
 	_player_name = player_name
 	_label.modulate = color.lightened(0.5)
 	_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	_label.fixed_size = true
+	_label.fixed_size = false # world size: shrinks with the zoom
 	_label.no_depth_test = true
-	_label.pixel_size = 0.0008
+	_label.pixel_size = 0.010
 	_label.font_size = 40
 	_label.outline_size = 10
 	_label.position.y = NAME_HEIGHT

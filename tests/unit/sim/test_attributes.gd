@@ -46,15 +46,14 @@ func test_spend_rejects_unknown_attribute() -> void:
 	assert_eq(Attributes.free_points(pr, b), 20)
 
 
-func test_auto_points_by_class() -> void:
+func test_every_attribute_grows_five_per_level() -> void:
 	var pr := PlayerProgress.new()
 	pr.level = 11
 	var t := Attributes.totals(pr, _class_def("warrior"), b)
-	assert_eq(t.strength, 10)
-	assert_eq(t.stamina, 10)
-	assert_eq(t.agility, 0)
+	for a: String in PlayerProgress.ATTRIBUTES:
+		assert_eq(t[a], 50, a)
 	pr.attributes.agility = 3
-	assert_eq(Attributes.totals(pr, _class_def("archer"), b).agility, 13)
+	assert_eq(Attributes.totals(pr, _class_def("archer"), b).agility, 53)
 
 
 func test_effective_soft_caps() -> void:
@@ -187,7 +186,7 @@ func test_villager_keeps_points_on_class_choice() -> void:
 	ClassRules.setup_player(p, "warrior", null, f.world)
 	assert_eq(p.progress.attributes.strength, 7)
 	assert_eq(p.class_id, "warrior")
-	assert_almost_eq(p.stats.attack_power, 20.0 + 0.5 * (7 + 5), 0.001)
+	assert_almost_eq(p.stats.attack_power, 20.0 + 0.5 * (7 + 25), 0.001)
 
 
 func test_block_halves_melee_physical_only() -> void:

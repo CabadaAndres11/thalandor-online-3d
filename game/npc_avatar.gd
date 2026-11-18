@@ -61,9 +61,9 @@ func _text(text: String, height: float, font_size: int, color: Color) -> Label3D
 	l.text = text
 	l.modulate = color
 	l.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	l.fixed_size = true
+	l.fixed_size = false
 	l.no_depth_test = true
-	l.pixel_size = 0.0008
+	l.pixel_size = 0.010
 	l.font_size = font_size
 	l.outline_size = 10
 	l.position.y = height

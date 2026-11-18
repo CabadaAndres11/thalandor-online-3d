@@ -97,7 +97,7 @@ func test_passives_come_from_data_by_level() -> void:
 	var m := f.world.add_player(3, Vector3(13, 0, 5))
 	m.progress.level = 5
 	ClassRules.setup_player(m, "mage")
-	assert_almost_eq(m.stats.max_resource, (160.0 + 2.0 * 4.0) * 1.10, 0.001, "Mente arcana at level 5 (+4 auto intellect)")
+	assert_almost_eq(m.stats.max_resource, (160.0 + 2.0 * 20.0) * 1.10, 0.001, "Mente arcana at level 5 (+20 auto intellect)")
 	assert_true(Passives.has_hook(m, "spell_power_after_no_damage_s").is_empty(), "Concentración is level 15")
 	var a := f.world.add_player(4, Vector3(17, 0, 5))
 	a.progress.level = 35

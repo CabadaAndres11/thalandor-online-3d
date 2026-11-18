@@ -42,9 +42,9 @@ func test_no_free_points_disables_the_plus_buttons() -> void:
 func test_shows_class_level_and_the_total_of_each_attribute() -> void:
 	_show(11, {"strength": 4})
 	assert_eq(win.level_text(), tr("CHAR_LEVEL") % 11)
-	assert_eq(win.attribute_value("strength"), 4 + 10, "spent plus the automatic points of a warrior")
-	assert_eq(win.attribute_value("stamina"), 10)
-	assert_eq(win.attribute_value("intellect"), 0)
+	assert_eq(win.attribute_value("strength"), 4 + 50, "spent plus 5 automatic points per level")
+	assert_eq(win.attribute_value("stamina"), 50)
+	assert_eq(win.attribute_value("intellect"), 50)
 
 
 func test_stat_rows_show_the_computed_stats() -> void:
@@ -60,7 +60,7 @@ func test_stat_rows_show_the_computed_stats() -> void:
 func test_stats_follow_the_progress() -> void:
 	_show(5, {"stamina": 20})
 	var hp: Array = win.stat_rows().filter(func(r: Array) -> bool: return r[0] == tr("STAT_ROW_HP"))[0]
-	assert_eq(hp[1], str(200 + 5 * (20 + 4)))
+	assert_eq(hp[1], str(200 + 5 * (20 + 20)))
 
 
 func test_window_fits_1280x720() -> void:
@@ -111,3 +111,8 @@ func test_main_attributes_of_the_class_are_in_gold() -> void:
 	win.show_for("Bea", "mage", pr, Progression.preview_stats("mage", pr, balance), balance)
 	assert_eq(win.attribute_color("strength"), HoloTheme.TEXT)
 	assert_eq(win.attribute_color("intellect"), HoloTheme.ACCENT)
+
+
+func test_the_model_stays_fixed() -> void:
+	_show(1)
+	assert_false(win.model_turns())

@@ -15,13 +15,14 @@ static func free_points(pr: PlayerProgress, b: Balance) -> int:
 	return int(_a(b, "points_per_level")) * (pr.level - 1) - spent
 
 
-## Hand-spent points plus auto_per_level x (level - 1) in each main attribute of the class.
-static func totals(pr: PlayerProgress, class_def: Dictionary, b: Balance) -> Dictionary:
+## Hand-spent points plus auto_per_level x (level - 1) in every attribute: all of them grow
+## with the level; the free points go wherever the player wants (the class's main ones are
+## only recommended).
+static func totals(pr: PlayerProgress, _class_def: Dictionary, b: Balance) -> Dictionary:
 	var out: Dictionary = {}
 	var auto := int(_a(b, "auto_per_level")) * (pr.level - 1)
-	var mains: Array = class_def.get("main_attributes", [])
 	for a: String in PlayerProgress.ATTRIBUTES:
-		out[a] = int(pr.attributes.get(a, 0)) + (auto if a in mains else 0)
+		out[a] = int(pr.attributes.get(a, 0)) + auto
 	return out
 
 

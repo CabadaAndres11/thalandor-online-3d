@@ -7,6 +7,8 @@ const TURN_DEG_PER_S := 6.0 # slow enough to look at the details
 const DRAG_DEG_PER_PX := 0.6
 
 var rig: HumanRig
+## false: the character stays facing the camera (character window).
+var turning: bool = true
 
 var _viewport: SubViewport
 var _pivot: Node3D
@@ -50,11 +52,13 @@ func show_character(class_id: String, appearance: Dictionary) -> void:
 
 
 func _process(delta: float) -> void:
-	if not _dragging:
+	if turning and not _dragging:
 		_pivot.rotation_degrees.y += TURN_DEG_PER_S * delta
 
 
 func _gui_input(event: InputEvent) -> void:
+	if not turning:
+		return
 	if event is InputEventMouseButton and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
 		_dragging = (event as InputEventMouseButton).pressed
 	elif event is InputEventMouseMotion and _dragging:
