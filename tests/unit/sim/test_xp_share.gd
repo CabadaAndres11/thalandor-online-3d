@@ -88,7 +88,7 @@ func test_boss_minions_give_none() -> void:
 
 func test_boss_gives_ten_times_and_higher_level_gives_more() -> void:
 	var a := f.player(1, Vector3(21, 0, 20))
-	var boss := MonsterDB.load_default().make("guard_beast", f.world.next_monster_id(), Vector3(20, 0, 20), f.world, 3)
+	var boss := MonsterDB.load_default().make("cult_acolyte", f.world.next_monster_id(), Vector3(20, 0, 20), f.world, 3)
 	f.world.add_entity(boss)
 	_kill(boss)
 	assert_gt(a.progress.xp + 100 * (a.progress.level - 1), 100)
@@ -102,7 +102,7 @@ func test_low_level_monster_gives_reduced_xp() -> void:
 
 
 func test_minions_are_marked_when_boss_calls_them() -> void:
-	var boss := MonsterDB.load_default().make("guard_beast", f.world.next_monster_id(), Vector3(20, 0, 20), f.world)
+	var boss := MonsterDB.load_default().make("cult_acolyte", f.world.next_monster_id(), Vector3(20, 0, 20), f.world)
 	boss.phase = 3
 	boss.add_threat(1, 1.0)
 	f.world.add_entity(boss)

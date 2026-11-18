@@ -45,7 +45,7 @@ func _process(_delta: float) -> bool:
 		me.stats.max_hp = 99999.0
 		me.hp = 99999.0
 		for m: CombatEntity in w.monsters.values():
-			if m.type_id == "guard_beast":
+			if m.type_id == "cult_acolyte":
 				m.hp = m.stats.max_hp * 0.6
 		var c := _main.game.client
 		c.roster[90] = {"name": "Bea", "slot": 1, "class_id": "cleric", "appearance": {}}

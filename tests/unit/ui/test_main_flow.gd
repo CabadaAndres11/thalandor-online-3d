@@ -394,9 +394,9 @@ func test_level_up_is_announced_in_the_chat_and_changes_the_bar_xp() -> void:
 func test_boss_death_is_announced_in_chat() -> void:
 	main._on_play("Prueba")
 	await wait_physics_frames(3)
-	main.game.client.combat_event.emit(["boss_down", "guard_beast"])
+	main.game.client.combat_event.emit(["boss_down", "cult_acolyte"])
 	var lines := main.chat.visible_lines()
-	assert_string_contains(lines[lines.size() - 1], tr("CHAT_BOSS_DOWN") % tr("MON_GUARD_BEAST"))
+	assert_string_contains(lines[lines.size() - 1], tr("CHAT_BOSS_DOWN") % tr("MON_CULT_ACOLYTE"))
 
 
 func test_villager_learns_a_class_from_brann() -> void:

@@ -1,7 +1,7 @@
 extends GutTest
 ## The prologue's bestiary (the night the cult attacks the village) as data.
 
-const ROSTER := ["cult_archer", "cultist", "guard_beast", "marked_boar", "marked_hound"]
+const ROSTER := ["cult_acolyte", "cult_archer", "cultist", "marked_boar", "marked_hound"]
 
 
 func _types() -> Array:
@@ -38,7 +38,7 @@ func test_map_spawns_exist() -> void:
 	var map: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/maps/test_arena.json"))
 	for s: Dictionary in map.spawns:
 		assert_has(ROSTER, s.type)
-	var boss: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/monsters/guard_beast.json"))
+	var boss: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/monsters/cult_acolyte.json"))
 	assert_has(ROSTER, boss.summon.type)
 
 

@@ -1,6 +1,6 @@
 ---
 tags: [gdd]
-actualizado: 2026-11-16
+actualizado: 2026-11-18
 ---
 
 # Registro de cambios del GDD
@@ -33,3 +33,4 @@ Añade una fila por cada cambio de diseño o funcionalidad implementada.
 
 ---
 ← [[00 Índice del GDD|Índice del GDD]]
+| 2.19 | 2026-11-18 | **Nuevo jefe: Acólito Cultista** (sustituye a la bestia de guardia, mismas reglas y fases). Modelo vóxel de la hoja de referencia «El culto del Sol Negro»: capucha alta con la máscara del sol negro (ojo dorado tenue y doce rayos), gran halo dorado con púas a la espalda, túnica hasta el suelo con manto escalonado, cadena con el sol, tabardo en punta y estandarte a la espalda, mangas de campana con caída y manos negras con garras. Escala ×1,8. Habilidades renombradas: *Zarpa del eclipse* y *Caída del sol negro*. |

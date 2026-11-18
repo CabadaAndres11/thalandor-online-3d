@@ -186,7 +186,7 @@ func test_melee_monster_does_not_hit_through_a_wall() -> void:
 		wall.append([20, z, 1])
 	var f := _fixture(wall)
 	var p := f.player(1, Vector3(21.4, 0, 20.5), 500.0)
-	var m := _monster(f, "guard_beast", Vector3(19.0, 0, 20.5))
+	var m := _monster(f, "cult_acolyte", Vector3(19.0, 0, 20.5))
 	m.threat[p.id] = 10.0
 	var hp := p.hp
 	_steps(f, 1.5)

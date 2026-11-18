@@ -10,7 +10,7 @@ func _fixture() -> CombatFixture:
 
 
 func _boss(f: CombatFixture, pos := Vector3(20, 0, 20)) -> MonsterState:
-	var m := MonsterDB.load_default().make("guard_beast", f.world.next_monster_id(), pos, f.world)
+	var m := MonsterDB.load_default().make("cult_acolyte", f.world.next_monster_id(), pos, f.world)
 	m.facing = 0.0
 	f.world.add_entity(m)
 	return m
@@ -36,10 +36,10 @@ func _goblins(f: CombatFixture) -> Array:
 
 
 func test_boss_data() -> void:
-	var d := MonsterDB.load_default().get_type("guard_beast")
+	var d := MonsterDB.load_default().get_type("cult_acolyte")
 	assert_eq(d.behavior, "boss")
 	assert_true(bool(d.get("boss", false)))
-	assert_eq(d.get("name"), "MON_GUARD_BEAST")
+	assert_eq(d.get("name"), "MON_CULT_ACOLYTE")
 	for ab: String in d.abilities + [d.jump.ability]:
 		assert_true(AbilityDB.load_default().has(ab), ab)
 
@@ -138,7 +138,7 @@ func test_boss_summons_goblins() -> void:
 func test_boss_death_announced_and_respawns() -> void:
 	var map := CollisionMap.from_layout({"size": [40, 40], "spawn": [20, 20], "blocks": [],
 		"respawn_point": [20, 20], "spawns": [
-			{"type": "guard_beast", "at": [30, 30], "count": 1, "radius": 0, "respawn_s": 30, "elite_chance": 1.0}]})
+			{"type": "cult_acolyte", "at": [30, 30], "count": 1, "radius": 0, "respawn_s": 30, "elite_chance": 1.0}]})
 	var b := Balance.load_from()
 	b.boss_respawn_s = 3.0
 	var w := SimWorld.new(b, map, 3)
@@ -148,14 +148,14 @@ func test_boss_death_announced_and_respawns() -> void:
 	Damage.apply(boss, {"amount": 999999.0, "crit": false, "dodged": false, "absorbed": 0.0}, w)
 	var downs := w.events.filter(func(ev: Array) -> bool: return str(ev[0]) == "boss_down")
 	assert_eq(downs.size(), 1)
-	assert_eq(downs[0][1], "guard_beast")
+	assert_eq(downs[0][1], "cult_acolyte")
 	for i in w.ticks(2.5):
 		w.step({})
 	assert_eq(w.monsters.values().filter(func(m: CombatEntity) -> bool: return m.is_alive()).size(), 0,
 		"boss_respawn_s, not the point's respawn_s")
 	for i in w.ticks(3.0):
 		w.step({})
-	assert_eq(w.monsters.values().filter(func(m: CombatEntity) -> bool: return m.is_alive() and m.type_id == "guard_beast").size(), 1)
+	assert_eq(w.monsters.values().filter(func(m: CombatEntity) -> bool: return m.is_alive() and m.type_id == "cult_acolyte").size(), 1)
 
 
 func _wait_jump(f: CombatFixture) -> Array:

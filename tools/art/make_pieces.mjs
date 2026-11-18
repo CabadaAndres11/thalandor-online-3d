@@ -396,13 +396,8 @@ const WEAPONS = {
 WEAPONS.weapon_dagger_left = WEAPONS.weapon_dagger_right;
 
 // --- Monster pieces (data/monsters "look") ----------------------------------------------
-// The cult of the demon king: faceless hoods with the black sun, long dark robes. The guard beast: a horned brute in chains with the
-// cult's collar.
-const BONE = 22, BONE_D = 23, SUN = 24, EMBER = 25, FUR = 26, FUR_D = 27, IRON = 28, IRON_L = 29;
-const MONSTER_KIT = {
-  ...KIT, [BONE]: "#e4dccb", [BONE_D]: "#b3a991", [SUN]: "#141016", [EMBER]: "#ff4a26",
-  [FUR]: "#3b2c24", [FUR_D]: "#251b16", [IRON]: "#3b3b42", [IRON_L]: "#6e6e78", [GLOW]: "#ff4a26",
-};
+// The cult of the demon king: faceless hoods with the black sun, long dark robes; its
+// acolyte (a boss) with a spiked halo and claws.
 // The cult's robes (the user's reference sheet): near-black cloth, grey folds, old
 // gold trim, a grey-green pendant.
 const ROBE = 60, ROBE_D = 61, ROBE_L = 62, VOID = 63, PANEL = 64, ROPE = 65, ROPE_D = 66, PENDANT = 67, PENDANT_D = 68, GOLD_D = 69;
@@ -410,6 +405,9 @@ const CULT_KIT = {
   ...KIT, [ROBE]: "#1c1b1f", [ROBE_D]: "#121114", [ROBE_L]: "#2c2b30", [VOID]: "#09080a", [PANEL]: "#141317",
   [ROPE]: "#37352f", [ROPE_D]: "#25231f", [PENDANT]: "#6f7568", [PENDANT_D]: "#4c5149", [GOLD]: "#b39a5e", [GOLD_D]: "#7d6a3e",
 };
+// The acolyte: the same robes with brighter old gold and claws.
+const GOLD_L = 70, CLAW = 71, CLAW_D = 72;
+const ACOLYTE_KIT = { ...CULT_KIT, [GOLD]: "#b8995a", [GOLD_D]: "#7a6539", [GOLD_L]: "#dcc184", [CLAW]: "#141217", [CLAW_D]: "#0b0a0c", [GLOW]: "#ffcf6a" };
 // Forearms x -2..1, y -8..0, z -2..1.
 const FORE_L = { x0: 1, x1: 4, y0: 1, y1: 9, z0: 1, z1: 4, part: "forearm_left", origin: [-3, -9, -3] };
 const FORE_R = { ...FORE_L, part: "forearm_right" };
@@ -525,57 +523,179 @@ const MONSTER = {
   // ...opening into bell cuffs with a worn gold hem over the forearms.
   cult_cuff_left: { frame: FORE_L, tag: "monster", palette: CULT_KIT, build: (f, s) => bellCuff(f, s) },
   cult_cuff_right: { frame: FORE_R, tag: "monster", palette: CULT_KIT, build: (f, s) => bellCuff(f, s) },
-  // The guard beast's head: a heavy brow, a bestial muzzle with tusks, glowing eyes
-  // and two great curved horns.
-  beast_head: {
-    frame: HEAD, tag: "monster", palette: MONSTER_KIT,
+  // --- The cult acolyte (boss, the user's "Jefe final - El culto del Sol Negro" sheet) ---
+  // A tall hood whose face is the black sun: a dark disk with a dim gold eye, twelve
+  // straight rays; behind the head a great spiked gold halo.
+  acolyte_hood: {
+    frame: HEAD, tag: "monster", palette: ACOLYTE_KIT,
     build(f, s) {
-      s.box(f.x0 - 1, f.y0, f.z1 + 1, f.x1 + 1, f.y0 + 3, f.z1 + 3, FUR); // muzzle
-      s.box(f.x0, f.y0 + 1, f.z1 + 4, f.x1, f.y0 + 3, f.z1 + 4, FUR_D);
-      s.box(f.x0 + 2, f.y0 + 2, f.z1 + 5, f.x1 - 2, f.y0 + 3, f.z1 + 5, SUN); // nose
-      s.box(f.x0, f.y0 - 1, f.z1 + 3, f.x0, f.y0 + 2, f.z1 + 3, BONE).box(f.x1, f.y0 - 1, f.z1 + 3, f.x1, f.y0 + 2, f.z1 + 3, BONE); // tusks
-      s.box(f.x0 - 1, f.y0 + 5, f.z1 + 1, f.x1 + 1, f.y0 + 6, f.z1 + 2, FUR_D); // heavy brow
-      s.box(f.x0 + 1, f.y0 + 4, f.z1 + 1, f.x0 + 2, f.y0 + 4, f.z1 + 1, GLOW).box(f.x1 - 2, f.y0 + 4, f.z1 + 1, f.x1 - 1, f.y0 + 4, f.z1 + 1, GLOW);
-      s.box(f.x0 - 1, f.y0 + 4, f.z0 - 1, f.x1 + 1, f.y1 + 1, f.z1, FUR); // shaggy skull
-      s.remove(f.x0, f.y0 + 4, f.z0, f.x1, f.y1, f.z1);
-      for (const side of [-1, 1]) { // horns sweeping out, back and up
-        const x0 = side < 0 ? f.x0 - 2 : f.x1 + 2;
-        const pts = [[0, 0, 0], [1, 0, 0], [2, 1, -1], [3, 2, -1], [4, 3, -2], [4, 5, -2], [4, 6, -1], [3, 7, 0]];
-        for (const [dx, dy, dz] of pts) s.box(x0 + side * dx, f.y1 - 1 + dy, f.z0 + 4 + dz, x0 + side * dx, f.y1 + dy, f.z0 + 5 + dz, dy > 5 ? BONE_D : BONE);
+      s.box(f.x0 - 2, f.y0 - 1, f.z0 - 2, f.x1 + 2, f.y1 + 2, f.z1 + 1, ROBE); // shell
+      for (let k = 0; k < 4; k++) s.box(f.x0 - 1 + k, f.y1 + 3 + k, f.z0 - 1 + k, f.x1 + 1 - k, f.y1 + 3 + k, f.z1 - k, k === 3 ? ROBE_L : ROBE); // peaked crown
+      for (const x of [f.x0 - 2, f.x1 + 2]) for (const z of [f.z0 - 2, f.z1 + 1]) s.remove(x, f.y1 + 1, z, x, f.y1 + 2, z);
+      s.box(f.x0 - 3, f.y0 - 1, f.z0 - 3, f.x1 + 3, f.y0 + 3, f.z1, ROBE); // widening into the mantle
+      for (let y = f.y0 - 1; y <= f.y1 + 3; y++) s.put(f.x0 - 2, y, f.z0, ROBE_D).put(f.x1 + 2, y, f.z0, ROBE_D);
+      s.box(f.x0 - 1, f.y0 - 1, f.z1 + 1, f.x1 + 1, f.y1 + 1, f.z1 + 1, VOID); // the dark face
+      // The black sun over the face: a dark disk ringed in gold, a dim eye in its middle.
+      const cx = (f.x0 + f.x1) / 2, cy = f.y0 + 5.5, z = f.z1 + 2;
+      for (let x = Math.floor(cx) - 4; x <= Math.ceil(cx) + 4; x++) {
+        for (let y = Math.floor(cy) - 4; y <= Math.ceil(cy) + 4; y++) {
+          const d = Math.hypot(x - cx, y - cy);
+          if (d <= 2.4) s.put(x, y, z, VOID);
+          else if (d <= 3.4) s.put(x, y, z, GOLD_D).put(x, y, z + 1, GOLD);
+        }
+      }
+      s.box(Math.floor(cx), Math.floor(cy), z, Math.ceil(cx), Math.ceil(cy), z, GLOW); // the eye
+      for (let k = 0; k < 12; k++) { // straight rays, alternating long and short
+        const a = (k * Math.PI) / 6 + Math.PI / 2;
+        const len = k % 2 === 0 ? 9 : 6.5;
+        for (let t = 3.6; t <= len; t += 0.3) {
+          s.put(Math.round(cx + Math.cos(a) * t), Math.round(cy + Math.sin(a) * t), z + (t < 5 ? 1 : 0), t > len - 1.2 ? GOLD_L : GOLD);
+        }
+      }
+      // The halo: a gold ring behind the head with spikes all around (two voxels deep).
+      const hy = cy + 3, hz = f.z0 - 5, R = 13;
+      for (let x = Math.floor(cx) - R - 6; x <= Math.ceil(cx) + R + 6; x++) {
+        for (let y = Math.floor(hy) - R - 6; y <= Math.ceil(hy) + R + 6; y++) {
+          const d = Math.hypot(x - cx, y - hy);
+          if (Math.abs(d - R) <= 0.75) s.put(x, y, hz, GOLD).put(x, y, hz - 1, GOLD_D);
+        }
+      }
+      for (let k = 0; k < 16; k++) {
+        const a = (k * Math.PI) / 8;
+        const len = k % 2 === 0 ? 5.5 : 3;
+        for (let t = R + 1; t <= R + len; t += 0.3) {
+          const x = Math.round(cx + Math.cos(a) * t), y = Math.round(hy + Math.sin(a) * t);
+          s.put(x, y, hz, t > R + len - 1 ? GOLD_L : GOLD);
+          if (k % 2 === 0 && t < R + 2.5) s.put(x + Math.round(-Math.sin(a)), y + Math.round(Math.cos(a)), hz, GOLD_D); // wider at the root
+        }
+      }
+      for (let k = 0; k < 8; k++) { // spokes joining the ring to the hood
+        const a = (k * Math.PI) / 4 + Math.PI / 8;
+        for (let t = 7; t <= R - 1; t += 0.4) s.put(Math.round(cx + Math.cos(a) * t), Math.round(hy + Math.sin(a) * t), hz + 1, GOLD_D);
       }
     },
   },
-  // Chains across the chest and the cult's iron collar with its glowing mark.
-  beast_chains: {
-    frame: TORSO, tag: "monster", palette: MONSTER_KIT,
+  // A grand robe to the floor: a stepped mantle edged in gold over the shoulders, a gold
+  // chain with the sun on the chest, a front tabard ending in a point and a banner with
+  // the sun down the back; the hem worn gold and ragged.
+  acolyte_robe: {
+    frame: TORSO, tag: "monster", palette: ACOLYTE_KIT,
     build(f, s) {
-      for (let i = 0; i <= f.x1 - f.x0; i++) {
-        s.put(f.x0 + i, f.y1 - 2 - Math.floor(i * 0.8), f.z1 + 1, i % 2 ? IRON : IRON_L);
-        s.put(f.x1 - i, f.y1 - 2 - Math.floor(i * 0.8), f.z1 + 1, i % 2 ? IRON_L : IRON);
-      }
-      s.box(f.x0 + 2, f.y1 - 1, f.z0 - 1, f.x1 - 2, f.y1 + 1, f.z1 + 1, IRON); // collar
-      s.remove(f.x0 + 3, f.y1 - 1, f.z0, f.x1 - 3, f.y1 + 1, f.z1);
-      s.box(f.x0 + 2, f.y1 + 1, f.z0 - 1, f.x1 - 2, f.y1 + 1, f.z1 + 1, IRON_L);
       const [a, b] = mid(f);
-      s.box(a, f.y1 - 1, f.z1 + 2, b, f.y1, f.z1 + 2, GLOW); // the mark
-      s.box(f.x0 - 1, f.y1 - 2, f.z0 - 2, f.x1 + 1, f.y1 + 1, f.z1, FUR); // fur mantle on the shoulders
-      s.remove(f.x0, f.y1 - 2, f.z0 - 1, f.x1, f.y1 + 1, f.z1);
-      for (let x = f.x0 - 1; x <= f.x1 + 1; x += 2) s.put(x, f.y1 - 3, f.z0 - 2, FUR_D);
+      s.box(f.x0 - 1, f.y0 + 3, f.z0 - 1, f.x1 + 1, f.y1, f.z1 + 1, ROBE); // over the chest
+      const bottom = f.y0 - 25;
+      const flareAt = (y) => Math.floor((f.y0 + 2 - y) / 3.5);
+      for (let y = bottom; y <= f.y0 + 2; y++) { // skirt, flaring wide towards the hem
+        const fl = flareAt(y);
+        const x0 = f.x0 - 2 - fl, x1 = f.x1 + 2 + fl, z0 = f.z0 - 1 - fl, z1 = f.z1 + 1 + fl;
+        s.box(x0, y, z0, x1, y, z1, ROBE);
+        s.remove(x0 + 1, y, z0 + 1, x1 - 1, y, z1 - 1); // hollow: the legs move inside
+        for (let x = x0 + 2; x <= x1 - 1; x += 3) s.put(x, y, z1, ROBE_D).put(x, y, z0, ROBE_D); // folds
+        for (let zz = z0 + 2; zz <= z1 - 1; zz += 3) s.put(x0, y, zz, ROBE_D).put(x1, y, zz, ROBE_D);
+      }
+      for (const v of [...s.cells.values()].filter((c) => c[1] <= bottom + 2)) { // ragged gold hem
+        const h = (v[0] * 7 + v[2] * 3) % 5;
+        if (v[1] === bottom && h === 0) s.remove(v[0], v[1], v[2], v[0], v[1], v[2]);
+        else s.put(v[0], v[1], v[2], v[1] === bottom + 2 ? (h < 2 ? GOLD_D : ROBE) : (h < 3 ? GOLD : GOLD_D));
+      }
+      // Stepped mantle: two layers over the shoulders, gold edges.
+      for (const [dy, w, edge] of [[0, 3, GOLD], [-4, 4, GOLD_D]]) {
+        const y0 = f.y1 - 4 + dy, y1 = f.y1 + 1 + dy;
+        s.box(f.x0 - w, y0, f.z0 - 2 - (w - 3), f.x1 + w, y1, f.z1 + 1 + (w - 3), ROBE);
+        s.remove(f.x0 - w + 1, y0, f.z0 - 1 - (w - 3), f.x1 + w - 1, y1 - 1, f.z1 + (w - 3));
+        s.box(f.x0 - w, y0, f.z0 - 2 - (w - 3), f.x1 + w, y0, f.z1 + 1 + (w - 3), edge);
+        s.remove(f.x0 - w + 1, y0, f.z0 - 1 - (w - 3), f.x1 + w - 1, y0, f.z1 + (w - 3));
+      }
+      s.box(f.x0 - 3, f.y1 + 1, f.z0 - 2, f.x1 + 3, f.y1 + 1, f.z1 + 1, ROBE_L);
+      // Front tabard, from the chest to a point below the knees, bordered in gold.
+      const tz = (y) => (y > f.y0 + 2 ? f.z1 + 2 : f.z1 + 2 + flareAt(y));
+      const tip = bottom + 5;
+      for (let y = tip; y <= f.y1 - 3; y++) {
+        const narrow = Math.max(0, 3 - (y - tip)); // the point
+        const xa = a - 3 + narrow, xb = b + 3 - narrow;
+        s.box(xa, y, tz(y), xb, y, tz(y), GOLD);
+        if (xb - xa >= 2) s.box(xa + 1, y, tz(y), xb - 1, y, tz(y), PANEL);
+      }
+      const sun = (cy, zf) => { // a small sun in gold
+        const zz = zf(cy);
+        s.box(a, cy - 1, zz + 1, b, cy + 1, zz + 1, GOLD).box(a - 1, cy, zz + 1, b + 1, cy, zz + 1, GOLD);
+        s.put(a - 2, cy + 2, zz + 1, GOLD_D).put(b + 2, cy + 2, zz + 1, GOLD_D).put(a - 2, cy - 2, zz + 1, GOLD_D).put(b + 2, cy - 2, zz + 1, GOLD_D);
+        s.put(a, cy + 2, zz + 1, GOLD_D).put(b, cy - 2, zz + 1, GOLD_D);
+      };
+      sun(f.y0 - 7, tz);
+      s.box(a, f.y0 - 15, tz(f.y0 - 13) + 1, b, f.y0 - 11, tz(f.y0 - 13) + 1, GOLD_D).box(a - 1, f.y0 - 12, tz(f.y0 - 12) + 1, b + 1, f.y0 - 12, tz(f.y0 - 12) + 1, GOLD_D); // a cross-mark
+      s.put(a, tip + 2, tz(tip + 2) + 1, GOLD).put(b, tip + 2, tz(tip + 2) + 1, GOLD); // a dot
+      // Back banner with the sun.
+      const bz = (y) => (y > f.y0 + 2 ? f.z0 - 2 : f.z0 - 2 - flareAt(y));
+      for (let y = bottom + 3; y <= f.y1 - 2; y++) {
+        const narrow = Math.max(0, 3 - (y - bottom - 3));
+        s.box(a - 3 + narrow, y, bz(y), b + 3 - narrow, y, bz(y), GOLD);
+        if (narrow < 2) s.box(a - 2 + narrow, y, bz(y), b + 2 - narrow, y, bz(y), PANEL);
+      }
+      const bs = (y) => bz(y) - 2;
+      sun(f.y0 - 4, bs);
+      s.box(a, f.y0 - 14, bz(f.y0 - 12) - 1, b, f.y0 - 10, bz(f.y0 - 12) - 1, GOLD_D);
+      // Rope belt.
+      s.box(f.x0 - 3, f.y0 + 1, f.z0 - 2, f.x1 + 3, f.y0 + 2, f.z1 + 2, ROPE);
+      s.remove(f.x0 - 2, f.y0 + 1, f.z0 - 1, f.x1 + 2, f.y0 + 2, f.z1 + 1);
+      // Gold chain hanging in a U from the shoulders, the sun pendant at its bottom.
+      for (let i = 0; i <= 8; i++) {
+        const dy = Math.round(Math.sin((i / 8) * Math.PI) * 5);
+        s.put(f.x0 + 1 + i, f.y1 - 1 - dy, f.z1 + 2, i % 2 ? GOLD_D : GOLD).put(f.x1 - 1 - i, f.y1 - 1 - dy, f.z1 + 2, i % 2 ? GOLD_D : GOLD);
+      }
+      s.box(a - 1, f.y1 - 10, f.z1 + 3, b + 1, f.y1 - 6, f.z1 + 3, GOLD);
+      s.box(a, f.y1 - 9, f.z1 + 4, b, f.y1 - 7, f.z1 + 4, VOID).put(a, f.y1 - 8, f.z1 + 4, GLOW);
+      s.put(a - 2, f.y1 - 8, f.z1 + 3, GOLD_D).put(b + 2, f.y1 - 8, f.z1 + 3, GOLD_D).put(a, f.y1 - 11, f.z1 + 3, GOLD_D).put(b, f.y1 - 11, f.z1 + 3, GOLD_D);
     },
   },
-  // A huge notched cleaver in the right fist.
-  beast_cleaver: {
-    frame: HAND_R, tag: "monster", palette: MONSTER_KIT,
-    build(f, s) {
-      s.box(2, 2, f.z0 - 2, 3, 3, f.z1 + 4, LEATHER_D); // haft
-      s.box(2, 1, f.z1 + 5, 2, 9, f.z1 + 22, IRON); // blade, its edge up
-      s.box(2, 9, f.z1 + 5, 2, 9, f.z1 + 22, IRON_L);
-      for (const z of [f.z1 + 9, f.z1 + 15, f.z1 + 19]) s.remove(2, 9, z, 2, 9, z); // notches
-      s.box(2, 1, f.z1 + 5, 2, 2, f.z1 + 22, SUN);
-      s.box(2, 4, f.z1 + 12, 2, 6, f.z1 + 14, EMBER); // a glowing rune
-    },
-  },
+  // Big sleeves: the upper arm wrapped with a gold seam...
+  acolyte_sleeve_left: { frame: ARM_L, tag: "monster", palette: ACOLYTE_KIT, build: (f, s) => acolyteSleeve(f, s) },
+  acolyte_sleeve_right: { frame: ARM_R, tag: "monster", palette: ACOLYTE_KIT, build: (f, s) => acolyteSleeve(f, s) },
+  // ...opening into wide bell cuffs edged in gold, a long drape hanging behind.
+  acolyte_cuff_left: { frame: FORE_L, tag: "monster", palette: ACOLYTE_KIT, build: (f, s) => acolyteCuff(f, s) },
+  acolyte_cuff_right: { frame: FORE_R, tag: "monster", palette: ACOLYTE_KIT, build: (f, s) => acolyteCuff(f, s) },
+  // Black clawed hands: four long splayed fingers curling forward, tips caught in gold.
+  acolyte_claws_left: { frame: HAND_L, tag: "monster", palette: ACOLYTE_KIT, build: (f, s) => claws(f, s, 1) },
+  acolyte_claws_right: { frame: HAND_R, tag: "monster", palette: ACOLYTE_KIT, build: (f, s) => claws(f, s, -1) },
 };
+function acolyteSleeve(f, s) {
+  s.box(f.x0 - 2, f.y0 - 1, f.z0 - 2, f.x1 + 2, f.y1 + 1, f.z1 + 2, ROBE);
+  s.box(f.x0 - 2, f.y1 + 1, f.z0 - 2, f.x1 + 2, f.y1 + 1, f.z1 + 2, ROBE_L);
+  s.box(f.x0 - 2, f.y0 - 1, f.z0 - 2, f.x0 - 2, f.y1, f.z0 - 2, ROBE_D).box(f.x1 + 2, f.y0 - 1, f.z0 - 2, f.x1 + 2, f.y1, f.z0 - 2, ROBE_D);
+  s.box(f.x0 - 2, f.y0 + 2, f.z1 + 2, f.x1 + 2, f.y0 + 2, f.z1 + 2, GOLD_D); // seam
+}
+function acolyteCuff(f, s) {
+  for (let y = f.y0 - 4; y <= f.y1; y++) {
+    const w = y < f.y0 ? 3 : y < f.y0 + 4 ? 2 : 1; // wider at the mouth
+    s.box(f.x0 - w, y, f.z0 - w, f.x1 + w, y, f.z1 + w, ROBE);
+    s.remove(f.x0, y, f.z0, f.x1, y, f.z1);
+  }
+  for (let y = f.y0 - 12; y < f.y0 - 4; y++) { // the drape hanging behind
+    const w = Math.max(0, 3 - Math.floor((f.y0 - 4 - y) / 3));
+    s.box(f.x0 - w, y, f.z0 - 3, f.x1 + w, y, f.z0 - 3, ROBE);
+  }
+  for (const v of [...s.cells.values()]) {
+    const lowest = !s.cells.has(`${v[0]},${v[1] - 1},${v[2]}`);
+    if (lowest && v[1] <= f.y0 - 2) s.put(v[0], v[1], v[2], GOLD);
+    else if (v[1] === f.y0 - 3 && (v[0] + v[2]) % 3 !== 0) s.put(v[0], v[1], v[2], GOLD_D);
+  }
+  s.box(f.x0 - 1, f.y0 + 4, f.z0 - 1, f.x0 - 1, f.y1, f.z0 - 1, ROBE_D);
+}
+// Fingers from the fist's bottom, splayed across X, curling forward; `inner` is the
+// side of the thumb (+1 for the left hand).
+function claws(f, s, inner) {
+  const xs = [f.x0, f.x0 + 1, f.x1 - 1, f.x1].map((x, i) => x + (i - 1.5) * 0.8);
+  xs.forEach((x0, i) => {
+    const len = i === 1 || i === 2 ? 6 : 5;
+    for (let t = 0; t <= len; t++) {
+      const x = Math.round(x0 + (i - 1.5) * t * 0.25), y = f.y0 - 1 - t, z = f.z1 - 1 + Math.floor((t * t) / 9);
+      s.put(x, y, z, t >= len - 1 ? GOLD : t === 0 ? CLAW_D : CLAW);
+    }
+  });
+  const tx = inner > 0 ? f.x1 + 1 : f.x0 - 1; // thumb
+  for (let t = 0; t <= 3; t++) s.put(tx + inner * Math.floor(t / 2), f.y0 + 1 - t, f.z1 + Math.floor(t / 2), t === 3 ? GOLD : CLAW);
+  s.box(f.x0, f.y0, f.z1 + 1, f.x1, f.y1 - 1, f.z1 + 1, CLAW_D); // knuckles
+}
 
 // --- Table -------------------------------------------------------------------------------
 const PIECES = { ...GEAR, ...MONSTER };

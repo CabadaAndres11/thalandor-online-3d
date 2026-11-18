@@ -19,7 +19,7 @@ Con ventana (no `--headless`):
 ```bash
 "$GODOT" --path . -s tests/helpers/render_characters.gd -- --set=classes
 ```
-Guarda la imagen en `user://render/<set>.png`. Otros sets: `variety`, `actions`, `grip`.
+Guarda la imagen en `user://render/<set>.png`. Otros sets: `variety`, `actions`, `grip`, `boss` y `acolyte` (el jefe de frente, de lado y de espaldas).
 
 ## Archivos
 - `vox.mjs`: escribe `.vox`. Recibe los ejes de Godot (Y hacia arriba) y los convierte a los de MagicaVoxel (Z hacia arriba).

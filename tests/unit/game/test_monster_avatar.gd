@@ -116,12 +116,12 @@ func test_elite_is_bigger_with_an_aura() -> void:
 
 
 func test_boss_is_a_big_humanoid_that_leaps() -> void:
-	var a := _avatar("guard_beast")
+	var a := _avatar("cult_acolyte")
 	var c := a.body.get_child(0) as HumanRig
 	assert_not_null(c)
-	for id: String in ["beast_head", "beast_chains", "beast_cleaver"]:
+	for id: String in ["acolyte_hood", "acolyte_robe", "acolyte_claws_left", "acolyte_claws_right"]:
 		assert_not_null(c.piece_node(id), id)
-	assert_almost_eq(a.body.scale.x, 1.6, 0.001)
+	assert_almost_eq(a.body.scale.x, 1.8, 0.001)
 	var rest := a.body.position.y
 	var t := a.play_leap(1.2)
 	t.pause()

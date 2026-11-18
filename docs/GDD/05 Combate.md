@@ -1,7 +1,7 @@
 ---
 tags: [gdd]
 estado: implementado
-actualizado: 2026-11-15
+actualizado: 2026-11-18
 ---
 
 # 5. Combate **[Implementado]** (Plan 3, 0.4.0: daño, esquiva, recarga global, kits completos, amenaza con provocar, lobos, jabalíes, goblins, esqueletos arqueros, limos, élites y el jefe Rey orco, escalado por grupo, derribo y levantar con E. Pendiente: la durabilidad al morir llega con los objetos en el Plan 5, y la reaparición es en el punto del escenario de pruebas)
@@ -23,7 +23,7 @@ actualizado: 2026-11-15
 - **Amenaza:** el daño suma su valor × multiplicador de amenaza; curar suma la mitad de lo curado en los monstruos que persiguen al curado; *Provocar* fuerza el objetivo unos segundos y deja al tanque con la amenaza máxima + 10 %. El monstruo solo cambia de objetivo si otro le supera en más de un 10 %.
 - **Élites:** ×1,3 de tamaño, ×2,5 de vida y ×1,4 de daño, con un aura en el suelo; cada punto de aparición tiene su probabilidad (`data/maps/test_arena.json`).
 - **Monstruos (0.5.0, bestiario del prólogo):** el jabalí marcado avisa una línea de 8 m y carga por ella; el arquero del culto se aleja si estás a menos de 5 m; los cultistas enmascarados despiertan a su grupo; el sabueso marcado muerde.
-- **Jefe, la bestia de guardia** (antes Rey orco, mismas reglas): fase 1 tajo en arco; fase 2 (66 %) además salta sobre un jugador con un área de 4 m avisada 1,2 s; fase 3 (33 %) además llama a 3 cultistas cada 20 s. Su muerte se anuncia en el chat y reaparece a los 3 minutos.
+- **Jefe, el Acólito Cultista** (antes bestia de guardia y Rey orco, mismas reglas): encapuchado del culto con la máscara del sol negro, halo dorado con púas y garras; fase 1 zarpazo en arco; fase 2 (66 %) además salta sobre un jugador con un área de 4 m avisada 1,2 s; fase 3 (33 %) además llama a 3 cultistas cada 20 s. Su muerte se anuncia en el chat y reaparece a los 3 minutos.
 - **Derribo:** en grupo, con algún aliado en pie, a 0 de vida quedas derribado 30 s. Un aliado a menos de 2 m mantiene E 3 s y te levanta con el 30 % de la vida (moverse, recibir daño o soltar lo cancela). Si cae todo el grupo, todos reaparecen a los 3 s.
 
 ## Plan 4 (0.6.0) **[Implementado]**

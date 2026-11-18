@@ -167,14 +167,14 @@ func test_boss_bar_shows_name_and_phase() -> void:
 	var hud := _hud(c)
 	hud.advance(0.0)
 	assert_false(hud.boss_bar_visible(), "no boss around")
-	c.monsters[1000] = {"type": "guard_beast", "hp": 1200.0, "max_hp": 1200.0, "status_bits": 0, "target": 0, "elite": false}
+	c.monsters[1000] = {"type": "cult_acolyte", "hp": 1200.0, "max_hp": 1200.0, "status_bits": 0, "target": 0, "elite": false}
 	hud.advance(0.0)
 	assert_false(hud.boss_bar_visible(), "a boss that is not fighting has no bar")
 	c.monsters[1000].target = 1
 	c.monsters[1000].hp = 700.0
 	hud.advance(0.0)
 	assert_true(hud.boss_bar_visible())
-	assert_string_contains(hud.boss_bar_text(), tr("MON_GUARD_BEAST"))
+	assert_string_contains(hud.boss_bar_text(), tr("MON_CULT_ACOLYTE"))
 	assert_string_contains(hud.boss_bar_text(), tr("HUD_BOSS_PHASE") % 2)
 	assert_almost_eq(hud.boss_fraction(), 700.0 / 1200.0, 0.001)
 	assert_true(Rect2(Vector2.ZERO, SCREEN).encloses(hud.boss_bar_rect()), "on screen")

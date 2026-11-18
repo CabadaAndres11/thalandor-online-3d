@@ -97,11 +97,11 @@ MON_MARKED_BOAR,Jabalí marcado
 MON_CULTIST,Cultista enmascarado
 MON_CULT_ARCHER,Arquero del culto
 MON_ELITE_NAME,%s élite
-MON_GUARD_BEAST,Bestia de guardia
-AB_GUARD_BEAST_CLEAVE,Tajo brutal
-AB_GUARD_BEAST_CLEAVE_DESC,Un golpe de cuchilla en arco ancho delante de ella.
-AB_GUARD_BEAST_JUMP,Salto aplastante
-AB_GUARD_BEAST_JUMP_DESC,"Salta hacia un jugador y cae sobre él: el área de 4 m se avisa en el suelo."
+MON_CULT_ACOLYTE,Acólito Cultista
+AB_CULT_ACOLYTE_CLAW,Zarpa del eclipse
+AB_CULT_ACOLYTE_CLAW_DESC,Desgarra con las garras en un arco ancho delante de él.
+AB_CULT_ACOLYTE_LEAP,Caída del sol negro
+AB_CULT_ACOLYTE_LEAP_DESC,"Salta hacia un jugador y cae sobre él: el área de 4 m se avisa en el suelo."
 CHAT_BOSS_DOWN,¡El %s ha caído!
 HUD_BOSS_PHASE,Fase %d
 AB_MARKED_BOAR_GORE,Cornada

@@ -23,6 +23,9 @@ func _initialize() -> void:
 	if _name == "boss":
 		_boss_scene()
 		return
+	if _name == "acolyte":
+		_turnaround("cult_acolyte")
+		return
 	if _name == "monsters_b":
 		_monsters_b()
 		return
@@ -249,6 +252,24 @@ func _monsters_b() -> void:
 	cam.look_at_from_position(Vector3(19.5, 9.0, 14.0), Vector3(19.5, 0.6, 21.6))
 
 
+## A monster seen from the front, its left, the back and its right, with a cultist for scale.
+func _turnaround(type_id: String) -> void:
+	var db := MonsterDB.load_default()
+	var spacing := 3.0
+	var row := [[type_id, 0.0], [type_id, -PI / 2.0], [type_id, PI], [type_id, PI / 2.0], ["cultist", 0.0]]
+	for i in row.size():
+		var a := MonsterAvatar.new()
+		root.add_child(a)
+		var type := db.get_type(row[i][0])
+		a.setup(type)
+		a.apply_state({"position": Vector3(20.0 + (i - 2) * spacing, 0, 20.0), "facing": row[i][1]}, {"hp": 1.0, "max_hp": 1.0, "status_bits": 0}, 0.016)
+		a.bar.visible = false
+	var cam := Camera3D.new()
+	cam.fov = 40
+	root.add_child(cam)
+	cam.look_at_from_position(Vector3(20.0, 3.4, 34.0), Vector3(20.0, 2.2, 20.0))
+
+
 ## Task 13 set: the orc king facing two heroes, warning its jump on one of them,
 ## with two of its goblins.
 func _boss_scene() -> void:
@@ -266,7 +287,7 @@ func _boss_scene() -> void:
 		_spots[h[0]] = h[3]
 	var db := MonsterDB.load_default()
 	var monsters := [
-		[1000, "guard_beast", Vector3(20.0, 0, 23.0), PI, 0.55],
+		[1000, "cult_acolyte", Vector3(20.0, 0, 23.0), PI, 0.55],
 		[1001, "cultist", Vector3(16.6, 0, 22.2), 2.6, 1.0],
 		[1002, "cultist", Vector3(23.4, 0, 22.0), -2.6, 0.8],
 	]

@@ -1,8 +1,8 @@
 [
-	{"id": "guard_beast_cleave", "monster": "guard_beast", "name": "AB_GUARD_BEAST_CLEAVE", "desc": "AB_GUARD_BEAST_CLEAVE_DESC", "icon": "brutal", "kind": "active", "level": 1,
+	{"id": "cult_acolyte_claw", "monster": "cult_acolyte", "name": "AB_CULT_ACOLYTE_CLAW", "desc": "AB_CULT_ACOLYTE_CLAW_DESC", "icon": "brutal", "kind": "active", "level": 1,
 	 "cost": 0, "cooldown_s": 2.0, "gcd": false, "range": 2.8, "anim": "melee",
 	 "effects": [{"type": "melee_arc", "angle_deg": 120, "range": 2.8, "damage": {"base": 28, "coef": 0.0, "kind": "physical"}}]},
-	{"id": "guard_beast_jump", "monster": "guard_beast", "name": "AB_GUARD_BEAST_JUMP", "desc": "AB_GUARD_BEAST_JUMP_DESC", "icon": "charge", "kind": "active", "level": 1,
+	{"id": "cult_acolyte_leap", "monster": "cult_acolyte", "name": "AB_CULT_ACOLYTE_LEAP", "desc": "AB_CULT_ACOLYTE_LEAP_DESC", "icon": "charge", "kind": "active", "level": 1,
 	 "cost": 0, "cooldown_s": 9, "gcd": false, "range": 14, "anim": "dash",
 	 "effects": [{"type": "area", "at": "cursor", "radius": 4, "delay_s": 1.2, "telegraph": true, "leap": true,
 		"damage": {"base": 45, "coef": 0.0, "kind": "physical"}}]},

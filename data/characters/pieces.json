@@ -216,35 +216,90 @@
 		"tag": "monster",
 		"hides": []
 	},
-	"beast_head": {
-		"file": "res://assets/characters/pieces/beast_head.vox",
+	"acolyte_hood": {
+		"file": "res://assets/characters/pieces/acolyte_hood.vox",
 		"part": "head",
 		"offset": [
+			-19,
 			-10,
-			-1,
-			-6
+			-11
 		],
 		"tag": "monster",
 		"hides": []
 	},
-	"beast_chains": {
-		"file": "res://assets/characters/pieces/beast_chains.vox",
+	"acolyte_robe": {
+		"file": "res://assets/characters/pieces/acolyte_robe.vox",
 		"part": "torso",
 		"offset": [
-			-7,
-			1,
-			-6
+			-15,
+			-25,
+			-12
 		],
 		"tag": "monster",
 		"hides": []
 	},
-	"beast_cleaver": {
-		"file": "res://assets/characters/pieces/beast_cleaver.vox",
+	"acolyte_sleeve_left": {
+		"file": "res://assets/characters/pieces/acolyte_sleeve_left.vox",
+		"part": "arm_left",
+		"offset": [
+			-4,
+			-10,
+			-4
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"acolyte_sleeve_right": {
+		"file": "res://assets/characters/pieces/acolyte_sleeve_right.vox",
+		"part": "arm_right",
+		"offset": [
+			-4,
+			-10,
+			-4
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"acolyte_cuff_left": {
+		"file": "res://assets/characters/pieces/acolyte_cuff_left.vox",
+		"part": "forearm_left",
+		"offset": [
+			-5,
+			-20,
+			-5
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"acolyte_cuff_right": {
+		"file": "res://assets/characters/pieces/acolyte_cuff_right.vox",
+		"part": "forearm_right",
+		"offset": [
+			-5,
+			-20,
+			-5
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"acolyte_claws_left": {
+		"file": "res://assets/characters/pieces/acolyte_claws_left.vox",
+		"part": "hand_left",
+		"offset": [
+			-5,
+			-11,
+			0
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"acolyte_claws_right": {
+		"file": "res://assets/characters/pieces/acolyte_claws_right.vox",
 		"part": "hand_right",
 		"offset": [
-			-1,
-			-4,
-			-4
+			-5,
+			-11,
+			0
 		],
 		"tag": "monster",
 		"hides": []

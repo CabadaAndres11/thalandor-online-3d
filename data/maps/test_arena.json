@@ -20,6 +20,6 @@
 		{"type": "marked_boar", "at": [38, 38], "count": 2, "radius": 3.0, "respawn_s": 35, "elite_chance": 0.15},
 		{"type": "cultist", "at": [7, 21], "count": 4, "radius": 2.5, "respawn_s": 35, "elite_chance": 0.1},
 		{"type": "cult_archer", "at": [27, 42], "count": 2, "radius": 3.0, "respawn_s": 35, "elite_chance": 0.15},
-		{"type": "guard_beast", "at": [23, 4], "count": 1, "radius": 0, "respawn_s": 180, "elite_chance": 0.0}
+		{"type": "cult_acolyte", "at": [23, 4], "count": 1, "radius": 0, "respawn_s": 180, "elite_chance": 0.0}
 	]
 }
