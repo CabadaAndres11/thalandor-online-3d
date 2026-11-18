@@ -140,6 +140,38 @@ func test_pack_joins_when_a_cultist_is_hit() -> void:
 	assert_true(b.threat.has(p.id))
 
 
+func test_inquisitor_fights_with_its_cultist_band() -> void:
+	var f := _fixture()
+	var a := _monster(f, "cultist", Vector3(20, 0, 20))
+	var inq := _monster(f, "cult_inquisitor", Vector3(24, 0, 20))
+	var archer := _monster(f, "cult_archer", Vector3(22, 0, 23))
+	var p := f.player(1, Vector3(5, 0, 5)) # far: nobody sees it
+	_steps(f, 0.2)
+	a.add_threat(p.id, 10.0) # a cultist is hit from afar
+	_steps(f, 0.2)
+	assert_true(inq.threat.has(p.id), "the inquisitor wakes with its band")
+	assert_false(archer.threat.has(p.id), "archers are not in the band")
+	var g := _fixture() # the other way round: the inquisitor is hit first
+	var inq2 := _monster(g, "cult_inquisitor", Vector3(20, 0, 20))
+	var c := _monster(g, "cultist", Vector3(24, 0, 20))
+	var q := g.player(1, Vector3(5, 0, 5))
+	_steps(g, 0.2)
+	inq2.add_threat(q.id, 10.0)
+	_steps(g, 0.2)
+	assert_true(c.threat.has(q.id), "and wakes the cultists when it is the one hit")
+
+
+func test_inquisitor_is_a_tougher_cultist() -> void:
+	var db := MonsterDB.load_default()
+	var inq := db.get_type("cult_inquisitor")
+	var cultist := db.get_type("cultist")
+	assert_gt(float(inq.stats.max_hp), float(cultist.stats.max_hp) * 3.0)
+	assert_gt(float(inq.stats.armor), float(cultist.stats.armor))
+	assert_eq(inq.abilities.size(), 1, "a single melee attack")
+	assert_eq(AbilityDB.load_default().get_ability(inq.abilities[0]).effects[0].type, "melee_arc")
+	assert_false(bool(inq.get("boss", false)))
+
+
 func test_elite_modifiers() -> void:
 	var f := _fixture()
 	var b := f.world.balance

@@ -96,6 +96,9 @@ AB_HOUND_BITE_DESC,Muerde al enemigo que tiene delante.
 MON_MARKED_BOAR,Jabalí marcado
 MON_CULTIST,Cultista enmascarado
 MON_CULT_ARCHER,Arquero del culto
+MON_CULT_INQUISITOR,Cultista Inquisidor
+AB_CULT_INQUISITOR_SLASH,Juicio solar
+AB_CULT_INQUISITOR_SLASH_DESC,"Descarga su espada ceremonial de arriba abajo en un arco amplio delante de él."
 MON_ELITE_NAME,%s élite
 MON_CULT_ACOLYTE,Acólito Cultista
 AB_CULT_ACOLYTE_CLAW,Zarpa del eclipse

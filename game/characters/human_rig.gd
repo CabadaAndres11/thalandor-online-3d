@@ -52,7 +52,8 @@ var _phase: float = 0.0
 var _time: float = 0.0
 var _action: String = "idle"
 var _action_t: float = 0.0
-## How the right hand holds its weapon at rest ("staff": leaning forward over the arm).
+## How the right hand holds its weapon at rest ("staff": leaning forward over the arm;
+## "blade_down": a long sword held away from the robe, point down and forward).
 var _grip: String = ""
 var _bow_charging: bool = false
 var _bow_drawn: bool = true # starts in the hand; _update_bow stows it
@@ -371,6 +372,10 @@ func _locomotion(walk: float) -> void:
 		# held at an angle, not standing straight up from the fist.
 		_rot("hand_right", 1.3)
 		(_parts["hand_right"] as Node3D).rotation.z = -0.25
+	elif _grip == "blade_down":
+		# The arm held a little away from the robe, the blade angled down and forward.
+		(_parts["arm_right"] as Node3D).rotation.z = -0.35
+		_rot("hand_right", 0.75 - 0.15 * walk)
 
 
 ## A full-body swing: weight back and the arm cocked over the shoulder, then a step forward with

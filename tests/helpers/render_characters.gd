@@ -23,8 +23,8 @@ func _initialize() -> void:
 	if _name == "boss":
 		_boss_scene()
 		return
-	if _name in ["acolyte", "vaelthar", "nhazar"]:
-		_turnaround({"acolyte": "cult_acolyte"}.get(_name, _name))
+	if _name in ["acolyte", "vaelthar", "nhazar", "inquisitor"]:
+		_turnaround({"acolyte": "cult_acolyte", "inquisitor": "cult_inquisitor"}.get(_name, _name))
 		return
 	if _name == "monsters_b":
 		_monsters_b()

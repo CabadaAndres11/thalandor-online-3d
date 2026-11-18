@@ -22,7 +22,8 @@ extends RefCounted
 ##                min_range?, max_range?, at?: "self"}]) are tried in order before its
 ##                basic attack, and "phase_abilities" ({"<phase>": ability}) is cast once
 ##                on itself when that phase starts
-## "pack": true monsters wake the IDLE ones of their type within pack_radius.
+## "pack": true monsters wake the IDLE ones of their type (or of their "pack_group") within
+## pack_radius.
 
 const REPATH_S := 0.5
 const UNREACHABLE_S := 3.0
@@ -248,13 +249,17 @@ static func _alert_pack(world: SimWorld, m: MonsterState) -> void:
 	var reach := float(m.def.get("pack_radius", 10.0))
 	for e: CombatEntity in world.monsters.values():
 		var o := e as MonsterState
-		if o == null or o == m or not o.is_alive() or o.type_id != m.type_id or o.ai != MonsterState.IDLE:
+		if o == null or o == m or not o.is_alive() or _pack_of(o) != _pack_of(m) or o.ai != MonsterState.IDLE:
 			continue
 		if Effects.flat(o.position).distance_to(Effects.flat(m.position)) > reach:
 			continue
 		for id: int in m.threat:
 			if not o.threat.has(id):
 				o.add_threat(id, 1.0)
+
+
+static func _pack_of(m: MonsterState) -> String:
+	return str(m.def.get("pack_group", m.type_id))
 
 
 ## Charger: starts the charge when the target is in the charge band and in sight.

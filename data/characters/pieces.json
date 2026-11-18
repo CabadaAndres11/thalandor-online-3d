@@ -326,6 +326,83 @@
 		"tag": "monster",
 		"hides": []
 	},
+	"inquisitor_hood": {
+		"file": "res://assets/characters/pieces/inquisitor_hood.vox",
+		"part": "head",
+		"offset": [
+			-11,
+			-2,
+			-8
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"inquisitor_belt": {
+		"file": "res://assets/characters/pieces/inquisitor_belt.vox",
+		"part": "torso",
+		"offset": [
+			-9,
+			0,
+			-6
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"inquisitor_pauldron_left": {
+		"file": "res://assets/characters/pieces/inquisitor_pauldron_left.vox",
+		"part": "arm_left",
+		"offset": [
+			-5,
+			-9,
+			-5
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"inquisitor_pauldron_right": {
+		"file": "res://assets/characters/pieces/inquisitor_pauldron_right.vox",
+		"part": "arm_right",
+		"offset": [
+			-5,
+			-9,
+			-5
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"inquisitor_vambrace_left": {
+		"file": "res://assets/characters/pieces/inquisitor_vambrace_left.vox",
+		"part": "forearm_left",
+		"offset": [
+			-3,
+			-8,
+			-3
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"inquisitor_vambrace_right": {
+		"file": "res://assets/characters/pieces/inquisitor_vambrace_right.vox",
+		"part": "forearm_right",
+		"offset": [
+			-3,
+			-8,
+			-3
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"weapon_inquisitor_sword": {
+		"file": "res://assets/characters/pieces/weapon_inquisitor_sword.vox",
+		"part": "hand_right",
+		"offset": [
+			-1,
+			-8,
+			-6
+		],
+		"tag": "weapon",
+		"hides": []
+	},
 	"nhazar_head": {
 		"file": "res://assets/characters/pieces/nhazar_head.vox",
 		"part": "head",

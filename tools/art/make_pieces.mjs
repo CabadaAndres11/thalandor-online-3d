@@ -969,6 +969,77 @@ function nhazarCollar(f, s) {
   s.box(a - 2, f.y1 - 3, f.z1 + 2, b + 2, f.y1 + 1, f.z1 + 2, ROBE_D); // over the open shirt collar
   s.box(a - 2, f.y1 + 1, f.z0 + 1, b + 2, f.y1 + 2, f.z1, VOID); // the dark inside
 }
+// --- The cult inquisitor (an elite of the cultist bands; the user's "Inquisidor solar"
+// sheet): a dark hood with burning eyes inside a gold sunburst crown, heavy stepped
+// pauldrons, plated forearms, a buckled war belt over the cult robe and a long
+// ceremonial sword with gold edges.
+function inquisitorHood(f, s) {
+  s.box(f.x0 - 2, f.y0 - 1, f.z0 - 2, f.x1 + 2, f.y1 + 2, f.z1 + 1, ROBE); // shell
+  for (let k = 0; k < 3; k++) s.box(f.x0 - 1 + k, f.y1 + 3 + k, f.z0 - 1 + k, f.x1 + 1 - k, f.y1 + 3 + k, f.z1 - k, ROBE);
+  s.box(f.x0 - 3, f.y0 - 2, f.z0 - 3, f.x1 + 3, f.y0 + 2, f.z1, ROBE); // into the mantle
+  for (let y = f.y0 - 1; y <= f.y1 + 2; y++) s.put(f.x0 - 2, y, f.z0, ROBE_D).put(f.x1 + 2, y, f.z0, ROBE_D);
+  s.box(f.x0 - 1, f.y0 - 1, f.z1 + 1, f.x1 + 1, f.y1 + 1, f.z1 + 1, VOID); // the dark face
+  s.box(f.x0 + 1, f.y0 + 5, f.z1 + 2, f.x0 + 2, f.y0 + 5, f.z1 + 2, GLOW).box(f.x1 - 2, f.y0 + 5, f.z1 + 2, f.x1 - 1, f.y0 + 5, f.z1 + 2, GLOW); // eyes
+  // The sunburst crown around the hood: a gold ring with rays, the top one a tall spike.
+  const cx = (f.x0 + f.x1) / 2, cy = f.y0 + 6, z = f.z1 + 1, R = 8;
+  for (let x = Math.floor(cx) - R - 1; x <= Math.ceil(cx) + R + 1; x++) for (let y = Math.floor(cy) - R - 1; y <= Math.ceil(cy) + R + 1; y++) {
+    const d = Math.hypot(x - cx, y - cy);
+    if (Math.abs(d - R) <= 0.7 && y > cy - 5) s.put(x, y, z, GOLD).put(x, y, z - 1, GOLD_D);
+  }
+  for (let k = 0; k < 12; k++) {
+    const a = (k * Math.PI) / 6 + Math.PI / 2;
+    if (Math.sin(a) < -0.5) continue; // none under the chin
+    const len = k === 0 ? 9 : k % 2 === 0 ? 4.5 : 3;
+    for (let r = R + 0.5; r <= R + len; r += 0.3) {
+      const x = Math.round(cx + Math.cos(a) * r), y = Math.round(cy + Math.sin(a) * r);
+      s.put(x, y, z, r > R + len - 1 ? GOLD_L : GOLD);
+      if (r < R + 2) s.put(x + Math.round(-Math.sin(a)), y + Math.round(Math.cos(a)), z, GOLD_D);
+    }
+  }
+}
+// Heavy stepped pauldron over the shoulder (arm frame; `outer` +1 for the left), gold-edged.
+function inquisitorPauldron(f, s, outer) {
+  for (const [dy, w] of [[0, 2], [-3, 3], [-6, 3]]) {
+    const y0 = f.y1 - 3 + dy, y1 = f.y1 + 1 + dy - (dy ? 1 : 0);
+    s.box(f.x0 - w, y0, f.z0 - w, f.x1 + w, y1, f.z1 + w, ROBE_L);
+    s.remove(f.x0 - w + 1, y0, f.z0 - w + 1, f.x1 + w - 1, y1 - 1, f.z1 + w - 1);
+    s.box(f.x0 - w, y0, f.z0 - w, f.x1 + w, y0, f.z1 + w, GOLD);
+    s.remove(f.x0 - w + 1, y0, f.z0 - w + 1, f.x1 + w - 1, y0, f.z1 + w - 1);
+  }
+  s.box(f.x0 - 2, f.y1 + 2, f.z0 - 2, f.x1 + 2, f.y1 + 2, f.z1 + 2, ROBE_L); // the dome
+  const ox = outer > 0 ? f.x1 + 3 : f.x0 - 3;
+  s.put(ox, f.y1 - 5, (f.z0 + f.z1) >> 1, GOLD_L).put(ox, f.y1 - 5, ((f.z0 + f.z1) >> 1) + 1, GOLD_L); // rivets
+}
+// Plated forearm with a gold rim at the wrist.
+function inquisitorVambrace(f, s) {
+  s.box(f.x0 - 1, f.y0, f.z0 - 1, f.x1 + 1, f.y1 - 1, f.z1 + 1, ROBE_L);
+  s.box(f.x0 - 1, f.y0, f.z0 - 1, f.x1 + 1, f.y0, f.z1 + 1, GOLD);
+  s.box(f.x0 - 1, f.y0 + 4, f.z1 + 1, f.x1 + 1, f.y0 + 4, f.z1 + 1, GOLD_D);
+}
+// A war belt with a big square gold buckle over the cult robe (torso frame).
+function inquisitorBelt(f, s) {
+  const [a, b] = mid(f);
+  s.box(f.x0 - 3, f.y0 + 1, f.z0 - 2, f.x1 + 3, f.y0 + 3, f.z1 + 2, ROBE_L);
+  s.remove(f.x0 - 2, f.y0 + 1, f.z0 - 1, f.x1 + 2, f.y0 + 3, f.z1 + 1);
+  s.box(f.x0 - 3, f.y0 + 3, f.z0 - 2, f.x1 + 3, f.y0 + 3, f.z1 + 2, GOLD_D);
+  s.remove(f.x0 - 2, f.y0 + 3, f.z0 - 1, f.x1 + 2, f.y0 + 3, f.z1 + 1);
+  s.box(a - 2, f.y0, f.z1 + 3, b + 2, f.y0 + 4, f.z1 + 3, GOLD).box(a - 1, f.y0 + 1, f.z1 + 3, b + 1, f.y0 + 3, f.z1 + 3, VOID).box(a, f.y0 + 2, f.z1 + 4, b, f.y0 + 2, f.z1 + 4, GOLD_L);
+  s.box(f.x0 - 2, f.y1 - 1, f.z0 - 2, f.x1 + 2, f.y1 + 1, f.z0 - 2, ROBE); // a short cape over the back
+}
+// The ceremonial sword: a long dark blade edged in gold with a gold fuller line and
+// marks, a cross-guard with a sun stud, a wrapped grip and a ring pommel (fist frame).
+function inquisitorSword(f, s) {
+  const len = 26;
+  s.box(2, 1, f.z0 - 4, 3, 4, f.z0 - 3, GOLD).box(2, 2, f.z0 - 4, 3, 3, f.z0 - 4, VOID); // ring pommel
+  s.box(2, 2, f.z0 - 2, 3, 3, f.z1, ROPE_D); // grip
+  s.box(2, -3, f.z1 + 1, 3, 8, f.z1 + 2, GOLD).box(2, 2, f.z1 + 1, 3, 3, f.z1 + 2, GOLD_L); // guard and its stud
+  s.box(2, -1, f.z1 + 3, 3, 6, f.z1 + 2 + len, VOID); // dark blade, flat, edges up and down
+  s.box(2, -1, f.z1 + 3, 3, 0, f.z1 + 2 + len, GOLD).box(2, 5, f.z1 + 3, 3, 6, f.z1 + 2 + len, GOLD); // gold edges
+  s.box(2, -1, f.z1 + 3, 3, -1, f.z1 + 2 + len, GOLD_D);
+  s.box(2, 2, f.z1 + 4, 3, 3, f.z1 + len - 4, PANEL);
+  for (const z of [f.z1 + 7, f.z1 + 14]) s.box(2, 2, z, 3, 3, z + 1, GOLD); // marks
+  for (let k = 0; k < 4; k++) s.box(2, 0 + k, f.z1 + 3 + len + k, 3, 5 - k, f.z1 + 3 + len + k, k === 3 ? GOLD_L : k ? VOID : GOLD_D); // tapered point
+}
 function acolyteSleeve(f, s) {
   s.box(f.x0 - 2, f.y0 - 1, f.z0 - 2, f.x1 + 2, f.y1 + 1, f.z1 + 2, ROBE);
   s.box(f.x0 - 2, f.y1 + 1, f.z0 - 2, f.x1 + 2, f.y1 + 1, f.z1 + 2, ROBE_L);
@@ -1012,6 +1083,13 @@ function claws(f, s, inner) {
 const PIECES = {
   ...GEAR, ...MONSTER,
   vaelthar_mane: VAEL.mane, vaelthar_robe: VAEL.robe,
+  inquisitor_hood: { frame: HEAD, tag: "monster", palette: ACOLYTE_KIT, build: (f, s) => inquisitorHood(f, s) },
+  inquisitor_belt: { frame: TORSO, tag: "monster", palette: ACOLYTE_KIT, build: (f, s) => inquisitorBelt(f, s) },
+  inquisitor_pauldron_left: { frame: ARM_L, tag: "monster", palette: ACOLYTE_KIT, build: (f, s) => inquisitorPauldron(f, s, 1) },
+  inquisitor_pauldron_right: { frame: ARM_R, tag: "monster", palette: ACOLYTE_KIT, build: (f, s) => inquisitorPauldron(f, s, -1) },
+  inquisitor_vambrace_left: { frame: FORE_L, tag: "monster", palette: ACOLYTE_KIT, build: (f, s) => inquisitorVambrace(f, s) },
+  inquisitor_vambrace_right: { frame: FORE_R, tag: "monster", palette: ACOLYTE_KIT, build: (f, s) => inquisitorVambrace(f, s) },
+  weapon_inquisitor_sword: { frame: HAND_R, tag: "weapon", palette: ACOLYTE_KIT, build: (f, s) => inquisitorSword(f, s) },
   nhazar_head: { frame: HEAD, tag: "monster", palette: NHAZ_KIT, build: (f, s) => nhazarHead(f, s) },
   nhazar_collar: { frame: TORSO, tag: "monster", palette: NHAZ_KIT, build: (f, s) => nhazarCollar(f, s) },
   nhazar_chains_left: { frame: FORE_L, tag: "monster", palette: NHAZ_KIT, build: (f, s) => nhazarChains(f, s, 1) },

@@ -105,6 +105,7 @@ static func look_of(type: Dictionary) -> Dictionary:
 		"secondary": Color(str(look.get("secondary", "#808080"))),
 		"trousers": Color(str(look.trousers)) if look.has("trousers") else Color(str(look.get("primary", "#808080"))).darkened(HumanRig.TROUSERS_DARKEN),
 		"body_scale": look.get("body_scale", {}),
+		"grip": str(look.get("grip", "")),
 		"pieces": pieces,
 	}
 

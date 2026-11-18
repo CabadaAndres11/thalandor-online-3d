@@ -1,0 +1,13 @@
+{
+	"id": "cult_inquisitor", "name": "MON_CULT_INQUISITOR", "model": "humanoid:cult_inquisitor", "tint": "#1c1b1f", "scale": 1.2,
+	"radius": 0.5, "speed": 4.2,
+	"stats": {"max_hp": 190, "armor": 28, "attack_power": 16, "crit_chance": 0.08},
+	"aggro_range": 8, "leash_range": 22, "attack_range": 2.1,
+	"behavior": "melee", "pack": true, "pack_group": "cult", "pack_radius": 10, "abilities": ["cult_inquisitor_slash"],
+	"look": {
+		"skin": "#141217", "eyes": "#09080a", "hair": "#09080a",
+		"primary": "#1c1b1f", "secondary": "#b8995a", "trousers": "#121114", "grip": "blade_down",
+		"body_scale": {"torso": [1.15, 1, 1.1], "arm": [1.15, 1, 1.15], "leg": [1.1, 1, 1.1]},
+		"pieces": ["acolyte_robe", "inquisitor_belt", "inquisitor_hood", "inquisitor_pauldron_left", "inquisitor_pauldron_right", "inquisitor_vambrace_left", "inquisitor_vambrace_right", "weapon_inquisitor_sword"]
+	}
+}

@@ -203,3 +203,12 @@ func test_nhazar_floats_under_a_head_far_bigger_than_its_body() -> void:
 	var robe := c.piece_node("acolyte_robe").get_aabb().size.x
 	assert_gt(head, robe * 1.5, "the mass is much wider than the body")
 	assert_gt(a.bar.position.y, 4.0 * 2.0, "the name floats over the mass")
+
+
+func test_inquisitor_wears_its_armour_and_holds_its_sword() -> void:
+	var a := _avatar("cult_inquisitor")
+	var c := a.body.get_child(0) as HumanRig
+	for id: String in ["inquisitor_hood", "inquisitor_belt", "inquisitor_pauldron_left", "inquisitor_pauldron_right", "weapon_inquisitor_sword"]:
+		assert_not_null(c.piece_node(id), id)
+	assert_eq(c.weapon_points("right").size(), 2, "its sword leaves a trail when it swings")
+	assert_eq(a.hover_height(), 0.0, "it walks")
