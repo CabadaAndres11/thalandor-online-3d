@@ -249,6 +249,22 @@ func test_a_status_leaves_with_its_time_or_when_the_snapshot_drops_it() -> void:
 	assert_eq(hud.status_tiles.kinds(), [], "time is up")
 
 
+func test_conditional_passive_buffs_show_while_on_and_leave_when_off() -> void:
+	var c := _client("mage")
+	var hud := _hud(c)
+	c._latest_tick = 100
+	c.combat_event.emit(["buff", 1, "focus", 1])
+	hud.advance(0.1)
+	assert_eq(hud.status_tiles.kinds(), ["focus"])
+	assert_false(StatusTiles.is_debuff("focus"))
+	c.combat_event.emit(["buff", 2, "focus", 0]) # somebody else's
+	hud.advance(0.1)
+	assert_eq(hud.status_tiles.kinds(), ["focus"])
+	c.combat_event.emit(["buff", 1, "focus", 0])
+	hud.advance(0.1)
+	assert_eq(hud.status_tiles.kinds(), [])
+
+
 func test_slots_show_the_icon_of_their_bound_key_and_numbers_only_numbers() -> void:
 	var hud := _hud(_client("mage"))
 	assert_eq(hud.slot_key_icon(0), "mouse_left")

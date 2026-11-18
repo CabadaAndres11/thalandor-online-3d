@@ -50,4 +50,4 @@ Esta versión trae **dos formas de conectarse**. Todos los del grupo tienen que 
 | Menú | Esc |
 | Zoom | Rueda del ratón |
 | Datos de red | F3 |
-| Cambiar proyección de cámara | F9 |
+| Cámara isométrica ↔ tercera persona (girar: Z / X) | F9 |

@@ -10,7 +10,9 @@ const BINDINGS := {
 	"chat": [KEY_ENTER, KEY_KP_ENTER],
 	"menu": [KEY_ESCAPE],
 	"debug_overlay": [KEY_F3],
-	"toggle_projection": [KEY_F9],
+	"toggle_camera": [KEY_F9],
+	"camera_left": [KEY_Z], # Q/R are reserved for potions (GDD §3.2)
+	"camera_right": [KEY_X],
 	"slot_1": [KEY_1],
 	"slot_2": [KEY_2],
 	"slot_3": [KEY_3],

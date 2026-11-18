@@ -36,6 +36,8 @@ const WALK_MIN_SPEED := 0.2 # m/s
 const STRIDE := 2.6 # meters per full leg cycle (two steps): about 2 strides/s at 5 m/s
 const LEG_SWING := 0.8
 const ARM_SWING := 0.5
+const BOW_ARM := -0.75 # bow arm raised forward at rest...
+const BOW_FOREARM := -0.55 # ...and bent, so the bow stands in front of the chest
 
 static var _rig_data: Dictionary = {}
 
@@ -312,6 +314,11 @@ func _locomotion(walk: float) -> void:
 	(_parts["hips"] as Node3D).position.y += absf(sin(_phase)) * 0.04 * walk
 	_rot("hand_left", 0.1)
 	_rot("hand_right", 0.1)
+	if _grip == "bow":
+		# The bow is held out in front at chest height, upright, not dangling from the hand.
+		_rot("arm_left", BOW_ARM - swing * 0.15)
+		_rot("forearm_left", BOW_FOREARM)
+		_rot("hand_left", -(BOW_ARM + BOW_FOREARM))
 	if _grip == "staff":
 		# The staff leans forward and out, resting across the body like a walking stick
 		# held at an angle, not standing straight up from the fist.
@@ -414,9 +421,13 @@ static func _keys(k: float, v0: float, v1: float, v2: float, v3: float) -> float
 func _shoot(k: float) -> void:
 	var up := _ease(minf(k / 0.2, 1.0)) * (1.0 - _ease(clampf((k - 0.8) / 0.2, 0.0, 1.0)))
 	var draw := _ease(clampf((k - 0.15) / 0.4, 0.0, 1.0)) if k < 0.7 else 0.0
-	_rot("arm_left", -PI / 2.0 * up)
-	_rot("forearm_left", -0.18 * (1.0 - up)) # the bow arm straightens
-	_rot("hand_left", PI / 2.0 * up + 0.1 * (1.0 - up)) # the bow stays upright
+	var bow_rest := _grip == "bow"
+	var arm_rest := BOW_ARM if bow_rest else 0.0
+	var fore_rest := BOW_FOREARM if bow_rest else -0.18
+	var hand_rest := -(BOW_ARM + BOW_FOREARM) if bow_rest else 0.1
+	_rot("arm_left", lerpf(arm_rest, -PI / 2.0, up))
+	_rot("forearm_left", fore_rest * (1.0 - up)) # the bow arm straightens
+	_rot("hand_left", lerpf(hand_rest, PI / 2.0, up)) # the bow stays upright
 	_rot("forearm_right", -1.7 * draw) # the string comes back to the cheek
 	_rot("arm_right", -PI / 2.0 * up)
 	(_parts["arm_right"] as Node3D).rotation.y = 0.7 * draw

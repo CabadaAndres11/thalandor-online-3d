@@ -355,19 +355,38 @@ static func net(radius_cells: int = 7) -> Dictionary:
 ## A bear trap lying on the ground: a dark plate with a ring of steel teeth.
 static func trap(radius_cells: int = 5) -> Dictionary:
 	var cells := {}
+	var r := float(radius_cells)
+	var rim := Color("#8a9099")
+	var steel := Color("#c8ced6")
+	# Two half-ring jaws lying open on each side of the hinge line (the z axis), each with a row
+	# of teeth on its inner edge, over a dark base bar.
 	for x in range(-radius_cells, radius_cells + 1):
 		for z in range(-radius_cells, radius_cells + 1):
 			var d := Vector2(x, z).length()
-			if d <= float(radius_cells) - 0.5:
-				cells[Vector3i(x, 0, z)] = Color("#8a9099") if d > float(radius_cells) - 1.6 else Color("#4a4f58")
-	for i in 10:
-		var a := TAU * float(i) / 10.0
-		var c := Vector3i(roundi(cos(a) * float(radius_cells - 1)), 0, roundi(sin(a) * float(radius_cells - 1)))
-		for h in range(1, 4):
-			cells[Vector3i(c.x, h, c.z)] = Color("#c8ced6") if h < 3 else Color("#f0f3f6")
+			if d > r - 0.3 or d < r - 2.1:
+				continue
+			if x == 0:
+				continue # the gap at the hinge
+			cells[Vector3i(x, 1, z)] = rim
+			if d > r - 1.3 and d <= r - 0.3 and posmod(x + z, 2) == 0:
+				continue
+			if d <= r - 1.1 and posmod(x + z, 2) == 0:
+				cells[Vector3i(x, 2, z)] = steel # teeth, pointing up
+				cells[Vector3i(x, 3, z)] = Color("#f0f3f6")
+	for x in range(-radius_cells + 1, radius_cells):
+		for z in range(-1, 2):
+			cells[Vector3i(x, 0, z)] = Color("#3a3f47") # base bar under both jaws
+	# The pressure plate in the middle, brass-coloured, with its trigger.
 	for x in range(-1, 2):
 		for z in range(-1, 2):
-			cells[Vector3i(x, 1, z)] = Color("#2f333a")
+			cells[Vector3i(x, 1, z)] = Color("#d6b25a")
+	cells[Vector3i(0, 2, 0)] = Color("#8c6a1c")
+	# A chain running out of the base, ending in a ring.
+	for i in range(1, 5):
+		cells[Vector3i(0, 0, -radius_cells - i)] = steel if i % 2 == 1 else Color("#6c727c")
+	cells[Vector3i(0, 0, -radius_cells - 5)] = rim
+	cells[Vector3i(1, 0, -radius_cells - 5)] = rim
+	cells[Vector3i(-1, 0, -radius_cells - 5)] = rim
 	return cells
 
 

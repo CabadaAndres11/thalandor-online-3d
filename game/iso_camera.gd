@@ -1,7 +1,14 @@
 class_name IsoCamera
 extends Camera3D
-## Isometric follow camera: fixed pitch and yaw, mouse-wheel zoom, F9 toggles
-## perspective/orthographic projection.
+## Follow camera with two modes (F9 toggles): isometric (fixed pitch and yaw) and third person
+## (low and close; Z/X or the middle mouse button turn it). Mouse-wheel zoom in both.
+
+enum Mode { ISOMETRIC, THIRD_PERSON }
+
+const ISO := {"pitch": 55.0, "distance": 18.0, "min": 10.0, "max": 30.0, "fov": 40.0}
+const THIRD := {"pitch": 24.0, "distance": 8.0, "min": 4.0, "max": 16.0, "fov": 65.0}
+const TURN_SPEED := 2.2 # rad/s with Z/X
+const DRAG_SENSITIVITY := 0.006 # rad/px with the middle button
 
 @export var pitch_deg: float = 55.0
 @export var yaw_deg: float = 45.0
@@ -10,7 +17,10 @@ extends Camera3D
 @export var max_distance: float = 30.0
 @export var zoom_step: float = 1.5
 
+var mode: Mode = Mode.ISOMETRIC
 var _target: Vector3 = Vector3.ZERO
+var _dragging: bool = false
+var _distances: Dictionary = {Mode.ISOMETRIC: 18.0, Mode.THIRD_PERSON: 8.0}
 
 
 func _ready() -> void:
@@ -30,23 +40,52 @@ func yaw() -> float:
 
 func zoom(steps: float) -> void:
 	distance = clampf(distance + steps * zoom_step, min_distance, max_distance)
+	_distances[mode] = distance
 	_apply()
 
 
-func toggle_projection() -> void:
-	projection = PROJECTION_ORTHOGONAL if projection == PROJECTION_PERSPECTIVE else PROJECTION_PERSPECTIVE
+func turn(radians: float) -> void:
+	if mode == Mode.THIRD_PERSON:
+		yaw_deg = fmod(yaw_deg + rad_to_deg(radians), 360.0)
+		_apply()
+
+
+## Isometric <-> third person (keeps the yaw and each mode's own zoom).
+func toggle_mode() -> void:
+	_distances[mode] = distance
+	mode = Mode.THIRD_PERSON if mode == Mode.ISOMETRIC else Mode.ISOMETRIC
+	var cfg: Dictionary = ISO if mode == Mode.ISOMETRIC else THIRD
+	pitch_deg = cfg.pitch
+	min_distance = cfg.min
+	max_distance = cfg.max
+	distance = _distances[mode]
+	fov = cfg.fov
+	if mode == Mode.ISOMETRIC:
+		yaw_deg = 45.0 # the isometric view always looks from the same corner
 	_apply()
+
+
+func _process(delta: float) -> void:
+	if mode != Mode.THIRD_PERSON:
+		return
+	var dir := Input.get_axis("camera_left", "camera_right")
+	if dir != 0.0:
+		turn(dir * TURN_SPEED * delta)
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed:
+	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
-		if mb.button_index == MOUSE_BUTTON_WHEEL_UP:
+		if mb.button_index == MOUSE_BUTTON_MIDDLE:
+			_dragging = mb.pressed
+		elif mb.pressed and mb.button_index == MOUSE_BUTTON_WHEEL_UP:
 			zoom(-1)
-		elif mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+		elif mb.pressed and mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			zoom(1)
-	elif event.is_action_pressed("toggle_projection"):
-		toggle_projection()
+	elif event is InputEventMouseMotion and _dragging:
+		turn(-(event as InputEventMouseMotion).relative.x * DRAG_SENSITIVITY)
+	elif event.is_action_pressed("toggle_camera"):
+		toggle_mode()
 
 
 func _apply() -> void:
@@ -54,6 +93,7 @@ func _apply() -> void:
 	var y := yaw()
 	var offset := Vector3(sin(y) * cos(pitch), sin(pitch), cos(y) * cos(pitch)) * distance
 	var eye := _target + offset
-	transform = Transform3D(Basis.looking_at(_target - eye, Vector3.UP), eye)
-	# Same framing in orthographic mode: visible height at the target distance.
+	# Third person looks a little above the feet so the character sits low on screen.
+	var look_at_point := _target + (Vector3(0, 1.2, 0) if mode == Mode.THIRD_PERSON else Vector3.ZERO)
+	transform = Transform3D(Basis.looking_at(look_at_point - eye, Vector3.UP), eye)
 	size = 2.0 * distance * tan(deg_to_rad(fov) / 2.0)

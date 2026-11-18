@@ -193,6 +193,26 @@ func test_staff_rests_tilted_until_casting() -> void:
 	assert_gt(up.dot(Vector3.UP), 0.7, "upright while casting")
 
 
+func test_the_bow_is_held_upright_in_front_not_dangling() -> void:
+	var look := _look()
+	look["grip"] = "bow"
+	var rig := HumanRig.build(look)
+	add_child_autofree(rig)
+	rig.update(0.1)
+	var up := rig.part("hand_left").global_transform.basis.y.normalized()
+	assert_gt(up.dot(Vector3.UP), 0.9, "the bow stands upright")
+	var arm_dir := -rig.part("arm_left").global_transform.basis.y.normalized()
+	assert_lt(arm_dir.y, 0.9, "the arm is raised forward, not hanging")
+	rig.play_action("shoot")
+	rig.update(0.01)
+	var start := rig.part("arm_left").rotation.x
+	assert_almost_eq(start, HumanRig.BOW_ARM, 0.15, "the shot starts from the held pose, no snap")
+
+
+func test_the_archer_has_the_bow_grip() -> void:
+	assert_eq(CharacterCatalog.load_default().resolve("archer", {}).get("grip"), "bow")
+
+
 func test_mage_look_has_the_staff_grip() -> void:
 	assert_eq(CharacterCatalog.load_default().resolve("mage", {}).get("grip"), "staff")
 	assert_eq(CharacterCatalog.load_default().resolve("warrior", {}).get("grip", ""), "")

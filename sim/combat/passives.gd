@@ -23,6 +23,30 @@ extends RefCounted
 ##               entity.cooldowns["hook:<name>"].
 ## Hooks are read where their rule lives (Resources, Damage, Combat, Effects, ClassRules).
 
+## Conditional buffs a player's passives grant right now (not always on): they show as tiles.
+## Key -> the hook that grants it; the key doubles as the status text id (STATUS_<KEY>).
+const CONDITIONAL := {
+	"focus": "spell_power_after_no_damage_s", # Concentración: some seconds without being hit
+	"steady": "stationary_damage", # standing still
+	"combat_regen": "mana_regen_in_combat", # in combat
+}
+
+
+## Keys of the conditional buffs that are on for this entity at this tick.
+static func active_buffs(e: CombatEntity, world: SimWorld) -> Array:
+	var out: Array = []
+	var h := has_hook(e, "spell_power_after_no_damage_s")
+	if not h.is_empty() and world.tick - e.last_hurt_tick >= world.ticks(float(h.get("seconds", 3.0))):
+		out.append("focus")
+	for sh: Dictionary in hooks(e, "stationary_damage"):
+		if world.tick - e.still_since >= world.ticks(float(sh.get("seconds", 1.5))):
+			out.append("steady")
+			break
+	if not has_hook(e, "mana_regen_in_combat").is_empty() and e.in_combat(world):
+		out.append("combat_regen")
+	return out
+
+
 ## Half-angle (degrees) of the cone behind a target that counts as "from behind".
 const BACK_HALF_ANGLE := 60.0
 

@@ -301,6 +301,42 @@ func test_a_beam_is_one_glowing_tube_that_turns_and_expires() -> void:
 	assert_eq(fx.beam_count(), 0, "gone when the pulses stop")
 
 
+func test_the_beam_glides_to_the_new_end_and_channel_end_removes_it() -> void:
+	fx.handle(["beam", 1, Vector3(5, 0, 5), Vector3(5, 0, 20), 1.2])
+	var b: Dictionary = fx._beams[1]
+	fx.handle(["beam", 1, Vector3(5, 0, 5), Vector3(20, 0, 5), 1.2])
+	fx.advance(0.05)
+	var mid: Vector3 = fx._beams[1].end
+	assert_gt(mid.x, 5.0, "moving toward the new end, not jumping")
+	assert_lt(mid.x, 21.0)
+	assert_eq(b.ends.size(), 2, "a ball at each end")
+	fx.handle(["channel_end", 1])
+	assert_eq(fx.beam_count(), 0)
+
+
+func test_a_repeating_slow_snows_once_not_once_per_pulse() -> void:
+	var before := fx.get_child_count()
+	fx.handle(["status", 7, "slow", 9999])
+	var after_first := fx.get_child_count()
+	fx.handle(["status", 7, "slow", 9999])
+	fx.handle(["status", 7, "slow", 9999])
+	assert_eq(fx.get_child_count(), after_first, "later pulses add nothing")
+	assert_gte(after_first, before)
+
+
+func test_the_trap_is_a_bear_trap_with_jaws_teeth_and_a_chain() -> void:
+	var cells := VoxelFx.trap()
+	var teeth := 0
+	var chain := 0
+	for c: Vector3i in cells:
+		if c.y >= 2:
+			teeth += 1
+		if c.z < -5:
+			chain += 1
+	assert_gt(teeth, 8, "teeth point up from both jaws")
+	assert_gt(chain, 3, "a chain runs out of the base")
+
+
 func test_archer_arrows_and_assassin_knives_are_voxel_models() -> void:
 	fx.handle(["projectile", 50, 1, "archer_shot", Vector3(5, 0, 5), Vector2(1, 0), 20.0, 20.0])
 	var arrow := (fx.get_child(0) as Node3D).get_child(0) as MeshInstance3D

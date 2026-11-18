@@ -589,6 +589,9 @@ STATUS_DAMAGE_BUFF,Más daño
 STATUS_DAMAGE_REDUCTION,Menos daño recibido
 STATUS_EVASION,Evasión
 STATUS_TAUNTED,Provocado
+STATUS_FOCUS,Concentración
+STATUS_STEADY,Pulso firme
+STATUS_COMBAT_REGEN,Regeneración en combate
 STATUS_STEALTH,Sigilo
 STATUS_INVULNERABLE,Invulnerable
 STATUS_HOT,Curación continua

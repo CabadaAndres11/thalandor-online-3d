@@ -32,6 +32,7 @@ const NUMBER_RISE := 1.2
 const FLASH_TIME := 0.2
 const HEAD_HEIGHT := 2.0
 const SPIKE_SPACING := 0.8
+const SNOW_COOLDOWN_MS := 1800 # snow over an entity at most this often
 const BEAM_HOLD_S := 0.35 # a beam stays until the next pulse of the channel (or this long)
 const MARK_LINGER := 0.3 # how long a mark outlasts its last pulse
 const MARK_MIN_LIFE := 0.7
@@ -59,6 +60,8 @@ var _mesh_cache: Dictionary = {}
 ## id -> bool: casters whose swing is drawn by a SlashFx (set by the game session).
 var slash_owners: Callable
 var _beams: Dictionary = {} # caster id -> {node, t}
+var _snow_last: Dictionary = {} # entity key -> msec of its last snow burst
+var _shell_last: Dictionary = {} # entity id -> msec of its last ice shell
 var _trap_nodes: Dictionary = {} # trap id -> {node, light, armed_tick}
 
 
@@ -99,6 +102,9 @@ func handle(ev: Array) -> void:
 			_start_charge(int(ev[1]), str(ev[2]), float(ev[3]))
 		"channel_end":
 			_end_charge(int(ev[1]))
+			if _beams.has(int(ev[1])):
+				_free_beam(_beams[int(ev[1])])
+				_beams.erase(int(ev[1]))
 		"telegraph_line":
 			_add_line_telegraph(ev)
 		"charge", "charge_cancel":
@@ -187,12 +193,12 @@ func advance(dt: float) -> void:
 	for id: int in _beams.keys():
 		var bm: Dictionary = _beams[id]
 		bm.t += dt
+		bm.age += dt
 		if bm.t >= BEAM_HOLD_S:
-			(bm.node as Node).queue_free()
+			_free_beam(bm)
 			_beams.erase(id)
 		else:
-			var flick := 1.0 + 0.12 * sin(bm.t * 60.0 + float(id))
-			(bm.core as Node3D).scale = Vector3(flick, 1.0, flick)
+			_place_beam(bm, id, dt)
 	for id: int in _charges.keys():
 		var c: Dictionary = _charges[id]
 		c.t += dt
@@ -566,6 +572,11 @@ func _start_charge(id: int, ability_id: String, total: float) -> void:
 	add_child(p)
 	var element := _element_of_ability(ability_id)
 	var orb: MeshInstance3D = null
+	var is_beam := false
+	for e: Dictionary in _abilities.get_ability(ability_id).get("effects", []):
+		is_beam = is_beam or e.get("type") == "beam"
+	if is_beam:
+		element = "" # the beam itself is the visual; no growing orb
 	if element != "":
 		orb = _voxel("body_" + element, func() -> Dictionary: return VoxelFx.body_for(element, color), true, 0.35)
 		orb.scale = Vector3.ONE * 0.15
@@ -961,8 +972,16 @@ func _snow(id: int, frozen: bool, end_tick: int) -> void:
 	var at: Variant = _position_of.call(id)
 	if at == null:
 		return
-	_snow_burst((at as Vector3) + Vector3(0, 2.0, 0))
+	# A field of ice refreshes the slow on every pulse: snow falls once, not once per pulse.
+	var now := Time.get_ticks_msec()
+	var key := id * 2 + (1 if frozen else 0)
+	if now - int(_snow_last.get(key, -100000)) >= SNOW_COOLDOWN_MS:
+		_snow_last[key] = now
+		_snow_burst((at as Vector3) + Vector3(0, 2.0, 0))
 	if frozen:
+		if now - int(_shell_last.get(id, -100000)) < SNOW_COOLDOWN_MS:
+			return
+		_shell_last[id] = now
 		var seconds := clampf(float(end_tick - int(_tick_now.call())) / float(_tick_rate), 0.3, 6.0)
 		var shell := _voxel("shell", func() -> Dictionary: return VoxelFx.ice_crystal(), false, 0.4, 0.2)
 		shell.position = (at as Vector3) + Vector3(0, 0.9, 0)
@@ -1041,43 +1060,83 @@ func _beam(ev: Array) -> void:
 		return
 	if not _beams.has(id):
 		var holder := Node3D.new()
-		var glow := MeshInstance3D.new()
-		var outer := CylinderMesh.new()
-		outer.top_radius = 1.0
-		outer.bottom_radius = 1.0
-		outer.height = 1.0
-		outer.radial_segments = 12
-		glow.mesh = outer
-		glow.material_override = _glow(ELEMENT_COLORS["arcane"], 0.45)
-		glow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		var glow := _beam_tube(ELEMENT_COLORS["arcane"], 0.45, 14)
 		holder.add_child(glow)
-		var core := MeshInstance3D.new()
-		var inner := CylinderMesh.new()
-		inner.top_radius = 1.0
-		inner.bottom_radius = 1.0
-		inner.height = 1.0
-		inner.radial_segments = 8
-		core.mesh = inner
-		core.material_override = _glow(Color("#f2e0ff"), 0.95)
-		core.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		var core := _beam_tube(Color("#f2e0ff"), 0.95, 8)
 		holder.add_child(core)
 		var light := OmniLight3D.new()
 		light.light_color = ELEMENT_COLORS["arcane"]
-		light.light_energy = 1.2
-		light.omni_range = 5.0
+		light.light_energy = 1.4
+		light.omni_range = 6.0
 		holder.add_child(light)
 		add_child(holder)
-		_beams[id] = {"node": holder, "glow": glow, "core": core, "light": light, "t": 0.0}
+		# A bright ball at each end: where the beam leaves the caster and where it lands.
+		var ends: Array = []
+		for i in 2:
+			var ball := MeshInstance3D.new()
+			var sphere := SphereMesh.new()
+			sphere.radius = 1.0
+			sphere.height = 2.0
+			sphere.radial_segments = 12
+			sphere.rings = 6
+			ball.mesh = sphere
+			ball.material_override = _glow(Color("#f2e0ff") if i == 0 else ELEMENT_COLORS["arcane"], 0.85)
+			ball.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			add_child(ball)
+			ends.append(ball)
+		_beams[id] = {"node": holder, "glow": glow, "core": core, "light": light, "ends": ends, "t": 0.0, "age": 0.0,
+			"from": from, "end": end, "end_target": end, "width": width}
 	var b: Dictionary = _beams[id]
 	b.t = 0.0
-	var holder_node: Node3D = b.node
-	holder_node.position = (from + end) / 2.0
+	b.end_target = end
+	b.width = width
+	if b.age == 0.0:
+		b.end = end
+		_place_beam(b, id, 0.0)
+
+
+func _beam_tube(color: Color, alpha: float, segments: int) -> MeshInstance3D:
+	var tube := MeshInstance3D.new()
+	var mesh := CylinderMesh.new()
+	mesh.top_radius = 1.0
+	mesh.bottom_radius = 1.0
+	mesh.height = 1.0
+	mesh.radial_segments = segments
+	tube.mesh = mesh
+	tube.material_override = _glow(color, alpha)
+	tube.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return tube
+
+
+## One continuous beam: it leaves the caster every frame and its far end glides toward the point
+## the latest pulse reached, so it turns smoothly with the cursor instead of in steps.
+func _place_beam(b: Dictionary, id: int, dt: float) -> void:
+	var at: Variant = _position_of.call(id)
+	if at != null:
+		b.from = (at as Vector3) + Vector3(0, 1.2, 0)
+	b.end = (b.end as Vector3).lerp(b.end_target, clampf(dt * 14.0, 0.0, 1.0))
+	var from: Vector3 = b.from
+	var end: Vector3 = b.end
+	var length := maxf(from.distance_to(end), 0.05)
 	var dir := (end - from).normalized()
-	holder_node.basis = Basis(Quaternion(Vector3.UP, dir)) # the tubes' axis (Y) along the beam
-	(b.glow as Node3D).scale = Vector3(width * 0.45, length, width * 0.45)
-	(b.core as Node3D).scale = Vector3(width * 0.16, length, width * 0.16)
-	(b.light as Node3D).position = Vector3.ZERO
-	_shards(end - Vector3(0, 1.0, 0) + Vector3(0, 0.3, 0), ELEMENT_COLORS["arcane"], 6) # sparks where it ends
+	var holder: Node3D = b.node
+	holder.position = (from + end) / 2.0
+	holder.basis = Basis(Quaternion(Vector3.UP, dir)) # the tubes' axis (Y) along the beam
+	var width: float = b.width
+	var pulse := 1.0 + 0.1 * sin(b.age * 40.0 + float(id))
+	var ramp := clampf(b.age / 0.15, 0.0, 1.0) # it opens up in a moment
+	(b.glow as Node3D).scale = Vector3(width * 0.45 * pulse * ramp, length, width * 0.45 * pulse * ramp)
+	(b.core as Node3D).scale = Vector3(width * 0.16 * ramp, length, width * 0.16 * ramp)
+	(b.ends[0] as Node3D).position = from + dir * 0.4
+	(b.ends[0] as Node3D).scale = Vector3.ONE * width * 0.5 * pulse * ramp
+	(b.ends[1] as Node3D).position = end
+	(b.ends[1] as Node3D).scale = Vector3.ONE * width * 0.62 * pulse * ramp
+
+
+func _free_beam(bm: Dictionary) -> void:
+	(bm.node as Node).queue_free()
+	for ball: Node in bm.ends:
+		ball.queue_free()
 
 
 func beam_count() -> int:

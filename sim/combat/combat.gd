@@ -506,10 +506,22 @@ static func tick(world: SimWorld) -> void:
 			e.shield_reflect = 0.0
 		Resources.tick(e, world)
 		_forced_move(world, e)
+		if e is PlayerState:
+			_buff_events(world, e as PlayerState)
 	_pending_casts(world)
 	_projectiles(world)
 	_areas(world)
 	_traps(world)
+
+
+## Tells the clients when a conditional passive buff turns on or off: ["buff", id, key, on].
+static func _buff_events(world: SimWorld, p: PlayerState) -> void:
+	var now: Array = Passives.active_buffs(p, world) if p.is_alive() else []
+	for key: String in Passives.CONDITIONAL:
+		var on := key in now
+		if on != (key in p.buffs_on):
+			world.emit(["buff", p.id, key, 1 if on else 0])
+	p.buffs_on = now
 
 
 static func _traps(world: SimWorld) -> void:

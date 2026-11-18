@@ -24,6 +24,8 @@ var progress := PlayerProgress.new()
 var progress_dirty: bool = false
 ## Evasión mortal: the next combo gain is raised after a dodge.
 var bonus_combo_ready: bool = false
+## Conditional passive buffs on at the last tick (Passives.CONDITIONAL keys), to send changes only.
+var buffs_on: Array = []
 ## Downed (in a group): the tick it bleeds out and dies if nobody revives it.
 var downed_end_tick: int = -1
 ## Reviving an ally with E: who, since when and from where (moving cancels).

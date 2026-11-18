@@ -41,6 +41,7 @@ var _charge: ProgressBar
 ## Tiles for the effects on this player (buffs, effects left by abilities, enemy debuffs).
 var status_tiles: StatusTiles
 var _statuses: Dictionary = {} # kind -> end tick, from the host's status events
+var _buffs: Dictionary = {} # conditional passive buffs on now (Passives.CONDITIONAL keys), from "buff" events
 var _cast: ProgressBar # cast time and channels of this player
 var _cast_label: Label
 var _cast_start: float = 0.0
@@ -266,6 +267,11 @@ func _on_combat_event(ev: Array) -> void:
 				_gcd_end = _clock + _client.balance.gcd_s
 		"status":
 			_statuses[str(ev[2])] = int(ev[3])
+		"buff":
+			if int(ev[3]) != 0:
+				_buffs[str(ev[2])] = true
+			else:
+				_buffs.erase(str(ev[2]))
 		"channel":
 			var cid := str(ev[2]) if ev.size() > 2 else ""
 			_cast_start = _clock
@@ -280,6 +286,7 @@ func _on_combat_event(ev: Array) -> void:
 		"died":
 			_cast.visible = false
 			_statuses.clear()
+			_buffs.clear()
 			_respawn_at = _clock + _client.balance.respawn_s
 		"respawned":
 			_respawn_at = -1.0
@@ -304,6 +311,8 @@ func _update_statuses() -> void:
 			_statuses.erase(kind)
 		else:
 			shown[kind] = left
+	for key: String in _buffs:
+		shown[key] = 99.0 # conditional passive buffs last while their condition holds
 	status_tiles.show_statuses(shown, _clock)
 
 
