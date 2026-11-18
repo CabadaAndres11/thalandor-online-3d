@@ -40,13 +40,18 @@ func test_attack_lunges_and_comes_back() -> void:
 	assert_almost_eq(a.body.position.distance_to(rest), 0.0, 0.001, "back in place")
 
 
-func test_death_falls_over() -> void:
+func test_death_dissolves_into_binary_without_deforming() -> void:
 	var a := _avatar("marked_hound")
+	var scale_before := a.body.scale
 	var t := a.play_death()
 	assert_true(a.dying)
+	assert_eq(a.binary_digit_count(), MonsterAvatar.BINARY_DIGITS)
 	t.pause()
-	t.custom_step(1.0)
-	assert_lt(a.body.scale.y, 0.5, "shrunk or fallen")
+	t.custom_step(2.0)
+	assert_eq(a.body.scale, scale_before, "no squashing")
+	assert_eq(a.body.rotation, Vector3.ZERO, "no tipping over")
+	for n: Node in a.body.find_children("*", "GeometryInstance3D", true, false):
+		assert_almost_eq((n as GeometryInstance3D).transparency, 1.0, 0.001)
 	assert_null(a.play_attack(), "dead monsters don't attack")
 
 

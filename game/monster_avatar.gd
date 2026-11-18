@@ -9,10 +9,13 @@ extends Node3D
 
 const SPEED_SMOOTHING_S := 0.1
 const TELEPORT_DISTANCE := 2.0
+const DISSOLVE_S := 1.1
+const BINARY_DIGITS := 36
 
 var body: Node3D
 var bar: OverheadBar
 var dying: bool = false
+var _binary: Array[Label3D] = []
 var _rig: BeastRig
 var _humanoid: HumanRig
 var _aura: Node3D
@@ -185,8 +188,8 @@ func land() -> Tween:
 
 
 
-## Falls over and shrinks (humanoids play their death animation); the node is removed
-## when the monster leaves the snapshot.
+## The body dissolves into binary code: it fades out in place while 0s and 1s rise from it
+## (humanoids also play their fall). The node is removed when the monster leaves the snapshot.
 func play_death() -> Tween:
 	if dying or body == null:
 		return null
@@ -194,16 +197,42 @@ func play_death() -> Tween:
 	bar.visible = false
 	if _aura != null:
 		_aura.visible = false
-	var t := create_tween().set_parallel()
 	if _humanoid != null:
 		_humanoid.play_action("die")
-		t.tween_property(body, "position:y", _rest.y - 0.05, 0.9)
-		return t
-	# Tips over onto its side without turning all the way and stays above the ground.
-	t.tween_property(body, "rotation_degrees:z", 55.0, 0.5)
-	t.tween_property(body, "scale:y", body.scale.y * 0.4, 0.9)
-	t.tween_property(body, "position:y", _rest.y + _height * 0.12, 0.9)
+	var t := create_tween().set_parallel()
+	for n: Node in body.find_children("*", "GeometryInstance3D", true, false):
+		t.tween_property(n, "transparency", 1.0, DISSOLVE_S).set_delay(0.1)
+	_spawn_binary(t)
 	return t
+
+
+## Digits (green 0 and 1) that rise from the body and fade while it dissolves.
+func _spawn_binary(t: Tween) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = int(position.x * 73.0 + position.z * 131.0) # visual only: not the simulation's rng
+	var half := maxf(_height * 0.3, 0.3)
+	for i in BINARY_DIGITS:
+		var l := Label3D.new()
+		l.text = "1" if rng.randf() < 0.5 else "0"
+		l.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		l.no_depth_test = true
+		l.fixed_size = false
+		l.pixel_size = 0.008
+		l.font_size = 40
+		l.outline_size = 6
+		l.modulate = Color(0.35, 1.0, 0.65, 0.0)
+		var from := Vector3(rng.randf_range(-half, half), rng.randf_range(0.1, _height), rng.randf_range(-half, half))
+		l.position = from
+		add_child(l)
+		_binary.append(l)
+		var delay := rng.randf_range(0.0, 0.6)
+		t.tween_property(l, "modulate:a", 1.0, 0.15).set_delay(delay)
+		t.tween_property(l, "position:y", from.y + rng.randf_range(0.8, 1.6), 0.9).set_delay(delay)
+		t.tween_property(l, "modulate:a", 0.0, 0.35).set_delay(delay + 0.6)
+
+
+func binary_digit_count() -> int:
+	return _binary.size()
 
 
 ## Elite aura: a glowing ember ring on the ground, a soft inner glow and a warm light.
