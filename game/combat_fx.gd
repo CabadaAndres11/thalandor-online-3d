@@ -1,12 +1,17 @@
 class_name CombatFX
 extends Node3D
 ## Combat visuals driven by the host's events (see SimWorld.events):
-##   projectile / projectile_end -> a glowing bolt that flies on its own
+##   projectile / projectile_end -> a voxel bolt that flies on its own (arcane prism, fire orb);
+##                                  frost leaves a line of ice spikes that grow toward the end;
+##                                  magic ends in an explosion (frost: a big burst of spikes)
+##   channel / channel_end       -> motes and a voxel orb that forms and brightens in front of the caster
 ##   cast (melee arcs)           -> a short flash of the arc
 ##   telegraph                   -> a ground warning that fills up until impact
 ##   telegraph_line              -> a charge's lane that fills toward its end; charge or
 ##                                  charge_cancel removes it
-##   area                        -> a flash where an area went off
+##   area                        -> a flash where an area went off; arcane leaves a pentagram,
+##                                  fire burning ground and frost ice spikes for a few seconds
+##   status slow / freeze        -> snow on the target (freeze also an ice shell)
 ##   status "shield"             -> a bubble around the entity until it fades
 ##   hit / heal / dodge          -> floating numbers
 ##   level_up                    -> "¡Nivel N!" over the player and a flash
@@ -26,6 +31,8 @@ const NUMBER_TIME := 0.9
 const NUMBER_RISE := 1.2
 const FLASH_TIME := 0.2
 const HEAD_HEIGHT := 2.0
+const SPIKE_SPACING := 0.8
+const MARK_LIFE := 3.0
 ## Colours of the magic schools (damage element of the ability).
 const ELEMENT_COLORS := {
 	"fire": Color("#ff7a2a"), "frost": Color("#7fd8ff"), "arcane": Color("#c07bff"), "nature": Color("#7be07b"),
@@ -42,7 +49,11 @@ var _telegraphs: Dictionary = {} # id -> {node, fill, t, duration}
 var _flashes: Array = [] # {node, t}
 var _numbers: Array = [] # {node, t, base_y}
 var _shields: Dictionary = {} # entity id -> {node, t, duration}
-var _charges: Dictionary = {} # caster id -> {node, t, duration} (cast times and channels)
+var _charges: Dictionary = {} # caster id -> {node, orb, t, duration, element} (cast times and channels)
+var _cast_aim: Dictionary = {} # caster id -> where its last cast was aimed
+var _decor: Array = [] # {node, t, life, grow, target, fade, base, flicker, spin}: voxel effects that grow and fade
+var _marks: Dictionary = {} # area id -> decor entry of its ground mark
+var _mesh_cache: Dictionary = {}
 
 
 func setup(position_of: Callable, tick_now: Callable, abilities: AbilityDB, tick_rate: int) -> void:
@@ -63,8 +74,10 @@ func handle(ev: Array) -> void:
 		"projectile":
 			_add_projectile(ev)
 		"projectile_end":
-			_remove_projectile(int(ev[1]))
+			_end_projectile(int(ev[1]), ev[2] if ev.size() > 2 else null)
 		"cast":
+			if ev.size() > 3 and ev[3] is Vector3:
+				_cast_aim[int(ev[1])] = ev[3]
 			_cast_flash(ev)
 		"channel":
 			_start_charge(int(ev[1]), str(ev[2]), float(ev[3]))
@@ -79,10 +92,12 @@ func handle(ev: Array) -> void:
 		"level_up":
 			level_up(int(ev[1]), int(ev[2]))
 		"area":
-			_area_flash(ev[2], float(ev[3]), str(ev[4]) if ev.size() > 4 else "")
+			_area_flash(ev[2], float(ev[3]), str(ev[4]) if ev.size() > 4 else "", int(ev[1]))
 		"status":
 			if str(ev[2]) == "shield":
 				_add_shield(int(ev[1]), int(ev[3]))
+			elif str(ev[2]) in ["slow", "freeze"]:
+				_snow(int(ev[1]), str(ev[2]) == "freeze", int(ev[3]) if ev.size() > 3 else 0)
 		"hit":
 			var at: Variant = _position_of.call(int(ev[1]))
 			if at != null:
@@ -115,6 +130,10 @@ func advance(dt: float) -> void:
 			_remove_projectile(pid)
 		else:
 			(p.node as Node3D).position = p.from + p.dir * travelled
+			if p.element == "frost":
+				while travelled >= p.next_spike and p.next_spike < p.range:
+					_ice_spikes_at(p, p.next_spike)
+					p.next_spike += SPIKE_SPACING
 	for id: int in _telegraphs.keys():
 		var g: Dictionary = _telegraphs[id]
 		g.t += dt
@@ -148,6 +167,8 @@ func advance(dt: float) -> void:
 			_end_charge(id)
 		else:
 			(c.node as Node3D).position = (at as Vector3) + Vector3(0, 0.9, 0)
+			_grow_charge_orb(c, id, at as Vector3)
+	_advance_decor(dt)
 	for id: int in _shields.keys():
 		var s: Dictionary = _shields[id]
 		s.t += dt
@@ -189,6 +210,19 @@ func shield_count() -> int:
 	return _shields.size()
 
 
+## Live voxel effects (ice spikes, ground marks, explosions, shells).
+func decor_count() -> int:
+	return _decor.size()
+
+
+func mark_count() -> int:
+	return _marks.size()
+
+
+func charge_orb_scale(id: int) -> float:
+	return ((_charges[id].orb as Node3D).scale.x) if _charges.has(id) and _charges[id].orb != null else 0.0
+
+
 # --- Builders -----------------------------------------------------------------------
 
 ## The damage element of an ability ("" when it has none), looking inside nested effects.
@@ -209,16 +243,30 @@ static func element_of(node: Variant) -> String:
 	return ""
 
 
+## The visual school of an ability: its own "fx_element", the element of its damage or the
+## school of its class (mages are arcane, clerics holy). "" = not magic.
+static func fx_element(ab: Dictionary) -> String:
+	if ab.has("fx_element"):
+		return str(ab.fx_element)
+	var e := element_of(ab.get("effects", []))
+	if e != "":
+		return e
+	return {"mage": "arcane", "cleric": "holy"}.get(str(ab.get("class", "")), "")
+
+
+func _element_of_ability(ability_id: String) -> String:
+	return fx_element(_abilities.get_ability(ability_id)) if _abilities != null and _abilities.has(ability_id) else ""
+
+
 func _is_magic(ability_id: String) -> bool:
-	var ab := _abilities.get_ability(ability_id)
-	return element_of(ab.get("effects", [])) != "" or str(ab.get("class", "")) in ["mage", "cleric"]
+	return _element_of_ability(ability_id) != ""
 
 
 func _color_of(ability_id: String) -> Color:
 	var ab := _abilities.get_ability(ability_id)
 	if ab.has("fx_color"):
 		return Color(str(ab.fx_color))
-	var element := element_of(ab.get("effects", []))
+	var element := fx_element(ab)
 	if ELEMENT_COLORS.has(element):
 		return ELEMENT_COLORS[element]
 	return CLASS_COLORS.get(str(ab.get("class", "")), MONSTER_COLOR)
@@ -245,52 +293,55 @@ func _add_projectile(ev: Array) -> void:
 	var from: Vector3 = ev[4]
 	var dir2: Vector2 = ev[5]
 	var color := _color_of(str(ev[3]))
+	var element := _element_of_ability(str(ev[3]))
 	var node := Node3D.new()
-	# A stretched glowing bolt along its flight, with a fading trail behind.
-	var bolt := MeshInstance3D.new()
-	var mesh := CapsuleMesh.new()
-	mesh.radius = 0.09
-	mesh.height = 0.55
-	bolt.mesh = mesh
-	bolt.rotation_degrees.x = 90.0
-	bolt.material_override = _material(color.lightened(0.3), 1.0)
-	bolt.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	node.add_child(bolt)
-	if _is_magic(str(ev[3])):
-		var core := SphereMesh.new()
-		core.radius = 0.14
-		core.height = 0.28
-		bolt.mesh = core
-		bolt.material_override = _glow(color.lightened(0.55), 1.0)
-		var halo := MeshInstance3D.new()
-		var hm := SphereMesh.new()
-		hm.radius = 0.32
-		hm.height = 0.64
-		halo.mesh = hm
-		halo.material_override = _glow(color, 0.35)
-		halo.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		node.add_child(halo)
+	if element == "":
+		# A stretched glowing bolt along its flight, with a fading trail behind.
+		var bolt := MeshInstance3D.new()
+		var mesh := CapsuleMesh.new()
+		mesh.radius = 0.09
+		mesh.height = 0.55
+		bolt.mesh = mesh
+		bolt.rotation_degrees.x = 90.0
+		bolt.material_override = _material(color.lightened(0.3), 1.0)
+		bolt.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		node.add_child(bolt)
+		node.add_child(_trail(color))
+	elif element == "frost":
+		node.add_child(_trail(color, true)) # no bolt: a mist, and the spikes come out of the ground
+	else:
+		var body := _voxel("body_" + element, func() -> Dictionary: return VoxelFx.body_for(element, color), true, 1.0)
+		node.add_child(body)
 		var light := OmniLight3D.new()
 		light.light_color = color
 		light.light_energy = 1.4
 		light.omni_range = 4.0
 		node.add_child(light)
 		node.add_child(_trail(color, true))
-	else:
-		node.add_child(_trail(color))
 	var start := from + Vector3(0, 1.1, 0)
 	node.position = start
 	add_child(node)
 	if dir2.length() > 0.001:
 		node.rotation.y = atan2(dir2.x, dir2.y)
 	_projectiles[pid] = {"node": node, "from": start, "dir": Vector3(dir2.x, 0, dir2.y),
-		"speed": float(ev[6]), "range": float(ev[7]), "t": 0.0}
+		"speed": float(ev[6]), "range": float(ev[7]), "t": 0.0, "element": element, "color": color, "next_spike": 0.6}
 
 
 func _remove_projectile(pid: int) -> void:
 	if _projectiles.has(pid):
 		(_projectiles[pid].node as Node).queue_free()
 		_projectiles.erase(pid)
+
+
+## The flight ended (it hit something or ran out of range): magic explodes where it stopped.
+func _end_projectile(pid: int, at: Variant) -> void:
+	if _projectiles.has(pid) and at is Vector3:
+		var p: Dictionary = _projectiles[pid]
+		if p.element == "frost":
+			_ice_finale(at as Vector3)
+		elif p.element != "":
+			_explosion(at as Vector3, p.color, p.element)
+	_remove_projectile(pid)
 
 
 func _disc(radius: float, color: Color, alpha: float) -> MeshInstance3D:
@@ -371,7 +422,7 @@ func _remove_telegraph(id: int) -> void:
 		_telegraphs.erase(id)
 
 
-func _area_flash(pos: Vector3, radius: float, ability_id: String = "") -> void:
+func _area_flash(pos: Vector3, radius: float, ability_id: String = "", area_id: int = 0) -> void:
 	var magic := ability_id != "" and _is_magic(ability_id)
 	var color := _color_of(ability_id).lightened(0.35) if magic else Color(1, 0.9, 0.6)
 	var d := _disc(radius, color, 0.6)
@@ -380,6 +431,7 @@ func _area_flash(pos: Vector3, radius: float, ability_id: String = "") -> void:
 	_flashes.append({"node": d, "t": 0.0})
 	if magic:
 		_burst(pos, radius, color)
+		_ground_mark(area_id, pos, radius, _element_of_ability(ability_id))
 
 
 ## A burst of glowing motes rising from an area that went off.
@@ -435,12 +487,22 @@ func _start_charge(id: int, ability_id: String, total: float) -> void:
 	p.color_ramp = _fade_ramp(color)
 	p.position = (at as Vector3) + Vector3(0, 0.9, 0)
 	add_child(p)
-	_charges[id] = {"node": p, "t": 0.0, "duration": total}
+	var element := _element_of_ability(ability_id)
+	var orb: MeshInstance3D = null
+	if element != "":
+		orb = _voxel("body_" + element, func() -> Dictionary: return VoxelFx.body_for(element, color), true, 0.35)
+		orb.scale = Vector3.ONE * 0.15
+		add_child(orb)
+	_charges[id] = {"node": p, "orb": orb, "t": 0.0, "duration": total, "element": element}
+	if orb != null:
+		_grow_charge_orb(_charges[id], id, at as Vector3)
 
 
 func _end_charge(id: int) -> void:
 	if _charges.has(id):
 		(_charges[id].node as Node).queue_free()
+		if _charges[id].orb != null:
+			(_charges[id].orb as Node).queue_free()
 		_charges.erase(id)
 
 
@@ -556,13 +618,241 @@ func _trail(color: Color, magic: bool = false) -> CPUParticles3D:
 	p.initial_velocity_max = 0.3
 	p.scale_amount_min = 0.5
 	p.scale_amount_max = 1.0
-	var quad := SphereMesh.new()
-	quad.radius = 0.05
-	quad.height = 0.1
-	p.mesh = quad
+	if magic:
+		var cube := BoxMesh.new()
+		cube.size = Vector3(0.09, 0.09, 0.09)
+		p.mesh = cube
+	else:
+		var quad := SphereMesh.new()
+		quad.radius = 0.05
+		quad.height = 0.1
+		p.mesh = quad
 	p.material_override = _glow(color, 0.8) if magic else _material(color, 0.7)
 	p.color_ramp = _fade_ramp(color)
 	return p
+
+
+## A voxel model node from a cache of meshes (each node has its own material).
+func _voxel(key: String, build: Callable, glow: bool, alpha: float, cube: float = VoxelFx.CUBE) -> MeshInstance3D:
+	var n := MeshInstance3D.new()
+	var ck := "%s|%s" % [key, cube]
+	if not _mesh_cache.has(ck):
+		_mesh_cache[ck] = VoxelFx.mesh_of(build.call(), cube)
+	n.mesh = _mesh_cache[ck]
+	n.material_override = VoxelFx.material(glow, alpha)
+	n.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return n
+
+
+## Adds a voxel effect: it grows to `target` in `grow` s, lives `life` s and fades during the
+## last `fade` s. `flicker` (flames) and `spin` (pentagram) are optional.
+func _add_decor(node: Node3D, life: float, grow: float = 0.0, target: Vector3 = Vector3.ONE, fade: float = 0.4,
+		base_alpha: float = 1.0, flicker: bool = false, spin: float = 0.0) -> Dictionary:
+	add_child(node)
+	var d := {"node": node, "t": 0.0, "life": life, "grow": grow, "target": target, "fade": fade, "base": base_alpha,
+		"flicker": flicker, "spin": spin, "phase": randf() * TAU}
+	if grow > 0.0:
+		node.scale = target * 0.05
+	_decor.append(d)
+	return d
+
+
+func _advance_decor(dt: float) -> void:
+	for d: Dictionary in _decor.duplicate():
+		d.t += dt
+		var node: Node3D = d.node
+		if d.t >= d.life or not is_instance_valid(node):
+			if is_instance_valid(node):
+				node.queue_free()
+			_decor.erase(d)
+			continue
+		if d.grow > 0.0:
+			var k := clampf(d.t / d.grow, 0.0, 1.0)
+			node.scale = (d.target as Vector3) * (1.0 - pow(1.0 - k, 3.0)) # eases out
+		if d.flicker:
+			var f := 0.85 + 0.25 * sin(d.t * 11.0 + d.phase)
+			node.scale = Vector3((d.target as Vector3).x, (d.target as Vector3).y * f, (d.target as Vector3).z)
+		if d.spin != 0.0:
+			node.rotation.y += float(d.spin) * dt
+		var remaining: float = d.life - d.t
+		if d.fade > 0.0 and remaining < d.fade:
+			_set_decor_alpha(node, float(d.base) * remaining / float(d.fade))
+
+
+func _set_decor_alpha(node: Node, a: float) -> void:
+	if node is MeshInstance3D and (node as MeshInstance3D).material_override is StandardMaterial3D:
+		((node as MeshInstance3D).material_override as StandardMaterial3D).albedo_color.a = clampf(a, 0.0, 1.0)
+	for c in node.get_children():
+		_set_decor_alpha(c, a)
+
+
+## Orb in front of the caster that forms and brightens while a cast time or a channel lasts.
+func _grow_charge_orb(c: Dictionary, id: int, at: Vector3) -> void:
+	var orb: MeshInstance3D = c.orb
+	if orb == null:
+		return
+	var k := clampf(c.t / maxf(c.duration, 0.01), 0.0, 1.0)
+	var dir := Vector3(0, 0, 1)
+	if _cast_aim.has(id):
+		var to: Vector3 = (_cast_aim[id] as Vector3) - at
+		to.y = 0.0
+		if to.length() > 0.01:
+			dir = to.normalized()
+	orb.position = at + dir * 0.9 + Vector3(0, 1.1, 0)
+	orb.rotation.y = atan2(dir.x, dir.z)
+	orb.scale = Vector3.ONE * lerpf(0.15, 1.0, k)
+	VoxelFx.set_alpha(orb, lerpf(0.35, 1.0, k)) # it gets brighter as it forms
+
+
+## Ice spikes coming out of the ground along a frost bolt's line, bigger toward its end.
+func _ice_spikes_at(p: Dictionary, dist: float) -> void:
+	var k := clampf(dist / maxf(float(p.range), 0.1), 0.0, 1.0)
+	var ground_y := (p.from as Vector3).y - 1.1
+	var side := Vector3(-(p.dir as Vector3).z, 0, (p.dir as Vector3).x)
+	for s: float in [-1.0, 1.0]:
+		var h := int(round(lerpf(4.0, 12.0, k))) + (0 if s > 0.0 else -1)
+		var spike := _voxel("spike_%d" % h, func() -> Dictionary: return VoxelFx.ice_spike(h), false, 0.95)
+		var at := (p.from as Vector3) + (p.dir as Vector3) * dist + side * (0.22 * s) * (1.0 + 2.0 * k)
+		at.y = ground_y
+		spike.position = at
+		spike.rotation.y = randf() * TAU
+		spike.rotation.z = randf_range(-0.2, 0.2)
+		_add_decor(spike, 1.4, 0.18, Vector3.ONE, 0.5)
+
+
+## The big end of a frost bolt: a ring of large spikes erupts, with shards and snow.
+func _ice_finale(pos: Vector3) -> void:
+	var centre := _voxel("spike_16", func() -> Dictionary: return VoxelFx.ice_spike(16), false, 0.95, 0.13)
+	centre.position = pos
+	_add_decor(centre, 1.8, 0.2, Vector3.ONE, 0.6)
+	for i in 8:
+		var a := TAU * float(i) / 8.0
+		var h := 9 + (i % 3) * 2
+		var spike := _voxel("spike_%d" % h, func() -> Dictionary: return VoxelFx.ice_spike(h), false, 0.95, 0.12)
+		spike.position = pos + Vector3(cos(a), 0, sin(a)) * (0.9 + 0.25 * float(i % 2))
+		spike.rotation.y = a
+		spike.rotation.z = 0.0
+		_add_decor(spike, 1.7, 0.22, Vector3.ONE, 0.6)
+	_shards(pos + Vector3(0, 0.6, 0), VoxelFx.ICE, 44)
+	_flash_orb(pos + Vector3(0, 0.8, 0), VoxelFx.ICE_LIGHT, 1.6)
+	_snow_burst(pos + Vector3(0, 1.8, 0))
+
+
+## Fire and arcane impact: a flash that swells and cubes that fly out.
+func _explosion(pos: Vector3, color: Color, element: String) -> void:
+	var at := pos + Vector3(0, 0.9, 0)
+	_flash_orb(at, color.lightened(0.4), 2.2)
+	_shards(at, color, 40)
+	var light := OmniLight3D.new()
+	light.light_color = color
+	light.light_energy = 3.0
+	light.omni_range = 6.0
+	light.position = at
+	_add_decor(light, 0.25, 0.0, Vector3.ONE, 0.0)
+
+
+## A glowing voxel ball that swells and fades (the flash of an impact).
+func _flash_orb(at: Vector3, color: Color, size: float) -> void:
+	var orb := _voxel("flash_%s" % color.to_html(), func() -> Dictionary: return VoxelFx.orb(color, 2.5), true, 0.9)
+	orb.position = at
+	_add_decor(orb, 0.4, 0.3, Vector3.ONE * size, 0.3, 0.9)
+
+
+## Cubes flying out of a point (one burst).
+func _shards(at: Vector3, color: Color, amount: int) -> void:
+	var p := CPUParticles3D.new()
+	p.one_shot = true
+	p.emitting = true
+	p.amount = amount
+	p.lifetime = 0.7
+	p.explosiveness = 1.0
+	p.direction = Vector3.UP
+	p.spread = 180.0
+	p.initial_velocity_min = 3.0
+	p.initial_velocity_max = 7.0
+	p.gravity = Vector3(0, -8.0, 0)
+	var cube := BoxMesh.new()
+	cube.size = Vector3(0.08, 0.08, 0.08)
+	p.mesh = cube
+	p.material_override = _glow(color, 1.0)
+	p.color_ramp = _fade_ramp(color)
+	p.position = at
+	_add_decor(p, 1.0, 0.0, Vector3.ONE, 0.0)
+
+
+## Snowflakes falling over a point.
+func _snow_burst(at: Vector3) -> void:
+	var p := CPUParticles3D.new()
+	p.one_shot = true
+	p.emitting = true
+	p.amount = 36
+	p.lifetime = 1.2
+	p.explosiveness = 0.3
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	p.emission_box_extents = Vector3(0.9, 0.1, 0.9)
+	p.direction = Vector3.DOWN
+	p.spread = 15.0
+	p.initial_velocity_min = 0.5
+	p.initial_velocity_max = 1.5
+	p.gravity = Vector3(0, -2.0, 0)
+	var cube := BoxMesh.new()
+	cube.size = Vector3(0.06, 0.06, 0.06)
+	p.mesh = cube
+	p.material_override = _material(Color(0.92, 0.97, 1.0), 0.95)
+	p.position = at
+	_add_decor(p, 1.5, 0.0, Vector3.ONE, 0.0)
+
+
+## Snow over a slowed or frozen entity (frozen: also an ice shell for as long as it lasts).
+func _snow(id: int, frozen: bool, end_tick: int) -> void:
+	var at: Variant = _position_of.call(id)
+	if at == null:
+		return
+	_snow_burst((at as Vector3) + Vector3(0, 2.0, 0))
+	if frozen:
+		var seconds := clampf(float(end_tick - int(_tick_now.call())) / float(_tick_rate), 0.3, 6.0)
+		var shell := _voxel("shell", func() -> Dictionary: return VoxelFx.ice_crystal(), false, 0.4, 0.2)
+		shell.position = (at as Vector3) + Vector3(0, 0.9, 0)
+		shell.scale = Vector3(1.0, 1.4, 1.0)
+		_add_decor(shell, seconds, 0.0, Vector3(1.0, 1.4, 1.0), 0.4, 0.4)
+
+
+## What an area leaves on the ground: arcane a pentagram, fire burning ground, frost ice spikes.
+func _ground_mark(area_id: int, pos: Vector3, radius: float, element: String) -> void:
+	if not element in ["arcane", "fire", "frost"]:
+		return
+	if _marks.has(area_id) and is_instance_valid(_marks[area_id].node) and _marks[area_id] in _decor:
+		_marks[area_id].t = 0.0 # a pulse of the same area: the mark lasts longer
+		return
+	var r := snappedf(radius, 0.5)
+	var holder := Node3D.new()
+	holder.position = Vector3(pos.x, 0.04, pos.z)
+	var life := MARK_LIFE
+	var entry: Dictionary
+	match element:
+		"arcane":
+			var star := _voxel("penta_%s" % r, func() -> Dictionary: return VoxelFx.pentagram(r), true, 0.85, 0.12)
+			holder.add_child(star)
+			entry = _add_decor(holder, life, 0.25, Vector3.ONE, 0.7, 0.85, false, 0.5)
+		"fire":
+			var flames := _voxel("flame_%s" % r, func() -> Dictionary: return VoxelFx.flame_patch(r), true, 0.9, 0.18)
+			holder.add_child(flames)
+			entry = _add_decor(holder, life, 0.2, Vector3.ONE, 0.7, 0.9, true)
+		_:
+			var ice := _disc(radius, VoxelFx.ICE, 0.3)
+			holder.add_child(ice)
+			var rng := RandomNumberGenerator.new()
+			rng.seed = int(r * 10.0)
+			for i in clampi(int(radius * 5.0), 6, 22):
+				var a := rng.randf() * TAU
+				var d := sqrt(rng.randf()) * radius * 0.9
+				var h := rng.randi_range(3, 7)
+				var spike := _voxel("spike_%d" % h, func() -> Dictionary: return VoxelFx.ice_spike(h), false, 0.9)
+				spike.position = Vector3(cos(a) * d, 0, sin(a) * d)
+				spike.rotation.y = rng.randf() * TAU
+				holder.add_child(spike)
+			entry = _add_decor(holder, life, 0.25, Vector3.ONE, 0.7, 1.0)
+	_marks[area_id] = entry
 
 
 ## A short burst of sparks where something got hit.

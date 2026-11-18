@@ -30,6 +30,7 @@ Implementar el [[Plan 4 — Progresión (spec)|Plan 4]]: experiencia y niveles s
 - Nombre del jugador en tamaño de mundo.
 - Tema holográfico azul, ventana C con modelo y huecos de objetos, ventana K en lista.
 - Escalado de monstruos subido (vida 0,17 y daño 0,115 por nivel), casteo del mago con `repeat.cast`, efectos de magia mejorados y cadáveres de bestias corregidos.
+- Barra de lanzamiento, muerte por disolución en binario y efectos de magia con modelos voxel (arcano, fuego, hielo) con marcas en el suelo.
 
 ## Siguiente paso
 - Prueba del usuario, revisión de arte (casco templario, ballesta, lobo, iconos) y publicación de la 0.6.0.
