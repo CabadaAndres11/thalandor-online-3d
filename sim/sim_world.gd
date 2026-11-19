@@ -140,6 +140,7 @@ func step(inputs: Dictionary) -> void:
 		if e is MonsterState:
 			MonsterAI.tick(self, e)
 	Combat.tick(self)
+	Loot.step(self)
 	if spawner != null:
 		spawner.tick(self)
 	tick += 1
