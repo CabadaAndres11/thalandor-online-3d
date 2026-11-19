@@ -99,8 +99,8 @@ Valor por defecto la primera vez: **Media** *(decisión de Claude: sin una prueb
 - Estilo de las demás ventanas (`holo_theme`); textos en `data/texts/textos.csv`.
 
 ### 6. Guardado de ajustes
-- `user://settings.cfg` (`ConfigFile`), local a cada equipo, con versión.
-- Se carga al arrancar, antes de la pantalla de título. Valores ausentes o no válidos → valor por defecto; archivo ilegible → todos por defecto, sin error visible.
+- Se amplía el `user://settings.json` que ya existe (`SettingsStore`, último personaje y código) a la **versión 3**, con las claves de vídeo y sonido. Local a cada equipo.
+- Se carga al arrancar, antes de la pantalla de título (como hoy). Valores ausentes o no válidos → valor por defecto; archivo ilegible → todos por defecto, sin error visible.
 
 ### 7. Comando `/ambiente`
 - `/ambiente` sin argumento muestra el actual y la lista; `/ambiente <id>` lo cambia.
@@ -111,7 +111,8 @@ Valor por defecto la primera vez: **Media** *(decisión de Claude: sin una prueb
 - `game/visual/ambience.gd`: carga y valida un ambiente JSON → datos.
 - `game/visual/ambience_builder.gd`: aplica ambiente + calidad → `Environment`, sol y partículas. Es la única pieza que cruza ambos.
 - `game/visual/torch.gd`: prop de antorcha con luz parpadeante.
-- `game/settings/settings.gd` (autoload): carga, guarda y aplica ajustes de vídeo y sonido; emite una señal al cambiar la calidad para que el entorno se reconstruya.
+- `save/settings_store.gd` (existe): guarda también vídeo y sonido.
+- `game/visual/settings_applier.gd`: aplica ventana, VSync, FPS, escala y volúmenes; `main.gd` lo usa al arrancar y al cambiar algo, y avisa a la partida para reconstruir el entorno si cambia la calidad. El juego no usa autoloads.
 - `ui/options_window.gd`: la ventana.
 - `arena.gd` deja de crear la luz a mano y usa el constructor de ambientes.
 - La vista previa del personaje (`ui/character_preview.gd`) y los iconos (`item_icons.gd`) siguen con su luz propia de estudio; se revisa que no hereden el ambiente.
