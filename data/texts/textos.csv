@@ -357,7 +357,7 @@ RES_FOCUS,Recurso: concentración
 RES_ENERGY,Recurso: energía
 CLASS_CHOICE_TOO_FAR,Tienes que estar en pie junto a Brann para elegir tu clase.
 CMD_HOST_ONLY,"Solo el anfitrión puede usar comandos"
-CMD_BAD,"Comando no válido. Usa /xp <cantidad> [nombre] o /nivel <nivel> [nombre]"
+CMD_BAD,"Comando no válido. Usa /xp <cantidad> [nombre], /nivel <nivel> [nombre], /oro <cantidad> [nombre] o /objeto <base> [nivel] [rareza] [nombre]"
 CMD_NO_PLAYER,"No hay ningún jugador con ese nombre"
 OVERHEAD_LEVEL,Nv %d %s
 LEVEL_SHORT,Nv %d

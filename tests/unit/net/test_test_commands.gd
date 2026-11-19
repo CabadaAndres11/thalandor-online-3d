@@ -138,3 +138,48 @@ func test_plain_slash_text_in_the_middle_is_chat() -> void:
 	_say(a, "hola /xp 5")
 	assert_eq(_msgs(b, Protocol.Msg.CHAT).size(), 1)
 	assert_eq(_p(1).progress.xp, 0)
+
+
+func _chats(c: MemoryTransport) -> Array:
+	return _msgs(c, Protocol.Msg.CHAT).map(func(m: Dictionary) -> String: return m.text)
+
+
+func test_gold_command() -> void:
+	var a := _guest("Ana")
+	var b := _guest("Bea")
+	_drain(a)
+	_say(a, "/oro 250")
+	assert_eq(_p(1).inventory.gold, 250)
+	_say(a, "/oro 30 bea")
+	assert_eq(_p(2).inventory.gold, 30)
+
+
+func test_item_command() -> void:
+	var a := _guest("Ana")
+	_drain(a)
+	_say(a, "/objeto plate_chest_t1 12 epic")
+	var it: Item = _p(1).inventory.bag[0]
+	assert_eq([it.base_id, it.level, it.rarity, it.affixes.size()], ["plate_chest_t1", 12, "epic", 3])
+	_say(a, "/objeto sword_t1")
+	assert_eq(_p(1).inventory.bag[1].level, _p(1).progress.level, "level defaults to the player's")
+	_drain(a)
+	_say(a, "/objeto nope")
+	assert_has(_chats(a), "CMD_BAD")
+
+
+func test_item_command_full_bag() -> void:
+	var a := _guest("Ana")
+	while _p(1).inventory.add(ItemRoll.new_item("ring_t1", 1), ItemDB.load_default()):
+		pass
+	_drain(a)
+	_say(a, "/objeto sword_t1")
+	assert_has(_chats(a), "ITEM_BAG_FULL")
+
+
+func test_guest_refused() -> void:
+	_guest("Ana")
+	var b := _guest("Bea")
+	_drain(b)
+	_say(b, "/oro 100")
+	assert_eq(_p(2).inventory.gold, 0)
+	assert_has(_chats(b), "CMD_HOST_ONLY")

@@ -282,13 +282,23 @@ func _on_set_arena_level(rec: Dictionary, level: int) -> void:
 	_broadcast(Protocol.arena_level(world.arena_level), true)
 
 
-## Test commands (host player only): /xp <n> [name] and /nivel <n> [name]. They are not
-## chat. Anything else starting with "/" is refused with a system message to the author.
+## Test commands (host player only): /xp <n> [name], /nivel <n> [name], /oro <n> [name] and
+## /objeto <base> [level] [rarity] [name]. They are not chat. Anything else starting with
+## "/" is refused with a system message to the author.
 func _on_command(rec: Dictionary, text: String) -> void:
 	if rec.id != _host_player_id:
 		_send_to(rec.id, Protocol.chat(0, "CMD_HOST_ONLY"), true)
 		return
 	var parts := text.substr(1).split(" ", false)
+	if parts.size() >= 2 and parts[0].to_lower() == "objeto":
+		_item_command(rec, parts)
+		return
+	if parts.size() >= 2 and parts[0].to_lower() == "oro" and parts[1].is_valid_int() and parts[1].to_int() > 0:
+		var who := _command_target(rec, parts.slice(2))
+		if who != null:
+			who.inventory.gold = mini(Inventory.MAX_GOLD, who.inventory.gold + parts[1].to_int())
+			who.inventory_dirty = true
+		return
 	if parts.size() < 2 or not parts[0].to_lower() in ["xp", "nivel"] or not parts[1].is_valid_int() or parts[1].to_int() < 1:
 		_send_to(rec.id, Protocol.chat(0, "CMD_BAD"), true)
 		return
@@ -343,6 +353,44 @@ func _flush_progress() -> void:
 		rec.sent_bar = (rec.bar as Array).duplicate()
 		rec.sent_tick = world.tick
 		p.progress_dirty = false
+
+
+## The player a command names (by name after its arguments), or its author; null (and a
+## message) when nobody has that name.
+func _command_target(rec: Dictionary, name_parts: Array) -> PlayerState:
+	if name_parts.is_empty():
+		return world.players.get(rec.id)
+	var wanted := " ".join(name_parts).to_lower()
+	for id: int in _players:
+		if str(_players[id].name).to_lower() == wanted:
+			return world.players.get(id)
+	_send_to(rec.id, Protocol.chat(0, "CMD_NO_PLAYER"), true)
+	return null
+
+
+## /objeto <base> [level] [rarity] [name]: the item goes straight to the bag.
+func _item_command(rec: Dictionary, parts: Array) -> void:
+	var db := world.items
+	var base_id := str(parts[1])
+	if db.base(base_id).is_empty():
+		_send_to(rec.id, Protocol.chat(0, "CMD_BAD"), true)
+		return
+	var rest: Array = parts.slice(2)
+	var level := -1
+	var rarity := "common"
+	if not rest.is_empty() and str(rest[0]).is_valid_int():
+		level = clampi(str(rest.pop_front()).to_int(), 1, 65535)
+	if not rest.is_empty() and str(rest[0]).to_lower() in (db.loot().get("rarities", []) as Array):
+		rarity = str(rest.pop_front()).to_lower()
+	var who := _command_target(rec, rest)
+	if who == null:
+		return
+	var it := ItemRoll.roll_gear(base_id, level if level > 0 else who.progress.level, rarity, world.rng, db) \
+		if not db.is_consumable(base_id) else ItemRoll.new_item(base_id, 1)
+	if not who.inventory.add(it, db):
+		_send_to(rec.id, Protocol.chat(0, "ITEM_BAG_FULL"), true)
+		return
+	who.inventory_dirty = true
 
 
 ## Sends each owner their changed inventory, and everyone the visible gear that changed.
