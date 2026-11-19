@@ -3,7 +3,7 @@ extends SceneTree
 ## arena's ground and light and saves user://render/<name>.png.
 ##   Godot --path . -s tests/helpers/render_characters.gd -- --set=classes
 ## Equipment: --set=gear --tier=1 [--rot=0|90|180] (the five classes in a full tier kit) and
-## --set=weapons --tier=1 --page=0|1|2 (every weapon type in a hand).
+## --set=weapons --tier=1 --page=0|1|2 (every weapon type in a hand); page 3: the boss uniques.
 ## Each set is a list of looks (see HumanRig.build) made from
 ## [class_id, appearance] pairs resolved through CharacterCatalog.
 
@@ -161,10 +161,12 @@ func _looks(set_name: String) -> Array:
 				[["warrior", "greatsword", ""], ["warrior", "great_axe", ""], ["warrior", "warhammer", ""], ["warrior", "halberd", ""], ["warrior", "sword", "shield"], ["warrior", "axe", ""]],
 				[["cleric", "mace", "orb"], ["mage", "staff", ""], ["mage", "wand", "tome"], ["cleric", "scepter", "shield"], ["archer", "bow", ""], ["archer", "crossbow", ""]],
 				[["archer", "short_sword", ""], ["assassin", "dagger", "dagger"], ["assassin", "short_sword", "dagger"]],
+				[["cleric", "unique_acolyte", ""], ["mage", "unique_vaelthar", ""], ["warrior", "unique_nhazar", ""]],
 			]
 			var out := []
 			for w: Array in pages[clampi(_page, 0, pages.size() - 1)]:
-				var gear := [str(w[1]) + t, (str(w[2]) + t) if str(w[2]) != "" else "", "", "", "", "", "", ""]
+				var main := str(w[1]) if str(w[1]).begins_with("unique_") else str(w[1]) + t
+				var gear := [main, (str(w[2]) + t) if str(w[2]) != "" else "", "", "", "", "", "", ""]
 				out.append(_geared(w[0], {"hair_style": "short"}, gear, 35.0))
 			return out
 	push_error("unknown set " + set_name)

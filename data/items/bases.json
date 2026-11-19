@@ -2346,6 +2346,90 @@
 			"template": "ring",
 			"look": [],
 			"name": "ITEM_RING_T3"
+		},
+		"unique_acolyte": {
+			"slot": "main",
+			"kind": "scepter",
+			"unique_of": "cult_acolyte",
+			"stats": [
+				{
+					"stat": "spell_power_add",
+					"base": 8,
+					"per_level": 2.4
+				},
+				{
+					"stat": "spirit",
+					"per_level": 0.5
+				},
+				{
+					"stat": "healing_done_pct",
+					"base": 0.04,
+					"per_level": 0.0006
+				}
+			],
+			"tier": 0,
+			"min_level": 1,
+			"max_level": 9999,
+			"look": [
+				"w_unique_acolyte"
+			],
+			"name": "ITEM_UNIQUE_ACOLYTE"
+		},
+		"unique_vaelthar": {
+			"slot": "main",
+			"kind": "staff",
+			"unique_of": "vaelthar",
+			"stats": [
+				{
+					"stat": "spell_power_add",
+					"base": 8,
+					"per_level": 2.8
+				},
+				{
+					"stat": "intellect",
+					"per_level": 0.55
+				},
+				{
+					"stat": "crit_add",
+					"base": 0.01,
+					"per_level": 0.0006
+				}
+			],
+			"tier": 0,
+			"min_level": 1,
+			"max_level": 9999,
+			"look": [
+				"w_unique_vaelthar"
+			],
+			"name": "ITEM_UNIQUE_VAELTHAR"
+		},
+		"unique_nhazar": {
+			"slot": "main",
+			"kind": "greatsword",
+			"unique_of": "nhazar",
+			"stats": [
+				{
+					"stat": "attack_power_add",
+					"base": 8,
+					"per_level": 2.6
+				},
+				{
+					"stat": "strength",
+					"per_level": 0.5
+				},
+				{
+					"stat": "lifesteal_add",
+					"base": 0.01,
+					"per_level": 0.0004
+				}
+			],
+			"tier": 0,
+			"min_level": 1,
+			"max_level": 9999,
+			"look": [
+				"w_unique_nhazar"
+			],
+			"name": "ITEM_UNIQUE_NHAZAR"
 		}
 	}
 }

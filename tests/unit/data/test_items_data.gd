@@ -36,3 +36,12 @@ func test_every_base_has_model() -> void:
 		assert_false(look.is_empty(), id + " has a model")
 		for piece: String in look + (b.get("look_offhand", []) as Array):
 			assert_false(cat.piece(piece).is_empty(), "%s: piece %s exists" % [id, piece])
+
+
+func test_each_boss_has_its_unique() -> void:
+	var db := ItemDB.load_default()
+	assert_eq(db.unique_for("cult_acolyte"), "unique_acolyte")
+	assert_eq(db.unique_for("vaelthar"), "unique_vaelthar")
+	assert_eq(db.unique_for("nhazar"), "unique_nhazar")
+	assert_eq(db.unique_for("cultist"), "")
+	assert_false(db.bases_for(10).has("unique_vaelthar"), "uniques never drop from the common tables")

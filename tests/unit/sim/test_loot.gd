@@ -130,3 +130,24 @@ func test_world_step_picks_up() -> void:
 	var id := _place(a.id, Vector3(20, 0, 20))
 	f.world.step({})
 	assert_false(f.world.loot.has(id))
+
+
+func test_boss_unique_chance() -> void:
+	_hero(1, Vector3(21, 0, 20))
+	var n := 1000
+	var got := 0
+	for i in n:
+		f.world.loot.clear()
+		_kill(_monster("vaelthar", Vector3(20, 0, 20)))
+		if f.world.loot.values().any(func(d: Dictionary) -> bool: return d.item.base_id == "unique_vaelthar"):
+			got += 1
+	assert_almost_eq(got / float(n), 0.25, 0.04)
+
+
+func test_unique_drops_as_unique_rarity() -> void:
+	_hero(1, Vector3(21, 0, 20))
+	for i in 60:
+		_kill(_monster("nhazar", Vector3(20, 0, 20)))
+	var uniques := f.world.loot.values().filter(func(d: Dictionary) -> bool: return d.item.base_id == "unique_nhazar")
+	assert_false(uniques.is_empty())
+	assert_eq(uniques[0].item.rarity, "unique")

@@ -3120,5 +3120,38 @@
 		],
 		"tag": "weapon",
 		"hides": []
+	},
+	"w_unique_acolyte": {
+		"file": "res://assets/items/vox/w_unique_acolyte.vox",
+		"part": "hand_right",
+		"offset": [
+			-6,
+			-9,
+			-4
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_unique_vaelthar": {
+		"file": "res://assets/items/vox/w_unique_vaelthar.vox",
+		"part": "hand_right",
+		"offset": [
+			-7,
+			-21,
+			-1
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_unique_nhazar": {
+		"file": "res://assets/items/vox/w_unique_nhazar.vox",
+		"part": "hand_right",
+		"offset": [
+			-2,
+			-10,
+			-9
+		],
+		"tag": "weapon",
+		"hides": []
 	}
 }

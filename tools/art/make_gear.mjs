@@ -854,6 +854,50 @@ for (const t of TIERS) {
     }
   }
 }
+// --- Boss uniques: each inspired by its boss, with its own glow -----------------------
+const UNIQUES = {
+  // The Acolyte's black-sun scepter: a blackened rod, a broken sun of five gold rays around a
+  // dark core that burns gold.
+  unique_acolyte: { frame: HAND_R, glow: "#ffcf6a", build(f, s) {
+    s.box(2, 2, f.z0 - 2, 3, 3, f.z1 + 11, C.DARK).box(2, 2, f.z0, 3, 3, f.z1, C.RED_D);
+    for (const z of [f.z1 + 3, f.z1 + 7]) s.box(1, 1, z, 4, 4, z, C.GOLD);
+    const z = f.z1 + 12;
+    s.box(0, 0, z, 5, 5, z + 4, C.DARK_D).box(1, 1, z + 1, 4, 4, z + 3, GLOW);
+    for (const [x, y] of [[2, -4], [7, 0], [6, 6], [-2, 6], [-3, 0]]) s.box(Math.min(2, x), Math.min(2, y), z + 2, Math.max(3, x), Math.max(3, y), z + 2, C.GOLD); // rays
+    s.remove(4, -1, z + 2, 5, 0, z + 2); // the sun is broken
+    s.box(2, 2, z + 5, 3, 3, z + 7, C.GOLD_L);
+  } },
+  // Vaelthar's staff: a pale twisting shaft, a halo of gold around a violet eye, tendrils below it.
+  unique_vaelthar: { frame: HAND_R, glow: "#c07bff", build(f, s) {
+    for (let y = -16; y <= 26; y++) s.box(2 + ((y >> 2) & 1), y, 2, 3 + ((y >> 2) & 1), y, 3, (y & 3) === 0 ? C.GOLD_D : C.WHITE);
+    const cy = 32;
+    for (let a = 0; a < 40; a++) s.put(2 + Math.round(Math.cos((a / 40) * Math.PI * 2) * 6), cy + Math.round(Math.sin((a / 40) * Math.PI * 2) * 6), 2, C.GOLD);
+    s.box(1, cy - 2, 2, 4, cy + 2, 3, GLOW).box(2, cy - 1, 4, 3, cy, 4, C.EBONY); // the eye
+    for (const x of [-1, 2, 5]) for (let k = 0; k < 5; k++) s.put(x + (k & 1), 26 - k, 3 + (k >> 1), k === 4 ? GLOW : C.CRYSTAL_D); // tendrils
+  } },
+  // Nhazar's greatsword: a dark blade split by red runes, chains wound round the hilt and a
+  // fanged mouth at the guard.
+  unique_nhazar: { frame: HAND_R, glow: "#ff3355", build(f, s) {
+    s.box(2, 2, f.z0 - 7, 3, 3, f.z0 - 6, C.GOLD).box(2, 2, f.z0 - 5, 3, 3, f.z1, C.BLACK_LEATHER);
+    for (let z = f.z0 - 5; z <= f.z1; z += 2) s.box(1, 1, z, 4, 4, z, C.IRON_D); // chains
+    s.box(2, -5, f.z1 + 1, 3, 10, f.z1 + 2, C.DARK_D).box(2, 0, f.z1 + 2, 3, 5, f.z1 + 2, C.RED); // guard, its mouth
+    for (const y of [1, 3]) s.put(2, y, f.z1 + 3, C.WHITE).put(3, y + 1, f.z1 + 3, C.WHITE); // fangs
+    const len = 28;
+    s.box(2, 1, f.z1 + 3, 2, 6, f.z1 + 2 + len, C.DARK);
+    s.box(2, 6, f.z1 + 3, 2, 6, f.z1 + 2 + len, C.DARK_L).box(2, 1, f.z1 + 3, 2, 1, f.z1 + 2 + len, C.DARK_L);
+    for (let z = f.z1 + 4; z < f.z1 + len; z += 2) s.put(2, 3 + (z & 1), z, GLOW); // runes down the middle
+    s.box(2, 2, f.z1 + 3 + len, 2, 5, f.z1 + 3 + len, C.DARK).box(2, 3, f.z1 + 4 + len, 2, 4, f.z1 + 4 + len, C.DARK_L);
+  } },
+};
+for (const [id, u] of Object.entries(UNIQUES)) {
+  const sh = new Shape();
+  u.build(u.frame, sh);
+  write(`${outDir}/w_${id}.vox`, sh.size(), sh.voxels(), { ...PALETTE, [GLOW]: u.glow });
+  const mn = sh.min();
+  table[`w_${id}`] = { file: resPath(`w_${id}`), part: u.frame.part, offset: u.frame.origin.map((o, i) => o + mn[i]), tag: "weapon", hides: [] };
+  looks[id] = { look: [`w_${id}`] };
+}
+
 fs.writeFileSync(jsonPath, JSON.stringify(table, null, "\t") + "\n");
 
 // Every base of a tier that has models gets them; others keep what they have.
