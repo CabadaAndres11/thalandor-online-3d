@@ -4,9 +4,11 @@ extends Control
 
 signal play_requested()
 signal quit_requested()
+signal options_requested()
 
 var play_button: Button
 var quit_button: Button
+var options_button: Button
 var version_label: Label
 
 
@@ -44,6 +46,10 @@ func _init() -> void:
 	play_button.custom_minimum_size.y = 48
 	play_button.pressed.connect(play_requested.emit)
 	box.add_child(play_button)
+	options_button = Button.new()
+	options_button.text = tr("MENU_OPTIONS")
+	options_button.pressed.connect(options_requested.emit)
+	box.add_child(options_button)
 	quit_button = Button.new()
 	quit_button.text = tr("BTN_QUIT")
 	quit_button.pressed.connect(quit_requested.emit)

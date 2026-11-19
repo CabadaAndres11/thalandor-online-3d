@@ -461,3 +461,25 @@ func test_i_opens_the_inventory_beside_the_character_window() -> void:
 	_press("window_inventory")
 	assert_false(main.inventory_window.visible)
 	assert_true(main.character_window.visible)
+
+
+func test_options_from_title_saves_on_close() -> void:
+	main.title.options_requested.emit()
+	assert_true(main.options_window.visible)
+	main.options_window.set_quality(GraphicsQuality.LOW)
+	main.options_window.close_button.pressed.emit()
+	assert_false(main.options_window.visible)
+	assert_eq(SettingsStore.load_from(SETTINGS).quality, GraphicsQuality.LOW)
+
+
+func test_options_quality_reaches_the_game() -> void:
+	main.settings.quality = GraphicsQuality.LOW
+	main._on_play("Prueba")
+	await wait_physics_frames(3)
+	assert_eq(main.game.arena.quality, GraphicsQuality.LOW, "a new game uses the saved quality")
+	main.pause_menu.visible = true
+	main.pause_menu.options_requested.emit()
+	main.options_window.set_quality(GraphicsQuality.HIGH)
+	assert_eq(main.game.arena.quality, GraphicsQuality.HIGH)
+	await wait_process_frames(1)
+	assert_true(main.game.input_blocked, "options block input")

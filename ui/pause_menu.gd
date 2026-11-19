@@ -5,10 +5,12 @@ extends Control
 signal resume_requested()
 signal leave_requested()
 signal open_group_requested()
+signal options_requested()
 
 var open_group_button: Button
 var code_label: Label
 var copy_button: Button
+var options_button: Button
 var _hint: Label
 var _code: String = ""
 
@@ -64,6 +66,11 @@ func _init() -> void:
 	copy_button.visible = false
 	copy_button.pressed.connect(_on_copy)
 	code_row.add_child(copy_button)
+
+	options_button = Button.new()
+	options_button.text = tr("MENU_OPTIONS")
+	options_button.pressed.connect(func() -> void: options_requested.emit())
+	box.add_child(options_button)
 
 	var leave := Button.new()
 	leave.text = tr("MENU_LEAVE")

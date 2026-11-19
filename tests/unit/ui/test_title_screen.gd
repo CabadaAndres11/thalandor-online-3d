@@ -113,3 +113,19 @@ func test_dialog_ask_text_returns_text_or_empty() -> void:
 	dialog.ask_text("Otro nombre", "Gemelo")
 	dialog.cancel_button.pressed.emit()
 	assert_signal_emitted_with_parameters(dialog, "text_answered", [""])
+
+
+func test_title_has_options_button() -> void:
+	var title := TitleScreen.new()
+	_host(title)
+	watch_signals(title)
+	title.options_button.pressed.emit()
+	assert_signal_emitted(title, "options_requested")
+
+
+func test_pause_menu_has_options_button() -> void:
+	var menu := PauseMenu.new()
+	_host(menu)
+	watch_signals(menu)
+	menu.options_button.pressed.emit()
+	assert_signal_emitted(menu, "options_requested")

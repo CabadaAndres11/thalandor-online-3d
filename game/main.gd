@@ -29,6 +29,7 @@ var combat_hud: CombatHud
 var party_frames: PartyFrames
 var downed_overlay: DownedOverlay
 var pause_menu: PauseMenu
+var options_window: OptionsWindow
 var abilities_window: AbilitiesWindow
 var class_choice_window: ClassChoiceWindow
 var character_window: CharacterWindow
@@ -57,6 +58,8 @@ func _ready() -> void:
 	add_child(ItemIcons.new()) # renders item icons for every window
 	InputSetup.ensure_actions()
 	settings = SettingsStore.load_from(settings_path)
+	SettingsApplier.ensure_buses()
+	SettingsApplier.apply_all(settings, get_viewport())
 	store = CharacterStore.new(characters_dir)
 	abilities = AbilityDB.load_default()
 	_ui = CanvasLayer.new()
@@ -70,6 +73,7 @@ func _ready() -> void:
 	title.theme = theme
 	title.play_requested.connect(_show_select)
 	title.quit_requested.connect(_quit)
+	title.options_requested.connect(_show_options)
 	_add_screen(title)
 
 	select_screen = CharacterSelectScreen.new()
@@ -175,7 +179,15 @@ func _ready() -> void:
 	pause_menu.resume_requested.connect(_on_resume)
 	pause_menu.leave_requested.connect(_leave_game)
 	pause_menu.open_group_requested.connect(_on_open_group)
+	pause_menu.options_requested.connect(_show_options)
 	_ui.add_child(pause_menu)
+
+	options_window = OptionsWindow.new()
+	options_window.theme = theme
+	options_window.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	options_window.settings_changed.connect(_on_settings_changed)
+	options_window.closed.connect(_on_options_closed)
+	_ui.add_child(options_window)
 
 	dialog = MessageDialog.new()
 	dialog.theme = theme
@@ -726,7 +738,7 @@ func _on_typing_changed(_is_typing: bool) -> void:
 ## (a click on a menu button must not attack).
 func _update_input_block() -> void:
 	if game != null:
-		game.input_blocked = chat.is_typing() or pause_menu.visible or dialog.visible or class_choice_window.visible \
+		game.input_blocked = chat.is_typing() or pause_menu.visible or options_window.visible or dialog.visible or class_choice_window.visible \
 			or trainer_menu.visible or upgrade_window.visible
 		game.attacks_blocked = _panel_open()
 
@@ -736,6 +748,21 @@ func _process(_delta: float) -> void:
 	# Walking away from the merchant closes the trade.
 	if merchant_window.visible and game != null and game.client != null 			and str(game.interaction().action) != NpcInteraction.TRADE:
 		merchant_window.visible = false
+
+
+## Options window (from the title or the pause menu): changes apply live, saved on close.
+func _show_options() -> void:
+	options_window.open(settings)
+
+
+func _on_settings_changed() -> void:
+	SettingsApplier.apply_all(settings, get_viewport())
+	if game != null:
+		game.set_graphics_quality(settings.quality)
+
+
+func _on_options_closed() -> void:
+	settings.save_to(settings_path)
 
 
 func _on_resume() -> void:
@@ -748,6 +775,7 @@ func _start_game() -> void:
 	if net_mode != "":
 		game.net_mode = net_mode
 	add_child(game)
+	game.set_graphics_quality(settings.quality)
 	game.session_ended.connect(_on_session_ended)
 	if _playing != null:
 		game.character_bar = _playing.bar.duplicate()

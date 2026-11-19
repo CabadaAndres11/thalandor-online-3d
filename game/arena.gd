@@ -115,7 +115,7 @@ func _apply_lighting() -> void:
 	_world_env.camera_attributes = AmbienceBuilder.camera_attributes(a, quality)
 	if _particles != null:
 		remove_child(_particles)
-		_particles.queue_free()
+		_particles.free()
 	_particles = AmbienceBuilder.make_particles(a, quality)
 	if _particles != null:
 		_particles.position = _follow
