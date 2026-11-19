@@ -9,7 +9,10 @@
 // the chest) and a light (top edges, cheekbones) tone, so it reads modelled rather
 // than flat; HumanRig tints them per character (skin, eyes, hair, shirt, trousers).
 import fs from "node:fs";
+import { fileURLToPath } from "node:url";
 import { write, Shape, SHADE, LIGHT, TINT_TROUSERS, TINT_SKIN, TINT_EYES, TINT_HAIR, TINT_PRIMARY } from "./vox.mjs";
+import { humanV2 } from "./human_v2.mjs";
+export { humanV2 };
 
 const T = TINT_TROUSERS, SK = TINT_SKIN, EY = TINT_EYES, HR = TINT_HAIR, P = TINT_PRIMARY;
 const BOOT = 30, BELT = 31, BUCKLE = 32, WHITE = 33, MOUTH = 34, SOLE = 35, BOOT_D = 36, BOOT_L = 37, BELT_D = 38;
@@ -28,7 +31,7 @@ function shadeSides(s, x0, y0, z0, x1, y1, z1, tint) {
   }
 }
 
-function human() {
+export function human() {
   const parts = {};
 
   // Pelvis and belt (pivot at the hip joints' height).
@@ -129,19 +132,28 @@ function human() {
   return { parts, palette: PALETTE };
 }
 
-const [outDir] = process.argv.slice(2);
-if (!outDir) {
-  console.error("usage: node make_humans.mjs <out dir>");
-  process.exit(1);
+// Writes one .vox per part and <name>.json (pivots, offsets, parents) for Godot.
+function writeRig(name, build, outDir, resDir) {
+  fs.mkdirSync(outDir, { recursive: true });
+  for (const f of fs.readdirSync(outDir)) if (f.startsWith(name + "_") && f.endsWith(".vox")) fs.unlinkSync(`${outDir}/${f}`);
+  const { parts, palette } = build();
+  const rig = { parts: {} };
+  for (const [part, { shape, pivot, parent }] of Object.entries(parts)) {
+    const file = `${name}_${part}.vox`;
+    write(`${outDir}/${file}`, shape.size(), shape.voxels(), palette);
+    rig.parts[part] = { file: `${resDir}/${file}`, pivot, offset: shape.min(), ...(parent ? { parent } : {}) };
+  }
+  fs.writeFileSync(`${outDir}/${name}.json`, JSON.stringify(rig, null, "\t") + "\n");
+  console.log(`wrote ${name}: ${Object.keys(parts).join(", ")}`);
 }
-fs.mkdirSync(outDir, { recursive: true });
-for (const f of fs.readdirSync(outDir)) if (f.startsWith("human_") && f.endsWith(".vox")) fs.unlinkSync(`${outDir}/${f}`);
-const { parts, palette } = human();
-const rig = { parts: {} };
-for (const [part, { shape, pivot, parent }] of Object.entries(parts)) {
-  const file = `human_${part}.vox`;
-  write(`${outDir}/${file}`, shape.size(), shape.voxels(), palette);
-  rig.parts[part] = { file: `res://assets/characters/vox/${file}`, pivot, offset: shape.min(), ...(parent ? { parent } : {}) };
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  // node make_humans.mjs <v1 out dir> [<v2 out dir>]
+  const [outDir, outDirV2 = outDir.replace(/vox\/?$/, "vox_v2")] = process.argv.slice(2);
+  if (!outDir) {
+    console.error("usage: node make_humans.mjs <out dir> [<v2 out dir>]");
+    process.exit(1);
+  }
+  writeRig("human", human, outDir, "res://assets/characters/vox");
+  writeRig("human_v2", humanV2, outDirV2, "res://assets/characters/vox_v2");
 }
-fs.writeFileSync(`${outDir}/human.json`, JSON.stringify(rig, null, "\t") + "\n");
-console.log(`wrote human: ${Object.keys(parts).join(", ")}`);
