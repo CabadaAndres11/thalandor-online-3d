@@ -7,12 +7,14 @@ const VOX_PATH := "res://assets/props/torch.vox"
 const MODEL_SCALE := 0.5
 const LIGHT_HEIGHT := 1.55
 const LIGHT_COLOR := Color("#ff9548")
-const LIGHT_ENERGY := 2.2
-const LIGHT_RANGE := 7.0
+const LIGHT_ENERGY := 3.0
+const LIGHT_RANGE := 9.0
 
 var model: MeshInstance3D
 var light: OmniLight3D
 var flame: GPUParticles3D
+## Set by the ambience (Ambience.torch_energy): torches barely show by day.
+var energy_scale: float = 1.0
 var _phase: float = 0.0
 var _time: float = 0.0
 
@@ -29,6 +31,7 @@ func _init() -> void:
 	model.name = "Model"
 	model.mesh = VoxMesher.cached(VOX_PATH, {})
 	model.scale = Vector3.ONE * MODEL_SCALE
+	model.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF # the bowl would hide its own light
 	if model.mesh != null:
 		var size := model.mesh.get_aabb().size * MODEL_SCALE
 		model.position = Vector3(-size.x * 0.5, 0, -size.z * 0.5)
@@ -41,6 +44,8 @@ func _init() -> void:
 	light.light_energy = LIGHT_ENERGY
 	light.omni_range = LIGHT_RANGE
 	light.omni_attenuation = 1.2
+	light.omni_shadow_mode = OmniLight3D.SHADOW_CUBE
+	light.light_volumetric_fog_energy = 0.0 # shadowed lights in volumetric fog leave artefacts
 	add_child(light)
 
 	flame = _make_flame()
@@ -60,7 +65,7 @@ func set_quality(q: int) -> void:
 func _process(delta: float) -> void:
 	_time += delta
 	var f := flicker(_time, _phase)
-	light.light_energy = LIGHT_ENERGY * f
+	light.light_energy = LIGHT_ENERGY * energy_scale * f
 	light.omni_range = LIGHT_RANGE * (0.97 + 0.03 * f)
 
 

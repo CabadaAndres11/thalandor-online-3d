@@ -47,3 +47,9 @@ func test_present_section_turns_effect_on() -> void:
 func test_unknown_id_falls_back() -> void:
 	var a := Ambience.load_id("nope")
 	assert_eq(a.id, Ambience.DEFAULT_ID)
+
+
+func test_torch_energy_from_data() -> void:
+	assert_almost_eq(Ambience.from_dict("x", {}).torch_energy, 1.0, 0.001)
+	assert_almost_eq(Ambience.from_dict("x", {"torches": {"energy": 0.3}}).torch_energy, 0.3, 0.001)
+	assert_lt(Ambience.load_id("exterior_dia").torch_energy, Ambience.load_id("mazmorra_noche").torch_energy)

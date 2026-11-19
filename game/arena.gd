@@ -122,3 +122,4 @@ func _apply_lighting() -> void:
 		add_child(_particles)
 	for torch: Torch in torches:
 		torch.set_quality(quality)
+		torch.energy_scale = a.torch_energy

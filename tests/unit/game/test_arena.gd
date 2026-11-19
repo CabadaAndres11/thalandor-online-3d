@@ -105,3 +105,13 @@ func test_real_arena_has_ambience_and_torches() -> void:
 	arena.build(Arena.load_layout())
 	assert_eq(arena.ambience_id, "exterior_dia")
 	assert_gte(arena.torches.size(), 6)
+
+
+func test_ambience_sets_torch_energy() -> void:
+	var arena: Arena = add_child_autofree(Arena.new())
+	var l := layout.duplicate()
+	l["torches"] = [[0, 0]]
+	arena.build(l)
+	assert_almost_eq(arena.torches[0].energy_scale, Ambience.load_id("exterior_dia").torch_energy, 0.001)
+	arena.set_ambience("mazmorra_noche")
+	assert_almost_eq(arena.torches[0].energy_scale, Ambience.load_id("mazmorra_noche").torch_energy, 0.001)

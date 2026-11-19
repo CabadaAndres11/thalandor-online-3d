@@ -49,3 +49,17 @@ func test_torch_has_model_and_flame() -> void:
 	assert_not_null(torch.flame)
 	assert_not_null(torch.model.mesh)
 	assert_almost_eq(torch.light.position.y, 1.55, 0.01)
+
+
+func test_energy_scale_and_no_fog_scattering() -> void:
+	var torch: Torch = add_child_autofree(Torch.new())
+	torch.energy_scale = 0.25
+	torch._process(0.1)
+	assert_lt(torch.light.light_energy, Torch.LIGHT_ENERGY * 0.25 * 1.16)
+	assert_eq(torch.light.light_volumetric_fog_energy, 0.0)
+
+
+func test_model_does_not_shadow_its_own_light() -> void:
+	var torch: Torch = add_child_autofree(Torch.new())
+	assert_eq(torch.model.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
+	assert_eq(torch.light.omni_shadow_mode, OmniLight3D.SHADOW_CUBE)

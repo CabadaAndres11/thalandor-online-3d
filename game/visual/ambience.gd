@@ -57,6 +57,9 @@ var particles: String = "none"
 var particle_amount: int = 0
 var particle_color := Color.WHITE
 
+## Multiplies the torches' light (low by day, full at night).
+var torch_energy: float = 1.0
+
 
 static func ids() -> PackedStringArray:
 	var out := PackedStringArray()
@@ -133,6 +136,7 @@ static func from_dict(ambience_id: String, d: Dictionary) -> Ambience:
 			a.particles = kind
 			a.particle_amount = maxi(0, int(_num(d.particles, "amount", 0)))
 			a.particle_color = _color(d.particles, "color", a.particle_color)
+	a.torch_energy = maxf(0.0, _num(_section(d, "torches"), "energy", a.torch_energy))
 	return a
 
 
