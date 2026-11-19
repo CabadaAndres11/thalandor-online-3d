@@ -483,3 +483,11 @@ func test_options_quality_reaches_the_game() -> void:
 	assert_eq(main.game.arena.quality, GraphicsQuality.HIGH)
 	await wait_process_frames(1)
 	assert_true(main.game.input_blocked, "options block input")
+
+
+func test_ambience_command_is_local() -> void:
+	main._on_play("Prueba")
+	await wait_physics_frames(3)
+	main._on_chat_submitted("/ambiente mazmorra_noche")
+	assert_eq(main.game.arena.ambience_id, "mazmorra_noche")
+	assert_true(main.chat.has_message(tr("AMBIENCE_SET") % "mazmorra_noche"))

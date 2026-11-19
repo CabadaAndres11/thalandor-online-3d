@@ -889,3 +889,6 @@ OPTIONS_VOL_SFX,Efectos
 OPTIONS_VOL_UI,Interfaz
 OPTIONS_MUTE,Silenciar todo
 BTN_RESET,Restablecer
+AMBIENCE_LIST,"Ambiente: %s. Disponibles: %s"
+AMBIENCE_SET,"Ambiente cambiado a %s (solo en tu pantalla)"
+AMBIENCE_UNKNOWN,"No existe el ambiente «%s». Disponibles: %s"
