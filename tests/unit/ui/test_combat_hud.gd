@@ -289,3 +289,38 @@ func test_key_icons_follow_the_binding() -> void:
 	var space := InputEventKey.new()
 	space.physical_keycode = KEY_SPACE
 	InputMap.action_add_event("dodge", space)
+
+
+func test_potion_counts_and_cooldown() -> void:
+	var c := _client("mage")
+	var db := ItemDB.load_default()
+	var h := ItemRoll.new_item("potion_health", 1)
+	h.count = 7
+	c.inventory.add(h, db)
+	var hud := _hud(c)
+	hud.advance(0.0)
+	assert_eq(hud.potion_count("health"), 7)
+	assert_eq(hud.potion_count("resource"), 0)
+	assert_eq(hud.potion_cooldown_ratio(), 0.0)
+	c._potion_ready_ms = c._clock_ms + 15000.0
+	hud.advance(0.0)
+	assert_almost_eq(hud.potion_cooldown_ratio(), 0.5, 0.01)
+
+
+func test_durability_warning() -> void:
+	var c := _client("warrior")
+	var it := ItemRoll.new_item("plate_chest_t1", 1)
+	c.inventory.equipment["chest"] = it
+	var hud := _hud(c)
+	hud.advance(0.0)
+	assert_false(hud.durability_warning())
+	it.durability = 20
+	hud.advance(0.0)
+	assert_true(hud.durability_warning())
+
+
+func test_potions_fit_the_screen() -> void:
+	var hud := _hud(_client("mage"))
+	hud.advance(0.0)
+	await wait_process_frames(2)
+	assert_true(Rect2(Vector2.ZERO, SCREEN).encloses(hud.potion_rect()), "%s" % hud.potion_rect())

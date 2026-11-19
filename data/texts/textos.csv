@@ -752,3 +752,7 @@ ITEM_POTION_RESOURCE_DESC,"Recupera el 35 % del recurso (R). Recarga compartida 
 INV_TITLE,Inventario
 INV_GOLD,%d oro
 INV_HINT,Clic derecho: equipar o usar
+HUD_KEY_POTION_HEALTH,Q
+HUD_KEY_POTION_RESOURCE,R
+HUD_REPAIR,¡Reparar!
+HUD_REPAIR_DESC,Tu equipo está casi roto: repáralo en el mercader.

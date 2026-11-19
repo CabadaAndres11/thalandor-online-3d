@@ -56,6 +56,10 @@ var _death_label: Label
 var _boss: VBoxContainer
 var _boss_label: Label
 var _boss_hp: ProgressBar
+## Potions (Q health, R resource) and the repair warning, right of the ability bar.
+var _extras: HBoxContainer
+var _potions: Dictionary = {} # kind -> {"panel", "icon", "count", "sweep"}
+var _repair: Label
 
 
 func _init() -> void:
@@ -117,6 +121,41 @@ func _init() -> void:
 		_slots.append(_make_slot(row))
 	xp_bar = XpBar.new()
 	_column.add_child(xp_bar)
+
+	_extras = HBoxContainer.new()
+	_extras.mouse_filter = MOUSE_FILTER_IGNORE
+	_extras.add_theme_constant_override("separation", int(GAP))
+	_extras.anchor_left = 0.5
+	_extras.anchor_right = 0.5
+	_extras.anchor_top = 1.0
+	_extras.anchor_bottom = 1.0
+	_extras.offset_left = width / 2.0 + 14.0
+	_extras.offset_bottom = -MARGIN_BOTTOM - 14.0
+	_extras.grow_vertical = GROW_DIRECTION_BEGIN
+	add_child(_extras)
+	for kind: String in ["health", "resource"]:
+		var slot := _make_slot(_extras)
+		(slot.icon as TextureRect).texture = ItemIcons.icon("potion_" + kind)
+		(slot.key as Label).text = tr("HUD_KEY_POTION_" + kind.to_upper())
+		var count := Label.new()
+		count.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		count.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+		count.add_theme_font_size_override("font_size", 13)
+		count.add_theme_constant_override("outline_size", 4)
+		count.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+		count.mouse_filter = MOUSE_FILTER_IGNORE
+		(slot.panel as Control).add_child(count)
+		slot["count"] = count
+		_potions[kind] = slot
+	_repair = Label.new()
+	_repair.text = tr("HUD_REPAIR")
+	_repair.add_theme_color_override("font_color", Color("#ff6b5e"))
+	_repair.add_theme_font_size_override("font_size", 14)
+	_repair.tooltip_text = tr("HUD_REPAIR_DESC")
+	_repair.mouse_filter = MOUSE_FILTER_PASS
+	_repair.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_repair.visible = false
+	_extras.add_child(_repair)
 
 	_death = PanelContainer.new()
 	_death.mouse_filter = MOUSE_FILTER_IGNORE
@@ -240,6 +279,7 @@ func advance(dt: float) -> void:
 		sweep.anchor_top = 1.0 - ratio
 		sweep.offset_top = 0.0
 		(s.icon as TextureRect).modulate = DIM if slot_dimmed(i) else Color.WHITE
+	_update_items()
 	var dead := int(me.life) == CombatEntity.DEAD
 	if dead and _respawn_at < 0.0:
 		_respawn_at = _clock + _client.balance.respawn_s
@@ -248,6 +288,51 @@ func advance(dt: float) -> void:
 	_death.visible = dead
 	if dead:
 		_death_label.text = tr("HUD_FALLEN") % maxi(0, ceili(_respawn_at - _clock))
+
+
+## Potion counts and their shared cooldown; the repair warning when some worn item is worn out.
+func _update_items() -> void:
+	var ratio := potion_cooldown_ratio()
+	for kind: String in _potions:
+		var s: Dictionary = _potions[kind]
+		var n := potion_count(kind)
+		(s.count as Label).text = str(n) if n > 0 else ""
+		(s.icon as TextureRect).modulate = DIM if n == 0 or ratio > 0.0 else Color.WHITE
+		var sweep: ColorRect = s.sweep
+		sweep.visible = ratio > 0.0
+		sweep.anchor_top = 1.0 - ratio
+		sweep.offset_top = 0.0
+	_repair.visible = durability_warning()
+
+
+func potion_count(kind: String) -> int:
+	if _client == null:
+		return 0
+	var db := ItemDB.load_default()
+	var n := 0
+	for it: Variant in _client.inventory.bag:
+		if it != null and str(db.base(it.base_id).get("potion", "")) == kind:
+			n += int(it.count)
+	return n
+
+
+## 1 just after drinking, 0 when a potion can be drunk again.
+func potion_cooldown_ratio() -> float:
+	if _client == null:
+		return 0.0
+	var total := float((ItemDB.load_default().loot().get("potion", {}) as Dictionary).get("cooldown_s", 30.0))
+	return clampf(_client.potion_cooldown_left() / total, 0.0, 1.0) if total > 0.0 else 0.0
+
+
+func durability_warning() -> bool:
+	if _client == null:
+		return false
+	var warn := int(ItemDB.load_default().loot().get("durability_warn", 25))
+	return _client.inventory.equipment.values().any(func(it: Item) -> bool: return it.durability < warn)
+
+
+func potion_rect() -> Rect2:
+	return _extras.get_global_rect()
 
 
 func _on_combat_event(ev: Array) -> void:
