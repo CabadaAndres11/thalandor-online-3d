@@ -33,6 +33,8 @@ var abilities_window: AbilitiesWindow
 var class_choice_window: ClassChoiceWindow
 var character_window: CharacterWindow
 var inventory_window: InventoryWindow
+var merchant_window: MerchantWindow
+var _merchant_stock: Array = []
 var talents_window: TalentsWindow
 var trainer_menu: TrainerMenu
 var upgrade_window: UpgradeWindow
@@ -139,7 +141,15 @@ func _ready() -> void:
 	inventory_window.theme = theme
 	inventory_window.item_action.connect(_request_item)
 	inventory_window.visibility_changed.connect(_dock_windows)
+	inventory_window.sell_requested.connect(_on_sell_requested)
 	_ui.add_child(inventory_window)
+	merchant_window = MerchantWindow.new()
+	merchant_window.theme = theme
+	merchant_window.buy_requested.connect(func(i: int) -> void: _request_item("buy", [i]))
+	merchant_window.repair_requested.connect(func() -> void: _request_item("repair", []))
+	merchant_window.tab_changed.connect(func(selling: bool) -> void: inventory_window.sell_mode = selling)
+	merchant_window.visibility_changed.connect(_on_merchant_visibility)
+	_ui.add_child(merchant_window)
 
 	talents_window = TalentsWindow.new()
 	talents_window.theme = theme
@@ -238,9 +248,40 @@ func _show_inventory() -> void:
 	inventory_window.show_for(c.inventory, c.class_id, c.progress.level)
 
 
-## The character window makes room for the inventory docked on the right.
+## The character and merchant windows make room for the inventory docked on the right.
 func _dock_windows() -> void:
-	character_window.set_right_margin(inventory_window.reserved_width() if inventory_window.visible else 0.0)
+	var px := inventory_window.reserved_width() if inventory_window.visible else 0.0
+	character_window.set_right_margin(px)
+	merchant_window.set_right_margin(px)
+
+
+## The host sent what the merchant sells: the merchant opens with the inventory beside it.
+func _on_merchant_stock(items: Array) -> void:
+	if game == null or game.client == null:
+		return
+	_merchant_stock = items
+	for w: Control in _panel_windows():
+		w.visible = false
+	var c := game.client
+	merchant_window.show_for(items, c.inventory, c.class_id, c.progress.level)
+	_show_inventory()
+
+
+func _on_merchant_visibility() -> void:
+	if not merchant_window.visible:
+		inventory_window.sell_mode = false
+
+
+## Right click in the inventory at the merchant: sell (rare or better asks first).
+func _on_sell_requested(index: int) -> void:
+	var it: Item = game.client.inventory.bag[index] if index < game.client.inventory.bag.size() else null
+	if it == null:
+		return
+	if not MerchantWindow.needs_confirm(it):
+		_request_item("sell", [index])
+		return
+	_pending = {"action": "sell", "index": index}
+	dialog.ask(tr("MERCHANT_SELL_CONFIRM") % [tr(str(ItemDB.load_default().base(it.base_id).get("name", ""))), Merchant.sell_price(it, ItemDB.load_default())])
 
 
 func _request_item(action: String, args: Array) -> void:
@@ -255,7 +296,7 @@ func _modal_open() -> bool:
 
 ## Esc: closes whatever window is open and says whether there was one.
 func _close_open_window() -> bool:
-	for w: Control in [class_choice_window, trainer_menu, upgrade_window] + _panel_windows() + [inventory_window]:
+	for w: Control in [class_choice_window, trainer_menu, upgrade_window] + _panel_windows() + [merchant_window, inventory_window]:
 		if w.visible:
 			if w == upgrade_window and upgrade_window.mandatory:
 				return true # the choice cannot be skipped
@@ -295,6 +336,8 @@ func _on_interact() -> void:
 	match str(r.action):
 		NpcInteraction.CHOOSE_CLASS:
 			class_choice_window.show_for(game.client.appearance)
+		NpcInteraction.TRADE:
+			_request_item("merchant_open", []) # the host answers with the stock
 		NpcInteraction.TALK:
 			var c := game.client
 			var me: Dictionary = c.combat.get(c.my_id, {})
@@ -453,6 +496,8 @@ func _on_inventory_changed() -> void:
 		return
 	if inventory_window.visible:
 		_show_inventory()
+	if merchant_window.visible:
+		merchant_window.show_for(_merchant_stock, game.client.inventory, game.client.class_id, game.client.progress.level)
 	if character_window.visible:
 		_show_character()
 	if _playing == null:
@@ -593,6 +638,8 @@ func _import(path: String, new_name: String) -> void:
 func _on_dialog_answered(yes: bool) -> void:
 	var pending := _pending
 	_pending = {}
+	if pending.get("action", "") == "sell" and yes:
+		_request_item("sell", [int(pending.index)])
 	if pending.get("action", "") == "reset" and yes and game != null and game.client != null:
 		game.client.reset_progress(str(pending.what))
 	if pending.get("action", "") == "delete" and yes:
@@ -686,6 +733,9 @@ func _update_input_block() -> void:
 
 func _process(_delta: float) -> void:
 	_update_input_block()
+	# Walking away from the merchant closes the trade.
+	if merchant_window.visible and game != null and game.client != null 			and str(game.interaction().action) != NpcInteraction.TRADE:
+		merchant_window.visible = false
 
 
 func _on_resume() -> void:
@@ -718,6 +768,7 @@ func _attach_client() -> void:
 	client.class_changed.connect(_on_class_changed)
 	client.progress_changed.connect(_on_progress_changed)
 	client.inventory_changed.connect(_on_inventory_changed)
+	client.merchant_stock_received.connect(_on_merchant_stock)
 	client.leveled_up.connect(_on_leveled_up)
 	client.upgrade_changed.connect(_on_upgrade_changed)
 	client.arena_level_changed.connect(_on_arena_level_changed)

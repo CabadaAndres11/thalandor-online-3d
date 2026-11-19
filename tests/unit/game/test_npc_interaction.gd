@@ -91,3 +91,12 @@ func test_trainer_options_in_combat_have_no_resets() -> void:
 func test_revive_still_beats_trainer() -> void:
 	var allies := [{"position": Vector3(21.0, 0, 20.5), "life": CombatEntity.DOWNED}]
 	assert_eq(_decide(Vector3(20.5, 0, 20.5), "warrior", allies).action, NpcInteraction.NONE)
+
+
+func test_interact_opens_merchant() -> void:
+	var m := CollisionMap.from_layout({"size": [40, 40], "spawn": [20, 20], "blocks": [],
+		"npcs": [{"id": "brann", "at": [10, 10], "facing": 0}, {"id": "merchant", "at": [22, 20], "facing": 0}]})
+	var r := NpcInteraction.decide(m, Vector3(20.5, 0, 20.5), "mage", [], 2.0)
+	assert_eq(r, {"action": NpcInteraction.TRADE, "npc": "merchant"})
+	r = NpcInteraction.decide(m, Vector3(20.5, 0, 20.5), "villager", [], 2.0)
+	assert_eq(r.action, NpcInteraction.TRADE, "villagers can trade too")

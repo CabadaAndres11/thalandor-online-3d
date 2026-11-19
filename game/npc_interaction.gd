@@ -7,6 +7,7 @@ extends RefCounted
 const NONE := ""
 const CHOOSE_CLASS := "choose_class"
 const TALK := "talk"
+const TRADE := "trade"
 
 
 ## allies: [{position: Vector3, life: int}] (other players); own_alive: false while this
@@ -20,7 +21,8 @@ static func decide(map: CollisionMap, pos: Vector3, class_id: String, allies: Ar
 			return {"action": NONE, "npc": ""}
 	var npc := NpcDB.load_default().near_with_role(map, pos, "class_trainer")
 	if npc == "":
-		return {"action": NONE, "npc": ""}
+		var merchant := NpcDB.load_default().near_with_role(map, pos, "merchant")
+		return {"action": TRADE, "npc": merchant} if merchant != "" else {"action": NONE, "npc": ""}
 	var villager := not CharacterCatalog.load_default().is_selectable(class_id)
 	return {"action": CHOOSE_CLASS if villager else TALK, "npc": npc}
 
