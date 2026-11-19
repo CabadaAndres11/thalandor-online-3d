@@ -27,6 +27,9 @@ var inventory := Inventory.new()
 var inventory_dirty: bool = false
 ## Tick from which a potion can be drunk again (shared by health and resource potions).
 var potion_ready_tick: int = 0
+## What the merchant offers this player and when it was rolled (-1 = never), see Merchant.
+var merchant_stock: Array = []
+var merchant_tick: int = -1
 ## Evasión mortal: the next combo gain is raised after a dodge.
 var bonus_combo_ready: bool = false
 ## Conditional passive buffs on at the last tick (Passives.CONDITIONAL keys), to send changes only.

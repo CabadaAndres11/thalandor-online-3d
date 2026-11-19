@@ -403,7 +403,7 @@ func test_villager_learns_a_class_from_brann() -> void:
 	main._on_play("Prueba")
 	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
 	assert_eq(main.game.client.class_id, "villager")
-	assert_eq(main.game.npc_count(), 1, "Brann stands in the arena")
+	assert_eq(main.game.npc_count(), 2, "Brann and the merchant stand in the arena")
 	_press("interact")
 	assert_true(main.class_choice_window.visible, "E next to Brann opens the class window")
 	assert_true(main.game.input_blocked)

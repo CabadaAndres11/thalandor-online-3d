@@ -700,3 +700,4 @@ STAT_SPIRIT,%s espíritu
 STAT_ATTACK_POWER_ADD,%s poder de ataque
 STAT_SPELL_POWER_ADD,%s poder de hechizos
 STAT_MAX_RESOURCE_ADD,%s recurso máximo
+NPC_MERCHANT,Mercader
