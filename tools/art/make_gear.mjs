@@ -486,6 +486,28 @@ const ARMOR = {
     return s;
   },
 
+  // The Mage's robe below the waist: down to the ankles, flaring out, with a hem in the trim
+  // color, a front panel and (tier 3) glowing runes along the hem.
+  robe(t, m) {
+    const s = new Shape();
+    const [x0, y0, z0, x1, y1, z1] = BOX.hips;
+    const bottom = y0 - 19;
+    for (let y = y1; y >= bottom; y--) {
+      const f = Math.floor((y1 - y) / 6); // flare
+      s.box(x0 - 1 - f, y, z0 - 1 - f, x1 + 1 + f, y, z1 + 1 + f, m.b);
+      s.box(x0 - 1 - f, y, z0 - 1 - f, x0 - 1 - f, y, z1 + 1 + f, m.d).box(x1 + 1 + f, y, z0 - 1 - f, x1 + 1 + f, y, z1 + 1 + f, m.d);
+      if (y <= y1 - 2 && (y & 1)) s.put(x0 - f, y, z1 + 1 + f, m.d).put(x1 - f + 1, y, z1 + 1 + f, m.d); // folds
+    }
+    s.remove(x0, bottom, z0, x1, y1, z1); // hollow (the legs move inside)
+    const fb = Math.floor((y1 - bottom) / 6);
+    s.box(x0 - 1 - fb, bottom, z1 + 1 + fb, x1 + 1 + fb, bottom + 1, z1 + 1 + fb, m.trim); // hem
+    s.box(x0 - 1 - fb, bottom, z0 - 1 - fb, x1 + 1 + fb, bottom, z0 - 1 - fb, m.trim);
+    for (let y = y1 - 1; y > bottom + 1; y--) { const f = Math.floor((y1 - y) / 6); s.box(-1, y, z1 + 1 + f, 0, y, z1 + 1 + f, m.trim); } // front panel
+    if (t >= 2) for (let y = y1 - 4; y > bottom + 2; y -= 4) { const f = Math.floor((y1 - y) / 6); s.put(-1, y, z1 + 2 + f, m.acc).put(0, y, z1 + 2 + f, m.acc); }
+    if (t >= 3) for (let x = x0 - fb; x <= x1 + fb; x += 2) s.put(x, bottom + 2, z1 + 2 + fb, m.rune);
+    return s;
+  },
+
   // The part of the chest piece over the hips: a skirt (cloth, mail) or tassets (plate).
   skirt(kind, t, m) {
     const s = new Shape();
@@ -598,10 +620,10 @@ const WEAPON = {
   axe(f, s, m, t) {
     s.box(2, 2, f.z0 - 2, 3, 3, f.z1 + 12 + t, m.wood).box(2, 2, f.z0, 3, 3, f.z1, m.grip);
     const z = f.z1 + 8 + t;
-    s.box(2, 4, z, 3, 8 + t, z + 4, m.blade).box(2, 8 + t, z - 1, 3, 9 + t, z + 5, m.edge); // bit
-    s.box(2, -1, z + 1, 3, 1, z + 3, m.dark); // back spike
-    if (t >= 2) s.box(2, 4, z + 2, 3, 4, z + 2, m.gold);
-    if (m.rune) s.put(2, 6, z + 2, m.rune);
+    s.box(2, -3 - t, z, 3, 1, z + 4, m.blade).box(2, -4 - t, z - 1, 3, -3 - t, z + 5, m.edge); // bit, facing forward
+    s.box(2, 4, z + 1, 3, 6, z + 3, m.dark); // back spike
+    if (t >= 2) s.box(2, 1, z + 2, 3, 1, z + 2, m.gold);
+    if (m.rune) s.put(2, -1, z + 2, m.rune);
   },
   mace(f, s, m, t) {
     s.box(2, 2, f.z0 - 2, 3, 3, f.z1 + 9, m.wood).box(2, 2, f.z0, 3, 3, f.z1, m.grip);
@@ -658,11 +680,11 @@ const WEAPON = {
   halberd(f, s, m, t) {
     s.box(2, 2, f.z0 - 12, 3, 3, f.z1 + 24 + t, m.wood).box(2, 2, f.z0 - 2, 3, 3, f.z1, m.grip);
     const z = f.z1 + 16 + t;
-    s.box(2, 4, z, 3, 9 + t, z + 5, m.blade).box(2, 9 + t, z - 1, 3, 10 + t, z + 6, m.edge); // axe blade
-    s.box(2, -1, z + 2, 3, 1, z + 3, m.dark).put(2, -2, z + 3, m.dark); // back hook
+    s.box(2, -4 - t, z, 3, 1, z + 5, m.blade).box(2, -5 - t, z - 1, 3, -4 - t, z + 6, m.edge); // axe blade, facing forward
+    s.box(2, 4, z + 2, 3, 6, z + 3, m.dark).put(2, 7, z + 3, m.dark); // back hook
     s.box(2, 2, z + 9 + t, 3, 3, z + 13 + t, m.blade).box(2, 2, z + 14 + t, 2, 3, z + 14 + t, m.edge); // spear point
     if (t >= 2) s.box(1, 1, z - 2, 4, 4, z - 1, m.gold);
-    if (m.rune) s.put(2, 6, z + 2, m.rune);
+    if (m.rune) s.put(2, -1, z + 2, m.rune);
   },
   // An upright staff through the fist, a crystal in claws on top that grows with the tier.
   staff(f, s, m, t) {
@@ -770,7 +792,7 @@ for (const t of TIERS) {
     const chest = ARMOR.chest(kind, t, m);
     EMBLEMS[cls](chest, t, m, BOX.torso[5] + (kind === "plate" ? 3 : 2));
     add(id("chest"), chest, "torso");
-    add(`${id("chest")}_skirt`, ARMOR.skirt(kind, t, m), "hips");
+    add(`${id("chest")}_skirt`, cls === "mage" ? ARMOR.robe(t, m) : ARMOR.skirt(kind, t, m), "hips");
     looks[id("chest")] = { look: [id("chest"), `${id("chest")}_skirt`] };
     for (const [suffix, part, shape] of ex.chest) { add(`${id("chest")}_${suffix}`, shape, part); looks[id("chest")].look.push(`${id("chest")}_${suffix}`); }
     for (const side of ["left", "right"]) {

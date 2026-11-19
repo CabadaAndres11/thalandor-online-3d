@@ -341,9 +341,9 @@
 		"file": "res://assets/items/vox/mage_chest_t1_skirt.vox",
 		"part": "hips",
 		"offset": [
-			-6,
-			-6,
-			-4
+			-10,
+			-21,
+			-8
 		],
 		"tag": "gear",
 		"hides": []
@@ -788,7 +788,7 @@
 		"part": "hand_right",
 		"offset": [
 			-1,
-			-6,
+			-10,
 			-4
 		],
 		"tag": "weapon",
@@ -865,7 +865,7 @@
 		"part": "hand_right",
 		"offset": [
 			-1,
-			-7,
+			-11,
 			-14
 		],
 		"tag": "weapon",
@@ -1301,9 +1301,9 @@
 		"file": "res://assets/items/vox/mage_chest_t2_skirt.vox",
 		"part": "hips",
 		"offset": [
-			-6,
-			-7,
-			-4
+			-10,
+			-21,
+			-8
 		],
 		"tag": "gear",
 		"hides": []
@@ -1770,7 +1770,7 @@
 		"part": "hand_right",
 		"offset": [
 			-1,
-			-6,
+			-11,
 			-4
 		],
 		"tag": "weapon",
@@ -1847,7 +1847,7 @@
 		"part": "hand_right",
 		"offset": [
 			-2,
-			-7,
+			-12,
 			-14
 		],
 		"tag": "weapon",
@@ -2349,9 +2349,9 @@
 		"file": "res://assets/items/vox/mage_chest_t3_skirt.vox",
 		"part": "hips",
 		"offset": [
-			-6,
-			-8,
-			-4
+			-10,
+			-21,
+			-8
 		],
 		"tag": "gear",
 		"hides": []
@@ -2840,7 +2840,7 @@
 		"part": "hand_right",
 		"offset": [
 			-1,
-			-6,
+			-12,
 			-4
 		],
 		"tag": "weapon",
@@ -2917,7 +2917,7 @@
 		"part": "hand_right",
 		"offset": [
 			-2,
-			-7,
+			-13,
 			-14
 		],
 		"tag": "weapon",
