@@ -563,7 +563,7 @@ const HAND_L = { ...HAND_R, part: "hand_left" };
 function wmats(t) {
   return t === 1 ? { blade: C.IRON, edge: C.IRON_L, dark: C.IRON_D, guard: C.IRON_D, grip: C.LEATHER, wood: C.WOOD, wood_d: C.WOOD_D, gold: C.BRONZE, gem: C.IRON_L, rune: null, crystal: C.CRYSTAL }
     : t === 2 ? { blade: C.STEEL, edge: C.STEEL_L, dark: C.STEEL_D, guard: C.GOLD, grip: C.LEATHER_D, wood: C.WOOD_D, wood_d: C.EBONY, gold: C.GOLD, gem: C.GEM, rune: null, crystal: C.CRYSTAL }
-    : { blade: C.DARK_L, edge: C.STEEL_L, dark: C.DARK, guard: C.GOLD, grip: C.RED_D, wood: C.EBONY, wood_d: C.EBONY_D, gold: C.GOLD_L, gem: C.GEM, rune: GLOW, crystal: GLOW };
+    : { blade: C.DARK_L, edge: GLOW, dark: C.DARK, guard: C.GOLD, grip: C.RED_D, wood: C.EBONY, wood_d: C.GOLD_D, gold: C.GOLD_L, gem: C.GEM, rune: GLOW, crystal: GLOW };
 }
 
 function blade(f, s, m, len, width, t) {
