@@ -22,10 +22,12 @@ const PERCENT := {
 
 ## The stats a character with this class and progress has (for windows: the client has no
 ## PlayerState of its own to read them from). Same numbers the host computes.
-static func preview_stats(class_id: String, progress: PlayerProgress, b: Balance) -> CombatStats:
+static func preview_stats(class_id: String, progress: PlayerProgress, b: Balance, inventory: Inventory = null) -> CombatStats:
 	var p := PlayerState.new()
 	p.class_id = class_id
 	p.progress = progress
+	if inventory != null:
+		p.inventory = inventory
 	rebuild(p, null, true, b)
 	return p.stats
 
@@ -36,6 +38,7 @@ static func modifiers(p: PlayerState, world: SimWorld) -> Array:
 	var b := world.balance if world != null else Balance.load_from()
 	var out := Passives.collect(db, p.class_id, p.progress.level, p.progress.upgrade)
 	out.append_array(Talents.mods(p.progress, TalentDB.load_default(), b))
+	out.append_array(GearStats.mods(p.inventory, ItemDB.load_default()))
 	return out
 
 
@@ -59,6 +62,9 @@ static func rebuild(p: PlayerState, world: SimWorld, fresh: bool = false, balanc
 	p.resource_def = res.duplicate()
 	# Attributes.
 	var t := Attributes.totals(p.progress, def, b)
+	var gear_attr := GearStats.attributes(p.inventory, ItemDB.load_default())
+	for a: String in gear_attr:
+		t[a] = int(t.get(a, 0)) + roundi(float(gear_attr[a]))
 	var ab := b.attributes
 	var attack_attr := str(def.get("attack_attribute", "strength"))
 	s.attack_power += Attributes.effective(int(t.get(attack_attr, 0)), b) * float(ab.get("attack_power", 0.0))
@@ -90,6 +96,9 @@ static func rebuild(p: PlayerState, world: SimWorld, fresh: bool = false, balanc
 	s.crit_chance = minf(s.crit_chance, float(ab.get("crit_cap", 1.0)))
 	s.dodge_chance = minf(s.dodge_chance, float(ab.get("dodge_cap", 1.0)))
 	s.block_chance = minf(s.block_chance, float(ab.get("block_cap", 1.0)))
+	# Only a shield blocks (characters with a class; test dummies keep what they are given).
+	if not GearStats.has_shield(p.inventory, ItemDB.load_default()):
+		s.block_chance = 0.0
 	s.cooldown_reduction = clampf(s.cooldown_reduction, 0.0, float(ab.get("cooldown_cap", 1.0)))
 	p.stats = s
 	p.passives = mods

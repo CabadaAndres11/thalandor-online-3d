@@ -66,9 +66,16 @@ func test_effective_soft_caps() -> void:
 func test_strength_gives_attack_and_block() -> void:
 	var p := _hero("warrior")
 	p.progress.attributes.strength = 100
+	_shield(p)
 	Progression.rebuild(p, f.world)
 	assert_almost_eq(p.stats.attack_power, 20.0 + 50.0, 0.001)
-	assert_almost_eq(p.stats.block_chance, 0.2, 0.0001)
+	# Strength's 0.2 block plus the level 1 shield's 0.001.
+	assert_almost_eq(p.stats.block_chance, 0.2 + 0.001, 0.0001)
+
+
+## Only a shield blocks (Plan 5).
+func _shield(p: PlayerState) -> void:
+	p.inventory.equipment["offhand"] = ItemRoll.new_item("shield_t1", 1)
 
 
 func test_archer_attack_from_agility() -> void:
@@ -98,6 +105,7 @@ func test_caps() -> void:
 	var p := _hero("archer")
 	p.progress.attributes.agility = 100000
 	p.progress.attributes.strength = 100000
+	_shield(p)
 	Progression.rebuild(p, f.world)
 	assert_true(p.stats.crit_chance <= 0.4 + 1e-6)
 	assert_true(p.stats.dodge_chance <= 0.25 + 1e-6)
