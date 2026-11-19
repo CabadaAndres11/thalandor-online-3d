@@ -77,3 +77,19 @@ func test_clamp_level() -> void:
 	assert_eq(GraphicsQuality.clamp_level(-3), GraphicsQuality.LOW)
 	assert_eq(GraphicsQuality.clamp_level(7), GraphicsQuality.HIGH)
 	assert_eq(GraphicsQuality.clamp_level(1), GraphicsQuality.MEDIUM)
+
+
+func _glow_levels(env: Environment) -> int:
+	var n := 0
+	for i in 7:
+		if env.get_glow_level(i) > 0.0:
+			n += 1
+	return n
+
+
+func test_low_glow_uses_fewer_levels() -> void:
+	var low := AmbienceBuilder.make_environment(night, GraphicsQuality.LOW)
+	var high := AmbienceBuilder.make_environment(night, GraphicsQuality.HIGH)
+	assert_true(low.glow_enabled)
+	assert_lt(_glow_levels(low), _glow_levels(high))
+	assert_gt(_glow_levels(low), 0)

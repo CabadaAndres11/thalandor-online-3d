@@ -47,8 +47,7 @@ func build(layout: Dictionary, quality_level: int = GraphicsQuality.MEDIUM) -> C
 		i += 1
 	_add_torches(layout.get("torches", []))
 	quality = GraphicsQuality.clamp_level(quality_level)
-	var wanted := str(layout.get("ambience", Ambience.DEFAULT_ID))
-	ambience_id = wanted if wanted in Ambience.ids() else Ambience.DEFAULT_ID
+	ambience_id = Ambience.resolve_id(str(layout.get("ambience", "")))
 	_apply_lighting()
 	return map
 

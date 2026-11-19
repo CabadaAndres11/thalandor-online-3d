@@ -30,6 +30,8 @@ var party_frames: PartyFrames
 var downed_overlay: DownedOverlay
 var pause_menu: PauseMenu
 var options_window: OptionsWindow
+## The settings last applied, to apply only what an Options change touched.
+var _applied: SettingsStore
 var abilities_window: AbilitiesWindow
 var class_choice_window: ClassChoiceWindow
 var character_window: CharacterWindow
@@ -60,7 +62,8 @@ func _ready() -> void:
 	settings = SettingsStore.load_from(settings_path)
 	SettingsApplier.ensure_buses()
 	SettingsApplier.apply_all(settings, get_viewport())
-	store = CharacterStore.new(characters_dir)
+	_applied = settings.duplicate_store()
+	store =CharacterStore.new(characters_dir)
 	abilities = AbilityDB.load_default()
 	_ui = CanvasLayer.new()
 	_ui.name = "UI"
@@ -763,10 +766,19 @@ func _show_options() -> void:
 	options_window.open(settings)
 
 
+## Applies only what changed: a volume slider must not rebuild the lighting or touch the window.
 func _on_settings_changed() -> void:
-	SettingsApplier.apply_all(settings, get_viewport())
-	if game != null:
-		game.set_graphics_quality(settings.quality)
+	var old := _applied
+	if settings.fullscreen != old.fullscreen or settings.vsync != old.vsync or settings.max_fps != old.max_fps:
+		SettingsApplier.apply_window(settings)
+	if settings.quality != old.quality or not is_equal_approx(settings.render_scale, old.render_scale):
+		SettingsApplier.apply_viewport(settings, get_viewport())
+	if settings.quality != old.quality:
+		SettingsApplier.apply_quality_globals(settings.quality)
+		if game != null:
+			game.set_graphics_quality(settings.quality)
+	SettingsApplier.apply_audio(settings)
+	_applied = settings.duplicate_store()
 
 
 func _on_options_closed() -> void:

@@ -46,6 +46,9 @@ static func make_environment(a: Ambience, q: int) -> Environment:
 	env.glow_intensity = a.glow_intensity
 	env.glow_hdr_threshold = a.glow_threshold
 	env.glow_bloom = a.glow_bloom
+	if q == GraphicsQuality.LOW:
+		for i in range(3, 7):
+			env.set_glow_level(i, 0.0) # cheap glow: only the smallest blur level
 
 	env.ssao_enabled = a.ssao and q >= GraphicsQuality.MEDIUM
 	env.ssao_radius = a.ssao_radius

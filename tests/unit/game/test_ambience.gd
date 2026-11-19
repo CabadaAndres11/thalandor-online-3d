@@ -53,3 +53,9 @@ func test_torch_energy_from_data() -> void:
 	assert_almost_eq(Ambience.from_dict("x", {}).torch_energy, 1.0, 0.001)
 	assert_almost_eq(Ambience.from_dict("x", {"torches": {"energy": 0.3}}).torch_energy, 0.3, 0.001)
 	assert_lt(Ambience.load_id("exterior_dia").torch_energy, Ambience.load_id("mazmorra_noche").torch_energy)
+
+
+func test_resolve_id() -> void:
+	assert_eq(Ambience.resolve_id("mazmorra_noche"), "mazmorra_noche")
+	assert_eq(Ambience.resolve_id("mazmora_noche"), Ambience.DEFAULT_ID)
+	assert_eq(Ambience.resolve_id(""), Ambience.DEFAULT_ID)

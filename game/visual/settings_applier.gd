@@ -43,6 +43,7 @@ static func apply_viewport(s: SettingsStore, vp: Viewport) -> void:
 static func apply_quality_globals(q: int) -> void:
 	q = GraphicsQuality.clamp_level(q)
 	RenderingServer.directional_shadow_atlas_set_size(SUN_ATLAS[q], true)
+	RenderingServer.environment_glow_set_use_bicubic_upscale(q != GraphicsQuality.LOW)
 	var ssao: Array = [RenderingServer.ENV_SSAO_QUALITY_VERY_LOW, RenderingServer.ENV_SSAO_QUALITY_LOW,
 		RenderingServer.ENV_SSAO_QUALITY_HIGH]
 	RenderingServer.environment_set_ssao_quality(ssao[q], true, 0.5, 2, 50.0, 300.0)

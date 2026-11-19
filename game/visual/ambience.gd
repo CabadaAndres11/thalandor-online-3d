@@ -73,6 +73,16 @@ static func ids() -> PackedStringArray:
 	return out
 
 
+## The id itself if that ambience exists; otherwise DEFAULT_ID, with a warning when a
+## (misspelt) id was given.
+static func resolve_id(ambience_id: String) -> String:
+	if ambience_id in ids():
+		return ambience_id
+	if ambience_id != "":
+		push_warning("Unknown ambience '%s', using '%s'" % [ambience_id, DEFAULT_ID])
+	return DEFAULT_ID
+
+
 static func load_id(ambience_id: String) -> Ambience:
 	var path := DIR + ambience_id + ".json"
 	if not FileAccess.file_exists(path):
