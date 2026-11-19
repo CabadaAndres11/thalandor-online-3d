@@ -11,7 +11,7 @@ actualizado: 2026-11-14
 - **Varias zonas a la vez:** dentro de una partida los jugadores pueden estar en zonas distintas.
 - **Mazmorras:** son **instancias** (cada grupo tiene su copia).
 - **Puntos de control** para reaparecer y **reaparición de monstruos** con temporizador.
-- **Iluminación:** ciclo de día y noche opcional por zona; las mazmorras usan luces locales (antorchas) para dar ambiente.
+- **Iluminación:** cada zona elige un **ambiente** de `data/ambiences/` con `"ambience"` en su JSON y coloca antorchas con `"torches"` **[Implementado 0.8.0]**. Ciclo de día y noche opcional por zona (Plan 8); las mazmorras usan luces locales (antorchas) para dar ambiente.
 
 ## 6.2 Contenido de la demo **[Diseñado]**
 | Zona | Niveles | Contenido |

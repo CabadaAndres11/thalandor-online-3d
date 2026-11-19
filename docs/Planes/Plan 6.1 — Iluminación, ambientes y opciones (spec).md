@@ -2,8 +2,8 @@
 tags: [plan, spec]
 plan: 6.1
 fecha: 2026-11-19
-estado: aprobado
-actualizado: 2026-11-19
+estado: implementado
+actualizado: 2026-11-20
 ---
 # Plan 6.1 — Iluminación, ambientes y opciones: diseño
 

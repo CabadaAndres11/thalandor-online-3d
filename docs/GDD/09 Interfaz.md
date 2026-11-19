@@ -31,7 +31,7 @@ actualizado: 2026-11-16
 - **Habilidades (K):** clase y mejoras de clase, habilidades desbloqueadas, asignación de la barra y pasivas con su descripción.
 - **Talentos (N):** el árbol circular dibujado tal cual, con zoom si crece.
 - **Misiones (J), Mapa (M), Mercader** y **Menú (Esc)** (en solitario pausa el mundo; en grupo la partida sigue).
-- **Opciones:** controles, volumen, gráficos y pantalla completa.
+- **Opciones [Implementado 0.8.0]:** ventana desde el título y el menú de pausa (Esc) con dos pestañas: **Vídeo** (calidad Baja/Media/Alta, escala de resolución del 50 al 100 %, pantalla completa, VSync, límite de FPS) y **Sonido** (General, Música, Efectos, Interfaz y silenciar). Se aplica al momento y se guarda al cerrar. Reasignar controles queda para el [[14 Hoja de ruta|Plan 11]].
 
 ## 9.4 Social **[Implementado]**
 - Chat de texto de grupo. Para la voz se usa Discord.

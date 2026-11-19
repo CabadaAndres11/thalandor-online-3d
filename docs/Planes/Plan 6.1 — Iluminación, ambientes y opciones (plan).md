@@ -2,7 +2,7 @@
 tags: [plan]
 plan: 6.1
 fecha: 2026-11-19
-estado: aprobado
+estado: hecho
 ---
 # Plan 6.1 — Iluminación, ambientes y opciones: implementación
 

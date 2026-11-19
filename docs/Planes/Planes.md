@@ -16,7 +16,7 @@ Cada plan de la [[14 Hoja de ruta]] tiene aquí su **spec** (diseño acordado) y
 | 3.2 · Vóxel propio, bestiario del prólogo y clase con Brann | [[Plan 3.2 — Vóxel propio, bestiario del prólogo y clase con Brann (spec)\|Spec]] | [[Plan 3.2 — Vóxel propio, bestiario del prólogo y clase con Brann (plan)\|Plan]] | Hecho (0.5.0) |
 | 4 · Progresión | [[Plan 4 — Progresión (spec)\|Spec]] | [[Plan 4 — Progresión (plan)\|Plan]] | Hecho (0.6.0, publicada; la 0.6.1 añade los jefes del culto) |
 | 5 · Objetos | [[Plan 5 — Objetos (spec)\|Spec]] | [[Plan 5 — Objetos (plan)\|Plan]] | Hecho (0.7.0) |
-| 6.1 · Iluminación, ambientes y opciones | [[Plan 6.1 — Iluminación, ambientes y opciones (spec)\|Spec]] | [[Plan 6.1 — Iluminación, ambientes y opciones (plan)\|Plan]] | En curso |
+| 6.1 · Iluminación, ambientes y opciones | [[Plan 6.1 — Iluminación, ambientes y opciones (spec)\|Spec]] | [[Plan 6.1 — Iluminación, ambientes y opciones (plan)\|Plan]] | Hecho (0.8.0, pendiente de tu prueba de juego) |
 | 6.2 · Humanoide y piezas (vóxel 2×) | — | — | Pendiente |
 | 6.3 · Equipo (vóxel 2×) | — | — | Pendiente |
 | 6.4 · Monstruos, PNJ y ropa que sigue al cuerpo | — | — | Pendiente |
