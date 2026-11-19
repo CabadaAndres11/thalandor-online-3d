@@ -80,7 +80,7 @@ func test_full_inventory_fits_a_packet() -> void:
 	var inv := Inventory.new()
 	var rng := RandomNumberGenerator.new()
 	for i in Inventory.SIZE:
-		inv.bag[i] = ItemRoll.roll_gear("plate_chest_t1", 999, "epic", rng, db)
+		inv.bag[i] = ItemRoll.roll_gear("warrior_chest_t1", 999, "epic", rng, db)
 	for s: String in Inventory.SLOTS:
 		inv.equipment[s] = ItemRoll.roll_gear("ring_t1", 999, "epic", rng, db)
 	assert_lt(Protocol.inventory(inv.to_wire(), 30.0).size(), Protocol.MAX_PACKET_BYTES)
@@ -124,14 +124,14 @@ func test_equip_roundtrip() -> void:
 	_all(a)
 	_all(b)
 	var p: PlayerState = host.world.players[1]
-	p.inventory.add(ItemRoll.new_item("plate_chest_t1", 1), db)
+	p.inventory.add(ItemRoll.new_item("warrior_chest_t1", 1), db)
 	_send(a, Protocol.item_action("equip", [0]))
-	assert_eq(p.inventory.equipment.chest.base_id, "plate_chest_t1")
+	assert_eq(p.inventory.equipment.chest.base_id, "warrior_chest_t1")
 	assert_eq(_msgs(a, Protocol.Msg.INVENTORY).size(), 1)
 	var gear := _msgs(b, Protocol.Msg.PLAYER_GEAR)
 	assert_eq(gear.size(), 1)
 	assert_eq(gear[0].id, 1)
-	assert_eq(gear[0].gear[4], "plate_chest_t1")
+	assert_eq(gear[0].gear[4], "warrior_chest_t1")
 
 
 func test_bad_item_actions_ignored() -> void:

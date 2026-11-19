@@ -122,10 +122,8 @@ func can_use(class_id: String, base_id: String) -> bool:
 		return false
 	var kind := str(b.get("kind", ""))
 	if slot in ARMOR_SLOTS:
-		var order: Array = _weapons.get("armor_order", [])
-		var max_i := order.find(str(rules.get("armor", "")))
-		var i := order.find(kind)
-		return i >= 0 and max_i >= 0 and i <= max_i
+		# Armor comes in one set per class, worn only by that class (its kind is a label).
+		return str(b.get("class", "")) == class_id
 	return kind in (rules.get("weapons", []) as Array) or kind in (rules.get("offhand", []) as Array)
 
 

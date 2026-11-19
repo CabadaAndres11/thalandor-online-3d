@@ -73,7 +73,7 @@ Que matar dé **botín** y que el personaje **se equipe**: oro, objetos con rare
 | Arquero | arco, ballesta | espada corta | — | cuero y malla (y tela) |
 | Asesino | — | daga, espada corta | daga | cuero (y tela) |
 
-  El orden de armaduras sigue el GDD: cada clase lleva su tipo y los inferiores.
+  **Armadura por clase (cambio del 2026-11-19):** cada tramo tiene **un juego de armadura por clase** (Guerrero, Clérigo, Mago, Arquero y Asesino), con un aspecto propio de su clase, y **solo lo lleva esa clase**. El tipo (placas, tela, malla, cuero) queda como dato descriptivo: Guerrero placas, Clérigo y Mago tela, Arquero malla, Asesino cuero. La columna *Armadura* de la tabla ya no es una regla.
 - **El carcaj deja de ser objeto:** es un adorno fijo a la espalda del Arquero.
 - **Equipo visible:** las 8 ranuras con modelo (armas, secundaria, cabeza, hombros, pecho, manos, piernas, pies) cambian el aspecto del personaje, y el resto del grupo lo ve. Cuello y anillos no se ven. Una ranura vacía muestra la **ropa base** (sencilla, de aldeano, con los colores del personaje).
 - **Equipo inicial:** cada clase empieza con un juego común de nivel 1 de su tipo, con su arma de siempre, para que el aspecto inicial se parezca al actual. Los personajes de la versión 3 lo reciben al cargar.
@@ -99,7 +99,8 @@ Las habilidades no cambian; cada **familia** fija en datos la **animación, el a
 
 ### 6. Aspectos por nivel y arte
 - **Tres aspectos por tipo**, por tramos de nivel del objeto: **1–19, 20–39 y 40+** *(propuesta de Claude: la demo llega al 60)*. Cada tramo más ornamentado y épico que el anterior.
-- Por tramo: **24 piezas de armadura** (4 tipos × 6 ranuras) y **18 armas o secundarias** = 42 modelos; **126 en total**, más los **3 únicos de jefe**.
+- Por tramo: **30 piezas de armadura** (5 juegos de clase × 6 ranuras) y **17 armas o secundarias** = 47 objetos; **141 en total**, más los **3 únicos de jefe**.
+- Cada juego de clase tiene su tocado (yelmo del Guerrero, capucha con sol del Clérigo, sombrero puntiagudo del Mago, capucha de explorador del Arquero, capucha y máscara del Asesino) y su emblema en el pecho; la tela y el cuero toman los colores de la clase.
 - Todo el arte se hace en código (`tools/art/`), como el resto del juego. Se revisa por tandas con `tests/helpers/render_characters.gd`: **tú apruebas cada tramo** antes de pasar al siguiente.
 - **Iconos:** miniatura renderizada del propio modelo, generada al arrancar y guardada en caché.
 
@@ -137,6 +138,7 @@ Las habilidades no cambian; cada **familia** fija en datos la **animación, el a
 - El carcaj pasa a adorno fijo a la espalda (usuario).
 - Mismas habilidades; cada familia de arma cambia animación, alcance y velocidad; el bloqueo exige escudo (usuario).
 - El básico cuerpo a cuerpo se ve como un combo de tres golpes encadenados, solo animación (usuario).
+- Un juego de armadura por clase en cada tramo, exclusivo de esa clase (usuario, tras ver el arte del tramo 1).
 - Legendarios fuera de este plan; el oro no cae al suelo; únicos de jefe al 25 % (Claude).
 
 ---

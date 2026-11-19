@@ -646,30 +646,6 @@ STATUS_SHIELD,Escudo
 STATUS_SPEED_BUFF,Más velocidad
 STATUS_ENVENOM,Filo envenenado
 STATUS_CONTAGION,Contagio
-ITEM_CLOTH_HEAD_T1,"Capucha de lino"
-ITEM_CLOTH_SHOULDERS_T1,"Hombreras de lino"
-ITEM_CLOTH_CHEST_T1,"Túnica de lino"
-ITEM_CLOTH_HANDS_T1,"Guantes de lino"
-ITEM_CLOTH_LEGS_T1,"Calzas de lino"
-ITEM_CLOTH_FEET_T1,"Sandalias de lino"
-ITEM_LEATHER_HEAD_T1,"Capucha de cuero"
-ITEM_LEATHER_SHOULDERS_T1,"Hombreras de cuero"
-ITEM_LEATHER_CHEST_T1,"Jubón de cuero"
-ITEM_LEATHER_HANDS_T1,"Guantes de cuero"
-ITEM_LEATHER_LEGS_T1,"Pantalones de cuero"
-ITEM_LEATHER_FEET_T1,"Botas de cuero"
-ITEM_MAIL_HEAD_T1,"Cofia de malla"
-ITEM_MAIL_SHOULDERS_T1,"Espaldares de malla"
-ITEM_MAIL_CHEST_T1,"Cota de malla"
-ITEM_MAIL_HANDS_T1,"Guanteletes de malla"
-ITEM_MAIL_LEGS_T1,"Quijotes de malla"
-ITEM_MAIL_FEET_T1,"Botas de malla"
-ITEM_PLATE_HEAD_T1,"Yelmo de hierro"
-ITEM_PLATE_SHOULDERS_T1,"Hombreras de hierro"
-ITEM_PLATE_CHEST_T1,"Coraza de hierro"
-ITEM_PLATE_HANDS_T1,"Guanteletes de hierro"
-ITEM_PLATE_LEGS_T1,"Grebas de hierro"
-ITEM_PLATE_FEET_T1,"Escarpes de hierro"
 ITEM_GREATSWORD_T1,"Mandoble de hierro"
 ITEM_GREAT_AXE_T1,"Gran hacha de hierro"
 ITEM_WARHAMMER_T1,"Martillo de guerra de hierro"
@@ -763,3 +739,33 @@ MERCHANT_BUY_HINT,Clic derecho: comprar
 MERCHANT_SELL_HINT,"Clic derecho en un objeto del inventario para venderlo (al 25 % de su valor)."
 MERCHANT_REPAIR,Reparar todo (%d oro)
 MERCHANT_SELL_CONFIRM,¿Vender %s por %d oro?
+ITEM_WARRIOR_HEAD_T1,Yelmo de hierro
+ITEM_WARRIOR_SHOULDERS_T1,Hombreras de hierro
+ITEM_WARRIOR_CHEST_T1,Coraza de hierro
+ITEM_WARRIOR_HANDS_T1,Guanteletes de hierro
+ITEM_WARRIOR_LEGS_T1,Grebas de hierro
+ITEM_WARRIOR_FEET_T1,Escarpes de hierro
+ITEM_CLERIC_HEAD_T1,Capucha de novicio
+ITEM_CLERIC_SHOULDERS_T1,Esclavina de novicio
+ITEM_CLERIC_CHEST_T1,Hábito de novicio
+ITEM_CLERIC_HANDS_T1,Guantes de novicio
+ITEM_CLERIC_LEGS_T1,Faldones de novicio
+ITEM_CLERIC_FEET_T1,Sandalias de novicio
+ITEM_MAGE_HEAD_T1,Sombrero de aprendiz
+ITEM_MAGE_SHOULDERS_T1,Hombreras de aprendiz
+ITEM_MAGE_CHEST_T1,Túnica de aprendiz
+ITEM_MAGE_HANDS_T1,Guantes de aprendiz
+ITEM_MAGE_LEGS_T1,Calzas de aprendiz
+ITEM_MAGE_FEET_T1,Botas de aprendiz
+ITEM_ARCHER_HEAD_T1,Capucha de explorador
+ITEM_ARCHER_SHOULDERS_T1,Hombreras de explorador
+ITEM_ARCHER_CHEST_T1,Cota de explorador
+ITEM_ARCHER_HANDS_T1,Brazales de explorador
+ITEM_ARCHER_LEGS_T1,Quijotes de explorador
+ITEM_ARCHER_FEET_T1,Botas de explorador
+ITEM_ASSASSIN_HEAD_T1,Máscara de sombra
+ITEM_ASSASSIN_SHOULDERS_T1,Hombreras de sombra
+ITEM_ASSASSIN_CHEST_T1,Jubón de sombra
+ITEM_ASSASSIN_HANDS_T1,Guantes de sombra
+ITEM_ASSASSIN_LEGS_T1,Pantalones de sombra
+ITEM_ASSASSIN_FEET_T1,Botas de sombra

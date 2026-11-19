@@ -108,6 +108,6 @@ func test_death_costs_durability() -> void:
 	var w := _world()
 	var p := w.add_player(1, Vector3(20, 0, 20))
 	ClassRules.setup_player(p, "mage")
-	p.inventory.equipment["chest"] = ItemRoll.new_item("cloth_chest_t1", 1)
+	p.inventory.equipment["chest"] = ItemRoll.new_item("mage_chest_t1", 1)
 	_kill(w, p)
 	assert_eq(p.inventory.equipment.chest.durability, 90)

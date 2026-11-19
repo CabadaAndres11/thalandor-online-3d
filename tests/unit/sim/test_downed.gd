@@ -155,7 +155,7 @@ func test_reviver_killed_mid_revive_cancels() -> void:
 
 
 func _chest(p: PlayerState) -> Item:
-	var it := ItemRoll.new_item("plate_chest_t1", 1)
+	var it := ItemRoll.new_item("warrior_chest_t1", 1)
 	p.inventory.equipment["chest"] = it
 	return it
 

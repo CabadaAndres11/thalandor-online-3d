@@ -42,12 +42,12 @@ func test_full_bag() -> void:
 
 
 func test_equip_rules_class_and_level() -> void:
-	inv.add(_it("plate_chest_t1"), db)
+	inv.add(_it("warrior_chest_t1"), db)
 	assert_false(inv.equip(0, "mage", 10, db), "class")
-	inv.add(_it("cloth_chest_t1", 12), db)
+	inv.add(_it("mage_chest_t1", 12), db)
 	assert_false(inv.equip(1, "mage", 10, db), "level")
 	assert_true(inv.equip(0, "warrior", 10, db))
-	assert_eq(inv.equipment.chest.base_id, "plate_chest_t1")
+	assert_eq(inv.equipment.chest.base_id, "warrior_chest_t1")
 	assert_null(inv.bag[0])
 
 
@@ -114,15 +114,15 @@ func test_potion_cannot_be_equipped() -> void:
 
 
 func test_unequip() -> void:
-	inv.equipment["chest"] = _it("cloth_chest_t1")
+	inv.equipment["chest"] = _it("mage_chest_t1")
 	assert_true(inv.unequip("chest", db))
 	assert_false(inv.equipment.has("chest"))
-	assert_eq(inv.bag[0].base_id, "cloth_chest_t1")
+	assert_eq(inv.bag[0].base_id, "mage_chest_t1")
 	assert_false(inv.unequip("chest", db))
 
 
 func test_unequip_full_bag_refused() -> void:
-	inv.equipment["chest"] = _it("cloth_chest_t1")
+	inv.equipment["chest"] = _it("mage_chest_t1")
 	_fill_bag()
 	assert_false(inv.unequip("chest", db))
 	assert_true(inv.equipment.has("chest"))
@@ -140,20 +140,20 @@ func test_visible_bases() -> void:
 func test_roundtrip() -> void:
 	inv.gold = 77
 	inv.add(_it("sword_t1"), db)
-	inv.equipment["chest"] = _it("plate_chest_t1")
+	inv.equipment["chest"] = _it("warrior_chest_t1")
 	var back := Inventory.from_dict(inv.to_dict(), "warrior", 5, db)
 	assert_eq(back.to_dict(), inv.to_dict())
 
 
 func test_sanitize() -> void:
-	var wrong_class := _it("plate_chest_t1").to_dict()
-	var too_high := _it("cloth_head_t1", 50).to_dict()
+	var wrong_class := _it("warrior_chest_t1").to_dict()
+	var too_high := _it("mage_head_t1", 50).to_dict()
 	var dup := _it("ring_t1").to_dict()
 	var d := {
 		"gold": -50,
 		"bag": [{"base_id": "nope"}, "junk", dup, dup] + range(40).map(func(_i: int) -> Dictionary: return _it("ring_t1").to_dict()),
 		"equipment": {"chest": wrong_class, "head": too_high, "main": _it("staff_t1").to_dict(),
-			"offhand": _it("orb_t1").to_dict(), "feet": _it("cloth_head_t1").to_dict(), "tail": _it("ring_t1").to_dict()},
+			"offhand": _it("orb_t1").to_dict(), "feet": _it("mage_head_t1").to_dict(), "tail": _it("ring_t1").to_dict()},
 	}
 	var s := Inventory.from_dict(d, "mage", 10, db)
 	assert_eq(s.gold, 0)

@@ -13,7 +13,7 @@ func before_each() -> void:
 
 func test_affixes_unique_and_in_range() -> void:
 	for i in 50:
-		var it := ItemRoll.roll_gear("plate_chest_t1", 30, "epic", rng, db)
+		var it := ItemRoll.roll_gear("warrior_chest_t1", 30, "epic", rng, db)
 		assert_eq(it.affixes.size(), 3)
 		var stats := {}
 		for a: Dictionary in it.affixes:
@@ -33,7 +33,7 @@ func test_affix_count_by_rarity() -> void:
 
 func test_affix_slots_respected() -> void:
 	for i in 200:
-		var it := ItemRoll.roll_gear("plate_chest_t1", 10, "epic", rng, db)
+		var it := ItemRoll.roll_gear("warrior_chest_t1", 10, "epic", rng, db)
 		for a: Dictionary in it.affixes:
 			var slots: Array = db.affix(a.id).get("slots", [])
 			assert_true(slots.is_empty() or "chest" in slots, str(a))
@@ -116,7 +116,7 @@ func test_from_dict_potion_count_clamped() -> void:
 
 
 func test_roundtrip() -> void:
-	var it := ItemRoll.roll_gear("plate_chest_t1", 12, "rare", rng, db)
+	var it := ItemRoll.roll_gear("warrior_chest_t1", 12, "rare", rng, db)
 	var back := Item.from_dict(it.to_dict(), db)
 	assert_eq(back.to_dict(), it.to_dict())
 

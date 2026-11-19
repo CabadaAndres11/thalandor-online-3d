@@ -22,7 +22,7 @@ func test_tier_one_is_complete() -> void:
 		var b := db.base(id)
 		if int(b.get("tier", 0)) == 1 and b.slot in ["head", "shoulders", "chest", "hands", "legs", "feet"]:
 			count += 1
-	assert_eq(count, 24, "4 armor kinds × 6 slots")
+	assert_eq(count, 30, "5 class sets × 6 slots")
 
 
 func test_every_base_has_model() -> void:

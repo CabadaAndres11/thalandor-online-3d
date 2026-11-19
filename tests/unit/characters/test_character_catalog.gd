@@ -190,16 +190,16 @@ func _gear_db() -> ItemDB:
 	var db := ItemDB.load_default()
 	var fake := ItemDB.load_dir(ItemDB.DIR)
 	fake._bases = db._bases.duplicate(true)
-	fake._bases["plate_head_t1"]["look"] = ["helm_templar"]
+	fake._bases["warrior_head_t1"]["look"] = ["helm_templar"]
 	fake._bases["greatsword_t1"]["look"] = ["weapon_sword"]
-	fake._bases["plate_chest_t1"]["look"] = ["outfit_warrior"]
+	fake._bases["warrior_chest_t1"]["look"] = ["outfit_warrior"]
 	return fake
 
 
 
 func test_resolve_from_gear() -> void:
 	var cat := CharacterCatalog.load_default()
-	var gear := ["greatsword_t1", "", "plate_head_t1", "", "", "", "", ""]
+	var gear := ["greatsword_t1", "", "warrior_head_t1", "", "", "", "", ""]
 	var look := cat.resolve("warrior", {"hair_style": "hair_long"}, "", gear, _gear_db())
 	var ids := _ids(look)
 	assert_has(ids, "helm_templar")
@@ -212,7 +212,7 @@ func test_resolve_from_gear() -> void:
 
 func test_resolve_gear_chest_replaces_base_clothes() -> void:
 	var cat := CharacterCatalog.load_default()
-	var gear := ["", "", "", "", "plate_chest_t1", "", "", ""]
+	var gear := ["", "", "", "", "warrior_chest_t1", "", "", ""]
 	var ids := _ids(cat.resolve("warrior", {}, "", gear, _gear_db()))
 	assert_has(ids, "outfit_warrior")
 	assert_does_not_have(ids, "outfit_villager")

@@ -26,7 +26,7 @@ func test_name_in_rarity_color() -> void:
 
 
 func test_stats_and_affixes_listed() -> void:
-	var it := _item("plate_chest_t1", 10, "uncommon", [{"id": "strength", "value": 12.0}])
+	var it := _item("warrior_chest_t1", 10, "uncommon", [{"id": "strength", "value": 12.0}])
 	var t := _texts(ItemTooltip.lines(it, "warrior", 10, null, db))
 	assert_has(t, tr("STAT_ARMOR_ADD") % "+13")
 	assert_has(t, tr("STAT_STRENGTH") % "+17", "5 fixed + 12 from the property")
@@ -34,8 +34,8 @@ func test_stats_and_affixes_listed() -> void:
 
 func test_tooltip_compare() -> void:
 	# Two chests of the same base: level 10 gives 13 armor, level 12 gives 15.4 → +2.
-	var worn := _item("plate_chest_t1", 10)
-	var new := _item("plate_chest_t1", 12)
+	var worn := _item("warrior_chest_t1", 10)
+	var new := _item("warrior_chest_t1", 12)
 	var lines := ItemTooltip.lines(new, "warrior", 20, worn, db)
 	var t := _texts(lines)
 	var i := t.find(tr("STAT_ARMOR_ADD") % "+2")
@@ -44,15 +44,15 @@ func test_tooltip_compare() -> void:
 
 
 func test_worse_is_red() -> void:
-	var lines := ItemTooltip.lines(_item("plate_chest_t1", 5), "warrior", 20, _item("plate_chest_t1", 10), db)
+	var lines := ItemTooltip.lines(_item("warrior_chest_t1", 5), "warrior", 20, _item("warrior_chest_t1", 10), db)
 	var red := lines.filter(func(l: Array) -> bool: return l[1] == ItemTooltip.WORSE)
 	assert_false(red.is_empty())
 
 
 func test_cannot_use_and_too_high() -> void:
-	var t := _texts(ItemTooltip.lines(_item("plate_chest_t1", 30), "mage", 10, null, db))
+	var t := _texts(ItemTooltip.lines(_item("warrior_chest_t1", 30), "mage", 10, null, db))
 	assert_has(t, tr("ITEM_CLASS_CANNOT"))
-	var lines := ItemTooltip.lines(_item("cloth_chest_t1", 30), "mage", 10, null, db)
+	var lines := ItemTooltip.lines(_item("mage_chest_t1", 30), "mage", 10, null, db)
 	var lvl: Array = lines.filter(func(l: Array) -> bool: return l[0] == tr("ITEM_LEVEL") % 30)[0]
 	assert_eq(lvl[1], ItemTooltip.WORSE, "level above the character's in red")
 

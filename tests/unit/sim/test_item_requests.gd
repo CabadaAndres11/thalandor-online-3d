@@ -30,7 +30,7 @@ func _give(p: PlayerState, base_id: String, count := 1) -> int:
 func test_equip_rebuilds_and_marks_dirty() -> void:
 	var p := _hero("warrior")
 	var armor := p.stats.armor
-	var i := _give(p, "plate_chest_t1")
+	var i := _give(p, "warrior_chest_t1")
 	assert_true(ItemRequests.equip(f.world, p, i))
 	assert_gt(p.stats.armor, armor)
 	assert_true(p.inventory_dirty)
@@ -38,7 +38,7 @@ func test_equip_rebuilds_and_marks_dirty() -> void:
 
 func test_unequip() -> void:
 	var p := _hero("warrior")
-	ItemRequests.equip(f.world, p, _give(p, "plate_chest_t1"))
+	ItemRequests.equip(f.world, p, _give(p, "warrior_chest_t1"))
 	p.inventory_dirty = false
 	assert_true(ItemRequests.unequip(f.world, p, "chest"))
 	assert_true(p.inventory_dirty)
@@ -46,7 +46,7 @@ func test_unequip() -> void:
 
 func test_dead_cannot_equip() -> void:
 	var p := _hero("warrior")
-	var i := _give(p, "plate_chest_t1")
+	var i := _give(p, "warrior_chest_t1")
 	p.life = CombatEntity.DEAD
 	assert_false(ItemRequests.equip(f.world, p, i))
 	p.life = CombatEntity.DOWNED
@@ -108,7 +108,7 @@ func test_cannot_use_gear() -> void:
 
 func test_death_durability() -> void:
 	var p := _hero("warrior")
-	ItemRequests.equip(f.world, p, _give(p, "plate_chest_t1"))
+	ItemRequests.equip(f.world, p, _give(p, "warrior_chest_t1"))
 	ItemRequests.on_death(f.world, p)
 	ItemRequests.on_death(f.world, p)
 	assert_eq(p.inventory.equipment.chest.durability, 80)

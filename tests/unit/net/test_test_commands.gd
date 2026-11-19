@@ -157,9 +157,9 @@ func test_gold_command() -> void:
 func test_item_command() -> void:
 	var a := _guest("Ana")
 	_drain(a)
-	_say(a, "/objeto plate_chest_t1 12 epic")
+	_say(a, "/objeto warrior_chest_t1 12 epic")
 	var it: Item = _p(1).inventory.bag[0]
-	assert_eq([it.base_id, it.level, it.rarity, it.affixes.size()], ["plate_chest_t1", 12, "epic", 3])
+	assert_eq([it.base_id, it.level, it.rarity, it.affixes.size()], ["warrior_chest_t1", 12, "epic", 3])
 	_say(a, "/objeto sword_t1")
 	assert_eq(_p(1).inventory.bag[1].level, _p(1).progress.level, "level defaults to the player's")
 	_drain(a)

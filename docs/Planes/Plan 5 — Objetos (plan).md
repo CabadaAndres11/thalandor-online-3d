@@ -38,6 +38,8 @@ Spec: [[Plan 5 — Objetos (spec)]]. Rama `claude/plan-desarrollo-d1cd1b`. Versi
 
 ---
 
+> **Cambio durante la ejecución (2026-11-19):** la armadura pasa a ser **un juego por clase y tramo, exclusivo de su clase** (`<clase>_<ranura>_t<n>`, con `class` en la base); `ItemDB.can_use` ya no usa el orden de armaduras. Por tramo hay 30 piezas de armadura y 17 armas o secundarias.
+
 ## Fase A — Reglas de objetos (`sim/items/`)
 
 ### Task 1: Datos y `ItemDB`

@@ -28,7 +28,7 @@ func _wear(p: PlayerState, slot: String, base_id: String, level := 1, affixes: A
 func test_gear_adds_armor() -> void:
 	var p := _hero("warrior", 10)
 	var before := p.stats.armor
-	_wear(p, "chest", "plate_chest_t1", 10)
+	_wear(p, "chest", "warrior_chest_t1", 10)
 	assert_almost_eq(p.stats.armor - before, 1.0 + 1.2 * 10, 0.001)
 
 
@@ -65,7 +65,7 @@ func test_pct_affix() -> void:
 func test_broken_gear_ignored() -> void:
 	var p := _hero("warrior", 10)
 	var before := p.stats.armor
-	var it := _wear(p, "chest", "plate_chest_t1", 10)
+	var it := _wear(p, "chest", "warrior_chest_t1", 10)
 	it.durability = 0
 	Progression.rebuild(p, f.world)
 	assert_almost_eq(p.stats.armor, before, 0.001)
@@ -96,5 +96,5 @@ func test_family() -> void:
 func test_rebuild_keeps_ratio() -> void:
 	var p := _hero("warrior", 10)
 	p.hp = p.stats.max_hp * 0.5
-	_wear(p, "chest", "plate_chest_t1", 10, [{"id": "stamina", "value": 20.0}])
+	_wear(p, "chest", "warrior_chest_t1", 10, [{"id": "stamina", "value": 20.0}])
 	assert_almost_eq(p.hp / p.stats.max_hp, 0.5, 0.001)

@@ -8,15 +8,22 @@ func before_each() -> void:
 	db = ItemDB.load_default()
 
 
-func test_can_use_armor() -> void:
-	assert_true(db.can_use("warrior", "plate_chest_t1"))
-	assert_true(db.can_use("warrior", "cloth_chest_t1"))
-	assert_false(db.can_use("mage", "plate_chest_t1"))
-	assert_true(db.can_use("archer", "mail_chest_t1"))
-	assert_true(db.can_use("archer", "cloth_chest_t1"))
-	assert_false(db.can_use("archer", "plate_chest_t1"))
-	assert_false(db.can_use("assassin", "mail_chest_t1"))
-	assert_true(db.can_use("assassin", "leather_chest_t1"))
+func test_can_use_armor_only_of_own_class() -> void:
+	assert_true(db.can_use("warrior", "warrior_chest_t1"))
+	assert_false(db.can_use("warrior", "mage_chest_t1"), "a set is only for its class")
+	assert_false(db.can_use("mage", "warrior_chest_t1"))
+	assert_true(db.can_use("cleric", "cleric_head_t1"))
+	assert_false(db.can_use("cleric", "mage_head_t1"), "cloth of another class too")
+	assert_true(db.can_use("archer", "archer_legs_t1"))
+	assert_false(db.can_use("assassin", "archer_legs_t1"))
+	assert_false(db.can_use("villager", "warrior_chest_t1"))
+
+
+func test_each_set_keeps_its_armor_type() -> void:
+	assert_eq(db.base("warrior_chest_t1").kind, "plate")
+	assert_eq(db.base("mage_chest_t1").kind, "cloth")
+	assert_eq(db.base("archer_chest_t1").kind, "mail")
+	assert_eq(db.base("assassin_chest_t1").kind, "leather")
 
 
 func test_can_use_weapons() -> void:
@@ -40,7 +47,7 @@ func test_jewelry_and_potions_for_everyone() -> void:
 
 func test_bases_for_tier() -> void:
 	var low := db.bases_for(19)
-	assert_true(low.has("plate_chest_t1"))
+	assert_true(low.has("warrior_chest_t1"))
 	assert_false(low.has("potion_health"), "no consumables")
 	assert_false(low.has("wood_sword"), "no villager weapon")
 	for id: String in db.bases_for(20):
@@ -61,17 +68,17 @@ func test_two_hand() -> void:
 	assert_eq(db.hands("staff_t1"), 2)
 	assert_eq(db.hands("bow_t1"), 2)
 	assert_eq(db.hands("sword_t1"), 1)
-	assert_eq(db.hands("plate_chest_t1"), 0)
+	assert_eq(db.hands("warrior_chest_t1"), 0)
 
 
 func test_family_of() -> void:
 	assert_eq(str(db.family_of("greatsword_t1").get("id")), "heavy")
 	assert_eq(str(db.family_of("wand_t1").get("id")), "wand")
-	assert_true(db.family_of("plate_chest_t1").is_empty())
+	assert_true(db.family_of("warrior_chest_t1").is_empty())
 
 
 func test_base_resolves_template_stats_and_levels() -> void:
-	var b := db.base("plate_chest_t1")
+	var b := db.base("warrior_chest_t1")
 	assert_eq(int(b.min_level), 1)
 	assert_eq(int(b.max_level), 19)
 	assert_false((b.stats as Array).is_empty())

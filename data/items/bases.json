@@ -609,273 +609,370 @@
 		"potion": []
 	},
 	"bases": {
-		"cloth_head_t1": {
-			"slot": "head",
-			"kind": "cloth",
-			"tier": 1,
-			"template": "cloth_head",
-			"look": [
-				"cloth_head_t1"
-			],
-			"name": "ITEM_CLOTH_HEAD_T1"
-		},
-		"cloth_shoulders_t1": {
-			"slot": "shoulders",
-			"kind": "cloth",
-			"tier": 1,
-			"template": "cloth_shoulders",
-			"look": [
-				"cloth_shoulders_t1_l",
-				"cloth_shoulders_t1_r"
-			],
-			"name": "ITEM_CLOTH_SHOULDERS_T1"
-		},
-		"cloth_chest_t1": {
-			"slot": "chest",
-			"kind": "cloth",
-			"tier": 1,
-			"template": "cloth_chest",
-			"look": [
-				"cloth_chest_t1",
-				"cloth_chest_t1_skirt"
-			],
-			"name": "ITEM_CLOTH_CHEST_T1"
-		},
-		"cloth_hands_t1": {
-			"slot": "hands",
-			"kind": "cloth",
-			"tier": 1,
-			"template": "cloth_hands",
-			"look": [
-				"cloth_hands_t1_l",
-				"cloth_hands_t1_cuff_l",
-				"cloth_hands_t1_r",
-				"cloth_hands_t1_cuff_r"
-			],
-			"name": "ITEM_CLOTH_HANDS_T1"
-		},
-		"cloth_legs_t1": {
-			"slot": "legs",
-			"kind": "cloth",
-			"tier": 1,
-			"template": "cloth_legs",
-			"look": [
-				"cloth_legs_t1_l",
-				"cloth_legs_t1_r"
-			],
-			"name": "ITEM_CLOTH_LEGS_T1"
-		},
-		"cloth_feet_t1": {
-			"slot": "feet",
-			"kind": "cloth",
-			"tier": 1,
-			"template": "cloth_feet",
-			"look": [
-				"cloth_feet_t1_l",
-				"cloth_feet_t1_r"
-			],
-			"name": "ITEM_CLOTH_FEET_T1"
-		},
-		"leather_head_t1": {
-			"slot": "head",
-			"kind": "leather",
-			"tier": 1,
-			"template": "leather_head",
-			"look": [
-				"leather_head_t1"
-			],
-			"name": "ITEM_LEATHER_HEAD_T1"
-		},
-		"leather_shoulders_t1": {
-			"slot": "shoulders",
-			"kind": "leather",
-			"tier": 1,
-			"template": "leather_shoulders",
-			"look": [
-				"leather_shoulders_t1_l",
-				"leather_shoulders_t1_r"
-			],
-			"name": "ITEM_LEATHER_SHOULDERS_T1"
-		},
-		"leather_chest_t1": {
-			"slot": "chest",
-			"kind": "leather",
-			"tier": 1,
-			"template": "leather_chest",
-			"look": [
-				"leather_chest_t1",
-				"leather_chest_t1_skirt"
-			],
-			"name": "ITEM_LEATHER_CHEST_T1"
-		},
-		"leather_hands_t1": {
-			"slot": "hands",
-			"kind": "leather",
-			"tier": 1,
-			"template": "leather_hands",
-			"look": [
-				"leather_hands_t1_l",
-				"leather_hands_t1_cuff_l",
-				"leather_hands_t1_r",
-				"leather_hands_t1_cuff_r"
-			],
-			"name": "ITEM_LEATHER_HANDS_T1"
-		},
-		"leather_legs_t1": {
-			"slot": "legs",
-			"kind": "leather",
-			"tier": 1,
-			"template": "leather_legs",
-			"look": [
-				"leather_legs_t1_l",
-				"leather_legs_t1_r"
-			],
-			"name": "ITEM_LEATHER_LEGS_T1"
-		},
-		"leather_feet_t1": {
-			"slot": "feet",
-			"kind": "leather",
-			"tier": 1,
-			"template": "leather_feet",
-			"look": [
-				"leather_feet_t1_l",
-				"leather_feet_t1_r"
-			],
-			"name": "ITEM_LEATHER_FEET_T1"
-		},
-		"mail_head_t1": {
-			"slot": "head",
-			"kind": "mail",
-			"tier": 1,
-			"template": "mail_head",
-			"look": [
-				"mail_head_t1"
-			],
-			"name": "ITEM_MAIL_HEAD_T1"
-		},
-		"mail_shoulders_t1": {
-			"slot": "shoulders",
-			"kind": "mail",
-			"tier": 1,
-			"template": "mail_shoulders",
-			"look": [
-				"mail_shoulders_t1_l",
-				"mail_shoulders_t1_r"
-			],
-			"name": "ITEM_MAIL_SHOULDERS_T1"
-		},
-		"mail_chest_t1": {
-			"slot": "chest",
-			"kind": "mail",
-			"tier": 1,
-			"template": "mail_chest",
-			"look": [
-				"mail_chest_t1",
-				"mail_chest_t1_skirt"
-			],
-			"name": "ITEM_MAIL_CHEST_T1"
-		},
-		"mail_hands_t1": {
-			"slot": "hands",
-			"kind": "mail",
-			"tier": 1,
-			"template": "mail_hands",
-			"look": [
-				"mail_hands_t1_l",
-				"mail_hands_t1_cuff_l",
-				"mail_hands_t1_r",
-				"mail_hands_t1_cuff_r"
-			],
-			"name": "ITEM_MAIL_HANDS_T1"
-		},
-		"mail_legs_t1": {
-			"slot": "legs",
-			"kind": "mail",
-			"tier": 1,
-			"template": "mail_legs",
-			"look": [
-				"mail_legs_t1_l",
-				"mail_legs_t1_r"
-			],
-			"name": "ITEM_MAIL_LEGS_T1"
-		},
-		"mail_feet_t1": {
-			"slot": "feet",
-			"kind": "mail",
-			"tier": 1,
-			"template": "mail_feet",
-			"look": [
-				"mail_feet_t1_l",
-				"mail_feet_t1_r"
-			],
-			"name": "ITEM_MAIL_FEET_T1"
-		},
-		"plate_head_t1": {
+		"warrior_head_t1": {
 			"slot": "head",
 			"kind": "plate",
+			"class": "warrior",
 			"tier": 1,
 			"template": "plate_head",
 			"look": [
-				"plate_head_t1"
+				"warrior_head_t1"
 			],
-			"name": "ITEM_PLATE_HEAD_T1"
+			"name": "ITEM_WARRIOR_HEAD_T1"
 		},
-		"plate_shoulders_t1": {
+		"warrior_shoulders_t1": {
 			"slot": "shoulders",
 			"kind": "plate",
+			"class": "warrior",
 			"tier": 1,
 			"template": "plate_shoulders",
 			"look": [
-				"plate_shoulders_t1_l",
-				"plate_shoulders_t1_r"
+				"warrior_shoulders_t1_l",
+				"warrior_shoulders_t1_r"
 			],
-			"name": "ITEM_PLATE_SHOULDERS_T1"
+			"name": "ITEM_WARRIOR_SHOULDERS_T1"
 		},
-		"plate_chest_t1": {
+		"warrior_chest_t1": {
 			"slot": "chest",
 			"kind": "plate",
+			"class": "warrior",
 			"tier": 1,
 			"template": "plate_chest",
 			"look": [
-				"plate_chest_t1",
-				"plate_chest_t1_skirt"
+				"warrior_chest_t1",
+				"warrior_chest_t1_skirt"
 			],
-			"name": "ITEM_PLATE_CHEST_T1"
+			"name": "ITEM_WARRIOR_CHEST_T1"
 		},
-		"plate_hands_t1": {
+		"warrior_hands_t1": {
 			"slot": "hands",
 			"kind": "plate",
+			"class": "warrior",
 			"tier": 1,
 			"template": "plate_hands",
 			"look": [
-				"plate_hands_t1_l",
-				"plate_hands_t1_cuff_l",
-				"plate_hands_t1_r",
-				"plate_hands_t1_cuff_r"
+				"warrior_hands_t1_l",
+				"warrior_hands_t1_cuff_l",
+				"warrior_hands_t1_r",
+				"warrior_hands_t1_cuff_r"
 			],
-			"name": "ITEM_PLATE_HANDS_T1"
+			"name": "ITEM_WARRIOR_HANDS_T1"
 		},
-		"plate_legs_t1": {
+		"warrior_legs_t1": {
 			"slot": "legs",
 			"kind": "plate",
+			"class": "warrior",
 			"tier": 1,
 			"template": "plate_legs",
 			"look": [
-				"plate_legs_t1_l",
-				"plate_legs_t1_r"
+				"warrior_legs_t1_l",
+				"warrior_legs_t1_r"
 			],
-			"name": "ITEM_PLATE_LEGS_T1"
+			"name": "ITEM_WARRIOR_LEGS_T1"
 		},
-		"plate_feet_t1": {
+		"warrior_feet_t1": {
 			"slot": "feet",
 			"kind": "plate",
+			"class": "warrior",
 			"tier": 1,
 			"template": "plate_feet",
 			"look": [
-				"plate_feet_t1_l",
-				"plate_feet_t1_r"
+				"warrior_feet_t1_l",
+				"warrior_feet_t1_r"
 			],
-			"name": "ITEM_PLATE_FEET_T1"
+			"name": "ITEM_WARRIOR_FEET_T1"
+		},
+		"cleric_head_t1": {
+			"slot": "head",
+			"kind": "cloth",
+			"class": "cleric",
+			"tier": 1,
+			"template": "cloth_head",
+			"look": [
+				"cleric_head_t1"
+			],
+			"name": "ITEM_CLERIC_HEAD_T1"
+		},
+		"cleric_shoulders_t1": {
+			"slot": "shoulders",
+			"kind": "cloth",
+			"class": "cleric",
+			"tier": 1,
+			"template": "cloth_shoulders",
+			"look": [
+				"cleric_shoulders_t1_l",
+				"cleric_shoulders_t1_r"
+			],
+			"name": "ITEM_CLERIC_SHOULDERS_T1"
+		},
+		"cleric_chest_t1": {
+			"slot": "chest",
+			"kind": "cloth",
+			"class": "cleric",
+			"tier": 1,
+			"template": "cloth_chest",
+			"look": [
+				"cleric_chest_t1",
+				"cleric_chest_t1_skirt"
+			],
+			"name": "ITEM_CLERIC_CHEST_T1"
+		},
+		"cleric_hands_t1": {
+			"slot": "hands",
+			"kind": "cloth",
+			"class": "cleric",
+			"tier": 1,
+			"template": "cloth_hands",
+			"look": [
+				"cleric_hands_t1_l",
+				"cleric_hands_t1_cuff_l",
+				"cleric_hands_t1_r",
+				"cleric_hands_t1_cuff_r"
+			],
+			"name": "ITEM_CLERIC_HANDS_T1"
+		},
+		"cleric_legs_t1": {
+			"slot": "legs",
+			"kind": "cloth",
+			"class": "cleric",
+			"tier": 1,
+			"template": "cloth_legs",
+			"look": [
+				"cleric_legs_t1_l",
+				"cleric_legs_t1_r"
+			],
+			"name": "ITEM_CLERIC_LEGS_T1"
+		},
+		"cleric_feet_t1": {
+			"slot": "feet",
+			"kind": "cloth",
+			"class": "cleric",
+			"tier": 1,
+			"template": "cloth_feet",
+			"look": [
+				"cleric_feet_t1_l",
+				"cleric_feet_t1_r"
+			],
+			"name": "ITEM_CLERIC_FEET_T1"
+		},
+		"mage_head_t1": {
+			"slot": "head",
+			"kind": "cloth",
+			"class": "mage",
+			"tier": 1,
+			"template": "cloth_head",
+			"look": [
+				"mage_head_t1"
+			],
+			"name": "ITEM_MAGE_HEAD_T1"
+		},
+		"mage_shoulders_t1": {
+			"slot": "shoulders",
+			"kind": "cloth",
+			"class": "mage",
+			"tier": 1,
+			"template": "cloth_shoulders",
+			"look": [
+				"mage_shoulders_t1_l",
+				"mage_shoulders_t1_r"
+			],
+			"name": "ITEM_MAGE_SHOULDERS_T1"
+		},
+		"mage_chest_t1": {
+			"slot": "chest",
+			"kind": "cloth",
+			"class": "mage",
+			"tier": 1,
+			"template": "cloth_chest",
+			"look": [
+				"mage_chest_t1",
+				"mage_chest_t1_skirt"
+			],
+			"name": "ITEM_MAGE_CHEST_T1"
+		},
+		"mage_hands_t1": {
+			"slot": "hands",
+			"kind": "cloth",
+			"class": "mage",
+			"tier": 1,
+			"template": "cloth_hands",
+			"look": [
+				"mage_hands_t1_l",
+				"mage_hands_t1_cuff_l",
+				"mage_hands_t1_r",
+				"mage_hands_t1_cuff_r"
+			],
+			"name": "ITEM_MAGE_HANDS_T1"
+		},
+		"mage_legs_t1": {
+			"slot": "legs",
+			"kind": "cloth",
+			"class": "mage",
+			"tier": 1,
+			"template": "cloth_legs",
+			"look": [
+				"mage_legs_t1_l",
+				"mage_legs_t1_r"
+			],
+			"name": "ITEM_MAGE_LEGS_T1"
+		},
+		"mage_feet_t1": {
+			"slot": "feet",
+			"kind": "cloth",
+			"class": "mage",
+			"tier": 1,
+			"template": "cloth_feet",
+			"look": [
+				"mage_feet_t1_l",
+				"mage_feet_t1_r"
+			],
+			"name": "ITEM_MAGE_FEET_T1"
+		},
+		"archer_head_t1": {
+			"slot": "head",
+			"kind": "mail",
+			"class": "archer",
+			"tier": 1,
+			"template": "mail_head",
+			"look": [
+				"archer_head_t1"
+			],
+			"name": "ITEM_ARCHER_HEAD_T1"
+		},
+		"archer_shoulders_t1": {
+			"slot": "shoulders",
+			"kind": "mail",
+			"class": "archer",
+			"tier": 1,
+			"template": "mail_shoulders",
+			"look": [
+				"archer_shoulders_t1_l",
+				"archer_shoulders_t1_r"
+			],
+			"name": "ITEM_ARCHER_SHOULDERS_T1"
+		},
+		"archer_chest_t1": {
+			"slot": "chest",
+			"kind": "mail",
+			"class": "archer",
+			"tier": 1,
+			"template": "mail_chest",
+			"look": [
+				"archer_chest_t1",
+				"archer_chest_t1_skirt"
+			],
+			"name": "ITEM_ARCHER_CHEST_T1"
+		},
+		"archer_hands_t1": {
+			"slot": "hands",
+			"kind": "mail",
+			"class": "archer",
+			"tier": 1,
+			"template": "mail_hands",
+			"look": [
+				"archer_hands_t1_l",
+				"archer_hands_t1_cuff_l",
+				"archer_hands_t1_r",
+				"archer_hands_t1_cuff_r"
+			],
+			"name": "ITEM_ARCHER_HANDS_T1"
+		},
+		"archer_legs_t1": {
+			"slot": "legs",
+			"kind": "mail",
+			"class": "archer",
+			"tier": 1,
+			"template": "mail_legs",
+			"look": [
+				"archer_legs_t1_l",
+				"archer_legs_t1_r"
+			],
+			"name": "ITEM_ARCHER_LEGS_T1"
+		},
+		"archer_feet_t1": {
+			"slot": "feet",
+			"kind": "mail",
+			"class": "archer",
+			"tier": 1,
+			"template": "mail_feet",
+			"look": [
+				"archer_feet_t1_l",
+				"archer_feet_t1_r"
+			],
+			"name": "ITEM_ARCHER_FEET_T1"
+		},
+		"assassin_head_t1": {
+			"slot": "head",
+			"kind": "leather",
+			"class": "assassin",
+			"tier": 1,
+			"template": "leather_head",
+			"look": [
+				"assassin_head_t1"
+			],
+			"name": "ITEM_ASSASSIN_HEAD_T1"
+		},
+		"assassin_shoulders_t1": {
+			"slot": "shoulders",
+			"kind": "leather",
+			"class": "assassin",
+			"tier": 1,
+			"template": "leather_shoulders",
+			"look": [
+				"assassin_shoulders_t1_l",
+				"assassin_shoulders_t1_r"
+			],
+			"name": "ITEM_ASSASSIN_SHOULDERS_T1"
+		},
+		"assassin_chest_t1": {
+			"slot": "chest",
+			"kind": "leather",
+			"class": "assassin",
+			"tier": 1,
+			"template": "leather_chest",
+			"look": [
+				"assassin_chest_t1",
+				"assassin_chest_t1_skirt"
+			],
+			"name": "ITEM_ASSASSIN_CHEST_T1"
+		},
+		"assassin_hands_t1": {
+			"slot": "hands",
+			"kind": "leather",
+			"class": "assassin",
+			"tier": 1,
+			"template": "leather_hands",
+			"look": [
+				"assassin_hands_t1_l",
+				"assassin_hands_t1_cuff_l",
+				"assassin_hands_t1_r",
+				"assassin_hands_t1_cuff_r"
+			],
+			"name": "ITEM_ASSASSIN_HANDS_T1"
+		},
+		"assassin_legs_t1": {
+			"slot": "legs",
+			"kind": "leather",
+			"class": "assassin",
+			"tier": 1,
+			"template": "leather_legs",
+			"look": [
+				"assassin_legs_t1_l",
+				"assassin_legs_t1_r"
+			],
+			"name": "ITEM_ASSASSIN_LEGS_T1"
+		},
+		"assassin_feet_t1": {
+			"slot": "feet",
+			"kind": "leather",
+			"class": "assassin",
+			"tier": 1,
+			"template": "leather_feet",
+			"look": [
+				"assassin_feet_t1_l",
+				"assassin_feet_t1_r"
+			],
+			"name": "ITEM_ASSASSIN_FEET_T1"
 		},
 		"greatsword_t1": {
 			"slot": "main",

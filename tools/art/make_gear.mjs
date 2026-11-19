@@ -4,9 +4,10 @@
 // Armor is drawn as shells around the body parts of HumanRig (make_humans.mjs), in the
 // part's own voxels from its pivot (so a piece's offset is just its min corner). Weapons use
 // the fist frame of make_pieces.mjs (grips through the middle, blades forward along +Z).
-// Three tiers per type: 1 plain, 2 trimmed and riveted, 3 gilded with glowing runes and
-// bigger silhouettes. Cloth and leather take the wearer's colors (primary and secondary
-// tints) so each class keeps its own look; mail and plate have their own metal.
+// Armor comes in one set per class (Warrior plate, Cleric and Mage cloth, Archer mail,
+// Assassin leather), each with its own headgear, emblems and colors; weapons by type.
+// Three tiers: 1 plain, 2 trimmed and riveted, 3 gilded with glowing runes and bigger
+// silhouettes. Cloth and leather sets take the wearer's colors (primary and secondary tints).
 import fs from "node:fs";
 import { write, Shape, SHADE, LIGHT, TINT_PRIMARY, TINT_SECONDARY, GLOW } from "./vox.mjs";
 
@@ -62,6 +63,124 @@ function mats(kind, tier) {
         : { b: C.DARK, d: C.DARK_D, l: C.DARK_L, trim: C.GOLD, acc: C.GOLD_L, rune: GLOW, gem: C.GEM };
   }
 }
+
+// The armor of each class: its kind (the shape of its pieces) and its materials.
+const CLASS_SETS = {
+  warrior: { kind: "plate" }, cleric: { kind: "cloth" }, mage: { kind: "cloth" },
+  archer: { kind: "mail" }, assassin: { kind: "leather" },
+};
+function cmats(cls, t) {
+  const m = mats(CLASS_SETS[cls].kind, t);
+  switch (cls) {
+    case "warrior": return { ...m, trim: t === 1 ? S : m.trim, acc: t === 1 ? S : m.acc };
+    case "cleric": return { ...m, acc: C.GOLD, gem: t >= 3 ? C.GEM : C.GOLD_L };
+    case "archer": return { ...m, trim: P, acc: t === 1 ? C.LEATHER : m.acc };
+    case "assassin": return { ...m, b: P, d: SHADE(P), l: LIGHT(P), trim: S };
+    default: return m;
+  }
+}
+
+// --- Class headgear and chest emblems -----------------------------------------------
+const HEADS = {
+  // A hood under a gold circlet with a sun on the brow; tier 3 a tall mitre.
+  cleric(t, m) {
+    const s = new Shape();
+    const [x0, y0, z0, x1, y1, z1] = BOX.head;
+    s.box(x0 - 1, y1 + 1, z0 - 1, x1 + 1, y1 + 1, z1 + 1, m.b);
+    s.box(x0 - 1, y0 + 1, z0 - 1, x1 + 1, y1, z0 - 1, m.d);
+    s.box(x0 - 1, y0 + 1, z0, x0 - 1, y1, z1 + 1, m.b).box(x1 + 1, y0 + 1, z0, x1 + 1, y1, z1 + 1, m.b);
+    s.box(x0 - 2, y0 - 1, z0 - 2, x1 + 2, y0, z1, m.b).remove(x0, y0 - 1, z0, x1, y0, z1 - 1); // mantle
+    s.box(x0 - 1, y1 - 1, z1 + 1, x1 + 1, y1 - 1, z1 + 1, m.acc); // circlet
+    s.box(-1, y1 - 2, z1 + 2, 0, y1, z1 + 2, m.gem).put(-2, y1 - 1, z1 + 2, m.acc).put(1, y1 - 1, z1 + 2, m.acc); // sun
+    if (t >= 2) s.box(x0 - 1, y0 + 1, z1 + 1, x0 - 1, y1 - 2, z1 + 1, m.trim).box(x1 + 1, y0 + 1, z1 + 1, x1 + 1, y1 - 2, z1 + 1, m.trim);
+    if (t >= 3) {
+      for (let k = 0; k < 5; k++) s.box(x0 + 1 + (k >> 1), y1 + 2 + k, z0 + 2, x1 - 1 - (k >> 1), y1 + 2 + k, z1 - 1, k % 2 ? m.l : m.b); // mitre
+      s.box(-1, y1 + 3, z1, 0, y1 + 6, z1, m.acc).box(-2, y1 + 5, z1, 1, y1 + 5, z1, m.acc).put(-1, y1 + 4, z1 + 1, m.rune);
+    }
+    return { s, hides: ["hair", "hair_cap"] };
+  },
+  // A pointed wizard's hat with a wide brim and a band; taller, starred and glowing with the tier.
+  mage(t, m) {
+    const s = new Shape();
+    const [x0, , z0, x1, y1, z1] = BOX.head;
+    const y = y1 + 1;
+    const brim = 3 + t;
+    s.box(x0 - brim, y, z0 - brim, x1 + brim, y, z1 + brim, m.b);
+    for (const [x, z] of [[x0 - brim, z0 - brim], [x1 + brim, z0 - brim], [x0 - brim, z1 + brim], [x1 + brim, z1 + brim]]) s.remove(x, y, z, x, y, z);
+    s.box(x0 - brim + 1, y, z1 + brim, x1 + brim - 1, y, z1 + brim, m.l).box(x0 - brim + 1, y, z0 - brim, x1 + brim - 1, y, z0 - brim, m.d);
+    s.box(x0, y + 1, z0, x1, y + 2, z1, m.trim); // band
+    s.box(-1, y + 1, z1 + 1, 0, y + 2, z1 + 1, m.acc);
+    const levels = 4 + t;
+    let lo = 0;
+    for (let k = 0; k < levels; k++) {
+      const yy = y + 3 + k * 2;
+      s.box(x0 + lo, yy, z0 + lo, x1 - lo, yy + 1, z1 - lo, m.b);
+      s.box(x0 + lo, yy, z0 + lo, x0 + lo, yy + 1, z1 - lo, m.d);
+      if (t >= 2 && k === 1) s.put(-1, yy, z1 - lo + 1, m.acc).put(0, yy + 1, z1 - lo + 1, m.acc); // a star
+      lo = Math.min(lo + 1, 3);
+    }
+    const top = y + 3 + levels * 2;
+    s.box(-1, top, z0 + 2, 0, top + 1, z0 + 3, m.b).box(-1, top + 1, z0, 0, top + 2, z0 + 1, m.b).put(-1, top + 2, z0 - 1, t >= 3 ? m.rune : m.b); // bent tip
+    if (t >= 3) for (let k = 1; k < levels; k += 2) s.put(x0 + Math.min(k, 3), y + 3 + k * 2, z1 - Math.min(k, 3) + 1, m.rune);
+    return { s, hides: ["hair"] };
+  },
+  // A ranger's hood with a long point; tier 2 a leather brow band, tier 3 a feather and glow.
+  archer(t, m) {
+    const s = new Shape();
+    const [x0, y0, z0, x1, y1, z1] = BOX.head;
+    const hood = P;
+    s.box(x0 - 1, y1 + 1, z0 - 1, x1 + 1, y1 + 1, z1 + 1, hood);
+    s.box(x0 - 1, y0 + 1, z0 - 1, x1 + 1, y1 + 1, z0 - 1, SHADE(hood));
+    s.box(x0 - 1, y0 + 1, z0, x0 - 1, y1 + 1, z1, hood).box(x1 + 1, y0 + 1, z0, x1 + 1, y1 + 1, z1, hood);
+    s.box(x0 - 1, y1 + 1, z1 + 1, x1 + 1, y1 + 1, z1 + 1, SHADE(hood));
+    s.box(x0 - 2, y0 - 1, z0 - 2, x1 + 2, y0, z1 - 1, hood).remove(x0, y0 - 1, z0, x1, y0, z1 - 1); // cape collar
+    s.box(x0 - 2, y0 - 1, z0 - 2, x1 + 2, y0 - 1, z0 - 2, m.b); // mail edge under the cape
+    for (let k = 0; k < 2 + t; k++) s.box(-1, y1 - 2 - k, z0 - 2 - k, 0, y1 + 1 - k, z0 - 2 - k, hood); // the point
+    if (t >= 2) s.box(x0 - 1, y1 - 1, z1 + 1, x1 + 1, y1 - 1, z1 + 1, C.LEATHER).put(-1, y1 - 1, z1 + 2, m.acc);
+    if (t >= 3) { for (let k = 0; k < 6; k++) s.put(x1 + 2, y1 - 1 + k, z0 + 1 - (k >> 1), k > 3 ? C.WHITE : S); s.put(x1 + 1, y1, z1, m.rune); }
+    return { s, hides: ["hair", "hair_cap"] };
+  },
+  // A hood and a mask over the lower face; tier 2 a red band, tier 3 small horns and glowing eyes' trim.
+  assassin(t, m) {
+    const s = new Shape();
+    const [x0, y0, z0, x1, y1, z1] = BOX.head;
+    s.box(x0 - 1, y1 + 1, z0 - 1, x1 + 1, y1 + 1, z1 + 1, m.b);
+    s.box(x0 - 1, y0 + 1, z0 - 1, x1 + 1, y1, z0 - 1, m.d);
+    s.box(x0 - 1, y0 + 1, z0, x0 - 1, y1, z1 + 1, m.b).box(x1 + 1, y0 + 1, z0, x1 + 1, y1, z1 + 1, m.b);
+    s.box(x0 - 1, y1, z1 + 1, x1 + 1, y1 + 1, z1 + 1, m.l); // brow
+    s.box(x0, y0 + 1, z1 + 1, x1, y0 + 3, z1 + 1, m.d).box(x0, y0 + 3, z1 + 1, x1, y0 + 3, z1 + 1, m.trim); // mask
+    s.box(x0 - 2, y0 - 1, z0 - 2, x1 + 2, y0, z1, m.b).remove(x0, y0 - 1, z0, x1, y0, z1 - 1);
+    if (t >= 2) s.box(x0 - 1, y1 - 1, z1 + 1, x1 + 1, y1 - 1, z1 + 1, m.trim);
+    if (t >= 3) {
+      for (const [x, dir] of [[x0, -1], [x1, 1]]) s.put(x, y1 + 2, z0 + 3, m.acc).put(x + dir, y1 + 3, z0 + 3, m.acc).put(x + dir, y1 + 4, z0 + 2, C.GOLD_L);
+      s.put(x0 + 1, y0 + 2, z1 + 2, m.rune).put(x1 - 1, y0 + 2, z1 + 2, m.rune);
+    }
+    return { s, hides: ["hair", "hair_cap"] };
+  },
+};
+
+// Emblems over the class's chest piece.
+const EMBLEMS = {
+  warrior(s, t, m, z) { s.box(-2, 6, z, 1, 7, z, m.trim).box(-1, 5, z, 0, 8, z, m.trim); }, // a cross
+  cleric(s, t, m, z) { // a gold sun on the chest
+    s.box(-1, 5, z, 0, 8, z, m.acc).box(-2, 6, z, 1, 7, z, m.acc);
+    for (const [x, y] of [[-3, 6], [2, 7], [-1, 9], [0, 4]]) s.put(x, y, z, m.acc);
+    if (t >= 3) s.box(-1, 6, z + 1, 0, 7, z + 1, GLOW);
+  },
+  mage(s, t, m, z) { // an arcane star
+    for (const [x, y] of [[-1, 8], [0, 8], [-2, 7], [1, 7], [-1, 6], [0, 6], [-3, 6], [2, 6], [-1, 5], [0, 5], [-2, 4], [1, 4]]) s.put(x, y, z, m.trim);
+    if (t >= 2) s.put(-1, 6, z + 1, m.acc).put(0, 6, z + 1, m.acc);
+    if (t >= 3) s.put(-1, 7, z + 1, GLOW).put(0, 7, z + 1, GLOW);
+  },
+  archer(s, t, m, z) { // a leather baldric across the mail and a buckle
+    for (let i = 0; i <= 9; i++) s.put(-6 + i, 10 - i, z, C.LEATHER);
+    s.put(-1, 5, z, m.acc);
+  },
+  assassin(s, t, m, z) { // crossed red straps and a dagger sheath
+    for (let i = 0; i <= 9; i++) s.put(-6 + i, 10 - i, z, m.trim).put(5 - i, 10 - i, z, m.trim);
+    s.box(3, 1, z, 4, 4, z, C.LEATHER_D);
+  },
+};
 
 // A hollow shell one voxel outside a box (open at the ends listed): base on the outside,
 // dark sides and back, light top edge. `grow` thickens it outward.
@@ -503,16 +622,19 @@ function addWeapon(name, shape, frame) {
 const looks = {}; // base id -> {look, look_offhand?}
 const TIERS = [1, 2, 3];
 for (const t of TIERS) {
-  for (const kind of ["cloth", "leather", "mail", "plate"]) {
-    const m = mats(kind, t);
-    const id = (slot) => `${kind}_${slot}_t${t}`;
-    const head = ARMOR.head(kind, t, m);
+  for (const cls of Object.keys(CLASS_SETS)) {
+    const kind = CLASS_SETS[cls].kind;
+    const m = cmats(cls, t);
+    const id = (slot) => `${cls}_${slot}_t${t}`;
+    const head = HEADS[cls] ? HEADS[cls](t, m) : ARMOR.head(kind, t, m);
     addPart(`${id("head")}`, head.s, "head", head.hides);
     looks[id("head")] = { look: [id("head")] };
     addPart(`${id("shoulders")}_l`, ARMOR.shoulder(kind, t, m, 1), "arm_left");
     addPart(`${id("shoulders")}_r`, ARMOR.shoulder(kind, t, m, -1), "arm_right");
     looks[id("shoulders")] = { look: [`${id("shoulders")}_l`, `${id("shoulders")}_r`] };
-    addPart(id("chest"), ARMOR.chest(kind, t, m), "torso");
+    const chest = ARMOR.chest(kind, t, m);
+    EMBLEMS[cls](chest, t, m, BOX.torso[5] + (kind === "plate" ? 3 : 2));
+    addPart(id("chest"), chest, "torso");
     addPart(`${id("chest")}_skirt`, ARMOR.skirt(kind, t, m), "hips");
     looks[id("chest")] = { look: [id("chest"), `${id("chest")}_skirt`] };
     for (const side of ["left", "right"]) {

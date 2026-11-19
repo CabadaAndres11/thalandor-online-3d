@@ -309,7 +309,7 @@ func test_potion_counts_and_cooldown() -> void:
 
 func test_durability_warning() -> void:
 	var c := _client("warrior")
-	var it := ItemRoll.new_item("plate_chest_t1", 1)
+	var it := ItemRoll.new_item("warrior_chest_t1", 1)
 	c.inventory.equipment["chest"] = it
 	var hud := _hud(c)
 	hud.advance(0.0)

@@ -1,49 +1,220 @@
 {
-	"armor_order": ["cloth", "leather", "mail", "plate"],
 	"families": {
 		"one_hand": {},
-		"heavy": {"grip": "two_hand", "melee_anim": "heavy", "cooldown_mult": 1.4, "damage_mult": 1.5, "range_add": 0.5, "angle_deg": 150},
-		"polearm": {"grip": "polearm", "melee_anim": "thrust", "cooldown_mult": 1.2, "damage_mult": 1.25, "range_add": 1.5, "angle_deg": 50},
-		"staff": {"grip": "staff"},
-		"wand": {"projectile": {"speed": 30, "range": 14}, "cooldown_mult": 0.75, "damage_mult": 0.8},
-		"bow": {"grip": "bow"},
-		"crossbow": {"grip": "crossbow", "auto_charge": true, "cooldown_mult": 2.0},
+		"heavy": {
+			"grip": "two_hand",
+			"melee_anim": "heavy",
+			"cooldown_mult": 1.4,
+			"damage_mult": 1.5,
+			"range_add": 0.5,
+			"angle_deg": 150
+		},
+		"polearm": {
+			"grip": "polearm",
+			"melee_anim": "thrust",
+			"cooldown_mult": 1.2,
+			"damage_mult": 1.25,
+			"range_add": 1.5,
+			"angle_deg": 50
+		},
+		"staff": {
+			"grip": "staff"
+		},
+		"wand": {
+			"projectile": {
+				"speed": 30,
+				"range": 14
+			},
+			"cooldown_mult": 0.75,
+			"damage_mult": 0.8
+		},
+		"bow": {
+			"grip": "bow"
+		},
+		"crossbow": {
+			"grip": "crossbow",
+			"auto_charge": true,
+			"cooldown_mult": 2
+		},
 		"daggers": {}
 	},
 	"weapon_types": {
-		"greatsword": {"family": "heavy", "hands": 2},
-		"great_axe": {"family": "heavy", "hands": 2},
-		"warhammer": {"family": "heavy", "hands": 2},
-		"halberd": {"family": "polearm", "hands": 2},
-		"staff": {"family": "staff", "hands": 2},
-		"bow": {"family": "bow", "hands": 2},
-		"crossbow": {"family": "crossbow", "hands": 2},
-		"sword": {"family": "one_hand", "hands": 1},
-		"axe": {"family": "one_hand", "hands": 1},
-		"mace": {"family": "one_hand", "hands": 1},
-		"scepter": {"family": "one_hand", "hands": 1},
-		"short_sword": {"family": "one_hand", "hands": 1, "offhand": true},
-		"dagger": {"family": "daggers", "hands": 1, "offhand": true},
-		"wand": {"family": "wand", "hands": 1},
-		"wood_sword": {"family": "one_hand", "hands": 1},
-		"shield": {"hands": 1},
-		"orb": {"hands": 1},
-		"tome": {"hands": 1}
+		"greatsword": {
+			"family": "heavy",
+			"hands": 2
+		},
+		"great_axe": {
+			"family": "heavy",
+			"hands": 2
+		},
+		"warhammer": {
+			"family": "heavy",
+			"hands": 2
+		},
+		"halberd": {
+			"family": "polearm",
+			"hands": 2
+		},
+		"staff": {
+			"family": "staff",
+			"hands": 2
+		},
+		"bow": {
+			"family": "bow",
+			"hands": 2
+		},
+		"crossbow": {
+			"family": "crossbow",
+			"hands": 2
+		},
+		"sword": {
+			"family": "one_hand",
+			"hands": 1
+		},
+		"axe": {
+			"family": "one_hand",
+			"hands": 1
+		},
+		"mace": {
+			"family": "one_hand",
+			"hands": 1
+		},
+		"scepter": {
+			"family": "one_hand",
+			"hands": 1
+		},
+		"short_sword": {
+			"family": "one_hand",
+			"hands": 1,
+			"offhand": true
+		},
+		"dagger": {
+			"family": "daggers",
+			"hands": 1,
+			"offhand": true
+		},
+		"wand": {
+			"family": "wand",
+			"hands": 1
+		},
+		"wood_sword": {
+			"family": "one_hand",
+			"hands": 1
+		},
+		"shield": {
+			"hands": 1
+		},
+		"orb": {
+			"hands": 1
+		},
+		"tome": {
+			"hands": 1
+		}
 	},
 	"classes": {
-		"villager": {"armor": "", "weapons": ["wood_sword"], "offhand": []},
-		"warrior": {"armor": "plate", "weapons": ["greatsword", "great_axe", "warhammer", "halberd", "sword", "axe", "mace"], "offhand": ["shield"]},
-		"cleric": {"armor": "cloth", "weapons": ["warhammer", "staff", "mace", "wand", "scepter"], "offhand": ["shield", "orb", "tome"]},
-		"mage": {"armor": "cloth", "weapons": ["staff", "wand"], "offhand": ["orb", "tome"]},
-		"archer": {"armor": "mail", "weapons": ["bow", "crossbow", "short_sword"], "offhand": []},
-		"assassin": {"armor": "leather", "weapons": ["dagger", "short_sword"], "offhand": ["dagger", "short_sword"]}
+		"villager": {
+			"weapons": [
+				"wood_sword"
+			],
+			"offhand": []
+		},
+		"warrior": {
+			"weapons": [
+				"greatsword",
+				"great_axe",
+				"warhammer",
+				"halberd",
+				"sword",
+				"axe",
+				"mace"
+			],
+			"offhand": [
+				"shield"
+			]
+		},
+		"cleric": {
+			"weapons": [
+				"warhammer",
+				"staff",
+				"mace",
+				"wand",
+				"scepter"
+			],
+			"offhand": [
+				"shield",
+				"orb",
+				"tome"
+			]
+		},
+		"mage": {
+			"weapons": [
+				"staff",
+				"wand"
+			],
+			"offhand": [
+				"orb",
+				"tome"
+			]
+		},
+		"archer": {
+			"weapons": [
+				"bow",
+				"crossbow",
+				"short_sword"
+			],
+			"offhand": []
+		},
+		"assassin": {
+			"weapons": [
+				"dagger",
+				"short_sword"
+			],
+			"offhand": [
+				"dagger",
+				"short_sword"
+			]
+		}
 	},
 	"starter": {
-		"villager": ["wood_sword"],
-		"warrior": ["sword_t1", "shield_t1", "plate_chest_t1", "plate_shoulders_t1", "plate_legs_t1", "plate_feet_t1"],
-		"cleric": ["mace_t1", "cloth_chest_t1", "cloth_legs_t1", "cloth_feet_t1"],
-		"mage": ["staff_t1", "cloth_chest_t1", "cloth_legs_t1", "cloth_feet_t1"],
-		"archer": ["bow_t1", "leather_chest_t1", "leather_legs_t1", "leather_feet_t1"],
-		"assassin": ["dagger_t1", "dagger_t1", "leather_chest_t1", "leather_legs_t1", "leather_feet_t1"]
+		"villager": [
+			"wood_sword"
+		],
+		"warrior": [
+			"sword_t1",
+			"shield_t1",
+			"warrior_chest_t1",
+			"warrior_shoulders_t1",
+			"warrior_legs_t1",
+			"warrior_feet_t1"
+		],
+		"cleric": [
+			"mace_t1",
+			"cleric_head_t1",
+			"cleric_chest_t1",
+			"cleric_legs_t1",
+			"cleric_feet_t1"
+		],
+		"mage": [
+			"staff_t1",
+			"mage_head_t1",
+			"mage_chest_t1",
+			"mage_legs_t1",
+			"mage_feet_t1"
+		],
+		"archer": [
+			"bow_t1",
+			"archer_head_t1",
+			"archer_chest_t1",
+			"archer_legs_t1",
+			"archer_feet_t1"
+		],
+		"assassin": [
+			"dagger_t1",
+			"dagger_t1",
+			"assassin_head_t1",
+			"assassin_chest_t1",
+			"assassin_legs_t1",
+			"assassin_feet_t1"
+		]
 	}
 }

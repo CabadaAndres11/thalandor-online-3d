@@ -16,7 +16,7 @@ func before_each() -> void:
 
 
 func _stock() -> Array:
-	return [ItemRoll.new_item("cloth_chest_t1", 10), ItemRoll.new_item("wand_t1", 10),
+	return [ItemRoll.new_item("mage_chest_t1", 10), ItemRoll.new_item("wand_t1", 10),
 		ItemRoll.new_item("orb_t1", 10), ItemRoll.new_item("staff_t1", 10)]
 
 

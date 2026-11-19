@@ -148,11 +148,11 @@ func _looks(set_name: String) -> Array:
 			var armor := func(kind: String) -> Array:
 				return ["head", "shoulders", "chest", "hands", "legs", "feet"].map(func(sl: String) -> String: return kind + "_" + sl + t)
 			var kits := [
-				["warrior", ["sword" + t, "shield" + t] + armor.call("plate"), {"skin": "skin_4", "hair_style": "short", "beard": "full", "body": "robust"}],
-				["cleric", ["scepter" + t, "tome" + t] + armor.call("cloth"), {"skin": "skin_2", "hair_style": "bald", "beard": "short"}],
-				["mage", ["staff" + t, ""] + armor.call("cloth"), {"skin": "skin_6", "hair_style": "bob", "hair_color": "white"}],
-				["archer", ["bow" + t, ""] + armor.call("mail"), {"skin": "skin_3", "hair_style": "swept", "hair_color": "blond"}],
-				["assassin", ["dagger" + t, "dagger" + t] + armor.call("leather"), {"skin": "skin_7", "hair_style": "short"}],
+				["warrior", ["sword" + t, "shield" + t] + armor.call("warrior"), {"skin": "skin_4", "hair_style": "short", "beard": "full", "body": "robust"}],
+				["cleric", ["scepter" + t, "tome" + t] + armor.call("cleric"), {"skin": "skin_2", "hair_style": "bald", "beard": "short"}],
+				["mage", ["staff" + t, ""] + armor.call("mage"), {"skin": "skin_6", "hair_style": "bob", "hair_color": "white"}],
+				["archer", ["bow" + t, ""] + armor.call("archer"), {"skin": "skin_3", "hair_style": "swept", "hair_color": "blond"}],
+				["assassin", ["dagger" + t, "dagger" + t] + armor.call("assassin"), {"skin": "skin_7", "hair_style": "short"}],
 			]
 			return kits.map(func(k: Array) -> Dictionary: return _geared(k[0], k[2], k[1], _rot))
 		"weapons":

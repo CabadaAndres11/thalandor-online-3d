@@ -83,15 +83,15 @@ func test_sell_worthless_refused() -> void:
 
 
 func test_repair_cost() -> void:
-	var it := ItemRoll.new_item("cloth_chest_t1", 10, "rare")
+	var it := ItemRoll.new_item("mage_chest_t1", 10, "rare")
 	it.durability = 50
 	assert_eq(Merchant.repair_cost(it, db), ceili(ItemRoll.value(it, db) * 0.1))
 
 
 func test_repair_all() -> void:
-	var a := ItemRoll.new_item("cloth_chest_t1", 10)
+	var a := ItemRoll.new_item("mage_chest_t1", 10)
 	a.durability = 50
-	var b := ItemRoll.new_item("cloth_legs_t1", 10)
+	var b := ItemRoll.new_item("mage_legs_t1", 10)
 	b.durability = 0
 	p.inventory.equipment["chest"] = a
 	p.inventory.equipment["legs"] = b
