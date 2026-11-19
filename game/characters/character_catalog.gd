@@ -120,6 +120,7 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 	var pieces: Array = []
 	var hidden := {}
 	var grip := str(c.get("grip", ""))
+	var auras: Array = []
 	if gear.is_empty():
 		var look: Dictionary = UpgradeDB.load_default().upgrade(upgrade).get("look", {}) if upgrade != "" else {}
 		var headgear := str(look.get("headgear", c.get("headgear", "")))
@@ -139,6 +140,8 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 			if base_id == "":
 				continue
 			var b := db.base(base_id)
+			if b.has("aura"):
+				auras.append(Color(str(b.aura)))
 			var ids: Array = b.get("look_offhand", b.get("look", [])) if Inventory.VISIBLE[i] == "offhand" else b.get("look", [])
 			for id: String in ids:
 				if piece(id).is_empty():
@@ -169,6 +172,7 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 		"trousers": Color(str(c.trousers)) if c.has("trousers") else Color(str(c.get("primary", "#808080"))).darkened(HumanRig.TROUSERS_DARKEN),
 		"body_scale": option("body", app.body).get("scale", {}),
 		"grip": grip,
+		"auras": auras,
 		"pieces": pieces,
 	}
 

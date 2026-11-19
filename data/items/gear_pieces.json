@@ -995,6 +995,17 @@
 		"tag": "gear",
 		"hides": []
 	},
+	"warrior_chest_t2_cape": {
+		"file": "res://assets/items/vox/warrior_chest_t2_cape.vox",
+		"part": "torso",
+		"offset": [
+			-8,
+			-11,
+			-6
+		],
+		"tag": "gear",
+		"hides": []
+	},
 	"warrior_hands_t2_l": {
 		"file": "res://assets/items/vox/warrior_hands_t2_l.vox",
 		"part": "hand_left",
@@ -1141,6 +1152,17 @@
 		"tag": "gear",
 		"hides": []
 	},
+	"cleric_chest_t2_cape": {
+		"file": "res://assets/items/vox/cleric_chest_t2_cape.vox",
+		"part": "torso",
+		"offset": [
+			-8,
+			-11,
+			-6
+		],
+		"tag": "gear",
+		"hides": []
+	},
 	"cleric_hands_t2_l": {
 		"file": "res://assets/items/vox/cleric_hands_t2_l.vox",
 		"part": "hand_left",
@@ -1282,6 +1304,17 @@
 			-6,
 			-7,
 			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t2_cape": {
+		"file": "res://assets/items/vox/mage_chest_t2_cape.vox",
+		"part": "torso",
+		"offset": [
+			-8,
+			-11,
+			-6
 		],
 		"tag": "gear",
 		"hides": []
@@ -1574,6 +1607,17 @@
 			-6,
 			-4,
 			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_chest_t2_cape": {
+		"file": "res://assets/items/vox/assassin_chest_t2_cape.vox",
+		"part": "torso",
+		"offset": [
+			-8,
+			-11,
+			-6
 		],
 		"tag": "gear",
 		"hides": []
@@ -1933,6 +1977,17 @@
 		"tag": "gear",
 		"hides": []
 	},
+	"warrior_chest_t3_cape": {
+		"file": "res://assets/items/vox/warrior_chest_t3_cape.vox",
+		"part": "torso",
+		"offset": [
+			-8,
+			-16,
+			-7
+		],
+		"tag": "gear",
+		"hides": []
+	},
 	"warrior_hands_t3_l": {
 		"file": "res://assets/items/vox/warrior_hands_t3_l.vox",
 		"part": "hand_left",
@@ -2035,6 +2090,17 @@
 			"hair_cap"
 		]
 	},
+	"cleric_head_t3_halo": {
+		"file": "res://assets/items/vox/cleric_head_t3_halo.vox",
+		"part": "head",
+		"offset": [
+			-10,
+			1,
+			-8
+		],
+		"tag": "gear",
+		"hides": []
+	},
 	"cleric_shoulders_t3_l": {
 		"file": "res://assets/items/vox/cleric_shoulders_t3_l.vox",
 		"part": "arm_left",
@@ -2057,6 +2123,28 @@
 		"tag": "gear",
 		"hides": []
 	},
+	"cleric_shoulders_t3_rays_l": {
+		"file": "res://assets/items/vox/cleric_shoulders_t3_rays_l.vox",
+		"part": "arm_left",
+		"offset": [
+			4,
+			2,
+			-1
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_shoulders_t3_rays_r": {
+		"file": "res://assets/items/vox/cleric_shoulders_t3_rays_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-8,
+			2,
+			-1
+		],
+		"tag": "gear",
+		"hides": []
+	},
 	"cleric_chest_t3": {
 		"file": "res://assets/items/vox/cleric_chest_t3.vox",
 		"part": "torso",
@@ -2075,6 +2163,17 @@
 			-6,
 			-8,
 			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_chest_t3_cape": {
+		"file": "res://assets/items/vox/cleric_chest_t3_cape.vox",
+		"part": "torso",
+		"offset": [
+			-8,
+			-16,
+			-7
 		],
 		"tag": "gear",
 		"hides": []
@@ -2180,6 +2279,17 @@
 			"hair"
 		]
 	},
+	"mage_head_t3_runes": {
+		"file": "res://assets/items/vox/mage_head_t3_runes.vox",
+		"part": "head",
+		"offset": [
+			-8,
+			13,
+			-8
+		],
+		"tag": "gear",
+		"hides": []
+	},
 	"mage_shoulders_t3_l": {
 		"file": "res://assets/items/vox/mage_shoulders_t3_l.vox",
 		"part": "arm_left",
@@ -2202,6 +2312,28 @@
 		"tag": "gear",
 		"hides": []
 	},
+	"mage_shoulders_t3_shards_l": {
+		"file": "res://assets/items/vox/mage_shoulders_t3_shards_l.vox",
+		"part": "arm_left",
+		"offset": [
+			5,
+			4,
+			0
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_shoulders_t3_shards_r": {
+		"file": "res://assets/items/vox/mage_shoulders_t3_shards_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-8,
+			4,
+			0
+		],
+		"tag": "gear",
+		"hides": []
+	},
 	"mage_chest_t3": {
 		"file": "res://assets/items/vox/mage_chest_t3.vox",
 		"part": "torso",
@@ -2220,6 +2352,17 @@
 			-6,
 			-8,
 			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t3_cape": {
+		"file": "res://assets/items/vox/mage_chest_t3_cape.vox",
+		"part": "torso",
+		"offset": [
+			-8,
+			-16,
+			-7
 		],
 		"tag": "gear",
 		"hides": []
@@ -2326,6 +2469,17 @@
 			"hair_cap"
 		]
 	},
+	"archer_head_t3_leaves": {
+		"file": "res://assets/items/vox/archer_head_t3_leaves.vox",
+		"part": "head",
+		"offset": [
+			-8,
+			11,
+			-6
+		],
+		"tag": "gear",
+		"hides": []
+	},
 	"archer_shoulders_t3_l": {
 		"file": "res://assets/items/vox/archer_shoulders_t3_l.vox",
 		"part": "arm_left",
@@ -2366,6 +2520,17 @@
 			-6,
 			-7,
 			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_chest_t3_cape": {
+		"file": "res://assets/items/vox/archer_chest_t3_cape.vox",
+		"part": "torso",
+		"offset": [
+			-8,
+			-16,
+			-7
 		],
 		"tag": "gear",
 		"hides": []
@@ -2512,6 +2677,17 @@
 			-6,
 			-5,
 			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_chest_t3_cape": {
+		"file": "res://assets/items/vox/assassin_chest_t3_cape.vox",
+		"part": "torso",
+		"offset": [
+			-8,
+			-16,
+			-7
 		],
 		"tag": "gear",
 		"hides": []

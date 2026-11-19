@@ -331,3 +331,11 @@ func test_dagger_combo_hands() -> void:
 		hands.append(rig.combo_hands())
 		rig.update(0.4)
 	assert_eq(hands, [["right"], ["left"], ["right", "left"]])
+
+
+func test_aura_from_look() -> void:
+	var look := _look()
+	look["auras"] = [Color("#c07bff")]
+	var rig := _rig(look)
+	assert_not_null(rig.find_child("Aura", true, false), "tier 3 sets glow around the character")
+	assert_null(_rig().find_child("Aura", true, false))

@@ -239,3 +239,10 @@ func test_offhand_dagger_uses_the_left_hand_model() -> void:
 	var ids := _ids(cat.resolve("assassin", {}, "", ["dagger_t1", "dagger_t1", "", "", "", "", "", ""]))
 	assert_has(ids, "w_dagger_t1")
 	assert_has(ids, "w_dagger_t1_left")
+
+
+func test_tier3_chest_brings_its_aura() -> void:
+	var cat := CharacterCatalog.load_default()
+	var look := cat.resolve("mage", {}, "", ["", "", "", "", "mage_chest_t3", "", "", ""])
+	assert_eq(look.auras, [Color("#c07bff")])
+	assert_eq(cat.resolve("mage", {}, "", ["", "", "", "", "mage_chest_t2", "", "", ""]).auras, [])

@@ -769,3 +769,101 @@ ITEM_ASSASSIN_CHEST_T1,Jubón de sombra
 ITEM_ASSASSIN_HANDS_T1,Guantes de sombra
 ITEM_ASSASSIN_LEGS_T1,Pantalones de sombra
 ITEM_ASSASSIN_FEET_T1,Botas de sombra
+ITEM_WARRIOR_HEAD_T2,Yelmo de acero templado
+ITEM_WARRIOR_SHOULDERS_T2,Hombreras de acero templado
+ITEM_WARRIOR_CHEST_T2,Coraza de acero templado
+ITEM_WARRIOR_HANDS_T2,Guanteletes de acero templado
+ITEM_WARRIOR_LEGS_T2,Grebas de acero templado
+ITEM_WARRIOR_FEET_T2,Escarpes de acero templado
+ITEM_CLERIC_HEAD_T2,Capucha sacerdotal
+ITEM_CLERIC_SHOULDERS_T2,Esclavina sacerdotal
+ITEM_CLERIC_CHEST_T2,Casulla sacerdotal
+ITEM_CLERIC_HANDS_T2,Guantes sacerdotales
+ITEM_CLERIC_LEGS_T2,Faldones sacerdotales
+ITEM_CLERIC_FEET_T2,Sandalias sacerdotales
+ITEM_MAGE_HEAD_T2,Sombrero del erudito
+ITEM_MAGE_SHOULDERS_T2,Hombreras del erudito
+ITEM_MAGE_CHEST_T2,Túnica del erudito
+ITEM_MAGE_HANDS_T2,Guantes del erudito
+ITEM_MAGE_LEGS_T2,Calzas del erudito
+ITEM_MAGE_FEET_T2,Botas del erudito
+ITEM_ARCHER_HEAD_T2,Capucha del guardabosques
+ITEM_ARCHER_SHOULDERS_T2,Hombreras del guardabosques
+ITEM_ARCHER_CHEST_T2,Cota del guardabosques
+ITEM_ARCHER_HANDS_T2,Brazales del guardabosques
+ITEM_ARCHER_LEGS_T2,Quijotes del guardabosques
+ITEM_ARCHER_FEET_T2,Botas del guardabosques
+ITEM_ASSASSIN_HEAD_T2,Máscara de la hermandad carmesí
+ITEM_ASSASSIN_SHOULDERS_T2,Hombreras de la hermandad carmesí
+ITEM_ASSASSIN_CHEST_T2,Jubón de la hermandad carmesí
+ITEM_ASSASSIN_HANDS_T2,Guantes de la hermandad carmesí
+ITEM_ASSASSIN_LEGS_T2,Pantalones de la hermandad carmesí
+ITEM_ASSASSIN_FEET_T2,Botas de la hermandad carmesí
+ITEM_GREATSWORD_T2,Mandoble de acero
+ITEM_GREAT_AXE_T2,Gran hacha de acero
+ITEM_WARHAMMER_T2,Martillo de guerra de acero
+ITEM_HALBERD_T2,Alabarda de acero
+ITEM_STAFF_T2,Bastón de ébano
+ITEM_BOW_T2,Arco compuesto
+ITEM_CROSSBOW_T2,Ballesta de acero
+ITEM_SWORD_T2,Espada de acero
+ITEM_AXE_T2,Hacha de acero
+ITEM_MACE_T2,Maza de acero
+ITEM_SHORT_SWORD_T2,Espada corta de acero
+ITEM_DAGGER_T2,Daga de acero
+ITEM_WAND_T2,Varita de ébano
+ITEM_SCEPTER_T2,Cetro dorado
+ITEM_SHIELD_T2,Escudo de acero
+ITEM_ORB_T2,Orbe de cristal
+ITEM_TOME_T2,Grimorio encuadernado
+ITEM_NECK_T2,Colgante de plata
+ITEM_RING_T2,Anillo de plata
+ITEM_WARRIOR_HEAD_T3,Yelmo del señor de la guerra
+ITEM_WARRIOR_SHOULDERS_T3,Hombreras del señor de la guerra
+ITEM_WARRIOR_CHEST_T3,Coraza del señor de la guerra
+ITEM_WARRIOR_HANDS_T3,Guanteletes del señor de la guerra
+ITEM_WARRIOR_LEGS_T3,Grebas del señor de la guerra
+ITEM_WARRIOR_FEET_T3,Escarpes del señor de la guerra
+ITEM_CLERIC_HEAD_T3,Mitra del heraldo solar
+ITEM_CLERIC_SHOULDERS_T3,Esclavina del heraldo solar
+ITEM_CLERIC_CHEST_T3,Casulla del heraldo solar
+ITEM_CLERIC_HANDS_T3,Guantes del heraldo solar
+ITEM_CLERIC_LEGS_T3,Faldones del heraldo solar
+ITEM_CLERIC_FEET_T3,Sandalias del heraldo solar
+ITEM_MAGE_HEAD_T3,Sombrero del archimago del vacío
+ITEM_MAGE_SHOULDERS_T3,Hombreras del archimago del vacío
+ITEM_MAGE_CHEST_T3,Túnica del archimago del vacío
+ITEM_MAGE_HANDS_T3,Guantes del archimago del vacío
+ITEM_MAGE_LEGS_T3,Calzas del archimago del vacío
+ITEM_MAGE_FEET_T3,Botas del archimago del vacío
+ITEM_ARCHER_HEAD_T3,Capucha del cazador esmeralda
+ITEM_ARCHER_SHOULDERS_T3,Hombreras del cazador esmeralda
+ITEM_ARCHER_CHEST_T3,Cota del cazador esmeralda
+ITEM_ARCHER_HANDS_T3,Brazales del cazador esmeralda
+ITEM_ARCHER_LEGS_T3,Quijotes del cazador esmeralda
+ITEM_ARCHER_FEET_T3,Botas del cazador esmeralda
+ITEM_ASSASSIN_HEAD_T3,Máscara de la sombra eterna
+ITEM_ASSASSIN_SHOULDERS_T3,Hombreras de la sombra eterna
+ITEM_ASSASSIN_CHEST_T3,Jubón de la sombra eterna
+ITEM_ASSASSIN_HANDS_T3,Guantes de la sombra eterna
+ITEM_ASSASSIN_LEGS_T3,Pantalones de la sombra eterna
+ITEM_ASSASSIN_FEET_T3,Botas de la sombra eterna
+ITEM_GREATSWORD_T3,Mandoble rúnico
+ITEM_GREAT_AXE_T3,Gran hacha rúnica
+ITEM_WARHAMMER_T3,Martillo de guerra rúnico
+ITEM_HALBERD_T3,Alabarda rúnica
+ITEM_STAFF_T3,Bastón astral
+ITEM_BOW_T3,Arco de las estrellas
+ITEM_CROSSBOW_T3,Ballesta rúnica
+ITEM_SWORD_T3,Espada rúnica
+ITEM_AXE_T3,Hacha rúnica
+ITEM_MACE_T3,Maza rúnica
+ITEM_SHORT_SWORD_T3,Espada corta rúnica
+ITEM_DAGGER_T3,Daga rúnica
+ITEM_WAND_T3,Varita astral
+ITEM_SCEPTER_T3,Cetro solar
+ITEM_SHIELD_T3,Escudo rúnico
+ITEM_ORB_T3,Orbe astral
+ITEM_TOME_T3,Grimorio astral
+ITEM_NECK_T3,Colgante de oro
+ITEM_RING_T3,Anillo de oro

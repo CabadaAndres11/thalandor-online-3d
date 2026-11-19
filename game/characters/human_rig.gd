@@ -270,7 +270,66 @@ func _setup(look: Dictionary) -> void:
 		_attach_piece(p, tints)
 	if _pieces.has("weapon_bow"):
 		_bow_hand_pos = (_pieces["weapon_bow"] as Node3D).position
+	var auras: Array = look.get("auras", [])
+	if not auras.is_empty():
+		_add_aura(auras[0])
 	_pose()
+
+
+## The glow of a tier 3 set: motes of light rising around the body and a faint ring on
+## the ground, in the set's color. It does not follow the body's poses (it stays upright).
+func _add_aura(color: Color) -> void:
+	var aura := Node3D.new()
+	aura.name = "Aura"
+	add_child(aura)
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.vertex_color_use_as_albedo = true
+	mat.albedo_color = color
+	mat.emission_enabled = true
+	mat.emission = color
+	var motes := CPUParticles3D.new()
+	motes.name = "Motes"
+	var cube := BoxMesh.new()
+	cube.size = Vector3.ONE * 0.09
+	cube.material = mat
+	motes.mesh = cube
+	motes.amount = 34
+	motes.lifetime = 1.6
+	motes.emission_shape = CPUParticles3D.EMISSION_SHAPE_RING
+	motes.emission_ring_axis = Vector3.UP
+	motes.emission_ring_radius = 1.7
+	motes.emission_ring_inner_radius = 1.2
+	motes.emission_ring_height = 0.1
+	motes.direction = Vector3.UP
+	motes.spread = 12.0
+	motes.gravity = Vector3.ZERO
+	motes.initial_velocity_min = 2.6
+	motes.initial_velocity_max = 4.2
+	motes.scale_amount_min = 0.5
+	motes.scale_amount_max = 1.0
+	var fade := Gradient.new()
+	fade.set_color(0, Color(color, 0.9))
+	fade.set_color(1, Color(color, 0.0))
+	motes.color_ramp = fade
+	motes.position.y = 0.3
+	aura.add_child(motes)
+	var ring := MeshInstance3D.new()
+	ring.name = "Ring"
+	var torus := TorusMesh.new()
+	torus.inner_radius = 1.6
+	torus.outer_radius = 2.0
+	torus.rings = 32
+	torus.ring_segments = 4
+	ring.mesh = torus
+	ring.scale = Vector3(1, 0.05, 1)
+	ring.position.y = 0.06
+	var ring_mat := mat.duplicate() as StandardMaterial3D
+	ring_mat.vertex_color_use_as_albedo = false
+	ring_mat.albedo_color = Color(color, 0.35)
+	ring.material_override = ring_mat
+	aura.add_child(ring)
 
 
 func _attach_piece(p: Dictionary, tints: Dictionary) -> void:
