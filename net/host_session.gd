@@ -8,6 +8,8 @@ signal player_left(id: int)
 const NAME_MIN := 2
 const NAME_MAX := 16
 const SPAWN_SPACING := 1.5
+## Events that only their owner (ev[1]) receives: personal loot and gold.
+const OWNER_EVENTS := ["gold", "loot", "loot_gone", "bag_full"]
 
 var world: SimWorld
 ## Sanitizes the class and appearance guests bring (they may send anything).
@@ -70,12 +72,21 @@ func tick() -> void:
 			inputs[id] = (rec.last_input as PlayerInput).held_only()
 	world.step(inputs)
 	_flush_progress()
+	_flush_inventory()
 	var player_rows := _snapshot_rows()
 	for id: int in _players:
 		var viewer: Vector3 = world.players[id].position if world.players.has(id) else Vector3.ZERO
 		_send_to(id, Protocol.snapshot(world.tick, player_rows, _monster_rows(viewer)), false)
 	if not world.events.is_empty():
-		_broadcast(Protocol.events(world.tick, world.events.duplicate()), true)
+		for id: int in _players:
+			var mine := events_for(id, world.events)
+			if not mine.is_empty():
+				_send_to(id, Protocol.events(world.tick, mine), true)
+
+
+## The events a player receives: everything except other players' loot and gold.
+static func events_for(id: int, events: Array) -> Array:
+	return events.filter(func(ev: Array) -> bool: return not (ev[0] in OWNER_EVENTS and ev.size() > 1 and ev[1] != id))
 
 
 ## Presses of a new input become casts: basic, secondary and the bar slots.
@@ -124,7 +135,7 @@ func roster() -> Array:
 	var rows := []
 	for id: int in _players:
 		var p: Dictionary = _players[id]
-		rows.append([id, p.name, p.slot, p.class_id, p.appearance, p.upgrade])
+		rows.append([id, p.name, p.slot, p.class_id, p.appearance, p.upgrade, p.gear])
 	return rows
 
 
@@ -157,6 +168,8 @@ func _handle(index: int, peer: int, data: PackedByteArray) -> void:
 				ProgressRequests.choose_upgrade(world, cp, msg.id, NpcDB.load_default().near_with_role(map, cp.position, "class_trainer") != "")
 		Protocol.Msg.SET_ARENA_LEVEL:
 			_on_set_arena_level(rec, msg.level)
+		Protocol.Msg.ITEM_ACTION:
+			_on_item_action(rec, msg.action, msg.args)
 		Protocol.Msg.CHAT:
 			var text: String = (msg.text as String).strip_edges().left(balance.chat_max_len)
 			if text.begins_with("/"):
@@ -186,6 +199,7 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 	var player := world.add_player(id, spawn)
 	# Whatever progress the guest brings is fixed up, never refused.
 	player.progress = ProgressRequests.sanitize(PlayerProgress.from_dict(msg.progress), class_id, world)
+	player.inventory = Inventory.from_wire(msg.inventory, class_id, player.progress.level, world.items)
 	ClassRules.setup_player(player, class_id, catalog, world)
 	var bar := world.abilities.sanitize_bar(class_id, msg.bar, player.level, player.progress.upgrade)
 	_players[id] = {
@@ -198,15 +212,18 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 		# What the owner was last sent (PROGRESS), to send only what changed.
 		"upgrade": player.progress.upgrade, "bar_level": player.progress.level, "sent_other": _without_xp(player.progress.to_dict()),
 		"sent_bar": bar.duplicate(), "sent_tick": -100000,
+		"gear": player.inventory.visible_bases(),
 	}
 	if _host_player_id == 0:
 		_host_player_id = id
 	_by_conn[key] = id
 	t.send(peer, Protocol.welcome(id, world.tick, roster(), world.arena_level), true)
 	t.send(peer, Protocol.progress(player.progress.to_dict(), bar), true)
+	t.send(peer, Protocol.inventory(player.inventory.to_wire(), 0.0), true)
+	player.inventory_dirty = false
 	for other: int in _players:
 		if other != id:
-			_send_to(other, Protocol.player_joined(id, name, slot, class_id, appearance, player.progress.upgrade), true)
+			_send_to(other, Protocol.player_joined(id, name, slot, class_id, appearance, player.progress.upgrade, _players[id].gear), true)
 	player_joined.emit(id, name)
 
 
@@ -322,6 +339,59 @@ func _flush_progress() -> void:
 		rec.sent_bar = (rec.bar as Array).duplicate()
 		rec.sent_tick = world.tick
 		p.progress_dirty = false
+
+
+## Sends each owner their changed inventory, and everyone the visible gear that changed.
+func _flush_inventory() -> void:
+	for id: int in _players:
+		var rec: Dictionary = _players[id]
+		var p: PlayerState = world.players.get(id)
+		if p == null or not p.inventory_dirty:
+			continue
+		p.inventory_dirty = false
+		var cd := maxf(0.0, float(p.potion_ready_tick - world.tick) / float(balance.tick_rate))
+		_send_to(id, Protocol.inventory(p.inventory.to_wire(), cd), true)
+		var gear := p.inventory.visible_bases()
+		if gear != rec.gear:
+			rec.gear = gear
+			_broadcast(Protocol.player_gear(id, gear), true)
+
+
+## Item requests: the host checks everything (ItemRequests, Merchant); malformed ones are ignored.
+func _on_item_action(rec: Dictionary, action: String, args: Array) -> void:
+	var p: PlayerState = world.players.get(rec.id)
+	if p == null:
+		return
+	var int_arg := args.size() >= 1 and args[0] is int
+	var str_arg := args.size() >= 1 and args[0] is String
+	match action:
+		"equip":
+			if int_arg:
+				ItemRequests.equip(world, p, args[0], str(args[1]) if args.size() > 1 and args[1] is String else "")
+		"unequip":
+			if str_arg:
+				ItemRequests.unequip(world, p, args[0])
+		"use":
+			if int_arg:
+				ItemRequests.use(world, p, args[0])
+		"potion":
+			if str_arg:
+				ItemRequests.use_potion(world, p, args[0])
+		"merchant_open":
+			_send_stock(rec.id, p)
+		"buy":
+			if int_arg and Merchant.buy(world, p, args[0]):
+				_send_stock(rec.id, p)
+		"sell":
+			if int_arg:
+				Merchant.sell(world, p, args[0])
+		"repair":
+			Merchant.repair_all(world, p)
+
+
+func _send_stock(id: int, p: PlayerState) -> void:
+	if Merchant.near(world, p):
+		_send_to(id, Protocol.merchant_stock(Merchant.stock(world, p).map(func(it: Item) -> Array: return it.to_wire())), true)
 
 
 static func _without_xp(d: Dictionary) -> Dictionary:

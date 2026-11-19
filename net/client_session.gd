@@ -19,6 +19,12 @@ signal leveled_up(id: int, level: int)
 signal arena_level_changed(level: int)
 ## A player (maybe this one) chose or lost a class upgrade ("" = none).
 signal upgrade_changed(id: int, upgrade: String)
+## This player's inventory came from the host (INVENTORY).
+signal inventory_changed()
+## A player's visible equipment changed (roster[id].gear).
+signal gear_changed(id: int)
+## What the merchant sells to this player (Item list), after merchant_open or a purchase.
+signal merchant_stock_received(items: Array)
 
 enum Status { CONNECTING, IN_GAME, CLOSED }
 
@@ -44,6 +50,8 @@ var appearance: Dictionary
 var bar: Array = []
 ## This player's progress, as the host last sent it (what HELLO carries at first).
 var progress := PlayerProgress.new()
+## This player's gold, bag and equipment, as the host last sent it (what HELLO carries at first).
+var inventory := Inventory.new()
 ## Monster level of the arena.
 var arena_level: int = 1
 ## Combat state from the last snapshot: player id -> {hp, max_hp, resource,
@@ -65,10 +73,12 @@ var _sent_at: Dictionary = {} # seq -> _clock_ms when sent
 var _ping_ms: float = 0.0
 var _own_move_mult: float = 1.0
 var _monster_buffers: Dictionary = {} # id -> InterpolationBuffer
+var _potion_ready_ms: float = 0.0
 
 
 func _init(p_balance: Balance, p_map: CollisionMap, p_game_version: String, p_name: String,
-		p_class_id: String = CharacterCatalog.DEFAULT_CLASS, p_appearance: Dictionary = {}, p_progress: Dictionary = {}) -> void:
+		p_class_id: String = CharacterCatalog.DEFAULT_CLASS, p_appearance: Dictionary = {}, p_progress: Dictionary = {},
+		p_inventory: Dictionary = {}) -> void:
 	balance = p_balance
 	map = p_map
 	game_version = p_game_version
@@ -76,6 +86,7 @@ func _init(p_balance: Balance, p_map: CollisionMap, p_game_version: String, p_na
 	class_id = p_class_id
 	appearance = p_appearance
 	progress = PlayerProgress.from_dict(p_progress)
+	inventory = Inventory.from_dict(p_inventory, p_class_id, progress.level, ItemDB.load_default()) if not p_inventory.is_empty() else Inventory.new()
 	bar = AbilityDB.load_default().default_bar(p_class_id, progress.level, progress.upgrade)
 
 
@@ -177,7 +188,7 @@ func latest_tick() -> int:
 func _on_peer_connected(peer: int) -> void:
 	if peer == Transport.HOST_PEER:
 		_transport.send(Transport.HOST_PEER,
-			Protocol.hello(game_version, Protocol.VERSION, player_name, class_id, appearance, bar, progress.to_dict()), true)
+			Protocol.hello(game_version, Protocol.VERSION, player_name, class_id, appearance, bar, progress.to_dict(), inventory.to_wire()), true)
 
 
 func _on_peer_disconnected(peer: int) -> void:
@@ -205,7 +216,7 @@ func _handle(msg: Dictionary) -> void:
 			arena_level = msg.arena_level
 			status = Status.IN_GAME
 			for row: Array in msg.roster:
-				roster[row[0]] = {"name": row[1], "slot": row[2], "class_id": row[3], "appearance": row[4], "upgrade": row[5]}
+				roster[row[0]] = {"name": row[1], "slot": row[2], "class_id": row[3], "appearance": row[4], "upgrade": row[5], "gear": row[6]}
 			welcomed.emit(my_id)
 			roster_changed.emit()
 		Protocol.Msg.REJECT:
@@ -223,7 +234,7 @@ func _handle(msg: Dictionary) -> void:
 							combat[ev[1]].level = ev[2]
 						leveled_up.emit(ev[1], ev[2])
 		Protocol.Msg.PLAYER_JOINED:
-			roster[msg.id] = {"name": msg.name, "slot": msg.slot, "class_id": msg.class_id, "appearance": msg.appearance, "upgrade": msg.upgrade}
+			roster[msg.id] = {"name": msg.name, "slot": msg.slot, "class_id": msg.class_id, "appearance": msg.appearance, "upgrade": msg.upgrade, "gear": msg.gear}
 			roster_changed.emit()
 			chat_received.emit("", tr_text("CHAT_JOINED") % msg.name, true)
 		Protocol.Msg.PLAYER_CLASS:
@@ -241,6 +252,21 @@ func _handle(msg: Dictionary) -> void:
 			progress = PlayerProgress.from_dict(msg.progress)
 			bar = (msg.bar as Array).duplicate()
 			progress_changed.emit()
+		Protocol.Msg.INVENTORY:
+			inventory = Inventory.from_wire(msg.inventory, class_id, progress.level, ItemDB.load_default())
+			_potion_ready_ms = _clock_ms + float(msg.potion_cd_s) * 1000.0
+			inventory_changed.emit()
+		Protocol.Msg.PLAYER_GEAR:
+			if roster.has(msg.id):
+				roster[msg.id].gear = msg.gear
+			gear_changed.emit(msg.id)
+		Protocol.Msg.MERCHANT_STOCK:
+			var items: Array = []
+			for w: Variant in msg.items:
+				var it := Item.from_wire(w, ItemDB.load_default())
+				if it != null:
+					items.append(it)
+			merchant_stock_received.emit(items)
 		Protocol.Msg.ARENA_LEVEL:
 			arena_level = msg.level
 			arena_level_changed.emit(arena_level)
@@ -314,6 +340,22 @@ func dodge_cooldown_ratio() -> float:
 func choose_class(new_class: String) -> void:
 	if status == Status.IN_GAME:
 		_transport.send(Transport.HOST_PEER, Protocol.choose_class(new_class), true)
+
+
+## Item requests (Protocol.item_action): the host checks each one and answers with INVENTORY.
+func request_item(action: String, args: Array = []) -> void:
+	if status == Status.IN_GAME:
+		_transport.send(Transport.HOST_PEER, Protocol.item_action(action, args), true)
+
+
+## Visible equipment of a player (8 base ids, see Inventory.VISIBLE); [] when unknown.
+func gear_of(id: int) -> Array:
+	return roster[id].get("gear", []) if roster.has(id) else []
+
+
+## Seconds until a potion can be drunk again (0 when ready).
+func potion_cooldown_left() -> float:
+	return maxf(0.0, (_potion_ready_ms - _clock_ms) / 1000.0)
 
 
 ## Progress requests: the host checks each one and answers with PROGRESS when it accepts.

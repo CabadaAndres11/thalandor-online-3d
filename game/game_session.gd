@@ -37,6 +37,8 @@ var fx: CombatFX
 var _avatar_root: Node3D
 ## Abilities in slots 1-4 for the next client (the saved character's; empty = class default).
 var character_bar: Array = []
+## The saved inventory of the character playing (Inventory.to_dict), sent in HELLO.
+var character_inventory: Dictionary = {}
 var _loopback: MemoryNetwork
 var _group_code: String = ""
 var _opening: bool = false
@@ -216,7 +218,7 @@ func is_hosting() -> bool:
 
 
 func _start_client(player_name: String, class_id: String, appearance: Dictionary, t: Transport, progress: Dictionary = {}) -> void:
-	client = ClientSession.new(balance, map, game_version(), player_name, class_id, appearance, progress)
+	client = ClientSession.new(balance, map, game_version(), player_name, class_id, appearance, progress, character_inventory)
 	if not character_bar.is_empty():
 		client.bar = character_bar.duplicate()
 	client.disconnected.connect(_on_client_disconnected)

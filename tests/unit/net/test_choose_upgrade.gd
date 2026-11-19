@@ -51,7 +51,7 @@ func test_messages_roundtrip() -> void:
 	assert_eq(Protocol.decode(Protocol.pack([Protocol.Msg.CHOOSE_UPGRADE, 5])), {})
 	var j := Protocol.decode(Protocol.player_joined(2, "Bea", 1, "mage", {}, "arcanist"))
 	assert_eq(j.upgrade, "arcanist")
-	var w := Protocol.decode(Protocol.welcome(1, 0, [[1, "Ana", 0, "warrior", {}, "berserker"]]))
+	var w := Protocol.decode(Protocol.welcome(1, 0, [[1, "Ana", 0, "warrior", {}, "berserker", []]]))
 	assert_eq(w.roster[0][5], "berserker")
 
 

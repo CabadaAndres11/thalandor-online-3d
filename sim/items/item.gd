@@ -21,6 +21,31 @@ func to_dict() -> Dictionary:
 	}
 
 
+## Compact form for the network: [uid, base_id, level, rarity, [affix id, value, …], durability, count].
+func to_wire() -> Array:
+	var flat: Array = []
+	for a: Dictionary in affixes:
+		flat.append(a.id)
+		flat.append(a.value)
+	return [uid, base_id, level, rarity, flat, durability, count]
+
+
+## The dictionary from_dict reads, from a wire array ({} when it is not one).
+static func wire_to_dict(v: Variant) -> Dictionary:
+	if not v is Array or (v as Array).size() != 7 or not v[4] is Array:
+		return {}
+	var a: Array = v
+	var aff: Array = []
+	var flat: Array = a[4]
+	for i in range(0, flat.size() - 1, 2):
+		aff.append({"id": flat[i], "value": flat[i + 1]})
+	return {"uid": a[0], "base_id": a[1], "level": a[2], "rarity": a[3], "affixes": aff, "durability": a[5], "count": a[6]}
+
+
+static func from_wire(v: Variant, db: ItemDB) -> Item:
+	return from_dict(wire_to_dict(v), db)
+
+
 ## null when `v` is not an item of a known base. Everything else is clamped or dropped.
 static func from_dict(v: Variant, db: ItemDB) -> Item:
 	if not v is Dictionary:

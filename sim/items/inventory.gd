@@ -159,6 +159,29 @@ func to_dict() -> Dictionary:
 	return {"gold": gold, "bag": bag.map(func(it: Variant) -> Variant: return it.to_dict() if it != null else null), "equipment": eq}
 
 
+## Compact form for the network: {g: gold, b: [item wire or null], e: {slot: item wire}}.
+func to_wire() -> Dictionary:
+	var eq := {}
+	for s: String in equipment:
+		eq[s] = equipment[s].to_wire()
+	return {"g": gold, "b": bag.map(func(it: Variant) -> Variant: return it.to_wire() if it != null else null), "e": eq}
+
+
+## Reads a wire inventory with the same sanitizing as from_dict.
+static func from_wire(v: Variant, class_id: String, level: int, db: ItemDB) -> Inventory:
+	if not v is Dictionary:
+		return from_dict(null, class_id, level, db)
+	var d: Dictionary = v
+	var eq := {}
+	var raw_eq: Variant = d.get("e", {})
+	if raw_eq is Dictionary:
+		for s: Variant in raw_eq:
+			eq[s] = Item.wire_to_dict((raw_eq as Dictionary)[s])
+	var raw_bag: Variant = d.get("b", [])
+	var bag_dicts: Array = (raw_bag as Array).map(func(x: Variant) -> Variant: return Item.wire_to_dict(x)) if raw_bag is Array else []
+	return from_dict({"gold": d.get("g", 0), "bag": bag_dicts, "equipment": eq}, class_id, level, db)
+
+
 ## Never null. Unknown items are dropped; anything valid that cannot be worn (other class,
 ## too high, wrong slot, an off-hand under a two-handed weapon) goes to the bag, which grows
 ## past 30 slots instead of losing it. Repeated uids get new ones.

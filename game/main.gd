@@ -406,6 +406,15 @@ func _on_progress_changed() -> void:
 	store.queue_save(_playing)
 
 
+## The host sent this player's inventory: the saved character keeps it.
+func _on_inventory_changed() -> void:
+	if game == null or game.client == null or _playing == null:
+		return
+	_playing.inventory = Inventory.from_dict(game.client.inventory.to_dict(), game.client.class_id,
+		game.client.progress.level, ItemDB.load_default())
+	store.queue_save(_playing)
+
+
 func in_game() -> bool:
 	return game != null
 
@@ -645,6 +654,7 @@ func _start_game() -> void:
 	game.session_ended.connect(_on_session_ended)
 	if _playing != null:
 		game.character_bar = _playing.bar.duplicate()
+		game.character_inventory = _playing.inventory.to_dict()
 	game.group_opened.connect(_on_group_opened)
 	game.group_failed.connect(_on_group_failed)
 	_show_only(null)
@@ -660,6 +670,7 @@ func _attach_client() -> void:
 	client.combat_event.connect(_on_game_event)
 	client.class_changed.connect(_on_class_changed)
 	client.progress_changed.connect(_on_progress_changed)
+	client.inventory_changed.connect(_on_inventory_changed)
 	client.leveled_up.connect(_on_leveled_up)
 	client.upgrade_changed.connect(_on_upgrade_changed)
 	client.arena_level_changed.connect(_on_arena_level_changed)

@@ -128,8 +128,6 @@ func test_client_updates_roster_and_emits() -> void:
 	assert_eq(client.bar, AbilityDB.load_default().default_bar("archer"))
 
 
-func test_protocol_is_6() -> void:
-	assert_eq(Protocol.VERSION, 6)
 
 
 func test_choosing_keeps_the_health_ratio() -> void:
@@ -154,4 +152,4 @@ func test_choose_class_gives_kit() -> void:
 	var kit: Array = ItemDB.load_default().starter("warrior").duplicate()
 	kit.sort()
 	assert_eq(worn, kit, "the wood sword is gone, the warrior kit is worn")
-	assert_true(p.inventory_dirty)
+	assert_true(_decoded(a).any(func(m: Dictionary) -> bool: return m.get("type") == Protocol.Msg.INVENTORY), "the owner gets it")

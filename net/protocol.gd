@@ -2,15 +2,17 @@ class_name Protocol
 extends RefCounted
 ## Network messages: Arrays [type, fields...] encoded with var_to_bytes (never objects).
 
-const VERSION := 6
+const VERSION := 7
 
 enum Msg { HELLO = 1, WELCOME, REJECT, INPUT, SNAPSHOT, PLAYER_JOINED, PLAYER_LEFT, CHAT, EVENTS, SET_BAR, CHOOSE_CLASS, PLAYER_CLASS,
-	SPEND_ATTRIBUTE, BUY_TALENT, BUY_MASTERY, RESET, SET_ARENA_LEVEL, PROGRESS, ARENA_LEVEL, CHOOSE_UPGRADE, PLAYER_UPGRADE }
+	SPEND_ATTRIBUTE, BUY_TALENT, BUY_MASTERY, RESET, SET_ARENA_LEVEL, PROGRESS, ARENA_LEVEL, CHOOSE_UPGRADE, PLAYER_UPGRADE,
+	ITEM_ACTION, INVENTORY, PLAYER_GEAR, MERCHANT_STOCK }
 
 ## Field names and Variant types per message type.
 const SCHEMAS := {
 	Msg.HELLO: [["game_version", TYPE_STRING], ["protocol", TYPE_INT], ["name", TYPE_STRING],
-		["class_id", TYPE_STRING], ["appearance", TYPE_DICTIONARY], ["bar", TYPE_ARRAY], ["progress", TYPE_DICTIONARY]],
+		["class_id", TYPE_STRING], ["appearance", TYPE_DICTIONARY], ["bar", TYPE_ARRAY], ["progress", TYPE_DICTIONARY],
+		["inventory", TYPE_DICTIONARY]],
 	Msg.WELCOME: [["player_id", TYPE_INT], ["tick", TYPE_INT], ["roster", TYPE_ARRAY], ["arena_level", TYPE_INT]],
 	Msg.REJECT: [["reason", TYPE_STRING], ["host_version", TYPE_STRING]],
 	Msg.INPUT: [["inputs", TYPE_ARRAY]],
@@ -20,7 +22,7 @@ const SCHEMAS := {
 	Msg.CHOOSE_CLASS: [["class_id", TYPE_STRING]],
 	Msg.PLAYER_CLASS: [["id", TYPE_INT], ["class_id", TYPE_STRING], ["bar", TYPE_ARRAY]],
 	Msg.PLAYER_JOINED: [["id", TYPE_INT], ["name", TYPE_STRING], ["slot", TYPE_INT],
-		["class_id", TYPE_STRING], ["appearance", TYPE_DICTIONARY], ["upgrade", TYPE_STRING]],
+		["class_id", TYPE_STRING], ["appearance", TYPE_DICTIONARY], ["upgrade", TYPE_STRING], ["gear", TYPE_ARRAY]],
 	Msg.PLAYER_LEFT: [["id", TYPE_INT]],
 	Msg.CHAT: [["from_id", TYPE_INT], ["text", TYPE_STRING]],
 	Msg.SPEND_ATTRIBUTE: [["attr", TYPE_STRING]],
@@ -32,11 +34,15 @@ const SCHEMAS := {
 	Msg.ARENA_LEVEL: [["level", TYPE_INT]],
 	Msg.CHOOSE_UPGRADE: [["id", TYPE_STRING]],
 	Msg.PLAYER_UPGRADE: [["id", TYPE_INT], ["upgrade", TYPE_STRING]],
+	Msg.ITEM_ACTION: [["action", TYPE_STRING], ["args", TYPE_ARRAY]],
+	Msg.INVENTORY: [["inventory", TYPE_DICTIONARY], ["potion_cd_s", TYPE_FLOAT]],
+	Msg.PLAYER_GEAR: [["id", TYPE_INT], ["gear", TYPE_ARRAY]],
+	Msg.MERCHANT_STOCK: [["items", TYPE_ARRAY]],
 }
 
 ## Element types of the nested arrays.
 const ROW_SCHEMAS := {
-	"roster": [TYPE_INT, TYPE_STRING, TYPE_INT, TYPE_STRING, TYPE_DICTIONARY, TYPE_STRING],
+	"roster": [TYPE_INT, TYPE_STRING, TYPE_INT, TYPE_STRING, TYPE_DICTIONARY, TYPE_STRING, TYPE_ARRAY],
 	"inputs": [TYPE_INT, TYPE_VECTOR2, TYPE_VECTOR3, TYPE_INT],
 }
 
@@ -61,10 +67,11 @@ static var _monster_types: Array = []
 const MAX_PACKET_BYTES := 16384
 ## HELLO sizes of older games, padded so the host can answer "different version":
 ## protocol 1 (0.1.x) had no character, protocol 2 (0.2.x) had no ability bar, protocol 5
-## (0.5.x) had no progress.
+## (0.5.x) had no progress, protocol 6 (0.6.x) had no inventory.
 const LEGACY_HELLO_SIZE := 4
 const PROTOCOL2_HELLO_SIZE := 6
 const PROTOCOL5_HELLO_SIZE := 7
+const PROTOCOL6_HELLO_SIZE := 8
 const MAGIC_0 := 0x54 # "T"
 const MAGIC_1 := 0x4F # "O"
 const HEADER_SIZE := 6
@@ -79,8 +86,8 @@ static func pack(message: Array) -> PackedByteArray:
 
 
 static func hello(game_version: String, protocol: int, name: String, class_id: String,
-		appearance: Dictionary, bar: Array = [], progress: Dictionary = {}) -> PackedByteArray:
-	return pack([Msg.HELLO, game_version, protocol, name, class_id, appearance, bar, progress])
+		appearance: Dictionary, bar: Array = [], progress: Dictionary = {}, inventory: Dictionary = {}) -> PackedByteArray:
+	return pack([Msg.HELLO, game_version, protocol, name, class_id, appearance, bar, progress, inventory])
 
 
 static func welcome(player_id: int, tick: int, roster: Array, arena_level: int = 1) -> PackedByteArray:
@@ -118,8 +125,8 @@ static func player_class(id: int, class_id: String, bar: Array) -> PackedByteArr
 
 
 static func player_joined(id: int, name: String, slot: int, class_id: String,
-		appearance: Dictionary, upgrade: String = "") -> PackedByteArray:
-	return pack([Msg.PLAYER_JOINED, id, name, slot, class_id, appearance, upgrade])
+		appearance: Dictionary, upgrade: String = "", gear: Array = []) -> PackedByteArray:
+	return pack([Msg.PLAYER_JOINED, id, name, slot, class_id, appearance, upgrade, gear])
 
 
 static func player_left(id: int) -> PackedByteArray:
@@ -162,6 +169,27 @@ static func arena_level(level: int) -> PackedByteArray:
 	return pack([Msg.ARENA_LEVEL, level])
 
 
+## A player asks to do something with their items: equip [index, target?], unequip [slot],
+## use [index], potion [kind], merchant_open [], buy [index], sell [index], repair [].
+static func item_action(action: String, args: Array = []) -> PackedByteArray:
+	return pack([Msg.ITEM_ACTION, action, args])
+
+
+## The host sends a player their own inventory (Inventory.to_wire) and potion cooldown left.
+static func inventory(wire: Dictionary, potion_cd_s: float) -> PackedByteArray:
+	return pack([Msg.INVENTORY, wire, potion_cd_s])
+
+
+## A player's visible equipment changed: 8 base ids (Inventory.VISIBLE), for everyone.
+static func player_gear(id: int, gear: Array) -> PackedByteArray:
+	return pack([Msg.PLAYER_GEAR, id, gear])
+
+
+## What the merchant sells to this player: item wire arrays.
+static func merchant_stock(items: Array) -> PackedByteArray:
+	return pack([Msg.MERCHANT_STOCK, items])
+
+
 ## Returns {"type": Msg, <fields>} or {} when the packet is invalid.
 static func decode(data: PackedByteArray) -> Dictionary:
 	# Header: 2 magic bytes + u32 payload length. Truncated or foreign packets are
@@ -184,10 +212,12 @@ static func decode(data: PackedByteArray) -> Dictionary:
 	var schema: Array = SCHEMAS[arr[0]]
 	# Older HELLOs (0.1.x, 0.2.x) are padded so the host can answer "version".
 	if arr[0] == Msg.HELLO and arr.size() == LEGACY_HELLO_SIZE:
-		arr = arr + ["", {}, [], {}]
+		arr = arr + ["", {}, [], {}, {}]
 	elif arr[0] == Msg.HELLO and arr.size() == PROTOCOL2_HELLO_SIZE:
-		arr = arr + [[], {}]
+		arr = arr + [[], {}, {}]
 	elif arr[0] == Msg.HELLO and arr.size() == PROTOCOL5_HELLO_SIZE:
+		arr = arr + [{}, {}]
+	elif arr[0] == Msg.HELLO and arr.size() == PROTOCOL6_HELLO_SIZE:
 		arr = arr + [{}]
 	if arr.size() != schema.size() + 1:
 		return {}
