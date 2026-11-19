@@ -17,7 +17,7 @@ Cada plan de la [[14 Hoja de ruta]] tiene aquí su **spec** (diseño acordado) y
 | 4 · Progresión | [[Plan 4 — Progresión (spec)\|Spec]] | [[Plan 4 — Progresión (plan)\|Plan]] | Hecho (0.6.0, publicada; la 0.6.1 añade los jefes del culto) |
 | 5 · Objetos | [[Plan 5 — Objetos (spec)\|Spec]] | [[Plan 5 — Objetos (plan)\|Plan]] | Hecho (0.7.0) |
 | 6.1 · Iluminación, ambientes y opciones | [[Plan 6.1 — Iluminación, ambientes y opciones (spec)\|Spec]] | [[Plan 6.1 — Iluminación, ambientes y opciones (plan)\|Plan]] | Hecho (0.8.0, pendiente de tu prueba de juego) |
-| 6.2 · Humanoide y piezas (vóxel 2×) | — | — | Pendiente |
+| 6.2 · Humanoide y piezas (vóxel 2×) | [[Plan 6.2 — Humanoide y piezas a vóxel 2× (spec)\|Spec]] | [[Plan 6.2 — Humanoide y piezas a vóxel 2× (plan)\|Plan]] | En curso (se publica con la 6.3 en la 0.9.0) |
 | 6.3 · Equipo (vóxel 2×) | — | — | Pendiente |
 | 6.4 · Monstruos, PNJ y ropa que sigue al cuerpo | — | — | Pendiente |
 | 7 · Identidad y creación de personaje | — | — | Pendiente |
