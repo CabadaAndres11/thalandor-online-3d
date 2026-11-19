@@ -10,6 +10,8 @@ node tools/art/make_humans.mjs assets/characters/vox
 node tools/art/make_pieces.mjs assets/characters/pieces data/characters/pieces.json
 # Monstruos vóxel (rigs por partes)
 node tools/art/make_monsters.mjs assets/monsters/vox
+# Props del mundo (antorcha), a vóxel de 5 cm
+node tools/art/make_props.mjs assets/props
 # Iconos de habilidades y estados
 node tools/art/make_icons.mjs assets/icons
 ```
