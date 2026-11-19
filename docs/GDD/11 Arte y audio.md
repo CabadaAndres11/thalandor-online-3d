@@ -6,7 +6,7 @@ actualizado: 2026-11-19
 
 # 11. Arte y audio **[En curso]** (0.5.0: todo el arte es propio, hecho por código)
 
-- **Renovación pendiente ([[14 Hoja de ruta|Plan 6]]):** vóxel más fino en todos los modelos para ganar detalle y alejarse del aspecto infantil o indie actual; proporciones más realistas, materiales, iluminación y postprocesado. Referencias en [[Estilo gráfico objetivo (Plan 6)]].
+- **Renovación pendiente ([[14 Hoja de ruta|Plan 6]]):** vóxel más fino en todos los modelos para ganar detalle y alejarse del aspecto infantil o indie actual; proporciones más realistas, materiales, iluminación y postprocesado. Referencias en [[Estilo gráfico objetivo (Plan 6)]]. Vóxel 2× y cuatro partes: [[D-015 Vóxel 2× y renovación gráfica en cuatro partes]]. Primera parte: [[Plan 6.1 — Iluminación, ambientes y opciones (spec)|ambientes como datos, calidad de vídeo y volúmenes]] **[Diseñado]**.
 - **Estilo:** **vóxel** 3D, colores vivos y saturados, iluminación suave con sombras (estética tipo Cube World / Trove / Minecraft Dungeons).
 - **Escala:** bloques del mundo de 1 m. Los humanoides usan un **vóxel fino** (unos 3,6 cm): 49 vóxeles de alto, unos 1,76 m, con proporciones de adulto.
 - **Personajes [Implementado 0.5.0]:** humanoide vóxel propio por huesos (`HumanRig`). Partes `.vox` generadas por `tools/art/make_humans.mjs`: cadera, torso, cabeza, brazos con antebrazo y mano, muslos y piernas con bota. Están animadas por código:
