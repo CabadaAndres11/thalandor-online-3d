@@ -43,10 +43,10 @@ func _init() -> void:
 	_viewport.add_child(world_env)
 
 
-func show_character(class_id: String, appearance: Dictionary) -> void:
+func show_character(class_id: String, appearance: Dictionary, gear: Array = []) -> void:
 	if rig != null:
 		rig.queue_free()
-	rig = HumanRig.create(class_id, appearance)
+	rig = HumanRig.create(class_id, appearance, null, "", gear)
 	_pivot.add_child(rig)
 	rig.set_moving_speed(0.0, 1.0)
 

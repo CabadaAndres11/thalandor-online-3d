@@ -27,6 +27,9 @@ const BINDINGS := {
 	"abilities_window": [KEY_K],
 	"window_character": [KEY_C],
 	"window_talents": [KEY_T],
+	"window_inventory": [KEY_I],
+	"potion_health": [KEY_Q],
+	"potion_resource": [KEY_R],
 }
 
 ## Mouse buttons of actions (GDD §3.2).

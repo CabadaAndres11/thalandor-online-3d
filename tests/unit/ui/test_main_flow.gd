@@ -447,3 +447,17 @@ func test_confirm_out_of_reach_says_why() -> void:
 	main.class_choice_window.select("mage")
 	main.class_choice_window.confirm_button.pressed.emit()
 	assert_true(main.chat.has_message(tr("CLASS_CHOICE_TOO_FAR")), "the player is told why nothing happened")
+
+
+func test_i_opens_the_inventory_beside_the_character_window() -> void:
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	_press("window_character")
+	_press("window_inventory")
+	assert_true(main.inventory_window.visible)
+	assert_true(main.character_window.visible, "I does not close C")
+	assert_eq(main.inventory_window.slot_count(), 30)
+
+	_press("window_inventory")
+	assert_false(main.inventory_window.visible)
+	assert_true(main.character_window.visible)

@@ -79,7 +79,8 @@ func test_every_text_key_is_translated() -> void:
 			"STAT_ROW_HP", "STAT_ROW_RESOURCE", "STAT_ROW_ATTACK", "STAT_ROW_SPELL", "STAT_ROW_ARMOR", "STAT_ROW_CRIT",
 			"STAT_ROW_CRIT_DAMAGE", "STAT_ROW_DODGE", "STAT_ROW_BLOCK", "STAT_ROW_SPEED", "STAT_ROW_COOLDOWN",
 			"STAT_ROW_LIFESTEAL", "STAT_ROW_REGEN", "CHAR_RECOMMENDED", "EQUIP_EMPTY", "EQUIP_HEAD", "EQUIP_CHEST",
-			"EQUIP_HANDS", "EQUIP_FEET", "EQUIP_WEAPON", "EQUIP_OFFHAND", "EQUIP_RING", "EQUIP_NECK"]:
+			"EQUIP_HANDS", "EQUIP_FEET", "EQUIP_MAIN", "EQUIP_OFFHAND", "EQUIP_RING_1", "EQUIP_RING_2", "EQUIP_NECK",
+			"EQUIP_SHOULDERS", "EQUIP_LEGS"]:
 		assert_ne(tr(key), key, key)
 
 
@@ -93,12 +94,25 @@ func test_stat_text_covers_every_modifier_stat() -> void:
 	assert_eq(StatText.describe({"stat": "crit_add", "value": 0.01}), "+1 % crítico")
 
 
-func test_shows_the_model_and_reserves_eight_item_slots() -> void:
+func test_eleven_slots() -> void:
 	_show(1)
 	assert_true(win.has_model())
-	assert_eq(win.slot_ids().size(), 8)
-	for id: String in ["head", "chest", "hands", "feet", "weapon", "offhand", "ring", "neck"]:
+	assert_eq(win.slot_ids().size(), 11)
+	for id: String in Inventory.SLOTS:
 		assert_has(win.slot_ids(), id)
+
+
+func test_slots_show_the_equipment_and_unequip_on_right_click() -> void:
+	var pr := PlayerProgress.from_dict({"level": 3})
+	var inv := Inventory.starter("warrior", ItemDB.load_default())
+	win.show_for("Ana", "warrior", pr, Progression.preview_stats("warrior", pr, balance, inv), balance, {}, inv)
+	assert_eq(win.slot_item("main").base_id, "sword_t1")
+	assert_null(win.slot_item("head"))
+	watch_signals(win)
+	win.right_click_slot("main")
+	assert_signal_emitted_with_parameters(win, "unequip_requested", ["main"])
+	win.right_click_slot("head")
+	assert_signal_emit_count(win, "unequip_requested", 1, "an empty slot does nothing")
 
 
 func test_main_attributes_of_the_class_are_in_gold() -> void:

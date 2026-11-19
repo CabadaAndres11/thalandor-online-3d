@@ -32,6 +32,7 @@ var pause_menu: PauseMenu
 var abilities_window: AbilitiesWindow
 var class_choice_window: ClassChoiceWindow
 var character_window: CharacterWindow
+var inventory_window: InventoryWindow
 var talents_window: TalentsWindow
 var trainer_menu: TrainerMenu
 var upgrade_window: UpgradeWindow
@@ -132,7 +133,13 @@ func _ready() -> void:
 	character_window = CharacterWindow.new()
 	character_window.theme = theme
 	character_window.attribute_spent.connect(_on_attribute_spent)
+	character_window.unequip_requested.connect(func(slot: String) -> void: _request_item("unequip", [slot]))
 	_ui.add_child(character_window)
+	inventory_window = InventoryWindow.new()
+	inventory_window.theme = theme
+	inventory_window.item_action.connect(_request_item)
+	inventory_window.visibility_changed.connect(_dock_windows)
+	_ui.add_child(inventory_window)
 
 	talents_window = TalentsWindow.new()
 	talents_window.theme = theme
@@ -198,6 +205,15 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("window_talents"):
 		_toggle_window(talents_window)
 		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("window_inventory"):
+		_toggle_inventory()
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("potion_health"):
+		_request_item("potion", ["health"])
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("potion_resource"):
+		_request_item("potion", ["resource"])
+		get_viewport().set_input_as_handled()
 
 
 ## The windows opened with K, C and T (one at a time): they block mouse attacks, not movement.
@@ -206,7 +222,30 @@ func _panel_windows() -> Array:
 
 
 func _panel_open() -> bool:
-	return _panel_windows().any(func(w: Control) -> bool: return w.visible)
+	return _panel_windows().any(func(w: Control) -> bool: return w.visible) or inventory_window.visible
+
+
+## I: the inventory opens beside whatever K/C/T window is open (it never closes them).
+func _toggle_inventory() -> void:
+	if inventory_window.visible:
+		inventory_window.visible = false
+		return
+	_show_inventory()
+
+
+func _show_inventory() -> void:
+	var c := game.client
+	inventory_window.show_for(c.inventory, c.class_id, c.progress.level)
+
+
+## The character window makes room for the inventory docked on the right.
+func _dock_windows() -> void:
+	character_window.set_right_margin(inventory_window.reserved_width() if inventory_window.visible else 0.0)
+
+
+func _request_item(action: String, args: Array) -> void:
+	if game != null and game.client != null:
+		game.client.request_item(action, args)
 
 
 ## Class choice and Brann's menu take the whole input while they are open.
@@ -216,7 +255,7 @@ func _modal_open() -> bool:
 
 ## Esc: closes whatever window is open and says whether there was one.
 func _close_open_window() -> bool:
-	for w: Control in [class_choice_window, trainer_menu, upgrade_window] + _panel_windows():
+	for w: Control in [class_choice_window, trainer_menu, upgrade_window] + _panel_windows() + [inventory_window]:
 		if w.visible:
 			if w == upgrade_window and upgrade_window.mandatory:
 				return true # the choice cannot be skipped
@@ -245,7 +284,8 @@ func _toggle_window(w: Control) -> void:
 func _show_character() -> void:
 	var c := game.client
 	var char_name: String = c.roster[c.my_id].name if c.roster.has(c.my_id) else c.player_name
-	character_window.show_for(char_name, c.class_id, c.progress, Progression.preview_stats(c.class_id, c.progress, c.balance), c.balance, c.appearance)
+	character_window.show_for(char_name, c.class_id, c.progress, Progression.preview_stats(c.class_id, c.progress, c.balance, c.inventory),
+		c.balance, c.appearance, c.inventory)
 
 
 ## E next to an NPC: a villager by Brann chooses a class; anyone else gets Brann's menu
@@ -407,9 +447,15 @@ func _on_progress_changed() -> void:
 	store.queue_save(_playing)
 
 
-## The host sent this player's inventory: the saved character keeps it.
+## The host sent this player's inventory: open windows show it and the saved character keeps it.
 func _on_inventory_changed() -> void:
-	if game == null or game.client == null or _playing == null:
+	if game == null or game.client == null:
+		return
+	if inventory_window.visible:
+		_show_inventory()
+	if character_window.visible:
+		_show_character()
+	if _playing == null:
 		return
 	_playing.inventory = Inventory.from_dict(game.client.inventory.to_dict(), game.client.class_id,
 		game.client.progress.level, ItemDB.load_default())

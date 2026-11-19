@@ -610,7 +610,7 @@ EQUIP_WEAPON,Arma
 EQUIP_OFFHAND,Mano secundaria
 EQUIP_RING,Anillo
 EQUIP_NECK,Amuleto
-EQUIP_EMPTY,Vacío (los objetos llegarán en un plan futuro)
+EQUIP_EMPTY,Vacío
 CHAR_RECOMMENDED,Recomendado para tu clase
 DETAIL_CAST,Lanzamiento: %s s (se interrumpe si te mueves)
 DETAIL_POWER_ARMOR,armadura
@@ -703,3 +703,52 @@ STAT_MAX_RESOURCE_ADD,%s recurso máximo
 NPC_MERCHANT,Mercader
 GOLD_SHORT,oro
 ITEM_BAG_FULL,Tu inventario está lleno: el objeto se queda en el suelo.
+EQUIP_MAIN,Arma principal
+EQUIP_SHOULDERS,Hombros
+EQUIP_LEGS,Piernas
+EQUIP_RING_1,Anillo
+EQUIP_RING_2,Anillo
+EQUIP_CONSUMABLE,Consumible
+KIND_CLOTH,Tela
+KIND_LEATHER,Cuero
+KIND_MAIL,Malla
+KIND_PLATE,Placas
+KIND_JEWELRY,Joya
+KIND_GREATSWORD,Mandoble
+KIND_GREAT_AXE,Gran hacha
+KIND_WARHAMMER,Martillo de guerra
+KIND_HALBERD,Alabarda
+KIND_STAFF,Bastón
+KIND_BOW,Arco
+KIND_CROSSBOW,Ballesta
+KIND_SWORD,Espada
+KIND_AXE,Hacha
+KIND_MACE,Maza
+KIND_SHORT_SWORD,Espada corta
+KIND_DAGGER,Daga
+KIND_WAND,Varita
+KIND_SCEPTER,Cetro
+KIND_SHIELD,Escudo
+KIND_ORB,Orbe
+KIND_TOME,Tomo
+KIND_WOOD_SWORD,Espada de práctica
+KIND_POTION,Poción
+RARITY_COMMON,Común
+RARITY_UNCOMMON,Poco común
+RARITY_RARE,Raro
+RARITY_EPIC,Épico
+RARITY_LEGENDARY,Legendario
+RARITY_UNIQUE,Único
+ITEM_LEVEL,Nivel %d
+ITEM_DURABILITY,"Durabilidad %d %%"
+ITEM_SELL,Valor de venta: %d oro
+ITEM_CLASS_CANNOT,Tu clase no puede usarlo
+ITEM_COMPARE,Comparado con lo equipado:
+ITEM_SAME,Igual que lo equipado
+ITEM_TWO_HANDS,Dos manos
+ITEM_STACK,Cantidad: %d
+ITEM_POTION_HEALTH_DESC,"Recupera el 35 % de la vida (Q). Recarga compartida de 30 s."
+ITEM_POTION_RESOURCE_DESC,"Recupera el 35 % del recurso (R). Recarga compartida de 30 s."
+INV_TITLE,Inventario
+INV_GOLD,%d oro
+INV_HINT,Clic derecho: equipar o usar
