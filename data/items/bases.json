@@ -614,7 +614,9 @@
 			"kind": "cloth",
 			"tier": 1,
 			"template": "cloth_head",
-			"look": [],
+			"look": [
+				"hat_mage"
+			],
 			"name": "ITEM_CLOTH_HEAD_T1"
 		},
 		"cloth_shoulders_t1": {
@@ -630,7 +632,9 @@
 			"kind": "cloth",
 			"tier": 1,
 			"template": "cloth_chest",
-			"look": [],
+			"look": [
+				"outfit_mage"
+			],
 			"name": "ITEM_CLOTH_CHEST_T1"
 		},
 		"cloth_hands_t1": {
@@ -662,7 +666,9 @@
 			"kind": "leather",
 			"tier": 1,
 			"template": "leather_head",
-			"look": [],
+			"look": [
+				"hood_archer"
+			],
 			"name": "ITEM_LEATHER_HEAD_T1"
 		},
 		"leather_shoulders_t1": {
@@ -678,7 +684,9 @@
 			"kind": "leather",
 			"tier": 1,
 			"template": "leather_chest",
-			"look": [],
+			"look": [
+				"outfit_assassin"
+			],
 			"name": "ITEM_LEATHER_CHEST_T1"
 		},
 		"leather_hands_t1": {
@@ -726,7 +734,9 @@
 			"kind": "mail",
 			"tier": 1,
 			"template": "mail_chest",
-			"look": [],
+			"look": [
+				"outfit_archer"
+			],
 			"name": "ITEM_MAIL_CHEST_T1"
 		},
 		"mail_hands_t1": {
@@ -766,7 +776,10 @@
 			"kind": "plate",
 			"tier": 1,
 			"template": "plate_shoulders",
-			"look": [],
+			"look": [
+				"pauldron_left",
+				"pauldron_right"
+			],
 			"name": "ITEM_PLATE_SHOULDERS_T1"
 		},
 		"plate_chest_t1": {
@@ -774,7 +787,9 @@
 			"kind": "plate",
 			"tier": 1,
 			"template": "plate_chest",
-			"look": [],
+			"look": [
+				"outfit_warrior"
+			],
 			"name": "ITEM_PLATE_CHEST_T1"
 		},
 		"plate_hands_t1": {
@@ -806,7 +821,9 @@
 			"kind": "greatsword",
 			"tier": 1,
 			"template": "greatsword",
-			"look": [],
+			"look": [
+				"weapon_sword"
+			],
 			"name": "ITEM_GREATSWORD_T1"
 		},
 		"great_axe_t1": {
@@ -838,7 +855,9 @@
 			"kind": "staff",
 			"tier": 1,
 			"template": "staff",
-			"look": [],
+			"look": [
+				"weapon_staff"
+			],
 			"name": "ITEM_STAFF_T1"
 		},
 		"bow_t1": {
@@ -846,7 +865,9 @@
 			"kind": "bow",
 			"tier": 1,
 			"template": "bow",
-			"look": [],
+			"look": [
+				"weapon_bow"
+			],
 			"name": "ITEM_BOW_T1"
 		},
 		"crossbow_t1": {
@@ -854,7 +875,9 @@
 			"kind": "crossbow",
 			"tier": 1,
 			"template": "crossbow",
-			"look": [],
+			"look": [
+				"weapon_crossbow"
+			],
 			"name": "ITEM_CROSSBOW_T1"
 		},
 		"sword_t1": {
@@ -862,7 +885,9 @@
 			"kind": "sword",
 			"tier": 1,
 			"template": "sword",
-			"look": [],
+			"look": [
+				"weapon_sword"
+			],
 			"name": "ITEM_SWORD_T1"
 		},
 		"axe_t1": {
@@ -878,7 +903,9 @@
 			"kind": "mace",
 			"tier": 1,
 			"template": "mace",
-			"look": [],
+			"look": [
+				"weapon_mace"
+			],
 			"name": "ITEM_MACE_T1"
 		},
 		"short_sword_t1": {
@@ -894,8 +921,13 @@
 			"kind": "dagger",
 			"tier": 1,
 			"template": "dagger",
-			"look": [],
-			"name": "ITEM_DAGGER_T1"
+			"look": [
+				"weapon_dagger_right"
+			],
+			"name": "ITEM_DAGGER_T1",
+			"look_offhand": [
+				"weapon_dagger_left"
+			]
 		},
 		"wand_t1": {
 			"slot": "main",
@@ -960,7 +992,9 @@
 			"min_level": 1,
 			"max_level": 9999,
 			"template": "wood_sword",
-			"look": [],
+			"look": [
+				"weapon_wood_sword"
+			],
 			"name": "ITEM_WOOD_SWORD"
 		},
 		"potion_health": {

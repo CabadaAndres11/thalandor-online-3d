@@ -31,9 +31,10 @@ var _action_left: float = 0.0
 var _dead: bool = false
 
 
-func setup(player_name: String, slot: int, class_id: String, appearance: Dictionary, upgrade: String = "") -> void:
+## gear: the 8 visible base ids (Inventory.VISIBLE); [] dresses the character as its class.
+func setup(player_name: String, slot: int, class_id: String, appearance: Dictionary, upgrade: String = "", gear: Array = []) -> void:
 	var color: Color = SLOT_COLORS[clampi(slot, 0, SLOT_COLORS.size() - 1)]
-	rig = HumanRig.create(class_id, appearance, null, upgrade)
+	rig = HumanRig.create(class_id, appearance, null, upgrade, gear)
 	rig.auto_update = false
 	add_child(rig)
 	rig.set_moving_speed(0.0, move_speed)
@@ -111,10 +112,10 @@ func is_translucent() -> bool:
 
 ## Plays the action of an ability kind (melee, shoot, cast, dash), "downed" or "die";
 ## idle and walk resume when it ends (a body on the ground stays down until alive).
-func play_action(kind: String) -> void:
+func play_action(kind: String, combo: bool = false) -> void:
 	if rig == null:
 		return
-	var d := rig.play_action(kind)
+	var d := rig.play_action(kind, combo)
 	if d <= 0.0:
 		return
 	_action_left = d

@@ -11,7 +11,7 @@
 	{"id": "mage", "main_attributes": ["intellect", "spirit"], "attack_attribute": "strength", "name": "CLASS_MAGE", "desc": "CLASS_MAGE_DESC", "weapons": ["weapon_staff"], "grip": "staff", "headgear": "hat_mage", "pieces": ["outfit_mage"], "primary": "#5b3f9e", "secondary": "#e8b23a",
 	 "stats": {"max_hp": 130, "attack_power": 5, "spell_power": 20, "armor": 10, "crit_chance": 0.05, "dodge_chance": 0.0},
 	 "resource": {"kind": "mana", "max": 160, "start": 160, "regen_per_s": 6, "regen_in_combat_mult": 0.0}},
-	{"id": "archer", "main_attributes": ["agility", "stamina"], "attack_attribute": "agility", "name": "CLASS_ARCHER", "desc": "CLASS_ARCHER_DESC", "weapons": ["weapon_bow"], "grip": "bow", "headgear": "hood_archer", "pieces": ["outfit_archer"], "primary": "#4f7a3a", "secondary": "#6b4a2b",
+	{"id": "archer", "main_attributes": ["agility", "stamina"], "attack_attribute": "agility", "name": "CLASS_ARCHER", "desc": "CLASS_ARCHER_DESC", "fixed_pieces": ["quiver_back"], "weapons": ["weapon_bow"], "grip": "bow", "headgear": "hood_archer", "pieces": ["outfit_archer"], "primary": "#4f7a3a", "secondary": "#6b4a2b",
 	 "stats": {"max_hp": 150, "attack_power": 20, "spell_power": 0, "armor": 20, "crit_chance": 0.05, "dodge_chance": 0.05},
 	 "resource": {"kind": "focus", "max": 100, "start": 100, "regen_per_s": 12, "dodging_regen_mult": 0.3}},
 	{"id": "assassin", "main_attributes": ["agility", "strength"], "attack_attribute": "strength", "name": "CLASS_ASSASSIN", "desc": "CLASS_ASSASSIN_DESC", "weapons": ["weapon_dagger_right", "weapon_dagger_left"], "headgear": "mask_assassin", "pieces": ["outfit_assassin"], "primary": "#2d2f3a", "secondary": "#8a2433",

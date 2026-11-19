@@ -93,7 +93,7 @@ func test_guest_class_reaches_host_avatar() -> void:
 	assert_eq(host_entry.get("class_id"), "cleric", "the guest sees the host's class")
 	var avatar := host_game.find_child("Player%d" % guest_id, true, false) as PlayerAvatar
 	assert_not_null(avatar)
-	assert_has(avatar.rig.pieces(), "hood_archer", "the host draws the guest as an archer")
+	assert_has(avatar.rig.pieces(), "quiver_back", "the host draws the guest as an archer (no gear yet: base clothes and the quiver)")
 
 
 func test_signaling_failure_reports_error() -> void:

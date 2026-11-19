@@ -253,3 +253,81 @@ func test_walk_pace_is_natural() -> void:
 			crossings += 1
 		last = a
 	assert_between(crossings, 3, 4, "about two strides a second")
+
+
+func _rig(look := _look()) -> HumanRig:
+	var rig := HumanRig.build(look)
+	rig.auto_update = false
+	add_child_autofree(rig)
+	return rig
+
+
+func test_rig_heavy_and_thrust() -> void:
+	var rig := _rig()
+	for kind: String in ["heavy", "thrust", "stab"]:
+		assert_gt(rig.play_action(kind), 0.0, kind)
+		rig.update(5.0)
+		assert_eq(rig.current_action(), "idle", kind + " ends")
+
+
+func test_melee_combo_cycles() -> void:
+	var rig := _rig()
+	var steps := []
+	for i in 4:
+		rig.play_action("melee", true)
+		steps.append(rig.combo_step())
+		rig.update(0.5)
+	assert_eq(steps, [0, 1, 2, 0])
+
+
+func test_melee_combo_resets() -> void:
+	var rig := _rig()
+	rig.play_action("melee", true)
+	rig.update(0.5)
+	rig.play_action("melee", true)
+	assert_eq(rig.combo_step(), 1)
+	rig.update(0.5 + 1.3)
+	rig.play_action("melee", true)
+	assert_eq(rig.combo_step(), 0, "a pause starts over")
+
+
+func test_non_combo_action_does_not_advance() -> void:
+	var rig := _rig()
+	rig.play_action("melee", true)
+	rig.update(0.5)
+	rig.play_action("melee")
+	assert_eq(rig.combo_step(), 0, "only the basic attack chains")
+
+
+func test_combo_same_duration() -> void:
+	var rig := _rig()
+	var d := []
+	for i in 3:
+		d.append(rig.play_action("heavy", true))
+		rig.update(0.7)
+	assert_eq(d[0], d[1])
+	assert_eq(d[1], d[2])
+
+
+func test_combo_steps_pose_differently() -> void:
+	var rig := _rig()
+	var poses := []
+	for i in 3:
+		rig.play_action("melee", true)
+		rig.update(HumanRig.ACTIONS.melee * 0.45)
+		poses.append([rig.part("arm_right").rotation, rig.part("torso").rotation])
+		rig.update(1.0)
+		rig.play_action("idle")
+		rig._last_combo_time = rig._time # keep the chain going for the test
+	assert_ne(poses[0], poses[1])
+	assert_ne(poses[1], poses[2])
+
+
+func test_dagger_combo_hands() -> void:
+	var rig := _rig()
+	var hands := []
+	for i in 3:
+		rig.play_action("stab", true)
+		hands.append(rig.combo_hands())
+		rig.update(0.4)
+	assert_eq(hands, [["right"], ["left"], ["right", "left"]])

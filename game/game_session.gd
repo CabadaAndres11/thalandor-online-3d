@@ -30,7 +30,6 @@ var arena: Arena
 var camera: IsoCamera
 var _avatars: Dictionary = {} # id -> PlayerAvatar
 var _monster_avatars: Dictionary = {} # id -> MonsterAvatar
-var _stab_right: Dictionary = {} # player id -> whether the next dagger stab is the right hand
 var _npc_avatars: Array = [] # NpcAvatar
 ## Combat visuals (projectiles, warnings, numbers…) driven by host events.
 var fx: CombatFX
@@ -225,6 +224,7 @@ func _start_client(player_name: String, class_id: String, appearance: Dictionary
 	client.combat_event.connect(_on_combat_event)
 	client.class_changed.connect(_on_class_changed)
 	client.upgrade_changed.connect(_on_upgrade_changed)
+	client.gear_changed.connect(_on_gear_changed)
 	client.connect_to(t)
 
 
@@ -285,7 +285,8 @@ func _sync_avatars(delta: float) -> void:
 			var avatar := PlayerAvatar.new()
 			avatar.name = "Player%d" % id
 			avatar.move_speed = balance.move_speed
-			avatar.setup(entry.name, entry.slot, entry.get("class_id", CharacterCatalog.DEFAULT_CLASS), entry.get("appearance", {}), str(entry.get("upgrade", "")))
+			avatar.setup(entry.name, entry.slot, entry.get("class_id", CharacterCatalog.DEFAULT_CLASS), entry.get("appearance", {}),
+				str(entry.get("upgrade", "")), entry.get("gear", []))
 			_avatar_root.add_child(avatar)
 			_avatars[id] = avatar
 		var avatar_node := _avatars[id] as PlayerAvatar
@@ -335,6 +336,12 @@ func _on_class_changed(id: int, _class_id: String) -> void:
 
 ## A player chose or lost an upgrade: the avatar is rebuilt with its look (helm, crossbow).
 func _on_upgrade_changed(id: int, _upgrade: String) -> void:
+	if _avatars.has(id):
+		_remove_avatar(id)
+
+
+## A player's visible equipment changed: the avatar is rebuilt wearing it.
+func _on_gear_changed(id: int) -> void:
 	if _avatars.has(id):
 		_remove_avatar(id)
 
@@ -392,14 +399,15 @@ func _on_combat_event(ev: Array) -> void:
 			elif _avatars.has(who):
 				var ab := AbilityDB.load_default().get_ability(str(ev[2]))
 				var pa := _avatars[who] as PlayerAvatar
+				# The weapon in hand changes the basic attack's animation (WeaponFamily).
+				var gear := client.gear_of(who)
+				if not gear.is_empty() and str(gear[0]) != "":
+					ab = WeaponFamily.adjust(ab, ItemDB.load_default().family_of(str(gear[0])))
 				var anim := str(ab.get("anim", ""))
-				if anim == "stab": # the dagger attack alternates hands
-					_stab_right[who] = not bool(_stab_right.get(who, false))
-					anim = "stab_right" if _stab_right[who] else "stab_left"
-				pa.play_action(anim)
+				var basic := str(ab.get("kind", "")) == "basic"
+				pa.play_action(anim, basic) # basic melee attacks chain three swings
 				if HumanRig.SWINGS.has(anim) and pa.rig != null:
-					var hands: Array = ["left"] if anim == "stab_left" else (["right", "left"] if anim in ["spin", "flurry"] else ["right"])
-					for hand: String in hands:
+					for hand: String in pa.rig.combo_hands():
 						if pa.rig.weapon_points(hand).is_empty():
 							continue
 						var slash := SlashFx.new()

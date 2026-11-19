@@ -10,6 +10,10 @@ const DEFAULT_CLASS := "villager"
 const APPEARANCE_PATH := "res://data/characters/appearance.json"
 const CLASSES_PATH := "res://data/characters/classes.json"
 const PIECES_PATH := "res://data/characters/pieces.json"
+## Equipment models (tools/art/make_gear.mjs); optional until they exist.
+const GEAR_PIECES_PATH := "res://data/items/gear_pieces.json"
+## What a character wears on the chest with nothing equipped there.
+const BASE_OUTFIT := "outfit_villager"
 ## Voxel hair is lit from all sides; a touch darker than the painted hair to match it.
 const VOXEL_HAIR_DARKEN := 0.15
 
@@ -105,23 +109,50 @@ func random_appearance(rng: RandomNumberGenerator) -> Dictionary:
 ## hides it, beard).
 ## `upgrade`: the class upgrade of the character; its "look" ({headgear?, weapons?, pieces?})
 ## changes the headgear and weapons or adds pieces (the Templar helm, the Hunter crossbow).
-func resolve(class_id: Variant, appearance: Variant, upgrade: String = "") -> Dictionary:
+## `gear`: the base ids of a player's 8 visible slots (Inventory.VISIBLE). When given, the
+## equipment decides the clothes, headgear, weapons and grip (the class outfit and the
+## upgrade look are not used); an empty chest shows BASE_OUTFIT.
+func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear: Array = [], items: ItemDB = null) -> Dictionary:
 	var c := class_def(sanitize_class(class_id))
 	var app := sanitize_appearance(appearance)
 	var hair := option("hair_style", app.hair_style)
 	var hair_color := Color(str(option("hair_color", app.hair_color).color))
 	var pieces: Array = []
 	var hidden := {}
-	var look: Dictionary = UpgradeDB.load_default().upgrade(upgrade).get("look", {}) if upgrade != "" else {}
-	var headgear := str(look.get("headgear", c.get("headgear", "")))
-	if headgear != "":
-		for tag: String in piece(headgear).get("hides", []):
-			hidden[tag] = true
-		pieces.append(_piece_entry(headgear))
-	for id: String in c.get("pieces", []) + look.get("pieces", []):
-		pieces.append(_piece_entry(id))
-	for id: String in look.get("weapons", c.get("weapons", [])):
-		pieces.append(_piece_entry(id))
+	var grip := str(c.get("grip", ""))
+	if gear.is_empty():
+		var look: Dictionary = UpgradeDB.load_default().upgrade(upgrade).get("look", {}) if upgrade != "" else {}
+		var headgear := str(look.get("headgear", c.get("headgear", "")))
+		if headgear != "":
+			for tag: String in piece(headgear).get("hides", []):
+				hidden[tag] = true
+			pieces.append(_piece_entry(headgear))
+		for id: String in c.get("pieces", []) + look.get("pieces", []):
+			pieces.append(_piece_entry(id))
+		for id: String in look.get("weapons", c.get("weapons", [])):
+			pieces.append(_piece_entry(id))
+	else:
+		var db := items if items != null else ItemDB.load_default()
+		grip = ""
+		for i in mini(gear.size(), Inventory.VISIBLE.size()):
+			var base_id := str(gear[i])
+			if base_id == "":
+				continue
+			var b := db.base(base_id)
+			var ids: Array = b.get("look_offhand", b.get("look", [])) if Inventory.VISIBLE[i] == "offhand" else b.get("look", [])
+			for id: String in ids:
+				if piece(id).is_empty():
+					continue
+				for tag: String in piece(id).get("hides", []):
+					hidden[tag] = true
+				pieces.append(_piece_entry(id))
+			if Inventory.VISIBLE[i] == "main":
+				grip = str(db.family_of(base_id).get("grip", ""))
+		var chest := str(gear[4]) if gear.size() > 4 else ""
+		if chest == "" or (db.base(chest).get("look", []) as Array).is_empty():
+			pieces.append(_piece_entry(BASE_OUTFIT))
+		for id: String in c.get("fixed_pieces", []):
+			pieces.append(_piece_entry(id))
 	for id: String in hair.get("pieces", []):
 		if not hidden.has(str(piece(id).get("tag", ""))):
 			pieces.append(_piece_entry(id))
@@ -137,7 +168,7 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "") -> Di
 		"secondary": Color(str(c.get("secondary", "#808080"))),
 		"trousers": Color(str(c.trousers)) if c.has("trousers") else Color(str(c.get("primary", "#808080"))).darkened(HumanRig.TROUSERS_DARKEN),
 		"body_scale": option("body", app.body).get("scale", {}),
-		"grip": str(c.get("grip", "")),
+		"grip": grip,
 		"pieces": pieces,
 	}
 
@@ -158,6 +189,10 @@ func _load(appearance_path: String, classes_path: String, pieces_path: String) -
 	var pcs: Variant = _read_json(pieces_path)
 	if pcs is Dictionary:
 		_pieces = pcs
+	if FileAccess.file_exists(GEAR_PIECES_PATH):
+		var gear: Variant = _read_json(GEAR_PIECES_PATH)
+		if gear is Dictionary:
+			_pieces.merge(gear)
 
 
 static func _read_json(path: String) -> Variant:

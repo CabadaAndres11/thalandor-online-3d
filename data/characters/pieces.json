@@ -1,4 +1,15 @@
 {
+	"quiver_back": {
+		"file": "res://assets/characters/pieces/quiver_back.vox",
+		"part": "torso",
+		"offset": [
+			-5,
+			2,
+			-7
+		],
+		"tag": "gear",
+		"hides": []
+	},
 	"pauldron_left": {
 		"file": "res://assets/characters/pieces/pauldron_left.vox",
 		"part": "arm_left",

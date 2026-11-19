@@ -2,6 +2,8 @@ extends SceneTree
 ## Art checkpoint tool (needs a window, not --headless): lines up characters on the
 ## arena's ground and light and saves user://render/<name>.png.
 ##   Godot --path . -s tests/helpers/render_characters.gd -- --set=classes
+## Equipment: --set=gear --tier=1 [--rot=0|90|180] (the five classes in a full tier kit) and
+## --set=weapons --tier=1 --page=0|1|2 (every weapon type in a hand).
 ## Each set is a list of looks (see HumanRig.build) made from
 ## [class_id, appearance] pairs resolved through CharacterCatalog.
 
@@ -10,12 +12,21 @@ const SPACING := 1.3
 
 var _frames := 0
 var _name := "classes"
+var _tier := 1
+var _rot := 0.0
+var _page := 0
 
 
 func _initialize() -> void:
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--set="):
 			_name = arg.trim_prefix("--set=")
+		elif arg.begins_with("--tier="):
+			_tier = int(arg.trim_prefix("--tier="))
+		elif arg.begins_with("--rot="):
+			_rot = float(arg.trim_prefix("--rot="))
+		elif arg.begins_with("--page="):
+			_page = int(arg.trim_prefix("--page="))
 	root.size = Vector2i(1600, 700)
 	var arena := Arena.new()
 	root.add_child(arena)
@@ -56,6 +67,8 @@ func _process(_delta: float) -> bool:
 	if _frames == 30:
 		DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("user://render"))
 		var path := "user://render/%s.png" % _name
+		if _name in ["gear", "weapons"]:
+			path = "user://render/%s_t%d_%s.png" % [_name, _tier, str(int(_rot)) if _name == "gear" else str(_page)]
 		root.get_texture().get_image().save_png(path)
 		print("saved ", ProjectSettings.globalize_path(path))
 		return true
@@ -130,8 +143,42 @@ func _looks(set_name: String) -> Array:
 				["warrior", {"hair_style": "hair_ponytail", "hair_color": "brown", "skin": "skin_2"}, 160.0],
 				["warrior", {"hair_style": "hair_bun", "hair_color": "black", "skin": "skin_6"}, 200.0],
 			])
+		"gear":
+			var t := "_t%d" % _tier
+			var armor := func(kind: String) -> Array:
+				return ["head", "shoulders", "chest", "hands", "legs", "feet"].map(func(sl: String) -> String: return kind + "_" + sl + t)
+			var kits := [
+				["warrior", ["sword" + t, "shield" + t] + armor.call("plate"), {"skin": "skin_4", "hair_style": "short", "beard": "full", "body": "robust"}],
+				["cleric", ["scepter" + t, "tome" + t] + armor.call("cloth"), {"skin": "skin_2", "hair_style": "bald", "beard": "short"}],
+				["mage", ["staff" + t, ""] + armor.call("cloth"), {"skin": "skin_6", "hair_style": "bob", "hair_color": "white"}],
+				["archer", ["bow" + t, ""] + armor.call("mail"), {"skin": "skin_3", "hair_style": "swept", "hair_color": "blond"}],
+				["assassin", ["dagger" + t, "dagger" + t] + armor.call("leather"), {"skin": "skin_7", "hair_style": "short"}],
+			]
+			return kits.map(func(k: Array) -> Dictionary: return _geared(k[0], k[2], k[1], _rot))
+		"weapons":
+			var t := "_t%d" % _tier
+			var pages := [
+				[["warrior", "greatsword", ""], ["warrior", "great_axe", ""], ["warrior", "warhammer", ""], ["warrior", "halberd", ""], ["warrior", "sword", "shield"], ["warrior", "axe", ""]],
+				[["cleric", "mace", "orb"], ["mage", "staff", ""], ["mage", "wand", "tome"], ["cleric", "scepter", "shield"], ["archer", "bow", ""], ["archer", "crossbow", ""]],
+				[["archer", "short_sword", ""], ["assassin", "dagger", "dagger"], ["assassin", "short_sword", "dagger"]],
+			]
+			var out := []
+			for w: Array in pages[clampi(_page, 0, pages.size() - 1)]:
+				var gear := [str(w[1]) + t, (str(w[2]) + t) if str(w[2]) != "" else "", "", "", "", "", "", ""]
+				out.append(_geared(w[0], {"hair_style": "short"}, gear, 35.0))
+			return out
 	push_error("unknown set " + set_name)
 	return []
+
+
+## A look wearing equipment: gear lists main, offhand, then the six armor slots.
+func _geared(class_id: String, appearance: Dictionary, gear: Array, rot: float) -> Dictionary:
+	var g := gear.duplicate()
+	g.resize(8)
+	g = g.map(func(x: Variant) -> String: return str(x) if x != null else "")
+	var look := CharacterCatalog.load_default().resolve(class_id, appearance, "", g)
+	look["rot"] = rot
+	return look
 
 
 ## [class_id, appearance(, rotation)] -> looks through the catalog.

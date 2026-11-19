@@ -20,14 +20,19 @@ const SCALE_GROUP := {
 }
 ## Seconds each action lasts; downed and die then stay.
 const ACTIONS := {"melee": 0.45, "shoot": 0.65, "cast": 0.6, "dash": 0.35, "downed": 0.5, "die": 0.7, "cast_long": 1.0,
-	"stab_right": 0.32, "stab_left": 0.32, "overhead": 0.6, "spin": 0.6, "flurry": 0.7}
+	"stab_right": 0.32, "stab_left": 0.32, "overhead": 0.6, "spin": 0.6, "flurry": 0.7,
+	"heavy": 0.6, "thrust": 0.45, "stab": 0.32}
 const LASTING := ["downed", "die"]
 ## Melee swings (the weapon's path is traced by a SlashFx): action -> [start, end] of the swing in
 ## the animation, as a share of its length.
 const SWINGS := {
 	"melee": [0.26, 0.72], "stab_right": [0.2, 0.7], "stab_left": [0.2, 0.7], "overhead": [0.28, 0.75],
-	"spin": [0.05, 0.97], "flurry": [0.04, 0.98],
+	"spin": [0.05, 0.97], "flurry": [0.04, 0.98], "heavy": [0.26, 0.72], "thrust": [0.26, 0.7], "stab": [0.2, 0.7],
 }
+## Basic melee attacks that chain three different swings (the same hit each time: only the
+## animation changes). A pause longer than COMBO_RESET_S starts the chain over.
+const COMBO_ACTIONS := ["melee", "heavy", "thrust", "stab"]
+const COMBO_RESET_S := 1.2
 ## Actions that repeat until another one starts (a long cast: arms up, the staff spinning).
 const LOOPING := ["cast_long"]
 ## Trousers default to the primary color this much darker.
@@ -58,6 +63,9 @@ var _grip: String = ""
 var _bow_charging: bool = false
 var _bow_drawn: bool = true # starts in the hand; _update_bow stows it
 var _bow_hand_pos: Vector3 = Vector3.ZERO
+## Step of the basic melee chain (0, 1, 2) and when the last link started (_time).
+var _combo_step: int = 0
+var _last_combo_time: float = -1000.0
 ## False when an avatar drives update() itself (from its state updates).
 var auto_update: bool = true
 
@@ -66,9 +74,10 @@ var auto_update: bool = true
 ## trousers (Color; trousers default to a darker primary); body_scale ({"torso"|"arm"|"leg": [x, y, z]}); pieces ([{id, file, part,
 ## offset: [x, y, z] voxels from the part's pivot}]).
 ## A character of a class with an appearance (ids; untrusted values are sanitized).
-static func create(class_id: String, appearance: Dictionary, catalog: CharacterCatalog = null, upgrade: String = "") -> HumanRig:
+static func create(class_id: String, appearance: Dictionary, catalog: CharacterCatalog = null, upgrade: String = "",
+		gear: Array = []) -> HumanRig:
 	var cat := catalog if catalog != null else CharacterCatalog.load_default()
-	return build(cat.resolve(class_id, appearance, upgrade))
+	return build(cat.resolve(class_id, appearance, upgrade, gear))
 
 
 static func build(look: Dictionary) -> HumanRig:
@@ -103,7 +112,8 @@ func set_moving_speed(speed_mps: float, move_speed: float) -> void:
 
 
 ## Starts an action (see ACTIONS; "idle" cancels and stands up). Returns its seconds.
-func play_action(kind: String) -> float:
+## combo: a basic melee attack, which chains three different swings (COMBO_ACTIONS).
+func play_action(kind: String, combo: bool = false) -> float:
 	if kind == "idle":
 		_action = "idle"
 		_action_t = 0.0
@@ -111,6 +121,12 @@ func play_action(kind: String) -> float:
 		return 0.0
 	if not ACTIONS.has(kind):
 		return 0.0
+	if combo and kind in COMBO_ACTIONS:
+		_combo_step = (_combo_step + 1) % 3 if _time - _last_combo_time <= COMBO_RESET_S else 0
+		_last_combo_time = _time
+	else:
+		_combo_step = 0
+		_last_combo_time = -1000.0
 	_action = kind
 	_action_t = 0.0
 	return ACTIONS[kind]
@@ -153,6 +169,22 @@ func walk_rate() -> float:
 
 func current_action() -> String:
 	return _action
+
+
+## Step of the basic melee chain: 0, 1 or 2.
+func combo_step() -> int:
+	return _combo_step
+
+
+## The hands whose weapons swing in the current attack (for the slash trails).
+func combo_hands() -> Array:
+	if _action == "stab":
+		return [["right"], ["left"], ["right", "left"]][_combo_step]
+	if _action == "stab_left":
+		return ["left"]
+	if _action in ["spin", "flurry"]:
+		return ["right", "left"]
+	return ["right"]
 
 
 ## The action, or walk/idle when there is none.
@@ -330,7 +362,26 @@ func _pose() -> void:
 	_locomotion(walk)
 	var k := clampf(_action_t / float(ACTIONS.get(_action, 1.0)), 0.0, 1.0)
 	match _action:
-		"melee": _melee(k)
+		"melee":
+			match _combo_step:
+				1: _backhand(k)
+				2: _chop(k)
+				_: _melee(k)
+		"heavy":
+			match _combo_step:
+				1: _heavy_swing(k, -1.0)
+				2: _overhead(k)
+				_: _heavy_swing(k, 1.0)
+		"thrust":
+			match _combo_step:
+				1: _sweep(k)
+				2: _thrust(k, 1.4)
+				_: _thrust(k, 1.0)
+		"stab":
+			match _combo_step:
+				1: _stab(k, false)
+				2: _cross_stab(k)
+				_: _stab(k, true)
 		"shoot": _shoot(k)
 		"cast": _cast(k)
 		"cast_long": _cast_long()
@@ -372,6 +423,30 @@ func _locomotion(walk: float) -> void:
 		# held at an angle, not standing straight up from the fist.
 		_rot("hand_right", 1.3)
 		(_parts["hand_right"] as Node3D).rotation.z = -0.25
+	elif _grip == "two_hand":
+		# Both hands on the hilt in front of the hips, the blade raised forward.
+		_rot("arm_right", -0.45)
+		_rot("forearm_right", -0.9)
+		_rot("arm_left", -0.55)
+		_rot("forearm_left", -0.85)
+		(_parts["arm_left"] as Node3D).rotation.z = -0.35
+		_rot("hand_right", 0.55)
+	elif _grip == "polearm":
+		# The haft held across the body, the head up and forward.
+		_rot("arm_right", -0.3)
+		_rot("forearm_right", -0.7)
+		_rot("hand_right", 0.35)
+		_rot("arm_left", -0.6)
+		_rot("forearm_left", -0.6)
+		(_parts["arm_left"] as Node3D).rotation.z = -0.3
+	elif _grip == "crossbow":
+		# Carried low in both hands, pointing forward.
+		_rot("arm_right", -0.35)
+		_rot("forearm_right", -1.05)
+		_rot("hand_right", 1.1)
+		_rot("arm_left", -0.45)
+		_rot("forearm_left", -0.9)
+		(_parts["arm_left"] as Node3D).rotation.z = -0.3
 	elif _grip == "blade_down":
 		# The arm held a little away from the robe, the blade angled down and forward.
 		(_parts["arm_right"] as Node3D).rotation.z = -0.35
@@ -399,6 +474,105 @@ func _melee(k: float) -> void:
 	(_parts["head"] as Node3D).rotation.y = -twist * 0.5 # the eyes stay on the target
 	_body.position.z = _keys(k, 0.0, -0.04, 0.18, 0.0) # a lunge
 	_body.position.y = _keys(k, 0.0, 0.0, -0.07, 0.0) # sinking into the stance
+
+
+## The second link: a backhand, the arm sweeping back across from the other side.
+func _backhand(k: float) -> void:
+	var twist := _keys(k, 0.0, -0.6, 0.55, 0.0)
+	_rot("arm_right", _keys(k, 0.0, -1.5, -1.2, 0.0))
+	_rot("forearm_right", _keys(k, -0.18, -1.3, -0.1, -0.18))
+	(_parts["arm_right"] as Node3D).rotation.z = _keys(k, 0.0, 0.9, -0.8, 0.0) # across the chest, then out
+	(_parts["torso"] as Node3D).rotation.y = twist
+	(_parts["torso"] as Node3D).rotation.x = _keys(k, 0.0, 0.05, 0.25, 0.0)
+	(_parts["hips"] as Node3D).rotation.y = _keys(k, 0.0, -0.25, 0.3, 0.0)
+	_rot("arm_left", _keys(k, 0.0, 0.6, -0.6, 0.0))
+	_rot("leg_right", _keys(k, 0.0, 0.15, -0.55, 0.0)) # the other foot steps in
+	_rot("leg_left", _keys(k, 0.0, -0.2, 0.45, 0.0))
+	_rot("shin_left", _keys(k, 0.05, 0.4, 0.65, 0.05))
+	(_parts["head"] as Node3D).rotation.y = -twist * 0.5
+	_body.position.z = _keys(k, 0.0, 0.0, 0.16, 0.0)
+	_body.position.y = _keys(k, 0.0, 0.0, -0.06, 0.0)
+
+
+## The third link: a downward chop with one hand, the weight dropping into it.
+func _chop(k: float) -> void:
+	_rot("arm_right", _keys(k, 0.0, -2.9, 0.3, 0.0))
+	_rot("forearm_right", _keys(k, -0.18, -0.8, -0.05, -0.18))
+	_rot("arm_left", _keys(k, 0.0, -0.4, 0.6, 0.0))
+	(_parts["torso"] as Node3D).rotation.x = _keys(k, 0.0, -0.25, 0.5, 0.0)
+	(_parts["torso"] as Node3D).rotation.y = _keys(k, 0.0, 0.2, -0.1, 0.0)
+	(_parts["head"] as Node3D).rotation.x = _keys(k, 0.0, 0.12, -0.18, 0.0)
+	_rot("leg_left", _keys(k, 0.0, 0.15, -0.6, 0.0))
+	_rot("leg_right", _keys(k, 0.0, -0.1, 0.5, 0.0))
+	_rot("shin_right", _keys(k, 0.05, 0.3, 0.8, 0.05))
+	_body.position.y = _keys(k, 0.0, 0.03, -0.12, 0.0)
+	_body.position.z = _keys(k, 0.0, -0.04, 0.2, 0.0)
+
+
+## A two-handed sweep (side 1: right to left; -1: back the other way), wide and heavy.
+func _heavy_swing(k: float, side: float) -> void:
+	var twist := side * _keys(k, 0.0, 0.8, -0.85, 0.0)
+	var arms := _keys(k, -0.5, -1.9, -0.9, -0.5)
+	_rot("arm_right", arms)
+	_rot("arm_left", arms - 0.1)
+	_rot("forearm_right", _keys(k, -0.9, -1.0, -0.3, -0.9))
+	_rot("forearm_left", _keys(k, -0.85, -1.0, -0.3, -0.85))
+	(_parts["arm_right"] as Node3D).rotation.z = side * _keys(k, 0.0, 0.5, -0.7, 0.0)
+	(_parts["arm_left"] as Node3D).rotation.z = side * _keys(k, -0.35, 0.3, -0.9, -0.35)
+	(_parts["torso"] as Node3D).rotation.y = twist
+	(_parts["torso"] as Node3D).rotation.x = _keys(k, 0.0, -0.1, 0.32, 0.0)
+	(_parts["hips"] as Node3D).rotation.y = twist * 0.5
+	_rot("leg_left", _keys(k, 0.0, 0.25, -0.75, 0.0))
+	_rot("leg_right", _keys(k, 0.0, -0.3, 0.6, 0.0))
+	_rot("shin_right", _keys(k, 0.05, 0.55, 0.85, 0.05))
+	(_parts["head"] as Node3D).rotation.y = -twist * 0.4
+	_body.position.z = _keys(k, 0.0, -0.06, 0.22, 0.0)
+	_body.position.y = _keys(k, 0.0, 0.0, -0.1, 0.0)
+
+
+## A straight two-handed thrust with a polearm; reach > 1 lunges deeper.
+func _thrust(k: float, reach: float) -> void:
+	var arms := _keys(k, -0.3, 0.3, -1.45, -0.3)
+	_rot("arm_right", arms)
+	_rot("arm_left", arms - 0.2)
+	_rot("forearm_right", _keys(k, -0.7, -1.4, -0.05, -0.7))
+	_rot("forearm_left", _keys(k, -0.6, -1.2, -0.05, -0.6))
+	(_parts["torso"] as Node3D).rotation.x = _keys(k, 0.0, -0.1, 0.3 * reach, 0.0)
+	(_parts["torso"] as Node3D).rotation.y = _keys(k, 0.0, 0.3, -0.2, 0.0)
+	_rot("leg_left", _keys(k, 0.0, 0.15, -0.65 * reach, 0.0))
+	_rot("leg_right", _keys(k, 0.0, -0.2, 0.5 * reach, 0.0))
+	_rot("shin_right", _keys(k, 0.05, 0.45, 0.8, 0.05))
+	_body.position.z = _keys(k, 0.0, -0.06, 0.24 * reach, 0.0)
+	_body.position.y = _keys(k, 0.0, 0.0, -0.08 * reach, 0.0)
+
+
+## A low sweep of the polearm from side to side.
+func _sweep(k: float) -> void:
+	var twist := _keys(k, 0.0, 0.75, -0.8, 0.0)
+	_rot("arm_right", _keys(k, -0.3, -1.0, -0.8, -0.3))
+	_rot("arm_left", _keys(k, -0.6, -1.1, -0.9, -0.6))
+	(_parts["arm_right"] as Node3D).rotation.z = _keys(k, 0.0, 0.4, -0.8, 0.0)
+	(_parts["torso"] as Node3D).rotation.y = twist
+	(_parts["torso"] as Node3D).rotation.x = _keys(k, 0.0, 0.05, 0.35, 0.0)
+	(_parts["hips"] as Node3D).rotation.y = twist * 0.5
+	_rot("leg_left", _keys(k, 0.0, 0.2, -0.5, 0.0))
+	_rot("shin_right", _keys(k, 0.05, 0.6, 0.9, 0.05))
+	_body.position.y = _keys(k, 0.0, -0.04, -0.14, 0.0)
+
+
+## Both daggers driven in together, crossing in front of the chest.
+func _cross_stab(k: float) -> void:
+	for side: String in ["right", "left"]:
+		_rot("arm_" + side, _keys(k, 0.0, 0.5, -1.45, 0.0))
+		_rot("forearm_" + side, _keys(k, -0.18, -1.2, -0.1, -0.18))
+	(_parts["arm_right"] as Node3D).rotation.z = _keys(k, 0.0, -0.3, 0.35, 0.0)
+	(_parts["arm_left"] as Node3D).rotation.z = _keys(k, 0.0, 0.3, -0.35, 0.0)
+	(_parts["torso"] as Node3D).rotation.x = _keys(k, 0.0, -0.1, 0.35, 0.0)
+	_rot("leg_left", _keys(k, 0.0, 0.1, -0.6, 0.0))
+	_rot("leg_right", _keys(k, 0.0, -0.2, 0.45, 0.0))
+	_rot("shin_right", _keys(k, 0.05, 0.45, 0.7, 0.05))
+	_body.position.z = _keys(k, 0.0, -0.04, 0.24, 0.0)
+	_body.position.y = _keys(k, 0.0, 0.0, -0.06, 0.0)
 
 
 ## A quick thrust with one hand (the other guards), a step into it and a turn of the torso.

@@ -184,3 +184,58 @@ func test_cult_sleeves_hang_from_the_arms() -> void:
 	assert_eq(catalog.piece("cult_cuff_left").part, "forearm_left")
 	assert_eq(catalog.piece("cult_cuff_right").part, "forearm_right")
 	assert_true(catalog.piece("cult_mask").is_empty(), "the faceless hood replaces the mask")
+
+
+func _gear_db() -> ItemDB:
+	var db := ItemDB.load_default()
+	var fake := ItemDB.load_dir(ItemDB.DIR)
+	fake._bases = db._bases.duplicate(true)
+	fake._bases["plate_head_t1"]["look"] = ["helm_templar"]
+	fake._bases["greatsword_t1"]["look"] = ["weapon_sword"]
+	fake._bases["plate_chest_t1"]["look"] = ["outfit_warrior"]
+	return fake
+
+
+
+func test_resolve_from_gear() -> void:
+	var cat := CharacterCatalog.load_default()
+	var gear := ["greatsword_t1", "", "plate_head_t1", "", "", "", "", ""]
+	var look := cat.resolve("warrior", {"hair_style": "hair_long"}, "", gear, _gear_db())
+	var ids := _ids(look)
+	assert_has(ids, "helm_templar")
+	assert_has(ids, "weapon_sword")
+	assert_does_not_have(ids, "hair_long", "the helm hides the hair")
+	assert_has(ids, "outfit_villager", "an empty chest shows the base clothes")
+	assert_does_not_have(ids, "outfit_warrior", "the class outfit is not used with gear")
+	assert_eq(look.grip, "two_hand")
+
+
+func test_resolve_gear_chest_replaces_base_clothes() -> void:
+	var cat := CharacterCatalog.load_default()
+	var gear := ["", "", "", "", "plate_chest_t1", "", "", ""]
+	var ids := _ids(cat.resolve("warrior", {}, "", gear, _gear_db()))
+	assert_has(ids, "outfit_warrior")
+	assert_does_not_have(ids, "outfit_villager")
+
+
+func test_upgrade_look_ignored_with_gear() -> void:
+	var cat := CharacterCatalog.load_default()
+	var gear := ["", "", "", "", "", "", "", ""]
+	assert_does_not_have(_ids(cat.resolve("cleric", {}, "templar", gear, _gear_db())), "helm_templar")
+
+
+func test_quiver_always() -> void:
+	var cat := CharacterCatalog.load_default()
+	assert_has(_ids(cat.resolve("archer", {}, "", ["", "", "", "", "", "", "", ""])), "quiver_back")
+
+
+func test_without_gear_as_before() -> void:
+	var cat := CharacterCatalog.load_default()
+	assert_has(_ids(cat.resolve("warrior", {})), "outfit_warrior")
+
+
+func test_offhand_dagger_uses_the_left_hand_model() -> void:
+	var cat := CharacterCatalog.load_default()
+	var ids := _ids(cat.resolve("assassin", {}, "", ["dagger_t1", "dagger_t1", "", "", "", "", "", ""]))
+	assert_has(ids, "weapon_dagger_right")
+	assert_has(ids, "weapon_dagger_left")

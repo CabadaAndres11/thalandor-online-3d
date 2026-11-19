@@ -178,6 +178,15 @@ function pauldron(f, s, outer) {
 }
 
 const GEAR = {
+  quiver_back: {
+    frame: TORSO, tag: "gear", palette: KIT,
+    build(f, s) {
+      for (let i = 0; i <= f.y1 - f.y0 - 3; i++) s.put(f.x0 + 1 + i, f.y1 - 1 - i, f.z1 + 2, WOOD_D); // strap
+      s.box(f.x1 - 4, f.y0 + 2, f.z0 - 3, f.x1 - 1, f.y1 + 2, f.z0 - 1, LEATHER); // quiver
+      s.box(f.x1 - 4, f.y0 + 2, f.z0 - 3, f.x1 - 4, f.y1 + 2, f.z0 - 1, LEATHER_D);
+      for (const x of [f.x1 - 4, f.x1 - 2]) s.box(x, f.y1 + 3, f.z0 - 2, x + 1, f.y1 + 5, f.z0 - 2, STRING); // fletching
+    },
+  },
   pauldron_left: { frame: ARM_L, tag: "armor", palette: KIT, build: (f, s) => pauldron(f, s, 1) },
   pauldron_right: { frame: ARM_R, tag: "armor", palette: KIT, build: (f, s) => pauldron(f, s, -1) },
   // Wide-brimmed pointed hat with a band, bending at the tip; sits on the hair cap.
