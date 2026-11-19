@@ -33,6 +33,8 @@ var _monster_avatars: Dictionary = {} # id -> MonsterAvatar
 var _npc_avatars: Array = [] # NpcAvatar
 ## Combat visuals (projectiles, warnings, numbers…) driven by host events.
 var fx: CombatFX
+## The own player's loot on the ground and the gold they win.
+var loot_view: LootView
 var _avatar_root: Node3D
 ## Abilities in slots 1-4 for the next client (the saved character's; empty = class default).
 var character_bar: Array = []
@@ -73,6 +75,9 @@ func _init() -> void:
 	add_child(fx)
 	fx.setup(_entity_position, _latest_tick, AbilityDB.load_default(), balance.tick_rate)
 	fx.slash_owners = func(id: int) -> bool: return _avatars.has(id)
+	loot_view = LootView.new()
+	loot_view.name = "Loot"
+	add_child(loot_view)
 	_aim = map.spawn_point()
 
 
@@ -385,6 +390,10 @@ func _sync_monsters(delta: float) -> void:
 
 func _on_combat_event(ev: Array) -> void:
 	fx.handle(ev)
+	loot_view.my_id = client.my_id
+	loot_view.handle(ev)
+	if str(ev[0]) == "bag_full" and ev.size() > 1 and int(ev[1]) == client.my_id:
+		client.chat_received.emit("", tr("ITEM_BAG_FULL"), true)
 	match str(ev[0]):
 		"cast":
 			var who := int(ev[1])

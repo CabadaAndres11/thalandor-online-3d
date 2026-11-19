@@ -51,6 +51,7 @@ var _playing: CharacterData = null
 
 
 func _ready() -> void:
+	add_child(ItemIcons.new()) # renders item icons for every window
 	InputSetup.ensure_actions()
 	settings = SettingsStore.load_from(settings_path)
 	store = CharacterStore.new(characters_dir)
