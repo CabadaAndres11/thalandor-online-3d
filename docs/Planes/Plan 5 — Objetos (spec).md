@@ -93,6 +93,7 @@ Las habilidades no cambian; cada **familia** fija en datos la **animación, el a
 | Ballesta | ballesta | dispara sin tensar: siempre sale el disparo cargado, con recarga más lenta |
 | Dagas | dos dagas, o daga con espada corta | como hoy (Asesino) |
 
+- **Combo visual de tres golpes:** el ataque básico cuerpo a cuerpo (todas las familias de melé) encadena tres animaciones distintas (por ejemplo, tajo de derecha a izquierda, revés y golpe vertical). **Solo es visual:** los tres golpes tienen el mismo daño, alcance, arco y recarga. El combo vuelve al primer golpe si pasa más de un instante sin atacar.
 - **Bloqueo solo con escudo:** la probabilidad de bloquear (de atributos y equipo) solo cuenta con escudo equipado; el *Bloqueo experto* del Guerrero lo necesita.
 - Los números concretos de cada familia son propuesta de Claude y se ajustan probando.
 
@@ -135,6 +136,7 @@ Las habilidades no cambian; cada **familia** fija en datos la **animación, el a
 - Armas a dos manos que ocupan principal y secundaria: mandoble, hacha a dos manos, martillo de guerra, alabarda, bastón, arco y ballesta; nuevas a una mano: varita y cetro; secundaria nueva: tomo (usuario y Claude).
 - El carcaj pasa a adorno fijo a la espalda (usuario).
 - Mismas habilidades; cada familia de arma cambia animación, alcance y velocidad; el bloqueo exige escudo (usuario).
+- El básico cuerpo a cuerpo se ve como un combo de tres golpes encadenados, solo animación (usuario).
 - Legendarios fuera de este plan; el oro no cae al suelo; únicos de jefe al 25 % (Claude).
 
 ---

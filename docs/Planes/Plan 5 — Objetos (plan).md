@@ -196,12 +196,13 @@ Pasos:
 **Archivos:** modificar `game/characters/character_catalog.gd` (carga también `data/items/gear_pieces.json`; `resolve(class_id, appearance, upgrade := "", gear: Array = [])`), `game/characters/human_rig.gd` (grips `two_hand`, `polearm`, `crossbow`; acciones `heavy` y `thrust`), `data/characters/classes.json` (`fixed_pieces: ["quiver_back"]` del Arquero; pieza `outfit_base` para el pecho y piernas vacíos), `game/player_avatar.gd` y `game/game_session.gd` (rehacer el rig al recibir `gear_changed`); tests `tests/unit/characters/test_character_catalog.gd`, `test_human_rig.gd`.
 
 - Con `gear` no vacío: piezas = `look` de cada base visible (+ `hides` del casco) + `fixed_pieces` de la clase + pelo y barba; ranura de pecho o piernas vacía → `outfit_base`; `grip` = el de la familia del arma principal; el `look` de la mejora de clase **ya no se aplica** a jugadores (el equipo manda). Sin `gear` (PNJ, monstruos, pantallas antiguas) → como hoy.
+- **Combo visual de tres golpes** (solo cliente, nada cambia en `sim/`): `HumanRig.play_action` cuenta los básicos cuerpo a cuerpo seguidos (`melee`, `heavy`, `thrust`, `stab`) y reproduce la variante `combo_step` 0, 1, 2 y vuelve a 0; si pasa más de `COMBO_RESET_S := 1.2` s desde el último, empieza en 0. Variantes: una mano → tajo derecha-izquierda, revés izquierda-derecha, golpe vertical; pesada → tajo amplio, revés amplio, mazazo vertical; asta → estocada, barrido, estocada a fondo; dagas → puñalada derecha, izquierda, cruzada con las dos. El rastro de `slash_fx.gd` sigue la hoja en las tres. `HumanRig.combo_step() -> int` para los tests.
 - Arreglo previo: `render_characters.gd` gana el set `gear` (los 5 personajes con el equipo de un tramo: `--tier=1|2|3`, de frente, de lado y de espaldas, y una fila con las 18 armas).
 
 Pasos:
-- [ ] Tests fallidos: `test_resolve_from_gear` (casco que oculta pelo; pecho vacío → `outfit_base`; grip de mandoble = `two_hand`), `test_quiver_always`, `test_rig_heavy_and_thrust` (las acciones existen y terminan).
+- [ ] Tests fallidos: `test_resolve_from_gear` (casco que oculta pelo; pecho vacío → `outfit_base`; grip de mandoble = `two_hand`), `test_quiver_always`, `test_rig_heavy_and_thrust` (las acciones existen y terminan), `test_melee_combo_cycles` (tres básicos seguidos → pasos 0, 1, 2 y el cuarto 0), `test_melee_combo_resets` (pausa de 1,3 s → vuelve a 0), `test_combo_same_duration` (los tres pasos duran lo mismo).
 - [ ] GUT → fallan. Implementar. GUT verde.
-- [ ] Commit `feat(characters): look from equipped gear and two-handed animations`.
+- [ ] Commit `feat(characters): look from equipped gear, two-handed animations and 3-hit melee combo`.
 
 ### Task 13: Arte del tramo 1
 **Archivos:** crear `tools/art/make_gear.mjs` (escribe `assets/items/vox/*.vox` y `data/items/gear_pieces.json`; mismos marcos y paleta que `make_pieces.mjs`, importando sus constantes); modificar `data/items/bases.json` (`look` del t1), `tools/art/README.md`; test en `tests/unit/data/test_items_data.gd` (`test_every_base_has_model`: cada base no consumible tiene `look` con piezas existentes).
