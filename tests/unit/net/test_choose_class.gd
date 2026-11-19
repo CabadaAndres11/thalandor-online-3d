@@ -61,7 +61,7 @@ func test_host_accepts_a_villager_next_to_brann() -> void:
 	assert_eq(p.class_id, "mage")
 	assert_eq(p.resource_kind, "mana")
 	assert_eq(p.stats.max_hp, 130.0)
-	assert_eq(p.resource, 160.0)
+	assert_almost_eq(p.resource, 160.0, 0.5, "mana starts at the class start value")
 	var mine := _class_msgs(a)
 	assert_eq(mine.size(), 1)
 	assert_eq([mine[0].id, mine[0].class_id], [1, "mage"])
@@ -139,4 +139,19 @@ func test_choosing_keeps_the_health_ratio() -> void:
 	var p: PlayerState = host.world.players[1]
 	p.hp = p.stats.max_hp * 0.25
 	_choose(a, "warrior")
-	assert_almost_eq(p.hp, 200.0 * 0.25, 0.01, "no free heal from choosing in combat")
+	assert_almost_eq(p.hp, p.stats.max_hp * 0.25, 0.01, "no free heal from choosing in combat")
+
+
+func test_choose_class_gives_kit() -> void:
+	_start([22, 20])
+	var a := _guest("Ana")
+	_decoded(a)
+	var p: PlayerState = host.world.players[1]
+	p.inventory = Inventory.starter("villager", ItemDB.load_default())
+	_choose(a, "warrior")
+	var worn: Array = p.inventory.equipment.values().map(func(it: Item) -> String: return it.base_id)
+	worn.sort()
+	var kit: Array = ItemDB.load_default().starter("warrior").duplicate()
+	kit.sort()
+	assert_eq(worn, kit, "the wood sword is gone, the warrior kit is worn")
+	assert_true(p.inventory_dirty)

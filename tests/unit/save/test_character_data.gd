@@ -15,6 +15,7 @@ func _sample() -> CharacterData:
 	c.appearance = catalog.sanitize_appearance({"hair_style": "hair_long", "skin": "skin_4"})
 	c.progress.level = 20
 	c.created_at = 1_800_000_000
+	c.inventory = Inventory.starter("mage", ItemDB.load_default())
 	c.bar = AbilityDB.load_default().sanitize_bar("mage", ["mage_fireball", "", "mage_frost_nova", "", "", "", "", "", ""], 20)
 	return c
 
@@ -125,7 +126,7 @@ func test_v2_migrates_to_level_1() -> void:
 	assert_not_null(c)
 	assert_eq(c.progress.level, 1)
 	assert_eq(c.progress.xp, 0)
-	assert_eq(c.to_dict().version, 3)
+	assert_eq(c.to_dict().version, CharacterData.VERSION)
 	assert_eq(c.bar.size(), 9)
 	assert_eq(c.name, "Lyra", "nothing else is lost")
 
@@ -148,3 +149,49 @@ func test_bar_uses_the_progress_level() -> void:
 	assert_eq(CharacterData.from_dict(d, catalog).bar, ["", "", "", "", "", "", "", "", ""], "locked abilities leave the bar")
 	d.progress = {"level": 10}
 	assert_eq(CharacterData.from_dict(d, catalog).bar, ["mage_fireball", "mage_frost_nova", "", "", "", "", "", "", ""])
+
+
+func _worn(c: CharacterData) -> Array:
+	var out: Array = c.inventory.equipment.values().map(func(it: Item) -> String: return it.base_id)
+	out.sort()
+	return out
+
+
+func test_v3_gets_starter() -> void:
+	var d := {"version": 3, "id": "c3", "name": "Ana", "class_id": "warrior", "appearance": {}, "bar": [],
+		"progress": {"level": 12, "talents": ["might_1"]}}
+	var c := CharacterData.from_dict(d, catalog)
+	var kit: Array = ItemDB.load_default().starter("warrior").duplicate()
+	kit.sort()
+	assert_eq(_worn(c), kit)
+	assert_eq(c.progress.level, 12)
+	assert_eq(c.progress.talents, ["might_1"])
+	assert_eq(c.inventory.gold, 0)
+	for it: Item in c.inventory.equipment.values():
+		assert_eq([it.level, it.rarity, it.durability], [1, "common", 100])
+
+
+func test_v3_villager_wood_sword() -> void:
+	var d := {"version": 3, "id": "c3", "name": "Ana", "appearance": {}, "bar": []}
+	assert_eq(_worn(CharacterData.from_dict(d, catalog)), ["wood_sword"])
+
+
+func test_v3_assassin_two_daggers() -> void:
+	var d := {"version": 3, "id": "c3", "name": "Ana", "class_id": "assassin", "appearance": {}, "bar": []}
+	var c := CharacterData.from_dict(d, catalog)
+	assert_eq(c.inventory.equipment.main.base_id, "dagger_t1")
+	assert_eq(c.inventory.equipment.offhand.base_id, "dagger_t1")
+
+
+func test_roundtrip_v4() -> void:
+	var c := _sample()
+	c.inventory.gold = 321
+	c.inventory.add(ItemRoll.new_item("wand_t1", 3, "rare"), ItemDB.load_default())
+	var d := c.to_dict()
+	assert_eq(d.version, 4)
+	var back := CharacterData.from_dict(JSON.parse_string(JSON.stringify(d)), catalog)
+	assert_eq(back.to_dict(), d)
+
+
+func test_new_character_is_a_villager_with_a_wood_sword() -> void:
+	assert_eq(_worn(CharacterData.new()), ["wood_sword"])

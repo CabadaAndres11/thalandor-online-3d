@@ -219,6 +219,9 @@ func _on_choose_class(rec: Dictionary, class_id: String) -> void:
 		return
 	# Same share of health as before: learning a class mid-fight is not a free heal.
 	var ratio := p.hp / maxf(p.stats.max_hp, 1.0)
+	# The villager's gear goes; the class's starter kit is worn (bag and gold stay).
+	p.inventory.wear_starter(class_id, world.items)
+	p.inventory_dirty = true
 	ClassRules.setup_player(p, class_id, catalog, world)
 	p.hp = p.stats.max_hp * ratio
 	rec.class_id = class_id

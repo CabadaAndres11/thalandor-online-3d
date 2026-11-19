@@ -130,6 +130,23 @@ func unequip(slot: String, _db: ItemDB = null) -> bool:
 	return true
 
 
+## The starter kit of a class worn (level 1, common), with an empty bag and no gold.
+static func starter(class_id: String, db: ItemDB) -> Inventory:
+	var inv := Inventory.new()
+	inv.wear_starter(class_id, db)
+	return inv
+
+
+## Replaces whatever is worn by the class's starter kit (bag and gold stay).
+func wear_starter(class_id: String, db: ItemDB) -> void:
+	equipment.clear()
+	for id: String in db.starter(class_id):
+		var it := ItemRoll.new_item(id, 1)
+		var slot := slot_for(it, class_id, db)
+		if slot != "" and not equipment.has(slot):
+			equipment[slot] = it
+
+
 ## Base ids of the 8 visible slots ("" when empty).
 func visible_bases() -> Array:
 	return VISIBLE.map(func(s: String) -> String: return equipment[s].base_id if equipment.has(s) else "")
