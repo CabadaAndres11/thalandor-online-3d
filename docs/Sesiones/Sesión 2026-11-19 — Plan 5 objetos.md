@@ -23,9 +23,12 @@ Diseñar e implementar el [[Plan 5 — Objetos (spec)|Plan 5 · Objetos]] hasta 
 ## Problemas encontrados
 - La ventana C no cabía junto al inventario a 1280×720: inventario de 5 × 6 y ventana C más estrecha.
 
+## Publicación y hoja de ruta
+- **0.7.0 publicada** (etiqueta `v0.7.0`, la CI genera el zip de Windows).
+- [[14 Hoja de ruta]] revisada con las peticiones del usuario: renovación gráfica primero, identidad y razas, mundo con diálogos nuevos, secretos y clases ocultas, oficios, interfaz y audio, y contenido de la demo con el bestiario ampliado.
+
 ## Siguiente paso
-- Prueba de juego del usuario de la 0.7.0 y publicación.
-- Plan 6 · Mundo y misiones (el mercader se muda a la capital).
+- Plan 6 · Renovación gráfica: vóxel más fino y aspecto menos infantil.
 
 ---
 ← [[Sesiones]]

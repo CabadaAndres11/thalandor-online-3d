@@ -1,6 +1,6 @@
 ---
 tags: [inicio]
-actualizado: 2026-11-14
+actualizado: 2026-11-19
 ---
 
 # Thalandor Online · Bóveda del proyecto
@@ -10,7 +10,17 @@ RPG de acción en **3D vóxel** hecho en **Godot 4**, para jugar online con hast
 ## Empezar aquí
 - [[00 Índice del GDD|GDD]] — la guía del proyecto (documento vivo)
 - [[15 Decisiones abiertas]] — lo que falta por decidir
-- [[14 Hoja de ruta]] — los 8 planes de desarrollo
+- [[14 Hoja de ruta]] — los 12 planes de desarrollo (5 hechos)
+- [[Planes]] — spec y plan de cada plan, con su estado
+- [[Índice de decisiones]] — todas las decisiones tomadas
+- [[Sesiones]] — resumen de cada sesión de trabajo
+- [[Guion]] — la historia del juego
+- [[Ideas]] — bandeja de ideas sin procesar
+
+## Referencia
+- [[Herramientas]] — herramientas gratuitas del proyecto
+- [[Prototipo 2D]] — el prototipo de origen (solo reglas y fórmulas)
+- [[GDD completo (v2.0)]] — el GDD original en una sola nota
 - [[Guion de inicio]] — el mensaje para arrancar el desarrollo con Claude
 
 ## Carpetas
@@ -23,7 +33,7 @@ RPG de acción en **3D vóxel** hecho en **Godot 4**, para jugar online con hast
 | `Ideas/` | Bandeja de ideas sin procesar |
 | `Historia/` | Guion, lore, personajes y zonas |
 | `Referencia/` | Prototipo 2D, GDD completo original y enlaces útiles |
-| `Plantillas/` | Plantillas de notas (Ctrl+T o el botón de insertar plantilla) |
+| `Plantillas/` | Plantillas de notas (Ctrl+T o el botón de insertar plantilla): [[Clase]], [[Decisión]], [[Idea]], [[Sesión]], [[Spec de plan]] |
 
 ## Normas
 - Las decisiones se toman juntos; cada decisión importante se apunta en `Decisiones/` y se refleja en el GDD.
