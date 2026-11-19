@@ -31,6 +31,7 @@ actualizado: 2026-11-19
 
 Añade una fila por cada cambio de diseño o funcionalidad implementada.
 | 2.25 | 2026-11-19 | **Versión 0.7.0 ([[Plan 5 — Objetos (spec)\|Plan 5]]): objetos.** Botín personal (oro directo, objetos con haz de luz solo para su dueño), rarezas con propiedades aleatorias, inventario (I) y 11 ranuras de equipo visibles, **un juego de armadura por clase** en tres tramos cada vez más épicos (capas, halos, coronas, auras), armas a una y dos manos con **familias** que cambian el ataque básico, combo visual de tres golpes, pociones (Q/R), durabilidad, **mercader provisional** junto a Brann y únicos de jefe ([[D-014 Objetos por clase, armas a dos manos y tramos épicos]]). Personajes versión 4, protocolo de red 7. |
+| 2.26 | 2026-11-19 | **Hoja de ruta revisada** tras la 0.7.0 ([[14 Hoja de ruta]]): 6 Renovación gráfica, 7 Identidad y creación de personaje (logo, menús, razas), 8 Mundo y misiones (con diálogos rediseñados), 9 Secretos y clases ocultas, 10 Oficios, 11 Interfaz y audio, 12 Contenido de la demo (con el bestiario ampliado). |
 
 ---
 ← [[00 Índice del GDD|Índice del GDD]]
