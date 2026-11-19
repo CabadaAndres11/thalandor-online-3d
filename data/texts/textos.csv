@@ -646,3 +646,57 @@ STATUS_SHIELD,Escudo
 STATUS_SPEED_BUFF,Más velocidad
 STATUS_ENVENOM,Filo envenenado
 STATUS_CONTAGION,Contagio
+ITEM_CLOTH_HEAD_T1,"Capucha de lino"
+ITEM_CLOTH_SHOULDERS_T1,"Hombreras de lino"
+ITEM_CLOTH_CHEST_T1,"Túnica de lino"
+ITEM_CLOTH_HANDS_T1,"Guantes de lino"
+ITEM_CLOTH_LEGS_T1,"Calzas de lino"
+ITEM_CLOTH_FEET_T1,"Sandalias de lino"
+ITEM_LEATHER_HEAD_T1,"Capucha de cuero"
+ITEM_LEATHER_SHOULDERS_T1,"Hombreras de cuero"
+ITEM_LEATHER_CHEST_T1,"Jubón de cuero"
+ITEM_LEATHER_HANDS_T1,"Guantes de cuero"
+ITEM_LEATHER_LEGS_T1,"Pantalones de cuero"
+ITEM_LEATHER_FEET_T1,"Botas de cuero"
+ITEM_MAIL_HEAD_T1,"Cofia de malla"
+ITEM_MAIL_SHOULDERS_T1,"Espaldares de malla"
+ITEM_MAIL_CHEST_T1,"Cota de malla"
+ITEM_MAIL_HANDS_T1,"Guanteletes de malla"
+ITEM_MAIL_LEGS_T1,"Quijotes de malla"
+ITEM_MAIL_FEET_T1,"Botas de malla"
+ITEM_PLATE_HEAD_T1,"Yelmo de hierro"
+ITEM_PLATE_SHOULDERS_T1,"Hombreras de hierro"
+ITEM_PLATE_CHEST_T1,"Coraza de hierro"
+ITEM_PLATE_HANDS_T1,"Guanteletes de hierro"
+ITEM_PLATE_LEGS_T1,"Grebas de hierro"
+ITEM_PLATE_FEET_T1,"Escarpes de hierro"
+ITEM_GREATSWORD_T1,"Mandoble de hierro"
+ITEM_GREAT_AXE_T1,"Gran hacha de hierro"
+ITEM_WARHAMMER_T1,"Martillo de guerra de hierro"
+ITEM_HALBERD_T1,"Alabarda de hierro"
+ITEM_STAFF_T1,"Bastón de roble"
+ITEM_BOW_T1,"Arco de tejo"
+ITEM_CROSSBOW_T1,"Ballesta de roble"
+ITEM_SWORD_T1,"Espada de hierro"
+ITEM_AXE_T1,"Hacha de hierro"
+ITEM_MACE_T1,"Maza de hierro"
+ITEM_SHORT_SWORD_T1,"Espada corta de hierro"
+ITEM_DAGGER_T1,"Daga de hierro"
+ITEM_WAND_T1,"Varita de abedul"
+ITEM_SCEPTER_T1,"Cetro de bronce"
+ITEM_SHIELD_T1,"Escudo de roble"
+ITEM_ORB_T1,"Orbe de cuarzo"
+ITEM_TOME_T1,"Tomo de aprendiz"
+ITEM_NECK_T1,"Colgante de cobre"
+ITEM_RING_T1,"Anillo de cobre"
+ITEM_WOOD_SWORD,"Espada de madera"
+ITEM_POTION_HEALTH,"Poción de vida"
+ITEM_POTION_RESOURCE,"Poción de recurso"
+STAT_STRENGTH,%s fuerza
+STAT_AGILITY,%s agilidad
+STAT_INTELLECT,%s intelecto
+STAT_STAMINA,%s aguante
+STAT_SPIRIT,%s espíritu
+STAT_ATTACK_POWER_ADD,%s poder de ataque
+STAT_SPELL_POWER_ADD,%s poder de hechizos
+STAT_MAX_RESOURCE_ADD,%s recurso máximo

@@ -1,0 +1,989 @@
+{
+	"tiers": {
+		"1": [
+			1,
+			19
+		],
+		"2": [
+			20,
+			39
+		],
+		"3": [
+			40,
+			9999
+		]
+	},
+	"templates": {
+		"cloth_head": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.15
+			},
+			{
+				"stat": "intellect",
+				"per_level": 0.3
+			},
+			{
+				"stat": "spirit",
+				"per_level": 0.24
+			}
+		],
+		"cloth_shoulders": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.125
+			},
+			{
+				"stat": "intellect",
+				"per_level": 0.25
+			},
+			{
+				"stat": "spirit",
+				"per_level": 0.2
+			}
+		],
+		"cloth_chest": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.25
+			},
+			{
+				"stat": "intellect",
+				"per_level": 0.5
+			},
+			{
+				"stat": "spirit",
+				"per_level": 0.4
+			}
+		],
+		"cloth_hands": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.1
+			},
+			{
+				"stat": "intellect",
+				"per_level": 0.2
+			},
+			{
+				"stat": "spirit",
+				"per_level": 0.16
+			}
+		],
+		"cloth_legs": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.2
+			},
+			{
+				"stat": "intellect",
+				"per_level": 0.4
+			},
+			{
+				"stat": "spirit",
+				"per_level": 0.32
+			}
+		],
+		"cloth_feet": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.1
+			},
+			{
+				"stat": "intellect",
+				"per_level": 0.2
+			},
+			{
+				"stat": "spirit",
+				"per_level": 0.16
+			}
+		],
+		"leather_head": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.3
+			},
+			{
+				"stat": "agility",
+				"per_level": 0.3
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.24
+			}
+		],
+		"leather_shoulders": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.25
+			},
+			{
+				"stat": "agility",
+				"per_level": 0.25
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.2
+			}
+		],
+		"leather_chest": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.5
+			},
+			{
+				"stat": "agility",
+				"per_level": 0.5
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.4
+			}
+		],
+		"leather_hands": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.2
+			},
+			{
+				"stat": "agility",
+				"per_level": 0.2
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.16
+			}
+		],
+		"leather_legs": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.4
+			},
+			{
+				"stat": "agility",
+				"per_level": 0.4
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.32
+			}
+		],
+		"leather_feet": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.2
+			},
+			{
+				"stat": "agility",
+				"per_level": 0.2
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.16
+			}
+		],
+		"mail_head": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.48
+			},
+			{
+				"stat": "agility",
+				"per_level": 0.3
+			},
+			{
+				"stat": "strength",
+				"per_level": 0.15
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.18
+			}
+		],
+		"mail_shoulders": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.4
+			},
+			{
+				"stat": "agility",
+				"per_level": 0.25
+			},
+			{
+				"stat": "strength",
+				"per_level": 0.125
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.15
+			}
+		],
+		"mail_chest": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.8
+			},
+			{
+				"stat": "agility",
+				"per_level": 0.5
+			},
+			{
+				"stat": "strength",
+				"per_level": 0.25
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.3
+			}
+		],
+		"mail_hands": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.32
+			},
+			{
+				"stat": "agility",
+				"per_level": 0.2
+			},
+			{
+				"stat": "strength",
+				"per_level": 0.1
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.12
+			}
+		],
+		"mail_legs": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.64
+			},
+			{
+				"stat": "agility",
+				"per_level": 0.4
+			},
+			{
+				"stat": "strength",
+				"per_level": 0.2
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.24
+			}
+		],
+		"mail_feet": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.32
+			},
+			{
+				"stat": "agility",
+				"per_level": 0.2
+			},
+			{
+				"stat": "strength",
+				"per_level": 0.1
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.12
+			}
+		],
+		"plate_head": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.72
+			},
+			{
+				"stat": "strength",
+				"per_level": 0.3
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.24
+			}
+		],
+		"plate_shoulders": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.6
+			},
+			{
+				"stat": "strength",
+				"per_level": 0.25
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.2
+			}
+		],
+		"plate_chest": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 1.2
+			},
+			{
+				"stat": "strength",
+				"per_level": 0.5
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.4
+			}
+		],
+		"plate_hands": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.48
+			},
+			{
+				"stat": "strength",
+				"per_level": 0.2
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.16
+			}
+		],
+		"plate_legs": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.96
+			},
+			{
+				"stat": "strength",
+				"per_level": 0.4
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.32
+			}
+		],
+		"plate_feet": [
+			{
+				"stat": "armor_add",
+				"base": 1,
+				"per_level": 0.48
+			},
+			{
+				"stat": "strength",
+				"per_level": 0.2
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.16
+			}
+		],
+		"greatsword": [
+			{
+				"stat": "attack_power_add",
+				"base": 4,
+				"per_level": 2
+			},
+			{
+				"stat": "strength",
+				"per_level": 0.3
+			}
+		],
+		"great_axe": [
+			{
+				"stat": "attack_power_add",
+				"base": 5,
+				"per_level": 2.2
+			}
+		],
+		"warhammer": [
+			{
+				"stat": "attack_power_add",
+				"base": 3,
+				"per_level": 1.2
+			},
+			{
+				"stat": "spell_power_add",
+				"base": 3,
+				"per_level": 1.2
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.2
+			}
+		],
+		"halberd": [
+			{
+				"stat": "attack_power_add",
+				"base": 4,
+				"per_level": 2
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.3
+			}
+		],
+		"staff": [
+			{
+				"stat": "spell_power_add",
+				"base": 4,
+				"per_level": 2.2
+			},
+			{
+				"stat": "intellect",
+				"per_level": 0.3
+			}
+		],
+		"bow": [
+			{
+				"stat": "attack_power_add",
+				"base": 4,
+				"per_level": 1.9
+			},
+			{
+				"stat": "agility",
+				"per_level": 0.3
+			}
+		],
+		"crossbow": [
+			{
+				"stat": "attack_power_add",
+				"base": 5,
+				"per_level": 2.1
+			},
+			{
+				"stat": "agility",
+				"per_level": 0.2
+			}
+		],
+		"sword": [
+			{
+				"stat": "attack_power_add",
+				"base": 4,
+				"per_level": 2
+			},
+			{
+				"stat": "strength",
+				"per_level": 0.3
+			}
+		],
+		"axe": [
+			{
+				"stat": "attack_power_add",
+				"base": 5,
+				"per_level": 2.2
+			}
+		],
+		"mace": [
+			{
+				"stat": "attack_power_add",
+				"base": 3,
+				"per_level": 1.2
+			},
+			{
+				"stat": "spell_power_add",
+				"base": 3,
+				"per_level": 1.2
+			}
+		],
+		"short_sword": [
+			{
+				"stat": "attack_power_add",
+				"base": 3,
+				"per_level": 1.9
+			},
+			{
+				"stat": "agility",
+				"per_level": 0.3
+			}
+		],
+		"dagger": [
+			{
+				"stat": "attack_power_add",
+				"base": 3,
+				"per_level": 1.8
+			},
+			{
+				"stat": "agility",
+				"per_level": 0.35
+			}
+		],
+		"wand": [
+			{
+				"stat": "spell_power_add",
+				"base": 3,
+				"per_level": 1.7
+			},
+			{
+				"stat": "intellect",
+				"per_level": 0.25
+			}
+		],
+		"scepter": [
+			{
+				"stat": "spell_power_add",
+				"base": 3,
+				"per_level": 1.5
+			},
+			{
+				"stat": "spirit",
+				"per_level": 0.3
+			}
+		],
+		"shield": [
+			{
+				"stat": "armor_add",
+				"base": 2,
+				"per_level": 0.8
+			},
+			{
+				"stat": "block_add",
+				"per_level": 0.001
+			},
+			{
+				"stat": "stamina",
+				"per_level": 0.25
+			}
+		],
+		"orb": [
+			{
+				"stat": "spell_power_add",
+				"base": 2,
+				"per_level": 0.8
+			},
+			{
+				"stat": "intellect",
+				"per_level": 0.25
+			}
+		],
+		"tome": [
+			{
+				"stat": "spell_power_add",
+				"base": 2,
+				"per_level": 0.8
+			},
+			{
+				"stat": "spirit",
+				"per_level": 0.25
+			}
+		],
+		"neck": [
+			{
+				"stat": "stamina",
+				"per_level": 0.2
+			}
+		],
+		"ring": [
+			{
+				"stat": "stamina",
+				"per_level": 0.2
+			}
+		],
+		"wood_sword": [
+			{
+				"stat": "attack_power_add",
+				"base": 1,
+				"per_level": 0.5
+			}
+		],
+		"potion": []
+	},
+	"bases": {
+		"cloth_head_t1": {
+			"slot": "head",
+			"kind": "cloth",
+			"tier": 1,
+			"template": "cloth_head",
+			"look": [],
+			"name": "ITEM_CLOTH_HEAD_T1"
+		},
+		"cloth_shoulders_t1": {
+			"slot": "shoulders",
+			"kind": "cloth",
+			"tier": 1,
+			"template": "cloth_shoulders",
+			"look": [],
+			"name": "ITEM_CLOTH_SHOULDERS_T1"
+		},
+		"cloth_chest_t1": {
+			"slot": "chest",
+			"kind": "cloth",
+			"tier": 1,
+			"template": "cloth_chest",
+			"look": [],
+			"name": "ITEM_CLOTH_CHEST_T1"
+		},
+		"cloth_hands_t1": {
+			"slot": "hands",
+			"kind": "cloth",
+			"tier": 1,
+			"template": "cloth_hands",
+			"look": [],
+			"name": "ITEM_CLOTH_HANDS_T1"
+		},
+		"cloth_legs_t1": {
+			"slot": "legs",
+			"kind": "cloth",
+			"tier": 1,
+			"template": "cloth_legs",
+			"look": [],
+			"name": "ITEM_CLOTH_LEGS_T1"
+		},
+		"cloth_feet_t1": {
+			"slot": "feet",
+			"kind": "cloth",
+			"tier": 1,
+			"template": "cloth_feet",
+			"look": [],
+			"name": "ITEM_CLOTH_FEET_T1"
+		},
+		"leather_head_t1": {
+			"slot": "head",
+			"kind": "leather",
+			"tier": 1,
+			"template": "leather_head",
+			"look": [],
+			"name": "ITEM_LEATHER_HEAD_T1"
+		},
+		"leather_shoulders_t1": {
+			"slot": "shoulders",
+			"kind": "leather",
+			"tier": 1,
+			"template": "leather_shoulders",
+			"look": [],
+			"name": "ITEM_LEATHER_SHOULDERS_T1"
+		},
+		"leather_chest_t1": {
+			"slot": "chest",
+			"kind": "leather",
+			"tier": 1,
+			"template": "leather_chest",
+			"look": [],
+			"name": "ITEM_LEATHER_CHEST_T1"
+		},
+		"leather_hands_t1": {
+			"slot": "hands",
+			"kind": "leather",
+			"tier": 1,
+			"template": "leather_hands",
+			"look": [],
+			"name": "ITEM_LEATHER_HANDS_T1"
+		},
+		"leather_legs_t1": {
+			"slot": "legs",
+			"kind": "leather",
+			"tier": 1,
+			"template": "leather_legs",
+			"look": [],
+			"name": "ITEM_LEATHER_LEGS_T1"
+		},
+		"leather_feet_t1": {
+			"slot": "feet",
+			"kind": "leather",
+			"tier": 1,
+			"template": "leather_feet",
+			"look": [],
+			"name": "ITEM_LEATHER_FEET_T1"
+		},
+		"mail_head_t1": {
+			"slot": "head",
+			"kind": "mail",
+			"tier": 1,
+			"template": "mail_head",
+			"look": [],
+			"name": "ITEM_MAIL_HEAD_T1"
+		},
+		"mail_shoulders_t1": {
+			"slot": "shoulders",
+			"kind": "mail",
+			"tier": 1,
+			"template": "mail_shoulders",
+			"look": [],
+			"name": "ITEM_MAIL_SHOULDERS_T1"
+		},
+		"mail_chest_t1": {
+			"slot": "chest",
+			"kind": "mail",
+			"tier": 1,
+			"template": "mail_chest",
+			"look": [],
+			"name": "ITEM_MAIL_CHEST_T1"
+		},
+		"mail_hands_t1": {
+			"slot": "hands",
+			"kind": "mail",
+			"tier": 1,
+			"template": "mail_hands",
+			"look": [],
+			"name": "ITEM_MAIL_HANDS_T1"
+		},
+		"mail_legs_t1": {
+			"slot": "legs",
+			"kind": "mail",
+			"tier": 1,
+			"template": "mail_legs",
+			"look": [],
+			"name": "ITEM_MAIL_LEGS_T1"
+		},
+		"mail_feet_t1": {
+			"slot": "feet",
+			"kind": "mail",
+			"tier": 1,
+			"template": "mail_feet",
+			"look": [],
+			"name": "ITEM_MAIL_FEET_T1"
+		},
+		"plate_head_t1": {
+			"slot": "head",
+			"kind": "plate",
+			"tier": 1,
+			"template": "plate_head",
+			"look": [],
+			"name": "ITEM_PLATE_HEAD_T1"
+		},
+		"plate_shoulders_t1": {
+			"slot": "shoulders",
+			"kind": "plate",
+			"tier": 1,
+			"template": "plate_shoulders",
+			"look": [],
+			"name": "ITEM_PLATE_SHOULDERS_T1"
+		},
+		"plate_chest_t1": {
+			"slot": "chest",
+			"kind": "plate",
+			"tier": 1,
+			"template": "plate_chest",
+			"look": [],
+			"name": "ITEM_PLATE_CHEST_T1"
+		},
+		"plate_hands_t1": {
+			"slot": "hands",
+			"kind": "plate",
+			"tier": 1,
+			"template": "plate_hands",
+			"look": [],
+			"name": "ITEM_PLATE_HANDS_T1"
+		},
+		"plate_legs_t1": {
+			"slot": "legs",
+			"kind": "plate",
+			"tier": 1,
+			"template": "plate_legs",
+			"look": [],
+			"name": "ITEM_PLATE_LEGS_T1"
+		},
+		"plate_feet_t1": {
+			"slot": "feet",
+			"kind": "plate",
+			"tier": 1,
+			"template": "plate_feet",
+			"look": [],
+			"name": "ITEM_PLATE_FEET_T1"
+		},
+		"greatsword_t1": {
+			"slot": "main",
+			"kind": "greatsword",
+			"tier": 1,
+			"template": "greatsword",
+			"look": [],
+			"name": "ITEM_GREATSWORD_T1"
+		},
+		"great_axe_t1": {
+			"slot": "main",
+			"kind": "great_axe",
+			"tier": 1,
+			"template": "great_axe",
+			"look": [],
+			"name": "ITEM_GREAT_AXE_T1"
+		},
+		"warhammer_t1": {
+			"slot": "main",
+			"kind": "warhammer",
+			"tier": 1,
+			"template": "warhammer",
+			"look": [],
+			"name": "ITEM_WARHAMMER_T1"
+		},
+		"halberd_t1": {
+			"slot": "main",
+			"kind": "halberd",
+			"tier": 1,
+			"template": "halberd",
+			"look": [],
+			"name": "ITEM_HALBERD_T1"
+		},
+		"staff_t1": {
+			"slot": "main",
+			"kind": "staff",
+			"tier": 1,
+			"template": "staff",
+			"look": [],
+			"name": "ITEM_STAFF_T1"
+		},
+		"bow_t1": {
+			"slot": "main",
+			"kind": "bow",
+			"tier": 1,
+			"template": "bow",
+			"look": [],
+			"name": "ITEM_BOW_T1"
+		},
+		"crossbow_t1": {
+			"slot": "main",
+			"kind": "crossbow",
+			"tier": 1,
+			"template": "crossbow",
+			"look": [],
+			"name": "ITEM_CROSSBOW_T1"
+		},
+		"sword_t1": {
+			"slot": "main",
+			"kind": "sword",
+			"tier": 1,
+			"template": "sword",
+			"look": [],
+			"name": "ITEM_SWORD_T1"
+		},
+		"axe_t1": {
+			"slot": "main",
+			"kind": "axe",
+			"tier": 1,
+			"template": "axe",
+			"look": [],
+			"name": "ITEM_AXE_T1"
+		},
+		"mace_t1": {
+			"slot": "main",
+			"kind": "mace",
+			"tier": 1,
+			"template": "mace",
+			"look": [],
+			"name": "ITEM_MACE_T1"
+		},
+		"short_sword_t1": {
+			"slot": "main",
+			"kind": "short_sword",
+			"tier": 1,
+			"template": "short_sword",
+			"look": [],
+			"name": "ITEM_SHORT_SWORD_T1"
+		},
+		"dagger_t1": {
+			"slot": "main",
+			"kind": "dagger",
+			"tier": 1,
+			"template": "dagger",
+			"look": [],
+			"name": "ITEM_DAGGER_T1"
+		},
+		"wand_t1": {
+			"slot": "main",
+			"kind": "wand",
+			"tier": 1,
+			"template": "wand",
+			"look": [],
+			"name": "ITEM_WAND_T1"
+		},
+		"scepter_t1": {
+			"slot": "main",
+			"kind": "scepter",
+			"tier": 1,
+			"template": "scepter",
+			"look": [],
+			"name": "ITEM_SCEPTER_T1"
+		},
+		"shield_t1": {
+			"slot": "offhand",
+			"kind": "shield",
+			"tier": 1,
+			"template": "shield",
+			"look": [],
+			"name": "ITEM_SHIELD_T1"
+		},
+		"orb_t1": {
+			"slot": "offhand",
+			"kind": "orb",
+			"tier": 1,
+			"template": "orb",
+			"look": [],
+			"name": "ITEM_ORB_T1"
+		},
+		"tome_t1": {
+			"slot": "offhand",
+			"kind": "tome",
+			"tier": 1,
+			"template": "tome",
+			"look": [],
+			"name": "ITEM_TOME_T1"
+		},
+		"neck_t1": {
+			"slot": "neck",
+			"kind": "jewelry",
+			"tier": 1,
+			"template": "neck",
+			"look": [],
+			"name": "ITEM_NECK_T1"
+		},
+		"ring_t1": {
+			"slot": "ring",
+			"kind": "jewelry",
+			"tier": 1,
+			"template": "ring",
+			"look": [],
+			"name": "ITEM_RING_T1"
+		},
+		"wood_sword": {
+			"slot": "main",
+			"kind": "wood_sword",
+			"tier": 0,
+			"min_level": 1,
+			"max_level": 9999,
+			"template": "wood_sword",
+			"look": [],
+			"name": "ITEM_WOOD_SWORD"
+		},
+		"potion_health": {
+			"slot": "consumable",
+			"kind": "potion",
+			"potion": "health",
+			"tier": 0,
+			"min_level": 1,
+			"max_level": 9999,
+			"template": "potion",
+			"look": [],
+			"name": "ITEM_POTION_HEALTH"
+		},
+		"potion_resource": {
+			"slot": "consumable",
+			"kind": "potion",
+			"potion": "resource",
+			"tier": 0,
+			"min_level": 1,
+			"max_level": 9999,
+			"template": "potion",
+			"look": [],
+			"name": "ITEM_POTION_RESOURCE"
+		}
+	}
+}

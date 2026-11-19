@@ -1,0 +1,49 @@
+{
+	"armor_order": ["cloth", "leather", "mail", "plate"],
+	"families": {
+		"one_hand": {},
+		"heavy": {"grip": "two_hand", "melee_anim": "heavy"},
+		"polearm": {"grip": "polearm", "melee_anim": "thrust"},
+		"staff": {"grip": "staff"},
+		"wand": {},
+		"bow": {"grip": "bow"},
+		"crossbow": {"grip": "crossbow"},
+		"daggers": {}
+	},
+	"weapon_types": {
+		"greatsword": {"family": "heavy", "hands": 2},
+		"great_axe": {"family": "heavy", "hands": 2},
+		"warhammer": {"family": "heavy", "hands": 2},
+		"halberd": {"family": "polearm", "hands": 2},
+		"staff": {"family": "staff", "hands": 2},
+		"bow": {"family": "bow", "hands": 2},
+		"crossbow": {"family": "crossbow", "hands": 2},
+		"sword": {"family": "one_hand", "hands": 1},
+		"axe": {"family": "one_hand", "hands": 1},
+		"mace": {"family": "one_hand", "hands": 1},
+		"scepter": {"family": "one_hand", "hands": 1},
+		"short_sword": {"family": "one_hand", "hands": 1, "offhand": true},
+		"dagger": {"family": "daggers", "hands": 1, "offhand": true},
+		"wand": {"family": "wand", "hands": 1},
+		"wood_sword": {"family": "one_hand", "hands": 1},
+		"shield": {"hands": 1},
+		"orb": {"hands": 1},
+		"tome": {"hands": 1}
+	},
+	"classes": {
+		"villager": {"armor": "", "weapons": ["wood_sword"], "offhand": []},
+		"warrior": {"armor": "plate", "weapons": ["greatsword", "great_axe", "warhammer", "halberd", "sword", "axe", "mace"], "offhand": ["shield"]},
+		"cleric": {"armor": "cloth", "weapons": ["warhammer", "staff", "mace", "wand", "scepter"], "offhand": ["shield", "orb", "tome"]},
+		"mage": {"armor": "cloth", "weapons": ["staff", "wand"], "offhand": ["orb", "tome"]},
+		"archer": {"armor": "mail", "weapons": ["bow", "crossbow", "short_sword"], "offhand": []},
+		"assassin": {"armor": "leather", "weapons": ["dagger", "short_sword"], "offhand": ["dagger", "short_sword"]}
+	},
+	"starter": {
+		"villager": ["wood_sword"],
+		"warrior": ["sword_t1", "shield_t1", "plate_chest_t1", "plate_shoulders_t1", "plate_legs_t1", "plate_feet_t1"],
+		"cleric": ["mace_t1", "cloth_chest_t1", "cloth_legs_t1", "cloth_feet_t1"],
+		"mage": ["staff_t1", "cloth_chest_t1", "cloth_legs_t1", "cloth_feet_t1"],
+		"archer": ["bow_t1", "leather_chest_t1", "leather_legs_t1", "leather_feet_t1"],
+		"assassin": ["dagger_t1", "dagger_t1", "leather_chest_t1", "leather_legs_t1", "leather_feet_t1"]
+	}
+}

@@ -8,6 +8,7 @@ const FLAT := {
 	"armor_add": "armor", "max_hp_add": "max_hp", "hp_regen_add": "hp_regen", "dodge_add": "dodge_chance",
 	"crit_add": "crit_chance", "block_add": "block_chance", "crit_damage_add": "crit_damage",
 	"lifesteal_add": "lifesteal", "cooldown_reduction_add": "cooldown_reduction",
+	"attack_power_add": "attack_power", "spell_power_add": "spell_power", "max_resource_add": "max_resource",
 }
 ## ... and stats scaled by (1 + sum of the values) with "<name>_pct".
 const PERCENT := {
