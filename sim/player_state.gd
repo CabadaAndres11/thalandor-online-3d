@@ -22,6 +22,11 @@ var respawn_tick: int = -1
 ## Experience, attributes, talents… (see PlayerProgress); progress_dirty asks the host to send it.
 var progress := PlayerProgress.new()
 var progress_dirty: bool = false
+## Gold, bag and equipment (see Inventory); inventory_dirty asks the host to send it.
+var inventory := Inventory.new()
+var inventory_dirty: bool = false
+## Tick from which a potion can be drunk again (shared by health and resource potions).
+var potion_ready_tick: int = 0
 ## Evasión mortal: the next combo gain is raised after a dodge.
 var bonus_combo_ready: bool = false
 ## Conditional passive buffs on at the last tick (Passives.CONDITIONAL keys), to send changes only.
