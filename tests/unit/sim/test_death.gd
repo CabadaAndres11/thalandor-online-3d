@@ -102,3 +102,12 @@ func test_area_hit_gives_rage() -> void:
 	Combat.deal(w, pa.owner, m, {"damage": {"base": 5, "coef": 0, "kind": "physical"}}, {})
 	assert_gt(p.resource, before, "rage from a hit dealt through a snapshot")
 	assert_true(p.in_combat(w))
+
+
+func test_death_costs_durability() -> void:
+	var w := _world()
+	var p := w.add_player(1, Vector3(20, 0, 20))
+	ClassRules.setup_player(p, "mage")
+	p.inventory.equipment["chest"] = ItemRoll.new_item("cloth_chest_t1", 1)
+	_kill(w, p)
+	assert_eq(p.inventory.equipment.chest.durability, 90)

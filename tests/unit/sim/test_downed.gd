@@ -152,3 +152,33 @@ func test_reviver_killed_mid_revive_cancels() -> void:
 	_kill(w, helper)
 	assert_has(_kinds(w.events), "revive_cancel", "the reviver's bar must go away")
 	assert_eq(helper.revive_target_id, 0)
+
+
+func _chest(p: PlayerState) -> Item:
+	var it := ItemRoll.new_item("plate_chest_t1", 1)
+	p.inventory.equipment["chest"] = it
+	return it
+
+
+func test_downed_keeps_durability() -> void:
+	var w := _world()
+	var down := _player(w, 1, Vector3(20, 0, 20))
+	var chest := _chest(down)
+	_player(w, 2, Vector3(21, 0, 20))
+	_kill(w, down)
+	_hold(w, 2, w.balance.revive_hold_s + 0.2)
+	assert_eq(down.life, CombatEntity.ALIVE)
+	assert_eq(chest.durability, 100)
+
+
+func test_bleeding_out_costs_durability() -> void:
+	var w := _world()
+	var down := _player(w, 1, Vector3(20, 0, 20))
+	var chest := _chest(down)
+	_player(w, 2, Vector3(30, 0, 30))
+	_kill(w, down)
+	assert_eq(chest.durability, 100, "downed only")
+	for i in w.ticks(w.balance.downed_s + 0.2):
+		w.step({})
+	assert_eq(down.life, CombatEntity.DEAD)
+	assert_eq(chest.durability, 90)

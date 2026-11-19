@@ -426,6 +426,7 @@ static func _die(world: SimWorld, p: PlayerState) -> void:
 	p.downed_end_tick = -1
 	p.respawn_tick = world.tick + world.ticks(world.balance.respawn_s)
 	world.emit(["died", p.id])
+	ItemRequests.on_death(world, p)
 
 
 ## Nobody left standing: the downed die too, so the whole group respawns together.
