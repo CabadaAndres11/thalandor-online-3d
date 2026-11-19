@@ -10,6 +10,8 @@ extends RefCounted
 static func try_cast(world: SimWorld, caster: CombatEntity, ability_id: String, aim: Vector3, mods: Dictionary = {}) -> bool:
 	var upgrade := (caster as PlayerState).progress.upgrade if caster is PlayerState else ""
 	var ab := world.abilities.resolved(ability_id, upgrade, world.upgrades)
+	if caster is PlayerState:
+		ab = WeaponFamily.adjust(ab, WeaponFamily.of(caster as PlayerState, world))
 	if ab.is_empty() or ab.get("kind") == "passive" or not caster.can_act(world.tick):
 		return false
 	if caster is PlayerState and (int(ab.get("level", 1)) > caster.level \

@@ -95,7 +95,11 @@ func _cast_from_input(rec: Dictionary, input: PlayerInput) -> void:
 	if p == null:
 		return
 	var basic := world.abilities.get_ability(rec.basic_id)
-	if basic.has("charge"):
+	if basic.has("charge") and bool(WeaponFamily.of(p, world).get("auto_charge", false)):
+		# A crossbow is never drawn: every press is the full charged shot.
+		if input.pressed(PlayerInput.BTN_BASIC):
+			ClassRules.release_charged(world, p, rec.basic_id, input.aim, 1.0)
+	elif basic.has("charge"):
 		# Archer: press starts charging, release fires (a quick tap = normal shot).
 		if input.pressed(PlayerInput.BTN_BASIC) and p.charge_start < 0:
 			p.charge_start = world.tick

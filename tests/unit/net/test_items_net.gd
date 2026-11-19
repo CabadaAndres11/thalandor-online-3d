@@ -191,3 +191,13 @@ func test_client_mirrors_inventory_and_gear() -> void:
 	assert_eq(ana.inventory.gold, 42)
 	assert_false(changed.is_empty())
 	assert_eq(bea.gear_of(ana.my_id)[0], "wood_sword")
+
+
+func test_crossbow_fires_charged_on_press() -> void:
+	var a := _guest("Ana", null, "archer")
+	var p: PlayerState = host.world.players[1]
+	p.inventory.equipment["main"] = ItemRoll.new_item("crossbow_t1", 1)
+	p.resource = 100.0
+	_send(a, Protocol.input([[1, Vector2.ZERO, Vector3(30, 0, 20), PlayerInput.BTN_BASIC]]))
+	assert_lt(p.resource, 100.0, "the charged shot's focus was spent on a single press")
+	assert_gt(int(p.cooldowns.get("archer_shot", 0)), host.world.tick)

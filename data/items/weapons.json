@@ -2,12 +2,12 @@
 	"armor_order": ["cloth", "leather", "mail", "plate"],
 	"families": {
 		"one_hand": {},
-		"heavy": {"grip": "two_hand", "melee_anim": "heavy"},
-		"polearm": {"grip": "polearm", "melee_anim": "thrust"},
+		"heavy": {"grip": "two_hand", "melee_anim": "heavy", "cooldown_mult": 1.4, "damage_mult": 1.5, "range_add": 0.5, "angle_deg": 150},
+		"polearm": {"grip": "polearm", "melee_anim": "thrust", "cooldown_mult": 1.2, "damage_mult": 1.25, "range_add": 1.5, "angle_deg": 50},
 		"staff": {"grip": "staff"},
-		"wand": {},
+		"wand": {"projectile": {"speed": 30, "range": 14}, "cooldown_mult": 0.75, "damage_mult": 0.8},
 		"bow": {"grip": "bow"},
-		"crossbow": {"grip": "crossbow"},
+		"crossbow": {"grip": "crossbow", "auto_charge": true, "cooldown_mult": 2.0},
 		"daggers": {}
 	},
 	"weapon_types": {
