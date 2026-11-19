@@ -1,0 +1,13 @@
+{
+	"sun": {"color": "#ffd9a8", "energy": 1.3, "elevation": 32, "azimuth": -35, "shadows": true},
+	"sky": {"top": "#5d8fc8", "horizon": "#f0cfa0"},
+	"ambient": {"color": "#a3b6cf", "energy": 0.45},
+	"fog": {"color": "#b4c6dc", "density": 0.008, "height": 0.0, "height_density": 0.0, "volumetric_density": 0.01, "volumetric_albedo": "#ffe8cc"},
+	"tonemap": {"mode": "aces", "exposure": 1.0},
+	"glow": {"intensity": 0.5, "threshold": 1.0, "bloom": 0.03},
+	"ssao": {"radius": 1.2, "intensity": 1.6},
+	"color": {"brightness": 1.0, "contrast": 1.08, "saturation": 1.05},
+	"ssr": false,
+	"dof": {"distance": 28, "amount": 0.08},
+	"particles": {"type": "dust", "amount": 80, "color": "#fff1d0"}
+}
