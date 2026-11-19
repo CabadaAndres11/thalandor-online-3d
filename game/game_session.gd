@@ -81,6 +81,11 @@ func _init() -> void:
 	_aim = map.spawn_point()
 
 
+## Rebuilds the arena lighting for a video quality level (GraphicsQuality).
+func set_graphics_quality(q: int) -> void:
+	arena.set_quality(q)
+
+
 static func game_version() -> String:
 	return str(ProjectSettings.get_setting(GAME_VERSION_SETTING, "0.0.0"))
 
@@ -265,6 +270,7 @@ func _process(delta: float) -> void:
 	var own := client.render_state(client.my_id)
 	if not own.is_empty():
 		camera.follow(own.position)
+		arena.follow(own.position)
 		for npc: NpcAvatar in _npc_avatars:
 			var d := Vector2(own.position.x - npc.position.x, own.position.z - npc.position.z).length()
 			npc.set_prompt_visible(d <= NpcDB.TALK_RANGE)
