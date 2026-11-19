@@ -237,5 +237,5 @@ func test_without_gear_as_before() -> void:
 func test_offhand_dagger_uses_the_left_hand_model() -> void:
 	var cat := CharacterCatalog.load_default()
 	var ids := _ids(cat.resolve("assassin", {}, "", ["dagger_t1", "dagger_t1", "", "", "", "", "", ""]))
-	assert_has(ids, "weapon_dagger_right")
-	assert_has(ids, "weapon_dagger_left")
+	assert_has(ids, "w_dagger_t1")
+	assert_has(ids, "w_dagger_t1_left")

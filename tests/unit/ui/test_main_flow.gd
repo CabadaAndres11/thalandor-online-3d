@@ -415,7 +415,7 @@ func test_villager_learns_a_class_from_brann() -> void:
 	await wait_until(func() -> bool: return main.combat_hud.slot_ability(0) == first, 3.0)
 	assert_eq(main.combat_hud.slot_ability(0), first, "the HUD has the mage bar")
 	await wait_physics_frames(3)
-	assert_has(main.game.player_avatar(main.game.client.my_id).rig.pieces(), "weapon_staff", "the avatar is redressed")
+	assert_has(main.game.player_avatar(main.game.client.my_id).rig.pieces(), "w_staff_t1", "the avatar is redressed")
 	_press("interact")
 	assert_false(main.class_choice_window.visible, "with a class, Brann only talks")
 

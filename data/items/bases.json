@@ -615,7 +615,7 @@
 			"tier": 1,
 			"template": "cloth_head",
 			"look": [
-				"hat_mage"
+				"cloth_head_t1"
 			],
 			"name": "ITEM_CLOTH_HEAD_T1"
 		},
@@ -624,7 +624,10 @@
 			"kind": "cloth",
 			"tier": 1,
 			"template": "cloth_shoulders",
-			"look": [],
+			"look": [
+				"cloth_shoulders_t1_l",
+				"cloth_shoulders_t1_r"
+			],
 			"name": "ITEM_CLOTH_SHOULDERS_T1"
 		},
 		"cloth_chest_t1": {
@@ -633,7 +636,8 @@
 			"tier": 1,
 			"template": "cloth_chest",
 			"look": [
-				"outfit_mage"
+				"cloth_chest_t1",
+				"cloth_chest_t1_skirt"
 			],
 			"name": "ITEM_CLOTH_CHEST_T1"
 		},
@@ -642,7 +646,12 @@
 			"kind": "cloth",
 			"tier": 1,
 			"template": "cloth_hands",
-			"look": [],
+			"look": [
+				"cloth_hands_t1_l",
+				"cloth_hands_t1_cuff_l",
+				"cloth_hands_t1_r",
+				"cloth_hands_t1_cuff_r"
+			],
 			"name": "ITEM_CLOTH_HANDS_T1"
 		},
 		"cloth_legs_t1": {
@@ -650,7 +659,10 @@
 			"kind": "cloth",
 			"tier": 1,
 			"template": "cloth_legs",
-			"look": [],
+			"look": [
+				"cloth_legs_t1_l",
+				"cloth_legs_t1_r"
+			],
 			"name": "ITEM_CLOTH_LEGS_T1"
 		},
 		"cloth_feet_t1": {
@@ -658,7 +670,10 @@
 			"kind": "cloth",
 			"tier": 1,
 			"template": "cloth_feet",
-			"look": [],
+			"look": [
+				"cloth_feet_t1_l",
+				"cloth_feet_t1_r"
+			],
 			"name": "ITEM_CLOTH_FEET_T1"
 		},
 		"leather_head_t1": {
@@ -667,7 +682,7 @@
 			"tier": 1,
 			"template": "leather_head",
 			"look": [
-				"hood_archer"
+				"leather_head_t1"
 			],
 			"name": "ITEM_LEATHER_HEAD_T1"
 		},
@@ -676,7 +691,10 @@
 			"kind": "leather",
 			"tier": 1,
 			"template": "leather_shoulders",
-			"look": [],
+			"look": [
+				"leather_shoulders_t1_l",
+				"leather_shoulders_t1_r"
+			],
 			"name": "ITEM_LEATHER_SHOULDERS_T1"
 		},
 		"leather_chest_t1": {
@@ -685,7 +703,8 @@
 			"tier": 1,
 			"template": "leather_chest",
 			"look": [
-				"outfit_assassin"
+				"leather_chest_t1",
+				"leather_chest_t1_skirt"
 			],
 			"name": "ITEM_LEATHER_CHEST_T1"
 		},
@@ -694,7 +713,12 @@
 			"kind": "leather",
 			"tier": 1,
 			"template": "leather_hands",
-			"look": [],
+			"look": [
+				"leather_hands_t1_l",
+				"leather_hands_t1_cuff_l",
+				"leather_hands_t1_r",
+				"leather_hands_t1_cuff_r"
+			],
 			"name": "ITEM_LEATHER_HANDS_T1"
 		},
 		"leather_legs_t1": {
@@ -702,7 +726,10 @@
 			"kind": "leather",
 			"tier": 1,
 			"template": "leather_legs",
-			"look": [],
+			"look": [
+				"leather_legs_t1_l",
+				"leather_legs_t1_r"
+			],
 			"name": "ITEM_LEATHER_LEGS_T1"
 		},
 		"leather_feet_t1": {
@@ -710,7 +737,10 @@
 			"kind": "leather",
 			"tier": 1,
 			"template": "leather_feet",
-			"look": [],
+			"look": [
+				"leather_feet_t1_l",
+				"leather_feet_t1_r"
+			],
 			"name": "ITEM_LEATHER_FEET_T1"
 		},
 		"mail_head_t1": {
@@ -718,7 +748,9 @@
 			"kind": "mail",
 			"tier": 1,
 			"template": "mail_head",
-			"look": [],
+			"look": [
+				"mail_head_t1"
+			],
 			"name": "ITEM_MAIL_HEAD_T1"
 		},
 		"mail_shoulders_t1": {
@@ -726,7 +758,10 @@
 			"kind": "mail",
 			"tier": 1,
 			"template": "mail_shoulders",
-			"look": [],
+			"look": [
+				"mail_shoulders_t1_l",
+				"mail_shoulders_t1_r"
+			],
 			"name": "ITEM_MAIL_SHOULDERS_T1"
 		},
 		"mail_chest_t1": {
@@ -735,7 +770,8 @@
 			"tier": 1,
 			"template": "mail_chest",
 			"look": [
-				"outfit_archer"
+				"mail_chest_t1",
+				"mail_chest_t1_skirt"
 			],
 			"name": "ITEM_MAIL_CHEST_T1"
 		},
@@ -744,7 +780,12 @@
 			"kind": "mail",
 			"tier": 1,
 			"template": "mail_hands",
-			"look": [],
+			"look": [
+				"mail_hands_t1_l",
+				"mail_hands_t1_cuff_l",
+				"mail_hands_t1_r",
+				"mail_hands_t1_cuff_r"
+			],
 			"name": "ITEM_MAIL_HANDS_T1"
 		},
 		"mail_legs_t1": {
@@ -752,7 +793,10 @@
 			"kind": "mail",
 			"tier": 1,
 			"template": "mail_legs",
-			"look": [],
+			"look": [
+				"mail_legs_t1_l",
+				"mail_legs_t1_r"
+			],
 			"name": "ITEM_MAIL_LEGS_T1"
 		},
 		"mail_feet_t1": {
@@ -760,7 +804,10 @@
 			"kind": "mail",
 			"tier": 1,
 			"template": "mail_feet",
-			"look": [],
+			"look": [
+				"mail_feet_t1_l",
+				"mail_feet_t1_r"
+			],
 			"name": "ITEM_MAIL_FEET_T1"
 		},
 		"plate_head_t1": {
@@ -768,7 +815,9 @@
 			"kind": "plate",
 			"tier": 1,
 			"template": "plate_head",
-			"look": [],
+			"look": [
+				"plate_head_t1"
+			],
 			"name": "ITEM_PLATE_HEAD_T1"
 		},
 		"plate_shoulders_t1": {
@@ -777,8 +826,8 @@
 			"tier": 1,
 			"template": "plate_shoulders",
 			"look": [
-				"pauldron_left",
-				"pauldron_right"
+				"plate_shoulders_t1_l",
+				"plate_shoulders_t1_r"
 			],
 			"name": "ITEM_PLATE_SHOULDERS_T1"
 		},
@@ -788,7 +837,8 @@
 			"tier": 1,
 			"template": "plate_chest",
 			"look": [
-				"outfit_warrior"
+				"plate_chest_t1",
+				"plate_chest_t1_skirt"
 			],
 			"name": "ITEM_PLATE_CHEST_T1"
 		},
@@ -797,7 +847,12 @@
 			"kind": "plate",
 			"tier": 1,
 			"template": "plate_hands",
-			"look": [],
+			"look": [
+				"plate_hands_t1_l",
+				"plate_hands_t1_cuff_l",
+				"plate_hands_t1_r",
+				"plate_hands_t1_cuff_r"
+			],
 			"name": "ITEM_PLATE_HANDS_T1"
 		},
 		"plate_legs_t1": {
@@ -805,7 +860,10 @@
 			"kind": "plate",
 			"tier": 1,
 			"template": "plate_legs",
-			"look": [],
+			"look": [
+				"plate_legs_t1_l",
+				"plate_legs_t1_r"
+			],
 			"name": "ITEM_PLATE_LEGS_T1"
 		},
 		"plate_feet_t1": {
@@ -813,7 +871,10 @@
 			"kind": "plate",
 			"tier": 1,
 			"template": "plate_feet",
-			"look": [],
+			"look": [
+				"plate_feet_t1_l",
+				"plate_feet_t1_r"
+			],
 			"name": "ITEM_PLATE_FEET_T1"
 		},
 		"greatsword_t1": {
@@ -822,7 +883,7 @@
 			"tier": 1,
 			"template": "greatsword",
 			"look": [
-				"weapon_sword"
+				"w_greatsword_t1"
 			],
 			"name": "ITEM_GREATSWORD_T1"
 		},
@@ -831,7 +892,9 @@
 			"kind": "great_axe",
 			"tier": 1,
 			"template": "great_axe",
-			"look": [],
+			"look": [
+				"w_great_axe_t1"
+			],
 			"name": "ITEM_GREAT_AXE_T1"
 		},
 		"warhammer_t1": {
@@ -839,7 +902,9 @@
 			"kind": "warhammer",
 			"tier": 1,
 			"template": "warhammer",
-			"look": [],
+			"look": [
+				"w_warhammer_t1"
+			],
 			"name": "ITEM_WARHAMMER_T1"
 		},
 		"halberd_t1": {
@@ -847,7 +912,9 @@
 			"kind": "halberd",
 			"tier": 1,
 			"template": "halberd",
-			"look": [],
+			"look": [
+				"w_halberd_t1"
+			],
 			"name": "ITEM_HALBERD_T1"
 		},
 		"staff_t1": {
@@ -856,7 +923,7 @@
 			"tier": 1,
 			"template": "staff",
 			"look": [
-				"weapon_staff"
+				"w_staff_t1"
 			],
 			"name": "ITEM_STAFF_T1"
 		},
@@ -866,7 +933,7 @@
 			"tier": 1,
 			"template": "bow",
 			"look": [
-				"weapon_bow"
+				"w_bow_t1"
 			],
 			"name": "ITEM_BOW_T1"
 		},
@@ -876,7 +943,7 @@
 			"tier": 1,
 			"template": "crossbow",
 			"look": [
-				"weapon_crossbow"
+				"w_crossbow_t1"
 			],
 			"name": "ITEM_CROSSBOW_T1"
 		},
@@ -886,7 +953,7 @@
 			"tier": 1,
 			"template": "sword",
 			"look": [
-				"weapon_sword"
+				"w_sword_t1"
 			],
 			"name": "ITEM_SWORD_T1"
 		},
@@ -895,7 +962,9 @@
 			"kind": "axe",
 			"tier": 1,
 			"template": "axe",
-			"look": [],
+			"look": [
+				"w_axe_t1"
+			],
 			"name": "ITEM_AXE_T1"
 		},
 		"mace_t1": {
@@ -904,7 +973,7 @@
 			"tier": 1,
 			"template": "mace",
 			"look": [
-				"weapon_mace"
+				"w_mace_t1"
 			],
 			"name": "ITEM_MACE_T1"
 		},
@@ -913,8 +982,13 @@
 			"kind": "short_sword",
 			"tier": 1,
 			"template": "short_sword",
-			"look": [],
-			"name": "ITEM_SHORT_SWORD_T1"
+			"look": [
+				"w_short_sword_t1"
+			],
+			"name": "ITEM_SHORT_SWORD_T1",
+			"look_offhand": [
+				"w_short_sword_t1_left"
+			]
 		},
 		"dagger_t1": {
 			"slot": "main",
@@ -922,11 +996,11 @@
 			"tier": 1,
 			"template": "dagger",
 			"look": [
-				"weapon_dagger_right"
+				"w_dagger_t1"
 			],
 			"name": "ITEM_DAGGER_T1",
 			"look_offhand": [
-				"weapon_dagger_left"
+				"w_dagger_t1_left"
 			]
 		},
 		"wand_t1": {
@@ -934,7 +1008,9 @@
 			"kind": "wand",
 			"tier": 1,
 			"template": "wand",
-			"look": [],
+			"look": [
+				"w_wand_t1"
+			],
 			"name": "ITEM_WAND_T1"
 		},
 		"scepter_t1": {
@@ -942,7 +1018,9 @@
 			"kind": "scepter",
 			"tier": 1,
 			"template": "scepter",
-			"look": [],
+			"look": [
+				"w_scepter_t1"
+			],
 			"name": "ITEM_SCEPTER_T1"
 		},
 		"shield_t1": {
@@ -950,7 +1028,9 @@
 			"kind": "shield",
 			"tier": 1,
 			"template": "shield",
-			"look": [],
+			"look": [
+				"w_shield_t1"
+			],
 			"name": "ITEM_SHIELD_T1"
 		},
 		"orb_t1": {
@@ -958,7 +1038,9 @@
 			"kind": "orb",
 			"tier": 1,
 			"template": "orb",
-			"look": [],
+			"look": [
+				"w_orb_t1"
+			],
 			"name": "ITEM_ORB_T1"
 		},
 		"tome_t1": {
@@ -966,7 +1048,9 @@
 			"kind": "tome",
 			"tier": 1,
 			"template": "tome",
-			"look": [],
+			"look": [
+				"w_tome_t1"
+			],
 			"name": "ITEM_TOME_T1"
 		},
 		"neck_t1": {
