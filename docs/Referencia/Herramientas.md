@@ -10,7 +10,7 @@ actualizado: 2026-11-19
 | Godot 4 | Motor del juego | https://godotengine.org |
 | GUT | Tests en Godot | https://github.com/bitwes/Gut |
 | godot-mcp | Herramientas MCP para que Claude ejecute el juego, lea su consola y edite escenas. Instalado en `D:\Tools\godot-mcp` (registro local de Claude Code, no está en el repositorio) | https://github.com/Coding-Solo/godot-mcp |
-| MagicaVoxel | Visor y editor vóxel: sirve para girar y revisar en 3D los `.vox` que genera el código | https://ephtracy.github.io |
+| MagicaVoxel | Visor y editor vóxel: sirve para girar y revisar en 3D los `.vox` que genera el código. Versión 0.99.7.2 instalada en `D:ToolsMagicaVoxel` (fuera del repositorio) | https://ephtracy.github.io |
 | Blockbench | Modelos por piezas y animaciones (glTF) | https://www.blockbench.net |
 | Kenney | Assets gratuitos (CC0). **Ya no se usan:** todo el arte es propio ([[D-010 Arte propio hecho por código]]) | https://kenney.nl |
 | itch.io | Distribución del juego y assets | https://itch.io |
