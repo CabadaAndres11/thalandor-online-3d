@@ -786,7 +786,11 @@
 			"template": "cloth_chest",
 			"look": [
 				"mage_chest_t1",
-				"mage_chest_t1_skirt"
+				"mage_chest_t1_skirt",
+				"mage_chest_t1_sleeve_l",
+				"mage_chest_t1_bell_l",
+				"mage_chest_t1_sleeve_r",
+				"mage_chest_t1_bell_r"
 			],
 			"name": "ITEM_MAGE_CHEST_T1"
 		},
@@ -1380,6 +1384,10 @@
 			"look": [
 				"mage_chest_t2",
 				"mage_chest_t2_skirt",
+				"mage_chest_t2_sleeve_l",
+				"mage_chest_t2_bell_l",
+				"mage_chest_t2_sleeve_r",
+				"mage_chest_t2_bell_r",
 				"mage_chest_t2_cape"
 			],
 			"name": "ITEM_MAGE_CHEST_T2"
@@ -1950,6 +1958,10 @@
 			"look": [
 				"mage_chest_t3",
 				"mage_chest_t3_skirt",
+				"mage_chest_t3_sleeve_l",
+				"mage_chest_t3_bell_l",
+				"mage_chest_t3_sleeve_r",
+				"mage_chest_t3_bell_r",
 				"mage_chest_t3_cape"
 			],
 			"name": "ITEM_MAGE_CHEST_T3"

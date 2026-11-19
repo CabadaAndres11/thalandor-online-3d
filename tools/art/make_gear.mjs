@@ -151,7 +151,7 @@ const HEADS = {
     s.box(x0 - brim + 1, y, z1 + brim, x1 + brim - 1, y, z1 + brim, m.l).box(x0 - brim + 1, y, z0 - brim, x1 + brim - 1, y, z0 - brim, m.d);
     s.box(x0, y + 1, z0, x1, y + 2, z1, m.trim); // band
     s.box(-1, y + 1, z1 + 1, 0, y + 2, z1 + 1, m.acc);
-    const levels = 4 + t;
+    const levels = t >= 3 ? 3 : 2;
     let lo = 0;
     for (let k = 0; k < levels; k++) {
       const yy = y + 3 + k * 2;
@@ -161,7 +161,7 @@ const HEADS = {
       lo = Math.min(lo + 1, 3);
     }
     const top = y + 3 + levels * 2;
-    s.box(-1, top, z0 + 2, 0, top + 1, z0 + 3, m.b).box(-1, top + 1, z0, 0, top + 2, z0 + 1, m.b).put(-1, top + 2, z0 - 1, t >= 3 ? m.rune : m.b); // bent tip
+    s.box(-1, top, z0 + 2, 0, top, z0 + 3, m.b).put(-1, top + 1, z0 + 1, t >= 3 ? m.rune : m.b); // small bent tip
     if (t >= 3) for (let k = 1; k < levels; k += 2) s.put(x0 + Math.min(k, 3), y + 3 + k * 2, z1 - Math.min(k, 3) + 1, m.rune);
     return { s, hides: ["hair"] };
   },
@@ -508,6 +508,30 @@ const ARMOR = {
     return s;
   },
 
+  // The Mage's sleeves: the upper sleeve (arm part)...
+  sleeve(t, m) {
+    const s = new Shape();
+    shell(s, BOX.arm, m);
+    s.box(BOX.arm[0] - 1, BOX.arm[4], BOX.arm[2] - 1, BOX.arm[3] + 1, BOX.arm[4] + 1, BOX.arm[5] + 1, m.b); // over the shoulder
+    if (t >= 2) s.box(BOX.arm[0] - 1, -4, BOX.arm[5] + 1, BOX.arm[3] + 1, -4, BOX.arm[5] + 1, m.acc);
+    return s;
+  },
+  // ...and the long bell cuff hanging past the wrist (forearm part).
+  bell(t, m) {
+    const s = new Shape();
+    const [x0, , z0, x1, , z1] = BOX.fore;
+    for (let y = 0; y >= -11; y--) {
+      const f = y < -5 ? 2 : y < -2 ? 1 : 0; // widens toward the wrist
+      s.box(x0 - 1 - f, y, z0 - 1 - f, x1 + 1 + f, y, z1 + 1 + f, m.b);
+      s.box(x0 - 1 - f, y, z0 - 1 - f, x0 - 1 - f, y, z1 + 1 + f, m.d).box(x1 + 1 + f, y, z0 - 1 - f, x1 + 1 + f, y, z1 + 1 + f, m.d);
+    }
+    s.remove(x0, -11, z0, x1, 0, z1);
+    s.remove(x0 - 2, -11, z0 - 2, x1 + 2, -11, z1 + 2); // open at the end, the hand shows
+    s.box(x0 - 3, -10, z0 - 3, x1 + 3, -10, z1 + 3, m.trim).remove(x0 - 2, -10, z0 - 2, x1 + 2, -10, z1 + 2); // trim at the opening
+    if (t >= 3) s.put(x0 - 3, -9, (z0 + z1) >> 1, m.rune).put(x1 + 3, -9, (z0 + z1) >> 1, m.rune);
+    return s;
+  },
+
   // The part of the chest piece over the hips: a skirt (cloth, mail) or tassets (plate).
   skirt(kind, t, m) {
     const s = new Shape();
@@ -794,6 +818,13 @@ for (const t of TIERS) {
     add(id("chest"), chest, "torso");
     add(`${id("chest")}_skirt`, cls === "mage" ? ARMOR.robe(t, m) : ARMOR.skirt(kind, t, m), "hips");
     looks[id("chest")] = { look: [id("chest"), `${id("chest")}_skirt`] };
+    if (cls === "mage") {
+      for (const [side, x] of [["left", "l"], ["right", "r"]]) {
+        add(`${id("chest")}_sleeve_${x}`, ARMOR.sleeve(t, m), `arm_${side}`);
+        add(`${id("chest")}_bell_${x}`, ARMOR.bell(t, m), `forearm_${side}`);
+        looks[id("chest")].look.push(`${id("chest")}_sleeve_${x}`, `${id("chest")}_bell_${x}`);
+      }
+    }
     for (const [suffix, part, shape] of ex.chest) { add(`${id("chest")}_${suffix}`, shape, part); looks[id("chest")].look.push(`${id("chest")}_${suffix}`); }
     for (const side of ["left", "right"]) {
       add(`${id("hands")}_${side[0]}`, ARMOR.glove(kind, t, m), `hand_${side}`);

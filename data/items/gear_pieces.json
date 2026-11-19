@@ -348,6 +348,50 @@
 		"tag": "gear",
 		"hides": []
 	},
+	"mage_chest_t1_sleeve_l": {
+		"file": "res://assets/items/vox/mage_chest_t1_sleeve_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-3,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t1_bell_l": {
+		"file": "res://assets/items/vox/mage_chest_t1_bell_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-5,
+			-11,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t1_sleeve_r": {
+		"file": "res://assets/items/vox/mage_chest_t1_sleeve_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-3,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t1_bell_r": {
+		"file": "res://assets/items/vox/mage_chest_t1_bell_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-5,
+			-11,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
 	"mage_hands_t1_l": {
 		"file": "res://assets/items/vox/mage_hands_t1_l.vox",
 		"part": "hand_left",
@@ -1304,6 +1348,50 @@
 			-10,
 			-21,
 			-8
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t2_sleeve_l": {
+		"file": "res://assets/items/vox/mage_chest_t2_sleeve_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-3,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t2_bell_l": {
+		"file": "res://assets/items/vox/mage_chest_t2_bell_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-5,
+			-11,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t2_sleeve_r": {
+		"file": "res://assets/items/vox/mage_chest_t2_sleeve_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-3,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t2_bell_r": {
+		"file": "res://assets/items/vox/mage_chest_t2_bell_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-5,
+			-11,
+			-5
 		],
 		"tag": "gear",
 		"hides": []
@@ -2352,6 +2440,50 @@
 			-10,
 			-21,
 			-8
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t3_sleeve_l": {
+		"file": "res://assets/items/vox/mage_chest_t3_sleeve_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-3,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t3_bell_l": {
+		"file": "res://assets/items/vox/mage_chest_t3_bell_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-5,
+			-11,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t3_sleeve_r": {
+		"file": "res://assets/items/vox/mage_chest_t3_sleeve_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-3,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t3_bell_r": {
+		"file": "res://assets/items/vox/mage_chest_t3_bell_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-5,
+			-11,
+			-5
 		],
 		"tag": "gear",
 		"hides": []
