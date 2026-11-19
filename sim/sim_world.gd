@@ -15,6 +15,10 @@ var events: Array = []
 var abilities: AbilityDB = AbilityDB.load_default()
 ## Class upgrades (level 50), see UpgradeDB.
 var upgrades: UpgradeDB = UpgradeDB.load_default()
+## Items, loot and merchant numbers (data/items), see ItemDB.
+var items: ItemDB = ItemDB.load_default()
+## Items lying on the ground: drop id -> {owner, item: Item, pos, expire_tick, warned} (see Loot).
+var loot: Dictionary = {}
 ## Non-player entities (monsters; test dummies), id -> CombatEntity.
 var monsters: Dictionary = {}
 var projectiles: Array = [] # Projectile
