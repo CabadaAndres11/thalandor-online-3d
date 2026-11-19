@@ -15,7 +15,7 @@ Cada plan de la [[14 Hoja de ruta]] tiene aquí su **spec** (diseño acordado) y
 | 3.1 · Ajustes tras la 0.4.0 | [[Plan 3.1 — Ajustes tras la 0.4.0 (spec)\|Spec]] | [[Plan 3.1 — Ajustes tras la 0.4.0 (plan)\|Plan]] | Hecho (0.4.1) |
 | 3.2 · Vóxel propio, bestiario del prólogo y clase con Brann | [[Plan 3.2 — Vóxel propio, bestiario del prólogo y clase con Brann (spec)\|Spec]] | [[Plan 3.2 — Vóxel propio, bestiario del prólogo y clase con Brann (plan)\|Plan]] | Hecho (0.5.0) |
 | 4 · Progresión | [[Plan 4 — Progresión (spec)\|Spec]] | [[Plan 4 — Progresión (plan)\|Plan]] | Hecho (0.6.0, publicada; la 0.6.1 añade los jefes del culto) |
-| 5 · Objetos | [[Plan 5 — Objetos (spec)\|Spec]] | [[Plan 5 — Objetos (plan)\|Plan]] | En curso |
+| 5 · Objetos | [[Plan 5 — Objetos (spec)\|Spec]] | [[Plan 5 — Objetos (plan)\|Plan]] | Hecho (0.7.0, pendiente de tu prueba de juego) |
 | 6 · Mundo y misiones | — | — | Pendiente |
 | 7 · Interfaz y audio | — | — | Pendiente |
 | 8 · Contenido de la demo | — | — | Pendiente |

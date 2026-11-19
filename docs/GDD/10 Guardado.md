@@ -14,5 +14,8 @@ actualizado: 2026-11-14
 ## Plan 4 (0.6.0) **[Implementado]**
 Personajes **versión 3**: el nivel suelto pasa a `progress` (nivel, experiencia, atributos, talentos, maestrías y mejora). Los personajes de la 0.5.0 (versión 2) entran a nivel 1 sin perder nada más. El anfitrión sanea cualquier progreso que llegue en el HELLO. Las escrituras se agrupan (como mucho una por personaje y fotograma) y se vuelcan al salir.
 
+## Plan 5 (0.7.0) **[Implementado]**
+Personajes **versión 4**: oro, bolsa y equipo. Los de la versión 3 entran con el equipo inicial de su clase (el aldeano, con la espada de madera). El anfitrión sanea el inventario que llega en el `HELLO`: lo que no existe se descarta, lo que no se puede llevar va a la bolsa y lo que no cabe ocupa casillas extra.
+
 ---
 ← [[00 Índice del GDD|Índice del GDD]]

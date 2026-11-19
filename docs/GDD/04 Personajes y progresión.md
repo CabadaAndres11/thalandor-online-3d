@@ -31,13 +31,13 @@ actualizado: 2026-11-15
 Cada clase tiene su nota con kit, pasivas y mejoras: [[Guerrero]] · [[Clérigo]] · [[Mago]] · [[Arquero]] · [[Asesino]].
 | Clase | Recurso | Rol base | Arma | Armadura |
 |---|---|---|---|---|
-| **Guerrero** | Ira | Tanque o daño cuerpo a cuerpo | Espada, hacha, maza, escudo | Placas (y todas las inferiores) |
-| **Clérigo** | Maná | Sanador o daño sagrado | Maza, bastón, escudo, orbe | Tela |
-| **Mago** | Maná | Daño mágico a distancia y control | Bastón, orbe | Tela |
-| **Arquero** | Concentración | Daño físico a distancia | Arco, ballesta, carcaj | Cuero y malla |
-| **Asesino** | Energía | Daño cuerpo a cuerpo con sigilo | Dagas (dos), espada corta | Cuero |
+| **Guerrero** | Ira | Tanque o daño cuerpo a cuerpo | Mandoble, gran hacha, martillo de guerra, alabarda, espada, hacha, maza, escudo | Su juego (placas) |
+| **Clérigo** | Maná | Sanador o daño sagrado | Martillo de guerra, bastón, maza, varita, cetro, escudo, orbe, tomo | Su juego (tela) |
+| **Mago** | Maná | Daño mágico a distancia y control | Bastón, varita, orbe, tomo | Su juego (tela, túnica larga) |
+| **Arquero** | Concentración | Daño físico a distancia | Arco, ballesta, espada corta (carcaj de adorno) | Su juego (malla) |
+| **Asesino** | Energía | Daño cuerpo a cuerpo con sigilo | Dagas (dos), espada corta | Su juego (cuero) |
 
-Orden de armaduras, de más ligera a más pesada: tela < cuero < malla < placas. Cada clase puede llevar su tipo y los inferiores.
+Desde la 0.7.0 la armadura va **por clase**: cada clase lleva solo su propio juego ([[D-014 Objetos por clase, armas a dos manos y tramos épicos]]).
 
 **Supervivencia en solitario:**
 - **Guerrero:** escudo, bloqueo y robo de vida.

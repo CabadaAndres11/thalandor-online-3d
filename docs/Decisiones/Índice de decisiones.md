@@ -23,6 +23,7 @@ Cada decisión importante tiene su nota (plantilla **Decisión**). Las pendiente
 - [[D-013 Mejoras del nivel 50 revisadas]]
 - [[D-012 Brann como instructor provisional y arena que escala]]
 - [[D-013 Mejoras del nivel 50 revisadas]]
+- [[D-014 Objetos por clase, armas a dos manos y tramos épicos]]
 
 ---
 ← [[00 Inicio|Inicio]]

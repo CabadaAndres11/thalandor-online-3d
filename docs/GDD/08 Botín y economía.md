@@ -1,10 +1,10 @@
 ---
 tags: [gdd]
-estado: diseñado
-actualizado: 2026-11-14
+estado: implementado
+actualizado: 2026-11-19
 ---
 
-# 8. Botín, objetos y economía **[Diseñado]** (sistema probado en el prototipo 2D)
+# 8. Botín, objetos y economía **[Implementado]** (0.7.0, [[Plan 5 — Objetos (spec)|Plan 5]]; alijo e intercambio pendientes)
 
 - **Botín personal:** cada jugador cercano tiene su propia tirada al morir un monstruo. Los objetos caen sueltos en el suelo, con un haz de luz y su nombre del color de su rareza, y solo los ve su dueño. Se recogen pasando por encima y desaparecen a los 2 minutos.
 - **Qué cae:** oro casi siempre; objetos el 12 % de las veces en monstruos normales; el élite suelta 1 seguro y a veces 2; pociones a veces. El 75 % de los objetos es usable por la clase de quien lo recibe.
@@ -32,6 +32,15 @@ actualizado: 2026-11-14
 - **Pociones:** vida (Q) y recurso (R), con el 35 % y una recarga compartida de 30 s, en pilas de 20.
 - **Alijo:** almacén compartido entre los personajes del mismo jugador, en la capital.
 - **Intercambio entre jugadores:** fuera de la demo.
+
+## Plan 5 (0.7.0) **[Implementado]**
+- **Armadura por clase** ([[D-014 Objetos por clase, armas a dos manos y tramos épicos]]): cada tramo tiene un juego por clase que solo lleva esa clase; el tipo (placas, tela, malla, cuero) es descriptivo.
+- **Tres tramos de aspecto** por nivel del objeto (1–19, 20–39, 40+), cada vez más épicos: colores propios y capa en el 2; halos, coronas, runas y **aura** en el 3. 141 objetos con modelo propio, más los **únicos** del Acólito Cultista (*Cetro del Sol Negro*), Vaelthar (*Báculo del Primer Apóstol*) y Nhazar (*Mandoble de las Mil Voces*), que sueltan con un 25 %.
+- **Armas:** a dos manos (mandoble, gran hacha, martillo de guerra, alabarda, bastón, arco, ballesta) ocupan las dos manos y dan 1,8 veces las estadísticas; nuevas varita, cetro y tomo; el carcaj es un adorno fijo. Cada **familia** cambia el ataque básico; la ballesta siempre dispara cargado; el **bloqueo exige escudo**. El básico cuerpo a cuerpo se ve como un **combo de tres golpes**.
+- **Mercader provisional** junto a Brann (se mudará a la capital en el Plan 6): pociones a 5 + 2 × nivel, 4 objetos comunes que se renuevan cada 10 min, compra al 25 %, repara al 20 % del valor según lo perdido; vender un raro o mejor pide confirmación.
+- El oro va directo a la bolsa (número dorado flotante); los objetos caen esparcidos con un haz de su color.
+- **Legendarios:** previstos en los datos, sin caer todavía (Plan 8).
+- Comandos de pruebas del anfitrión: `/oro <n> [nombre]` y `/objeto <base> [nivel] [rareza] [nombre]`.
 
 ---
 ← [[00 Índice del GDD|Índice del GDD]]

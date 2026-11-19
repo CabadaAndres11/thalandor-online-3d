@@ -2,7 +2,7 @@
 tags: [plan]
 plan: 5
 fecha: 2026-11-19
-estado: borrador
+estado: implementado
 actualizado: 2026-11-19
 ---
 # Plan 5 — Objetos: plan de implementación

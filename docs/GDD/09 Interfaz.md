@@ -39,6 +39,9 @@ actualizado: 2026-11-16
 ## Plan 4 (0.6.0) **[Implementado]**
 Barra de experiencia bajo las habilidades, nivel junto a los nombres, ventana de personaje (**C**), árbol de talentos (**T**), menú de Brann con reinicios, nivel de la arena y mejora de clase. Las ventanas C, T y K se cierran con Esc y con su tecla, abrir una cierra las otras y bloquean el ataque con el ratón pero no el movimiento. Ninguna necesita scroll a 1280×720.
 
+## Plan 5 (0.7.0) **[Implementado]**
+Inventario (**I**) de 5 × 6 casillas y el oro, acoplado a la derecha: la ventana C y la del mercader se apartan para caber a su lado a 1280×720. Clic derecho equipa o bebe; en el mercader, vende. Tooltips con nombre en el color de la rareza, estadísticas, durabilidad, valor y la comparación con lo equipado (verde mejor, rojo peor). Ventana C con **11 huecos** alrededor del modelo vestido con el equipo; clic derecho desequipa. Ventana del mercader con pestañas *Comprar* y *Vender y reparar*. HUD con las pociones (**Q** vida, **R** recurso), su cantidad y la recarga compartida, y el aviso *¡Reparar!*. Botín con haz de luz y nombre de color en el suelo; oro como número dorado.
+
 ---
 ← [[00 Índice del GDD|Índice del GDD]]
 

@@ -1,6 +1,6 @@
 ---
 tags: [gdd]
-actualizado: 2026-11-18
+actualizado: 2026-11-19
 ---
 
 # Registro de cambios del GDD
@@ -30,6 +30,7 @@ actualizado: 2026-11-18
 | 2.18 | 2026-11-18 | **Octava tanda.** El arquero lleva el arco a la espalda y solo lo saca mientras carga el disparo. Las casillas de efectos de las pasivas explican su efecto en una línea al poner el cursor. **Ventisca:** campo fijo (sin crecer desde cero) con un torbellino de hielo que gira y nieve en espiral. Cámara en tercera persona más alta (42°). |
 
 Añade una fila por cada cambio de diseño o funcionalidad implementada.
+| 2.25 | 2026-11-19 | **Versión 0.7.0 ([[Plan 5 — Objetos (spec)\|Plan 5]]): objetos.** Botín personal (oro directo, objetos con haz de luz solo para su dueño), rarezas con propiedades aleatorias, inventario (I) y 11 ranuras de equipo visibles, **un juego de armadura por clase** en tres tramos cada vez más épicos (capas, halos, coronas, auras), armas a una y dos manos con **familias** que cambian el ataque básico, combo visual de tres golpes, pociones (Q/R), durabilidad, **mercader provisional** junto a Brann y únicos de jefe ([[D-014 Objetos por clase, armas a dos manos y tramos épicos]]). Personajes versión 4, protocolo de red 7. |
 
 ---
 ← [[00 Índice del GDD|Índice del GDD]]
