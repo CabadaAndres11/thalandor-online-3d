@@ -19,6 +19,7 @@ RPG de acción en **3D vóxel** hecho en **Godot 4**, para jugar online con hast
 
 ## Referencia
 - [[Herramientas]] — herramientas gratuitas del proyecto
+- [[Estilo gráfico objetivo (Plan 6)]] — referencias del aspecto que buscamos
 - [[Prototipo 2D]] — el prototipo de origen (solo reglas y fórmulas)
 - [[GDD completo (v2.0)]] — el GDD original en una sola nota
 - [[Guion de inicio]] — el mensaje para arrancar el desarrollo con Claude
