@@ -3,7 +3,7 @@
 // primitives (sculpt.mjs) with two or three tones per material. Same parts, parents and
 // joints as v1, so the code animations keep working. Godot axes, faces +Z, symmetric
 // about x = -0.5. Pivots are in voxels from the rig origin on the ground.
-import { Shape, SHADE, LIGHT, TINT_TROUSERS, TINT_SKIN, TINT_EYES, TINT_HAIR, TINT_PRIMARY } from "./vox.mjs";
+import { Shape, SHADE, LIGHT, TEX_D, TEX_L, TINT_TROUSERS, TINT_SKIN, TINT_EYES, TINT_HAIR, TINT_PRIMARY } from "./vox.mjs";
 import { ellipsoid, capsule, cylinder, roundBox, carve, mirrorX, tone, shadeByFacing } from "./sculpt.mjs";
 
 const T = TINT_TROUSERS, SK = TINT_SKIN, EY = TINT_EYES, HR = TINT_HAIR, P = TINT_PRIMARY;
@@ -16,25 +16,30 @@ export const PALETTE_V2 = {
   [LEATHER]: "#5c3e27", [LEATHER_D]: "#402a1a", [LEATHER_L]: "#7a5636",
   [BELT]: "#4a3220", [BELT_D]: "#2f2015", [BELT_L]: "#634630",
   [BRASS]: "#c9a043", [BRASS_D]: "#8f6f28", [BRASS_L]: "#ead07a",
-  [SOLE]: "#1f1710", [WHITE]: "#eee8de", [MOUTH]: "#4a1f1b", [LIP]: "#8e4a42", [PUPIL]: "#141012",
+  [SOLE]: "#1f1710", [WHITE]: "#eee8de", [MOUTH]: "#4a1f1b", [LIP]: "#b0706a", [PUPIL]: "#141012",
 };
-// The three tones of each material, for tone() and shadeByFacing().
+// Texture tones of each material (base, a little darker, a little lighter), mixed per voxel.
+const tint = (t) => [t, TEX_D(t), TEX_L(t)];
 export const TONES = {
-  [SK]: [SK, SHADE(SK), LIGHT(SK)], [P]: [P, SHADE(P), LIGHT(P)], [T]: [T, SHADE(T), LIGHT(T)],
-  [HR]: [HR, SHADE(HR), LIGHT(HR)],
+  [SK]: tint(SK), [P]: tint(P), [T]: tint(T), [HR]: tint(HR),
   [LEATHER]: [LEATHER, LEATHER_D, LEATHER_L], [BELT]: [BELT, BELT_D, BELT_L], [BRASS]: [BRASS, BRASS_D, BRASS_L],
 };
+// Form tones (folds, faces looking down or away, top edges): stronger than the texture.
+const tintForm = (t) => ({ shade: SHADE(t), light: LIGHT(t) });
+export const FORM = {
+  [SK]: tintForm(SK), [P]: tintForm(P), [T]: tintForm(T), [HR]: tintForm(HR),
+  [LEATHER]: { shade: LEATHER_D, light: LEATHER_L }, [BELT]: { shade: BELT_D, light: BELT_L }, [BRASS]: { shade: BRASS_D, light: BRASS_L },
+};
 
-// Two or three tones mixed per voxel, then shade facing down/back and light facing up.
-export function finish(s, materials, seed, mix) {
+// Two or three tones mixed per voxel, then the form: shade facing down/back, light facing up.
+export function finish(s, materials, seed, mix = [0.65, 0.25, 0.1]) {
   const map = {};
   const idxs = [];
   for (const m of materials) {
-    const [base, shade, light] = TONES[m];
-    tone(s, base, TONES[m], seed + m, mix);
-    for (const i of [base, shade, light]) {
+    tone(s, m, TONES[m], seed + m, mix);
+    for (const i of TONES[m]) {
       idxs.push(i);
-      map[i] = { shade, light };
+      map[i] = FORM[m];
     }
   }
   return shadeByFacing(s, idxs, map);
@@ -61,7 +66,7 @@ export function headV2() {
   roundBox(h, [-4, 0, -2], [3, 3, 5], 1.5, SK); // chin and jaw line
   carve(h, (t) => roundBox(t, [-9, -2, -10], [8, 16.5 + 3, -7.5], 0, 0)); // flatten the very back
   carve(h, (t) => roundBox(t, [-9, 17, -10], [8, 22, 8], 0, 0)); // 17 voxels tall
-  finish(h, [SK], 11, [0.78, 0.14, 0.08]);
+  finish(h, [SK], 11, [0.7, 0.2, 0.1]);
   // Ears.
   for (const x of [-8, 7]) roundBox(h, [x, 6, -2], [x, 10, 0], 0.6, SK);
   for (const x of [-8, 7]) h.put(x, 8, -1, SHADE(SK));
@@ -81,7 +86,7 @@ export function headV2() {
   for (const x of [-2, 1]) face(h, x, 5, SHADE(SK));
   for (const x of [-1, 0]) face(h, x, 4, SHADE(SK));
   // Mouth: upper lip, the line of the mouth, lower lip; a dimple under it.
-  for (let x = -3; x <= 2; x++) face(h, x, 3, x === -3 || x === 2 ? SHADE(SK) : MOUTH);
+  for (let x = -3; x <= 2; x++) face(h, x, 3, x === -3 || x === 2 ? SHADE(SK) : x === -2 || x === 1 ? LIP : MOUTH);
   for (let x = -2; x <= 1; x++) face(h, x, 2, LIP);
   for (const x of [-1, 0]) face(h, x, 1, SHADE(SK));
   return h;
@@ -91,8 +96,8 @@ export function headV2() {
 function torsoV2() {
   const t = new Shape();
   ellipsoid(t, [-0.5, 7, -0.5], [9.8, 8.5, 6.8], P); // waist and belly
-  ellipsoid(t, [-0.5, 17, 0], [11.8, 9.5, 7.8], P); // chest and ribs
-  for (const x of [-12.5, 11.5]) ellipsoid(t, [x, 22, -0.5], [4.6, 4.2, 5.4], P); // shoulders
+  ellipsoid(t, [-0.5, 17, 0], [11.2, 9, 7.2], P); // chest and ribs
+  for (const x of [-11.5, 10.5]) ellipsoid(t, [x, 22, -0.5], [3.8, 3.6, 4.6], P); // shoulders
   carve(t, (c) => roundBox(c, [-20, 26, -12], [20, 34, 12], 0, 0)); // flat on top of the shoulders
   carve(t, (c) => roundBox(c, [-20, -6, -12], [20, -1, 12], 0, 0));
   finish(t, [P], 21);
@@ -115,7 +120,7 @@ function hipsV2() {
   carve(h, (c) => roundBox(c, [-20, 8, -12], [20, 16, 12], 0, 0));
   finish(h, [T], 31);
   // Belt band at the waist with a brass buckle.
-  for (const [x, y, z, i] of [...h.cells.values()]) if (y >= 4 && y <= 6 && [T, SHADE(T), LIGHT(T)].includes(i)) h.put(x, y, z, BELT);
+  for (const [x, y, z, i] of [...h.cells.values()]) if (y >= 4 && y <= 6 && [...TONES[T], SHADE(T), LIGHT(T)].includes(i)) h.put(x, y, z, BELT);
   finish(h, [BELT], 33, [0.5, 0.35, 0.15]);
   for (let y = 3; y <= 7; y++) for (let x = -3; x <= 2; x++) face(h, x, y, y === 3 || y === 7 || x === -3 || x === 2 ? BRASS : BELT_D, 1);
   face(h, -1, 5, BRASS_L, 1); face(h, 0, 5, BRASS_L, 1);
@@ -126,12 +131,12 @@ function hipsV2() {
 function upperArmV2() {
   const a = new Shape();
   capsule(a, [-0.5, -1, -0.5], [-0.5, -19, -0.5], 3.4, 2.7, SK);
-  finish(a, [SK], 41, [0.8, 0.12, 0.08]);
-  capsule(a, [-0.5, 0, -0.5], [-0.5, -9, -0.5], 4.1, 3.6, P); // sleeve
+  finish(a, [SK], 41, [0.7, 0.2, 0.1]);
+  capsule(a, [-0.5, 0, -0.5], [-0.5, -9, -0.5], 3.7, 3.4, P); // sleeve
   carve(a, (c) => roundBox(c, [-8, -20, -8], [8, -10, 8], 0, 0).put(0, 0, 0, 0)); // sleeve hem
   capsule(a, [-0.5, -10, -0.5], [-0.5, -19, -0.5], 2.9, 2.7, SK); // arm under the hem
   finish(a, [P], 43);
-  for (const [x, y, z, i] of [...a.cells.values()]) if (y === -9 && [P, SHADE(P), LIGHT(P)].includes(i)) a.put(x, y, z, SHADE(P));
+  for (const [x, y, z, i] of [...a.cells.values()]) if (y === -9 && [...TONES[P], SHADE(P), LIGHT(P)].includes(i)) a.put(x, y, z, SHADE(P));
   return a;
 }
 
@@ -139,7 +144,7 @@ function upperArmV2() {
 function forearmV2() {
   const f = new Shape();
   capsule(f, [-0.5, 0, -0.5], [-0.5, -17, -0.5], 3.0, 2.3, SK);
-  finish(f, [SK], 51, [0.8, 0.12, 0.08]);
+  finish(f, [SK], 51, [0.7, 0.2, 0.1]);
   cylinder(f, [-0.5, -9, -0.5], [-0.5, -17, -0.5], 3.1, LEATHER);
   finish(f, [LEATHER], 53, [0.55, 0.3, 0.15]);
   for (const [x, y, z] of [...f.cells.values()]) if (y === -9 || y === -17) f.put(x, y, z, LEATHER_D); // bracer edges
@@ -151,7 +156,7 @@ function forearmV2() {
 function handV2() {
   const h = new Shape();
   roundBox(h, [-3, -8, -2], [2, 0, 3], 1.4, SK);
-  finish(h, [SK], 61, [0.8, 0.12, 0.08]);
+  finish(h, [SK], 61, [0.7, 0.2, 0.1]);
   for (let x = -3; x <= 2; x++) face(h, x, -4, SHADE(SK)); // finger creases
   for (let x = -3; x <= 2; x++) face(h, x, -6, SHADE(SK));
   for (let x = -2; x <= 1; x += 1) face(h, x, -2, LIGHT(SK)); // knuckles

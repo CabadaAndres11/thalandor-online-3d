@@ -12,6 +12,9 @@ export const GLOW = 253; // drawn unshaded: eyes, runes, acid
 // Darker / lighter tone of a tint (see VoxMesher.SHADE_OF / LIGHT_OF).
 export const SHADE = (tint) => tint - 20;
 export const LIGHT = (tint) => tint - 30;
+// Subtle texture tones of a tint (Plan 6.2), mixed per voxel; SHADE and LIGHT are for form.
+export const TEX_D = (tint) => tint - 40;
+export const TEX_L = (tint) => tint - 50;
 import fs from "node:fs";
 
 function u32(v) {

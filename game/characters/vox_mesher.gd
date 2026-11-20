@@ -19,6 +19,11 @@ const SHADE_OF := {247: 227, 248: 228, 249: 229, 250: 230, 251: 231, 252: 232}
 const LIGHT_OF := {247: 217, 248: 218, 249: 219, 250: 220, 251: 221, 252: 222}
 const TONE_SHADE := 0.28
 const TONE_LIGHT := 0.18
+## Subtle texture tones (tint - 40 and tint - 50): two or three tones mixed per voxel.
+const TEX_DARK_OF := {247: 207, 248: 208, 249: 209, 250: 210, 251: 211, 252: 212}
+const TEX_LIGHT_OF := {247: 197, 248: 198, 249: 199, 250: 200, 251: 201, 252: 202}
+const TONE_TEX_DARK := 0.1
+const TONE_TEX_LIGHT := 0.08
 ## Vertex ambient occlusion: color factor by how open a face corner is (0 = an inner
 ## corner closed on both sides, 3 = open).
 const AO_LEVELS := [0.6, 0.74, 0.88, 1.0]
@@ -89,6 +94,10 @@ static func _color(index: int, tints: Dictionary, palette: PackedColorArray) -> 
 			return (tints[base] as Color).darkened(TONE_SHADE)
 		if LIGHT_OF[base] == index and tints.has(base):
 			return (tints[base] as Color).lightened(TONE_LIGHT)
+		if TEX_DARK_OF[base] == index and tints.has(base):
+			return (tints[base] as Color).darkened(TONE_TEX_DARK)
+		if TEX_LIGHT_OF[base] == index and tints.has(base):
+			return (tints[base] as Color).lightened(TONE_TEX_LIGHT)
 	return palette[index]
 
 

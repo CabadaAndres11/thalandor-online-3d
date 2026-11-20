@@ -37,6 +37,9 @@ func _initialize() -> void:
 	if _name in ["acolyte", "vaelthar", "nhazar", "inquisitor"]:
 		_turnaround({"acolyte": "cult_acolyte", "inquisitor": "cult_inquisitor"}.get(_name, _name))
 		return
+	if _name in ["bodies", "faces"]:
+		_bodies(_name == "faces")
+		return
 	if _name == "monsters_b":
 		_monsters_b()
 		return
@@ -318,6 +321,31 @@ func _turnaround(type_id: String) -> void:
 	cam.fov = 40
 	root.add_child(cam)
 	cam.look_at_from_position(Vector3(20.0, 3.4 * tall, 34.0 + 10.0 * (tall - 1.0)), Vector3(20.0, 2.0 * tall, 20.0))
+
+
+## Plan 6.2 sets: the bare v1 and v2 bodies (front, side, back) side by side; "faces"
+## frames the heads close up.
+func _bodies(close: bool) -> void:
+	var catalog := CharacterCatalog.load_default()
+	var look := catalog.resolve("warrior", {"skin": "skin_3", "eyes": "green"})
+	look["pieces"] = []
+	var row := [["v1", 0.0], ["v2", 0.0], ["v2", 90.0], ["v2", 180.0]]
+	for i in row.size():
+		var l: Dictionary = look.duplicate()
+		l["body"] = row[i][0]
+		var rig := HumanRig.build(l)
+		rig.position = Vector3(18.5 + i * 1.3, 0, 18.5)
+		rig.rotation_degrees.y = row[i][1]
+		root.add_child(rig)
+	var cam := Camera3D.new()
+	cam.fov = 30
+	root.add_child(cam)
+	var cx := 18.5 + 1.5 * 1.3
+	if close:
+		cam.fov = 12
+		cam.look_at_from_position(Vector3(cx, 1.75, 18.5 + 9.0), Vector3(cx, 1.55, 18.5))
+	else:
+		cam.look_at_from_position(Vector3(cx, 1.6, 18.5 + 8.5), Vector3(cx, 0.9, 18.5))
 
 
 ## Task 13 set: the orc king facing two heroes, warning its jump on one of them,

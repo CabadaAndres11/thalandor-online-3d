@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { human, humanV2 } from "../make_humans.mjs";
-import { TINT_SKIN, SHADE, LIGHT } from "../vox.mjs";
+import { TINT_SKIN, TEX_D, TEX_L } from "../vox.mjs";
 
 const v1 = human(), v2 = humanV2();
 // Highest/lowest voxel of a part in rig space (pivot + cell).
@@ -39,7 +39,7 @@ test("v2 is symmetric", () => {
 
 test("skin uses three tones", () => {
   const used = new Set([...v2.parts.head.shape.cells.values()].map((v) => v[3]));
-  for (const i of [TINT_SKIN, SHADE(TINT_SKIN), LIGHT(TINT_SKIN)]) assert.ok(used.has(i), `tone ${i}`);
+  for (const i of [TINT_SKIN, TEX_D(TINT_SKIN), TEX_L(TINT_SKIN)]) assert.ok(used.has(i), `tone ${i}`);
 });
 
 test("generation is deterministic", () => {

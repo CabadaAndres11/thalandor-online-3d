@@ -152,3 +152,14 @@ func test_ambient_occlusion_darkens_inner_corners() -> void:
 			far = cols[i]
 	assert_lt(near_wall.r, 0.95, "occluded by the neighbour")
 	assert_true(_near(far, Color.WHITE), "open edge")
+
+
+## Subtle texture tones of a tint (Plan 6.2): tint - 40 a little darker, tint - 50 a little lighter.
+func test_texture_tones_of_a_tint() -> void:
+	var dark := _vox([[0, 0, 0, VoxMesher.TINT_HAIR - 40]])
+	var c: Color = (_arrays(VoxMesher.build(dark, {VoxMesher.TINT_HAIR: Color.ORANGE}))[Mesh.ARRAY_COLOR] as PackedColorArray)[0]
+	assert_almost_eq(c.r, Color.ORANGE.darkened(VoxMesher.TONE_TEX_DARK).r, 0.01)
+	var light := _vox([[0, 0, 0, VoxMesher.TINT_HAIR - 50]])
+	c = (_arrays(VoxMesher.build(light, {VoxMesher.TINT_HAIR: Color.ORANGE}))[Mesh.ARRAY_COLOR] as PackedColorArray)[0]
+	assert_almost_eq(c.g, Color.ORANGE.lightened(VoxMesher.TONE_TEX_LIGHT).g, 0.01)
+	assert_lt(VoxMesher.TONE_TEX_DARK, VoxMesher.TONE_SHADE)

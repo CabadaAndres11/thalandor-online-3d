@@ -75,3 +75,24 @@ test("noise3 is stable and in [0,1)", () => {
     assert.ok(n >= 0 && n < 1);
   }
 });
+
+test("mirrorX copies only the drawn (+x) half", () => {
+  const s = new Shape().put(2, 0, 0, 9).put(-3, 0, 0, 1);
+  mirrorX(s);
+  assert.equal(s.cells.get("-3,0,0")[3], 9, "the + side wins");
+  assert.equal(s.cells.get("2,0,0")[3], 9, "the + side is not overwritten");
+});
+
+test("shadeByFacing ignores the small steps of a curved surface", () => {
+  const s = ellipsoid(new Shape(), [0, 0, 0], [8, 8, 8], 5);
+  shadeByFacing(s, [5], { 5: { shade: 6, light: 7 } });
+  // A cell on the equator, front side: it faces +Z, so it keeps its colour.
+  assert.equal(s.cells.get("0,0,8")[3], 5);
+  assert.equal(s.cells.get("0,-8,0")[3], 6, "the bottom is shaded");
+  assert.equal(s.cells.get("0,8,0")[3], 7, "the top is lit");
+  // Front cells just above the equator stay unshaded (no stair-step speckle).
+  for (let y = -3; y <= 3; y++) {
+    const z = Math.max(...[...s.cells.values()].filter((v) => v[0] === 0 && v[1] === y).map((v) => v[2]));
+    assert.equal(s.cells.get(`0,${y},${z}`)[3], 5, `y=${y}`);
+  }
+});

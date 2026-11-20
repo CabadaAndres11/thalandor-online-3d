@@ -68,9 +68,10 @@ export function carve(s, build) {
   return s;
 }
 
-// Copies every cell to its reflection about x = axis (bodies are symmetric about -0.5).
+// Copies the drawn half (x > axis) onto the other side, about x = axis (bodies are
+// symmetric about -0.5). The other side's cells are replaced where the halves overlap.
 export function mirrorX(s, axis = -0.5) {
-  for (const [x, y, z, i] of [...s.cells.values()]) s.put(Math.round(2 * axis - x), y, z, i);
+  for (const [x, y, z, i] of [...s.cells.values()]) if (x > axis) s.put(Math.round(2 * axis - x), y, z, i);
   return s;
 }
 
@@ -89,15 +90,30 @@ export function tone(s, idx, tones, seed = 0, mix = [0.6, 0.25, 0.15]) {
   return s;
 }
 
-// Surface cells of the given indices: empty above → light tone; else empty below or
-// behind (-Z) → shade tone. `map` is {index: {shade, light}}.
-export function shadeByFacing(s, idxs, map) {
-  const empty = (x, y, z) => !s.cells.has(`${x},${y},${z}`);
+// The outward direction of a surface cell, smoothed over its 26 neighbours (the sum of
+// the directions to empty neighbours, normalized), or null inside the shape.
+export function surfaceNormal(s, x, y, z) {
+  const n = [0, 0, 0];
+  for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) for (let dz = -1; dz <= 1; dz++) {
+    if ((dx || dy || dz) && !s.cells.has(`${x + dx},${y + dy},${z + dz}`)) {
+      n[0] += dx; n[1] += dy; n[2] += dz;
+    }
+  }
+  const len = Math.hypot(n[0], n[1], n[2]);
+  return len < 1e-6 ? null : n.map((v) => v / len);
+}
+
+// Surface cells of the given indices take their light tone when they face up and their
+// shade tone when they face down or away (-Z). The facing is a smoothed normal, so the
+// small steps of a curved surface do not speckle. `map` is {index: {shade, light}}.
+export function shadeByFacing(s, idxs, map, up = 0.6, down = -0.45, back = -0.75) {
   const changes = [];
   for (const [x, y, z, i] of s.cells.values()) {
     if (!idxs.includes(i) || !map[i]) continue;
-    if (empty(x, y + 1, z)) changes.push([x, y, z, map[i].light]);
-    else if (empty(x, y - 1, z) || empty(x, y, z - 1)) changes.push([x, y, z, map[i].shade]);
+    const n = surfaceNormal(s, x, y, z);
+    if (!n) continue;
+    if (n[1] >= up) changes.push([x, y, z, map[i].light]);
+    else if (n[1] <= down || n[2] <= back) changes.push([x, y, z, map[i].shade]);
   }
   for (const [x, y, z, i] of changes) s.put(x, y, z, i);
   return s;
