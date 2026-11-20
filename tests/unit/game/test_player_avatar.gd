@@ -157,3 +157,14 @@ func test_a_normal_long_cast_stays_on_the_ground() -> void:
 	for i in 60:
 		avatar.apply_state({}, 1.0 / 60.0)
 	assert_lt(avatar.rig.position.y, 0.01)
+
+
+func test_falling_mid_song_brings_the_body_down() -> void:
+	avatar.setup("Ana", 0, "cleric", {})
+	avatar.play_long_cast(6.0, true)
+	for i in 60:
+		avatar.apply_state({}, 1.0 / 60.0)
+	avatar.play_action("downed") # the channel_end never arrives
+	for i in 90:
+		avatar.apply_state({}, 1.0 / 60.0)
+	assert_lt(avatar.rig.position.y, 0.05, "the body lies on the ground")

@@ -253,7 +253,7 @@ func _handle(msg: Dictionary) -> void:
 			bar = (msg.bar as Array).duplicate()
 			progress_changed.emit()
 		Protocol.Msg.INVENTORY:
-			inventory = Inventory.from_wire(msg.inventory, class_id, progress.level, ItemDB.load_default())
+			inventory = Inventory.from_wire_exact(msg.inventory, ItemDB.load_default()) # slots as on the host
 			_potion_ready_ms = _clock_ms + float(msg.potion_cd_s) * 1000.0
 			inventory_changed.emit()
 		Protocol.Msg.PLAYER_GEAR:

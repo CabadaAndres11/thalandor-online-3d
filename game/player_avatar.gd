@@ -129,6 +129,8 @@ func play_action(kind: String, combo: bool = false) -> void:
 		return
 	_action_left = d
 	_dead = kind == "die" or kind == "downed"
+	if _dead:
+		_hover = false # a body that falls comes down, song or not
 
 
 ## The archer draws the bow from the back while charging a shot.

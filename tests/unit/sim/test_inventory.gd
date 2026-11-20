@@ -203,3 +203,12 @@ func test_unwearable_equipment_fills_the_first_gap() -> void:
 	var back := Inventory.from_dict(d, "warrior", 10, db)
 	assert_eq(back.bag[0].base_id, "sword_t1")
 	assert_eq(back.bag[1].base_id, "mage_chest_t1", "a mage chest on a warrior goes to the first free slot")
+
+
+func test_the_client_copies_the_host_inventory_as_is() -> void:
+	inv.bag[4] = _it("sword_t1", 5)
+	inv.equipment["chest"] = _it("mage_chest_t1", 20) # the client thinks it is a level 10 warrior
+	var seen := Inventory.from_wire_exact(inv.to_wire(), db)
+	assert_eq(seen.equipment.chest.base_id, "mage_chest_t1", "the host's word, not re-checked")
+	assert_eq(seen.bag[4].base_id, "sword_t1")
+	assert_null(seen.bag[0], "nothing moved into the gaps")

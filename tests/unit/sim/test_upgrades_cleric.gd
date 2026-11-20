@@ -237,3 +237,18 @@ func test_moving_ends_the_hymn_invulnerability() -> void:
 	f.run(0.2)
 	assert_false(p.has_status("invulnerable"))
 	assert_has(f.log, ["status_end", p.id, "invulnerable"])
+
+
+func test_dodging_out_of_the_hymn_keeps_the_dodge_frames() -> void:
+	var p := _hero("healer")
+	assert_true(Combat.try_cast(f.world, p, "cleric_divine_hymn", p.position))
+	f.run(1.0)
+	# The dodge starts this tick: its invulnerability merges into the song's, and the move
+	# cuts the channel.
+	p.add_status(StatusEffect.make("invulnerable", f.world.tick + f.world.ticks(f.world.balance.dodge_invuln_s)), 1)
+	p.dash_ticks = 5
+	p.position += Vector3(1, 0, 0)
+	f.run(1.0 / 30.0)
+	assert_true(p.has_status("invulnerable"), "the dodge still protects")
+	f.run(f.world.balance.dodge_invuln_s + 0.1)
+	assert_false(p.has_status("invulnerable"), "only for the dodge")

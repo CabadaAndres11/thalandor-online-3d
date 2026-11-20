@@ -172,8 +172,14 @@ static func _finish_cast(world: SimWorld, pc: PendingCast, caster: CombatEntity,
 	elif caster != null and caster.is_alive():
 		ClassRules.after_cast(caster, pc.ability, pc.hits)
 	if pc.channel_status != "" and caster != null and caster.has_status(pc.channel_status):
-		caster.remove_status(pc.channel_status)
-		world.emit(["status_end", pc.caster_id, pc.channel_status])
+		if caster.is_dashing() and pc.channel_status == "invulnerable":
+			# A dodge cut the song: keep only the dodge's own invulnerability window.
+			for st: StatusEffect in caster.statuses:
+				if st.kind == pc.channel_status:
+					st.end_tick = mini(st.end_tick, world.tick + world.ticks(world.balance.dodge_invuln_s))
+		else:
+			caster.remove_status(pc.channel_status)
+			world.emit(["status_end", pc.caster_id, pc.channel_status])
 	if pc.channel:
 		world.emit(["channel_end", pc.caster_id])
 

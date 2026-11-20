@@ -182,6 +182,30 @@ static func from_wire(v: Variant, class_id: String, level: int, db: ItemDB) -> I
 	return from_dict({"gold": d.get("g", 0), "bag": bag_dicts, "equipment": eq}, class_id, level, db)
 
 
+## The host's inventory exactly as sent (for its owner's client): every item in its slot and
+## every worn piece as worn, unknown items dropped and nothing re-checked. The host already
+## sanitized it, and moving anything here would make the client's slots point at other items.
+static func from_wire_exact(v: Variant, db: ItemDB) -> Inventory:
+	var inv := Inventory.new()
+	if not v is Dictionary:
+		return inv
+	var d: Dictionary = v
+	var g: Variant = d.get("g", 0)
+	inv.gold = clampi(int(g), 0, MAX_GOLD) if g is int or g is float else 0
+	var raw_bag: Variant = d.get("b", [])
+	if raw_bag is Array:
+		inv.bag.resize(maxi(SIZE, (raw_bag as Array).size()))
+		for i in (raw_bag as Array).size():
+			inv.bag[i] = Item.from_dict(Item.wire_to_dict((raw_bag as Array)[i]), db)
+	var raw_eq: Variant = d.get("e", {})
+	if raw_eq is Dictionary:
+		for s: Variant in raw_eq:
+			var it := Item.from_dict(Item.wire_to_dict((raw_eq as Dictionary)[s]), db)
+			if it != null and str(s) in SLOTS:
+				inv.equipment[str(s)] = it
+	return inv
+
+
 ## Never null. Unknown items are dropped; anything valid that cannot be worn (other class,
 ## too high, wrong slot, an off-hand under a two-handed weapon) goes to the bag, which grows
 ## past 30 slots instead of losing it. Repeated uids get new ones.
