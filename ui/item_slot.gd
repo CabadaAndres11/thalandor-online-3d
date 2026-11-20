@@ -1,11 +1,13 @@
 class_name ItemSlot
 extends PanelContainer
 ## One item square: the item's icon with a border in its rarity color, the stack count,
-## red when broken. Right click reports `right_clicked`; hovering shows ItemTooltip.
+## red when broken, on a red background when the viewer cannot equip it. Right click reports `right_clicked`; hovering shows ItemTooltip.
 
 signal right_clicked()
 
 const SIZE := 48.0
+## Background of an item the viewer cannot equip (another class's, or above their level).
+const UNUSABLE_BG := Color(0.55, 0.08, 0.08, 0.55)
 
 var item: Item
 ## For the tooltip: who looks at it and what they wear in that slot.
@@ -51,9 +53,20 @@ func set_item(it: Item) -> void:
 	if it != null:
 		style.border_color = ItemIcons.rarity_color(it.rarity)
 		style.set_border_width_all(2)
+		if unusable():
+			style.bg_color = UNUSABLE_BG
 		_icon.modulate = Color(1, 0.45, 0.45) if it.durability <= 0 and not ItemDB.load_default().is_consumable(it.base_id) else Color.WHITE
 	add_theme_stylebox_override("panel", style)
 	tooltip_text = " " if it != null else _hint.text
+
+
+## True when the viewer (class_id, level) could not equip this item; never for potions,
+## nor when no viewer class is set.
+func unusable() -> bool:
+	var db := ItemDB.load_default()
+	if item == null or class_id == "" or db.is_consumable(item.base_id):
+		return false
+	return not db.can_use(class_id, item.base_id) or item.level > level
 
 
 func count_text() -> String:
