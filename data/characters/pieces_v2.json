@@ -281,5 +281,93 @@
 		],
 		"tag": "armor",
 		"hides": []
+	},
+	"weapon_sword": {
+		"file": "res://assets/characters/pieces_v2/weapon_sword.vox",
+		"part": "hand_right",
+		"offset": [
+			-2,
+			-11,
+			-5
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"weapon_wood_sword": {
+		"file": "res://assets/characters/pieces_v2/weapon_wood_sword.vox",
+		"part": "hand_right",
+		"offset": [
+			-2,
+			-11,
+			-5
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"weapon_mace": {
+		"file": "res://assets/characters/pieces_v2/weapon_mace.vox",
+		"part": "hand_right",
+		"offset": [
+			-4,
+			-8,
+			-6
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"weapon_staff": {
+		"file": "res://assets/characters/pieces_v2/weapon_staff.vox",
+		"part": "hand_right",
+		"offset": [
+			-2,
+			-36,
+			-1
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"weapon_bow": {
+		"file": "res://assets/characters/pieces_v2/weapon_bow.vox",
+		"part": "hand_left",
+		"offset": [
+			-2,
+			-33,
+			-6
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"weapon_crossbow": {
+		"file": "res://assets/characters/pieces_v2/weapon_crossbow.vox",
+		"part": "hand_right",
+		"offset": [
+			-16,
+			-10,
+			-8
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"weapon_dagger_right": {
+		"file": "res://assets/characters/pieces_v2/weapon_dagger_right.vox",
+		"part": "hand_right",
+		"offset": [
+			-1,
+			-8,
+			-5
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"weapon_dagger_left": {
+		"file": "res://assets/characters/pieces_v2/weapon_dagger_left.vox",
+		"part": "hand_left",
+		"offset": [
+			-1,
+			-8,
+			-5
+		],
+		"tag": "weapon",
+		"hides": []
 	}
 }

@@ -153,7 +153,7 @@ function forearmV2() {
 }
 
 // Fist, knuckles forward, thumb on top; pivot at the wrist.
-function handV2() {
+export function handV2() {
   const h = new Shape();
   roundBox(h, [-3, -8, -2], [2, 0, 3], 1.4, SK);
   finish(h, [SK], 61, [0.7, 0.2, 0.1]);

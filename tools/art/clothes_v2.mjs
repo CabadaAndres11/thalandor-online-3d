@@ -33,6 +33,7 @@ export { STEEL, STEEL_D, STEEL_L, GOLD, GOLD_D, GOLD_L, LEATHER, LEATHER_D, LEAT
 export function paint(s, mats, seed = 1) {
   const idxs = [], map = {};
   for (const m of mats) {
+    if (!MAT[m]) continue; // a plain index (already one tone): left as it is
     const metal = m === STEEL || m === GOLD;
     tone(s, m, MAT[m].tones, seed + m, metal ? [0.75, 0.15, 0.1] : [0.65, 0.25, 0.1]);
     for (const i of MAT[m].tones) { idxs.push(i); map[i] = MAT[m].form; }

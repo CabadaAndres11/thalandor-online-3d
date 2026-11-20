@@ -392,3 +392,54 @@ func test_piece_voxel_scale() -> void:
 	var node := rig.piece_node("hat_mage")
 	assert_almost_eq(node.scale.x, 2.0, 0.001)
 	assert_almost_eq(node.position, Vector3(-8, 10, -8) * VoxMesher.VOXEL_SIZE, Vector3.ONE * 0.001)
+
+
+func _class_rig(class_id: String) -> HumanRig:
+	var rig := HumanRig.build(CharacterCatalog.load_default().resolve(class_id, {}))
+	add_child_autofree(rig)
+	rig.update(0.1)
+	return rig
+
+
+func test_v2_classes_hold_v2_weapons() -> void:
+	for class_id: String in ["villager", "warrior", "cleric", "mage", "archer", "assassin"]:
+		var look := CharacterCatalog.load_default().resolve(class_id, {})
+		for p: Dictionary in look.pieces:
+			if str(p.id).begins_with("weapon_"):
+				assert_string_contains(str(p.file), "/pieces_v2/", "%s %s" % [class_id, p.id])
+				assert_false(p.has("voxel_scale"), "%s %s" % [class_id, p.id])
+
+
+func test_v2_sword_runs_through_the_fist() -> void:
+	var rig := _class_rig("warrior")
+	var sword := rig.piece_node("weapon_sword")
+	var hand := rig.part_mesh("hand_right")
+	var fist := hand.global_transform * hand.get_aabb()
+	var blade := sword.global_transform * sword.get_aabb()
+	assert_true(blade.intersects(fist), "the grip is inside the fist")
+	assert_gt(blade.size.length(), fist.size.length() * 2.5, "a long blade")
+
+
+func test_bow_rides_on_the_back_v2() -> void:
+	var rig := _class_rig("archer")
+	var bow := rig.piece_node("weapon_bow")
+	assert_eq(bow.get_parent(), rig.part("torso"), "on the back")
+	assert_almost_eq(bow.scale.length(), Vector3.ONE.length(), 0.01, "a v2 bow is drawn at its size")
+	rig.set_bow_charging(true)
+	rig.update(0.1)
+	assert_eq(bow.get_parent(), rig.part("hand_left"))
+	var up := rig.part("hand_left").global_transform.basis.y.normalized()
+	assert_gt(up.dot(Vector3.UP), 0.9, "the bow stands upright")
+
+
+func test_staff_rests_tilted_until_casting_v2() -> void:
+	var rig := _class_rig("mage")
+	var up := rig.part("hand_right").global_transform.basis.y.normalized()
+	assert_lt(up.dot(Vector3.UP), 0.6, "the staff leans over at rest")
+	rig.play_action("cast")
+	rig.update(HumanRig.ACTIONS.cast * 0.4)
+	up = rig.part("hand_right").global_transform.basis.y.normalized()
+	assert_gt(up.dot(Vector3.UP), 0.7, "upright while casting")
+	var staff := rig.piece_node("weapon_staff")
+	var top := (staff.global_transform * staff.get_aabb()).end.y
+	assert_gt(top, 1.9, "the crystal rises above the head")

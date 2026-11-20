@@ -85,3 +85,11 @@ test("every piece the class and upgrade data name has a v2 version (weapons apar
   }
   for (const id of ids) assert.ok(v2[id], `${id} has no v2 version`);
 });
+
+test("every hand weapon has a v2 version on the v1 hand", () => {
+  for (const id of ["weapon_sword", "weapon_wood_sword", "weapon_mace", "weapon_staff", "weapon_bow", "weapon_crossbow", "weapon_dagger_right", "weapon_dagger_left"]) {
+    assert.ok(v2[id], id);
+    assert.equal(v2[id].part, v1[id].part, id);
+    assert.ok(v2[id].shape.cells.size > 40, `${id} has volume`);
+  }
+});
