@@ -7,6 +7,7 @@ signal quit_requested()
 
 var play_button: Button
 var quit_button: Button
+var logo: TextureRect
 var version_label: Label
 
 
@@ -20,15 +21,17 @@ func _init() -> void:
 	center.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	add_child(center)
 	var box := VBoxContainer.new()
-	box.custom_minimum_size = Vector2(420, 0)
+	box.custom_minimum_size = Vector2(480, 0)
 	box.add_theme_constant_override("separation", 12)
 	center.add_child(box)
 
-	var title := Label.new()
-	title.text = tr("GAME_TITLE")
-	title.add_theme_font_size_override("font_size", 56)
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	box.add_child(title)
+	logo = TextureRect.new()
+	logo.texture = load("res://assets/brand/logo.png")
+	logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	logo.custom_minimum_size = Vector2(480, 160)
+	logo.tooltip_text = tr("GAME_TITLE")
+	box.add_child(logo)
 
 	version_label = Label.new()
 	version_label.text = tr("VERSION_LABEL") % GameSession.game_version()

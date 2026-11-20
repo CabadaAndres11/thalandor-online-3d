@@ -19,6 +19,7 @@ actualizado: 2026-11-19
 - **Monstruos:** modelos vóxel propios con sus animaciones. Los humanoides del culto y su jefe, el Acólito Cultista, usan `HumanRig`; los sabuesos y jabalíes usan `BeastRig`, que aún tiene el vóxel grueso (pasarlos al fino está en [[15 Decisiones abiertas]]).
 - **Fuentes de assets [Decidido, [[D-010 Arte propio hecho por código]]]:** todo el arte se genera con los scripts de `tools/art/`; no se usan packs de terceros.
 - **Créditos:** archivo `CREDITS.md` con autor y licencia de cada asset, generado o mantenido con cada importación.
+- **Logo e icono [Implementado]:** logo "Thalandor Online" con el Sol Negro del culto en las O, en la pantalla de inicio (`assets/brand/logo.png`); el mismo sol como icono del ejecutable y de la ventana (`assets/brand/icono.ico`).
 - **Gráficos provisionales:** cubos y cápsulas de colores hasta tener los modelos definitivos.
 - **Audio:** música y efectos de packs gratuitos con licencia libre; volumen por canal (música, efectos, interfaz).
 
