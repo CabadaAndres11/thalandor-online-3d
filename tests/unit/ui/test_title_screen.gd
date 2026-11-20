@@ -20,6 +20,13 @@ func test_play_opens_characters() -> void:
 	assert_signal_emitted(title, "play_requested")
 
 
+func test_shows_logo() -> void:
+	var title := TitleScreen.new()
+	_host(title)
+	assert_not_null(title.logo.texture)
+	assert_eq(title.logo.texture.get_width(), 2000)
+
+
 func test_shows_version() -> void:
 	var title := TitleScreen.new()
 	_host(title)
