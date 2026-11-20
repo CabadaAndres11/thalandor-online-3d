@@ -7,15 +7,8 @@
 // <name>.json with each part's pivot (where it rotates, in voxels from the rig
 // origin at ground level below the body centre) and mesh offset (from the pivot).
 import fs from "node:fs";
-import { write, Shape, TINT_PRIMARY, GLOW } from "./vox.mjs";
+import { write } from "./vox.mjs";
 import { beastsV2 } from "./beasts_v2.mjs";
-
-const P = TINT_PRIMARY;
-const DARK = 20, BELLY = 21, BONE = 22, NOSE = 23, PAW = 24, IRON = 26, IRON_L = 27;
-const PALETTE = {
-  [DARK]: "#1e2026", [BELLY]: "#55585f", [BONE]: "#e6dfcc", [NOSE]: "#0e0e10",
-  [PAW]: "#2a2c31", [IRON]: "#3a3a40", [IRON_L]: "#6c6c74", [GLOW]: "#ff3b2f",
-};
 
 // --- Single bodies ------------------------------------------------------------------
 

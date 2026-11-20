@@ -37,3 +37,15 @@ test("parts fit in a .vox and generation is deterministic", () => {
     assert.deepEqual([...again[name].parts[p].shape.cells.entries()], [...beast.parts[p].shape.cells.entries()], `${name} ${p}`);
   }
 });
+
+test("left and right legs mirror about the body's middle", () => {
+  for (const [name, beast] of Object.entries(b)) for (const end of ["front", "back"]) {
+    const mid = (p) => { const xs = [...beast.parts[p].shape.cells.values()].map((v) => v[0]); return beast.parts[p].pivot[0] + (Math.min(...xs) + Math.max(...xs)) / 2; };
+    const l = mid(`leg_${end}_left`), r = mid(`leg_${end}_right`);
+    assert.ok(Math.abs(l + r - 2 * -0.5) <= 1, `${name} ${end}: ${l} and ${r}`);
+  }
+});
+
+test("head and tail hang from the body (they bob with it)", () => {
+  for (const [name, beast] of Object.entries(b)) for (const p of ["head", "tail"]) assert.equal(beast.parts[p].parent, "body", `${name} ${p}`);
+});

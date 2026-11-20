@@ -4,7 +4,7 @@
 // Monsters face +Z; y 0 is the ground. The skin takes the monster's tint (TINT_PRIMARY) with
 // its texture and form tones.
 import { Shape, TINT_PRIMARY, GLOW, SHADE, LIGHT, TEX_D, TEX_L } from "./vox.mjs";
-import { ellipsoid, capsule, cylinder, roundBox, tone, shadeByFacing, carve } from "./sculpt.mjs";
+import { ellipsoid, capsule, cylinder, roundBox, tone, shadeByFacing } from "./sculpt.mjs";
 
 const P = TINT_PRIMARY;
 export const B = { DARK: 20, BELLY: 21, BONE: 22, NOSE: 23, PAW: 24, VOID: 25, IRON: 26, IRON_L: 27, IRON_D: 28, BONE_D: 29, DARK_L: 30 };
@@ -84,7 +84,7 @@ function hound(withCollar) {
   eyes(head, [-5, 4], 2, 17);
   if (withCollar) collar(head, -5, 10, -8, -4);
   for (const v of head.cells.values()) if (v[3] === P && v[1] < -9) v[3] = BELLY; // the pale throat
-  parts.head = { shape: finish(head, 13), pivot: [0, 44, 24] };
+  parts.head = { shape: finish(head, 13), pivot: [0, 44, 24], parent: "body" }; // bobs with the body
 
   // Legs: a muscled thigh, a long shank, a paw with claws; the back legs bend at the hock.
   const leg = (back, seed) => {
@@ -96,7 +96,7 @@ function hound(withCollar) {
     capsule(l, knee, hock, 2.6, 2.1, P);
     capsule(l, hock, [CX, -29, 1], 2.1, 2, P);
     ellipsoid(l, [CX, -30.5, 2.5], [3.2, 1.8, 4], PAW);
-    for (const x of [-2, 0, 2]) l.put(x - 0.5 > -3 ? x : x, -31, 7, BONE).put(x, -32, 7, BONE);
+    for (const x of [-2, 0, 2]) l.put(x, -31, 7, BONE).put(x, -32, 7, BONE);
     return finish(l, seed);
   };
   parts.leg_front_left = { shape: leg(false, 15), pivot: [-8, 32, 16] };
@@ -108,7 +108,7 @@ function hound(withCollar) {
   capsule(tail, [CX, 0, 0], [CX, 3, -12], 3.2, 2.4, P);
   capsule(tail, [CX, 3, -12], [CX, 7, -24], 2.4, 1.6, P);
   capsule(tail, [CX, 6, -22], [CX, 9, -30], 2.2, 0.6, DARK);
-  parts.tail = { shape: finish(tail, 19), pivot: [0, 44, -24] };
+  parts.tail = { shape: finish(tail, 19), pivot: [0, 44, -24], parent: "body" };
   return { parts, palette: BEAST_PALETTE, voxel_scale: 0.25 };
 }
 
@@ -151,7 +151,7 @@ function boar() {
   for (const side of [-1, 1]) capsule(head, [CX + side * 7, 6, 3], [CX + side * 11, 10, -2], 3, 1, DARK); // ears
   eyes(head, [-6, 5], 0, 17);
   collar(head, -5, 11, -6, -2);
-  parts.head = { shape: finish(head, 23), pivot: [0, 40, 24] };
+  parts.head = { shape: finish(head, 23), pivot: [0, 40, 24], parent: "body" }; // bobs with the body
 
   const leg = (seed) => { // short and thick, ending in a split hoof
     const l = new Shape();
@@ -161,21 +161,20 @@ function boar() {
     for (let y = -20; y <= -17; y++) for (let z = 1; z <= 5; z++) l.cells.delete(`${-1},${y},${z}`); // the split
     return finish(l, seed);
   };
-  parts.leg_front_left = { shape: leg(25), pivot: [-12, 20, 12] };
-  parts.leg_front_right = { shape: leg(26), pivot: [8, 20, 12] };
-  parts.leg_back_left = { shape: leg(27), pivot: [-12, 20, -16] };
-  parts.leg_back_right = { shape: leg(28), pivot: [8, 20, -16] };
+  parts.leg_front_left = { shape: leg(25), pivot: [-10, 20, 12] };
+  parts.leg_front_right = { shape: leg(26), pivot: [10, 20, 12] };
+  parts.leg_back_left = { shape: leg(27), pivot: [-10, 20, -16] };
+  parts.leg_back_right = { shape: leg(28), pivot: [10, 20, -16] };
 
   const tail = new Shape(); // a short curly tail
   for (let k = 0; k <= 24; k++) {
     const t = (k / 24) * Math.PI * 2.2, rr = 4 - k * 0.12;
     ellipsoid(tail, [CX, Math.sin(t) * rr + 2, 3 - Math.cos(t) * rr - k * 0.3], [1.4, 1.4, 1.4], k > 20 ? DARK : P); // starts in the rump
   }
-  parts.tail = { shape: finish(tail, 29), pivot: [0, 40, -24] };
+  parts.tail = { shape: finish(tail, 29), pivot: [0, 40, -24], parent: "body" };
   return { parts, palette: BOAR_PALETTE, voxel_scale: 0.25 };
 }
 
 export function beastsV2() {
   return { marked_hound: hound(true), marked_boar: boar(), hunter_wolf: hound(false) };
 }
-void carve;

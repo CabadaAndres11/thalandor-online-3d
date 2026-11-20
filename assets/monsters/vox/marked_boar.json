@@ -25,12 +25,13 @@
 				-15,
 				-21,
 				-20
-			]
+			],
+			"parent": "body"
 		},
 		"leg_front_left": {
 			"file": "res://assets/monsters/vox/marked_boar_leg_front_left.vox",
 			"pivot": [
-				-12,
+				-10,
 				20,
 				12
 			],
@@ -43,7 +44,7 @@
 		"leg_front_right": {
 			"file": "res://assets/monsters/vox/marked_boar_leg_front_right.vox",
 			"pivot": [
-				8,
+				10,
 				20,
 				12
 			],
@@ -56,7 +57,7 @@
 		"leg_back_left": {
 			"file": "res://assets/monsters/vox/marked_boar_leg_back_left.vox",
 			"pivot": [
-				-12,
+				-10,
 				20,
 				-16
 			],
@@ -69,7 +70,7 @@
 		"leg_back_right": {
 			"file": "res://assets/monsters/vox/marked_boar_leg_back_right.vox",
 			"pivot": [
-				8,
+				10,
 				20,
 				-16
 			],
@@ -90,7 +91,8 @@
 				-1,
 				-1,
 				-6
-			]
+			],
+			"parent": "body"
 		}
 	}
 }

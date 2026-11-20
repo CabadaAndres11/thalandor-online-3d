@@ -25,7 +25,8 @@
 				-13,
 				-20,
 				-21
-			]
+			],
+			"parent": "body"
 		},
 		"leg_front_left": {
 			"file": "res://assets/monsters/vox/marked_hound_leg_front_left.vox",
@@ -90,7 +91,8 @@
 				-3,
 				-3,
 				-30
-			]
+			],
+			"parent": "body"
 		}
 	}
 }

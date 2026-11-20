@@ -262,3 +262,12 @@ func test_beasts_are_fine_voxels_at_the_same_size() -> void:
 		assert_almost_eq(box.position.y, 0.0, 0.06, "%s stands on the ground" % pair[0])
 		assert_between(box.size.y, float(pair[1]) * 0.7, float(pair[1]) * 1.3, "%s height" % pair[0])
 		assert_between(box.size.z, float(pair[2]) * 0.7, float(pair[2]) * 1.3, "%s length" % pair[0])
+
+
+func test_beasts_are_built_ahead_of_the_fight() -> void:
+	VoxMesher.clear_cache()
+	MonsterAvatar.prewarm_bosses()
+	var t0 := Time.get_ticks_msec()
+	for id: String in ["hunter_wolf", "marked_hound", "marked_boar"]:
+		_avatar(id)
+	assert_lt(Time.get_ticks_msec() - t0, 120, "the beasts' meshes were already built")

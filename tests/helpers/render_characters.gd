@@ -288,8 +288,6 @@ func _combat_scene() -> void:
 	cam.look_at_from_position(Vector3(19.0, 9.0, 13.5), Vector3(19.0, 0.6, 20.8))
 
 
-## Task 12 set: marked boar (warning its charge), cultists (one elite), cult archer and an
-## elite marked_hound, around a warrior.
 ## Plan 6.4.3: robes, skirts and capes mid-stride (side on), so the cloth following the legs shows.
 func _cloth() -> void:
 	var cat := CharacterCatalog.load_default()
@@ -325,6 +323,8 @@ func _beasts() -> void:
 	cam.look_at_from_position(Vector3(20.5, 3.4, 30.5), Vector3(20.5, 0.9, 20.0))
 
 
+## Task 12 set: marked boar (warning its charge), cultists (one elite), cult archer and an
+## elite marked_hound, around a warrior.
 func _monsters_b() -> void:
 	var hero := PlayerAvatar.new()
 	root.add_child(hero)
