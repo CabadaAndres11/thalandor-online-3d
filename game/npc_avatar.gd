@@ -38,8 +38,8 @@ static func look_of(look: Dictionary) -> Dictionary:
 		var pieces: Array = (out.pieces as Array).filter(
 			func(p: Dictionary) -> bool: return str(catalog.piece(p.id).get("tag", "")) != "weapon")
 		for id: String in look.weapons:
-			var p := catalog.piece(id)
-			pieces.append({"id": id, "file": p.get("file", ""), "part": p.get("part", ""), "offset": p.get("offset", [0, 0, 0])})
+			if not catalog.piece(id).is_empty():
+				pieces.append(catalog.piece_entry(id)) # the v2 version, or the v1 one at double size
 		out["pieces"] = pieces
 	return out
 

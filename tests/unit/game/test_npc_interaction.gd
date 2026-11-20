@@ -100,3 +100,13 @@ func test_interact_opens_merchant() -> void:
 	assert_eq(r, {"action": NpcInteraction.TRADE, "npc": "merchant"})
 	r = NpcInteraction.decide(m, Vector3(20.5, 0, 20.5), "villager", [], 2.0)
 	assert_eq(r.action, NpcInteraction.TRADE, "villagers can trade too")
+
+
+func test_npc_weapons_follow_the_v2_body() -> void:
+	var look := NpcAvatar.look_of({"class": "warrior", "weapons": ["weapon_sword"]})
+	var found := false
+	for p: Dictionary in look.pieces:
+		if str(p.id) == "weapon_sword":
+			found = true
+			assert_true(str(p.file).contains("/pieces_v2/") or float(p.get("voxel_scale", 1.0)) == 2.0, str(p))
+	assert_true(found)

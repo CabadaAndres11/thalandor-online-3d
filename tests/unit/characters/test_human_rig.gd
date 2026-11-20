@@ -380,7 +380,7 @@ func test_v2_body_is_a_person_tall() -> void:
 	assert_almost_eq(tb.y, 0.0, 0.03, "feet on the ground")
 	for p: String in HumanRig.PARTS:
 		assert_not_null(rig.part(p), p)
-		assert_true(str(rig.part_mesh(p).mesh.resource_name).length() >= 0)
+		assert_not_null(rig.part_mesh(p).mesh, p)
 
 
 func test_piece_voxel_scale() -> void:
@@ -443,3 +443,88 @@ func test_staff_rests_tilted_until_casting_v2() -> void:
 	var staff := rig.piece_node("weapon_staff")
 	var top := (staff.global_transform * staff.get_aabb()).end.y
 	assert_gt(top, 1.9, "the crystal rises above the head")
+
+
+func _v2_look(body_scale: Dictionary = {}) -> Dictionary:
+	var look := _look(body_scale)
+	look["body"] = "v2"
+	look["pieces"] = []
+	return look
+
+
+func test_body_scale_widens_torso_v2() -> void:
+	var slim := HumanRig.build(_v2_look())
+	var robust := HumanRig.build(_v2_look({"torso": [1.15, 1, 1.12], "arm": [1.12, 1, 1.12], "leg": [1.08, 1, 1.08]}))
+	add_child_autofree(slim)
+	add_child_autofree(robust)
+	assert_gt(robust.part("arm_left").position.x, slim.part("arm_left").position.x, "shoulders move out")
+	assert_lt(robust.part("arm_right").position.x, slim.part("arm_right").position.x, "both shoulders")
+
+
+func test_dagger_combo_hands_v2() -> void:
+	var rig := HumanRig.build(_v2_look())
+	add_child_autofree(rig)
+	var hands := []
+	for i in 3:
+		rig.play_action("stab", true)
+		hands.append(rig.combo_hands())
+		rig.update(0.4)
+	assert_eq(hands, [["right"], ["left"], ["right", "left"]])
+
+
+func test_aura_from_look_v2() -> void:
+	var look := _v2_look()
+	look["auras"] = [Color("#c07bff")]
+	var rig := HumanRig.build(look)
+	add_child_autofree(rig)
+	assert_not_null(rig.find_child("Aura", true, false))
+
+
+func test_blade_down_grip_v2() -> void:
+	var a := HumanRig.build(_look())
+	var look := _v2_look()
+	look["grip"] = "blade_down"
+	var b := HumanRig.build(look)
+	var la := _look()
+	la["grip"] = "blade_down"
+	a = HumanRig.build(la)
+	add_child_autofree(a)
+	add_child_autofree(b)
+	a.update(0.1)
+	b.update(0.1)
+	assert_almost_eq(b.part("hand_right").global_transform.basis.y.normalized().dot(Vector3.UP),
+		a.part("hand_right").global_transform.basis.y.normalized().dot(Vector3.UP), 0.05, "same grip angle on both bodies")
+
+
+func test_gear_without_v2_is_worn_at_double_size() -> void:
+	var db := ItemDB.load_default()
+	var chest := ""
+	for id: String in db.base_ids():
+		var b := db.base(id)
+		if str(b.get("slot", "")) == "chest" and not (b.get("look", []) as Array).is_empty() \
+				and CharacterCatalog.load_default().piece_v2(str(b.look[0])).is_empty():
+			chest = id
+			break
+	assert_ne(chest, "", "some chest has no v2 look yet")
+	var gear := ["", "", "", "", chest, "", "", ""]
+	var rig := HumanRig.create("warrior", {}, null, "", gear)
+	add_child_autofree(rig)
+	var piece_id := str(db.base(chest).look[0])
+	assert_almost_eq(rig.piece_node(piece_id).scale.x, 2.0, 0.001)
+
+
+## Lunges, breathing, the walk bob and falling move the same in metres on both bodies.
+func test_pose_motion_is_in_metres_on_both_bodies() -> void:
+	var lunge := []
+	var bottoms := []
+	for look: Dictionary in [_look(), _v2_look()]:
+		var rig := HumanRig.build(look)
+		add_child_autofree(rig)
+		rig.play_action("melee")
+		rig.update(HumanRig.ACTIONS.melee * 0.66)
+		lunge.append((rig.get_node("Body") as Node3D).global_position.z - rig.global_position.z)
+		rig.play_action("die")
+		rig.update(HumanRig.ACTIONS.die * 2.0)
+		bottoms.append(_top_and_bottom(rig).y)
+	assert_almost_eq(lunge[1], lunge[0], 0.01, "same lunge in metres")
+	assert_gt(bottoms[1], bottoms[0] - 0.03, "a dead v2 body sinks no deeper than a v1 one (%.3f vs %.3f)" % [bottoms[1], bottoms[0]])

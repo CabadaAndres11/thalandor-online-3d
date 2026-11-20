@@ -135,11 +135,11 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 		if headgear != "":
 			for tag: String in piece(headgear).get("hides", []):
 				hidden[tag] = true
-			pieces.append(_piece_entry(headgear))
+			pieces.append(piece_entry(headgear))
 		for id: String in c.get("pieces", []) + look.get("pieces", []):
-			pieces.append(_piece_entry(id))
+			pieces.append(piece_entry(id))
 		for id: String in look.get("weapons", c.get("weapons", [])):
-			pieces.append(_piece_entry(id))
+			pieces.append(piece_entry(id))
 	else:
 		var db := items if items != null else ItemDB.load_default()
 		grip = ""
@@ -156,20 +156,20 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 					continue
 				for tag: String in piece(id).get("hides", []):
 					hidden[tag] = true
-				pieces.append(_piece_entry(id))
+				pieces.append(piece_entry(id))
 			if Inventory.VISIBLE[i] == "main":
 				grip = str(db.family_of(base_id).get("grip", ""))
 		var chest := str(gear[4]) if gear.size() > 4 else ""
 		if chest == "" or (db.base(chest).get("look", []) as Array).is_empty():
-			pieces.append(_piece_entry(BASE_OUTFIT))
+			pieces.append(piece_entry(BASE_OUTFIT))
 		for id: String in c.get("fixed_pieces", []):
-			pieces.append(_piece_entry(id))
+			pieces.append(piece_entry(id))
 	for id: String in hair.get("pieces", []):
 		if not hidden.has(str(piece(id).get("tag", ""))):
-			pieces.append(_piece_entry(id))
+			pieces.append(piece_entry(id))
 	var beard := str(option("beard", app.beard).get("piece", ""))
 	if beard != "":
-		pieces.append(_piece_entry(beard))
+		pieces.append(piece_entry(beard))
 	return {
 		"skin_color": Color(str(option("skin", app.skin).color)),
 		"eyes_color": Color(str(option("eyes", app.eyes).color)),
@@ -187,7 +187,7 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 
 
 ## The piece as the v2 body wears it: its v2 version, or the v1 one drawn twice as big.
-func _piece_entry(id: String) -> Dictionary:
+func piece_entry(id: String) -> Dictionary:
 	var v2 := piece_v2(id)
 	if not v2.is_empty():
 		return {"id": id, "file": v2.get("file", ""), "part": v2.get("part", ""), "offset": v2.get("offset", [0, 0, 0])}

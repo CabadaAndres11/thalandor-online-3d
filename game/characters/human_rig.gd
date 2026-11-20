@@ -470,6 +470,21 @@ func _pose() -> void:
 		"dash": _dash(k)
 		"downed": _fall(_ease(k), true)
 		"die": _fall(_ease(k), false)
+	_to_metres()
+
+
+## The poses move the body, hips and torso in v1 rig units (lunges, breathing, the walk
+## bob, falling); a finer body has a smaller rig scale, so its moves are scaled up to
+## travel the same distance in metres.
+func _to_metres() -> void:
+	var f := MODEL_SCALE / float(BODIES[body].scale)
+	if is_equal_approx(f, 1.0):
+		return
+	_body.position *= f
+	for part_name: String in ["hips", "torso"]:
+		var p: Node3D = _parts.get(part_name)
+		if p != null:
+			p.position = _rest[part_name] + (p.position - _rest[part_name]) * f
 
 
 func _locomotion(walk: float) -> void:

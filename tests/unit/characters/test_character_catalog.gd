@@ -256,7 +256,7 @@ func test_resolve_gives_the_v2_body() -> void:
 func test_piece_without_v2_is_scaled() -> void:
 	var cat := CharacterCatalog.load_default()
 	assert_true(cat.piece_v2("cult_hood").is_empty(), "monster pieces stay v1")
-	var e: Dictionary = cat._piece_entry("cult_hood")
+	var e: Dictionary = cat.piece_entry("cult_hood")
 	assert_string_contains(str(e.file), "/pieces/")
 	assert_almost_eq(float(e.get("voxel_scale", 1.0)), 2.0, 0.001)
 
