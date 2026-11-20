@@ -22,6 +22,7 @@
 	"dodge_invuln_s": 0.3,
 	"dodge_cooldown_s": 3.0,
 	"in_combat_s": 5.0,
+	"out_of_combat_hp_pct": 0.02,
 	"revive_hold_s": 3.0,
 	"revive_range": 2.0,
 	"revive_hp_pct": 0.3,

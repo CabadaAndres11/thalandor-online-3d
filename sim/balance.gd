@@ -29,6 +29,8 @@ var dodge_s: float = 0.2
 var dodge_invuln_s: float = 0.3
 var dodge_cooldown_s: float = 3.0
 var in_combat_s: float = 5.0
+## Players out of combat heal this share of their max life per second (plus spirit regen).
+var out_of_combat_hp_pct: float = 0.02
 var revive_hold_s: float = 3.0
 var revive_range: float = 2.0
 var revive_hp_pct: float = 0.3

@@ -131,3 +131,28 @@ func test_hot_heals_over_time_capped() -> void:
 	e.add_status(_status("hot", 3.0, 4.0, 1, 1.0), 1)
 	_run(e, 3.1)
 	assert_eq(e.hp, 100.0)
+
+
+func test_players_regen_life_out_of_combat() -> void:
+	assert_eq(world.balance.out_of_combat_hp_pct, 0.02)
+	var p := PlayerState.new()
+	p.stats = CombatStats.from_dict({"max_hp": 200})
+	p.hp = 100.0
+	_run(p, 1.0)
+	assert_almost_eq(p.hp, 104.0, 0.01, "2 % of max life per second")
+
+
+func test_no_passive_regen_in_combat() -> void:
+	var p := PlayerState.new()
+	p.stats = CombatStats.from_dict({"max_hp": 200})
+	p.hp = 100.0
+	p.last_combat_tick = world.tick
+	_run(p, 1.0)
+	assert_eq(p.hp, 100.0)
+
+
+func test_monsters_have_no_passive_regen() -> void:
+	var e := _entity()
+	e.hp = 50.0
+	_run(e, 1.0)
+	assert_eq(e.hp, 50.0)

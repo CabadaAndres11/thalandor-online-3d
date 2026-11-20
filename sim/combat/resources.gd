@@ -13,8 +13,12 @@ static func tick(e: CombatEntity, world: SimWorld) -> void:
 	if not e.is_alive():
 		return
 	var per_tick := 1.0 / float(world.balance.tick_rate)
-	if e.stats.hp_regen > 0.0 and not e.in_combat(world) and e.hp < e.stats.max_hp:
-		e.hp = minf(e.hp + e.stats.hp_regen * per_tick, e.stats.max_hp)
+	# Out of combat life comes back: spirit regen for everyone, plus a share of max life for players.
+	var regen := e.stats.hp_regen
+	if e is PlayerState:
+		regen += e.stats.max_hp * world.balance.out_of_combat_hp_pct
+	if regen > 0.0 and not e.in_combat(world) and e.hp < e.stats.max_hp:
+		e.hp = minf(e.hp + regen * per_tick, e.stats.max_hp)
 	if e.resource_kind == "":
 		return
 	var d := e.resource_def
