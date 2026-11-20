@@ -6,14 +6,28 @@ extends RefCounted
 
 const BUY_HEALTH := -1
 const BUY_RESOURCE := -2
+## Extra metres the host allows for trades: the client may see the player in range a
+## moment before the host does.
+const TRADE_MARGIN := 0.5
 
 
-static func near(world: SimWorld, p: PlayerState) -> bool:
-	return NpcDB.load_default().near_with_role(world.map, p.position, "merchant") != ""
+static func near(world: SimWorld, p: PlayerState, margin: float = 0.0) -> bool:
+	return NpcDB.load_default().near_with_role(world.map, p.position, "merchant", margin) != ""
 
 
+## Whether the player may trade now; when not, tells them why (["trade_refused", id, reason],
+## reason "dead", "combat" or "far").
 static func _can_trade(world: SimWorld, p: PlayerState) -> bool:
-	return p.life == CombatEntity.ALIVE and not p.in_combat(world) and near(world, p)
+	var reason := ""
+	if p.life != CombatEntity.ALIVE:
+		reason = "dead"
+	elif p.in_combat(world):
+		reason = "combat"
+	elif not near(world, p, TRADE_MARGIN):
+		reason = "far"
+	if reason != "":
+		world.emit(["trade_refused", p.id, reason])
+	return reason == ""
 
 
 static func potion_price(level: int, db: ItemDB) -> int:
@@ -21,8 +35,11 @@ static func potion_price(level: int, db: ItemDB) -> int:
 	return int(c.get("price_base", 5)) + int(c.get("price_per_level", 2)) * level
 
 
+## What the merchant pays: sell_factor of the value, at least 1 gold for anything but potions.
 static func sell_price(it: Item, db: ItemDB) -> int:
-	return floori(ItemRoll.value(it, db) * float(db.loot().get("sell_factor", 0.25)))
+	if db.is_consumable(it.base_id):
+		return 0
+	return maxi(1, floori(ItemRoll.value(it, db) * float(db.loot().get("sell_factor", 0.25))))
 
 
 static func repair_cost(it: Item, db: ItemDB) -> int:

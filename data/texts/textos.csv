@@ -679,6 +679,9 @@ STAT_MAX_RESOURCE_ADD,%s recurso máximo
 NPC_MERCHANT,Mercader
 GOLD_SHORT,oro
 ITEM_BAG_FULL,Tu inventario está lleno: el objeto se queda en el suelo.
+TRADE_REFUSED_COMBAT,No puedes comerciar en combate.
+TRADE_REFUSED_FAR,Estás demasiado lejos del comerciante.
+TRADE_REFUSED_DEAD,No puedes comerciar estando caído.
 EQUIP_MAIN,Arma principal
 EQUIP_SHOULDERS,Hombros
 EQUIP_LEGS,Piernas

@@ -37,12 +37,12 @@ static func placed(map: CollisionMap) -> Array:
 	return out
 
 
-## The id of an NPC with this role within TALK_RANGE of `pos`, or "".
-func near_with_role(map: CollisionMap, pos: Vector3, role: String) -> String:
+## The id of an NPC with this role within TALK_RANGE (+ margin) of `pos`, or "".
+func near_with_role(map: CollisionMap, pos: Vector3, role: String, margin: float = 0.0) -> String:
 	for n: Dictionary in placed(map):
 		if str(npc(n.id).get("role", "")) != role:
 			continue
 		var d := Vector2(pos.x - n.position.x, pos.z - n.position.z).length()
-		if d <= TALK_RANGE:
+		if d <= TALK_RANGE + margin:
 			return n.id
 	return ""

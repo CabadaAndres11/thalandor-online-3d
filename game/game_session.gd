@@ -400,6 +400,8 @@ func _on_combat_event(ev: Array) -> void:
 	loot_view.handle(ev)
 	if str(ev[0]) == "bag_full" and ev.size() > 1 and int(ev[1]) == client.my_id:
 		client.chat_received.emit("", tr("ITEM_BAG_FULL"), true)
+	if str(ev[0]) == "trade_refused" and ev.size() > 2 and int(ev[1]) == client.my_id:
+		client.chat_received.emit("", tr("TRADE_REFUSED_" + str(ev[2]).to_upper()), true)
 	match str(ev[0]):
 		"cast":
 			var who := int(ev[1])

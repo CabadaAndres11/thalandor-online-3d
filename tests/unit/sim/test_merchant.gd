@@ -109,3 +109,28 @@ func test_in_combat_refused() -> void:
 	p.inventory.gold = 100
 	p.last_combat_tick = f.world.tick
 	assert_false(Merchant.buy(f.world, p, Merchant.BUY_HEALTH))
+
+
+func test_sell_cheap_level1_item_for_one_gold() -> void:
+	var it := ItemRoll.new_item("sword_t1", 1, "common")
+	assert_eq(floori(ItemRoll.value(it, db) * 0.25), 0, "worth 0 before the floor")
+	p.inventory.add(it, db)
+	assert_true(Merchant.sell(f.world, p, 0))
+	assert_eq(p.inventory.gold, 1)
+
+
+func test_trade_margin_at_edge_of_range() -> void:
+	var at: Vector3 = NpcDB.load_default().placed(f.world.map)[0].position
+	p.position = at + Vector3(NpcDB.TALK_RANGE + 0.3, 0, 0)
+	assert_false(Merchant.near(f.world, p), "outside the talk range")
+	p.inventory.gold = 100
+	assert_true(Merchant.buy(f.world, p, Merchant.BUY_HEALTH), "within the 0.5 m margin")
+
+
+func test_refused_trade_tells_the_player() -> void:
+	p.inventory.add(ItemRoll.new_item("sword_t1", 10, "rare"), db)
+	p.last_combat_tick = f.world.tick
+	assert_false(Merchant.sell(f.world, p, 0))
+	var evs := f.world.events.filter(func(e: Array) -> bool: return str(e[0]) == "trade_refused")
+	assert_eq(evs.size(), 1)
+	assert_eq(evs[0], ["trade_refused", 1, "combat"])

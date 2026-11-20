@@ -9,7 +9,7 @@ const NAME_MIN := 2
 const NAME_MAX := 16
 const SPAWN_SPACING := 1.5
 ## Events that only their owner (ev[1]) receives: personal loot and gold.
-const OWNER_EVENTS := ["gold", "loot", "loot_gone", "bag_full"]
+const OWNER_EVENTS := ["gold", "loot", "loot_gone", "bag_full", "trade_refused"]
 
 var world: SimWorld
 ## Sanitizes the class and appearance guests bring (they may send anything).
