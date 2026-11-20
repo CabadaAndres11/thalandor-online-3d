@@ -141,7 +141,7 @@ export function upperArmV2() {
 }
 
 // Forearm with a leather bracer; pivot at the elbow.
-function forearmV2() {
+export function forearmV2() {
   const f = new Shape();
   capsule(f, [-0.5, 0, -0.5], [-0.5, -17, -0.5], 3.0, 2.3, SK);
   finish(f, [SK], 51, [0.7, 0.2, 0.1]);
@@ -164,7 +164,7 @@ export function handV2() {
 }
 
 // Thigh, pivot at the hip joint.
-function thighV2() {
+export function thighV2() {
   const l = new Shape();
   capsule(l, [0, -1, 0], [0, -19, 0], 4.0, 3.3, T);
   finish(l, [T], 71);
@@ -173,7 +173,7 @@ function thighV2() {
 }
 
 // Shin in a tall boot with a folded cuff, toe cap and sole; pivot at the knee, ground at -26.
-function shinV2() {
+export function shinV2() {
   const l = new Shape();
   capsule(l, [0, 0, 0], [0, -8, 0], 3.4, 3.2, T);
   finish(l, [T], 81);

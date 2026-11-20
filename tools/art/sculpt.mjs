@@ -42,6 +42,10 @@ export function capsule(s, a, b, ra, rb, idx) {
 
 // A flat-ended cylinder from a to b.
 export function cylinder(s, a, b, r, idx) {
+  if (a[0] === b[0] && a[1] === b[1] && a[2] === b[2]) { // a disc one voxel thick, across Y
+    const y = Math.round(a[1]);
+    return fill(s, [a[0] - r, y, a[2] - r], [a[0] + r, y, a[2] + r], idx, (x, yy, z) => Math.hypot(x - a[0], z - a[2]) <= r + EPS);
+  }
   const lo = [0, 1, 2].map((i) => Math.min(a[i], b[i]) - r);
   const hi = [0, 1, 2].map((i) => Math.max(a[i], b[i]) + r);
   return fill(s, lo, hi, idx, (x, y, z) => {

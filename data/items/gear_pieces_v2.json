@@ -1,0 +1,2497 @@
+{
+	"warrior_head_t1": {
+		"file": "res://assets/items/vox_v2/warrior_head_t1.vox",
+		"part": "head",
+		"offset": [
+			-11,
+			3,
+			-11
+		],
+		"tag": "gear",
+		"hides": [
+			"hair",
+			"hair_cap"
+		]
+	},
+	"warrior_shoulders_t1_l": {
+		"file": "res://assets/items/vox_v2/warrior_shoulders_t1_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-3,
+			-6,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_shoulders_t1_r": {
+		"file": "res://assets/items/vox_v2/warrior_shoulders_t1_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-7,
+			-6,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_chest_t1": {
+		"file": "res://assets/items/vox_v2/warrior_chest_t1.vox",
+		"part": "torso",
+		"offset": [
+			-14,
+			0,
+			-9
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_chest_t1_skirt": {
+		"file": "res://assets/items/vox_v2/warrior_chest_t1_skirt.vox",
+		"part": "hips",
+		"offset": [
+			-12,
+			-6,
+			-8
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_hands_t1_l": {
+		"file": "res://assets/items/vox_v2/warrior_hands_t1_l.vox",
+		"part": "hand_left",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_hands_t1_cuff_l": {
+		"file": "res://assets/items/vox_v2/warrior_hands_t1_cuff_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-5,
+			-18,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_legs_t1_l": {
+		"file": "res://assets/items/vox_v2/warrior_legs_t1_l.vox",
+		"part": "leg_left",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_feet_t1_l": {
+		"file": "res://assets/items/vox_v2/warrior_feet_t1_l.vox",
+		"part": "shin_left",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_hands_t1_r": {
+		"file": "res://assets/items/vox_v2/warrior_hands_t1_r.vox",
+		"part": "hand_right",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_hands_t1_cuff_r": {
+		"file": "res://assets/items/vox_v2/warrior_hands_t1_cuff_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-5,
+			-18,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_legs_t1_r": {
+		"file": "res://assets/items/vox_v2/warrior_legs_t1_r.vox",
+		"part": "leg_right",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_feet_t1_r": {
+		"file": "res://assets/items/vox_v2/warrior_feet_t1_r.vox",
+		"part": "shin_right",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_head_t1": {
+		"file": "res://assets/items/vox_v2/cleric_head_t1.vox",
+		"part": "head",
+		"offset": [
+			-14,
+			-8,
+			-9
+		],
+		"tag": "gear",
+		"hides": [
+			"hair",
+			"hair_cap"
+		]
+	},
+	"cleric_shoulders_t1_l": {
+		"file": "res://assets/items/vox_v2/cleric_shoulders_t1_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-2,
+			-1,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_shoulders_t1_r": {
+		"file": "res://assets/items/vox_v2/cleric_shoulders_t1_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-7,
+			-1,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_chest_t1": {
+		"file": "res://assets/items/vox_v2/cleric_chest_t1.vox",
+		"part": "torso",
+		"offset": [
+			-13,
+			0,
+			-8
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_chest_t1_skirt": {
+		"file": "res://assets/items/vox_v2/cleric_chest_t1_skirt.vox",
+		"part": "hips",
+		"offset": [
+			-12,
+			-12,
+			-9
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_hands_t1_l": {
+		"file": "res://assets/items/vox_v2/cleric_hands_t1_l.vox",
+		"part": "hand_left",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_hands_t1_cuff_l": {
+		"file": "res://assets/items/vox_v2/cleric_hands_t1_cuff_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_legs_t1_l": {
+		"file": "res://assets/items/vox_v2/cleric_legs_t1_l.vox",
+		"part": "leg_left",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_feet_t1_l": {
+		"file": "res://assets/items/vox_v2/cleric_feet_t1_l.vox",
+		"part": "shin_left",
+		"offset": [
+			-5,
+			-26,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_hands_t1_r": {
+		"file": "res://assets/items/vox_v2/cleric_hands_t1_r.vox",
+		"part": "hand_right",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_hands_t1_cuff_r": {
+		"file": "res://assets/items/vox_v2/cleric_hands_t1_cuff_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_legs_t1_r": {
+		"file": "res://assets/items/vox_v2/cleric_legs_t1_r.vox",
+		"part": "leg_right",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_feet_t1_r": {
+		"file": "res://assets/items/vox_v2/cleric_feet_t1_r.vox",
+		"part": "shin_right",
+		"offset": [
+			-5,
+			-26,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_head_t1": {
+		"file": "res://assets/items/vox_v2/mage_head_t1.vox",
+		"part": "head",
+		"offset": [
+			-11,
+			16,
+			-12
+		],
+		"tag": "gear",
+		"hides": [
+			"hair"
+		]
+	},
+	"mage_shoulders_t1_l": {
+		"file": "res://assets/items/vox_v2/mage_shoulders_t1_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-2,
+			-1,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_shoulders_t1_r": {
+		"file": "res://assets/items/vox_v2/mage_shoulders_t1_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-7,
+			-1,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t1": {
+		"file": "res://assets/items/vox_v2/mage_chest_t1.vox",
+		"part": "torso",
+		"offset": [
+			-13,
+			0,
+			-8
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t1_skirt": {
+		"file": "res://assets/items/vox_v2/mage_chest_t1_skirt.vox",
+		"part": "hips",
+		"offset": [
+			-16,
+			-36,
+			-12
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t1_sleeve_l": {
+		"file": "res://assets/items/vox_v2/mage_chest_t1_sleeve_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-5,
+			-18,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t1_bell_l": {
+		"file": "res://assets/items/vox_v2/mage_chest_t1_bell_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-7,
+			-22,
+			-7
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t1_sleeve_r": {
+		"file": "res://assets/items/vox_v2/mage_chest_t1_sleeve_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-5,
+			-18,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t1_bell_r": {
+		"file": "res://assets/items/vox_v2/mage_chest_t1_bell_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-7,
+			-22,
+			-7
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_hands_t1_l": {
+		"file": "res://assets/items/vox_v2/mage_hands_t1_l.vox",
+		"part": "hand_left",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_hands_t1_cuff_l": {
+		"file": "res://assets/items/vox_v2/mage_hands_t1_cuff_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_legs_t1_l": {
+		"file": "res://assets/items/vox_v2/mage_legs_t1_l.vox",
+		"part": "leg_left",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_feet_t1_l": {
+		"file": "res://assets/items/vox_v2/mage_feet_t1_l.vox",
+		"part": "shin_left",
+		"offset": [
+			-5,
+			-26,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_hands_t1_r": {
+		"file": "res://assets/items/vox_v2/mage_hands_t1_r.vox",
+		"part": "hand_right",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_hands_t1_cuff_r": {
+		"file": "res://assets/items/vox_v2/mage_hands_t1_cuff_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_legs_t1_r": {
+		"file": "res://assets/items/vox_v2/mage_legs_t1_r.vox",
+		"part": "leg_right",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_feet_t1_r": {
+		"file": "res://assets/items/vox_v2/mage_feet_t1_r.vox",
+		"part": "shin_right",
+		"offset": [
+			-5,
+			-26,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_head_t1": {
+		"file": "res://assets/items/vox_v2/archer_head_t1.vox",
+		"part": "head",
+		"offset": [
+			-14,
+			-8,
+			-14
+		],
+		"tag": "gear",
+		"hides": [
+			"hair",
+			"hair_cap"
+		]
+	},
+	"archer_shoulders_t1_l": {
+		"file": "res://assets/items/vox_v2/archer_shoulders_t1_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-3,
+			-6,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_shoulders_t1_r": {
+		"file": "res://assets/items/vox_v2/archer_shoulders_t1_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-7,
+			-6,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_chest_t1": {
+		"file": "res://assets/items/vox_v2/archer_chest_t1.vox",
+		"part": "torso",
+		"offset": [
+			-13,
+			0,
+			-8
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_chest_t1_skirt": {
+		"file": "res://assets/items/vox_v2/archer_chest_t1_skirt.vox",
+		"part": "hips",
+		"offset": [
+			-12,
+			-10,
+			-9
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_hands_t1_l": {
+		"file": "res://assets/items/vox_v2/archer_hands_t1_l.vox",
+		"part": "hand_left",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_hands_t1_cuff_l": {
+		"file": "res://assets/items/vox_v2/archer_hands_t1_cuff_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-5,
+			-18,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_legs_t1_l": {
+		"file": "res://assets/items/vox_v2/archer_legs_t1_l.vox",
+		"part": "leg_left",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_feet_t1_l": {
+		"file": "res://assets/items/vox_v2/archer_feet_t1_l.vox",
+		"part": "shin_left",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_hands_t1_r": {
+		"file": "res://assets/items/vox_v2/archer_hands_t1_r.vox",
+		"part": "hand_right",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_hands_t1_cuff_r": {
+		"file": "res://assets/items/vox_v2/archer_hands_t1_cuff_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-5,
+			-18,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_legs_t1_r": {
+		"file": "res://assets/items/vox_v2/archer_legs_t1_r.vox",
+		"part": "leg_right",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_feet_t1_r": {
+		"file": "res://assets/items/vox_v2/archer_feet_t1_r.vox",
+		"part": "shin_right",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_head_t1": {
+		"file": "res://assets/items/vox_v2/assassin_head_t1.vox",
+		"part": "head",
+		"offset": [
+			-14,
+			-8,
+			-9
+		],
+		"tag": "gear",
+		"hides": [
+			"hair",
+			"hair_cap"
+		]
+	},
+	"assassin_shoulders_t1_l": {
+		"file": "res://assets/items/vox_v2/assassin_shoulders_t1_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-2,
+			-1,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_shoulders_t1_r": {
+		"file": "res://assets/items/vox_v2/assassin_shoulders_t1_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-7,
+			-1,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_chest_t1": {
+		"file": "res://assets/items/vox_v2/assassin_chest_t1.vox",
+		"part": "torso",
+		"offset": [
+			-13,
+			0,
+			-8
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_chest_t1_skirt": {
+		"file": "res://assets/items/vox_v2/assassin_chest_t1_skirt.vox",
+		"part": "hips",
+		"offset": [
+			-12,
+			-6,
+			-8
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_hands_t1_l": {
+		"file": "res://assets/items/vox_v2/assassin_hands_t1_l.vox",
+		"part": "hand_left",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_hands_t1_cuff_l": {
+		"file": "res://assets/items/vox_v2/assassin_hands_t1_cuff_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_legs_t1_l": {
+		"file": "res://assets/items/vox_v2/assassin_legs_t1_l.vox",
+		"part": "leg_left",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_feet_t1_l": {
+		"file": "res://assets/items/vox_v2/assassin_feet_t1_l.vox",
+		"part": "shin_left",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_hands_t1_r": {
+		"file": "res://assets/items/vox_v2/assassin_hands_t1_r.vox",
+		"part": "hand_right",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_hands_t1_cuff_r": {
+		"file": "res://assets/items/vox_v2/assassin_hands_t1_cuff_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_legs_t1_r": {
+		"file": "res://assets/items/vox_v2/assassin_legs_t1_r.vox",
+		"part": "leg_right",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_feet_t1_r": {
+		"file": "res://assets/items/vox_v2/assassin_feet_t1_r.vox",
+		"part": "shin_right",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_head_t2": {
+		"file": "res://assets/items/vox_v2/warrior_head_t2.vox",
+		"part": "head",
+		"offset": [
+			-10,
+			1,
+			-9
+		],
+		"tag": "gear",
+		"hides": [
+			"hair",
+			"hair_cap"
+		]
+	},
+	"warrior_shoulders_t2_l": {
+		"file": "res://assets/items/vox_v2/warrior_shoulders_t2_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-4,
+			-9,
+			-6
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_shoulders_t2_r": {
+		"file": "res://assets/items/vox_v2/warrior_shoulders_t2_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-8,
+			-9,
+			-6
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_chest_t2": {
+		"file": "res://assets/items/vox_v2/warrior_chest_t2.vox",
+		"part": "torso",
+		"offset": [
+			-14,
+			0,
+			-9
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_chest_t2_skirt": {
+		"file": "res://assets/items/vox_v2/warrior_chest_t2_skirt.vox",
+		"part": "hips",
+		"offset": [
+			-12,
+			-8,
+			-9
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_chest_t2_cape": {
+		"file": "res://assets/items/vox_v2/warrior_chest_t2_cape.vox",
+		"part": "torso",
+		"offset": [
+			-16,
+			-24,
+			-12
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_hands_t2_l": {
+		"file": "res://assets/items/vox_v2/warrior_hands_t2_l.vox",
+		"part": "hand_left",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_hands_t2_cuff_l": {
+		"file": "res://assets/items/vox_v2/warrior_hands_t2_cuff_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-5,
+			-18,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_legs_t2_l": {
+		"file": "res://assets/items/vox_v2/warrior_legs_t2_l.vox",
+		"part": "leg_left",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_feet_t2_l": {
+		"file": "res://assets/items/vox_v2/warrior_feet_t2_l.vox",
+		"part": "shin_left",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_hands_t2_r": {
+		"file": "res://assets/items/vox_v2/warrior_hands_t2_r.vox",
+		"part": "hand_right",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_hands_t2_cuff_r": {
+		"file": "res://assets/items/vox_v2/warrior_hands_t2_cuff_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-5,
+			-18,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_legs_t2_r": {
+		"file": "res://assets/items/vox_v2/warrior_legs_t2_r.vox",
+		"part": "leg_right",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_feet_t2_r": {
+		"file": "res://assets/items/vox_v2/warrior_feet_t2_r.vox",
+		"part": "shin_right",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_head_t2": {
+		"file": "res://assets/items/vox_v2/cleric_head_t2.vox",
+		"part": "head",
+		"offset": [
+			-14,
+			-8,
+			-9
+		],
+		"tag": "gear",
+		"hides": [
+			"hair",
+			"hair_cap"
+		]
+	},
+	"cleric_shoulders_t2_l": {
+		"file": "res://assets/items/vox_v2/cleric_shoulders_t2_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-4,
+			-1,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_shoulders_t2_r": {
+		"file": "res://assets/items/vox_v2/cleric_shoulders_t2_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-8,
+			-1,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_chest_t2": {
+		"file": "res://assets/items/vox_v2/cleric_chest_t2.vox",
+		"part": "torso",
+		"offset": [
+			-13,
+			0,
+			-8
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_chest_t2_skirt": {
+		"file": "res://assets/items/vox_v2/cleric_chest_t2_skirt.vox",
+		"part": "hips",
+		"offset": [
+			-13,
+			-14,
+			-9
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_chest_t2_cape": {
+		"file": "res://assets/items/vox_v2/cleric_chest_t2_cape.vox",
+		"part": "torso",
+		"offset": [
+			-16,
+			-24,
+			-12
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_hands_t2_l": {
+		"file": "res://assets/items/vox_v2/cleric_hands_t2_l.vox",
+		"part": "hand_left",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_hands_t2_cuff_l": {
+		"file": "res://assets/items/vox_v2/cleric_hands_t2_cuff_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_legs_t2_l": {
+		"file": "res://assets/items/vox_v2/cleric_legs_t2_l.vox",
+		"part": "leg_left",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_feet_t2_l": {
+		"file": "res://assets/items/vox_v2/cleric_feet_t2_l.vox",
+		"part": "shin_left",
+		"offset": [
+			-5,
+			-26,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_hands_t2_r": {
+		"file": "res://assets/items/vox_v2/cleric_hands_t2_r.vox",
+		"part": "hand_right",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_hands_t2_cuff_r": {
+		"file": "res://assets/items/vox_v2/cleric_hands_t2_cuff_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_legs_t2_r": {
+		"file": "res://assets/items/vox_v2/cleric_legs_t2_r.vox",
+		"part": "leg_right",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_feet_t2_r": {
+		"file": "res://assets/items/vox_v2/cleric_feet_t2_r.vox",
+		"part": "shin_right",
+		"offset": [
+			-5,
+			-26,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_head_t2": {
+		"file": "res://assets/items/vox_v2/mage_head_t2.vox",
+		"part": "head",
+		"offset": [
+			-13,
+			16,
+			-14
+		],
+		"tag": "gear",
+		"hides": [
+			"hair"
+		]
+	},
+	"mage_shoulders_t2_l": {
+		"file": "res://assets/items/vox_v2/mage_shoulders_t2_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-4,
+			-1,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_shoulders_t2_r": {
+		"file": "res://assets/items/vox_v2/mage_shoulders_t2_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-8,
+			-1,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t2": {
+		"file": "res://assets/items/vox_v2/mage_chest_t2.vox",
+		"part": "torso",
+		"offset": [
+			-13,
+			0,
+			-8
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t2_skirt": {
+		"file": "res://assets/items/vox_v2/mage_chest_t2_skirt.vox",
+		"part": "hips",
+		"offset": [
+			-16,
+			-36,
+			-12
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t2_sleeve_l": {
+		"file": "res://assets/items/vox_v2/mage_chest_t2_sleeve_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-5,
+			-18,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t2_bell_l": {
+		"file": "res://assets/items/vox_v2/mage_chest_t2_bell_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-7,
+			-22,
+			-7
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t2_sleeve_r": {
+		"file": "res://assets/items/vox_v2/mage_chest_t2_sleeve_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-5,
+			-18,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t2_bell_r": {
+		"file": "res://assets/items/vox_v2/mage_chest_t2_bell_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-7,
+			-22,
+			-7
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t2_cape": {
+		"file": "res://assets/items/vox_v2/mage_chest_t2_cape.vox",
+		"part": "torso",
+		"offset": [
+			-16,
+			-24,
+			-12
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_hands_t2_l": {
+		"file": "res://assets/items/vox_v2/mage_hands_t2_l.vox",
+		"part": "hand_left",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_hands_t2_cuff_l": {
+		"file": "res://assets/items/vox_v2/mage_hands_t2_cuff_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_legs_t2_l": {
+		"file": "res://assets/items/vox_v2/mage_legs_t2_l.vox",
+		"part": "leg_left",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_feet_t2_l": {
+		"file": "res://assets/items/vox_v2/mage_feet_t2_l.vox",
+		"part": "shin_left",
+		"offset": [
+			-5,
+			-26,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_hands_t2_r": {
+		"file": "res://assets/items/vox_v2/mage_hands_t2_r.vox",
+		"part": "hand_right",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_hands_t2_cuff_r": {
+		"file": "res://assets/items/vox_v2/mage_hands_t2_cuff_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_legs_t2_r": {
+		"file": "res://assets/items/vox_v2/mage_legs_t2_r.vox",
+		"part": "leg_right",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_feet_t2_r": {
+		"file": "res://assets/items/vox_v2/mage_feet_t2_r.vox",
+		"part": "shin_right",
+		"offset": [
+			-5,
+			-26,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_head_t2": {
+		"file": "res://assets/items/vox_v2/archer_head_t2.vox",
+		"part": "head",
+		"offset": [
+			-14,
+			-8,
+			-16
+		],
+		"tag": "gear",
+		"hides": [
+			"hair",
+			"hair_cap"
+		]
+	},
+	"archer_shoulders_t2_l": {
+		"file": "res://assets/items/vox_v2/archer_shoulders_t2_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-4,
+			-9,
+			-6
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_shoulders_t2_r": {
+		"file": "res://assets/items/vox_v2/archer_shoulders_t2_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-8,
+			-9,
+			-6
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_chest_t2": {
+		"file": "res://assets/items/vox_v2/archer_chest_t2.vox",
+		"part": "torso",
+		"offset": [
+			-13,
+			0,
+			-8
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_chest_t2_skirt": {
+		"file": "res://assets/items/vox_v2/archer_chest_t2_skirt.vox",
+		"part": "hips",
+		"offset": [
+			-12,
+			-12,
+			-9
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_hands_t2_l": {
+		"file": "res://assets/items/vox_v2/archer_hands_t2_l.vox",
+		"part": "hand_left",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_hands_t2_cuff_l": {
+		"file": "res://assets/items/vox_v2/archer_hands_t2_cuff_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-5,
+			-18,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_legs_t2_l": {
+		"file": "res://assets/items/vox_v2/archer_legs_t2_l.vox",
+		"part": "leg_left",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_feet_t2_l": {
+		"file": "res://assets/items/vox_v2/archer_feet_t2_l.vox",
+		"part": "shin_left",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_hands_t2_r": {
+		"file": "res://assets/items/vox_v2/archer_hands_t2_r.vox",
+		"part": "hand_right",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_hands_t2_cuff_r": {
+		"file": "res://assets/items/vox_v2/archer_hands_t2_cuff_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-5,
+			-18,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_legs_t2_r": {
+		"file": "res://assets/items/vox_v2/archer_legs_t2_r.vox",
+		"part": "leg_right",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_feet_t2_r": {
+		"file": "res://assets/items/vox_v2/archer_feet_t2_r.vox",
+		"part": "shin_right",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_head_t2": {
+		"file": "res://assets/items/vox_v2/assassin_head_t2.vox",
+		"part": "head",
+		"offset": [
+			-14,
+			-8,
+			-9
+		],
+		"tag": "gear",
+		"hides": [
+			"hair",
+			"hair_cap"
+		]
+	},
+	"assassin_shoulders_t2_l": {
+		"file": "res://assets/items/vox_v2/assassin_shoulders_t2_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-4,
+			-1,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_shoulders_t2_r": {
+		"file": "res://assets/items/vox_v2/assassin_shoulders_t2_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-8,
+			-1,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_chest_t2": {
+		"file": "res://assets/items/vox_v2/assassin_chest_t2.vox",
+		"part": "torso",
+		"offset": [
+			-13,
+			0,
+			-8
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_chest_t2_skirt": {
+		"file": "res://assets/items/vox_v2/assassin_chest_t2_skirt.vox",
+		"part": "hips",
+		"offset": [
+			-12,
+			-8,
+			-9
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_chest_t2_cape": {
+		"file": "res://assets/items/vox_v2/assassin_chest_t2_cape.vox",
+		"part": "torso",
+		"offset": [
+			-16,
+			-24,
+			-12
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_hands_t2_l": {
+		"file": "res://assets/items/vox_v2/assassin_hands_t2_l.vox",
+		"part": "hand_left",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_hands_t2_cuff_l": {
+		"file": "res://assets/items/vox_v2/assassin_hands_t2_cuff_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_legs_t2_l": {
+		"file": "res://assets/items/vox_v2/assassin_legs_t2_l.vox",
+		"part": "leg_left",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_feet_t2_l": {
+		"file": "res://assets/items/vox_v2/assassin_feet_t2_l.vox",
+		"part": "shin_left",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_hands_t2_r": {
+		"file": "res://assets/items/vox_v2/assassin_hands_t2_r.vox",
+		"part": "hand_right",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_hands_t2_cuff_r": {
+		"file": "res://assets/items/vox_v2/assassin_hands_t2_cuff_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_legs_t2_r": {
+		"file": "res://assets/items/vox_v2/assassin_legs_t2_r.vox",
+		"part": "leg_right",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_feet_t2_r": {
+		"file": "res://assets/items/vox_v2/assassin_feet_t2_r.vox",
+		"part": "shin_right",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_head_t3": {
+		"file": "res://assets/items/vox_v2/warrior_head_t3.vox",
+		"part": "head",
+		"offset": [
+			-15,
+			1,
+			-9
+		],
+		"tag": "gear",
+		"hides": [
+			"hair",
+			"hair_cap"
+		]
+	},
+	"warrior_shoulders_t3_l": {
+		"file": "res://assets/items/vox_v2/warrior_shoulders_t3_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-5,
+			-12,
+			-7
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_shoulders_t3_r": {
+		"file": "res://assets/items/vox_v2/warrior_shoulders_t3_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-10,
+			-12,
+			-7
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_chest_t3": {
+		"file": "res://assets/items/vox_v2/warrior_chest_t3.vox",
+		"part": "torso",
+		"offset": [
+			-14,
+			0,
+			-9
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_chest_t3_skirt": {
+		"file": "res://assets/items/vox_v2/warrior_chest_t3_skirt.vox",
+		"part": "hips",
+		"offset": [
+			-12,
+			-10,
+			-9
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_chest_t3_cape": {
+		"file": "res://assets/items/vox_v2/warrior_chest_t3_cape.vox",
+		"part": "torso",
+		"offset": [
+			-16,
+			-40,
+			-12
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_hands_t3_l": {
+		"file": "res://assets/items/vox_v2/warrior_hands_t3_l.vox",
+		"part": "hand_left",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_hands_t3_cuff_l": {
+		"file": "res://assets/items/vox_v2/warrior_hands_t3_cuff_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-6,
+			-18,
+			-6
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_legs_t3_l": {
+		"file": "res://assets/items/vox_v2/warrior_legs_t3_l.vox",
+		"part": "leg_left",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_feet_t3_l": {
+		"file": "res://assets/items/vox_v2/warrior_feet_t3_l.vox",
+		"part": "shin_left",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_hands_t3_r": {
+		"file": "res://assets/items/vox_v2/warrior_hands_t3_r.vox",
+		"part": "hand_right",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_hands_t3_cuff_r": {
+		"file": "res://assets/items/vox_v2/warrior_hands_t3_cuff_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-6,
+			-18,
+			-6
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_legs_t3_r": {
+		"file": "res://assets/items/vox_v2/warrior_legs_t3_r.vox",
+		"part": "leg_right",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"warrior_feet_t3_r": {
+		"file": "res://assets/items/vox_v2/warrior_feet_t3_r.vox",
+		"part": "shin_right",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_head_t3": {
+		"file": "res://assets/items/vox_v2/cleric_head_t3.vox",
+		"part": "head",
+		"offset": [
+			-14,
+			-8,
+			-9
+		],
+		"tag": "gear",
+		"hides": [
+			"hair",
+			"hair_cap"
+		]
+	},
+	"cleric_head_t3_halo": {
+		"file": "res://assets/items/vox_v2/cleric_head_t3_halo.vox",
+		"part": "head",
+		"offset": [
+			-14,
+			4,
+			-11
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_shoulders_t3_l": {
+		"file": "res://assets/items/vox_v2/cleric_shoulders_t3_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-5,
+			-6,
+			-6
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_shoulders_t3_r": {
+		"file": "res://assets/items/vox_v2/cleric_shoulders_t3_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-9,
+			-6,
+			-6
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_shoulders_t3_rays_l": {
+		"file": "res://assets/items/vox_v2/cleric_shoulders_t3_rays_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-6,
+			-4,
+			-2
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_shoulders_t3_rays_r": {
+		"file": "res://assets/items/vox_v2/cleric_shoulders_t3_rays_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-16,
+			-4,
+			-2
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_chest_t3": {
+		"file": "res://assets/items/vox_v2/cleric_chest_t3.vox",
+		"part": "torso",
+		"offset": [
+			-14,
+			0,
+			-8
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_chest_t3_skirt": {
+		"file": "res://assets/items/vox_v2/cleric_chest_t3_skirt.vox",
+		"part": "hips",
+		"offset": [
+			-13,
+			-16,
+			-9
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_chest_t3_cape": {
+		"file": "res://assets/items/vox_v2/cleric_chest_t3_cape.vox",
+		"part": "torso",
+		"offset": [
+			-16,
+			-40,
+			-12
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_hands_t3_l": {
+		"file": "res://assets/items/vox_v2/cleric_hands_t3_l.vox",
+		"part": "hand_left",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_hands_t3_cuff_l": {
+		"file": "res://assets/items/vox_v2/cleric_hands_t3_cuff_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_legs_t3_l": {
+		"file": "res://assets/items/vox_v2/cleric_legs_t3_l.vox",
+		"part": "leg_left",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_feet_t3_l": {
+		"file": "res://assets/items/vox_v2/cleric_feet_t3_l.vox",
+		"part": "shin_left",
+		"offset": [
+			-5,
+			-26,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_hands_t3_r": {
+		"file": "res://assets/items/vox_v2/cleric_hands_t3_r.vox",
+		"part": "hand_right",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_hands_t3_cuff_r": {
+		"file": "res://assets/items/vox_v2/cleric_hands_t3_cuff_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_legs_t3_r": {
+		"file": "res://assets/items/vox_v2/cleric_legs_t3_r.vox",
+		"part": "leg_right",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"cleric_feet_t3_r": {
+		"file": "res://assets/items/vox_v2/cleric_feet_t3_r.vox",
+		"part": "shin_right",
+		"offset": [
+			-5,
+			-26,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_head_t3": {
+		"file": "res://assets/items/vox_v2/mage_head_t3.vox",
+		"part": "head",
+		"offset": [
+			-15,
+			16,
+			-16
+		],
+		"tag": "gear",
+		"hides": [
+			"hair"
+		]
+	},
+	"mage_head_t3_runes": {
+		"file": "res://assets/items/vox_v2/mage_head_t3_runes.vox",
+		"part": "head",
+		"offset": [
+			-14,
+			22,
+			-15
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_shoulders_t3_l": {
+		"file": "res://assets/items/vox_v2/mage_shoulders_t3_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-5,
+			-6,
+			-6
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_shoulders_t3_r": {
+		"file": "res://assets/items/vox_v2/mage_shoulders_t3_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-9,
+			-6,
+			-6
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_shoulders_t3_shards_l": {
+		"file": "res://assets/items/vox_v2/mage_shoulders_t3_shards_l.vox",
+		"part": "arm_left",
+		"offset": [
+			7,
+			7,
+			-1
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_shoulders_t3_shards_r": {
+		"file": "res://assets/items/vox_v2/mage_shoulders_t3_shards_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-15,
+			7,
+			-1
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t3": {
+		"file": "res://assets/items/vox_v2/mage_chest_t3.vox",
+		"part": "torso",
+		"offset": [
+			-14,
+			0,
+			-8
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t3_skirt": {
+		"file": "res://assets/items/vox_v2/mage_chest_t3_skirt.vox",
+		"part": "hips",
+		"offset": [
+			-16,
+			-36,
+			-12
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t3_sleeve_l": {
+		"file": "res://assets/items/vox_v2/mage_chest_t3_sleeve_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-5,
+			-18,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t3_bell_l": {
+		"file": "res://assets/items/vox_v2/mage_chest_t3_bell_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-7,
+			-22,
+			-7
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t3_sleeve_r": {
+		"file": "res://assets/items/vox_v2/mage_chest_t3_sleeve_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-5,
+			-18,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t3_bell_r": {
+		"file": "res://assets/items/vox_v2/mage_chest_t3_bell_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-7,
+			-22,
+			-7
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_chest_t3_cape": {
+		"file": "res://assets/items/vox_v2/mage_chest_t3_cape.vox",
+		"part": "torso",
+		"offset": [
+			-16,
+			-40,
+			-12
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_hands_t3_l": {
+		"file": "res://assets/items/vox_v2/mage_hands_t3_l.vox",
+		"part": "hand_left",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_hands_t3_cuff_l": {
+		"file": "res://assets/items/vox_v2/mage_hands_t3_cuff_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_legs_t3_l": {
+		"file": "res://assets/items/vox_v2/mage_legs_t3_l.vox",
+		"part": "leg_left",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_feet_t3_l": {
+		"file": "res://assets/items/vox_v2/mage_feet_t3_l.vox",
+		"part": "shin_left",
+		"offset": [
+			-5,
+			-26,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_hands_t3_r": {
+		"file": "res://assets/items/vox_v2/mage_hands_t3_r.vox",
+		"part": "hand_right",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_hands_t3_cuff_r": {
+		"file": "res://assets/items/vox_v2/mage_hands_t3_cuff_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_legs_t3_r": {
+		"file": "res://assets/items/vox_v2/mage_legs_t3_r.vox",
+		"part": "leg_right",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mage_feet_t3_r": {
+		"file": "res://assets/items/vox_v2/mage_feet_t3_r.vox",
+		"part": "shin_right",
+		"offset": [
+			-5,
+			-26,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_head_t3": {
+		"file": "res://assets/items/vox_v2/archer_head_t3.vox",
+		"part": "head",
+		"offset": [
+			-14,
+			-8,
+			-17
+		],
+		"tag": "gear",
+		"hides": [
+			"hair",
+			"hair_cap"
+		]
+	},
+	"archer_head_t3_leaves": {
+		"file": "res://assets/items/vox_v2/archer_head_t3_leaves.vox",
+		"part": "head",
+		"offset": [
+			-13,
+			15,
+			-10
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_shoulders_t3_l": {
+		"file": "res://assets/items/vox_v2/archer_shoulders_t3_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-5,
+			-12,
+			-7
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_shoulders_t3_r": {
+		"file": "res://assets/items/vox_v2/archer_shoulders_t3_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-10,
+			-12,
+			-7
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_chest_t3": {
+		"file": "res://assets/items/vox_v2/archer_chest_t3.vox",
+		"part": "torso",
+		"offset": [
+			-13,
+			0,
+			-8
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_chest_t3_skirt": {
+		"file": "res://assets/items/vox_v2/archer_chest_t3_skirt.vox",
+		"part": "hips",
+		"offset": [
+			-13,
+			-14,
+			-9
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_chest_t3_cape": {
+		"file": "res://assets/items/vox_v2/archer_chest_t3_cape.vox",
+		"part": "torso",
+		"offset": [
+			-16,
+			-40,
+			-12
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_hands_t3_l": {
+		"file": "res://assets/items/vox_v2/archer_hands_t3_l.vox",
+		"part": "hand_left",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_hands_t3_cuff_l": {
+		"file": "res://assets/items/vox_v2/archer_hands_t3_cuff_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-5,
+			-18,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_legs_t3_l": {
+		"file": "res://assets/items/vox_v2/archer_legs_t3_l.vox",
+		"part": "leg_left",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_feet_t3_l": {
+		"file": "res://assets/items/vox_v2/archer_feet_t3_l.vox",
+		"part": "shin_left",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_hands_t3_r": {
+		"file": "res://assets/items/vox_v2/archer_hands_t3_r.vox",
+		"part": "hand_right",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_hands_t3_cuff_r": {
+		"file": "res://assets/items/vox_v2/archer_hands_t3_cuff_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-5,
+			-18,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_legs_t3_r": {
+		"file": "res://assets/items/vox_v2/archer_legs_t3_r.vox",
+		"part": "leg_right",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"archer_feet_t3_r": {
+		"file": "res://assets/items/vox_v2/archer_feet_t3_r.vox",
+		"part": "shin_right",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_head_t3": {
+		"file": "res://assets/items/vox_v2/assassin_head_t3.vox",
+		"part": "head",
+		"offset": [
+			-14,
+			-8,
+			-9
+		],
+		"tag": "gear",
+		"hides": [
+			"hair",
+			"hair_cap"
+		]
+	},
+	"assassin_shoulders_t3_l": {
+		"file": "res://assets/items/vox_v2/assassin_shoulders_t3_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-5,
+			-6,
+			-6
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_shoulders_t3_r": {
+		"file": "res://assets/items/vox_v2/assassin_shoulders_t3_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-9,
+			-6,
+			-6
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_chest_t3": {
+		"file": "res://assets/items/vox_v2/assassin_chest_t3.vox",
+		"part": "torso",
+		"offset": [
+			-13,
+			0,
+			-8
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_chest_t3_skirt": {
+		"file": "res://assets/items/vox_v2/assassin_chest_t3_skirt.vox",
+		"part": "hips",
+		"offset": [
+			-12,
+			-10,
+			-9
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_chest_t3_cape": {
+		"file": "res://assets/items/vox_v2/assassin_chest_t3_cape.vox",
+		"part": "torso",
+		"offset": [
+			-16,
+			-40,
+			-12
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_hands_t3_l": {
+		"file": "res://assets/items/vox_v2/assassin_hands_t3_l.vox",
+		"part": "hand_left",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_hands_t3_cuff_l": {
+		"file": "res://assets/items/vox_v2/assassin_hands_t3_cuff_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_legs_t3_l": {
+		"file": "res://assets/items/vox_v2/assassin_legs_t3_l.vox",
+		"part": "leg_left",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_feet_t3_l": {
+		"file": "res://assets/items/vox_v2/assassin_feet_t3_l.vox",
+		"part": "shin_left",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_hands_t3_r": {
+		"file": "res://assets/items/vox_v2/assassin_hands_t3_r.vox",
+		"part": "hand_right",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_hands_t3_cuff_r": {
+		"file": "res://assets/items/vox_v2/assassin_hands_t3_cuff_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_legs_t3_r": {
+		"file": "res://assets/items/vox_v2/assassin_legs_t3_r.vox",
+		"part": "leg_right",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"assassin_feet_t3_r": {
+		"file": "res://assets/items/vox_v2/assassin_feet_t3_r.vox",
+		"part": "shin_right",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	}
+}

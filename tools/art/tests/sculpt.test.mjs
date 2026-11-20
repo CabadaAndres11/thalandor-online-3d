@@ -107,3 +107,9 @@ test("shellAround wraps a shape without touching it", async () => {
   assert.ok(!shell.cells.has("0,-5,0"), "filter keeps y >= 0");
   for (const v of shell.cells.values()) assert.equal(v[3], 9);
 });
+
+test("a cylinder with both ends at one point is a one-voxel disc, not a sphere", () => {
+  const s = cylinder(new Shape(), [0, 5, 0], [0, 5, 0], 4, 1);
+  assert.ok(has(s, 4, 5, 0) && has(s, 0, 5, -4));
+  for (const v of s.cells.values()) assert.equal(v[1], 5, "flat");
+});
