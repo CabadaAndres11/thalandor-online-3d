@@ -647,3 +647,23 @@ func _max_jump(main: String, side: String) -> float:
 func test_two_hand_arms_do_not_flicker() -> void:
 	for side: String in ["right", "left"]:
 		assert_lt(_max_jump("greatsword_t1", side), 0.025, side + " fist moves smoothly")
+
+
+func _torso_at(rig: HumanRig, kind: String, step: int, k: float) -> Vector3:
+	_tip_at(rig, kind, step, k)
+	return rig.part("torso").rotation
+
+
+func test_swings_are_exaggerated() -> void:
+	for pair: Array in [["sword_t1", "melee"], ["greatsword_t1", "heavy"]]:
+		var rig := _gear_rig(pair[0])
+		for step in 2: # side slashes: the torso winds up about 70 degrees, then turns through
+			var wound := _torso_at(rig, pair[1], step, 0.3).y
+			var hit := _torso_at(rig, pair[1], step, 0.55).y
+			assert_gt(absf(wound), 1.1, "%s %d wound up" % [pair[0], step])
+			assert_gt(absf(hit - wound), 2.0, "%s %d turns through the blow" % [pair[0], step])
+		# The blow from above: leaning far back, then far into it.
+		var back := _torso_at(rig, pair[1], 2, 0.3).x
+		var into := _torso_at(rig, pair[1], 2, 0.55).x
+		assert_gt(into - back, 1.0, "%s blow from above" % pair[0])
+		assert_lt(rig._body.position.y, -0.1, "%s sinks into the blow" % pair[0])

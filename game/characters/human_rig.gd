@@ -649,25 +649,27 @@ func _side_slash(k: float, dir: float, both: bool) -> void:
 	_rot("arm_right", arm)
 	_rot("forearm_right", _keys(k, -0.18, -0.35, -0.1, -0.18))
 	_rot("hand_right", _keys(k, 0.1, 1.35, 1.35, 0.1)) # the blade points out, not up
-	(_parts["arm_right"] as Node3D).rotation.y = _keys(k, 0.0, -0.75 * sweep, 0.85 * sweep, 0.0)
-	var twist := _keys(k, 0.0, -0.55 * sweep, 0.6 * sweep, 0.0)
+	(_parts["arm_right"] as Node3D).rotation.y = _keys(k, 0.0, -0.6 * sweep, 0.7 * sweep, 0.0)
+	# Wound up far round (about 70 degrees), then the whole body turns through the blow.
+	var twist := _keys(k, 0.0, -1.2 * sweep, 1.0 * sweep, 0.0)
 	(_parts["torso"] as Node3D).rotation.y = twist
-	(_parts["hips"] as Node3D).rotation.y = twist * 0.5 # the hips lead the turn
-	(_parts["torso"] as Node3D).rotation.x = _keys(k, 0.0, -0.08, 0.22, 0.0)
+	(_parts["hips"] as Node3D).rotation.y = twist * 0.55 # the hips lead the turn
+	(_parts["torso"] as Node3D).rotation.x = _keys(k, 0.0, -0.15, 0.32, 0.0) # weight back, then into it
+	(_parts["torso"] as Node3D).rotation.z = sweep * _keys(k, 0.0, 0.12, -0.15, 0.0) # the shoulders tilt with the swing
 	if both:
 		_rot("arm_left", arm)
 		_rot("forearm_left", _keys(k, -0.85, -0.6, -0.3, -0.85))
-		(_parts["arm_left"] as Node3D).rotation.y = _keys(k, 0.0, -0.75 * sweep, 0.85 * sweep, 0.0)
+		(_parts["arm_left"] as Node3D).rotation.y = _keys(k, 0.0, -0.6 * sweep, 0.7 * sweep, 0.0)
 	else:
 		_rot("arm_left", _keys(k, 0.0, 0.5, -0.6, 0.0)) # the free arm balances the slash
 	var front := "leg_left" if dir > 0.0 else "leg_right"
 	var back := "leg_right" if dir > 0.0 else "leg_left"
-	_rot(front, _keys(k, 0.0, 0.2, -0.65, 0.0)) # a step into the slash
-	_rot(back, _keys(k, 0.0, -0.25, 0.5, 0.0))
-	_rot("shin_" + back.trim_prefix("leg_"), _keys(k, 0.05, 0.45, 0.75, 0.05))
+	_rot(front, _keys(k, 0.0, 0.25, -0.9, 0.0)) # a long step into the slash
+	_rot(back, _keys(k, 0.0, -0.3, 0.7, 0.0))
+	_rot("shin_" + back.trim_prefix("leg_"), _keys(k, 0.05, 0.55, 0.95, 0.05))
 	(_parts["head"] as Node3D).rotation.y = -twist * 0.5 # the eyes stay on the target
-	_body.position.z = _keys(k, 0.0, -0.04, 0.18, 0.0)
-	_body.position.y = _keys(k, 0.0, 0.0, -0.07 if not both else -0.1, 0.0)
+	_body.position.z = _keys(k, 0.0, -0.06, 0.26, 0.0)
+	_body.position.y = _keys(k, 0.0, 0.0, -0.12 if not both else -0.15, 0.0)
 
 
 ## The third link: a downward blow with one hand, the weight dropping into it.
@@ -675,14 +677,14 @@ func _chop(k: float) -> void:
 	_rot("arm_right", _keys(k, 0.0, -2.9, 0.3, 0.0))
 	_rot("forearm_right", _keys(k, -0.18, -0.8, -0.05, -0.18))
 	_rot("arm_left", _keys(k, 0.0, -0.4, 0.6, 0.0))
-	(_parts["torso"] as Node3D).rotation.x = _keys(k, 0.0, -0.25, 0.5, 0.0)
-	(_parts["torso"] as Node3D).rotation.y = _keys(k, 0.0, 0.2, -0.1, 0.0)
+	(_parts["torso"] as Node3D).rotation.x = _keys(k, 0.0, -0.45, 0.65, 0.0) # far back, then far into it
+	(_parts["torso"] as Node3D).rotation.y = _keys(k, 0.0, 0.3, -0.15, 0.0)
 	(_parts["head"] as Node3D).rotation.x = _keys(k, 0.0, 0.12, -0.18, 0.0)
 	_rot("leg_left", _keys(k, 0.0, 0.15, -0.6, 0.0))
 	_rot("leg_right", _keys(k, 0.0, -0.1, 0.5, 0.0))
 	_rot("shin_right", _keys(k, 0.05, 0.3, 0.8, 0.05))
-	_body.position.y = _keys(k, 0.0, 0.03, -0.12, 0.0)
-	_body.position.z = _keys(k, 0.0, -0.04, 0.2, 0.0)
+	_body.position.y = _keys(k, 0.0, 0.04, -0.15, 0.0)
+	_body.position.z = _keys(k, 0.0, -0.06, 0.26, 0.0)
 
 
 ## A straight two-handed thrust with a polearm; reach > 1 lunges deeper.
@@ -757,13 +759,13 @@ func _overhead(k: float) -> void:
 	_rot("arm_left", arms)
 	_rot("forearm_right", _keys(k, -0.18, -0.5, -0.1, -0.18))
 	_rot("forearm_left", _keys(k, -0.18, -0.5, -0.1, -0.18))
-	(_parts["torso"] as Node3D).rotation.x = _keys(k, 0.0, -0.32, 0.55, 0.0)
+	(_parts["torso"] as Node3D).rotation.x = _keys(k, 0.0, -0.45, 0.65, 0.0)
 	(_parts["head"] as Node3D).rotation.x = _keys(k, 0.0, 0.15, -0.2, 0.0)
 	_rot("leg_left", _keys(k, 0.0, 0.2, -0.5, 0.0))
 	_rot("leg_right", _keys(k, 0.0, -0.1, 0.45, 0.0))
 	_rot("shin_right", _keys(k, 0.05, 0.3, 0.9, 0.05))
-	_body.position.y = _keys(k, 0.0, 0.03, -0.14, 0.0)
-	_body.position.z = _keys(k, 0.0, -0.05, 0.2, 0.0)
+	_body.position.y = _keys(k, 0.0, 0.04, -0.17, 0.0)
+	_body.position.z = _keys(k, 0.0, -0.06, 0.26, 0.0)
 
 
 ## A full turn on the spot with the arms out, the weapons sweeping a circle around the body.
