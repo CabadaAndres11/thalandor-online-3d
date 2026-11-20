@@ -7,6 +7,47 @@
 3. **Aviso de Windows (SmartScreen):** el juego no está firmado. Pulsa **Más información → Ejecutar de todas formas**.
 4. Pulsa **Jugar**. Se abre **Tus personajes**: crea uno con **Crear** (nombre y aspecto) o elige uno que ya tengas. Empiezas como **aldeano**: la clase se elige en la partida, hablando con **Brann** (pulsa **E** a su lado).
 
+### Novedades de la 0.9.7: renovación gráfica
+**Todo el juego tiene un aspecto nuevo**, con vóxeles más finos y más detalle.
+
+- **Iluminación y ambientes:**
+  - dos ambientes, de día y mazmorra de noche;
+  - antorchas que parpadean, niebla, brillo y oclusión ambiental.
+  - El anfitrión los cambia con .
+- **Opciones** (en el título y en el menú de pausa):
+  - calidad gráfica baja, media o alta, para equipos modestos;
+  - ventana, escala de resolución y suavizado;
+  - volumen general, de música y de efectos.
+- **Personajes a doble resolución:**
+  - cuerpo de adulto, con caras, pelo, barbas y ropa rehechos;
+  - la vista previa de la selección lleva tu equipo puesto.
+- **Equipo nuevo:**
+  - las armaduras de las cinco clases, cada tramo más épico;
+  - filos y cabezas de armas más grandes y gruesos, con una silueta propia por arma;
+  - anillos y amuletos con modelo propio.
+- **Enemigos rehechos:**
+  - los cultistas, el inquisidor y los jefes Acólito, Vaelthar y Nhazar, con el detalle de sus hojas de referencia;
+  - el sabueso, el jabalí y el lobo, a alta resolución.
+- **Ropa que sigue al cuerpo:** las túnicas y faldas se mueven con las piernas, y las capas, capuchas y melenas se balancean al correr.
+- **Combate:**
+  - combo cuerpo a cuerpo de tajo a la izquierda, a la derecha y descendente, más exagerado y más rápido en todas las clases;
+  - las armas a dos manos se agarran con las dos manos;
+  - efectos sagrados del clérigo (cruces, alas, ángeles y coro) y templario cuerpo a cuerpo;
+  - *Himno divino*: el clérigo levita y es invulnerable mientras canta.
+- **Reglas:**
+  - fuera de combate recuperas un 2 % de la vida por segundo;
+  - en combate, el maná se recupera al 50 %;
+  - cada punto de atributo da un efecto visible (1 fuerza = +1 de ataque, 1 aguante = +10 de vida…);
+  - la agilidad sube la velocidad;
+  - los básicos del arquero no gastan concentración.
+- **Objetos:**
+  - lo que cae se ve en el suelo;
+  - fondo rojo en lo que no puedes equipar;
+  - vender ya no falla: se arregló un desajuste de casillas de la bolsa, y el chat dice por qué si no se puede.
+- El chat se vacía al **Cerrar sesión**.
+- **Tus personajes de antes se actualizan solos.** Sus estadísticas se recalculan con los nuevos valores de los atributos.
+- **Todo el grupo tiene que usar la misma versión.**
+
 ### Novedades de la 0.7.0: objetos
 - **Botín personal:** al morir un monstruo, cada jugador cercano recibe el suyo. El oro va directo a tu bolsa; los objetos caen al suelo con un **haz de luz** y su nombre en el color de su rareza, y **solo los ves tú**. Se recogen pasando por encima.
 - **Rarezas:** común, poco común, raro y épico, con propiedades aleatorias; y los **únicos de jefe** (Acólito Cultista, Vaelthar y Nhazar).
@@ -20,35 +61,6 @@
 - **Mercader** junto a Brann: vende pociones y objetos comunes, compra lo tuyo al 25 % y repara.
 - Comandos de prueba para el anfitrión: `/oro <n>` y `/objeto <base> [nivel] [rareza]`.
 - **Tus personajes de antes se actualizan solos** y empiezan con el equipo de su clase.
-
-### Novedades de la 0.6.1: los jefes del culto
-- **Acólito Cultista**, el nuevo jefe del culto (sustituye a la Bestia de guardia, con las mismas tres fases): halo dorado con púas, máscara del sol negro y garras.
-- **Vaelthar, Primer Apóstol**, el primero de los cinco Sacerdotes demonio. Está al **este** de la arena.
-  - Levita, tiene melena gris ceniza y tentáculos que le salen de las mangas.
-  - Seis ataques en tres fases: azote de tentáculos, lágrimas del sol negro, abrazo del abismo, halo del eclipse, charca de corrupción y un fervor final.
-- **Nhazar, Obispo de las Mil Voces**, el segundo Sacerdote demonio. Está en la esquina **noroeste**.
-  - Su cabeza es una masa enorme llena de máscaras que gritan.
-  - Su combate gira en torno a los estados: ralentiza, te hace atacar más lento, debilita, aturde y te rompe la armadura.
-- **Cultista Inquisidor:** la élite de las bandas de cultistas, con espada ceremonial. Entra en combate junto a los cultistas.
-- **Estado nuevo: Armadura rota.** Tu armadura protege menos contra el daño físico mientras dura.
-- La barra de los jefes sale arriba en cuanto empiezas a pelear con ellos.
-- **Todo el grupo tiene que usar la misma versión.**
-
-### Novedades de la 0.6.0: progresión
-- **Experiencia y niveles sin tope.** Cada nivel da **+5 a los cinco atributos** y 5 puntos libres; los atributos recomendados de tu clase salen en dorado.
-- **Ventana del personaje (C)** con tu modelo 3D y tus atributos.
-- **Árbol de talentos (T)** de 66 nodos con maestrías.
-- **Mejoras de clase del nivel 50:** doce en total, con sus habilidades activas, pasivas y evoluciones. La elección es obligatoria al llegar al 50.
-- **Barra de 9 huecos** (1–9) y ventana de habilidades (K) en lista.
-- **Monstruos con nivel:** la arena escala del 1 al 60 y la fija el anfitrión hablando con Brann.
-- **Kit del Asesino rehecho** y mucho trabajo visual en el combate:
-  - magia en vóxel (prisma arcano, bola de fuego, hielo, meteoro, muro de fuego, láser arcano);
-  - rastros y animaciones propias en el cuerpo a cuerpo;
-  - los enemigos reaccionan a los golpes y se disuelven en código binario al morir.
-- **Tiempo de lanzamiento** en algunos hechizos (se interrumpe al moverse), con su barra en pantalla.
-- **F9:** cámara isométrica o en tercera persona (Z / X para girarla).
-- Comandos de prueba para el anfitrión: `/xp <n>` y `/nivel <n>`.
-- **Tus personajes de antes se actualizan solos.**
 
 ### Jugar con amigos: dos redes para probar
 Esta versión trae **dos formas de conectarse**. Todos los del grupo tienen que usar la misma, y también **la misma versión** del juego.
