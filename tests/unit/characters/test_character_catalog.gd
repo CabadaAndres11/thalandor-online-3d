@@ -246,3 +246,25 @@ func test_tier3_chest_brings_its_aura() -> void:
 	var look := cat.resolve("mage", {}, "", ["", "", "", "", "mage_chest_t3", "", "", ""])
 	assert_eq(look.auras, [Color("#c07bff")])
 	assert_eq(cat.resolve("mage", {}, "", ["", "", "", "", "mage_chest_t2", "", "", ""]).auras, [])
+
+
+func test_resolve_gives_the_v2_body() -> void:
+	var look := CharacterCatalog.load_default().resolve("warrior", {})
+	assert_eq(look.get("body"), "v2")
+
+
+func test_piece_without_v2_is_scaled() -> void:
+	var cat := CharacterCatalog.load_default()
+	assert_true(cat.piece_v2("cult_hood").is_empty(), "monster pieces stay v1")
+	var e: Dictionary = cat._piece_entry("cult_hood")
+	assert_string_contains(str(e.file), "/pieces/")
+	assert_almost_eq(float(e.get("voxel_scale", 1.0)), 2.0, 0.001)
+
+
+func test_monster_look_stays_v1() -> void:
+	var type: Dictionary = MonsterDB.load_default().get_type("cultist")
+	assert_false(type.is_empty())
+	var look := MonsterAvatar.look_of(type)
+	assert_false(look.has("body"))
+	for p: Dictionary in look.get("pieces", []):
+		assert_false(p.has("voxel_scale"), str(p.id))

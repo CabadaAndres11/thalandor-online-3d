@@ -12,6 +12,9 @@ const CLASSES_PATH := "res://data/characters/classes.json"
 const PIECES_PATH := "res://data/characters/pieces.json"
 ## Equipment models (tools/art/make_gear.mjs); optional until they exist.
 const GEAR_PIECES_PATH := "res://data/items/gear_pieces.json"
+## v2 versions of the pieces (Plan 6.2), same ids; a piece without one is worn at voxel_scale 2.
+const PIECES_V2 := "res://data/characters/pieces_v2.json"
+const BODY := "v2"
 ## What a character wears on the chest with nothing equipped there.
 const BASE_OUTFIT := "outfit_villager"
 ## Voxel hair is lit from all sides; a touch darker than the painted hair to match it.
@@ -22,6 +25,7 @@ static var _default: CharacterCatalog
 var _options: Dictionary = {} # kind -> Array of option dicts
 var _classes: Array = []
 var _pieces: Dictionary = {}
+var _pieces_v2: Dictionary = {}
 
 
 static func load_default() -> CharacterCatalog:
@@ -64,6 +68,10 @@ func class_def(id: String) -> Dictionary:
 
 func piece(id: String) -> Dictionary:
 	return _pieces.get(id, {})
+
+
+func piece_v2(id: String) -> Dictionary:
+	return _pieces_v2.get(id, {})
 
 
 func piece_ids() -> Array:
@@ -174,12 +182,18 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 		"grip": grip,
 		"auras": auras,
 		"pieces": pieces,
+		"body": BODY,
 	}
 
 
+## The piece as the v2 body wears it: its v2 version, or the v1 one drawn twice as big.
 func _piece_entry(id: String) -> Dictionary:
+	var v2 := piece_v2(id)
+	if not v2.is_empty():
+		return {"id": id, "file": v2.get("file", ""), "part": v2.get("part", ""), "offset": v2.get("offset", [0, 0, 0])}
 	var p := piece(id)
-	return {"id": id, "file": p.get("file", ""), "part": p.get("part", ""), "offset": p.get("offset", [0, 0, 0])}
+	return {"id": id, "file": p.get("file", ""), "part": p.get("part", ""), "offset": p.get("offset", [0, 0, 0]),
+		"voxel_scale": 2.0}
 
 
 func _load(appearance_path: String, classes_path: String, pieces_path: String) -> void:
@@ -197,6 +211,10 @@ func _load(appearance_path: String, classes_path: String, pieces_path: String) -
 		var gear: Variant = _read_json(GEAR_PIECES_PATH)
 		if gear is Dictionary:
 			_pieces.merge(gear)
+	if FileAccess.file_exists(PIECES_V2):
+		var v2: Variant = _read_json(PIECES_V2)
+		if v2 is Dictionary:
+			_pieces_v2 = v2
 
 
 static func _read_json(path: String) -> Variant:

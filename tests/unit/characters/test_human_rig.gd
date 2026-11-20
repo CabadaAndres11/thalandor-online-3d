@@ -339,3 +339,56 @@ func test_aura_from_look() -> void:
 	var rig := _rig(look)
 	assert_not_null(rig.find_child("Aura", true, false), "tier 3 sets glow around the character")
 	assert_null(_rig().find_child("Aura", true, false))
+
+
+func _top_and_bottom(rig: HumanRig) -> Vector2:
+	var top := -INF
+	var bottom := INF
+	for n: Node in rig.find_children("Mesh", "MeshInstance3D", true, false):
+		var mi := n as MeshInstance3D
+		var aabb := mi.global_transform * mi.get_aabb()
+		top = maxf(top, aabb.end.y)
+		bottom = minf(bottom, aabb.position.y)
+	return Vector2(top, bottom)
+
+
+func test_look_without_body_is_v1() -> void:
+	var rig := HumanRig.build(_look())
+	add_child_autofree(rig)
+	assert_eq(rig.body, "v1")
+	assert_almost_eq(rig.scale.x, 0.36, 0.001)
+
+
+func test_unknown_body_falls_back_to_v1() -> void:
+	var look := _look()
+	look["body"] = "v9"
+	var rig := HumanRig.build(look)
+	add_child_autofree(rig)
+	assert_eq(rig.body, "v1")
+
+
+func test_v2_body_is_a_person_tall() -> void:
+	var look := _look()
+	look["body"] = "v2"
+	look["pieces"] = []
+	var rig := HumanRig.build(look)
+	add_child_autofree(rig)
+	assert_eq(rig.body, "v2")
+	assert_almost_eq(rig.scale.x, 0.18, 0.001)
+	var tb := _top_and_bottom(rig)
+	assert_between(tb.x, 1.70, 1.85, "head top in meters")
+	assert_almost_eq(tb.y, 0.0, 0.03, "feet on the ground")
+	for p: String in HumanRig.PARTS:
+		assert_not_null(rig.part(p), p)
+		assert_true(str(rig.part_mesh(p).mesh.resource_name).length() >= 0)
+
+
+func test_piece_voxel_scale() -> void:
+	var look := _look()
+	look["body"] = "v2"
+	look["pieces"] = [{"id": "hat_mage", "file": PIECES + "hat_mage.vox", "part": "head", "offset": [-4, 5, -4], "voxel_scale": 2.0}]
+	var rig := HumanRig.build(look)
+	add_child_autofree(rig)
+	var node := rig.piece_node("hat_mage")
+	assert_almost_eq(node.scale.x, 2.0, 0.001)
+	assert_almost_eq(node.position, Vector3(-8, 10, -8) * VoxMesher.VOXEL_SIZE, Vector3.ONE * 0.001)

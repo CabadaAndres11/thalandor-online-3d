@@ -10,6 +10,13 @@ extends Node3D
 const RIG := "res://assets/characters/vox/human.json"
 ## Fine voxels: the 49-voxel body is about 1.76 m tall.
 const MODEL_SCALE := 0.36
+## The two bodies (look.body): v1, 49 voxels (monsters until Plan 6.4), and v2, 98 voxels
+## of 1.8 cm (players and NPCs, Plan 6.2). Both are about 1.76 m tall.
+const BODIES := {
+	"v1": {"rig": RIG, "scale": MODEL_SCALE},
+	"v2": {"rig": "res://assets/characters/vox_v2/human_v2.json", "scale": 0.18},
+}
+const DEFAULT_BODY := "v1"
 const PARTS := ["hips", "torso", "head", "arm_left", "arm_right", "forearm_left", "forearm_right",
 	"hand_left", "hand_right", "leg_left", "leg_right", "shin_left", "shin_right"]
 ## Which body_scale entry applies to each part.
@@ -44,7 +51,10 @@ const ARM_SWING := 0.5
 const BOW_ARM := -0.75 # bow arm raised forward at rest...
 const BOW_FOREARM := -0.55 # ...and bent, so the bow stands in front of the chest
 
-static var _rig_data: Dictionary = {}
+static var _rig_data: Dictionary = {} # body -> parsed rig json
+
+## Which body this rig uses (a key of BODIES).
+var body: String = DEFAULT_BODY
 
 var _body: Node3D # everything hangs from it; it tips over for downed and die
 var _parts: Dictionary = {} # name -> Node3D (pivot)
@@ -214,12 +224,15 @@ func update(delta: float) -> void:
 
 
 func _setup(look: Dictionary) -> void:
-	scale = Vector3.ONE * MODEL_SCALE
+	body = str(look.get("body", DEFAULT_BODY))
+	if not BODIES.has(body):
+		body = DEFAULT_BODY
+	scale = Vector3.ONE * float(BODIES[body].scale)
 	_grip = str(look.get("grip", ""))
 	_body = Node3D.new()
 	_body.name = "Body"
 	add_child(_body)
-	var data := _load_rig()
+	var data := _load_rig(body)
 	var parts: Dictionary = data.get("parts", {})
 	var tints := {
 		VoxMesher.TINT_SKIN: look.get("skin_color", Color.WHITE),
@@ -341,8 +354,11 @@ func _attach_piece(p: Dictionary, tints: Dictionary) -> void:
 	var node := MeshInstance3D.new()
 	node.name = str(p.id)
 	node.mesh = mesh
+	# A v1 piece worn by the v2 body is drawn twice as big (voxel_scale 2) until it has its v2 version.
+	var vs := float(p.get("voxel_scale", 1.0))
+	node.scale = Vector3.ONE * vs
 	var o: Array = p.get("offset", [0, 0, 0])
-	node.position = Vector3(o[0], o[1], o[2]) * VoxMesher.VOXEL_SIZE
+	node.position = Vector3(o[0], o[1], o[2]) * VoxMesher.VOXEL_SIZE * vs
 	host.add_child(node)
 	_pieces[str(p.id)] = node
 
@@ -356,14 +372,16 @@ static func _factor(body_scale: Dictionary, group: String) -> Vector3:
 	return Vector3(f[0], f[1], f[2])
 
 
-static func _load_rig() -> Dictionary:
-	if _rig_data.is_empty():
-		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(RIG))
+static func _load_rig(body_id: String) -> Dictionary:
+	if not _rig_data.has(body_id):
+		var path := str(BODIES[body_id].rig)
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
 		if parsed is Dictionary:
-			_rig_data = parsed
+			_rig_data[body_id] = parsed
 		else:
-			push_error("HumanRig: missing or bad %s" % RIG)
-	return _rig_data
+			push_error("HumanRig: missing or bad %s" % path)
+			return {}
+	return _rig_data[body_id]
 
 
 # --- Poses ---------------------------------------------------------------------------
