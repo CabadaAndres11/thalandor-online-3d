@@ -2,7 +2,7 @@
 tags: [plan, spec]
 plan: 6.2
 fecha: 2026-11-20
-estado: aprobado
+estado: implementado
 actualizado: 2026-11-20
 ---
 # Plan 6.2 — Humanoide y piezas a vóxel 2×: diseño
