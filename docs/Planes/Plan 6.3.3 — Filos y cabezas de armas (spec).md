@@ -40,7 +40,7 @@ Rehacer los filos y las cabezas de todas las armas v2 con el estilo de la refere
    | Hacha | Hoja de media luna con barba hacia abajo y púa trasera |
    | Hacha a dos manos | Doble media luna con un remate en punta |
    | Maza | Cabeza con 6 aletas radiales y punta |
-   | Martillo de guerra | Bloque con caras enmarcadas, púa trasera y gema central |
+   | Martillo de guerra | Cabeza enorme en forma de tambor con cara de martillo en los dos lados, aro dorado, ojo central y correas; mango corto (cambio pedido por el usuario tras probar la 0.9.3) |
    | Alabarda | Hoja de hacha, punta de lanza y gancho trasero |
    | Cetro y bastón | Cabezas con jaula, cristal o gema |
 

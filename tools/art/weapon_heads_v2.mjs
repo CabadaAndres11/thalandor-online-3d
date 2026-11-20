@@ -171,22 +171,39 @@ export function headsV3({ hilt, haft }) {
       if (m.rune) cylinder(s, [CX, CY, z0 + r(h / 2)], [CX, CY, z0 + r(h / 2)], SC * 3.3, m.rune);
     },
     warhammer(s, m, t) {
-      haft(s, -16, r(SC * 2 * (16 + t)) + 8, m);
+      // A huge drum-shaped head on a short handle, a striking face at both ends (the user's
+      // reference): faces framed in a rim with an eye in the middle, straps round the drum.
+      const R = 8 + 2 * t, half = 11 + 2 * t, zc = 15 + R; // radius, half length (y), centre height
+      haft(s, -16, zc, m);
       cylinder(s, [CX, CY, -8], [CX, CY, 3], 1.5, m.grip);
-      const z = r(SC * 2 * (13 + t)) + 6, hh = r(SC * 9), face = r(SC * (8 + 2 * t));
-      // A block on the +y side with a framed striking face, a beak on the -y side.
-      roundBox(s, [-4, r(CY), z], [3, r(CY) + face, z + hh], 1, m.body);
-      roundBox(s, [-4, r(CY) + face - 1, z], [3, r(CY) + face, z + hh], 0.6, m.edge); // the face
-      roundBox(s, [-3, r(CY) + face, z + 1], [2, r(CY) + face, z + hh - 1], 0, m.core); // its sunken middle
-      if (m.trim) {
-        roundBox(s, [-4, r(CY) + 1, z], [3, r(CY) + 2, z + hh], 0.4, m.trim); // gold bands framing the block
-        roundBox(s, [-4, r(CY) + face - 3, z], [3, r(CY) + face - 2, z + hh], 0.4, m.trim);
+      const rim = m.trim ?? m.dark;
+      for (let y = r(CY - half); y <= r(CY + half); y++) {
+        const end = Math.abs(y - CY) >= half - 1.5; // the two faces
+        const ring = Math.abs(y - CY) >= half - 4 && !end; // a collar behind each face
+        const rr = ring ? R + 1 : R;
+        for (let x = Math.floor(CX - rr); x <= Math.ceil(CX + rr); x++) for (let z = Math.floor(zc - rr); z <= Math.ceil(zc + rr); z++) {
+          const d = Math.hypot(x - CX, z - zc);
+          if (d > rr) continue;
+          let idx = m.body;
+          if (end) idx = d > R - 2 ? rim : d > R - 3 ? m.edge : d < R * 0.32 ? (t >= 2 ? m.gem : m.edge) : d < R * 0.32 + 1 ? m.edge : m.core; // rim, steel face, eye
+          else if (ring) idx = rim;
+          else if (Math.abs(Math.abs(y - CY) - half / 2) < 0.6) idx = m.core; // grooves round the drum
+          s.put(x, y, z, idx);
+        }
       }
-      ellipsoid(s, [-4.5, CY + face / 2, z + hh / 2], [1, 2, 2], t >= 2 ? m.gem : m.dark); // the centre gem
-      if (t >= 2) s.put(-5, r(CY + face / 2) - 1, r(z + hh / 2) + 1, C.WHITE);
-      capsule(s, [CX, CY - 1, z + hh / 2], [CX, CY - SC * (7 + t), z + hh / 2 - 2], 2.4, 0.4, m.core); // the beak
-      capsule(s, [CX, CY, z + hh], [CX, CY, z + hh + 6 + 2 * t], 1.8, 0.4, m.edge); // top spike
-      if (m.rune) for (const x of [-4, 3]) s.put(x, r(CY + face / 2), r(z + hh / 2), m.rune);
+      // Four straps crossing the drum lengthwise, with studs, and the eye's glint on each face.
+      for (let k = 0; k < 4; k++) {
+        const a = (k / 4) * Math.PI * 2 + Math.PI / 4;
+        for (let y = r(CY - half + 4); y <= r(CY + half - 4); y++) {
+          for (const w of [-1, 0, 1]) s.put(r(CX + Math.cos(a) * R - Math.sin(a) * w), y, r(zc + Math.sin(a) * R + Math.cos(a) * w), rim);
+          if ((y & 3) === 0) s.put(r(CX + Math.cos(a) * (R + 1)), y, r(zc + Math.sin(a) * (R + 1)), m.edge);
+        }
+      }
+      if (t >= 2) for (const dir of [-1, 1]) s.put(r(CX) - 1, r(CY + dir * half), r(zc) + 1, C.WHITE);
+      if (m.rune) for (const dir of [-1, 1]) for (let a = 0; a < 24; a++) { // a glowing ring round each eye
+        const ang = (a / 24) * Math.PI * 2;
+        s.put(r(CX + Math.cos(ang) * R * 0.5), r(CY + dir * half), r(zc + Math.sin(ang) * R * 0.5), m.rune);
+      }
     },
     halberd(s, m, t) {
       haft(s, -24, r(SC * 2 * (24 + t)) + 8, m);

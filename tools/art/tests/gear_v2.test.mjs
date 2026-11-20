@@ -74,7 +74,8 @@ test("weapons keep about their v1 length in metres (-20 % to +50 %)", async () =
   for (const id of weaponIds) {
     const v1len = VoxRead(new URL(`../../../${v1[id].file.replace("res://", "")}`, import.meta.url)) * 2; // v1 voxels are twice as big
     const len = longest(v2[id].shape);
-    assert.ok(len >= v1len * 0.8 && len <= v1len * 1.5, `${id}: ${len} v2 voxels vs ${v1len} (v1 ×2)`);
+    const shortHandle = id.startsWith("w_warhammer_"); // shorter on purpose (user, after the 0.9.3 playtest)
+    assert.ok((shortHandle || len >= v1len * 0.8) && len <= v1len * 1.5, `${id}: ${len} v2 voxels vs ${v1len} (v1 ×2)`);
   }
 });
 

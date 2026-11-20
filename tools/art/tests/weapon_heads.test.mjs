@@ -10,8 +10,23 @@ const before = JSON.parse(fs.readFileSync(new URL("./weapon_sizes_0.9.2.json", i
 const CY = -4.5;
 const BLADED = ["sword", "short_sword", "dagger", "greatsword", "axe", "great_axe", "halberd"];
 
+// The war hammer (user, after the 0.9.3 playtest): a hammer face on both sides, a much bigger
+// head and a shorter handle.
+test("the war hammer is a huge two-faced head on a short handle", () => {
+  for (const t of [1, 2, 3]) {
+    const s = w[`w_warhammer_t${t}`].shape, now = metrics(s), was = before[`w_warhammer_t${t}`];
+    assert.ok(now.W >= was.W * 1.8, `t${t} head ${now.W} wide vs ${was.W}`);
+    let lo = Infinity, hi = -Infinity, zlo = Infinity;
+    for (const [, y, z] of s.cells.values()) if (z > 8) { lo = Math.min(lo, y); hi = Math.max(hi, y); zlo = Math.min(zlo, z); }
+    assert.ok(Math.abs((hi - CY) - (CY - lo)) <= 2, `t${t} the same on both sides (${lo}..${hi})`);
+    const headTop = now.L, headLow = zlo;
+    assert.ok(headLow < 18, `t${t} a short handle: the head starts at z ${headLow}`);
+    assert.ok(headTop - headLow >= 16 + 2 * t, `t${t} a tall head (${headTop - headLow})`);
+  }
+});
+
 test("heads and blades are at least 20 % bigger than in 0.9.2", () => {
-  for (const f of ZFAMILIES) for (const t of [1, 2, 3]) {
+  for (const f of ZFAMILIES.filter((x) => x !== "warhammer")) for (const t of [1, 2, 3]) {
     const id = `w_${f}_t${t}`, now = metrics(w[id].shape), was = before[id];
     assert.ok(now.L - 3 >= (was.L - 3) * 1.2, `${id} reach ${now.L} vs ${was.L}`);
     assert.ok(now.W >= was.W * 1.15, `${id} width ${now.W} vs ${was.W}`);

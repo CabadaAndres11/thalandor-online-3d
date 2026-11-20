@@ -2674,8 +2674,8 @@
 		"file": "res://assets/items/vox_v2/w_warhammer_t1.vox",
 		"part": "hand_right",
 		"offset": [
-			-5,
-			-13,
+			-11,
+			-17,
 			-16
 		],
 		"tag": "weapon",
@@ -2883,8 +2883,8 @@
 		"file": "res://assets/items/vox_v2/w_warhammer_t2.vox",
 		"part": "hand_right",
 		"offset": [
-			-5,
-			-14,
+			-13,
+			-19,
 			-16
 		],
 		"tag": "weapon",
@@ -3092,8 +3092,8 @@
 		"file": "res://assets/items/vox_v2/w_warhammer_t3.vox",
 		"part": "hand_right",
 		"offset": [
-			-5,
 			-15,
+			-21,
 			-16
 		],
 		"tag": "weapon",
