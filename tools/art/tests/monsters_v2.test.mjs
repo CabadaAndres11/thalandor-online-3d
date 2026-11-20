@@ -68,3 +68,30 @@ test("robe hems stay off the ground (y -53)", () => {
     assert.ok(lo >= -52, `${id} reaches ${lo}`);
   }
 });
+
+// A hidden voxel draws nothing: if one touched the air outside, the floor behind would show
+// through. Flood the air from outside the box and check no hidden voxel borders it.
+test("Nhazar's head is watertight: no hidden voxel touches the outside air", async () => {
+  const { HIDDEN } = await import("../vox.mjs");
+  const s = m.nhazar_head.shape, [sx, sy, sz] = s.size(), [mx, my, mz] = s.min();
+  const X = sx + 2, Y = sy + 2, Z = sz + 2, idx = (x, y, z) => (x * Y + y) * Z + z;
+  const solid = new Uint8Array(X * Y * Z);
+  for (const [x, y, z, i] of s.cells.values()) solid[idx(x - mx + 1, y - my + 1, z - mz + 1)] = i === HIDDEN ? 2 : 1;
+  // The body's own head fills the hole the mass leaves round it (it is drawn).
+  for (const [x, y, z] of body.head.shape.cells.values()) { const k = idx(x - mx + 1, y - my + 1, z - mz + 1); if (x - mx + 1 >= 0 && x - mx + 1 < X && y - my + 1 >= 0 && y - my + 1 < Y && z - mz + 1 >= 0 && z - mz + 1 < Z && !solid[k]) solid[k] = 1; }
+  const air = new Uint8Array(X * Y * Z), stack = [0];
+  air[0] = 1;
+  while (stack.length) {
+    const c = stack.pop(), z = c % Z, y = ((c - z) / Z) % Y, x = (c - z - y * Z) / (Y * Z);
+    for (const [dx, dy, dz] of [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]]) {
+      const nx = x + dx, ny = y + dy, nz = z + dz;
+      if (nx < 0 || ny < 0 || nz < 0 || nx >= X || ny >= Y || nz >= Z) continue;
+      const n = idx(nx, ny, nz);
+      if (air[n]) continue;
+      if (solid[n] === 2) assert.fail(`a hidden voxel at ${nx + mx - 1},${ny + my - 1},${nz + mz - 1} is open to the air`);
+      if (solid[n]) continue;
+      air[n] = 1;
+      stack.push(n);
+    }
+  }
+});

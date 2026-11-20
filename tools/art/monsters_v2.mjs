@@ -492,13 +492,20 @@ function tentacles(outer) {
 function nhazarHead() {
   const s = new Shape();
   const R = 72, cx = CX, cz = 0, cy = R * 0.95;
-  for (let x = Math.floor(cx - R - 7); x <= Math.ceil(cx + R + 7); x++) for (let y = Math.floor(cy - R - 7); y <= Math.ceil(cy + R + 7); y++) {
-    for (let z = Math.floor(cz - R - 7); z <= Math.ceil(cz + R + 7); z++) {
-      const d = Math.hypot(x - cx, y - cy, z - cz) || 1;
-      const nx = (x - cx) / d, ny = (y - cy) / d, nz = (z - cz) / d;
-      const bump = Math.sin(nx * 11 + ny * 3) * 4.4 + Math.sin(ny * 13 - nz * 5) * 3.8 + Math.sin(nz * 10 + nx * 4) * 4 + Math.sin(nx * 31 + nz * 23) * 1.6;
-      const rr = R + bump;
-      if (d > rr || d < rr - 1.6) continue; // a shell: the inside is never seen
+  // The mass is a bumpy solid; only its surface is kept (each inside cell with a face to the
+  // outside), so the shell is closed however steep the bumps are.
+  const inside = (x, y, z) => {
+    const d = Math.hypot(x - cx, y - cy, z - cz) || 1;
+    const nx = (x - cx) / d, ny = (y - cy) / d, nz = (z - cz) / d;
+    const bump = Math.sin(nx * 11 + ny * 3) * 4.4 + Math.sin(ny * 13 - nz * 5) * 3.8 + Math.sin(nz * 10 + nx * 4) * 4 + Math.sin(nx * 31 + nz * 23) * 1.6;
+    return d <= R + bump;
+  };
+  const SIDES = [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]];
+  const B = R + 16; // the bumps reach 14 voxels past R: the box must hold all of them
+  for (let x = Math.floor(cx - B); x <= Math.ceil(cx + B); x++) for (let y = Math.floor(cy - B); y <= Math.ceil(cy + B); y++) {
+    for (let z = Math.floor(cz - B); z <= Math.ceil(cz + B); z++) {
+      if (Math.hypot(x - cx, y - cy, z - cz) < R - 16 || !inside(x, y, z)) continue; // deep inside or outside
+      if (SIDES.every(([dx, dy, dz]) => inside(x + dx, y + dy, z + dz))) continue; // not on the surface
       const curl = Math.sin(x * 0.65 + y * 0.35) + Math.sin(z * 0.55 - y * 0.45);
       s.put(x, y, z, curl > 0.9 ? CURL_L : curl < -1.1 ? CURL_D : CURL);
     }
@@ -532,10 +539,9 @@ function nhazarHead() {
   const inner = [];
   for (const [x, y, z, i] of s.cells.values()) {
     if (i === GOLD || i === GOLD_D || i === GOLD_L) continue; // only the curls and the masks' backs
-    const d = Math.hypot(x - cx, y - cy, z - cz);
-    for (const [dx, dy, dz] of [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]]) {
+    for (const [dx, dy, dz] of SIDES) { // inside the solid, every empty cell beside the surface is hidden
       const nx = x + dx, ny = y + dy, nz = z + dz;
-      if (!s.cells.has(`${nx},${ny},${nz}`) && Math.hypot(nx - cx, ny - cy, nz - cz) < d - 0.2) inner.push([nx, ny, nz]);
+      if (!s.cells.has(`${nx},${ny},${nz}`) && inside(nx, ny, nz)) inner.push([nx, ny, nz]);
     }
   }
   for (const [x, y, z] of inner) s.put(x, y, z, HIDDEN);
