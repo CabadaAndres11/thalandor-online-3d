@@ -43,6 +43,9 @@ func _initialize() -> void:
 	if _name in ["bodies", "faces"]:
 		_bodies(_name == "faces")
 		return
+	if _name == "beasts":
+		_beasts()
+		return
 	if _name == "monsters_b":
 		_monsters_b()
 		return
@@ -284,6 +287,22 @@ func _combat_scene() -> void:
 
 ## Task 12 set: marked boar (warning its charge), cultists (one elite), cult archer and an
 ## elite marked_hound, around a warrior.
+## Plan 6.4.2: the three beasts side on and three-quarter, a cultist for scale.
+func _beasts() -> void:
+	var db := MonsterDB.load_default()
+	var row := [["marked_hound", PI / 2.0], ["marked_hound", 0.6], ["marked_boar", PI / 2.0], ["marked_boar", 0.6], ["hunter_wolf", PI / 2.0], ["cultist", 0.0]]
+	for i in row.size():
+		var a := MonsterAvatar.new()
+		root.add_child(a)
+		a.setup(db.get_type(row[i][0]))
+		a.apply_state({"position": Vector3(14.0 + i * 2.6, 0, 20.0), "facing": row[i][1]}, {"hp": 1.0, "max_hp": 1.0, "status_bits": 0}, 0.016)
+		a.bar.visible = false
+	var cam := Camera3D.new()
+	cam.fov = 42
+	root.add_child(cam)
+	cam.look_at_from_position(Vector3(20.5, 3.4, 30.5), Vector3(20.5, 0.9, 20.0))
+
+
 func _monsters_b() -> void:
 	var hero := PlayerAvatar.new()
 	root.add_child(hero)

@@ -3,7 +3,8 @@ extends Node3D
 ## A voxel monster made of parts (assets/monsters/vox/<name>.json): each part is a
 ## .vox mesh hanging from a pivot node (optionally under a "parent" part), animated
 ## by code: legs swing in diagonal pairs, the head bobs, the tail sways; bite: the head
-## snaps down while the beast lunges (MonsterAvatar).
+## snaps down while the beast lunges (MonsterAvatar). "voxel_scale" in the rig file sizes its voxels
+## (0.25: 2.5 cm voxels, Plan 6.4.2); pivots and offsets are in those voxels.
 
 const DIR := "res://assets/monsters/vox/%s.json"
 const LEG_SWING := 0.6
@@ -14,6 +15,8 @@ var _phase: float = 0.0
 var _time: float = 0.0
 ## While true the head is driven by the attack tween, not by the walk cycle.
 var biting: bool = false
+## The size of this rig's voxels relative to VoxMesher.VOXEL_SIZE.
+var voxel_scale: float = 1.0
 
 
 static func build(rig_name: String, tint: Color) -> BeastRig:
@@ -24,6 +27,8 @@ static func build(rig_name: String, tint: Color) -> BeastRig:
 		push_error("BeastRig: missing or bad rig %s" % rig_name)
 		return rig
 	var parts: Dictionary = data.get("parts", {})
+	rig.voxel_scale = float(data.get("voxel_scale", 1.0))
+	var unit := VoxMesher.VOXEL_SIZE * rig.voxel_scale
 	var pivots := {} # name -> absolute pivot (voxels)
 	for part_name: String in parts:
 		var p: Dictionary = parts[part_name]
@@ -34,7 +39,8 @@ static func build(rig_name: String, tint: Color) -> BeastRig:
 		var mesh := MeshInstance3D.new()
 		mesh.mesh = VoxMesher.cached(str(p.get("file", "")), {VoxMesher.TINT_PRIMARY: tint})
 		var off: Array = p.get("offset", [0, 0, 0])
-		mesh.position = Vector3(off[0], off[1], off[2]) * VoxMesher.VOXEL_SIZE
+		mesh.position = Vector3(off[0], off[1], off[2]) * unit
+		mesh.scale = Vector3.ONE * rig.voxel_scale
 		pivot.add_child(mesh)
 		rig._parts[part_name] = pivot
 	# Parents first (file order lists them first): a child's pivot is relative to its
@@ -43,10 +49,10 @@ static func build(rig_name: String, tint: Color) -> BeastRig:
 		var parent_name := str((parts[part_name] as Dictionary).get("parent", ""))
 		var pivot: Node3D = rig._parts[part_name]
 		if parent_name != "" and rig._parts.has(parent_name):
-			pivot.position = (pivots[part_name] - pivots[parent_name]) * VoxMesher.VOXEL_SIZE
+			pivot.position = (pivots[part_name] - pivots[parent_name]) * unit
 			(rig._parts[parent_name] as Node3D).add_child(pivot)
 		else:
-			pivot.position = pivots[part_name] * VoxMesher.VOXEL_SIZE
+			pivot.position = pivots[part_name] * unit
 			rig.add_child(pivot)
 	return rig
 

@@ -240,3 +240,25 @@ func test_boss_models_are_built_ahead_of_the_fight() -> void:
 	var a := _avatar("nhazar")
 	assert_not_null(a)
 	assert_lt(Time.get_ticks_msec() - t0, 500, "the huge head was already built (%s)" % head.file)
+
+
+func _rig_box(rig: BeastRig) -> AABB:
+	var box := AABB()
+	var first := true
+	for mi: MeshInstance3D in rig.find_children("*", "MeshInstance3D", true, false):
+		var b := rig.global_transform.affine_inverse() * (mi.global_transform * mi.mesh.get_aabb())
+		box = b if first else box.merge(b)
+		first = false
+	return box
+
+
+func test_beasts_are_fine_voxels_at_the_same_size() -> void:
+	# Plan 6.4.2: 2.5 cm voxels (voxel_scale 0.25) with the same size in metres as before.
+	for pair: Array in [["marked_hound", 1.7, 2.9], ["marked_boar", 1.7, 2.6], ["hunter_wolf", 1.7, 2.9]]:
+		var rig := BeastRig.build(pair[0], Color.GRAY)
+		add_child_autofree(rig)
+		assert_almost_eq(rig.voxel_scale, 0.25, 0.001, pair[0])
+		var box := _rig_box(rig)
+		assert_almost_eq(box.position.y, 0.0, 0.06, "%s stands on the ground" % pair[0])
+		assert_between(box.size.y, float(pair[1]) * 0.7, float(pair[1]) * 1.3, "%s height" % pair[0])
+		assert_between(box.size.z, float(pair[2]) * 0.7, float(pair[2]) * 1.3, "%s length" % pair[0])

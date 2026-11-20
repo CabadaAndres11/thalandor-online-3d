@@ -1,4 +1,5 @@
 {
+	"voxel_scale": 0.25,
 	"parts": {
 		"body": {
 			"file": "res://assets/monsters/vox/hunter_wolf_body.vox",
@@ -8,87 +9,87 @@
 				0
 			],
 			"offset": [
-				-3,
-				7,
-				-6
+				-11,
+				30,
+				-25
 			]
 		},
 		"head": {
 			"file": "res://assets/monsters/vox/hunter_wolf_head.vox",
 			"pivot": [
 				0,
-				11,
-				6
+				44,
+				24
 			],
 			"offset": [
-				-3,
-				-5,
-				0
+				-10,
+				-17,
+				-21
 			]
 		},
 		"leg_front_left": {
 			"file": "res://assets/monsters/vox/hunter_wolf_leg_front_left.vox",
 			"pivot": [
-				-2,
-				8,
-				4
+				-8,
+				32,
+				16
 			],
 			"offset": [
-				-1,
-				-8,
-				-1
+				-5,
+				-32,
+				-5
 			]
 		},
 		"leg_front_right": {
 			"file": "res://assets/monsters/vox/hunter_wolf_leg_front_right.vox",
 			"pivot": [
-				2,
 				8,
-				4
+				32,
+				16
 			],
 			"offset": [
-				-1,
-				-8,
-				-1
+				-5,
+				-32,
+				-5
 			]
 		},
 		"leg_back_left": {
 			"file": "res://assets/monsters/vox/hunter_wolf_leg_back_left.vox",
 			"pivot": [
-				-2,
-				8,
-				-4
+				-8,
+				32,
+				-16
 			],
 			"offset": [
-				-1,
-				-8,
-				-1
+				-5,
+				-32,
+				-5
 			]
 		},
 		"leg_back_right": {
 			"file": "res://assets/monsters/vox/hunter_wolf_leg_back_right.vox",
 			"pivot": [
-				2,
 				8,
-				-4
+				32,
+				-16
 			],
 			"offset": [
-				-1,
-				-8,
-				-1
+				-5,
+				-32,
+				-5
 			]
 		},
 		"tail": {
 			"file": "res://assets/monsters/vox/hunter_wolf_tail.vox",
 			"pivot": [
 				0,
-				11,
-				-6
+				44,
+				-24
 			],
 			"offset": [
-				-1,
-				-1,
-				-7
+				-3,
+				-3,
+				-30
 			]
 		}
 	}

@@ -1,4 +1,5 @@
 {
+	"voxel_scale": 0.25,
 	"parts": {
 		"body": {
 			"file": "res://assets/monsters/vox/marked_boar_body.vox",
@@ -8,87 +9,87 @@
 				0
 			],
 			"offset": [
-				-5,
-				5,
-				-6
+				-16,
+				21,
+				-23
 			]
 		},
 		"head": {
 			"file": "res://assets/monsters/vox/marked_boar_head.vox",
 			"pivot": [
 				0,
-				10,
-				6
+				40,
+				24
 			],
 			"offset": [
-				-3,
-				-6,
-				-4
+				-15,
+				-21,
+				-20
 			]
 		},
 		"leg_front_left": {
 			"file": "res://assets/monsters/vox/marked_boar_leg_front_left.vox",
 			"pivot": [
-				-3,
-				5,
-				3
+				-12,
+				20,
+				12
 			],
 			"offset": [
-				-1,
-				-5,
-				-1
+				-6,
+				-20,
+				-5
 			]
 		},
 		"leg_front_right": {
 			"file": "res://assets/monsters/vox/marked_boar_leg_front_right.vox",
 			"pivot": [
-				2,
-				5,
-				3
+				8,
+				20,
+				12
 			],
 			"offset": [
-				-1,
-				-5,
-				-1
+				-6,
+				-20,
+				-5
 			]
 		},
 		"leg_back_left": {
 			"file": "res://assets/monsters/vox/marked_boar_leg_back_left.vox",
 			"pivot": [
-				-3,
-				5,
-				-4
+				-12,
+				20,
+				-16
 			],
 			"offset": [
-				-1,
-				-5,
-				-1
+				-6,
+				-20,
+				-5
 			]
 		},
 		"leg_back_right": {
 			"file": "res://assets/monsters/vox/marked_boar_leg_back_right.vox",
 			"pivot": [
-				2,
-				5,
-				-4
+				8,
+				20,
+				-16
 			],
 			"offset": [
-				-1,
-				-5,
-				-1
+				-6,
+				-20,
+				-5
 			]
 		},
 		"tail": {
 			"file": "res://assets/monsters/vox/marked_boar_tail.vox",
 			"pivot": [
 				0,
-				10,
-				-6
+				40,
+				-24
 			],
 			"offset": [
-				0,
-				0,
-				-3
+				-1,
+				-1,
+				-6
 			]
 		}
 	}
