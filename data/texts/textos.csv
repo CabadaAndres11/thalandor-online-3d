@@ -16,7 +16,7 @@ MENU_TITLE,Menú
 MENU_RESUME,Volver al juego
 MENU_OPEN_GROUP,Abrir grupo
 MENU_OPENING_GROUP,Abriendo grupo…
-MENU_LEAVE,Salir al título
+MENU_LEAVE,Cerrar sesión
 MENU_CODE_HINT,Comparte este código con tus amigos
 MENU_GUEST_HINT,Estás en el grupo de un amigo
 CHAT_PLACEHOLDER,"Escribe un mensaje (Enter envía, Esc cancela)"

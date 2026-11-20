@@ -78,6 +78,14 @@ func cancel() -> void:
 
 
 ## True if a line with exactly this text is in the chat.
+## Empties the history (a new session starts with a clean chat).
+func clear() -> void:
+	for l: Dictionary in _lines:
+		_lines_box.remove_child(l.label)
+		(l.label as Label).free()
+	_lines.clear()
+
+
 func has_message(text: String) -> bool:
 	return _lines.any(func(l: Dictionary) -> bool: return (l.label as Label).text == text)
 

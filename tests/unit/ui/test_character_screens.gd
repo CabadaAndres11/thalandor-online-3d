@@ -149,3 +149,21 @@ func test_preview_shows_character() -> void:
 	assert_has(p.rig.pieces(), "hat_mage")
 	p.show_character("warrior", {})
 	assert_has(p.rig.pieces(), "pauldron_left", "replaces the previous character")
+
+
+func test_select_preview_wears_the_saved_gear() -> void:
+	var s := CharacterSelectScreen.new()
+	_host(s)
+	var list := _chars(1)
+	list[0].class_id = "warrior"
+	list[0].progress.level = 30
+	list[0].inventory = Inventory.starter("warrior", ItemDB.load_default())
+	list[0].inventory.equipment["main"] = ItemRoll.new_item("greatsword_t2", 30)
+	list[0].inventory.equipment.erase("offhand")
+	s.set_characters(list, list[0].id)
+	assert_has(s.preview.rig.pieces(), "w_greatsword_t2", "the weapon in hand")
+	assert_has(s.preview.rig.pieces(), "warrior_chest_t1", "the armour worn")
+
+
+func test_leave_menu_says_log_out() -> void:
+	assert_eq(TranslationServer.translate("MENU_LEAVE"), "Cerrar sesión")

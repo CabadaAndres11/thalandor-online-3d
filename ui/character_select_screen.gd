@@ -132,7 +132,7 @@ func _refresh() -> void:
 	var c := _current()
 	preview.visible = c != null
 	if c != null:
-		preview.show_character(c.class_id, c.appearance)
+		preview.show_character(c.class_id, c.appearance, c.inventory.visible_bases()) # as last equipped
 
 
 func _current() -> CharacterData:

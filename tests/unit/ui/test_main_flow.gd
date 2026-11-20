@@ -518,3 +518,11 @@ func test_esc_closes_options_and_keeps_pause() -> void:
 	await wait_process_frames(2)
 	assert_false(main.options_window.visible)
 	assert_true(main.pause_menu.visible)
+
+
+func test_leaving_clears_the_chat() -> void:
+	main._on_play("Prueba")
+	await wait_physics_frames(3)
+	main.chat.add_message("Ana", "hola", false)
+	main._leave_game()
+	assert_eq(main.chat.visible_lines().size(), 0, "a new session starts with an empty chat")

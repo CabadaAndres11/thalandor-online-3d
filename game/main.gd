@@ -888,6 +888,7 @@ func _leave_game() -> void:
 	downed_overlay.unbind()
 	downed_overlay.visible = false
 	chat.cancel()
+	chat.clear()
 	chat.visible = false
 	status_label.visible = false
 	pause_menu.reset()
