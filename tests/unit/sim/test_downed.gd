@@ -5,7 +5,9 @@ extends GutTest
 
 func _world() -> SimWorld:
 	var map := CollisionMap.from_layout({"size": [40, 40], "spawn": [5, 5], "blocks": [], "respawn_point": [6, 6]})
-	return SimWorld.new(Balance.load_from(), map, 5)
+	var b := Balance.load_from()
+	b.out_of_combat_hp_pct = 0.0 # exact revive health (the passive regen has its own test)
+	return SimWorld.new(b, map, 5)
 
 
 func _player(w: SimWorld, id: int, pos: Vector3) -> PlayerState:

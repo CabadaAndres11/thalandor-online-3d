@@ -11,6 +11,7 @@ func test_combat_group_three_clients_see_same_hp() -> void:
 		h.add_client(n)
 	h.run_ticks(30)
 	var w := h.host.world
+	w.balance.out_of_combat_hp_pct = 0.0 # the health compared must not drift between snapshots
 	var marked_hound := MonsterDB.load_default().make("marked_hound", w.next_monster_id(), Vector3(30, 0, 30), w)
 	w.add_entity(marked_hound)
 	Damage.apply(marked_hound, {"amount": 17.0, "crit": false, "dodged": false, "absorbed": 0.0}, w)

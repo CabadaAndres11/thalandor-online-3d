@@ -135,6 +135,7 @@ func test_choosing_keeps_the_health_ratio() -> void:
 	var a := _guest("Ana")
 	_decoded(a)
 	var p: PlayerState = host.world.players[1]
+	host.world.balance.out_of_combat_hp_pct = 0.0 # only the class change may move the health
 	p.hp = p.stats.max_hp * 0.25
 	_choose(a, "warrior")
 	assert_almost_eq(p.hp, p.stats.max_hp * 0.25, 0.01, "no free heal from choosing in combat")

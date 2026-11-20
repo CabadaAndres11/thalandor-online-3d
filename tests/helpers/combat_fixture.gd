@@ -14,6 +14,7 @@ func _init(blocks: Array = [], size := Vector2i(30, 30), seed_value := 7) -> voi
 	var map := CollisionMap.from_layout({"size": [size.x, size.y], "spawn": [5, 5], "blocks": blocks})
 	var b := Balance.load_from()
 	b.damage_variance = 0.0 # exact numbers in combat tests (variance has its own test)
+	b.out_of_combat_hp_pct = 0.0 # exact heals too (the passive regen has its own test)
 	world = SimWorld.new(b, map, seed_value)
 	world.abilities = AbilityDB.load_files([TEST_ABILITIES])
 
