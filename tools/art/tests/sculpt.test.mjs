@@ -61,7 +61,7 @@ test("tone is deterministic and only uses given tones", () => {
 
 test("shadeByFacing darkens bottom faces and lights top faces", () => {
   const s = roundBox(new Shape(), [0, 0, 0], [4, 4, 4], 0, 5);
-  shadeByFacing(s, [5], { 5: { shade: 6, light: 7 } });
+  shadeByFacing(s, [5], { 5: { shade: 6, light: 7 } }, 0.6, -0.45, -0.75);
   assert.equal(s.cells.get("2,0,2")[3], 6, "bottom");
   assert.equal(s.cells.get("2,4,2")[3], 7, "top");
   assert.equal(s.cells.get("2,2,2")[3], 5, "inside");
@@ -95,4 +95,15 @@ test("shadeByFacing ignores the small steps of a curved surface", () => {
     const z = Math.max(...[...s.cells.values()].filter((v) => v[0] === 0 && v[1] === y).map((v) => v[2]));
     assert.equal(s.cells.get(`0,${y},${z}`)[3], 5, `y=${y}`);
   }
+});
+
+test("shellAround wraps a shape without touching it", async () => {
+  const { shellAround } = await import("../sculpt.mjs");
+  const src = ellipsoid(new Shape(), [0, 0, 0], [4, 4, 4], 5);
+  const shell = shellAround(src, 2, 9, (x, y) => y >= 0);
+  for (const key of shell.cells.keys()) assert.ok(!src.cells.has(key), "outside the source");
+  assert.ok(shell.cells.has("0,5,0") && shell.cells.has("0,6,0"), "two layers over the top");
+  assert.ok(!shell.cells.has("0,7,0"));
+  assert.ok(!shell.cells.has("0,-5,0"), "filter keeps y >= 0");
+  for (const v of shell.cells.values()) assert.equal(v[3], 9);
 });

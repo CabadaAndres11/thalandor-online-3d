@@ -1,1 +1,123 @@
-{}
+{
+	"hair_short": {
+		"file": "res://assets/characters/pieces_v2/hair_short.vox",
+		"part": "head",
+		"offset": [
+			-9,
+			5,
+			-9
+		],
+		"tag": "hair_cap",
+		"hides": []
+	},
+	"hair_bob": {
+		"file": "res://assets/characters/pieces_v2/hair_bob.vox",
+		"part": "head",
+		"offset": [
+			-10,
+			2,
+			-9
+		],
+		"tag": "hair_cap",
+		"hides": []
+	},
+	"hair_swept": {
+		"file": "res://assets/characters/pieces_v2/hair_swept.vox",
+		"part": "head",
+		"offset": [
+			-9,
+			5,
+			-9
+		],
+		"tag": "hair_cap",
+		"hides": []
+	},
+	"hair_long": {
+		"file": "res://assets/characters/pieces_v2/hair_long.vox",
+		"part": "head",
+		"offset": [
+			-10,
+			-18,
+			-11
+		],
+		"tag": "hair",
+		"hides": []
+	},
+	"hair_ponytail": {
+		"file": "res://assets/characters/pieces_v2/hair_ponytail.vox",
+		"part": "head",
+		"offset": [
+			-3,
+			-9,
+			-13
+		],
+		"tag": "hair",
+		"hides": []
+	},
+	"hair_bun": {
+		"file": "res://assets/characters/pieces_v2/hair_bun.vox",
+		"part": "head",
+		"offset": [
+			-4,
+			10,
+			-12
+		],
+		"tag": "hair",
+		"hides": []
+	},
+	"hair_mohawk": {
+		"file": "res://assets/characters/pieces_v2/hair_mohawk.vox",
+		"part": "head",
+		"offset": [
+			-2,
+			4,
+			-8
+		],
+		"tag": "hair_cap",
+		"hides": []
+	},
+	"beard_mustache": {
+		"file": "res://assets/characters/pieces_v2/beard_mustache.vox",
+		"part": "head",
+		"offset": [
+			-4,
+			1,
+			2
+		],
+		"tag": "beard",
+		"hides": []
+	},
+	"beard_goatee": {
+		"file": "res://assets/characters/pieces_v2/beard_goatee.vox",
+		"part": "head",
+		"offset": [
+			-4,
+			-2,
+			2
+		],
+		"tag": "beard",
+		"hides": []
+	},
+	"beard_short": {
+		"file": "res://assets/characters/pieces_v2/beard_short.vox",
+		"part": "head",
+		"offset": [
+			-9,
+			-1,
+			-2
+		],
+		"tag": "beard",
+		"hides": []
+	},
+	"beard_full": {
+		"file": "res://assets/characters/pieces_v2/beard_full.vox",
+		"part": "head",
+		"offset": [
+			-10,
+			-6,
+			-2
+		],
+		"tag": "beard",
+		"hides": []
+	}
+}

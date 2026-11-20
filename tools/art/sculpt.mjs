@@ -106,7 +106,8 @@ export function surfaceNormal(s, x, y, z) {
 // Surface cells of the given indices take their light tone when they face up and their
 // shade tone when they face down or away (-Z). The facing is a smoothed normal, so the
 // small steps of a curved surface do not speckle. `map` is {index: {shade, light}}.
-export function shadeByFacing(s, idxs, map, up = 0.6, down = -0.45, back = -0.75) {
+// Facing away (-Z) is off by default (`back` = -2): on round backs it drew rings.
+export function shadeByFacing(s, idxs, map, up = 0.6, down = -0.45, back = -2) {
   const changes = [];
   for (const [x, y, z, i] of s.cells.values()) {
     if (!idxs.includes(i) || !map[i]) continue;
@@ -117,4 +118,20 @@ export function shadeByFacing(s, idxs, map, up = 0.6, down = -0.45, back = -0.75
   }
   for (const [x, y, z, i] of changes) s.put(x, y, z, i);
   return s;
+}
+
+// A shell of `layers` voxels around src (cells outside src within that Chebyshev
+// distance of it), kept where filter(x, y, z) holds: hair over a skull, a beard on a jaw,
+// cloth over a body. Returns a new Shape-like object filled with idx.
+export function shellAround(src, layers, idx, filter = () => true) {
+  const out = new src.constructor();
+  for (const [x, y, z] of src.cells.values()) {
+    for (let dx = -layers; dx <= layers; dx++) for (let dy = -layers; dy <= layers; dy++) for (let dz = -layers; dz <= layers; dz++) {
+      const nx = x + dx, ny = y + dy, nz = z + dz;
+      const key = `${nx},${ny},${nz}`;
+      if (src.cells.has(key) || out.cells.has(key) || !filter(nx, ny, nz)) continue;
+      out.put(nx, ny, nz, idx);
+    }
+  }
+  return out;
 }

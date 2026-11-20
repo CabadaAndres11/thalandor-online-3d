@@ -37,6 +37,9 @@ func _initialize() -> void:
 	if _name in ["acolyte", "vaelthar", "nhazar", "inquisitor"]:
 		_turnaround({"acolyte": "cult_acolyte", "inquisitor": "cult_inquisitor"}.get(_name, _name))
 		return
+	if _name in ["heads", "heads_back"]:
+		_heads(_name == "heads_back")
+		return
 	if _name in ["bodies", "faces"]:
 		_bodies(_name == "faces")
 		return
@@ -346,6 +349,30 @@ func _bodies(close: bool) -> void:
 		cam.look_at_from_position(Vector3(cx, 1.75, 18.5 + 9.0), Vector3(cx, 1.55, 18.5))
 	else:
 		cam.look_at_from_position(Vector3(cx, 1.6, 18.5 + 8.5), Vector3(cx, 0.9, 18.5))
+
+
+## Plan 6.2 set: every hair style (with a beard each) on the v2 head, close up, front and
+## three-quarter back views.
+func _heads(back: bool) -> void:
+	var catalog := CharacterCatalog.load_default()
+	var styles := ["short", "bob", "swept", "bald", "hair_long", "hair_ponytail", "hair_bun", "hair_mohawk"]
+	var beards := ["none", "full", "mustache", "short", "goatee", "none", "none", "full"]
+	var colors := ["dark_brown", "blond", "black", "grey", "red", "chestnut", "white", "black"]
+	for i in styles.size():
+		for row in [1 if back else 0]:
+			var look := catalog.resolve("villager", {"hair_style": styles[i], "beard": beards[i], "hair_color": colors[i],
+				"skin": "skin_%d" % (1 + i % 8)})
+			look["pieces"] = (look.pieces as Array).filter(func(p: Dictionary) -> bool:
+				return str(p.part) == "head")
+			var rig := HumanRig.build(look)
+			rig.position = Vector3(16.0 + i * 0.75, 0, 18.5)
+			rig.rotation_degrees.y = 0.0 if row == 0 else 150.0
+			root.add_child(rig)
+	var cam := Camera3D.new()
+	cam.projection = Camera3D.PROJECTION_ORTHOGONAL
+	cam.size = 2.0
+	root.add_child(cam)
+	cam.look_at_from_position(Vector3(16.0 + 3.5 * 0.75, 1.45, 26.0), Vector3(16.0 + 3.5 * 0.75, 1.45, 18.5))
 
 
 ## Task 13 set: the orc king facing two heroes, warning its jump on one of them,

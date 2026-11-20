@@ -29,3 +29,16 @@ Guarda la imagen en `user://render/<set>.png`. Otros sets: `variety`, `actions`,
   - `SHADE(t)` y `LIGHT(t)` dan el tono oscuro y el claro de cada tinte.
   - 253 brilla sin sombreado.
 - `png.mjs`: lee y escribe PNG (iconos).
+
+## Vóxel 2× (Plan 6.2)
+```bash
+# Cuerpo v2 (lo escribe make_humans.mjs junto al v1, en assets/characters/vox_v2)
+node tools/art/make_humans.mjs assets/characters/vox
+# Piezas v2 (pelo y barbas; después ropa, tocados y armas)
+node tools/art/make_pieces_v2.mjs assets/characters/pieces_v2 data/characters/pieces_v2.json
+# Tests de la librería de esculpido y de los generadores
+node --test tools/art/tests/
+```
+- `sculpt.mjs`: formas redondeadas (elipsoide, cápsula, cilindro, caja redondeada), `carve`, `mirrorX`, `shellAround`, `tone` y `shadeByFacing`.
+- Tonos de textura de cada canal teñible: `TEX_D(t)` (t − 40) y `TEX_L(t)` (t − 50); `SHADE` y `LIGHT` quedan para la forma.
+- Capturas: sets `bodies`, `faces`, `heads` y `heads_back` de `render_characters.gd`.

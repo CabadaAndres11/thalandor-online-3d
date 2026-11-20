@@ -22,3 +22,13 @@ func test_no_kenney_left() -> void:
 	assert_false(FileAccess.file_exists("res://tools/art/extract_layers.mjs"))
 	assert_false(FileAccess.file_exists("res://tools/art/paint_outfits.mjs"))
 	assert_false(FileAccess.get_file_as_string("res://CREDITS.md").contains("Kenney"))
+
+
+func test_every_v2_piece_file_exists() -> void:
+	var table: Variant = JSON.parse_string(FileAccess.get_file_as_string(CharacterCatalog.PIECES_V2))
+	assert_true(table is Dictionary and not (table as Dictionary).is_empty(), "the v2 table has pieces")
+	for id: String in table:
+		var e: Dictionary = table[id]
+		assert_true(FileAccess.file_exists(str(e.file)), "%s: %s" % [id, e.file])
+		assert_not_null(VoxMesher.cached(str(e.file), {}), id)
+		assert_false(CharacterCatalog.load_default().piece(id).is_empty(), "%s has a v1 entry" % id)
