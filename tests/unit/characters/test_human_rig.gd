@@ -605,3 +605,24 @@ func test_one_hand_combo_left_right_down() -> void:
 
 func test_two_hand_combo_left_right_down() -> void:
 	_combo_reads("greatsword_t1", "heavy")
+
+
+func _grip_errors(main: String, kind: String) -> Array:
+	var rig := _gear_rig(main)
+	var out := [rig.left_grip_error()]
+	for step in 3:
+		for k: float in [0.3, 0.55]:
+			_tip_at(rig, kind, step, k)
+			out.append(rig.left_grip_error())
+	return out
+
+
+func test_two_hand_weapons_held_with_both_hands() -> void:
+	for pair: Array in [["greatsword_t1", "heavy"], ["great_axe_t2", "heavy"], ["warhammer_t3", "heavy"], ["halberd_t1", "thrust"]]:
+		var errs := _grip_errors(pair[0], pair[1])
+		for i in errs.size():
+			assert_lt(float(errs[i]), 0.06, "%s pose %d: left fist on the grip" % [pair[0], i])
+
+
+func test_one_hand_weapons_keep_the_left_hand_free() -> void:
+	assert_eq(_gear_rig("sword_t1").left_grip_error(), -1.0)

@@ -472,6 +472,82 @@ func _pose() -> void:
 		"downed": _fall(_ease(k), true)
 		"die": _fall(_ease(k), false)
 	_to_metres()
+	_two_hand_ik()
+
+
+## Two-handed weapons (two_hand, polearm): how far below the right fist the left one holds
+## the grip, in the hand's voxels along the weapon (toward the pommel).
+const TWO_HAND_SPACING := {"two_hand": 7.0, "polearm": 12.0}
+
+
+## Where the left fist should be on the weapon, in global space.
+func _grip_point() -> Vector3:
+	var hand := part("hand_right")
+	var spacing := float(TWO_HAND_SPACING[_grip]) * VoxMesher.VOXEL_SIZE * (hand.get_child(0) as Node3D).scale.z
+	return hand.global_transform * (_fist_centre("right") + Vector3(0, 0, -spacing))
+
+
+## The centre of a fist in its hand's own space.
+func _fist_centre(side: String) -> Vector3:
+	var mesh := part_mesh("hand_" + side)
+	var scaler := mesh.get_parent() as Node3D
+	return (scaler.transform * mesh.transform) * mesh.get_aabb().get_center()
+
+
+## The left arm reaches for the grip below the right fist (two-bone IK: the elbow bends
+## down and out), and the left hand takes the right hand's angle so both close on the grip.
+func _two_hand_ik() -> void:
+	if not TWO_HAND_SPACING.has(_grip) or not is_inside_tree() or _action in LASTING:
+		return
+	var arm := part("arm_left")
+	var fore := part("forearm_left")
+	var hand := part("hand_left")
+	var s := arm.global_position
+	var l1 := fore.global_position.distance_to(s)
+	var l2 := hand.global_position.distance_to(fore.global_position)
+	# When the grip is out of the left arm's reach, the right arm swings in toward the left
+	# shoulder (the weapon comes in front of the chest) until it is not.
+	var arm_r := part("arm_right")
+	var wrist := Vector3.ZERO
+	for i in 16:
+		wrist = _grip_point() - part("hand_right").global_basis * _fist_centre("left")
+		if wrist.distance_to(s) <= (l1 + l2) * 0.97:
+			break
+		var a := arm_r.global_position
+		var axis := (wrist - a).cross(s - a)
+		if axis.is_zero_approx():
+			break
+		arm_r.global_basis = Basis(axis.normalized(), 0.08) * arm_r.global_basis
+	var right_basis := part("hand_right").global_basis
+	var to := wrist - s
+	var d := clampf(to.length(), absf(l1 - l2) + 0.001, l1 + l2 - 0.001)
+	var u := to.normalized()
+	var b := _body.global_basis
+	var left := (b * Vector3(signf((_rest["arm_left"] as Vector3).x), 0, 0)).normalized()
+	var pole := (b * Vector3.DOWN).normalized() + left * 0.7 - (b * Vector3.BACK).normalized() * 0.2
+	var side := (pole - u * pole.dot(u)).normalized()
+	var cos_a := clampf((l1 * l1 + d * d - l2 * l2) / (2.0 * l1 * d), -1.0, 1.0)
+	var elbow := s + u * l1 * cos_a + side * l1 * sqrt(1.0 - cos_a * cos_a)
+	_aim_bone(arm, fore.position, elbow - s)
+	_aim_bone(fore, hand.position, s + u * d - elbow)
+	hand.global_basis = right_basis
+
+
+## Turns a bone so the direction to its child (`child_pos`, in its own space) points along
+## `want` (global), keeping its scale.
+func _aim_bone(bone: Node3D, child_pos: Vector3, want: Vector3) -> void:
+	var have := (bone.global_basis * child_pos).normalized()
+	if have.is_zero_approx() or want.is_zero_approx() or have.is_equal_approx(want.normalized()):
+		return
+	bone.global_basis = Basis(Quaternion(have, want.normalized())) * bone.global_basis
+
+
+## How far the left fist is from its place on a two-handed grip (metres); -1 when the weapon
+## is not held in two hands.
+func left_grip_error() -> float:
+	if not TWO_HAND_SPACING.has(_grip) or not is_inside_tree():
+		return -1.0
+	return (part("hand_left").global_transform * _fist_centre("left")).distance_to(_grip_point())
 
 
 ## The poses move the body, hips and torso in v1 rig units (lunges, breathing, the walk

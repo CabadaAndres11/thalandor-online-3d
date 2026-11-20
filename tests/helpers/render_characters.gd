@@ -61,7 +61,9 @@ func _initialize() -> void:
 		var action := str(looks[i].get("action", ""))
 		if action != "":
 			rig.auto_update = false
-			rig.update(rig.play_action(action) * float(looks[i].get("at", 0.4)))
+			var length := rig.play_action(action)
+			rig._combo_step = int(looks[i].get("step", 0))
+			rig.update(length * float(looks[i].get("at", 0.4)))
 	var cam := Camera3D.new()
 	cam.fov = 30
 	root.add_child(cam)
@@ -97,6 +99,22 @@ func _looks(set_name: String) -> Array:
 				var l: Dictionary = _resolved([[a[0], {"hair_style": "short", "beard": "short"}, 35.0]])[0]
 				l["action"] = a[1]
 				l["at"] = a[2]
+				out.append(l)
+			return out
+		"two_hand", "combo":
+			# Two-handed grips at rest, and the basic chain (left, right, down) wound up and mid-blow.
+			var out := []
+			var poses := [["greatsword_t2", "", 0, 0.0, 30.0], ["great_axe_t2", "", 0, 0.0, 30.0], ["halberd_t2", "", 0, 0.0, 30.0], ["sword_t2", "", 0, 0.0, 30.0]]
+			if set_name == "combo":
+				poses = [["greatsword_t2", "heavy", 0, 0.3, 0.0], ["greatsword_t2", "heavy", 0, 0.5, 0.0], ["greatsword_t2", "heavy", 1, 0.5, 0.0], ["greatsword_t2", "heavy", 2, 0.5, 60.0]]
+			for a: Array in poses:
+				var l := CharacterCatalog.load_default().resolve("warrior", {"hair_style": "short"}, "", [a[0], "", "", "", "", "", "", ""])
+				l["rot"] = a[4]
+				l["dx"] = 0.6
+				if a[1] != "":
+					l["action"] = a[1]
+					l["step"] = a[2]
+					l["at"] = a[3]
 				out.append(l)
 			return out
 		"grip":
