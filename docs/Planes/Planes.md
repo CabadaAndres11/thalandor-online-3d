@@ -24,7 +24,7 @@ Cada plan de la [[14 Hoja de ruta]] tiene aquí su **spec** (diseño acordado) y
 | 6.3.3 · Filos y cabezas de armas | [[Plan 6.3.3 — Filos y cabezas de armas (spec)\|Spec]] | — (la spec lleva las tareas) | Hecho (0.9.3, pendiente de tu prueba de juego) |
 | 6.4.1 · Enemigos humanoides (vóxel 2×) | [[Plan 6.4.1 — Enemigos humanoides a vóxel 2× (spec)\|Spec]] | — (la spec lleva las tareas) | Hecho (0.9.4, pendiente de tu prueba de juego) |
 | 6.4.2 · Bestias a alta resolución | [[Plan 6.4.2 — Bestias a alta resolución (spec)\|Spec]] | — (la spec lleva las tareas) | Hecho (0.9.5, pendiente de tu prueba de juego) |
-| 6.4 · Ropa que sigue al cuerpo | — | — | Pendiente |
+| 6.4.3 · Ropa que sigue al cuerpo | [[Plan 6.4.3 — Ropa que sigue al cuerpo (spec)\|Spec]] | — (la spec lleva las tareas) | Hecho (0.9.6, pendiente de tu prueba de juego) |
 | 7 · Identidad y creación de personaje | — | — | Pendiente |
 | 8 · Mundo y misiones | — | — | Pendiente |
 | 9 · Secretos y clases ocultas | — | — | Pendiente |

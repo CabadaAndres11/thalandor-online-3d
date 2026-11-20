@@ -2,7 +2,7 @@
 tags: [plan, spec]
 plan: 6.4.3
 fecha: 2026-11-20
-estado: en curso
+estado: implementado
 actualizado: 2026-11-20
 ---
 # Plan 6.4.3 — Ropa que sigue al cuerpo: diseño
@@ -48,6 +48,11 @@ actualizado: 2026-11-20
 - Decisiones de Claude:
   - deformación en el shader, sin esqueleto ni física;
   - qué piezas son falda y cuáles capa.
+
+## Durante la implementación
+- El modo de cada pieza se decide al montarla. Es falda si va en la parte `hips` o si es del `torso` y baja más de 6 vóxeles por debajo de la cintura. Es capa si su id termina en `_cape` o es `hood_archer`, `hood_cleric` o `vaelthar_mane`.
+- El color de vértice se pasa de sRGB a lineal con el cuadrado, una aproximación a la curva exacta.
+- Captura: `docs/Adjuntos/Plan 6.4.3/ropa.png` (conjunto `cloth`).
 
 ---
 ← [[Planes]]
