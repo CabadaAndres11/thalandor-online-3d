@@ -49,3 +49,36 @@ test("generation is deterministic", () => {
     assert.deepEqual([...again[id].shape.cells.values()].sort(), [...v2[id].shape.cells.values()].sort(), id);
   }
 });
+
+const weaponIds = Object.keys(v1).filter((id) => v1[id].tag === "weapon");
+const extent = (shape, axis) => {
+  const vs = [...shape.cells.values()].map((v) => v[axis]);
+  return Math.max(...vs) - Math.min(...vs) + 1;
+};
+const longest = (shape) => Math.max(extent(shape, 0), extent(shape, 1), extent(shape, 2));
+
+test("every v1 weapon id has a v2 piece on the same hand", () => {
+  for (const id of weaponIds) {
+    assert.ok(v2[id], `${id} missing`);
+    assert.equal(v2[id].part, v1[id].part, id);
+  }
+});
+
+test("off-hand items are held in the left hand", () => {
+  for (const id of weaponIds.filter((i) => /^w_(shield|orb|tome|bow)_t\d$|_left$/.test(i))) assert.equal(v2[id].part, "hand_left", id);
+});
+
+test("weapons keep their v1 length in metres (±20 %)", async () => {
+  const { VoxRead } = await import("./vox_read.mjs");
+  for (const id of weaponIds) {
+    const v1len = VoxRead(new URL(`../../../${v1[id].file.replace("res://", "")}`, import.meta.url)) * 2; // v1 voxels are twice as big
+    const len = longest(v2[id].shape);
+    assert.ok(len >= v1len * 0.8 && len <= v1len * 1.25, `${id}: ${len} v2 voxels vs ${v1len} (v1 ×2)`);
+  }
+});
+
+test("tier 3 weapons are larger than tier 1", () => {
+  for (const fam of ["sword", "axe", "mace", "greatsword", "great_axe", "warhammer", "halberd", "staff", "bow", "shield", "orb"]) {
+    assert.ok(v2[`w_${fam}_t3`].shape.cells.size > v2[`w_${fam}_t1`].shape.cells.size, fam);
+  }
+});
