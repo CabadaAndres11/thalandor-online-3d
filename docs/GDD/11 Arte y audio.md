@@ -17,7 +17,7 @@ actualizado: 2026-11-19
   - caído y muerte.
 - **Color y sombreado:** cada material tiene un tono oscuro y otro claro pintados en los vóxeles, y el mallador añade **oclusión ambiental en los vértices**. El aspecto, menos «bloque», se aprobó con una referencia del usuario.
 - **Piezas:** pelo, barbas, ropa de cada clase, tocados y armas en la mano son `.vox` de `tools/art/make_pieces.mjs`. Las teñibles usan los canales piel, ojos, pelo, color principal, secundario y pantalón. Es el mismo sistema que usará el equipo visible.
-- **Equipo:** un modelo vóxel por objeto base, acoplado a su hueso; variantes de material (hierro, acero, oro…) por color de paleta.
+- **Equipo:** un modelo vóxel por objeto base, acoplado a su hueso; variantes de material (hierro, acero, oro…) por color de paleta. **[Implementado 0.9.0]** versión v2 de todas las piezas (`tools/art/make_gear_v2.mjs`, `data/items/gear_pieces_v2.json`), con los mismos diseños y más épica por tramo. Los colores por clase y tramo están en `gear_style.mjs`, compartido con el v1.
 - **Monstruos:** modelos vóxel propios con sus animaciones. Los humanoides del culto y su jefe, el Acólito Cultista, usan `HumanRig`; los sabuesos y jabalíes usan `BeastRig`, que aún tiene el vóxel grueso (pasarlos al fino está en [[15 Decisiones abiertas]]).
 - **Fuentes de assets [Decidido, [[D-010 Arte propio hecho por código]]]:** todo el arte se genera con los scripts de `tools/art/`; no se usan packs de terceros.
 - **Créditos:** archivo `CREDITS.md` con autor y licencia de cada asset, generado o mantenido con cada importación.

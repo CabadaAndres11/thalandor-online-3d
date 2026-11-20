@@ -2,7 +2,7 @@
 tags: [plan, spec]
 plan: 6.3
 fecha: 2026-11-20
-estado: aprobado
+estado: implementado
 actualizado: 2026-11-20
 ---
 # Plan 6.3 — Equipo a vóxel 2×: diseño

@@ -2,7 +2,7 @@
 tags: [plan]
 plan: 6.3
 fecha: 2026-11-20
-estado: aprobado
+estado: hecho
 ---
 # Plan 6.3 — Equipo a vóxel 2×: implementación
 
