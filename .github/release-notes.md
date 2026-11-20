@@ -13,7 +13,7 @@
 - **Iluminación y ambientes:**
   - dos ambientes, de día y mazmorra de noche;
   - antorchas que parpadean, niebla, brillo y oclusión ambiental.
-  - El anfitrión los cambia con .
+  - El anfitrión los cambia con `/ambiente`.
 - **Opciones** (en el título y en el menú de pausa):
   - calidad gráfica baja, media o alta, para equipos modestos;
   - ventana, escala de resolución y suavizado;
