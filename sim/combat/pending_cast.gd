@@ -22,3 +22,5 @@ var cast_time: bool = false
 var follow_aim: bool = false
 var times: int = 1
 var cost: float = 0.0
+## A status the caster has while the channel lasts (the hymn's invulnerability); "" = none.
+var channel_status: String = ""

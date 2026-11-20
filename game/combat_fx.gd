@@ -112,6 +112,9 @@ func handle(ev: Array) -> void:
 			_start_charge(int(ev[1]), str(ev[2]), float(ev[3]))
 		"channel_end":
 			_end_charge(int(ev[1]))
+			for h: Dictionary in _holy: # the hymn's wings fade with the song
+				if h.style == "hymn" and int(h.get("follow", -1)) == int(ev[1]):
+					h.life = minf(float(h.life), float(h.t) + 0.35)
 			if _beams.has(int(ev[1])):
 				_free_beam(_beams[int(ev[1])])
 				_beams.erase(int(ev[1]))
@@ -1397,7 +1400,8 @@ func _holy_spawn(style: String, at: Vector3, who: int, aim: Variant) -> void:
 			var halo := _voxel("halo", func() -> Dictionary: return VoxelFx.halo(6), true, 0.95, 0.05)
 			halo.position.y = 0.95
 			node.add_child(halo)
-			h.life = 2.0
+			h.life = 6.2 # the whole song; a cut channel ends it sooner
+			h.lift = 1.0 + PlayerAvatar.HOVER_M
 			h.grow = 0.3
 		"strike": # a cross flashing on the blow, in front of the templar
 			node.add_child(_voxel("holy_cross", func() -> Dictionary: return VoxelFx.holy_cross(), false, 1.0, 0.09))

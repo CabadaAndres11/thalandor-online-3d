@@ -534,3 +534,13 @@ func test_a_pending_cast_does_not_wait_for_later_frames() -> void:
 	fx.advance(0.016) # its own heal never came in that batch
 	fx.handle(["heal", 1, 5.0]) # a later, unrelated heal
 	assert_almost_eq((_holy_at("cross") as Vector3).x, 8.0, 0.01, "shown at the aim, not on the later heal")
+
+
+func test_hymn_wings_last_the_song_and_go_when_it_is_cut() -> void:
+	fx.handle(["cast", 1, "cleric_divine_hymn", Vector3(5, 0, 5), 60.0])
+	fx.advance(4.0)
+	assert_not_null(_holy_at("hymn"), "still singing")
+	assert_gt((_holy_at("hymn") as Vector3).y, 1.5, "above the floating cleric")
+	fx.handle(["channel_end", 1])
+	fx.advance(0.5)
+	assert_null(_holy_at("hymn"), "the song was cut")

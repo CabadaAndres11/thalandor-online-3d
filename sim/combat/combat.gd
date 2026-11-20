@@ -75,7 +75,7 @@ static func channeling(world: SimWorld, id: int) -> bool:
 	return false
 
 
-## An ability with {"repeat": {times, interval_s, delay_s?, channel?}} applies its effects
+## An ability with {"repeat": {times, interval_s, delay_s?, channel?, channel_status?}} applies its effects
 ## `times` times, `interval_s` apart, the first one after `delay_s`. Cost and cooldown were
 ## already paid. Combo points are counted once when it ends.
 static func _start_repeat(world: SimWorld, caster: CombatEntity, ab: Dictionary, aim: Vector3, cost: float = 0.0) -> void:
@@ -97,6 +97,11 @@ static func _start_repeat(world: SimWorld, caster: CombatEntity, ab: Dictionary,
 	if pc.channel:
 		var total := float(r.get("delay_s", 0.0)) + float(r.get("interval_s", 0.0)) * float(pc.left - 1)
 		world.emit(["channel", caster.id, str(ab.get("id", "")), total])
+		pc.channel_status = str(r.get("channel_status", ""))
+		if pc.channel_status != "": # kept while singing; the end of the channel takes it away
+			var st := StatusEffect.make(pc.channel_status, world.tick + world.ticks(total + 1.0))
+			caster.add_status(st)
+			world.emit(["status", caster.id, st.kind, st.end_tick])
 	if pc.next_tick <= world.tick:
 		_step_cast(world, pc)
 		if pc.left <= 0:
@@ -166,6 +171,9 @@ static func _finish_cast(world: SimWorld, pc: PendingCast, caster: CombatEntity,
 		caster.gcd_end = 0
 	elif caster != null and caster.is_alive():
 		ClassRules.after_cast(caster, pc.ability, pc.hits)
+	if pc.channel_status != "" and caster != null and caster.has_status(pc.channel_status):
+		caster.remove_status(pc.channel_status)
+		world.emit(["status_end", pc.caster_id, pc.channel_status])
 	if pc.channel:
 		world.emit(["channel_end", pc.caster_id])
 

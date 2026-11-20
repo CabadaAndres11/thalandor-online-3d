@@ -439,7 +439,8 @@ func _on_combat_event(ev: Array) -> void:
 						slash.setup(pa.rig, (CombatFX.CLASS_COLORS.get(str(ab.get("class", "")), Color.WHITE) as Color).lightened(0.3), hand)
 		"channel":
 			if _avatars.has(int(ev[1])):
-				(_avatars[int(ev[1])] as PlayerAvatar).play_long_cast(float(ev[3]))
+				var sung := AbilityDB.load_default().get_ability(str(ev[2]))
+				(_avatars[int(ev[1])] as PlayerAvatar).play_long_cast(float(ev[3]), bool(sung.get("levitate", false)))
 		"channel_end":
 			if _avatars.has(int(ev[1])):
 				(_avatars[int(ev[1])] as PlayerAvatar).stop_long_cast()

@@ -214,3 +214,26 @@ func test_each_upgrade_is_complete_with_texts_and_icons() -> void:
 			assert_ne(tr(str(a.desc)), str(a.desc), aid)
 			assert_true(ResourceLoader.exists(CombatHud.ICON_DIR % a.icon), aid)
 		assert_ne(tr(str(u.evolves.desc)), str(u.evolves.desc))
+
+
+func test_divine_hymn_makes_the_cleric_invulnerable_while_singing() -> void:
+	var p := _hero("healer")
+	var near := _ally(2, Vector3(22, 0, 10))
+	assert_true(Combat.try_cast(f.world, p, "cleric_divine_hymn", p.position))
+	assert_true(p.has_status("invulnerable"), "the cleric")
+	assert_false(near.has_status("invulnerable"), "only the cleric")
+	f.run(2.0)
+	assert_true(p.has_status("invulnerable"), "the whole song")
+	f.run(4.5)
+	assert_false(p.has_status("invulnerable"), "gone when the song ends")
+
+
+func test_moving_ends_the_hymn_invulnerability() -> void:
+	var p := _hero("healer")
+	assert_true(Combat.try_cast(f.world, p, "cleric_divine_hymn", p.position))
+	f.run(1.5)
+	f.log.clear()
+	p.position += Vector3(1, 0, 0)
+	f.run(0.2)
+	assert_false(p.has_status("invulnerable"))
+	assert_has(f.log, ["status_end", p.id, "invulnerable"])

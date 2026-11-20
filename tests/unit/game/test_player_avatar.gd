@@ -137,3 +137,23 @@ func test_long_cast_raises_the_arms_and_ends_when_told() -> void:
 	assert_eq(avatar.rig.current_action(), "cast_long")
 	avatar.stop_long_cast()
 	assert_eq(avatar.rig.current_action(), "idle")
+
+
+func test_a_levitating_cast_lifts_the_body_and_sets_it_down() -> void:
+	avatar.setup("Ana", 0, "cleric", {})
+	avatar.play_long_cast(6.0, true)
+	for i in 60:
+		avatar.apply_state({}, 1.0 / 60.0)
+	assert_gt(avatar.rig.position.y, 0.6, "floating while singing")
+	avatar.stop_long_cast()
+	for i in 90:
+		avatar.apply_state({}, 1.0 / 60.0)
+	assert_lt(avatar.rig.position.y, 0.05, "back on the ground")
+
+
+func test_a_normal_long_cast_stays_on_the_ground() -> void:
+	avatar.setup("Ana", 0, "mage", {})
+	avatar.play_long_cast(2.0)
+	for i in 60:
+		avatar.apply_state({}, 1.0 / 60.0)
+	assert_lt(avatar.rig.position.y, 0.01)

@@ -20,6 +20,10 @@ var bar: OverheadBar
 ## How see-through the character is in stealth (0 = solid, 1 = invisible).
 const STEALTH_TRANSPARENCY := 0.7
 var _translucent: bool = false
+## Height a levitating cast lifts the body to (m), and whether one is lifting it now.
+const HOVER_M := 0.8
+var _hover: bool = false
+var _hover_t: float = 0.0
 
 var _label: Label3D
 var _player_name: String = ""
@@ -81,6 +85,11 @@ func apply_state(state: Dictionary, delta: float) -> void:
 			rig.set_moving_speed(_speed, move_speed)
 			if rig.current_action() == "cast_long":
 				rig.play_action("idle") # the long cast ran out
+			_hover = false
+		if delta > 0.0: # rises to HOVER_M and floats gently, or settles back on the ground
+			_hover_t += delta
+			var want := HOVER_M + sin(_hover_t * 2.4) * 0.05 if _hover else 0.0
+			rig.position.y = lerpf(rig.position.y, want, 1.0 - exp(-delta / 0.25))
 		rig.update(delta)
 
 
@@ -129,15 +138,18 @@ func set_charging(on: bool) -> void:
 
 
 ## A long cast (a cast time or a channel): arms up and the staff spinning for `seconds`.
-func play_long_cast(seconds: float) -> void:
+## levitate: the body rises off the ground while it lasts (the cleric's hymn).
+func play_long_cast(seconds: float, levitate: bool = false) -> void:
 	if rig == null or _dead:
 		return
 	rig.play_action("cast_long")
 	_action_left = seconds
+	_hover = levitate
 
 
 ## The long cast ended or was interrupted.
 func stop_long_cast() -> void:
+	_hover = false
 	if rig != null and rig.current_action() == "cast_long":
 		rig.play_action("idle")
 		_action_left = 0.0

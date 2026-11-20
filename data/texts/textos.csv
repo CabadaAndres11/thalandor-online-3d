@@ -522,7 +522,7 @@ UP_BERSERKER_EVO,"El ataque básico golpea dos veces, cada golpe al 70 % del da�
 AB_CLERIC_HEALING_CIRCLE,Círculo de sanación
 AB_CLERIC_HEALING_CIRCLE_DESC,"Un círculo de 5 m en el cursor que cura a los aliados dentro cada segundo durante 5 s."
 AB_CLERIC_DIVINE_HYMN,Himno divino
-AB_CLERIC_DIVINE_HYMN_DESC,"Canalizas 6 s: cada segundo curas a todos los aliados a 15 m. Te interrumpe moverte."
+AB_CLERIC_DIVINE_HYMN_DESC,"Canalizas 6 s levitando: eres invulnerable y cada segundo curas a todos los aliados a 15 m. Te interrumpe moverte."
 AB_CLERIC_GUARDIAN_ANGEL,Ángel guardián
 AB_CLERIC_GUARDIAN_ANGEL_DESC,"Un aliado a 20 m que recibiría un golpe mortal se salva con el 25 % de su vida (una vez cada 2 minutos)."
 AB_CLERIC_GREATER_GRACE,Gracia mayor
