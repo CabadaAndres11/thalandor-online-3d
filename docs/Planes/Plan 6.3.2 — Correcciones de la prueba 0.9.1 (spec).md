@@ -2,7 +2,7 @@
 tags: [plan, spec]
 plan: 6.3.2
 fecha: 2026-11-20
-estado: diseñado
+estado: implementado
 actualizado: 2026-11-20
 ---
 # Plan 6.3.2 — Correcciones de la prueba 0.9.1: diseño
@@ -79,6 +79,12 @@ Corregir los 10 puntos de [[Correcciones de la prueba 0.9.1]] antes del Plan 6.4
 - Decisiones de Claude:
   - el mismo daño por segundo con las nuevas recargas;
   - los valores de la tabla.
+
+## Durante la implementación
+- El *Berserker* y el *Envenenador* evolucionan los básicos: su daño por golpe baja en la misma proporción.
+- La ira del guerrero por golpe no cambia, así que con básicos más rápidos genera algo más de ira por segundo.
+- La animación de los golpes a dos manos baja de 0,6 s a 0,55 s para caber en la nueva recarga.
+- El temblor no se ve en reposo ni andando: aparece al golpear. Con pasos fijos, el puño saltaba hasta 5,4 cm en un instante; con la bisección se mueve como la animación sin cinemática inversa.
 
 ---
 ← [[Planes]]
