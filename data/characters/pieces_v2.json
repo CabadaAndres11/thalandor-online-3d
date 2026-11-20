@@ -124,7 +124,7 @@
 		"file": "res://assets/characters/pieces_v2/outfit_warrior.vox",
 		"part": "torso",
 		"offset": [
-			-11,
+			-12,
 			-9,
 			-8
 		],
@@ -157,7 +157,7 @@
 		"file": "res://assets/characters/pieces_v2/outfit_archer.vox",
 		"part": "torso",
 		"offset": [
-			-16,
+			-13,
 			-1,
 			-14
 		],
@@ -168,7 +168,7 @@
 		"file": "res://assets/characters/pieces_v2/outfit_assassin.vox",
 		"part": "torso",
 		"offset": [
-			-11,
+			-12,
 			-13,
 			-8
 		],
@@ -179,7 +179,7 @@
 		"file": "res://assets/characters/pieces_v2/outfit_villager.vox",
 		"part": "torso",
 		"offset": [
-			-10,
+			-12,
 			0,
 			2
 		],
@@ -225,7 +225,7 @@
 		"file": "res://assets/characters/pieces_v2/hood_archer.vox",
 		"part": "head",
 		"offset": [
-			-17,
+			-14,
 			-8,
 			-11
 		],

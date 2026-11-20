@@ -48,3 +48,18 @@ test("generation is deterministic", () => {
     assert.deepEqual([...again.parts[k].shape.cells.values()].sort(), [...v2.parts[k].shape.cells.values()].sort(), k);
   }
 });
+
+const width = (part, y) => {
+  const xs = [...v2.parts[part].shape.cells.values()].filter((v) => v[1] === y).map((v) => v[0]);
+  return xs.length ? Math.max(...xs) - Math.min(...xs) + 1 : 0;
+};
+
+test("the waist is broad where the torso meets the hips (no wasp waist)", () => {
+  for (let y = 0; y <= 10; y++) assert.ok(width("torso", y) >= 19, `torso y=${y}: ${width("torso", y)}`);
+  for (let y = -2; y <= 7; y++) assert.ok(width("hips", y) >= 18, `hips y=${y}: ${width("hips", y)}`);
+});
+
+test("the shoulders barely stand out from the chest", () => {
+  const chest = width("torso", 18);
+  for (let y = 19; y <= 25; y++) assert.ok(width("torso", y) <= chest + 2, `y=${y}: ${width("torso", y)} vs chest ${chest}`);
+});

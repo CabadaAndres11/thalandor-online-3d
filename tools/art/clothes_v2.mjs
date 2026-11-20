@@ -98,7 +98,7 @@ function outfitMage() {
   const robe = new Shape(); // a robe skirt from the waist to the shins, flaring out
   for (let y = -38; y <= 3; y++) {
     const k = (3 - y) / 41;
-    const rx = 10.6 + k * 4.2, rz = 7.6 + k * 3.0;
+    const rx = 12.2 + k * 3.6, rz = 8.0 + k * 3.0;
     for (let x = -16; x <= 15; x++) for (let z = -12; z <= 12; z++) {
       const d = ((x + 0.5) / rx) ** 2 + ((z + 0.5) / rz) ** 2;
       if (d <= 1 && d >= ((rx - 1.6) / rx) ** 2) robe.put(x, y, z, P);
