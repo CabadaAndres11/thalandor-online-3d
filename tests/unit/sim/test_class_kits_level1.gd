@@ -139,24 +139,24 @@ func test_archer_quick_shot_is_free() -> void:
 	assert_almost_eq(1000.0 - d.hp, 9 + 0.6 * 20, 0.01)
 
 
-func test_archer_charged_shot_costs_focus_and_scales() -> void:
+func test_archer_charged_shot_is_free_and_scales() -> void:
 	var a := _hero("archer")
 	var d := _target(Vector3(10, 0, 18))
 	a.resource = 50.0
 	assert_true(ClassRules.release_charged(f.world, a, "archer_shot", d.position, 1.0))
 	f.run(0.6)
-	assert_eq(a.resource, 35.0, "full charge costs 15 focus")
+	assert_eq(a.resource, 50.0, "basics never spend focus (Plan 6.4.4)")
 	assert_almost_eq(1000.0 - d.hp, (9 + 0.6 * 20) * 2.2, 0.01)
 
 
-func test_archer_charged_shot_without_focus_is_a_normal_shot() -> void:
+func test_archer_charged_shot_needs_no_focus() -> void:
 	var a := _hero("archer")
 	var d := _target(Vector3(10, 0, 18))
-	a.resource = 5.0
+	a.resource = 0.0
 	ClassRules.release_charged(f.world, a, "archer_shot", d.position, 1.0)
 	f.run(0.6)
-	assert_eq(a.resource, 5.0)
-	assert_almost_eq(1000.0 - d.hp, 9 + 0.6 * 20, 0.01)
+	assert_eq(a.resource, 0.0)
+	assert_almost_eq(1000.0 - d.hp, (9 + 0.6 * 20) * 2.2, 0.01, "fully charged with no focus")
 
 
 func test_archer_piercing_and_roll() -> void:

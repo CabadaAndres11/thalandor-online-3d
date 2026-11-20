@@ -166,7 +166,7 @@ AB_MAGE_BLAST_DESC,"Área pequeña en el cursor, con un breve retardo."
 AB_MAGE_BLINK,Parpadeo
 AB_MAGE_BLINK_DESC,Teletransporte corto hacia el cursor.
 AB_ARCHER_SHOT,Disparo
-AB_ARCHER_SHOT_DESC,"Flecha a distancia. Mantén el botón para cargarla: más daño y alcance, a cambio de concentración."
+AB_ARCHER_SHOT_DESC,"Flecha a distancia. Mantén el botón para cargarla: más daño y alcance."
 AB_ARCHER_PIERCING,Disparo perforante
 AB_ARCHER_PIERCING_DESC,Flecha que atraviesa a los enemigos en línea.
 AB_ARCHER_ROLL,Voltereta
@@ -202,7 +202,7 @@ AB_CLERIC_PURIFY_DESC,"Quita los efectos negativos del aliado bajo el cursor (o 
 AB_CLERIC_RESURRECTION,Resurrección
 AB_CLERIC_RESURRECTION_DESC,Levanta a distancia a un aliado derribado bajo el cursor.
 AB_CLERIC_MEDITATION,Meditación
-AB_CLERIC_MEDITATION_DESC,La regeneración de maná sigue al 50 % en combate.
+AB_CLERIC_MEDITATION_DESC,La regeneración de maná no baja en combate (sin ella va al 50 %).
 AB_CLERIC_UNSHAKABLE_FAITH,Fe inquebrantable
 AB_CLERIC_UNSHAKABLE_FAITH_DESC,+10 % de curación recibida.
 AB_CLERIC_GRACE,Gracia
@@ -325,6 +325,7 @@ DETAIL_FINISHER,Remate: multiplica el daño por tus puntos de combo (1 a 5) y lo
 DETAIL_COMBO_GAIN,+%d punto de combo al acertar
 DETAIL_COMBO_PER_HIT,+%d punto de combo por cada enemigo alcanzado
 DETAIL_CHARGE,"Mantén pulsado hasta %s s: hasta ×%s de daño y ×%s de alcance; cargarlo cuesta %s de %s"
+DETAIL_CHARGE_FREE,"Mantén pulsado hasta %s s: hasta ×%s de daño y ×%s de alcance"
 DETAIL_CRIT,Crítico: %s (×%s) · el daño varía ±%s · la armadura reduce el daño físico
 DETAIL_COST,Coste: %s de %s
 DETAIL_NO_COST,Sin coste
@@ -377,7 +378,7 @@ ATTR_INTELLECT,Intelecto
 ATTR_STAMINA,Aguante
 ATTR_SPIRIT,Espíritu
 ATTR_STRENGTH_DESC,Poder de ataque (menos el arquero) y bloqueo.
-ATTR_AGILITY_DESC,Crítico y esquiva; poder de ataque del arquero.
+ATTR_AGILITY_DESC,"Crítico, esquiva y velocidad de movimiento; poder de ataque del arquero."
 ATTR_INTELLECT_DESC,Poder de hechizos y maná máximo.
 ATTR_STAMINA_DESC,Vida máxima.
 ATTR_SPIRIT_DESC,Regeneración de vida y de maná.

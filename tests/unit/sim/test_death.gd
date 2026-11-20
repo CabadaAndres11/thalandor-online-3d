@@ -86,7 +86,7 @@ func test_projectile_hit_puts_caster_in_combat() -> void:
 	assert_true(p.in_combat(w), "ranged damage counts as fighting")
 	var mana := p.resource
 	_steps(w, 1.0)
-	assert_lte(p.resource, mana, "no mana regen while in combat")
+	assert_almost_eq(p.resource - mana, 6.0 * 0.5, 0.6, "half the mana regen while in combat (Plan 6.4.4)")
 
 
 func test_area_hit_gives_rage() -> void:

@@ -1,7 +1,7 @@
 ---
 tags: [gdd]
 estado: diseñado
-actualizado: 2026-11-15
+actualizado: 2026-11-20
 ---
 
 # 4. Personajes y clases
@@ -23,8 +23,8 @@ actualizado: 2026-11-15
 - **Vida:** todas las clases.
 - **Recurso de clase:**
   - **Ira** (Guerrero): se genera golpeando y recibiendo daño; decae fuera de combate.
-  - **Maná** (Clérigo, Mago): se consume al lanzar y se regenera con Espíritu (al 50 % en combate solo con la pasiva adecuada).
-  - **Concentración** (Arquero): se regenera rápido estando quieto o caminando, más despacio al esquivar; los disparos cargados la consumen.
+  - **Maná** (Clérigo, Mago): se consume al lanzar y se regenera con Espíritu; en combate, al 50 % (al 100 % con *Meditación* del clérigo).
+  - **Concentración** (Arquero): se regenera rápido estando quieto o caminando, más despacio al esquivar. Los ataques básicos no la gastan, tampoco cargados.
   - **Energía** (Asesino): se regenera rápido a ritmo fijo.
 
 ## 4.2 Las 5 clases iniciales **[Implementado]** (0.4.0: kit completo de cada clase; valores iniciales en la nota de cada clase)
@@ -75,17 +75,17 @@ Desde la 0.7.0 la armadura va **por clase**: cada clase lleva solo su propio jue
 El detalle de cada mejora está en la nota de su clase y en [[Plan 4 — Progresión (spec)]].
 
 ## 4.5 Atributos **[Implementado]** (0.6.0)
-Cada nivel sube **+5 a cada uno de los cinco atributos** automáticamente y otorga además **5 puntos libres** para repartir. Los atributos principales de cada clase se muestran en dorado en la ventana C como recomendados.
+Cada nivel sube **+2 a cada uno de los cinco atributos** automáticamente y otorga además **5 puntos libres** para repartir. Los atributos principales de cada clase se muestran en dorado en la ventana C como recomendados.
 
 | Atributo | Efecto |
 |---|---|
 | **Fuerza** | Poder de ataque cuerpo a cuerpo, probabilidad de bloqueo (0,2 % por punto; un bloqueo reduce a la mitad el daño físico cuerpo a cuerpo) |
-| **Agilidad** | Probabilidad de crítico, esquiva, poder de ataque a distancia |
+| **Agilidad** | Probabilidad de crítico, esquiva, velocidad de movimiento (+0,05 % por punto, hasta +30 %), poder de ataque a distancia |
 | **Intelecto** | Poder de hechizos, maná máximo |
 | **Aguante** | Vida máxima |
 | **Espíritu** | Regeneración de vida y maná (además, fuera de combate todos recuperan el 2 % de su vida máxima por segundo) |
 
-**Sin nivel máximo:** para que los números no se disparen, las conversiones de atributo a estadística tienen **rendimientos decrecientes** a partir de ciertos umbrales (definidos en `data/balance.json`), y la probabilidad de crítico, esquiva y bloqueo tiene topes.
+**Sin nivel máximo:** para que los números no se disparen, cada punto de atributo da siempre lo mismo y se nota (1 fuerza = +1 de ataque, 1 aguante = +10 de vida…, en `data/balance.json`); lo que está acotado son la probabilidad de crítico, esquiva y bloqueo y la velocidad extra.
 
 ## 4.6 Árbol de talentos **[Implementado]** (0.6.0) (diseño probado en el prototipo 2D)
 - **Puntos:** 1 por nivel a partir del 2.

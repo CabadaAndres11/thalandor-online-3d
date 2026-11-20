@@ -65,7 +65,7 @@ func test_finisher_charge_and_combo() -> void:
 	assert_string_contains(_text("assassin_eviscerate"), tr("DETAIL_FINISHER"))
 	var shot := _text("archer_shot")
 	assert_string_contains(shot, "×2,2")
-	assert_string_contains(shot, "15 de concentración")
+	assert_false(shot.contains("concentración"), "the charge is free (Plan 6.4.4)")
 	assert_string_contains(_text("assassin_stab"), tr("DETAIL_COMBO_GAIN") % 1)
 
 

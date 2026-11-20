@@ -36,7 +36,9 @@ static func lines(ability: Dictionary, stats: CombatStats, resource_kind: String
 	elif ability.has("repeat"):
 		out.append(_tr("DETAIL_REPEAT") % [int(ability.repeat.get("times", 1)), num(ability.repeat.get("interval_s", 0))])
 	var charge: Dictionary = ability.get("charge", {})
-	if not charge.is_empty():
+	if not charge.is_empty() and float(charge.get("cost", 0)) <= 0.0: # a free charge says nothing of a cost
+		out.append(_tr("DETAIL_CHARGE_FREE") % [num(charge.get("max_s", 1.5)), num(charge.get("damage_mult", 1.0)), num(charge.get("range_mult", 1.0))])
+	elif not charge.is_empty():
 		out.append(_tr("DETAIL_CHARGE") % [num(charge.get("max_s", 1.5)), num(charge.get("damage_mult", 1.0)),
 			num(charge.get("range_mult", 1.0)), num(charge.get("cost", 0)), _resource(resource_kind)])
 	if has_damage:

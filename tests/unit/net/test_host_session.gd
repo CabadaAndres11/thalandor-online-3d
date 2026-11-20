@@ -408,14 +408,14 @@ func test_archer_hold_and_release_fires_charged_shot() -> void:
 	a.send(Transport.HOST_PEER, Protocol.input([_row(47)]), false)
 	host.tick()
 	assert_eq(_casts(a).size(), 1, "fires on release")
-	assert_eq(p.resource, focus - 15.0, "a full charge costs focus")
+	assert_eq(p.resource, focus, "a full charge is free (Plan 6.4.4)")
 	host.world.tick += 30
 	a.send(Transport.HOST_PEER, Protocol.input([_row(48, PlayerInput.BTN_BASIC | held)]), false)
 	host.tick()
 	a.send(Transport.HOST_PEER, Protocol.input([_row(49)]), false)
 	host.tick()
 	assert_eq(_casts(a).size(), 1, "a tap fires once more")
-	assert_eq(p.resource, focus - 15.0, "the tap is free")
+	assert_eq(p.resource, focus, "the tap is free")
 
 
 ## Each player gets the nearest max_monsters_per_snapshot monsters (Plan 3, point 4).

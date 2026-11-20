@@ -125,17 +125,6 @@ function boar() {
     const h = (z >= 0 ? 7 : 4) + ((z / 2) & 1) * 2;
     for (const dx of [-1, 0]) capsule(body, [CX + dx, top - 1, z], [CX + dx, top + h, z - 1], 1, 0.4, DARK);
   }
-  // Iron plates on the flanks, riveted, with a light rim.
-  for (const side of [-1, 1]) {
-    for (let y = 26; y <= 44; y++) for (let z = -12; z <= 16; z++) {
-      let edge = null;
-      for (let x = 0; x <= 20; x++) { const xx = r(CX + side * x); if (body.cells.has(`${xx},${y},${z}`)) edge = xx; }
-      if (edge === null) continue;
-      const rim = y === 26 || y === 44 || z === -12 || z === 16;
-      body.put(edge + side, y, z, rim ? IRON_L : IRON);
-      if ((y === 30 || y === 40) && (z === -8 || z === 4 || z === 12)) body.put(edge + side * 2, y, z, IRON_L);
-    }
-  }
   parts.body = { shape: finish(body, 21), pivot: [0, 0, 0] };
 
   const head = new Shape(); // pivot at the neck; the head hangs low and forward

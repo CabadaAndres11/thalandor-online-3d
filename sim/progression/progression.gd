@@ -75,6 +75,8 @@ static func rebuild(p: PlayerState, world: SimWorld, fresh: bool = false, balanc
 		s.resource_regen_add += Attributes.effective(int(t.spirit), b) * float(ab.get("mana_regen", 0.0))
 	s.crit_chance += Attributes.effective(int(t.agility), b) * float(ab.get("crit", 0.0))
 	s.dodge_chance += Attributes.effective(int(t.agility), b) * float(ab.get("dodge", 0.0))
+	# Agility makes you faster too (Plan 6.4.4), up to move_speed_cap.
+	s.move_speed_mult += minf(Attributes.effective(int(t.agility), b) * float(ab.get("move_speed", 0.0)), float(ab.get("move_speed_cap", 0.0)))
 	s.block_chance += Attributes.effective(int(t.strength), b) * float(ab.get("block", 0.0))
 	s.hp_regen += Attributes.effective(int(t.spirit), b) * float(ab.get("hp_regen", 0.0))
 	# Modifiers: flat ones first, then the percentages of each stat added together.

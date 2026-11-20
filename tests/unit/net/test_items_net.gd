@@ -199,7 +199,7 @@ func test_crossbow_fires_charged_on_press() -> void:
 	p.inventory.equipment["main"] = ItemRoll.new_item("crossbow_t1", 1)
 	p.resource = 100.0
 	_send(a, Protocol.input([[1, Vector2.ZERO, Vector3(30, 0, 20), PlayerInput.BTN_BASIC]]))
-	assert_lt(p.resource, 100.0, "the charged shot's focus was spent on a single press")
+	assert_eq(p.resource, 100.0, "the crossbow's charged shot is free (Plan 6.4.4)")
 	assert_gt(int(p.cooldowns.get("archer_shot", 0)), host.world.tick)
 
 

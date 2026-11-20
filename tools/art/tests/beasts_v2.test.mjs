@@ -49,3 +49,9 @@ test("left and right legs mirror about the body's middle", () => {
 test("head and tail hang from the body (they bob with it)", () => {
   for (const [name, beast] of Object.entries(b)) for (const p of ["head", "tail"]) assert.equal(beast.parts[p].parent, "body", `${name} ${p}`);
 });
+
+test("the boar wears no iron plates on its flanks", async () => {
+  const { B } = await import("../beasts_v2.mjs");
+  const iron = [...b.marked_boar.parts.body.shape.cells.values()].filter((v) => v[3] === B.IRON || v[3] === B.IRON_L || v[3] === B.IRON_D);
+  assert.equal(iron.length, 0);
+});

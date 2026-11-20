@@ -36,8 +36,8 @@ func test_attribute_affix_raises_attack_power() -> void:
 	var p := _hero("warrior", 10)
 	var before := p.stats.attack_power
 	_wear(p, "neck", "neck_t1", 10, [{"id": "strength", "value": 12.0}])
-	# neck_t1: +2 stamina at level 10; +12 strength → +6 attack power (0.5 per point).
-	assert_almost_eq(p.stats.attack_power - before, 6.0, 0.001)
+	# neck_t1: +2 stamina at level 10; +12 strength → +12 attack power (1 per point).
+	assert_almost_eq(p.stats.attack_power - before, 12.0, 0.001)
 
 
 func test_two_handed_stats_scaled() -> void:

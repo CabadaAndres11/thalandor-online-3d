@@ -46,7 +46,7 @@
 	{"id": "cleric_zeal", "class": "cleric", "upgrade": "templar", "name": "AB_CLERIC_ZEAL", "desc": "AB_CLERIC_ZEAL_DESC", "icon": "passive_cleric", "kind": "passive", "level": 50,
 	 "passive": [{"type": "hook", "hook": "melee_hit_restores", "amount": 4}]},
 	{"id": "cleric_meditation", "class": "cleric", "name": "AB_CLERIC_MEDITATION", "desc": "AB_CLERIC_MEDITATION_DESC", "icon": "passive_cleric", "kind": "passive", "level": 5,
-	 "passive": [{"type": "hook", "hook": "mana_regen_in_combat", "mult": 0.5}]},
+	 "passive": [{"type": "hook", "hook": "mana_regen_in_combat", "mult": 1.0}]},
 	{"id": "cleric_unshakable_faith", "class": "cleric", "name": "AB_CLERIC_UNSHAKABLE_FAITH", "desc": "AB_CLERIC_UNSHAKABLE_FAITH_DESC", "icon": "passive_cleric", "kind": "passive", "level": 15,
 	 "passive": [{"type": "stat", "stat": "healing_received_pct", "value": 0.10}]},
 	{"id": "cleric_grace", "class": "cleric", "name": "AB_CLERIC_GRACE", "desc": "AB_CLERIC_GRACE_DESC", "icon": "passive_cleric", "kind": "passive", "level": 25,

@@ -42,9 +42,9 @@ func test_no_free_points_disables_the_plus_buttons() -> void:
 func test_shows_class_level_and_the_total_of_each_attribute() -> void:
 	_show(11, {"strength": 4})
 	assert_eq(win.level_text(), tr("CHAR_LEVEL") % 11)
-	assert_eq(win.attribute_value("strength"), 4 + 50, "spent plus 5 automatic points per level")
-	assert_eq(win.attribute_value("stamina"), 50)
-	assert_eq(win.attribute_value("intellect"), 50)
+	assert_eq(win.attribute_value("strength"), 4 + 20, "spent plus 2 automatic points per level")
+	assert_eq(win.attribute_value("stamina"), 20)
+	assert_eq(win.attribute_value("intellect"), 20)
 
 
 func test_stat_rows_show_the_computed_stats() -> void:
@@ -60,7 +60,7 @@ func test_stat_rows_show_the_computed_stats() -> void:
 func test_stats_follow_the_progress() -> void:
 	_show(5, {"stamina": 20})
 	var hp: Array = win.stat_rows().filter(func(r: Array) -> bool: return r[0] == tr("STAT_ROW_HP"))[0]
-	assert_eq(hp[1], str(200 + 5 * (20 + 20)))
+	assert_eq(hp[1], str(200 + 10 * (20 + 8)))
 
 
 func test_window_fits_1280x720() -> void:

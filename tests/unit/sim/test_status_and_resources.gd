@@ -156,3 +156,13 @@ func test_monsters_have_no_passive_regen() -> void:
 	e.hp = 50.0
 	_run(e, 1.0)
 	assert_eq(e.hp, 50.0)
+
+
+func test_casters_regain_half_their_mana_in_combat() -> void:
+	var classes: Dictionary = {}
+	for c: Dictionary in CharacterCatalog.load_default().classes():
+		classes[str(c.id)] = c
+	for id: String in ["mage", "cleric"]:
+		assert_almost_eq(float(classes[id].resource.regen_in_combat_mult), 0.5, 0.001, id)
+	var med: Dictionary = AbilityDB.load_default().get_ability("cleric_meditation").passive[0]
+	assert_almost_eq(float(med.mult), 1.0, 0.001, "Meditation: all of it")

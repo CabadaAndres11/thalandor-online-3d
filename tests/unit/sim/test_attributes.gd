@@ -46,20 +46,19 @@ func test_spend_rejects_unknown_attribute() -> void:
 	assert_eq(Attributes.free_points(pr, b), 20)
 
 
-func test_every_attribute_grows_five_per_level() -> void:
+func test_every_attribute_grows_two_per_level() -> void:
 	var pr := PlayerProgress.new()
 	pr.level = 11
 	var t := Attributes.totals(pr, _class_def("warrior"), b)
 	for a: String in PlayerProgress.ATTRIBUTES:
-		assert_eq(t[a], 50, a)
+		assert_eq(t[a], 20, a)
 	pr.attributes.agility = 3
-	assert_eq(Attributes.totals(pr, _class_def("archer"), b).agility, 53)
+	assert_eq(Attributes.totals(pr, _class_def("archer"), b).agility, 23)
 
 
-func test_effective_soft_caps() -> void:
+func test_effective_is_every_point() -> void:
 	assert_almost_eq(Attributes.effective(200, b), 200.0, 0.001)
-	assert_almost_eq(Attributes.effective(300, b), 250.0, 0.001)
-	assert_almost_eq(Attributes.effective(600, b), 375.0, 0.001)
+	assert_almost_eq(Attributes.effective(300, b), 300.0, 0.001)
 	assert_almost_eq(Attributes.effective(0, b), 0.0, 0.001)
 
 
@@ -68,9 +67,9 @@ func test_strength_gives_attack_and_block() -> void:
 	p.progress.attributes.strength = 100
 	_shield(p)
 	Progression.rebuild(p, f.world)
-	assert_almost_eq(p.stats.attack_power, 20.0 + 50.0, 0.001)
-	# Strength's 0.2 block plus the level 1 shield's 0.001.
-	assert_almost_eq(p.stats.block_chance, 0.2 + 0.001, 0.0001)
+	assert_almost_eq(p.stats.attack_power, 20.0 + 100.0, 0.001)
+	# Strength's 0.4 block (capped at 0.3).
+	assert_almost_eq(p.stats.block_chance, 0.3, 0.0001)
 
 
 ## Only a shield blocks (Plan 5).
@@ -83,9 +82,9 @@ func test_archer_attack_from_agility() -> void:
 	p.progress.attributes.agility = 100
 	p.progress.attributes.strength = 100
 	Progression.rebuild(p, f.world)
-	assert_almost_eq(p.stats.attack_power, 20.0 + 50.0, 0.001)
-	assert_almost_eq(p.stats.crit_chance, 0.05 + 0.05, 0.0001)
-	assert_almost_eq(p.stats.dodge_chance, 0.05 + 0.03, 0.0001)
+	assert_almost_eq(p.stats.attack_power, 20.0 + 100.0, 0.001)
+	assert_almost_eq(p.stats.crit_chance, 0.05 + 0.1, 0.0001)
+	assert_almost_eq(p.stats.dodge_chance, 0.05 + 0.06, 0.0001)
 
 
 func test_intellect_stamina_spirit() -> void:
@@ -94,11 +93,11 @@ func test_intellect_stamina_spirit() -> void:
 	p.progress.attributes.stamina = 10
 	p.progress.attributes.spirit = 100
 	Progression.rebuild(p, f.world)
-	assert_almost_eq(p.stats.spell_power, 20.0 + 50.0, 0.001)
-	assert_almost_eq(p.stats.max_resource, 160.0 + 200.0, 0.001)
-	assert_almost_eq(p.stats.max_hp, 130.0 + 50.0, 0.001)
-	assert_almost_eq(p.stats.hp_regen, 5.0, 0.001)
-	assert_almost_eq(p.stats.resource_regen_add, 3.0, 0.001)
+	assert_almost_eq(p.stats.spell_power, 20.0 + 100.0, 0.001)
+	assert_almost_eq(p.stats.max_resource, 160.0 + 400.0, 0.001)
+	assert_almost_eq(p.stats.max_hp, 130.0 + 100.0, 0.001)
+	assert_almost_eq(p.stats.hp_regen, 10.0, 0.001)
+	assert_almost_eq(p.stats.resource_regen_add, 6.0, 0.001)
 
 
 func test_caps() -> void:
@@ -131,8 +130,8 @@ func test_rebuild_keeps_hp_ratio() -> void:
 	p.hp = p.stats.max_hp * 0.5
 	p.progress.attributes.stamina = 20
 	Progression.rebuild(p, f.world)
-	assert_almost_eq(p.stats.max_hp, 300.0, 0.001)
-	assert_almost_eq(p.hp, 150.0, 0.001)
+	assert_almost_eq(p.stats.max_hp, 400.0, 0.001)
+	assert_almost_eq(p.hp, 200.0, 0.001)
 
 
 func test_rebuild_keeps_resource_ratio() -> void:
@@ -194,7 +193,7 @@ func test_villager_keeps_points_on_class_choice() -> void:
 	ClassRules.setup_player(p, "warrior", null, f.world)
 	assert_eq(p.progress.attributes.strength, 7)
 	assert_eq(p.class_id, "warrior")
-	assert_almost_eq(p.stats.attack_power, 20.0 + 0.5 * (7 + 25), 0.001)
+	assert_almost_eq(p.stats.attack_power, 20.0 + 1.0 * (7 + 10), 0.001)
 
 
 func test_block_halves_melee_physical_only() -> void:
@@ -293,3 +292,41 @@ func test_armor_break_lets_more_physical_damage_through() -> void:
 	assert_true(StatusTiles.is_debuff("armor_break"))
 	assert_true(FileAccess.file_exists("res://assets/icons/status/armor_break.png"))
 	assert_ne(tr("STATUS_ARMOR_BREAK"), "STATUS_ARMOR_BREAK")
+
+
+# --- Plan 6.4.4: every point shows ---------------------------------------------------------
+
+## The stats of a level-1 warrior with `n` hand points in `attr` minus those with none.
+func _gain(class_id: String, attr: String, n: int, field: String) -> float:
+	var p := _hero(class_id)
+	var base := float(p.stats.get(field))
+	f.world.players.clear()
+	var q := f.world.add_player(1, Vector3(5, 0, 5))
+	q.progress.attributes[attr] = n
+	ClassRules.setup_player(q, class_id, null, f.world)
+	f.world.players.clear()
+	return float(q.stats.get(field)) - base
+
+
+func test_each_point_shows_in_the_stats() -> void:
+	assert_almost_eq(_gain("warrior", "strength", 1, "attack_power"), 1.0, 0.001, "1 strength = +1 attack")
+	assert_almost_eq(_gain("mage", "intellect", 1, "spell_power"), 1.0, 0.001, "1 intellect = +1 spell power")
+	assert_almost_eq(_gain("mage", "intellect", 1, "max_resource"), 4.0, 0.001, "and +4 mana")
+	assert_almost_eq(_gain("warrior", "stamina", 1, "max_hp"), 10.0, 0.001, "1 stamina = +10 life")
+	assert_almost_eq(_gain("warrior", "agility", 10, "crit_chance"), 0.01, 0.0001, "10 agility = +1 % crit")
+	assert_almost_eq(_gain("warrior", "spirit", 10, "hp_regen"), 1.0, 0.001, "10 spirit = +1 life/s")
+
+
+func test_no_diminishing_returns() -> void:
+	assert_almost_eq(Attributes.effective(600, b), 600.0, 0.001)
+
+
+func test_agility_makes_you_faster_up_to_a_cap() -> void:
+	assert_almost_eq(_gain("warrior", "agility", 100, "move_speed_mult"), 0.05, 0.0001, "100 agility = +5 % speed")
+	assert_almost_eq(_gain("warrior", "agility", 5000, "move_speed_mult"), 0.30, 0.0001, "at most +30 %")
+
+
+func test_auto_points_are_two_per_level() -> void:
+	var pr := PlayerProgress.new()
+	pr.level = 11
+	assert_eq(int(Attributes.totals(pr, {}, b).strength), 20)
