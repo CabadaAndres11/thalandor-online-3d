@@ -253,7 +253,7 @@ func test_resolve_gives_the_v2_body() -> void:
 	assert_eq(look.get("body"), "v2")
 
 
-func test_every_v1_piece_has_a_v2_version() -> void:
+func test_cult_pieces_have_v2_versions() -> void:
 	var cat := CharacterCatalog.load_default()
 	assert_false(cat.piece_v2("cult_hood").is_empty(), "the cult's pieces too (Plan 6.4.1)")
 	assert_string_contains(str(cat.piece_entry("cult_hood").file), "/pieces_v2/")

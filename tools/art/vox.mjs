@@ -9,6 +9,7 @@ export const TINT_HAIR = 250;
 export const TINT_PRIMARY = 251;
 export const TINT_SECONDARY = 252;
 export const GLOW = 253; // drawn unshaded: eyes, runes, acid
+export const HIDDEN = 254; // never drawn: it only hides the faces of its neighbours (the inside of a hollow shell)
 // Darker / lighter tone of a tint (see VoxMesher.SHADE_OF / LIGHT_OF).
 export const SHADE = (tint) => tint - 20;
 export const LIGHT = (tint) => tint - 30;

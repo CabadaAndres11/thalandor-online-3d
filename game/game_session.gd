@@ -57,6 +57,7 @@ func _init() -> void:
 	arena.name = "Arena"
 	add_child(arena)
 	map = arena.build(Arena.load_layout())
+	MonsterAvatar.prewarm_bosses() # while the game loads, not when a boss appears
 	_avatar_root = Node3D.new()
 	_avatar_root.name = "Players"
 	add_child(_avatar_root)

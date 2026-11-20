@@ -7,7 +7,7 @@
 // v2 frames (voxels from each part's pivot): head x -8..7, y 0..16, z -7..8 (face +z);
 // torso x -12..11, y -8..29 (waist 0, shoulders ~22), z -7..7, the ground at y -53;
 // upper arm x -3..2, y -21..3; forearm y -19..2; hand y -8..0 (fingers down, palm +z).
-import { Shape, GLOW } from "./vox.mjs";
+import { Shape, GLOW, HIDDEN } from "./vox.mjs";
 import { ellipsoid, capsule, cylinder, roundBox, carve, tone, shadeByFacing, shellAround, noise3 } from "./sculpt.mjs";
 import { headV2, torsoV2, upperArmV2, forearmV2, handV2 } from "./human_v2.mjs";
 
@@ -33,7 +33,7 @@ export const CULT_PALETTE = {
   [STONE]: "#a59d96", [STONE_D]: "#6e6762", [STONE_L]: "#cac3bc",
   [CLAW]: "#19171b", [CLAW_D]: "#0b0a0c", [PENDANT]: "#7f8c74", [PENDANT_D]: "#56604d",
   [PLATE]: "#2a2930", [PLATE_D]: "#18171c", [PLATE_L]: "#3c3a44", [BLOOD]: "#9e1b22",
-  [GLOW]: "#ffb84a",
+  [GLOW]: "#ffb84a", [HIDDEN]: "#000000",
 };
 
 // Textures and form: every material mixes its tones and darkens facing down, lightens on top.
@@ -290,7 +290,7 @@ function vaeltharRobe() {
   for (const v of [...s.cells.values()].filter((c) => c[1] === BOTTOM)) {
     const h = (v[0] * 7 + v[2] * 5) % 7;
     const red = v[3] === RED || v[3] === RED_D;
-    for (let d = 1; d <= h - 2; d++) s.put(v[0], BOTTOM - d, v[2], red ? RED_D : ROBE_D);
+    for (let d = 1; d <= Math.min(h - 2, 2); d++) s.put(v[0], BOTTOM - d, v[2], red ? RED_D : ROBE_D); // never past y -52
   }
   mantles(s, [[19, 29, 1], [13, 23, 3], [7, 17, 5]]);
   for (let y = 27; y <= 31; y++) ring(s, y, 7, 6, 1.6, ROBE); // the high collar
@@ -528,6 +528,17 @@ function nhazarHead() {
       if (ch === "h" || ch === "G") { s.put(...out(0), ch === "G" ? GLOW : CURL_D); s.put(...out(-1), ch === "G" ? GLOW : CURL_D); }
     }
   }
+  // Behind the shell, one layer of hidden voxels: the inner surface, never seen, is not drawn.
+  const inner = [];
+  for (const [x, y, z, i] of s.cells.values()) {
+    if (i === GOLD || i === GOLD_D || i === GOLD_L) continue; // only the curls and the masks' backs
+    const d = Math.hypot(x - cx, y - cy, z - cz);
+    for (const [dx, dy, dz] of [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]]) {
+      const nx = x + dx, ny = y + dy, nz = z + dz;
+      if (!s.cells.has(`${nx},${ny},${nz}`) && Math.hypot(nx - cx, ny - cy, nz - cz) < d - 0.2) inner.push([nx, ny, nz]);
+    }
+  }
+  for (const [x, y, z] of inner) s.put(x, y, z, HIDDEN);
   for (let k = 0; k < 9; k++) { // gold crosses standing out of the crown
     const nx = Math.sin((k - 4) * 0.2), ny = Math.cos((k - 4) * 0.2);
     const bx = r(cx + nx * (R + 2)), by = r(cy + ny * (R + 2)), bz = r(cz + (k % 2 ? -18 : 14));
@@ -541,7 +552,8 @@ function nhazarHead() {
     const x = r(cx + Math.cos(a) * (R + 14)), y = r(cy + Math.sin(a) * (R + 14)), z = r(cz - R + 12);
     for (let d = 0; d < 3; d++) s.put(x, y, z + d, k % 5 ? GOLD : GOLD_D);
   }
-  return paint(without(s, HEAD), 61);
+  paint(without(s, HEAD), 61);
+  return without(s, HEAD);
 }
 function nhazarCollar() {
   const s = new Shape();

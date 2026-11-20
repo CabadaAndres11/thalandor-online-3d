@@ -49,3 +49,22 @@ test("deterministic", () => {
   const again = monstersV2();
   for (const id of ["cult_robe", "vaelthar_tentacles_left", "inquisitor_hood"]) assert.deepEqual([...again[id].shape.cells.entries()], [...m[id].shape.cells.entries()], id);
 });
+
+test("Nhazar's head shows only its outside (hidden voxels behind the shell)", async () => {
+  const { HIDDEN } = await import("../vox.mjs");
+  const s = m.nhazar_head.shape;
+  let faces = 0;
+  for (const [x, y, z, i] of s.cells.values()) {
+    if (i === HIDDEN) continue;
+    for (const [dx, dy, dz] of [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]]) if (!s.cells.has(`${x + dx},${y + dy},${z + dz}`)) faces++;
+  }
+  assert.ok(faces < 160000, `${faces} faces drawn`);
+});
+
+test("robe hems stay off the ground (y -53)", () => {
+  for (const id of ["cult_robe", "acolyte_robe", "vaelthar_robe"]) {
+    let lo = Infinity;
+    for (const [, y] of m[id].shape.cells.values()) lo = Math.min(lo, y);
+    assert.ok(lo >= -52, `${id} reaches ${lo}`);
+  }
+});

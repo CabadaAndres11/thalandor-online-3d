@@ -87,6 +87,16 @@ func setup(type: Dictionary, elite: bool = false, elite_scale: float = 1.3, ally
 
 
 ## A HumanRig look (see HumanRig.build) from a monster's "look" data.
+## Builds the humanoid bosses' models once (their meshes stay in VoxMesher's cache), so a
+## boss's huge pieces (Nhazar's head) are made while the game loads, not mid-fight.
+static func prewarm_bosses() -> void:
+	var db := MonsterDB.load_default()
+	for id: String in db.type_ids():
+		var type := db.get_type(id)
+		if bool(type.get("boss", false)) and str(type.get("model", "")).begins_with("humanoid:"):
+			HumanRig.build(look_of(type)).free()
+
+
 static func look_of(type: Dictionary) -> Dictionary:
 	var look: Dictionary = type.get("look", {})
 	var catalog := CharacterCatalog.load_default()

@@ -13,6 +13,9 @@ const TINT_PRIMARY := 251
 const TINT_SECONDARY := 252
 ## Voxels of this index glow: drawn unshaded (eyes, runes, acid).
 const GLOW := 253
+## Never drawn: it only hides the faces of the voxels beside it (the inside of a hollow shell,
+## such as a boss's huge head, whose inner surface is never seen).
+const HIDDEN := 254
 ## Tone indices: a darker (shade) and a lighter (light) version of each tint, for
 ## folds, edges and highlights painted into the voxels.
 const SHADE_OF := {247: 227, 248: 228, 249: 229, 250: 230, 251: 231, 252: 232}
@@ -54,6 +57,8 @@ static func build(vox: VoxFile, tints: Dictionary) -> ArrayMesh:
 	for v: Array in vox.voxels:
 		var cell := Vector3i(v[0], v[1], v[2])
 		var index: int = v[3]
+		if index == HIDDEN:
+			continue
 		var color := _color(index, tints, vox.palette)
 		var s: Dictionary = glow if index == GLOW else lit
 		for side: Array in SIDES:

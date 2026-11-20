@@ -229,3 +229,14 @@ func test_cult_pieces_come_from_the_v2_table() -> void:
 	for p: Dictionary in look.pieces:
 		assert_string_contains(str(p.file), "/pieces_v2/", str(p.id))
 		assert_false(p.has("voxel_scale"), str(p.id))
+
+
+func test_boss_models_are_built_ahead_of_the_fight() -> void:
+	VoxMesher.clear_cache()
+	MonsterAvatar.prewarm_bosses()
+	var look := MonsterAvatar.look_of(MonsterDB.load_default().get_type("nhazar"))
+	var head: Dictionary = look.pieces.filter(func(p: Dictionary) -> bool: return p.id == "nhazar_head")[0]
+	var t0 := Time.get_ticks_msec()
+	var a := _avatar("nhazar")
+	assert_not_null(a)
+	assert_lt(Time.get_ticks_msec() - t0, 500, "the huge head was already built (%s)" % head.file)

@@ -163,3 +163,9 @@ func test_texture_tones_of_a_tint() -> void:
 	c = (_arrays(VoxMesher.build(light, {VoxMesher.TINT_HAIR: Color.ORANGE}))[Mesh.ARRAY_COLOR] as PackedColorArray)[0]
 	assert_almost_eq(c.g, Color.ORANGE.lightened(VoxMesher.TONE_TEX_LIGHT).g, 0.01)
 	assert_lt(VoxMesher.TONE_TEX_DARK, VoxMesher.TONE_SHADE)
+
+
+func test_hidden_voxels_hide_faces_but_draw_nothing() -> void:
+	# A voxel with a hidden one beside it: the shared face is not drawn, nor the hidden one.
+	var arrays := _arrays(VoxMesher.build(_vox([[0, 0, 0, 1], [1, 0, 0, VoxMesher.HIDDEN]]), {}))
+	assert_eq((arrays[Mesh.ARRAY_INDEX] as PackedInt32Array).size(), 30, "5 faces of the visible voxel only")
