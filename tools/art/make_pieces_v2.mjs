@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 import { write, Shape, TEX_D, TEX_L, TINT_HAIR } from "./vox.mjs";
 import { ellipsoid, capsule, roundBox, carve, shadeByFacing, shellAround, noise3 } from "./sculpt.mjs";
 import { headV2, frontZ, PALETTE_V2, FORM } from "./human_v2.mjs";
+import { clothesV2 } from "./clothes_v2.mjs";
 
 const H = TINT_HAIR;
 const HEAD = headV2();
@@ -161,7 +162,7 @@ export function piecesV2() {
   for (const [id, build] of Object.entries({ ...HAIR, ...BEARDS })) {
     out[id] = { shape: strands(build(), seed++), part: "head", palette: PALETTE_V2 };
   }
-  return out;
+  return { ...out, ...clothesV2() };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

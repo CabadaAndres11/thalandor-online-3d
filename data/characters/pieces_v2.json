@@ -119,5 +119,167 @@
 		],
 		"tag": "beard",
 		"hides": []
+	},
+	"outfit_warrior": {
+		"file": "res://assets/characters/pieces_v2/outfit_warrior.vox",
+		"part": "torso",
+		"offset": [
+			-11,
+			-9,
+			-8
+		],
+		"tag": "outfit",
+		"hides": []
+	},
+	"outfit_cleric": {
+		"file": "res://assets/characters/pieces_v2/outfit_cleric.vox",
+		"part": "torso",
+		"offset": [
+			-5,
+			-26,
+			-8
+		],
+		"tag": "outfit",
+		"hides": []
+	},
+	"outfit_mage": {
+		"file": "res://assets/characters/pieces_v2/outfit_mage.vox",
+		"part": "torso",
+		"offset": [
+			-16,
+			-38,
+			-11
+		],
+		"tag": "outfit",
+		"hides": []
+	},
+	"outfit_archer": {
+		"file": "res://assets/characters/pieces_v2/outfit_archer.vox",
+		"part": "torso",
+		"offset": [
+			-16,
+			-1,
+			-14
+		],
+		"tag": "outfit",
+		"hides": []
+	},
+	"outfit_assassin": {
+		"file": "res://assets/characters/pieces_v2/outfit_assassin.vox",
+		"part": "torso",
+		"offset": [
+			-11,
+			-13,
+			-8
+		],
+		"tag": "outfit",
+		"hides": []
+	},
+	"outfit_villager": {
+		"file": "res://assets/characters/pieces_v2/outfit_villager.vox",
+		"part": "torso",
+		"offset": [
+			-10,
+			0,
+			2
+		],
+		"tag": "outfit",
+		"hides": []
+	},
+	"quiver_back": {
+		"file": "res://assets/characters/pieces_v2/quiver_back.vox",
+		"part": "torso",
+		"offset": [
+			2,
+			-1,
+			-14
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"hood_cleric": {
+		"file": "res://assets/characters/pieces_v2/hood_cleric.vox",
+		"part": "torso",
+		"offset": [
+			-8,
+			19,
+			-10
+		],
+		"tag": "headgear",
+		"hides": []
+	},
+	"hat_mage": {
+		"file": "res://assets/characters/pieces_v2/hat_mage.vox",
+		"part": "head",
+		"offset": [
+			-13,
+			13,
+			-14
+		],
+		"tag": "headgear",
+		"hides": [
+			"hair"
+		]
+	},
+	"hood_archer": {
+		"file": "res://assets/characters/pieces_v2/hood_archer.vox",
+		"part": "head",
+		"offset": [
+			-17,
+			-8,
+			-11
+		],
+		"tag": "headgear",
+		"hides": [
+			"hair",
+			"hair_cap"
+		]
+	},
+	"helm_templar": {
+		"file": "res://assets/characters/pieces_v2/helm_templar.vox",
+		"part": "head",
+		"offset": [
+			-10,
+			3,
+			-9
+		],
+		"tag": "headgear",
+		"hides": [
+			"hair",
+			"hair_cap"
+		]
+	},
+	"mask_assassin": {
+		"file": "res://assets/characters/pieces_v2/mask_assassin.vox",
+		"part": "head",
+		"offset": [
+			-9,
+			-6,
+			-10
+		],
+		"tag": "headgear",
+		"hides": []
+	},
+	"pauldron_left": {
+		"file": "res://assets/characters/pieces_v2/pauldron_left.vox",
+		"part": "arm_left",
+		"offset": [
+			-5,
+			-6,
+			-6
+		],
+		"tag": "armor",
+		"hides": []
+	},
+	"pauldron_right": {
+		"file": "res://assets/characters/pieces_v2/pauldron_right.vox",
+		"part": "arm_right",
+		"offset": [
+			-6,
+			-6,
+			-6
+		],
+		"tag": "armor",
+		"hides": []
 	}
 }

@@ -48,3 +48,40 @@ test("the face stays visible under caps and beards", () => {
     }
   }
 });
+
+const CLOTHES = ["outfit_warrior", "outfit_cleric", "outfit_mage", "outfit_archer", "outfit_assassin", "outfit_villager",
+  "hat_mage", "hood_archer", "helm_templar", "mask_assassin", "hood_cleric", "pauldron_left", "pauldron_right", "quiver_back"];
+
+test("every class piece has a v2 version on the v1 part", () => {
+  for (const id of CLOTHES) {
+    assert.ok(v2[id], id);
+    assert.equal(v2[id].part, v1[id].part, id);
+    assert.ok(v2[id].shape.cells.size > 30, `${id} has volume`);
+  }
+});
+
+test("clothes never sit inside the body part they hang from", async () => {
+  const body = (await import("../human_v2.mjs")).humanV2().parts;
+  for (const id of CLOTHES) {
+    const part = body[v2[id].part].shape;
+    for (const key of v2[id].shape.cells.keys()) assert.ok(!part.cells.has(key), `${id} inside ${v2[id].part} at ${key}`);
+  }
+});
+
+test("headgear keeps the eyes visible", () => {
+  for (const id of ["hat_mage", "hood_archer", "helm_templar", "mask_assassin"]) {
+    for (const [x, y, z] of v2[id].shape.cells.values()) {
+      const eyeColumn = (x >= 1 && x <= 4) || (x >= -5 && x <= -2);
+      assert.ok(!(y >= 7 && y <= 10 && eyeColumn && z >= 4), `${id} covers the eyes at ${x},${y},${z}`);
+    }
+  }
+});
+
+test("every piece the class and upgrade data name has a v2 version (weapons apart)", () => {
+  const classes = JSON.parse(fs.readFileSync(new URL("../../../data/characters/classes.json", import.meta.url)));
+  const ids = new Set();
+  for (const c of classes.classes ?? classes) {
+    for (const id of [...(c.pieces ?? []), ...(c.fixed_pieces ?? []), c.headgear ?? ""]) if (id) ids.add(id);
+  }
+  for (const id of ids) assert.ok(v2[id], `${id} has no v2 version`);
+});

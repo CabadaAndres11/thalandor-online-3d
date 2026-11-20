@@ -93,7 +93,7 @@ export function headV2() {
 }
 
 // Torso, pivot at the waist; neck up to the head pivot (local y 28).
-function torsoV2() {
+export function torsoV2() {
   const t = new Shape();
   ellipsoid(t, [-0.5, 7, -0.5], [9.8, 8.5, 6.8], P); // waist and belly
   ellipsoid(t, [-0.5, 17, 0], [11.2, 9, 7.2], P); // chest and ribs
@@ -113,7 +113,7 @@ function torsoV2() {
 }
 
 // Pelvis and belt, pivot at the hip joints (local y 0 = rig 46); the waist pivot is 7 up.
-function hipsV2() {
+export function hipsV2() {
   const h = new Shape();
   ellipsoid(h, [-0.5, 1, -0.5], [10.2, 6.5, 7.2], T);
   carve(h, (c) => roundBox(c, [-20, -12, -12], [20, -4, 12], 0, 0));
@@ -128,7 +128,7 @@ function hipsV2() {
 }
 
 // Upper arm, pivot at the shoulder: a sleeve over the top, bare below.
-function upperArmV2() {
+export function upperArmV2() {
   const a = new Shape();
   capsule(a, [-0.5, -1, -0.5], [-0.5, -19, -0.5], 3.4, 2.7, SK);
   finish(a, [SK], 41, [0.7, 0.2, 0.1]);
