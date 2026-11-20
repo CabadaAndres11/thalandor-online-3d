@@ -9,17 +9,12 @@ import { fileURLToPath } from "node:url";
 import { write } from "./vox.mjs";
 import { armorV2, BODY } from "./gear_armor_v2.mjs";
 import { carve } from "./sculpt.mjs";
+import { gearWeaponsV2 as weapons } from "./gear_weapons_v2.mjs";
 
 // The body part each piece hangs from (pieces never sit inside it).
 const PART_BODY = { head: "head", torso: "torso", hips: "hips", arm_left: "arm", arm_right: "arm", forearm_left: "fore",
   forearm_right: "fore", hand_left: "hand", hand_right: "hand", leg_left: "thigh", leg_right: "thigh", shin_left: "shin", shin_right: "shin" };
 
-let weapons = () => ({});
-try {
-  weapons = (await import("./gear_weapons_v2.mjs")).gearWeaponsV2;
-} catch (e) {
-  if (e.code !== "ERR_MODULE_NOT_FOUND") throw e;
-}
 
 export function gearV2() {
   const all = { ...armorV2(), ...weapons() };

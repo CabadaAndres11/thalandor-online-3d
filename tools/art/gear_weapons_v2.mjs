@@ -240,7 +240,7 @@ const UNIQUES = {
   unique_acolyte: { glow: "#ffcf6a", build(s) {
     cylinder(s, [CX, CY, -6], [CX, CY, 26], 1.3, C.DARK);
     cylinder(s, [CX, CY, -3], [CX, CY, 3], 1.5, C.RED_D);
-    for (const z of [10, 18]) cylinder(s, [CX, CY, z], [CX, CY, z], 2.2, C.GOLD);
+    for (const z of [10, 18]) cylinder(s, [CX, CY, z], [CX, CY, z + 1], 2.2, C.GOLD);
     const z = 30;
     ellipsoid(s, [CX, CY, z], [4.4, 4.4, 3.4], C.DARK_D);
     ellipsoid(s, [CX, CY, z + 1], [2.8, 2.8, 2.8], GLOW);
@@ -271,7 +271,7 @@ const UNIQUES = {
   unique_nhazar: { glow: "#ff3355", build(s) {
     const m = { blade: C.DARK, edge: C.DARK_L, dark: C.DARK_D, gold: C.GOLD, rune: GLOW };
     cylinder(s, [CX, CY, -12], [CX, CY, 3], 1.5, C.BLACK_LEATHER);
-    for (let z = -12; z <= 3; z += 3) cylinder(s, [CX, CY, z], [CX, CY, z], 2.2, C.IRON_D); // chains
+    for (let z = -12; z <= 3; z += 3) cylinder(s, [CX, CY, z], [CX, CY, z + 1], 2.2, C.IRON_D); // chains
     ellipsoid(s, [CX, CY, -14], [2.2, 2.2, 1.8], C.GOLD);
     roundBox(s, [-2, Math.round(CY) - 11, 4], [1, Math.round(CY) + 13, 6], 1, C.DARK_D);
     roundBox(s, [-2, Math.round(CY) - 2, 6], [1, Math.round(CY) + 3, 6], 0, C.RED); // the mouth

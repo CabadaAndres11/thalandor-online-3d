@@ -82,3 +82,10 @@ test("tier 3 weapons are larger than tier 1", () => {
     assert.ok(v2[`w_${fam}_t3`].shape.cells.size > v2[`w_${fam}_t1`].shape.cells.size, fam);
   }
 });
+
+test("rings on rods along +Z wrap the rod (not flat side fins)", () => {
+  for (const [id, z] of [["w_unique_acolyte", 10], ["w_unique_nhazar", -9]]) {
+    const ys = [...v2[id].shape.cells.values()].filter((v) => v[2] === z).map((v) => v[1]);
+    assert.ok(Math.max(...ys) - Math.min(...ys) + 1 >= 4, `${id} z=${z}: ring spans ${Math.max(...ys) - Math.min(...ys) + 1} in y`);
+  }
+});
