@@ -20,14 +20,14 @@ func _fam(id: String) -> Dictionary:
 func test_heavy_basic() -> void:
 	var slash := abilities.get_ability("warrior_slash")
 	var a := WeaponFamily.adjust(slash, _fam("heavy"))
-	assert_almost_eq(float(a.cooldown_s), 0.6 * 1.4, 0.0001)
+	assert_almost_eq(float(a.cooldown_s), 0.45 * 1.25, 0.0001)
 	assert_almost_eq(float(a.range), 3.0, 0.0001)
 	assert_eq(a.anim, "heavy")
 	var arc: Dictionary = a.effects[0]
 	assert_almost_eq(float(arc.range), 3.0, 0.0001)
 	assert_eq(int(arc.angle_deg), 150)
-	assert_almost_eq(float(arc.damage.base), 10 * 1.5, 0.0001)
-	assert_almost_eq(float(arc.damage.coef), 0.6 * 1.5, 0.0001)
+	assert_almost_eq(float(arc.damage.base), 7.5 * 1.34, 0.0001)
+	assert_almost_eq(float(arc.damage.coef), 0.45 * 1.34, 0.0001)
 
 
 func test_polearm_thrust() -> void:
@@ -77,4 +77,4 @@ func test_cast_uses_the_family() -> void:
 	ClassRules.setup_player(p, "warrior", null, f.world)
 	p.inventory.equipment["main"] = ItemRoll.new_item("greatsword_t1", 1)
 	assert_true(Combat.try_cast(f.world, p, "warrior_slash", Vector3(6, 0, 5)))
-	assert_eq(int(p.cooldowns.warrior_slash), f.world.tick + f.world.ticks(0.6 * 1.4))
+	assert_eq(int(p.cooldowns.warrior_slash), f.world.tick + f.world.ticks(0.45 * 1.25))

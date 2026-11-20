@@ -28,7 +28,7 @@ const SCALE_GROUP := {
 ## Seconds each action lasts; downed and die then stay.
 const ACTIONS := {"melee": 0.45, "shoot": 0.65, "cast": 0.6, "dash": 0.35, "downed": 0.5, "die": 0.7, "cast_long": 1.0,
 	"stab_right": 0.32, "stab_left": 0.32, "overhead": 0.6, "spin": 0.6, "flurry": 0.7,
-	"heavy": 0.6, "thrust": 0.45, "stab": 0.32}
+	"heavy": 0.55, "thrust": 0.45, "stab": 0.32}
 const LASTING := ["downed", "die"]
 ## Melee swings (the weapon's path is traced by a SlashFx): action -> [start, end] of the swing in
 ## the animation, as a share of its length.

@@ -170,7 +170,7 @@ func test_smite_evolution_is_a_melee_strike() -> void:
 	assert_eq(smite.effects[0].range, 2.5)
 	assert_eq(smite.effects[0].angle_deg, 100)
 	assert_true(Combat.try_cast(f.world, p, "cleric_smite", foe.position))
-	assert_almost_eq(5000.0 - foe.hp, (9.0 + 0.6 * p.stats.spell_power) * 1.15, 0.01, "15 % more damage")
+	assert_almost_eq(5000.0 - foe.hp, (9.0 + 0.6 * p.stats.spell_power) * 1.15 * 0.75, 0.01, "15 % more damage, at 0.6 s instead of 0.8 s")
 	assert_eq(f.world.projectiles.size(), 0)
 	assert_eq(far.hp, 5000.0)
 	assert_eq(f.world.abilities.get_ability("cleric_smite").effects[0].type, "projectile", "the base data stays")

@@ -1,7 +1,7 @@
 [
 	{"id": "assassin_stab", "class": "assassin", "name": "AB_ASSASSIN_STAB", "desc": "AB_ASSASSIN_STAB_DESC", "icon": "stab", "kind": "basic", "level": 1,
-	 "cost": 0, "cooldown_s": 0.5, "gcd": false, "range": 2.0, "anim": "stab", "combo_gain": 1,
-	 "effects": [{"type": "melee_arc", "angle_deg": 90, "range": 2.0, "damage": {"base": 9, "coef": 0.5, "kind": "physical"}}]},
+	 "cost": 0, "cooldown_s": 0.4, "gcd": false, "range": 2.0, "anim": "stab", "combo_gain": 1,
+	 "effects": [{"type": "melee_arc", "angle_deg": 90, "range": 2.0, "damage": {"base": 7.2, "coef": 0.4, "kind": "physical"}}]},
 	{"id": "assassin_eviscerate", "class": "assassin", "name": "AB_ASSASSIN_EVISCERATE", "desc": "AB_ASSASSIN_EVISCERATE_DESC", "icon": "eviscerate", "kind": "secondary", "level": 1,
 	 "cost": 35, "cooldown_s": 1, "gcd": false, "range": 2.0, "anim": "overhead", "finisher": true,
 	 "effects": [{"type": "melee_arc", "angle_deg": 60, "range": 2.0, "damage": {"base": 12, "coef": 0.4, "kind": "physical"}}]},

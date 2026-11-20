@@ -53,7 +53,7 @@ func test_warrior_basic_secondary_level1() -> void:
 	var w := _hero("warrior")
 	var d := _target()
 	assert_true(Combat.try_cast(f.world, w, "warrior_slash", d.position))
-	assert_almost_eq(1000.0 - d.hp, (10 + 0.6 * 20) * (1.0 - Damage.mitigation(0, f.world.balance)), 0.01)
+	assert_almost_eq(1000.0 - d.hp, (7.5 + 0.45 * 20) * (1.0 - Damage.mitigation(0, f.world.balance)), 0.01)
 	assert_eq(w.resource, 8.0, "slash generates rage")
 	assert_false(Combat.try_cast(f.world, w, "warrior_brutal", d.position), "brutal needs 30 rage")
 	w.resource = 40.0

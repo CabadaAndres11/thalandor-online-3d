@@ -173,15 +173,15 @@ func test_slash_evolution() -> void:
 	assert_true(Combat.try_cast(f.world, p, "warrior_slash", foe.position))
 	f.run(0.5)
 	var armor := 1.0 - Damage.mitigation(foe.stats.armor, f.world.balance)
-	var one := (7.0 + 0.42 * p.stats.attack_power) * armor
+	var one := (5.25 + 0.315 * p.stats.attack_power) * armor
 	assert_almost_eq(5000.0 - foe.hp, 2.0 * one, 0.01, "two hits at 70 % each")
-	assert_almost_eq(one, 0.7 * (10.0 + 0.6 * p.stats.attack_power) * armor, 0.01)
+	assert_almost_eq(one, 0.7 * (7.5 + 0.45 * p.stats.attack_power) * armor, 0.01)
 	f.world.players.clear()
 	var plain := _hero("protector")
 	var foe2 := _foe(2001, Vector3(10, 0, 11.5))
 	assert_true(Combat.try_cast(f.world, plain, "warrior_slash", foe2.position))
 	f.run(0.5)
-	assert_almost_eq(5000.0 - foe2.hp, (10.0 + 0.6 * plain.stats.attack_power) * armor, 0.01, "without it, one hit")
+	assert_almost_eq(5000.0 - foe2.hp, (7.5 + 0.45 * plain.stats.attack_power) * armor, 0.01, "without it, one hit")
 
 
 # --- Shape --------------------------------------------------------------------------------

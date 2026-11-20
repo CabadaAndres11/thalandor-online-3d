@@ -7,6 +7,6 @@
 	 "actives": ["cleric_crusader_strike", "cleric_consecration"], "passives": ["cleric_armor_of_faith", "cleric_zeal"],
 	 "look": {"headgear": "helm_templar"},
 	 "evolves": {"ability": "cleric_smite", "desc": "UP_TEMPLAR_EVO",
-		"set": {"anim": "melee", "range": 2.5},
-		"effects": [{"type": "melee_arc", "angle_deg": 100, "range": 2.5, "damage": {"base": 10.35, "coef": 0.69, "kind": "magic"}}]}}
+		"set": {"anim": "melee", "range": 2.5, "cooldown_s": 0.6},
+		"effects": [{"type": "melee_arc", "angle_deg": 100, "range": 2.5, "damage": {"base": 7.7625, "coef": 0.5175, "kind": "magic"}}]}}
 ]

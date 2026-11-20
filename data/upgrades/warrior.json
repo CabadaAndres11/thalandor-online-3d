@@ -8,5 +8,5 @@
 	 "actives": ["warrior_frenzy", "warrior_execute"], "passives": ["warrior_blood_fury", "warrior_massacre"],
 	 "evolves": {"ability": "warrior_slash", "desc": "UP_BERSERKER_EVO",
 		"set": {"repeat": {"times": 2, "interval_s": 0.15}},
-		"effects": [{"type": "melee_arc", "angle_deg": 120, "range": 2.5, "damage": {"base": 7, "coef": 0.42, "kind": "physical"}}]}}
+		"effects": [{"type": "melee_arc", "angle_deg": 120, "range": 2.5, "damage": {"base": 5.25, "coef": 0.315, "kind": "physical"}}]}}
 ]
