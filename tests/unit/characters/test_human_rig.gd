@@ -560,3 +560,48 @@ func test_pose_motion_is_in_metres_on_both_bodies() -> void:
 		bottoms.append(_top_and_bottom(rig).y)
 	assert_almost_eq(lunge[1], lunge[0], 0.01, "same lunge in metres")
 	assert_gt(bottoms[1], bottoms[0] - 0.03, "a dead v2 body sinks no deeper than a v1 one (%.3f vs %.3f)" % [bottoms[1], bottoms[0]])
+
+
+func _gear_rig(main: String, class_id: String = "warrior") -> HumanRig:
+	var rig := HumanRig.build(CharacterCatalog.load_default().resolve(class_id, {}, "", [main, "", "", "", "", "", "", ""]))
+	rig.auto_update = false
+	add_child_autofree(rig)
+	rig.update(0.1)
+	return rig
+
+
+## The weapon tip, in the rig's own space, at fraction k of combo step `step` of `kind`.
+func _tip_at(rig: HumanRig, kind: String, step: int, k: float) -> Vector3:
+	rig.play_action("idle")
+	rig._combo_step = step
+	rig._action = kind
+	rig._action_t = float(HumanRig.ACTIONS[kind]) * k
+	rig.update(0.0)
+	var pts: Array = rig.weapon_points("right")
+	return rig.global_transform.affine_inverse() * (pts[1] as Vector3)
+
+
+func _combo_reads(main: String, kind: String) -> void:
+	var rig := _gear_rig(main)
+	var left := signf(rig.part("arm_left").position.x) # the character's left, in rig x
+	# Step 1: a side slash toward the left; step 2: toward the right; step 3: downward.
+	var a := _tip_at(rig, kind, 0, 0.3)
+	var b := _tip_at(rig, kind, 0, 0.55)
+	assert_gt((b.x - a.x) * left, 0.4, "%s 1: sweeps to the left" % main)
+	assert_lt(absf(b.y - a.y), absf(b.x - a.x), "%s 1: sideways, not down" % main)
+	a = _tip_at(rig, kind, 1, 0.3)
+	b = _tip_at(rig, kind, 1, 0.55)
+	assert_lt((b.x - a.x) * left, -0.4, "%s 2: sweeps to the right" % main)
+	assert_lt(absf(b.y - a.y), absf(b.x - a.x), "%s 2: sideways, not down" % main)
+	a = _tip_at(rig, kind, 2, 0.3)
+	b = _tip_at(rig, kind, 2, 0.55)
+	assert_lt(b.y - a.y, -0.6, "%s 3: comes down" % main)
+	assert_gt(absf(b.y - a.y), absf(b.x - a.x), "%s 3: down, not sideways" % main)
+
+
+func test_one_hand_combo_left_right_down() -> void:
+	_combo_reads("sword_t1", "melee")
+
+
+func test_two_hand_combo_left_right_down() -> void:
+	_combo_reads("greatsword_t1", "heavy")

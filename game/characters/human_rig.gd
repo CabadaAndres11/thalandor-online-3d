@@ -157,7 +157,7 @@ func weapon_points(side: String = "right") -> Array:
 		return []
 	for id: String in _pieces:
 		var mi: MeshInstance3D = _pieces[id]
-		if not id.begins_with("weapon_") or mi.get_parent() != hand or mi.mesh == null:
+		if not (id.begins_with("weapon_") or id.begins_with("w_")) or mi.get_parent() != hand or mi.mesh == null:
 			continue
 		var box := mi.get_aabb()
 		var origin := hand.global_position
@@ -439,16 +439,17 @@ func _pose() -> void:
 	_locomotion(walk)
 	var k := clampf(_action_t / float(ACTIONS.get(_action, 1.0)), 0.0, 1.0)
 	match _action:
+		# The basic chain: a side slash to the left, one back to the right, then a blow from above.
 		"melee":
 			match _combo_step:
-				1: _backhand(k)
+				1: _side_slash(k, -1.0, false)
 				2: _chop(k)
-				_: _melee(k)
+				_: _side_slash(k, 1.0, false)
 		"heavy":
 			match _combo_step:
-				1: _heavy_swing(k, -1.0)
+				1: _side_slash(k, -1.0, true)
 				2: _overhead(k)
-				_: _heavy_swing(k, 1.0)
+				_: _side_slash(k, 1.0, true)
 		"thrust":
 			match _combo_step:
 				1: _sweep(k)
@@ -545,48 +546,39 @@ func _locomotion(walk: float) -> void:
 		_rot("hand_right", 0.75 - 0.15 * walk)
 
 
-## A full-body swing: weight back and the arm cocked over the shoulder, then a step forward with
-## the hips and torso turning through the blow, the other arm swinging back, and a recovery.
-## Keys at 0, 0.3 (cocked), 0.55 (end of the swing) and 1 (recovered).
-func _melee(k: float) -> void:
-	var arm := _keys(k, 0.0, -2.5, 0.6, 0.0)
-	var twist := _keys(k, 0.0, 0.55, -0.6, 0.0)
+## A side slash, the blade level and pointing out: wound up on one side, then swept across
+## to the other by the hips, the torso and the arm (dir 1: toward the character's left,
+## -1: back toward the right), with a step into it. both: the two hands on the hilt.
+## Keys at 0, 0.3 (wound up), 0.55 (end of the slash) and 1 (recovered).
+func _side_slash(k: float, dir: float, both: bool) -> void:
+	var left := signf((_rest["arm_left"] as Vector3).x) # the character's left, in rig x
+	var sweep := left * dir
+	var arm := _keys(k, 0.0, -1.45, -1.45, 0.0) # raised level in front
 	_rot("arm_right", arm)
-	_rot("forearm_right", -1.1 * clampf(-arm / 2.5, 0.0, 1.0)) # cocked back, then straight
-	(_parts["arm_right"] as Node3D).rotation.z = -absf(twist) * 0.6
+	_rot("forearm_right", _keys(k, -0.18, -0.35, -0.1, -0.18))
+	_rot("hand_right", _keys(k, 0.1, 1.35, 1.35, 0.1)) # the blade points out, not up
+	(_parts["arm_right"] as Node3D).rotation.y = _keys(k, 0.0, -0.75 * sweep, 0.85 * sweep, 0.0)
+	var twist := _keys(k, 0.0, -0.55 * sweep, 0.6 * sweep, 0.0)
 	(_parts["torso"] as Node3D).rotation.y = twist
-	(_parts["torso"] as Node3D).rotation.x = _keys(k, 0.0, -0.14, 0.36, 0.0) # leans back, then into the blow
-	(_parts["hips"] as Node3D).rotation.y = _keys(k, 0.0, 0.25, -0.3, 0.0) # the hips lead the turn
-	_rot("arm_left", _keys(k, 0.0, -0.7, 1.0, 0.0)) # the free arm balances the swing
-	_rot("leg_left", _keys(k, 0.0, 0.2, -0.7, 0.0)) # the front leg steps forward
-	_rot("leg_right", _keys(k, 0.0, -0.25, 0.55, 0.0))
-	_rot("shin_left", _keys(k, 0.05, 0.1, 0.25, 0.05))
-	_rot("shin_right", _keys(k, 0.05, 0.5, 0.75, 0.05)) # the back leg bends and pushes
-	(_parts["head"] as Node3D).rotation.x = _keys(k, 0.0, 0.05, -0.14, 0.0)
+	(_parts["hips"] as Node3D).rotation.y = twist * 0.5 # the hips lead the turn
+	(_parts["torso"] as Node3D).rotation.x = _keys(k, 0.0, -0.08, 0.22, 0.0)
+	if both:
+		_rot("arm_left", arm)
+		_rot("forearm_left", _keys(k, -0.85, -0.6, -0.3, -0.85))
+		(_parts["arm_left"] as Node3D).rotation.y = _keys(k, 0.0, -0.75 * sweep, 0.85 * sweep, 0.0)
+	else:
+		_rot("arm_left", _keys(k, 0.0, 0.5, -0.6, 0.0)) # the free arm balances the slash
+	var front := "leg_left" if dir > 0.0 else "leg_right"
+	var back := "leg_right" if dir > 0.0 else "leg_left"
+	_rot(front, _keys(k, 0.0, 0.2, -0.65, 0.0)) # a step into the slash
+	_rot(back, _keys(k, 0.0, -0.25, 0.5, 0.0))
+	_rot("shin_" + back.trim_prefix("leg_"), _keys(k, 0.05, 0.45, 0.75, 0.05))
 	(_parts["head"] as Node3D).rotation.y = -twist * 0.5 # the eyes stay on the target
-	_body.position.z = _keys(k, 0.0, -0.04, 0.18, 0.0) # a lunge
-	_body.position.y = _keys(k, 0.0, 0.0, -0.07, 0.0) # sinking into the stance
+	_body.position.z = _keys(k, 0.0, -0.04, 0.18, 0.0)
+	_body.position.y = _keys(k, 0.0, 0.0, -0.07 if not both else -0.1, 0.0)
 
 
-## The second link: a backhand, the arm sweeping back across from the other side.
-func _backhand(k: float) -> void:
-	var twist := _keys(k, 0.0, -0.6, 0.55, 0.0)
-	_rot("arm_right", _keys(k, 0.0, -1.5, -1.2, 0.0))
-	_rot("forearm_right", _keys(k, -0.18, -1.3, -0.1, -0.18))
-	(_parts["arm_right"] as Node3D).rotation.z = _keys(k, 0.0, 0.9, -0.8, 0.0) # across the chest, then out
-	(_parts["torso"] as Node3D).rotation.y = twist
-	(_parts["torso"] as Node3D).rotation.x = _keys(k, 0.0, 0.05, 0.25, 0.0)
-	(_parts["hips"] as Node3D).rotation.y = _keys(k, 0.0, -0.25, 0.3, 0.0)
-	_rot("arm_left", _keys(k, 0.0, 0.6, -0.6, 0.0))
-	_rot("leg_right", _keys(k, 0.0, 0.15, -0.55, 0.0)) # the other foot steps in
-	_rot("leg_left", _keys(k, 0.0, -0.2, 0.45, 0.0))
-	_rot("shin_left", _keys(k, 0.05, 0.4, 0.65, 0.05))
-	(_parts["head"] as Node3D).rotation.y = -twist * 0.5
-	_body.position.z = _keys(k, 0.0, 0.0, 0.16, 0.0)
-	_body.position.y = _keys(k, 0.0, 0.0, -0.06, 0.0)
-
-
-## The third link: a downward chop with one hand, the weight dropping into it.
+## The third link: a downward blow with one hand, the weight dropping into it.
 func _chop(k: float) -> void:
 	_rot("arm_right", _keys(k, 0.0, -2.9, 0.3, 0.0))
 	_rot("forearm_right", _keys(k, -0.18, -0.8, -0.05, -0.18))
@@ -599,27 +591,6 @@ func _chop(k: float) -> void:
 	_rot("shin_right", _keys(k, 0.05, 0.3, 0.8, 0.05))
 	_body.position.y = _keys(k, 0.0, 0.03, -0.12, 0.0)
 	_body.position.z = _keys(k, 0.0, -0.04, 0.2, 0.0)
-
-
-## A two-handed sweep (side 1: right to left; -1: back the other way), wide and heavy.
-func _heavy_swing(k: float, side: float) -> void:
-	var twist := side * _keys(k, 0.0, 0.8, -0.85, 0.0)
-	var arms := _keys(k, -0.5, -1.9, -0.9, -0.5)
-	_rot("arm_right", arms)
-	_rot("arm_left", arms - 0.1)
-	_rot("forearm_right", _keys(k, -0.9, -1.0, -0.3, -0.9))
-	_rot("forearm_left", _keys(k, -0.85, -1.0, -0.3, -0.85))
-	(_parts["arm_right"] as Node3D).rotation.z = side * _keys(k, 0.0, 0.5, -0.7, 0.0)
-	(_parts["arm_left"] as Node3D).rotation.z = side * _keys(k, -0.35, 0.3, -0.9, -0.35)
-	(_parts["torso"] as Node3D).rotation.y = twist
-	(_parts["torso"] as Node3D).rotation.x = _keys(k, 0.0, -0.1, 0.32, 0.0)
-	(_parts["hips"] as Node3D).rotation.y = twist * 0.5
-	_rot("leg_left", _keys(k, 0.0, 0.25, -0.75, 0.0))
-	_rot("leg_right", _keys(k, 0.0, -0.3, 0.6, 0.0))
-	_rot("shin_right", _keys(k, 0.05, 0.55, 0.85, 0.05))
-	(_parts["head"] as Node3D).rotation.y = -twist * 0.4
-	_body.position.z = _keys(k, 0.0, -0.06, 0.22, 0.0)
-	_body.position.y = _keys(k, 0.0, 0.0, -0.1, 0.0)
 
 
 ## A straight two-handed thrust with a polearm; reach > 1 lunges deeper.
