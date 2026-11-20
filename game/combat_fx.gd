@@ -65,12 +65,13 @@ var _shell_last: Dictionary = {} # entity id -> msec of its last ice shell
 var _trap_nodes: Dictionary = {} # trap id -> {node, light, armed_tick}
 ## The cleric's holy effects: {style, node, t, life, follow?, from?, to?, rise?}.
 var _holy: Array = []
-## A cleric's targeted cast waiting for its first heal/status/revive event to know whom it
-## touched: {style, aim, t}; after HOLY_WAIT s it shows at the aim instead.
+## A cleric's targeted cast waiting for the heal/status/revive event that follows it in the
+## same batch (the host applies a cast's effects right after announcing it): caster id ->
+## {style, aim}. Whatever is still waiting at the next frame shows at its aim.
 var _holy_pending: Dictionary = {}
-const HOLY_WAIT := 0.15
-## Holy styles drawn on whoever the cast touched (the rest are drawn on the cleric at once).
-const HOLY_TARGETED := ["cross", "wings", "angel", "column"]
+## Holy styles drawn on whoever the cast touched (the rest are drawn on the cleric at once,
+## the column at the aim: a cleanse says nothing about whom it touched).
+const HOLY_TARGETED := ["cross", "wings", "angel"]
 
 
 func setup(position_of: Callable, tick_now: Callable, abilities: AbilityDB, tick_rate: int) -> void:
@@ -1322,18 +1323,24 @@ func _holy_cast(ev: Array) -> void:
 	var caster := int(ev[1])
 	var aim: Variant = ev[3] if ev.size() > 3 and ev[3] is Vector3 else _position_of.call(caster)
 	if style in HOLY_TARGETED:
-		_holy_pending[caster] = {"style": style, "aim": aim, "t": 0.0}
+		_holy_pending.erase(caster) # re-added last: the newest cast takes the next event
+		_holy_pending[caster] = {"style": style, "aim": aim}
+		return
+	if style == "column":
+		if aim != null:
+			_holy_spawn(style, aim, -1, aim)
 		return
 	var at: Variant = _position_of.call(caster)
 	if at != null:
 		_holy_spawn(style, at, caster, aim)
 
 
-## The first heal, status or revive after a targeted holy cast shows it on that entity.
+## The heal, status or revive right after a targeted holy cast shows it on that entity
+## (the newest cast first).
 func _holy_touched(id: int) -> void:
 	if _holy_pending.is_empty():
 		return
-	var caster: int = _holy_pending.keys()[0]
+	var caster: int = _holy_pending.keys()[-1]
 	var pend: Dictionary = _holy_pending[caster]
 	_holy_pending.erase(caster)
 	var at: Variant = _position_of.call(id)
@@ -1411,13 +1418,11 @@ func _holy_spawn(style: String, at: Vector3, who: int, aim: Variant) -> void:
 
 
 func _advance_holy(dt: float) -> void:
-	for caster: int in _holy_pending.keys():
+	for caster: int in _holy_pending.keys(): # nothing said whom it touched: show it at the aim
 		var pend: Dictionary = _holy_pending[caster]
-		pend.t += dt
-		if pend.t >= HOLY_WAIT: # nothing said whom it touched (a cleanse): show it at the aim
-			_holy_pending.erase(caster)
-			if pend.aim != null:
-				_holy_spawn(str(pend.style), pend.aim, caster, pend.aim)
+		_holy_pending.erase(caster)
+		if pend.aim != null:
+			_holy_spawn(str(pend.style), pend.aim, -1, pend.aim) # stays where it was aimed
 	for h: Dictionary in _holy.duplicate():
 		h.t += dt
 		var node: Node3D = h.node

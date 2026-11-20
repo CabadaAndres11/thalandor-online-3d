@@ -99,6 +99,7 @@ static func sell(world: SimWorld, p: PlayerState, index: int) -> bool:
 		return false
 	var price := sell_price(p.inventory.bag[index], world.items)
 	if price <= 0:
+		world.emit(["trade_refused", p.id, "worthless"]) # potions: the merchant does not buy them
 		return false
 	p.inventory.bag[index] = null
 	p.inventory.gold = mini(Inventory.MAX_GOLD, p.inventory.gold + price)

@@ -201,3 +201,18 @@ func test_crossbow_fires_charged_on_press() -> void:
 	_send(a, Protocol.input([[1, Vector2.ZERO, Vector3(30, 0, 20), PlayerInput.BTN_BASIC]]))
 	assert_lt(p.resource, 100.0, "the charged shot's focus was spent on a single press")
 	assert_gt(int(p.cooldowns.get("archer_shot", 0)), host.world.tick)
+
+
+func test_merchant_stock_sent_within_the_trade_margin() -> void:
+	var a := _guest("Ana", null, "mage", 10)
+	var p: PlayerState = host.world.players[1]
+	var at: Vector3 = NpcDB.load_default().placed(host.world.map).filter(func(n: Dictionary) -> bool: return str(NpcDB.load_default().npc(n.id).get("role", "")) == "merchant")[0].position
+	p.position = at + Vector3(NpcDB.TALK_RANGE + 0.3, 0, 0)
+	p.inventory.gold = 1000
+	_all(a)
+	_send(a, Protocol.item_action("merchant_open", []))
+	assert_eq(_msgs(a, Protocol.Msg.MERCHANT_STOCK).size(), 1, "opens at the edge too")
+	_send(a, Protocol.item_action("buy", [0]))
+	var after := _msgs(a, Protocol.Msg.MERCHANT_STOCK)
+	assert_eq(after.size(), 1, "the bought item leaves the list")
+	assert_eq((after[-1].items as Array).size(), 3)

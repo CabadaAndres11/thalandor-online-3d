@@ -511,3 +511,26 @@ func test_holy_effects_fade_away() -> void:
 func test_holy_voxel_models_have_cubes() -> void:
 	for cells: Dictionary in [VoxelFx.holy_cross(), VoxelFx.angel_wings(), VoxelFx.halo(6), VoxelFx.angel(), VoxelFx.holy_circle(3.0)]:
 		assert_gt(cells.size(), 20)
+
+
+func test_a_purify_is_never_drawn_on_someone_else_healed() -> void:
+	positions[2] = Vector3(12, 0, 5)
+	fx.handle(["cast", 1, "cleric_purify", Vector3(7, 0, 6), 10.0])
+	fx.handle(["heal", 2, 30.0]) # someone else's potion in the same moment
+	assert_almost_eq((_holy_at("column") as Vector3).x, 7.0, 0.01, "at the aim")
+
+
+func test_two_clerics_each_get_their_own_target() -> void:
+	positions[2] = Vector3(12, 0, 5)
+	positions[3] = Vector3(15, 0, 5)
+	fx.handle(["cast", 1, "cleric_shield", Vector3(12, 0, 5), 10.0])
+	fx.handle(["cast", 3, "cleric_heal", Vector3(8, 0, 5), 1.5])
+	fx.handle(["heal", 1000, 40.0]) # the heal belongs to the last cast
+	assert_almost_eq((_holy_at("cross") as Vector3).x, 8.0, 0.01, "the cross on the healed ally")
+
+
+func test_a_pending_cast_does_not_wait_for_later_frames() -> void:
+	fx.handle(["cast", 1, "cleric_heal", Vector3(8, 0, 5), 1.5])
+	fx.advance(0.016) # its own heal never came in that batch
+	fx.handle(["heal", 1, 5.0]) # a later, unrelated heal
+	assert_almost_eq((_holy_at("cross") as Vector3).x, 8.0, 0.01, "shown at the aim, not on the later heal")

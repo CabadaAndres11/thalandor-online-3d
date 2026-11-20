@@ -134,3 +134,9 @@ func test_refused_trade_tells_the_player() -> void:
 	var evs := f.world.events.filter(func(e: Array) -> bool: return str(e[0]) == "trade_refused")
 	assert_eq(evs.size(), 1)
 	assert_eq(evs[0], ["trade_refused", 1, "combat"])
+
+
+func test_selling_a_potion_says_why_not() -> void:
+	p.inventory.add(ItemRoll.new_item("potion_health", 1), db)
+	assert_false(Merchant.sell(f.world, p, 0))
+	assert_has(f.world.events, ["trade_refused", 1, "worthless"])

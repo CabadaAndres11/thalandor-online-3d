@@ -442,7 +442,7 @@ func _on_item_action(rec: Dictionary, action: String, args: Array) -> void:
 
 
 func _send_stock(id: int, p: PlayerState) -> void:
-	if Merchant.near(world, p):
+	if Merchant.near(world, p, Merchant.TRADE_MARGIN): # the same reach as the trades
 		_send_to(id, Protocol.merchant_stock(Merchant.stock(world, p).map(func(it: Item) -> Array: return it.to_wire())), true)
 
 

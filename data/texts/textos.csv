@@ -681,6 +681,7 @@ GOLD_SHORT,oro
 ITEM_BAG_FULL,Tu inventario está lleno: el objeto se queda en el suelo.
 TRADE_REFUSED_COMBAT,No puedes comerciar en combate.
 TRADE_REFUSED_FAR,Estás demasiado lejos del comerciante.
+TRADE_REFUSED_WORTHLESS,El comerciante no compra pociones.
 TRADE_REFUSED_DEAD,No puedes comerciar estando caído.
 EQUIP_MAIN,Arma principal
 EQUIP_SHOULDERS,Hombros
