@@ -21,6 +21,7 @@ Cada plan de la [[14 Hoja de ruta]] tiene aquí su **spec** (diseño acordado) y
 | 6.3 · Equipo (vóxel 2×) | [[Plan 6.3 — Equipo a vóxel 2× (spec)\|Spec]] | [[Plan 6.3 — Equipo a vóxel 2× (plan)\|Plan]] | Hecho (0.9.0, pendiente de tu prueba de juego) |
 | 6.3.1 · Correcciones de la prueba 0.9.0 ([[Correcciones de la prueba 0.9.0\|lista]]) | [[Plan 6.3.1 — Correcciones de la prueba 0.9.0 (spec)\|Spec]] | [[Plan 6.3.1 — Correcciones de la prueba 0.9.0 (plan)\|Plan]] | Hecho (0.9.1, pendiente de tu prueba de juego) |
 | 6.3.2 · Correcciones de la prueba 0.9.1 ([[Correcciones de la prueba 0.9.1\|lista]]) | [[Plan 6.3.2 — Correcciones de la prueba 0.9.1 (spec)\|Spec]] | — (la spec lleva las tareas) | Hecho (0.9.2, pendiente de tu prueba de juego) |
+| 6.3.3 · Filos y cabezas de armas | [[Plan 6.3.3 — Filos y cabezas de armas (spec)\|Spec]] | — (la spec lleva las tareas) | Hecho (0.9.3, pendiente de tu prueba de juego) |
 | 6.4 · Monstruos, PNJ y ropa que sigue al cuerpo | — | — | Pendiente |
 | 7 · Identidad y creación de personaje | — | — | Pendiente |
 | 8 · Mundo y misiones | — | — | Pendiente |

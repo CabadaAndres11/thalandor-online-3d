@@ -2494,94 +2494,6 @@
 		"tag": "gear",
 		"hides": []
 	},
-	"w_sword_t1": {
-		"file": "res://assets/items/vox_v2/w_sword_t1.vox",
-		"part": "hand_right",
-		"offset": [
-			-2,
-			-12,
-			-6
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_short_sword_t1": {
-		"file": "res://assets/items/vox_v2/w_short_sword_t1.vox",
-		"part": "hand_right",
-		"offset": [
-			-2,
-			-8,
-			-6
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_short_sword_t1_left": {
-		"file": "res://assets/items/vox_v2/w_short_sword_t1_left.vox",
-		"part": "hand_left",
-		"offset": [
-			-2,
-			-8,
-			-6
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_dagger_t1": {
-		"file": "res://assets/items/vox_v2/w_dagger_t1.vox",
-		"part": "hand_right",
-		"offset": [
-			-2,
-			-7,
-			-6
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_dagger_t1_left": {
-		"file": "res://assets/items/vox_v2/w_dagger_t1_left.vox",
-		"part": "hand_left",
-		"offset": [
-			-2,
-			-7,
-			-6
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_axe_t1": {
-		"file": "res://assets/items/vox_v2/w_axe_t1.vox",
-		"part": "hand_right",
-		"offset": [
-			-2,
-			-12,
-			-7
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_mace_t1": {
-		"file": "res://assets/items/vox_v2/w_mace_t1.vox",
-		"part": "hand_right",
-		"offset": [
-			-4,
-			-8,
-			-7
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_scepter_t1": {
-		"file": "res://assets/items/vox_v2/w_scepter_t1.vox",
-		"part": "hand_right",
-		"offset": [
-			-3,
-			-7,
-			-6
-		],
-		"tag": "weapon",
-		"hides": []
-	},
 	"w_wand_t1": {
 		"file": "res://assets/items/vox_v2/w_wand_t1.vox",
 		"part": "hand_right",
@@ -2589,50 +2501,6 @@
 			-2,
 			-6,
 			-3
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_greatsword_t1": {
-		"file": "res://assets/items/vox_v2/w_greatsword_t1.vox",
-		"part": "hand_right",
-		"offset": [
-			-2,
-			-16,
-			-15
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_great_axe_t1": {
-		"file": "res://assets/items/vox_v2/w_great_axe_t1.vox",
-		"part": "hand_right",
-		"offset": [
-			-2,
-			-15,
-			-16
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_warhammer_t1": {
-		"file": "res://assets/items/vox_v2/w_warhammer_t1.vox",
-		"part": "hand_right",
-		"offset": [
-			-11,
-			-9,
-			-16
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_halberd_t1": {
-		"file": "res://assets/items/vox_v2/w_halberd_t1.vox",
-		"part": "hand_right",
-		"offset": [
-			-2,
-			-14,
-			-24
 		],
 		"tag": "weapon",
 		"hides": []
@@ -2703,89 +2571,133 @@
 		"tag": "weapon",
 		"hides": []
 	},
-	"w_sword_t2": {
-		"file": "res://assets/items/vox_v2/w_sword_t2.vox",
+	"w_sword_t1": {
+		"file": "res://assets/items/vox_v2/w_sword_t1.vox",
+		"part": "hand_right",
+		"offset": [
+			-3,
+			-17,
+			-6
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_short_sword_t1": {
+		"file": "res://assets/items/vox_v2/w_short_sword_t1.vox",
+		"part": "hand_right",
+		"offset": [
+			-3,
+			-12,
+			-6
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_short_sword_t1_left": {
+		"file": "res://assets/items/vox_v2/w_short_sword_t1_left.vox",
+		"part": "hand_left",
+		"offset": [
+			-3,
+			-12,
+			-6
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_dagger_t1": {
+		"file": "res://assets/items/vox_v2/w_dagger_t1.vox",
+		"part": "hand_right",
+		"offset": [
+			-3,
+			-10,
+			-6
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_dagger_t1_left": {
+		"file": "res://assets/items/vox_v2/w_dagger_t1_left.vox",
+		"part": "hand_left",
+		"offset": [
+			-3,
+			-10,
+			-6
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_greatsword_t1": {
+		"file": "res://assets/items/vox_v2/w_greatsword_t1.vox",
+		"part": "hand_right",
+		"offset": [
+			-3,
+			-22,
+			-16
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_axe_t1": {
+		"file": "res://assets/items/vox_v2/w_axe_t1.vox",
 		"part": "hand_right",
 		"offset": [
 			-2,
 			-16,
-			-6
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_short_sword_t2": {
-		"file": "res://assets/items/vox_v2/w_short_sword_t2.vox",
-		"part": "hand_right",
-		"offset": [
-			-2,
-			-10,
-			-6
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_short_sword_t2_left": {
-		"file": "res://assets/items/vox_v2/w_short_sword_t2_left.vox",
-		"part": "hand_left",
-		"offset": [
-			-2,
-			-10,
-			-6
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_dagger_t2": {
-		"file": "res://assets/items/vox_v2/w_dagger_t2.vox",
-		"part": "hand_right",
-		"offset": [
-			-2,
-			-8,
-			-6
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_dagger_t2_left": {
-		"file": "res://assets/items/vox_v2/w_dagger_t2_left.vox",
-		"part": "hand_left",
-		"offset": [
-			-2,
-			-8,
-			-6
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_axe_t2": {
-		"file": "res://assets/items/vox_v2/w_axe_t2.vox",
-		"part": "hand_right",
-		"offset": [
-			-2,
-			-14,
 			-7
 		],
 		"tag": "weapon",
 		"hides": []
 	},
-	"w_mace_t2": {
-		"file": "res://assets/items/vox_v2/w_mace_t2.vox",
+	"w_great_axe_t1": {
+		"file": "res://assets/items/vox_v2/w_great_axe_t1.vox",
 		"part": "hand_right",
 		"offset": [
-			-4,
+			-3,
+			-18,
+			-16
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_mace_t1": {
+		"file": "res://assets/items/vox_v2/w_mace_t1.vox",
+		"part": "hand_right",
+		"offset": [
 			-8,
+			-12,
 			-7
 		],
 		"tag": "weapon",
 		"hides": []
 	},
-	"w_scepter_t2": {
-		"file": "res://assets/items/vox_v2/w_scepter_t2.vox",
+	"w_warhammer_t1": {
+		"file": "res://assets/items/vox_v2/w_warhammer_t1.vox",
 		"part": "hand_right",
 		"offset": [
 			-5,
-			-9,
+			-13,
+			-16
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_halberd_t1": {
+		"file": "res://assets/items/vox_v2/w_halberd_t1.vox",
+		"part": "hand_right",
+		"offset": [
+			-2,
+			-16,
+			-24
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_scepter_t1": {
+		"file": "res://assets/items/vox_v2/w_scepter_t1.vox",
+		"part": "hand_right",
+		"offset": [
+			-6,
+			-10,
 			-6
 		],
 		"tag": "weapon",
@@ -2798,50 +2710,6 @@
 			-2,
 			-6,
 			-3
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_greatsword_t2": {
-		"file": "res://assets/items/vox_v2/w_greatsword_t2.vox",
-		"part": "hand_right",
-		"offset": [
-			-2,
-			-20,
-			-15
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_great_axe_t2": {
-		"file": "res://assets/items/vox_v2/w_great_axe_t2.vox",
-		"part": "hand_right",
-		"offset": [
-			-2,
-			-17,
-			-16
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_warhammer_t2": {
-		"file": "res://assets/items/vox_v2/w_warhammer_t2.vox",
-		"part": "hand_right",
-		"offset": [
-			-13,
-			-9,
-			-16
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_halberd_t2": {
-		"file": "res://assets/items/vox_v2/w_halberd_t2.vox",
-		"part": "hand_right",
-		"offset": [
-			-2,
-			-16,
-			-24
 		],
 		"tag": "weapon",
 		"hides": []
@@ -2912,89 +2780,133 @@
 		"tag": "weapon",
 		"hides": []
 	},
-	"w_sword_t3": {
-		"file": "res://assets/items/vox_v2/w_sword_t3.vox",
+	"w_sword_t2": {
+		"file": "res://assets/items/vox_v2/w_sword_t2.vox",
+		"part": "hand_right",
+		"offset": [
+			-3,
+			-19,
+			-6
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_short_sword_t2": {
+		"file": "res://assets/items/vox_v2/w_short_sword_t2.vox",
+		"part": "hand_right",
+		"offset": [
+			-3,
+			-12,
+			-6
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_short_sword_t2_left": {
+		"file": "res://assets/items/vox_v2/w_short_sword_t2_left.vox",
+		"part": "hand_left",
+		"offset": [
+			-3,
+			-12,
+			-6
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_dagger_t2": {
+		"file": "res://assets/items/vox_v2/w_dagger_t2.vox",
+		"part": "hand_right",
+		"offset": [
+			-3,
+			-12,
+			-6
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_dagger_t2_left": {
+		"file": "res://assets/items/vox_v2/w_dagger_t2_left.vox",
+		"part": "hand_left",
+		"offset": [
+			-3,
+			-12,
+			-6
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_greatsword_t2": {
+		"file": "res://assets/items/vox_v2/w_greatsword_t2.vox",
+		"part": "hand_right",
+		"offset": [
+			-3,
+			-24,
+			-16
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_axe_t2": {
+		"file": "res://assets/items/vox_v2/w_axe_t2.vox",
+		"part": "hand_right",
+		"offset": [
+			-3,
+			-18,
+			-7
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_great_axe_t2": {
+		"file": "res://assets/items/vox_v2/w_great_axe_t2.vox",
+		"part": "hand_right",
+		"offset": [
+			-3,
+			-21,
+			-16
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_mace_t2": {
+		"file": "res://assets/items/vox_v2/w_mace_t2.vox",
+		"part": "hand_right",
+		"offset": [
+			-9,
+			-13,
+			-7
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_warhammer_t2": {
+		"file": "res://assets/items/vox_v2/w_warhammer_t2.vox",
+		"part": "hand_right",
+		"offset": [
+			-5,
+			-14,
+			-16
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_halberd_t2": {
+		"file": "res://assets/items/vox_v2/w_halberd_t2.vox",
 		"part": "hand_right",
 		"offset": [
 			-2,
 			-18,
-			-6
+			-24
 		],
 		"tag": "weapon",
 		"hides": []
 	},
-	"w_short_sword_t3": {
-		"file": "res://assets/items/vox_v2/w_short_sword_t3.vox",
+	"w_scepter_t2": {
+		"file": "res://assets/items/vox_v2/w_scepter_t2.vox",
 		"part": "hand_right",
 		"offset": [
-			-2,
-			-10,
-			-6
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_short_sword_t3_left": {
-		"file": "res://assets/items/vox_v2/w_short_sword_t3_left.vox",
-		"part": "hand_left",
-		"offset": [
-			-2,
-			-10,
-			-6
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_dagger_t3": {
-		"file": "res://assets/items/vox_v2/w_dagger_t3.vox",
-		"part": "hand_right",
-		"offset": [
-			-2,
-			-8,
-			-6
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_dagger_t3_left": {
-		"file": "res://assets/items/vox_v2/w_dagger_t3_left.vox",
-		"part": "hand_left",
-		"offset": [
-			-2,
-			-8,
-			-6
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_axe_t3": {
-		"file": "res://assets/items/vox_v2/w_axe_t3.vox",
-		"part": "hand_right",
-		"offset": [
-			-2,
-			-16,
-			-7
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_mace_t3": {
-		"file": "res://assets/items/vox_v2/w_mace_t3.vox",
-		"part": "hand_right",
-		"offset": [
-			-4,
-			-8,
-			-7
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_scepter_t3": {
-		"file": "res://assets/items/vox_v2/w_scepter_t3.vox",
-		"part": "hand_right",
-		"offset": [
-			-5,
 			-9,
+			-13,
 			-6
 		],
 		"tag": "weapon",
@@ -3007,50 +2919,6 @@
 			-2,
 			-6,
 			-3
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_greatsword_t3": {
-		"file": "res://assets/items/vox_v2/w_greatsword_t3.vox",
-		"part": "hand_right",
-		"offset": [
-			-2,
-			-22,
-			-15
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_great_axe_t3": {
-		"file": "res://assets/items/vox_v2/w_great_axe_t3.vox",
-		"part": "hand_right",
-		"offset": [
-			-2,
-			-19,
-			-16
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_warhammer_t3": {
-		"file": "res://assets/items/vox_v2/w_warhammer_t3.vox",
-		"part": "hand_right",
-		"offset": [
-			-15,
-			-9,
-			-16
-		],
-		"tag": "weapon",
-		"hides": []
-	},
-	"w_halberd_t3": {
-		"file": "res://assets/items/vox_v2/w_halberd_t3.vox",
-		"part": "hand_right",
-		"offset": [
-			-2,
-			-18,
-			-24
 		],
 		"tag": "weapon",
 		"hides": []
@@ -3117,6 +2985,138 @@
 			-4,
 			0,
 			-4
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_sword_t3": {
+		"file": "res://assets/items/vox_v2/w_sword_t3.vox",
+		"part": "hand_right",
+		"offset": [
+			-3,
+			-23,
+			-6
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_short_sword_t3": {
+		"file": "res://assets/items/vox_v2/w_short_sword_t3.vox",
+		"part": "hand_right",
+		"offset": [
+			-3,
+			-12,
+			-6
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_short_sword_t3_left": {
+		"file": "res://assets/items/vox_v2/w_short_sword_t3_left.vox",
+		"part": "hand_left",
+		"offset": [
+			-3,
+			-12,
+			-6
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_dagger_t3": {
+		"file": "res://assets/items/vox_v2/w_dagger_t3.vox",
+		"part": "hand_right",
+		"offset": [
+			-3,
+			-12,
+			-6
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_dagger_t3_left": {
+		"file": "res://assets/items/vox_v2/w_dagger_t3_left.vox",
+		"part": "hand_left",
+		"offset": [
+			-3,
+			-12,
+			-6
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_greatsword_t3": {
+		"file": "res://assets/items/vox_v2/w_greatsword_t3.vox",
+		"part": "hand_right",
+		"offset": [
+			-3,
+			-28,
+			-16
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_axe_t3": {
+		"file": "res://assets/items/vox_v2/w_axe_t3.vox",
+		"part": "hand_right",
+		"offset": [
+			-3,
+			-21,
+			-7
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_great_axe_t3": {
+		"file": "res://assets/items/vox_v2/w_great_axe_t3.vox",
+		"part": "hand_right",
+		"offset": [
+			-3,
+			-23,
+			-16
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_mace_t3": {
+		"file": "res://assets/items/vox_v2/w_mace_t3.vox",
+		"part": "hand_right",
+		"offset": [
+			-11,
+			-14,
+			-7
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_warhammer_t3": {
+		"file": "res://assets/items/vox_v2/w_warhammer_t3.vox",
+		"part": "hand_right",
+		"offset": [
+			-5,
+			-15,
+			-16
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_halberd_t3": {
+		"file": "res://assets/items/vox_v2/w_halberd_t3.vox",
+		"part": "hand_right",
+		"offset": [
+			-2,
+			-21,
+			-24
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"w_scepter_t3": {
+		"file": "res://assets/items/vox_v2/w_scepter_t3.vox",
+		"part": "hand_right",
+		"offset": [
+			-9,
+			-13,
+			-6
 		],
 		"tag": "weapon",
 		"hides": []

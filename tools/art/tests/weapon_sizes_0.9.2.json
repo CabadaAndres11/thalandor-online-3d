@@ -1,0 +1,122 @@
+{
+ "w_sword_t1": {
+  "L": 38,
+  "W": 17
+ },
+ "w_sword_t2": {
+  "L": 42,
+  "W": 25
+ },
+ "w_sword_t3": {
+  "L": 46,
+  "W": 29
+ },
+ "w_short_sword_t1": {
+  "L": 26,
+  "W": 9
+ },
+ "w_short_sword_t2": {
+  "L": 28,
+  "W": 13
+ },
+ "w_short_sword_t3": {
+  "L": 30,
+  "W": 13
+ },
+ "w_dagger_t1": {
+  "L": 20,
+  "W": 7
+ },
+ "w_dagger_t2": {
+  "L": 22,
+  "W": 9
+ },
+ "w_dagger_t3": {
+  "L": 24,
+  "W": 9
+ },
+ "w_axe_t1": {
+  "L": 36,
+  "W": 14
+ },
+ "w_axe_t2": {
+  "L": 40,
+  "W": 16
+ },
+ "w_axe_t3": {
+  "L": 44,
+  "W": 18
+ },
+ "w_mace_t1": {
+  "L": 36,
+  "W": 9
+ },
+ "w_mace_t2": {
+  "L": 38,
+  "W": 9
+ },
+ "w_mace_t3": {
+  "L": 40,
+  "W": 9
+ },
+ "w_scepter_t1": {
+  "L": 31,
+  "W": 6
+ },
+ "w_scepter_t2": {
+  "L": 31,
+  "W": 10
+ },
+ "w_scepter_t3": {
+  "L": 34,
+  "W": 10
+ },
+ "w_greatsword_t1": {
+  "L": 54,
+  "W": 25
+ },
+ "w_greatsword_t2": {
+  "L": 58,
+  "W": 33
+ },
+ "w_greatsword_t3": {
+  "L": 62,
+  "W": 37
+ },
+ "w_great_axe_t1": {
+  "L": 44,
+  "W": 23
+ },
+ "w_great_axe_t2": {
+  "L": 46,
+  "W": 27
+ },
+ "w_great_axe_t3": {
+  "L": 48,
+  "W": 31
+ },
+ "w_warhammer_t1": {
+  "L": 47,
+  "W": 11
+ },
+ "w_warhammer_t2": {
+  "L": 50,
+  "W": 11
+ },
+ "w_warhammer_t3": {
+  "L": 54,
+  "W": 11
+ },
+ "w_halberd_t1": {
+  "L": 67,
+  "W": 16
+ },
+ "w_halberd_t2": {
+  "L": 71,
+  "W": 18
+ },
+ "w_halberd_t3": {
+  "L": 75,
+  "W": 20
+ }
+}

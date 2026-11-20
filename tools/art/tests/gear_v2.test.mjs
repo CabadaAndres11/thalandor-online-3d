@@ -68,12 +68,13 @@ test("off-hand items are held in the left hand", () => {
   for (const id of weaponIds.filter((i) => /^w_(shield|orb|tome|bow)_t\d$|_left$/.test(i))) assert.equal(v2[id].part, "hand_left", id);
 });
 
-test("weapons keep their v1 length in metres (±20 %)", async () => {
+// Plan 6.3.3 made blades and heads a quarter bigger: up to half again the v1 length.
+test("weapons keep about their v1 length in metres (-20 % to +50 %)", async () => {
   const { VoxRead } = await import("./vox_read.mjs");
   for (const id of weaponIds) {
     const v1len = VoxRead(new URL(`../../../${v1[id].file.replace("res://", "")}`, import.meta.url)) * 2; // v1 voxels are twice as big
     const len = longest(v2[id].shape);
-    assert.ok(len >= v1len * 0.8 && len <= v1len * 1.25, `${id}: ${len} v2 voxels vs ${v1len} (v1 ×2)`);
+    assert.ok(len >= v1len * 0.8 && len <= v1len * 1.5, `${id}: ${len} v2 voxels vs ${v1len} (v1 ×2)`);
   }
 });
 
