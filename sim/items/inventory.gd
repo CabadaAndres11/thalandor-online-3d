@@ -196,10 +196,13 @@ static func from_dict(v: Variant, class_id: String, level: int, db: ItemDB) -> I
 	var loose: Array = []
 	var raw_bag: Variant = d.get("bag", [])
 	if raw_bag is Array:
-		for x: Variant in raw_bag:
-			var it := _unique(Item.from_dict(x, db), uids)
+		# Every item keeps its slot: the client and the host must agree on the indexes the
+		# requests (sell, equip, use) refer to.
+		inv.bag.resize(maxi(SIZE, (raw_bag as Array).size()))
+		for i in (raw_bag as Array).size():
+			var it := _unique(Item.from_dict((raw_bag as Array)[i], db), uids)
 			if it != null:
-				loose.append(it)
+				inv.bag[i] = it
 	var raw_eq: Variant = d.get("equipment", {})
 	if raw_eq is Dictionary:
 		for s: String in SLOTS: # a fixed order, so main is worn before offhand is checked
@@ -222,6 +225,8 @@ static func from_dict(v: Variant, class_id: String, level: int, db: ItemDB) -> I
 			inv.bag.append(it)
 		else:
 			inv.bag[i] = it
+	while inv.bag.size() > SIZE and inv.bag.back() == null: # a grown bag shrinks back when it can
+		inv.bag.pop_back()
 	return inv
 
 

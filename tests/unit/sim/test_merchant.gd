@@ -140,3 +140,8 @@ func test_selling_a_potion_says_why_not() -> void:
 	p.inventory.add(ItemRoll.new_item("potion_health", 1), db)
 	assert_false(Merchant.sell(f.world, p, 0))
 	assert_has(f.world.events, ["trade_refused", 1, "worthless"])
+
+
+func test_selling_an_empty_slot_says_so() -> void:
+	assert_false(Merchant.sell(f.world, p, 4))
+	assert_has(f.world.events, ["trade_refused", 1, "empty"])

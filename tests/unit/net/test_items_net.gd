@@ -216,3 +216,20 @@ func test_merchant_stock_sent_within_the_trade_margin() -> void:
 	var after := _msgs(a, Protocol.Msg.MERCHANT_STOCK)
 	assert_eq(after.size(), 1, "the bought item leaves the list")
 	assert_eq((after[-1].items as Array).size(), 3)
+
+
+func test_second_sale_sells_the_item_the_client_sees() -> void:
+	var a := _guest("Ana", null, "mage", 10)
+	var p: PlayerState = host.world.players[1]
+	p.position = Vector3(21.5, 0, 20.5)
+	p.inventory.add(ItemRoll.new_item("sword_t1", 10), host.world.items)
+	p.inventory.add(ItemRoll.new_item("ring_t1", 10), host.world.items)
+	p.inventory_dirty = true
+	_all(a)
+	_send(a, Protocol.item_action("sell", [0]))
+	var inv := _msgs(a, Protocol.Msg.INVENTORY)
+	var seen := Inventory.from_wire(inv[-1].inventory, "mage", 10, host.world.items)
+	var ring := seen.bag.find(seen.bag.filter(func(it: Variant) -> bool: return it != null and it.base_id == "ring_t1")[0])
+	assert_eq(ring, 1, "the ring keeps its slot on the client")
+	_send(a, Protocol.item_action("sell", [ring]))
+	assert_true(p.inventory.bag.all(func(it: Variant) -> bool: return it == null), "the ring is sold")

@@ -95,7 +95,10 @@ static func buy(world: SimWorld, p: PlayerState, index: int) -> bool:
 
 
 static func sell(world: SimWorld, p: PlayerState, index: int) -> bool:
-	if not _can_trade(world, p) or index < 0 or index >= p.inventory.bag.size() or p.inventory.bag[index] == null:
+	if not _can_trade(world, p):
+		return false
+	if index < 0 or index >= p.inventory.bag.size() or p.inventory.bag[index] == null:
+		world.emit(["trade_refused", p.id, "empty"]) # the slot the client sent is empty here
 		return false
 	var price := sell_price(p.inventory.bag[index], world.items)
 	if price <= 0:

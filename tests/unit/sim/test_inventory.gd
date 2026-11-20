@@ -176,3 +176,30 @@ func test_from_dict_garbage() -> void:
 	var s := Inventory.from_dict("x", "mage", 1, db)
 	assert_eq(s.bag.size(), 30)
 	assert_eq(s.gold, 0)
+
+
+func test_wire_keeps_bag_gaps() -> void:
+	inv.bag[0] = null
+	inv.bag[3] = _it("sword_t1")
+	inv.bag[7] = _it("ring_t1")
+	var back := Inventory.from_wire(inv.to_wire(), "warrior", 10, db)
+	assert_null(back.bag[0])
+	assert_eq(back.bag[3].base_id, "sword_t1", "same slot as on the host")
+	assert_eq(back.bag[7].base_id, "ring_t1")
+	assert_eq(back.bag.size(), Inventory.SIZE)
+
+
+func test_save_keeps_bag_gaps() -> void:
+	inv.bag[5] = _it("sword_t1")
+	var back := Inventory.from_dict(inv.to_dict(), "warrior", 10, db)
+	assert_eq(back.bag[5].base_id, "sword_t1")
+	assert_null(back.bag[0])
+
+
+func test_unwearable_equipment_fills_the_first_gap() -> void:
+	inv.bag[0] = _it("sword_t1")
+	var d := inv.to_dict()
+	d.equipment = {"chest": _it("mage_chest_t1").to_dict()}
+	var back := Inventory.from_dict(d, "warrior", 10, db)
+	assert_eq(back.bag[0].base_id, "sword_t1")
+	assert_eq(back.bag[1].base_id, "mage_chest_t1", "a mage chest on a warrior goes to the first free slot")
