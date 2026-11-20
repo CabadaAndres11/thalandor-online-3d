@@ -25,3 +25,10 @@ func test_unknown_base_has_a_fallback() -> void:
 func test_rarity_color() -> void:
 	assert_eq(ItemIcons.rarity_color("epic"), Color("#b04fe8"))
 	assert_eq(ItemIcons.rarity_color("weird"), Color.WHITE)
+
+
+func test_icons_use_v2_pieces() -> void:
+	var pieces := ItemIcons.icon_pieces("warrior_chest_t3")
+	assert_false(pieces.is_empty())
+	for p: Dictionary in pieces:
+		assert_string_contains(str(p.file), "/vox_v2/")

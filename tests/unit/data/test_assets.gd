@@ -32,3 +32,11 @@ func test_every_v2_piece_file_exists() -> void:
 		assert_true(FileAccess.file_exists(str(e.file)), "%s: %s" % [id, e.file])
 		assert_not_null(VoxMesher.cached(str(e.file), {}), id)
 		assert_false(CharacterCatalog.load_default().piece(id).is_empty(), "%s has a v1 entry" % id)
+
+
+func test_every_v2_gear_file_exists() -> void:
+	var table: Variant = JSON.parse_string(FileAccess.get_file_as_string(CharacterCatalog.GEAR_PIECES_V2))
+	var v1: Variant = JSON.parse_string(FileAccess.get_file_as_string(CharacterCatalog.GEAR_PIECES_PATH))
+	assert_eq((table as Dictionary).size(), (v1 as Dictionary).size(), "one v2 piece per v1 gear piece")
+	for id: String in table:
+		assert_true(FileAccess.file_exists(str(table[id].file)), id)

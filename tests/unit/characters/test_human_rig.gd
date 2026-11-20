@@ -496,21 +496,53 @@ func test_blade_down_grip_v2() -> void:
 		a.part("hand_right").global_transform.basis.y.normalized().dot(Vector3.UP), 0.05, "same grip angle on both bodies")
 
 
-func test_gear_without_v2_is_worn_at_double_size() -> void:
-	var db := ItemDB.load_default()
-	var chest := ""
-	for id: String in db.base_ids():
-		var b := db.base(id)
-		if str(b.get("slot", "")) == "chest" and not (b.get("look", []) as Array).is_empty() \
-				and CharacterCatalog.load_default().piece_v2(str(b.look[0])).is_empty():
-			chest = id
-			break
-	assert_ne(chest, "", "some chest has no v2 look yet")
-	var gear := ["", "", "", "", chest, "", "", ""]
-	var rig := HumanRig.create("warrior", {}, null, "", gear)
+func _kit(class_id: String, tier: int) -> Array:
+	var cls: String = class_id
+	var main: String = {"warrior": "sword", "cleric": "mace", "mage": "staff", "archer": "bow", "assassin": "dagger"}[cls]
+	var off: String = {"warrior": "shield", "cleric": "shield", "mage": "orb", "archer": "", "assassin": "dagger"}[cls]
+	var gear := []
+	for slot: String in Inventory.VISIBLE:
+		match slot:
+			"main": gear.append("%s_t%d" % [main, tier])
+			"offhand": gear.append("%s_t%d" % [off, tier] if off != "" else "")
+			_: gear.append("%s_%s_t%d" % [cls, slot, tier] if ItemDB.load_default().base("%s_%s_t%d" % [cls, slot, tier]).size() > 0 else "")
+	return gear
+
+
+func test_gear_is_worn_as_v2() -> void:
+	var rig := HumanRig.create("warrior", {}, null, "", _kit("warrior", 3))
 	add_child_autofree(rig)
-	var piece_id := str(db.base(chest).look[0])
-	assert_almost_eq(rig.piece_node(piece_id).scale.x, 2.0, 0.001)
+	var node := rig.piece_node("warrior_chest_t3")
+	assert_not_null(node)
+	assert_almost_eq(node.scale.x, 1.0, 0.001, "a v2 piece, not a scaled v1 one")
+
+
+func test_full_tier3_kit_builds_for_every_class() -> void:
+	for class_id: String in ["warrior", "cleric", "mage", "archer", "assassin"]:
+		var look := CharacterCatalog.load_default().resolve(class_id, {}, "", _kit(class_id, 3))
+		var rig := HumanRig.build(look)
+		add_child_autofree(rig)
+		rig.update(0.1)
+		for p: Dictionary in look.pieces:
+			assert_not_null(rig.piece_node(str(p.id)), "%s %s" % [class_id, p.id])
+			assert_false(p.has("voxel_scale"), "%s %s is v2" % [class_id, p.id])
+
+
+func test_mixed_kit_builds() -> void:
+	var gear := _kit("mage", 1)
+	gear[Inventory.VISIBLE.find("shoulders")] = "warrior_shoulders_t3"
+	gear[Inventory.VISIBLE.find("head")] = "archer_head_t2"
+	var rig := HumanRig.create("mage", {}, null, "", gear)
+	add_child_autofree(rig)
+	assert_not_null(rig.piece_node("warrior_shoulders_t3_l"))
+	assert_not_null(rig.piece_node("archer_head_t2"))
+
+
+func test_robust_body_with_armour() -> void:
+	var rig := HumanRig.create("warrior", {"body": "robust"}, null, "", _kit("warrior", 2))
+	add_child_autofree(rig)
+	var pad := rig.piece_node("warrior_shoulders_t2_l")
+	assert_eq(pad.get_parent(), rig.part("arm_left"), "the pauldron rides on its arm")
 
 
 ## Lunges, breathing, the walk bob and falling move the same in metres on both bodies.

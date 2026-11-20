@@ -14,6 +14,8 @@ const PIECES_PATH := "res://data/characters/pieces.json"
 const GEAR_PIECES_PATH := "res://data/items/gear_pieces.json"
 ## v2 versions of the pieces (Plan 6.2), same ids; a piece without one is worn at voxel_scale 2.
 const PIECES_V2 := "res://data/characters/pieces_v2.json"
+## v2 equipment (Plan 6.3), same ids as GEAR_PIECES_PATH.
+const GEAR_PIECES_V2 := "res://data/items/gear_pieces_v2.json"
 const BODY := "v2"
 ## What a character wears on the chest with nothing equipped there.
 const BASE_OUTFIT := "outfit_villager"
@@ -215,6 +217,10 @@ func _load(appearance_path: String, classes_path: String, pieces_path: String) -
 		var v2: Variant = _read_json(PIECES_V2)
 		if v2 is Dictionary:
 			_pieces_v2 = v2
+	if FileAccess.file_exists(GEAR_PIECES_V2):
+		var gear_v2: Variant = _read_json(GEAR_PIECES_V2)
+		if gear_v2 is Dictionary:
+			_pieces_v2.merge(gear_v2)
 
 
 static func _read_json(path: String) -> Variant:

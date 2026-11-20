@@ -110,15 +110,26 @@ func _process(_delta: float) -> void:
 	_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 
 
+## The pieces an icon shows: the base's look, each in its v2 version when it has one.
+static func icon_pieces(base_id: String) -> Array[Dictionary]:
+	var cat := CharacterCatalog.load_default()
+	var out: Array[Dictionary] = []
+	for id: String in ItemDB.load_default().base(base_id).get("look", []):
+		var p := cat.piece_v2(id)
+		if p.is_empty():
+			p = cat.piece(id)
+		if not p.is_empty():
+			out.append(p)
+	return out
+
+
 ## Lays the base's pieces out as worn around one point, and frames them.
 func _build(base_id: String) -> void:
 	for c: Node in _holder.get_children():
 		c.queue_free()
-	var cat := CharacterCatalog.load_default()
 	var box := AABB()
 	var first := true
-	for id: String in ItemDB.load_default().base(base_id).get("look", []):
-		var p := cat.piece(id)
+	for p: Dictionary in icon_pieces(base_id):
 		var mesh := VoxMesher.cached(str(p.get("file", "")), ICON_TINTS)
 		if mesh == null:
 			continue
