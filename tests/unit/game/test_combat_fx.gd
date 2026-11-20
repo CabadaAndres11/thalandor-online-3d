@@ -544,3 +544,32 @@ func test_hymn_wings_last_the_song_and_go_when_it_is_cut() -> void:
 	fx.handle(["channel_end", 1])
 	fx.advance(0.5)
 	assert_null(_holy_at("hymn"), "the song was cut")
+
+
+func _holy_area_pulse(t_s: float) -> void:
+	fx.handle(["area", 31, Vector3(6, 0, 6), 5.0, "cleric_healing_circle", 5, 1.0])
+	fx.advance(t_s)
+
+
+func test_holy_area_does_not_pulse() -> void:
+	_holy_area_pulse(0.6)
+	var mark: Node3D = fx.mark_node(31)
+	assert_almost_eq(mark.scale.x, 1.0, 0.01, "fully grown")
+	fx.handle(["area", 31, Vector3(6, 0, 6), 5.0, "cleric_healing_circle", 4, 1.0]) # the next pulse
+	fx.advance(0.05)
+	assert_almost_eq(mark.scale.x, 1.0, 0.01, "it does not shrink and grow again")
+
+
+func test_holy_area_has_a_choir_of_angels() -> void:
+	_holy_area_pulse(0.3)
+	var mark: Node3D = fx.mark_node(31)
+	assert_eq(mark.find_children("Angel*", "", true, false).size(), 6)
+	assert_not_null(mark.find_child("Motes", true, false))
+	assert_not_null(mark.find_child("Beam", true, false))
+
+
+func test_consecration_adds_golden_flames() -> void:
+	fx.handle(["area", 32, Vector3(6, 0, 6), 5.0, "cleric_consecration", 8, 1.0])
+	assert_not_null(fx.mark_node(32).find_child("HolyFlames", true, false))
+	fx.handle(["area", 33, Vector3(16, 0, 6), 5.0, "cleric_healing_circle", 5, 1.0])
+	assert_null(fx.mark_node(33).find_child("HolyFlames", true, false))

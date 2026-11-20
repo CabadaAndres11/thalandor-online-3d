@@ -32,7 +32,7 @@ func _initialize() -> void:
 	_fx.handle(["cast", 103, "cleric_holy_nova", _spots[103], 1.0])
 	_fx.handle(["cast", 104, "cleric_purify", _spots[104], 1.0])
 	_fx.handle(["cast", 105, "cleric_divine_hymn", _spots[105], 1.0])
-	_fx.handle(["area", 9, _spots[106], 1.5, "cleric_consecration", 5, 1.0])
+	_fx.handle(["area", 9, _spots[106], 2.5, "cleric_consecration", 5, 1.0])
 	for i in 8:
 		var rig := HumanRig.build(CharacterCatalog.load_default().resolve("cleric", {"hair_style": "short"}))
 		rig.position = _spots[100 + i]

@@ -552,3 +552,23 @@ static func light_column(height: int = 30, r: float = 2.5) -> Dictionary:
 				if d <= rr and (d >= rr - 1.0 or (x + y + z) % 4 == 0):
 					cells[Vector3i(x, y, z)] = HOLY_LIGHT if d < rr - 0.8 else HOLY_GOLD
 	return cells
+
+
+## Golden flames licking up round the edge of a circle (consecrated ground).
+static func holy_flame_ring(radius_m: float, cube: float = 0.12) -> Dictionary:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 17
+	var cells := {}
+	var r := radius_m * 0.95 / cube
+	var steps := maxi(int(TAU * r / 2.0), 10)
+	for i in steps:
+		var a := TAU * float(i) / float(steps)
+		var cx := roundi(cos(a) * r)
+		var cz := roundi(sin(a) * r)
+		var h := 3 + rng.randi() % 4
+		for y in h:
+			var col := HOLY_LIGHT if y >= h - 1 else (HOLY_GOLD if y > 0 else HOLY_GOLD.darkened(0.25))
+			cells[Vector3i(cx, y, cz)] = col
+			if y < h - 2:
+				cells[Vector3i(cx + 1, y, cz)] = HOLY_GOLD
+	return cells

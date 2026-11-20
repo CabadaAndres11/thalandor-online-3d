@@ -290,6 +290,10 @@ func decor_count() -> int:
 	return _decor.size()
 
 
+func mark_node(area_id: int) -> Node3D:
+	return _marks[area_id].node if _marks.has(area_id) else null
+
+
 func mark_count() -> int:
 	return _marks.size()
 
@@ -537,7 +541,7 @@ func _area_flash(pos: Vector3, radius: float, ability_id: String = "", area_id: 
 	if magic:
 		if not again: # the effect stays in the field: only its first pulse bursts
 			_burst(pos, radius, color, wall)
-		_ground_mark(area_id, pos, radius, _element_of_ability(ability_id), still_going_s, wall)
+		_ground_mark(area_id, pos, radius, _element_of_ability(ability_id), still_going_s, wall, ability_id)
 		if _fx_style(ability_id) == "meteor":
 			_explosion(pos, color, "fire", radius / 2.0)
 			_shockwave(pos, radius)
@@ -1035,13 +1039,14 @@ func _ice_block(id: int, end_tick: int) -> void:
 
 
 ## What an area leaves on the ground: arcane a pentagram, fire burning ground, frost ice spikes.
-func _ground_mark(area_id: int, pos: Vector3, radius: float, element: String, still_going_s: float = 0.0, wall: Array = []) -> void:
+func _ground_mark(area_id: int, pos: Vector3, radius: float, element: String, still_going_s: float = 0.0, wall: Array = [],
+		ability_id: String = "") -> void:
 	if not element in ["arcane", "fire", "frost", "holy"]:
 		return
 	var life_left := maxf(still_going_s + MARK_LINGER, MARK_MIN_LIFE) # only while the area still does something
 	if _marks.has(area_id) and is_instance_valid(_marks[area_id].node) and _marks[area_id] in _decor:
-		_marks[area_id].t = 0.0
-		_marks[area_id].life = life_left
+		# A new pulse only keeps it alive longer: it does not grow again from nothing.
+		_marks[area_id].life = float(_marks[area_id].t) + life_left
 		return
 	var r := snappedf(radius, 0.5)
 	var holder := Node3D.new()
@@ -1056,6 +1061,7 @@ func _ground_mark(area_id: int, pos: Vector3, radius: float, element: String, st
 		"holy":
 			var circle := _voxel("holy_circle_%s" % r, func() -> Dictionary: return VoxelFx.holy_circle(r), true, 0.85, 0.12)
 			holder.add_child(circle)
+			_holy_choir(holder, radius, ability_id)
 			entry = _add_decor(holder, life, 0.25, Vector3.ONE, 0.7, 0.85, false, 0.4)
 		"fire":
 			var flames: MeshInstance3D
@@ -1457,3 +1463,33 @@ func _advance_holy(dt: float) -> void:
 		var remaining: float = h.life - h.t
 		if remaining < 0.35:
 			_set_decor_alpha(node, remaining / 0.35)
+
+
+## A holy area as an ultimate: six angels floating round the edge (they turn with the
+## circle), motes of light rising from the whole area and a beam in the middle; consecrated
+## ground ("fx_flames") burns with golden flames round its edge too.
+func _holy_choir(holder: Node3D, radius: float, ability_id: String) -> void:
+	for i in 6:
+		var a := TAU * float(i) / 6.0
+		var angel := _voxel("angel", func() -> Dictionary: return VoxelFx.angel(), false, 0.95, 0.06)
+		angel.name = "Angel%d" % i
+		angel.position = Vector3(sin(a), 0.0, cos(a)) * radius * 0.95 + Vector3(0, 1.3, 0)
+		angel.rotation.y = a + PI # facing the middle
+		holder.add_child(angel)
+	var beam := _voxel("light_column", func() -> Dictionary: return VoxelFx.light_column(), true, 0.45, 0.12)
+	beam.name = "Beam"
+	holder.add_child(beam)
+	var motes := _storm_snow(radius)
+	motes.name = "Motes"
+	motes.tangential_accel_min = 0.0
+	motes.tangential_accel_max = 0.6
+	motes.initial_velocity_min = 0.8
+	motes.initial_velocity_max = 1.8
+	motes.material_override = _glow(VoxelFx.HOLY_LIGHT, 0.9)
+	holder.add_child(motes)
+	var ab := _abilities.get_ability(ability_id) if _abilities != null and _abilities.has(ability_id) else {}
+	if bool(ab.get("fx_flames", false)):
+		var r := snappedf(radius, 0.5)
+		var flames := _voxel("holy_flames_%s" % r, func() -> Dictionary: return VoxelFx.holy_flame_ring(r), true, 0.9, 0.12)
+		flames.name = "HolyFlames"
+		holder.add_child(flames)

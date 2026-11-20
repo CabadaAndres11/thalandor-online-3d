@@ -37,7 +37,7 @@
 	{"id": "cleric_crusader_strike", "fx_holy": "strike", "class": "cleric", "upgrade": "templar", "name": "AB_CLERIC_CRUSADER_STRIKE", "desc": "AB_CLERIC_CRUSADER_STRIKE_DESC", "icon": "crusader_strike", "kind": "active", "level": 50,
 	 "cost": 15, "cooldown_s": 4, "gcd": true, "range": 2.5, "anim": "melee",
 	 "effects": [{"type": "melee_arc", "angle_deg": 90, "range": 2.5, "damage": {"base": 16, "coef": 1.2, "kind": "magic", "lifesteal_pct": 0.3}}]},
-	{"id": "cleric_consecration", "class": "cleric", "upgrade": "templar", "name": "AB_CLERIC_CONSECRATION", "desc": "AB_CLERIC_CONSECRATION_DESC", "icon": "consecration", "kind": "active", "level": 50,
+	{"id": "cleric_consecration", "fx_flames": true, "class": "cleric", "upgrade": "templar", "name": "AB_CLERIC_CONSECRATION", "desc": "AB_CLERIC_CONSECRATION_DESC", "icon": "consecration", "kind": "active", "level": 50,
 	 "cost": 35, "cooldown_s": 18, "gcd": true, "range": 5, "anim": "cast",
 	 "effects": [{"type": "area", "at": "self", "radius": 5, "delay_s": 0, "telegraph": false, "pulses": 8, "interval_s": 1.0,
 		"damage": {"base": 6, "coef": 0.4, "kind": "magic"}, "heal": {"base": 3, "coef": 0.2}}]},
