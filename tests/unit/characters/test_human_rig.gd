@@ -481,13 +481,12 @@ func test_aura_from_look_v2() -> void:
 
 
 func test_blade_down_grip_v2() -> void:
-	var a := HumanRig.build(_look())
 	var look := _v2_look()
 	look["grip"] = "blade_down"
 	var b := HumanRig.build(look)
 	var la := _look()
 	la["grip"] = "blade_down"
-	a = HumanRig.build(la)
+	var a := HumanRig.build(la)
 	add_child_autofree(a)
 	add_child_autofree(b)
 	a.update(0.1)
