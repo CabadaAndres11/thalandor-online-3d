@@ -394,6 +394,15 @@ func _sync_monsters(delta: float) -> void:
 		(_monster_avatars[id] as MonsterAvatar).apply_state(client.monster_render_state(id), info, delta)
 
 
+## The ability as others see a player cast it: evolved by their upgrade (the templar's smite
+## is a melee swing), then changed by the family of the weapon in hand (WeaponFamily).
+static func seen_ability(ability_id: String, upgrade: String, main_base: String) -> Dictionary:
+	var ab := AbilityDB.load_default().resolved(ability_id, upgrade)
+	if main_base != "":
+		ab = WeaponFamily.adjust(ab, ItemDB.load_default().family_of(main_base))
+	return ab
+
+
 func _on_combat_event(ev: Array) -> void:
 	fx.handle(ev)
 	loot_view.my_id = client.my_id
@@ -414,12 +423,10 @@ func _on_combat_event(ev: Array) -> void:
 				else:
 					avatar.play_attack(str(mab.get("anim", "melee")))
 			elif _avatars.has(who):
-				var ab := AbilityDB.load_default().get_ability(str(ev[2]))
 				var pa := _avatars[who] as PlayerAvatar
-				# The weapon in hand changes the basic attack's animation (WeaponFamily).
 				var gear := client.gear_of(who)
-				if not gear.is_empty() and str(gear[0]) != "":
-					ab = WeaponFamily.adjust(ab, ItemDB.load_default().family_of(str(gear[0])))
+				var upgrade := str((client.roster.get(who, {}) as Dictionary).get("upgrade", ""))
+				var ab := seen_ability(str(ev[2]), upgrade, str(gear[0]) if not gear.is_empty() else "")
 				var anim := str(ab.get("anim", ""))
 				var basic := str(ab.get("kind", "")) == "basic"
 				pa.play_action(anim, basic) # basic melee attacks chain three swings
