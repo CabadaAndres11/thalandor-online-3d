@@ -253,18 +253,26 @@ func test_resolve_gives_the_v2_body() -> void:
 	assert_eq(look.get("body"), "v2")
 
 
-func test_piece_without_v2_is_scaled() -> void:
+func test_every_v1_piece_has_a_v2_version() -> void:
 	var cat := CharacterCatalog.load_default()
-	assert_true(cat.piece_v2("cult_hood").is_empty(), "monster pieces stay v1")
+	assert_false(cat.piece_v2("cult_hood").is_empty(), "the cult's pieces too (Plan 6.4.1)")
+	assert_string_contains(str(cat.piece_entry("cult_hood").file), "/pieces_v2/")
+
+
+func test_a_piece_without_v2_is_drawn_twice_as_big() -> void:
+	var cat := CharacterCatalog.load_default()
+	var saved: Dictionary = cat._pieces_v2["cult_hood"]
+	cat._pieces_v2.erase("cult_hood")
 	var e: Dictionary = cat.piece_entry("cult_hood")
+	cat._pieces_v2["cult_hood"] = saved
 	assert_string_contains(str(e.file), "/pieces/")
 	assert_almost_eq(float(e.get("voxel_scale", 1.0)), 2.0, 0.001)
 
 
-func test_monster_look_stays_v1() -> void:
+func test_monster_look_is_v2() -> void:
 	var type: Dictionary = MonsterDB.load_default().get_type("cultist")
 	assert_false(type.is_empty())
 	var look := MonsterAvatar.look_of(type)
-	assert_false(look.has("body"))
+	assert_eq(look.body, "v2")
 	for p: Dictionary in look.get("pieces", []):
 		assert_false(p.has("voxel_scale"), str(p.id))

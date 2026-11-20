@@ -369,5 +369,346 @@
 		],
 		"tag": "weapon",
 		"hides": []
+	},
+	"cult_hood": {
+		"file": "res://assets/characters/pieces_v2/cult_hood.vox",
+		"part": "head",
+		"offset": [
+			-18,
+			-12,
+			-11
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"cult_robe": {
+		"file": "res://assets/characters/pieces_v2/cult_robe.vox",
+		"part": "torso",
+		"offset": [
+			-18,
+			-50,
+			-12
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"cult_sleeve_left": {
+		"file": "res://assets/characters/pieces_v2/cult_sleeve_left.vox",
+		"part": "arm_left",
+		"offset": [
+			-6,
+			-21,
+			-6
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"cult_sleeve_right": {
+		"file": "res://assets/characters/pieces_v2/cult_sleeve_right.vox",
+		"part": "arm_right",
+		"offset": [
+			-6,
+			-21,
+			-6
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"cult_cuff_left": {
+		"file": "res://assets/characters/pieces_v2/cult_cuff_left.vox",
+		"part": "forearm_left",
+		"offset": [
+			-9,
+			-22,
+			-8
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"cult_cuff_right": {
+		"file": "res://assets/characters/pieces_v2/cult_cuff_right.vox",
+		"part": "forearm_right",
+		"offset": [
+			-9,
+			-22,
+			-8
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"acolyte_hood": {
+		"file": "res://assets/characters/pieces_v2/acolyte_hood.vox",
+		"part": "head",
+		"offset": [
+			-36,
+			-22,
+			-14
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"acolyte_robe": {
+		"file": "res://assets/characters/pieces_v2/acolyte_robe.vox",
+		"part": "torso",
+		"offset": [
+			-23,
+			-50,
+			-17
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"acolyte_sleeve_left": {
+		"file": "res://assets/characters/pieces_v2/acolyte_sleeve_left.vox",
+		"part": "arm_left",
+		"offset": [
+			-6,
+			-21,
+			-6
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"acolyte_sleeve_right": {
+		"file": "res://assets/characters/pieces_v2/acolyte_sleeve_right.vox",
+		"part": "arm_right",
+		"offset": [
+			-6,
+			-21,
+			-6
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"acolyte_cuff_left": {
+		"file": "res://assets/characters/pieces_v2/acolyte_cuff_left.vox",
+		"part": "forearm_left",
+		"offset": [
+			-9,
+			-36,
+			-10
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"acolyte_cuff_right": {
+		"file": "res://assets/characters/pieces_v2/acolyte_cuff_right.vox",
+		"part": "forearm_right",
+		"offset": [
+			-9,
+			-36,
+			-10
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"acolyte_claws_left": {
+		"file": "res://assets/characters/pieces_v2/acolyte_claws_left.vox",
+		"part": "hand_left",
+		"offset": [
+			-6,
+			-21,
+			1
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"acolyte_claws_right": {
+		"file": "res://assets/characters/pieces_v2/acolyte_claws_right.vox",
+		"part": "hand_right",
+		"offset": [
+			-6,
+			-21,
+			1
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"inquisitor_hood": {
+		"file": "res://assets/characters/pieces_v2/inquisitor_hood.vox",
+		"part": "head",
+		"offset": [
+			-21,
+			-12,
+			-11
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"inquisitor_belt": {
+		"file": "res://assets/characters/pieces_v2/inquisitor_belt.vox",
+		"part": "torso",
+		"offset": [
+			-15,
+			-40,
+			-10
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"inquisitor_pauldron_left": {
+		"file": "res://assets/characters/pieces_v2/inquisitor_pauldron_left.vox",
+		"part": "arm_left",
+		"offset": [
+			-5,
+			-10,
+			-8
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"inquisitor_pauldron_right": {
+		"file": "res://assets/characters/pieces_v2/inquisitor_pauldron_right.vox",
+		"part": "arm_right",
+		"offset": [
+			-10,
+			-10,
+			-8
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"inquisitor_vambrace_left": {
+		"file": "res://assets/characters/pieces_v2/inquisitor_vambrace_left.vox",
+		"part": "forearm_left",
+		"offset": [
+			-5,
+			-17,
+			-4
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"inquisitor_vambrace_right": {
+		"file": "res://assets/characters/pieces_v2/inquisitor_vambrace_right.vox",
+		"part": "forearm_right",
+		"offset": [
+			-5,
+			-17,
+			-4
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"weapon_inquisitor_sword": {
+		"file": "res://assets/characters/pieces_v2/weapon_inquisitor_sword.vox",
+		"part": "hand_right",
+		"offset": [
+			-5,
+			-13,
+			-7
+		],
+		"tag": "weapon",
+		"hides": []
+	},
+	"vaelthar_mane": {
+		"file": "res://assets/characters/pieces_v2/vaelthar_mane.vox",
+		"part": "head",
+		"offset": [
+			-43,
+			-51,
+			-18
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"vaelthar_robe": {
+		"file": "res://assets/characters/pieces_v2/vaelthar_robe.vox",
+		"part": "torso",
+		"offset": [
+			-25,
+			-54,
+			-18
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"vaelthar_sleeve_left": {
+		"file": "res://assets/characters/pieces_v2/vaelthar_sleeve_left.vox",
+		"part": "arm_left",
+		"offset": [
+			-9,
+			-21,
+			-9
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"vaelthar_sleeve_right": {
+		"file": "res://assets/characters/pieces_v2/vaelthar_sleeve_right.vox",
+		"part": "arm_right",
+		"offset": [
+			-9,
+			-21,
+			-9
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"vaelthar_tentacles_left": {
+		"file": "res://assets/characters/pieces_v2/vaelthar_tentacles_left.vox",
+		"part": "arm_left",
+		"offset": [
+			-14,
+			-62,
+			-17
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"vaelthar_tentacles_right": {
+		"file": "res://assets/characters/pieces_v2/vaelthar_tentacles_right.vox",
+		"part": "arm_right",
+		"offset": [
+			-30,
+			-62,
+			-17
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"nhazar_head": {
+		"file": "res://assets/characters/pieces_v2/nhazar_head.vox",
+		"part": "head",
+		"offset": [
+			-86,
+			-18,
+			-78
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"nhazar_collar": {
+		"file": "res://assets/characters/pieces_v2/nhazar_collar.vox",
+		"part": "torso",
+		"offset": [
+			-10,
+			26,
+			-9
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"nhazar_chains_left": {
+		"file": "res://assets/characters/pieces_v2/nhazar_chains_left.vox",
+		"part": "forearm_left",
+		"offset": [
+			7,
+			-77,
+			-5
+		],
+		"tag": "monster",
+		"hides": []
+	},
+	"nhazar_chains_right": {
+		"file": "res://assets/characters/pieces_v2/nhazar_chains_right.vox",
+		"part": "forearm_right",
+		"offset": [
+			-11,
+			-77,
+			-5
+		],
+		"tag": "monster",
+		"hides": []
 	}
 }

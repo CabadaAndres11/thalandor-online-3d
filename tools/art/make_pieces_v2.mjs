@@ -1,4 +1,4 @@
-// The v2 versions of the player and NPC pieces (Plan 6.2), sculpted on the v2 body.
+// The v2 versions of the player, NPC (Plan 6.2) and cult enemy (Plan 6.4.1) pieces, sculpted on the v2 body.
 //   node tools/art/make_pieces_v2.mjs <out dir> <pieces_v2.json path>
 //   (assets/characters/pieces_v2 and data/characters/pieces_v2.json)
 // Each piece is drawn in its part's pivot frame (the same frame human_v2.mjs draws the
@@ -11,6 +11,7 @@ import { ellipsoid, capsule, roundBox, carve, shadeByFacing, shellAround, noise3
 import { headV2, frontZ, PALETTE_V2, FORM } from "./human_v2.mjs";
 import { clothesV2 } from "./clothes_v2.mjs";
 import { weaponsV2 } from "./weapons_v2.mjs";
+import { monstersV2 } from "./monsters_v2.mjs";
 
 const H = TINT_HAIR;
 const HEAD = headV2();
@@ -163,7 +164,7 @@ export function piecesV2() {
   for (const [id, build] of Object.entries({ ...HAIR, ...BEARDS })) {
     out[id] = { shape: strands(build(), seed++), part: "head", palette: PALETTE_V2 };
   }
-  return { ...out, ...clothesV2(), ...weaponsV2() };
+  return { ...out, ...clothesV2(), ...weaponsV2(), ...monstersV2() };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

@@ -212,3 +212,20 @@ func test_inquisitor_wears_its_armour_and_holds_its_sword() -> void:
 		assert_not_null(c.piece_node(id), id)
 	assert_eq(c.weapon_points("right").size(), 2, "its sword leaves a trail when it swings")
 	assert_eq(a.hover_height(), 0.0, "it walks")
+
+
+func test_cult_humanoids_use_the_v2_body_and_pieces() -> void:
+	for type_id: String in ["cultist", "cult_archer", "cult_acolyte", "cult_inquisitor", "vaelthar", "nhazar"]:
+		var c := _avatar(type_id).body.get_child(0) as HumanRig
+		assert_eq(c.body, "v2", type_id)
+		for id: String in c.pieces():
+			var mi := c.piece_node(id)
+			assert_eq(mi.scale, Vector3.ONE, "%s %s is not a v1 piece blown up" % [type_id, id])
+
+
+func test_cult_pieces_come_from_the_v2_table() -> void:
+	var look := MonsterAvatar.look_of(MonsterDB.load_default().get_type("cult_acolyte"))
+	assert_eq(look.body, "v2")
+	for p: Dictionary in look.pieces:
+		assert_string_contains(str(p.file), "/pieces_v2/", str(p.id))
+		assert_false(p.has("voxel_scale"), str(p.id))

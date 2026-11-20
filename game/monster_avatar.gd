@@ -93,10 +93,11 @@ static func look_of(type: Dictionary) -> Dictionary:
 	var skin := Color(str(look.get("skin", "#ffffff")))
 	var pieces: Array = []
 	for id: String in look.get("pieces", []):
-		var p := catalog.piece(id)
-		if not p.is_empty():
-			pieces.append({"id": id, "file": p.get("file", ""), "part": p.get("part", ""), "offset": p.get("offset", [0, 0, 0])})
+		if catalog.piece(id).is_empty() and catalog.piece_v2(id).is_empty():
+			continue
+		pieces.append(catalog.piece_entry(id)) # the v2 piece (Plan 6.4.1), or v1 drawn twice as big
 	return {
+		"body": CharacterCatalog.BODY, # cult humanoids wear the v2 body like the players
 		"skin_color": skin,
 		"eyes_color": Color(str(look.get("eyes", "#000000"))),
 		"hair_color": Color(str(look.get("hair", look.get("skin", "#000000")))),
