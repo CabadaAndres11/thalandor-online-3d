@@ -61,6 +61,9 @@ var _parts: Dictionary = {} # name -> Node3D (pivot)
 var _meshes: Dictionary = {} # name -> MeshInstance3D
 var _rest: Dictionary = {} # name -> rest position of the pivot
 var _pieces: Dictionary = {} # piece id -> MeshInstance3D
+## Cloth that follows the body (Plan 6.4.3): piece id -> {mode, node, anchor, span, drape, drape_v}.
+var _cloth: Dictionary = {}
+var _dt: float = 0.0 # the last update's step (the capes' spring)
 var _speed: float = 0.0
 var _rate: float = 1.0
 var _phase: float = 0.0
@@ -211,6 +214,7 @@ func _process(delta: float) -> void:
 
 func update(delta: float) -> void:
 	_time += delta
+	_dt = delta
 	if _speed >= WALK_MIN_SPEED:
 		_phase += _speed * delta / STRIDE * TAU
 	if _action != "idle":
@@ -361,6 +365,7 @@ func _attach_piece(p: Dictionary, tints: Dictionary) -> void:
 	node.position = Vector3(o[0], o[1], o[2]) * VoxMesher.VOXEL_SIZE * vs
 	host.add_child(node)
 	_pieces[str(p.id)] = node
+	_setup_cloth(str(p.id), str(p.get("part", "")), node, o)
 
 
 static func _in_arm(part_name: String) -> bool:
@@ -473,6 +478,8 @@ func _pose() -> void:
 		"die": _fall(_ease(k), false)
 	_to_metres()
 	_two_hand_ik()
+	_update_cloth()
+	_dt = 0.0
 
 
 ## Two-handed weapons (two_hand, polearm): how far below the right fist the left one holds
@@ -888,3 +895,124 @@ func _rot(part_name: String, angle: float) -> void:
 static func _ease(t: float) -> float:
 	t = clampf(t, 0.0, 1.0)
 	return t * t * (3.0 - 2.0 * t)
+
+
+# --- Cloth that follows the body (Plan 6.4.3) ------------------------------------------------
+
+const CLOTH_NONE := 0
+const CLOTH_SKIRT := 1 ## below the waist each side turns with its leg (robes, skirts, tabards)
+const CLOTH_CAPE := 2 ## behind and below its anchor it swings back as the body moves
+## Pieces that hang like a cape, with their anchor in their part's frame (voxels): where the
+## cloth starts to hang (the shoulders, the nape).
+const CAPE_ANCHORS := {"hood_archer": Vector3(0, -2, -6), "hood_cleric": Vector3(0, 26, -6), "vaelthar_mane": Vector3(0, 4, -7)}
+const CAPE_ANCHOR_TORSO := Vector3(0, 24, -5) # every "*_cape" of the gear
+## A torso piece reaching this far below the waist (voxels) is a skirt.
+const SKIRT_BELOW := -6
+static var _cloth_material: ShaderMaterial
+static var _cloth_glow_material: ShaderMaterial
+
+
+static func cloth_material(glow: bool) -> ShaderMaterial:
+	if _cloth_material == null:
+		_cloth_material = ShaderMaterial.new()
+		_cloth_material.shader = load("res://game/characters/cloth.gdshader")
+		_cloth_glow_material = ShaderMaterial.new()
+		_cloth_glow_material.shader = load("res://game/characters/cloth_glow.gdshader")
+	return _cloth_glow_material if glow else _cloth_material
+
+
+static func _cloth_mode_for(id: String, part_name: String, offset: Array) -> int:
+	if CAPE_ANCHORS.has(id) or id.ends_with("_cape"):
+		return CLOTH_CAPE
+	if part_name == "hips":
+		return CLOTH_SKIRT
+	if part_name == "torso" and float(offset[1]) < SKIRT_BELOW:
+		return CLOTH_SKIRT
+	return CLOTH_NONE
+
+
+func _setup_cloth(id: String, part_name: String, node: MeshInstance3D, offset: Array) -> void:
+	var mode := _cloth_mode_for(id, part_name, offset)
+	if mode == CLOTH_NONE:
+		return
+	for i in node.mesh.get_surface_count():
+		node.set_surface_override_material(i, cloth_material(node.mesh.surface_get_material(i) == VoxMesher.glow_material()))
+	var c := {"mode": mode, "node": node, "anchor": Vector3.ZERO, "span": 1.0, "drape": 0.0, "drape_v": 0.0}
+	if mode == CLOTH_CAPE:
+		var a: Vector3 = CAPE_ANCHORS.get(id, CAPE_ANCHOR_TORSO)
+		c.anchor = (a * VoxMesher.VOXEL_SIZE - node.position) / node.scale.x # into the mesh's own space
+		c.span = maxf(c.anchor.y - node.mesh.get_aabb().position.y, 0.1)
+	node.set_instance_shader_parameter("cloth_mode", mode)
+	_cloth[id] = c
+
+
+## How a piece moves with the body: CLOTH_NONE, CLOTH_SKIRT or CLOTH_CAPE.
+func cloth_mode(id: String) -> int:
+	return int(_cloth[id].mode) if _cloth.has(id) else CLOTH_NONE
+
+
+## The parameters the cloth shader got for a piece this frame (in the piece's mesh space).
+func cloth_params(id: String) -> Dictionary:
+	if not _cloth.has(id):
+		return {}
+	var node: MeshInstance3D = _cloth[id].node
+	var out := {"mode": int(_cloth[id].mode)}
+	for key: String in ["hip_l", "hip_r", "ang_l", "ang_r", "waist_y", "span", "anchor", "drape"]:
+		out[key] = node.get_instance_shader_parameter(key)
+	return out
+
+
+func _update_cloth() -> void:
+	if _cloth.is_empty() or not is_inside_tree():
+		return
+	for id: String in _cloth:
+		var c: Dictionary = _cloth[id]
+		var node: MeshInstance3D = c.node
+		var to_mesh := node.global_transform.affine_inverse()
+		if int(c.mode) == CLOTH_SKIRT:
+			var hips := {}
+			for side: String in ["left", "right"]:
+				var leg := part("leg_" + side)
+				var hip := to_mesh * leg.global_position
+				var down := (to_mesh.basis * (leg.global_basis * Vector3.DOWN)).normalized()
+				hips[side] = [hip, atan2(-down.z, -down.y)]
+				if side == "left":
+					node.set_instance_shader_parameter("span", (to_mesh * part("shin_left").global_position).distance_to(hip))
+			node.set_instance_shader_parameter("hip_l", hips.left[0])
+			node.set_instance_shader_parameter("hip_r", hips.right[0])
+			node.set_instance_shader_parameter("ang_l", hips.left[1])
+			node.set_instance_shader_parameter("ang_r", hips.right[1])
+			node.set_instance_shader_parameter("waist_y", maxf((hips.left[0] as Vector3).y, (hips.right[0] as Vector3).y) + 0.3)
+		else:
+			# A spring pulls the drape towards how fast the body moves (back when running),
+			# with a little sway at rest.
+			var target := clampf(_speed / 4.0, 0.0, 1.0) * 0.6 + sin(_time * 1.7) * 0.03
+			if _dt > 0.0:
+				c.drape_v = float(c.drape_v) + ((target - float(c.drape)) * 40.0 - float(c.drape_v) * 9.0) * _dt
+				c.drape = float(c.drape) + float(c.drape_v) * _dt
+			node.set_instance_shader_parameter("anchor", c.anchor)
+			node.set_instance_shader_parameter("span", c.span)
+			node.set_instance_shader_parameter("drape", c.drape)
+
+
+## The cloth shader's deformation on the CPU (the same maths as cloth.gdshaderinc).
+static func cloth_deform(v: Vector3, p: Dictionary) -> Vector3:
+	var mode := int(p.get("mode", CLOTH_NONE))
+	if mode == CLOTH_SKIRT and v.y < float(p.waist_y):
+		var k := clampf((float(p.waist_y) - v.y) / maxf(float(p.span), 0.001), 0.0, 1.0)
+		var hl: Vector3 = p.hip_l
+		var hr: Vector3 = p.hip_r
+		var w := hl.x - hr.x
+		var t := 0.5 if absf(w) < 0.001 else clampf((v.x - hr.x) / w, 0.0, 1.0)
+		var pivot := hr.lerp(hl, t)
+		return pivot + _rot_x(v - pivot, lerpf(float(p.ang_r), float(p.ang_l), t) * k)
+	if mode == CLOTH_CAPE:
+		var an: Vector3 = p.anchor
+		if v.y < an.y and v.z < an.z + 0.3:
+			var k := clampf((an.y - v.y) / maxf(float(p.span), 0.001), 0.0, 1.0)
+			return an + _rot_x(v - an, float(p.drape) * k)
+	return v
+
+
+static func _rot_x(d: Vector3, a: float) -> Vector3:
+	return Vector3(d.x, d.y * cos(a) - d.z * sin(a), d.y * sin(a) + d.z * cos(a))

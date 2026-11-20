@@ -43,6 +43,9 @@ func _initialize() -> void:
 	if _name in ["bodies", "faces"]:
 		_bodies(_name == "faces")
 		return
+	if _name == "cloth":
+		_cloth()
+		return
 	if _name == "beasts":
 		_beasts()
 		return
@@ -287,6 +290,25 @@ func _combat_scene() -> void:
 
 ## Task 12 set: marked boar (warning its charge), cultists (one elite), cult archer and an
 ## elite marked_hound, around a warrior.
+## Plan 6.4.3: robes, skirts and capes mid-stride (side on), so the cloth following the legs shows.
+func _cloth() -> void:
+	var cat := CharacterCatalog.load_default()
+	var looks := [cat.resolve("mage", {}), cat.resolve("warrior", {}, "", ["sword_t3", "", "", "", "warrior_chest_t3", "", "", ""]), cat.resolve("cleric", {}), MonsterAvatar.look_of(MonsterDB.load_default().get_type("cultist")), cat.resolve("mage", {}, "", ["staff_t3", "", "", "", "mage_chest_t3", "", "", ""])]
+	for i in looks.size():
+		var rig := HumanRig.build(looks[i])
+		rig.auto_update = false
+		rig.position = Vector3(16.5 + i * 2.0, 0, 20.0)
+		rig.rotation.y = PI / 2.0
+		root.add_child(rig)
+		rig.set_moving_speed(5.0, 5.0)
+		for k in 30 + i * 7:
+			rig.update(1.0 / 60.0)
+	var cam := Camera3D.new()
+	cam.fov = 38
+	root.add_child(cam)
+	cam.look_at_from_position(Vector3(20.5, 2.2, 28.0), Vector3(20.5, 1.0, 20.0))
+
+
 ## Plan 6.4.2: the three beasts side on and three-quarter, a cultist for scale.
 func _beasts() -> void:
 	var db := MonsterDB.load_default()
