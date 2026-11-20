@@ -32,3 +32,19 @@ func test_icons_use_v2_pieces() -> void:
 	assert_false(pieces.is_empty())
 	for p: Dictionary in pieces:
 		assert_string_contains(str(p.file), "/vox_v2/")
+
+
+func test_jewelry_has_a_model_for_icons() -> void:
+	for id: String in ["ring_t1", "ring_t2", "ring_t3", "neck_t1", "neck_t2", "neck_t3"]:
+		var pieces := ItemIcons.icon_pieces(id)
+		assert_eq(pieces.size(), 1, id)
+		assert_string_contains(str(pieces[0].file), "jewel_", id)
+		assert_true(ResourceLoader.exists(str(pieces[0].file)) or FileAccess.file_exists(str(pieces[0].file)), id)
+
+
+func test_jewelry_is_never_worn() -> void:
+	var inv := Inventory.new()
+	inv.equipment["ring_1"] = ItemRoll.new_item("ring_t3", 30)
+	inv.equipment["neck"] = ItemRoll.new_item("neck_t3", 30)
+	for b: Variant in inv.visible_bases():
+		assert_false(str(b).begins_with("ring") or str(b).begins_with("neck"), str(b))

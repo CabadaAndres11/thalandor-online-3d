@@ -1160,6 +1160,7 @@
 			"tier": 1,
 			"template": "neck",
 			"look": [],
+			"model": ["jewel_neck_t1"],
 			"name": "ITEM_NECK_T1"
 		},
 		"ring_t1": {
@@ -1168,6 +1169,7 @@
 			"tier": 1,
 			"template": "ring",
 			"look": [],
+			"model": ["jewel_ring_t1"],
 			"name": "ITEM_RING_T1"
 		},
 		"wood_sword": {
@@ -1759,6 +1761,7 @@
 			"tier": 2,
 			"template": "neck",
 			"look": [],
+			"model": ["jewel_neck_t2"],
 			"name": "ITEM_NECK_T2"
 		},
 		"ring_t2": {
@@ -1767,6 +1770,7 @@
 			"tier": 2,
 			"template": "ring",
 			"look": [],
+			"model": ["jewel_ring_t2"],
 			"name": "ITEM_RING_T2"
 		},
 		"warrior_head_t3": {
@@ -2337,6 +2341,7 @@
 			"tier": 3,
 			"template": "neck",
 			"look": [],
+			"model": ["jewel_neck_t3"],
 			"name": "ITEM_NECK_T3"
 		},
 		"ring_t3": {
@@ -2345,6 +2350,7 @@
 			"tier": 3,
 			"template": "ring",
 			"look": [],
+			"model": ["jewel_ring_t3"],
 			"name": "ITEM_RING_T3"
 		},
 		"unique_acolyte": {

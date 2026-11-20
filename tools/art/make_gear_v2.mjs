@@ -3,13 +3,14 @@
 //   (assets/items/vox_v2 and data/items/gear_pieces_v2.json)
 // Same ids, parts, tags and hides as data/items/gear_pieces.json (copied from it); every
 // piece is drawn in its part's pivot frame, so its offset is the shape's lowest corner.
-// bases.json does not change: the looks keep the same ids.
+// bases.json keeps the looks' ids; jewelry (never worn) is named by its bases' "model".
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { write } from "./vox.mjs";
 import { armorV2, BODY } from "./gear_armor_v2.mjs";
 import { carve } from "./sculpt.mjs";
 import { gearWeaponsV2 as weapons } from "./gear_weapons_v2.mjs";
+import { jewelryV2 } from "./gear_jewelry_v2.mjs";
 
 // The body part each piece hangs from (pieces never sit inside it).
 const PART_BODY = { head: "head", torso: "torso", hips: "hips", arm_left: "arm", arm_right: "arm", forearm_left: "fore",
@@ -22,7 +23,8 @@ export function gearV2() {
     const part = BODY[PART_BODY[p.part]];
     if (part) carve(p.shape, (c) => { for (const [x, y, z] of part.cells.values()) c.put(x, y, z, 0); });
   }
-  return all;
+  // Jewelry is never worn (only icons and loot use it), so it is not carved.
+  return { ...all, ...jewelryV2() };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

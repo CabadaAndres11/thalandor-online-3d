@@ -110,11 +110,13 @@ func _process(_delta: float) -> void:
 	_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 
 
-## The pieces an icon shows: the base's look, each in its v2 version when it has one.
+## The pieces an icon shows: the base's look plus its "model" (pieces never worn, such as
+## jewelry), each in its v2 version when it has one.
 static func icon_pieces(base_id: String) -> Array[Dictionary]:
 	var cat := CharacterCatalog.load_default()
 	var out: Array[Dictionary] = []
-	for id: String in ItemDB.load_default().base(base_id).get("look", []):
+	var b := ItemDB.load_default().base(base_id)
+	for id: String in (b.get("look", []) as Array) + (b.get("model", []) as Array):
 		var p := cat.piece_v2(id)
 		if p.is_empty():
 			p = cat.piece(id)

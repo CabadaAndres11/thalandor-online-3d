@@ -3153,5 +3153,71 @@
 		],
 		"tag": "weapon",
 		"hides": []
+	},
+	"jewel_ring_t1": {
+		"file": "res://assets/items/vox_v2/jewel_ring_t1.vox",
+		"part": "hand_right",
+		"offset": [
+			-6,
+			-6,
+			0
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"jewel_neck_t1": {
+		"file": "res://assets/items/vox_v2/jewel_neck_t1.vox",
+		"part": "torso",
+		"offset": [
+			-8,
+			-1,
+			0
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"jewel_ring_t2": {
+		"file": "res://assets/items/vox_v2/jewel_ring_t2.vox",
+		"part": "hand_right",
+		"offset": [
+			-8,
+			-8,
+			0
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"jewel_neck_t2": {
+		"file": "res://assets/items/vox_v2/jewel_neck_t2.vox",
+		"part": "torso",
+		"offset": [
+			-9,
+			-2,
+			-1
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"jewel_ring_t3": {
+		"file": "res://assets/items/vox_v2/jewel_ring_t3.vox",
+		"part": "hand_right",
+		"offset": [
+			-9,
+			-9,
+			0
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"jewel_neck_t3": {
+		"file": "res://assets/items/vox_v2/jewel_neck_t3.vox",
+		"part": "torso",
+		"offset": [
+			-10,
+			-4,
+			-1
+		],
+		"tag": "gear",
+		"hides": []
 	}
 }
