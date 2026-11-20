@@ -95,7 +95,7 @@ export function headV2() {
 // Torso, pivot at the waist; neck up to the head pivot (local y 28).
 export function torsoV2() {
   const t = new Shape();
-  ellipsoid(t, [-0.5, 5, -0.5], [10.8, 12.5, 6.8], P); // waist and belly, broad down to the belt
+  ellipsoid(t, [-0.5, 5, -1], [9.2, 14, 6.1], P); // waist and belly: straight sides, flat front, down to the belt
   ellipsoid(t, [-0.5, 17, 0], [11.2, 9, 7.2], P); // chest and ribs
   for (const x of [-9.5, 8.5]) ellipsoid(t, [x, 22, -0.5], [2.6, 3.0, 4.2], P); // shoulders, gently rounded
   carve(t, (c) => roundBox(c, [-20, 26, -12], [20, 34, 12], 0, 0)); // flat on top of the shoulders

@@ -124,7 +124,7 @@
 		"file": "res://assets/characters/pieces_v2/outfit_warrior.vox",
 		"part": "torso",
 		"offset": [
-			-12,
+			-11,
 			-9,
 			-8
 		],
@@ -168,7 +168,7 @@
 		"file": "res://assets/characters/pieces_v2/outfit_assassin.vox",
 		"part": "torso",
 		"offset": [
-			-12,
+			-11,
 			-13,
 			-8
 		],
@@ -179,7 +179,7 @@
 		"file": "res://assets/characters/pieces_v2/outfit_villager.vox",
 		"part": "torso",
 		"offset": [
-			-12,
+			-10,
 			0,
 			2
 		],

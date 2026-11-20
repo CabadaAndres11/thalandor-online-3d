@@ -55,11 +55,23 @@ const width = (part, y) => {
 };
 
 test("the waist is broad where the torso meets the hips (no wasp waist)", () => {
-  for (let y = 0; y <= 10; y++) assert.ok(width("torso", y) >= 19, `torso y=${y}: ${width("torso", y)}`);
+  for (let y = 0; y <= 10; y++) assert.ok(width("torso", y) >= 18, `torso y=${y}: ${width("torso", y)}`);
   for (let y = -2; y <= 7; y++) assert.ok(width("hips", y) >= 18, `hips y=${y}: ${width("hips", y)}`);
 });
 
 test("the shoulders barely stand out from the chest", () => {
   const chest = width("torso", 18);
   for (let y = 19; y <= 25; y++) assert.ok(width("torso", y) <= chest + 2, `y=${y}: ${width("torso", y)} vs chest ${chest}`);
+});
+
+test("no paunch: the belly is narrower than the chest and not deeper than it", () => {
+  const chest = width("torso", 18);
+  const depth = (y) => {
+    const zs = [...v2.parts.torso.shape.cells.values()].filter((v) => v[1] === y).map((v) => v[2]);
+    return Math.max(...zs) - Math.min(...zs) + 1;
+  };
+  for (let y = 3; y <= 9; y++) {
+    assert.ok(width("torso", y) <= chest - 4, `belly y=${y}: ${width("torso", y)} vs chest ${chest}`);
+    assert.ok(depth(y) <= depth(17) - 2, `belly depth y=${y}: ${depth(y)} vs chest ${depth(17)}`);
+  }
 });
