@@ -10,6 +10,6 @@ void vertex() {
 }
 
 void fragment() {
-	ALBEDO = COLOR.rgb * COLOR.rgb; // sRGB vertex colour to linear (close enough to the exact curve)
+	ALBEDO = mix(pow((COLOR.rgb + vec3(0.055)) * (1.0 / 1.055), vec3(2.4)), COLOR.rgb * (1.0 / 12.92), lessThan(COLOR.rgb, vec3(0.04045))); // the exact sRGB curve, as VoxMesher's material
 	ROUGHNESS = 1.0;
 }

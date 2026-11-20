@@ -987,12 +987,24 @@ func _update_cloth() -> void:
 			# A spring pulls the drape towards how fast the body moves (back when running),
 			# with a little sway at rest.
 			var target := clampf(_speed / 4.0, 0.0, 1.0) * 0.6 + sin(_time * 1.7) * 0.03
-			if _dt > 0.0:
-				c.drape_v = float(c.drape_v) + ((target - float(c.drape)) * 40.0 - float(c.drape_v) * 9.0) * _dt
-				c.drape = float(c.drape) + float(c.drape_v) * _dt
+			# Small steps keep the spring stable through a long frame (a load, a shader compile).
+			var left := _dt
+			while left > 0.0:
+				var dt := minf(left, 1.0 / 60.0)
+				left -= dt
+				c.drape_v = float(c.drape_v) + ((target - float(c.drape)) * 40.0 - float(c.drape_v) * 9.0) * dt
+				c.drape = clampf(float(c.drape) + float(c.drape_v) * dt, -0.2, 1.0)
 			node.set_instance_shader_parameter("anchor", c.anchor)
 			node.set_instance_shader_parameter("span", c.span)
 			node.set_instance_shader_parameter("drape", c.drape)
+
+
+## The flash over a cloth piece when it is hit: white, fading with the flash's alpha, bent like the
+## cloth (a plain overlay would show the robe rigid through the legs).
+static func cloth_flash_material() -> ShaderMaterial:
+	var m := ShaderMaterial.new()
+	m.shader = load("res://game/characters/cloth_flash.gdshader")
+	return m
 
 
 ## The cloth shader's deformation on the CPU (the same maths as cloth.gdshaderinc).

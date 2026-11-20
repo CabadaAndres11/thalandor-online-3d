@@ -51,7 +51,9 @@ actualizado: 2026-11-20
 
 ## Durante la implementación
 - El modo de cada pieza se decide al montarla. Es falda si va en la parte `hips` o si es del `torso` y baja más de 6 vóxeles por debajo de la cintura. Es capa si su id termina en `_cape` o es `hood_archer`, `hood_cleric` o `vaelthar_mane`.
-- El color de vértice se pasa de sRGB a lineal con el cuadrado, una aproximación a la curva exacta.
+- El color de vértice se pasa de sRGB a lineal con la curva exacta, como el material vóxel, para que la tela no salga más clara.
+- El muelle de las capas avanza en pasos de 1/60 s y su ángulo se limita, así que un fotograma largo no las dispara.
+- El destello de los golpes sobre la tela usa su propio shader, deformado igual que la tela.
 - Captura: `docs/Adjuntos/Plan 6.4.3/ropa.png` (conjunto `cloth`).
 
 ---

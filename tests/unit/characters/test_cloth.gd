@@ -67,3 +67,23 @@ func test_cult_robes_follow_the_legs_too() -> void:
 	a.setup(MonsterDB.load_default().get_type("cultist"))
 	var rig := a.body.get_child(0) as HumanRig
 	assert_eq(rig.cloth_mode("cult_robe"), HumanRig.CLOTH_SKIRT)
+
+
+func test_a_long_frame_does_not_fling_the_cape() -> void:
+	var rig := _rig("warrior", _gear("sword_t1", "warrior_chest_t3"))
+	rig.set_moving_speed(5.0, 5.0)
+	for i in 6:
+		rig.update(0.25) # a hitch (a load, a shader compile)
+		var drape := float(rig.cloth_params("warrior_chest_t3_cape").drape)
+		assert_between(drape, -0.2, 1.0, "frame %d: the cape stays sane (%f)" % [i, drape])
+
+
+func test_the_hit_flash_bends_with_the_cloth() -> void:
+	var a := MonsterAvatar.new()
+	add_child_autofree(a)
+	a.setup(MonsterDB.load_default().get_type("cultist"))
+	a.react_to_hit()
+	var rig := a.body.get_child(0) as HumanRig
+	var robe := rig.piece_node("cult_robe")
+	assert_true(robe.material_overlay is ShaderMaterial, "the flash on a robe is cloth too")
+	assert_false(rig.piece_node("cult_hood").material_overlay is ShaderMaterial, "a rigid piece keeps the plain flash")

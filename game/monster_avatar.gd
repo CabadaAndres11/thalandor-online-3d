@@ -237,10 +237,16 @@ func react_to_hit(from: Variant = null) -> void:
 	overlay.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	overlay.albedo_color = Color(1, 1, 1, 0.85)
 	var meshes := body.find_children("*", "GeometryInstance3D", true, false)
+	var cloth_flash := HumanRig.cloth_flash_material() # robes and capes flash bent like the cloth
+	cloth_flash.set_shader_parameter("flash", Color(1, 1, 1, 0.85))
 	for n: Node in meshes:
-		(n as GeometryInstance3D).material_overlay = overlay
+		var cloth := n is MeshInstance3D and (n as MeshInstance3D).get_surface_override_material(0) is ShaderMaterial
+		(n as GeometryInstance3D).material_overlay = cloth_flash if cloth else overlay
 	var flash := create_tween()
+	flash.set_parallel()
 	flash.tween_property(overlay, "albedo_color:a", 0.0, HIT_FLASH_S)
+	flash.tween_property(cloth_flash, "shader_parameter/flash:a", 0.0, HIT_FLASH_S)
+	flash.chain()
 	flash.tween_callback(func() -> void:
 		for n: Node in meshes:
 			if is_instance_valid(n):
