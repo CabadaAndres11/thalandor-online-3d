@@ -63,6 +63,14 @@ var _beams: Dictionary = {} # caster id -> {node, t}
 var _snow_last: Dictionary = {} # entity key -> msec of its last snow burst
 var _shell_last: Dictionary = {} # entity id -> msec of its last ice shell
 var _trap_nodes: Dictionary = {} # trap id -> {node, light, armed_tick}
+## The cleric's holy effects: {style, node, t, life, follow?, from?, to?, rise?}.
+var _holy: Array = []
+## A cleric's targeted cast waiting for its first heal/status/revive event to know whom it
+## touched: {style, aim, t}; after HOLY_WAIT s it shows at the aim instead.
+var _holy_pending: Dictionary = {}
+const HOLY_WAIT := 0.15
+## Holy styles drawn on whoever the cast touched (the rest are drawn on the cleric at once).
+const HOLY_TARGETED := ["cross", "wings", "angel", "column"]
 
 
 func setup(position_of: Callable, tick_now: Callable, abilities: AbilityDB, tick_rate: int) -> void:
@@ -98,6 +106,7 @@ func handle(ev: Array) -> void:
 			if ev.size() > 3 and ev[3] is Vector3:
 				_cast_aim[int(ev[1])] = ev[3]
 			_cast_flash(ev)
+			_holy_cast(ev)
 		"channel":
 			_start_charge(int(ev[1]), str(ev[2]), float(ev[3]))
 		"channel_end":
@@ -119,6 +128,8 @@ func handle(ev: Array) -> void:
 			_area_flash(ev[2], float(ev[3]), str(ev[4]) if ev.size() > 4 else "", int(ev[1]),
 				(int(ev[5]) * float(ev[6])) if ev.size() > 6 else 0.0, ev[7] if ev.size() > 7 else [])
 		"status":
+			if str(ev[2]) in ["shield", "hot"]: # what a cleric's shield or renew puts on
+				_holy_touched(int(ev[1]))
 			if str(ev[2]) == "shield":
 				_add_shield(int(ev[1]), int(ev[3]))
 			elif str(ev[2]) == "root":
@@ -135,7 +146,10 @@ func handle(ev: Array) -> void:
 				_number(int(ev[1]), "%d" % roundi(float(ev[2])), COLOR_CRIT, 64)
 			else:
 				_number(int(ev[1]), "%d" % roundi(float(ev[2])), COLOR_HIT, 44)
+		"revived":
+			_holy_touched(int(ev[1]))
 		"heal":
+			_holy_touched(int(ev[1]))
 			if float(ev[2]) >= 0.5:
 				_number(int(ev[1]), "+%d" % roundi(float(ev[2])), COLOR_HEAL, 44)
 		"dodge":
@@ -151,6 +165,7 @@ func level_up(id: int, level: int) -> void:
 
 
 func advance(dt: float) -> void:
+	_advance_holy(dt)
 	for pid: int in _projectiles.keys():
 		var p: Dictionary = _projectiles[pid]
 		p.t += dt
@@ -161,6 +176,8 @@ func advance(dt: float) -> void:
 			(p.node as Node3D).position = p.from + p.dir * travelled
 			if p.spin != null:
 				(p.spin as Node3D).rotation.x += dt * 22.0
+			if p.get("spin_z") != null:
+				(p.spin_z as Node3D).rotation.z += dt * 9.0
 			if p.element == "frost":
 				while travelled >= p.next_spike and p.next_spike < p.range:
 					_ice_spikes_at(p, p.next_spike)
@@ -230,6 +247,14 @@ func advance(dt: float) -> void:
 
 func projectile_count() -> int:
 	return _projectiles.size()
+
+
+func projectile_node(pid: int) -> Node3D:
+	return _projectiles[pid].node if _projectiles.has(pid) else null
+
+
+func holy_effects() -> Array:
+	return _holy
 
 
 func projectile_position(pid: int) -> Vector3:
@@ -381,6 +406,8 @@ func _add_projectile(ev: Array) -> void:
 	else:
 		var body := _voxel("body_" + element, func() -> Dictionary: return VoxelFx.body_for(element, color), true, 1.0)
 		node.add_child(body)
+		if element == "holy":
+			body.name = "HolyCross" # a golden cross turning as it flies
 		var light := OmniLight3D.new()
 		light.light_color = color
 		light.light_energy = 1.4
@@ -393,7 +420,8 @@ func _add_projectile(ev: Array) -> void:
 	if dir2.length() > 0.001:
 		node.rotation.y = atan2(dir2.x, dir2.y)
 	_projectiles[pid] = {"node": node, "from": start, "dir": Vector3(dir2.x, 0, dir2.y),
-		"speed": float(ev[6]), "range": float(ev[7]), "t": 0.0, "element": element, "color": color, "next_spike": 0.6, "spin": spin}
+		"speed": float(ev[6]), "range": float(ev[7]), "t": 0.0, "element": element, "color": color, "next_spike": 0.6, "spin": spin,
+		"spin_z": node.find_child("HolyCross", false, false)}
 
 
 func _remove_projectile(pid: int) -> void:
@@ -1004,7 +1032,7 @@ func _ice_block(id: int, end_tick: int) -> void:
 
 ## What an area leaves on the ground: arcane a pentagram, fire burning ground, frost ice spikes.
 func _ground_mark(area_id: int, pos: Vector3, radius: float, element: String, still_going_s: float = 0.0, wall: Array = []) -> void:
-	if not element in ["arcane", "fire", "frost"]:
+	if not element in ["arcane", "fire", "frost", "holy"]:
 		return
 	var life_left := maxf(still_going_s + MARK_LINGER, MARK_MIN_LIFE) # only while the area still does something
 	if _marks.has(area_id) and is_instance_valid(_marks[area_id].node) and _marks[area_id] in _decor:
@@ -1021,6 +1049,10 @@ func _ground_mark(area_id: int, pos: Vector3, radius: float, element: String, st
 			var star := _voxel("penta_%s" % r, func() -> Dictionary: return VoxelFx.pentagram(r), true, 0.85, 0.12)
 			holder.add_child(star)
 			entry = _add_decor(holder, life, 0.25, Vector3.ONE, 0.7, 0.85, false, 0.5)
+		"holy":
+			var circle := _voxel("holy_circle_%s" % r, func() -> Dictionary: return VoxelFx.holy_circle(r), true, 0.85, 0.12)
+			holder.add_child(circle)
+			entry = _add_decor(holder, life, 0.25, Vector3.ONE, 0.7, 0.85, false, 0.4)
 		"fire":
 			var flames: MeshInstance3D
 			if wall.is_empty():
@@ -1275,3 +1307,144 @@ func _fade_ramp(color: Color) -> Gradient:
 	g.set_color(0, Color(color, 1.0))
 	g.set_color(1, Color(color, 0.0))
 	return g
+
+
+# --- Holy (cleric) ------------------------------------------------------------------
+
+## A cleric's cast with "fx_holy": targeted styles wait for the event that says whom it
+## touched; the others show on the cleric now (the nova, the hymn, the crusader's blow).
+func _holy_cast(ev: Array) -> void:
+	if _abilities == null or not _abilities.has(str(ev[2])):
+		return
+	var style := str(_abilities.get_ability(str(ev[2])).get("fx_holy", ""))
+	if style == "":
+		return
+	var caster := int(ev[1])
+	var aim: Variant = ev[3] if ev.size() > 3 and ev[3] is Vector3 else _position_of.call(caster)
+	if style in HOLY_TARGETED:
+		_holy_pending[caster] = {"style": style, "aim": aim, "t": 0.0}
+		return
+	var at: Variant = _position_of.call(caster)
+	if at != null:
+		_holy_spawn(style, at, caster, aim)
+
+
+## The first heal, status or revive after a targeted holy cast shows it on that entity.
+func _holy_touched(id: int) -> void:
+	if _holy_pending.is_empty():
+		return
+	var caster: int = _holy_pending.keys()[0]
+	var pend: Dictionary = _holy_pending[caster]
+	_holy_pending.erase(caster)
+	var at: Variant = _position_of.call(id)
+	if at == null:
+		at = pend.aim
+	if at != null:
+		_holy_spawn(str(pend.style), at, id, pend.aim)
+
+
+func _holy_spawn(style: String, at: Vector3, who: int, aim: Variant) -> void:
+	var node := Node3D.new()
+	var h := {"style": style, "node": node, "t": 0.0, "life": 1.2, "follow": who, "lift": 1.0}
+	match style:
+		"cross": # rises over the healed one, turning
+			node.add_child(_voxel("holy_cross", func() -> Dictionary: return VoxelFx.holy_cross(), false, 1.0, 0.09))
+			h.lift = 2.2 # above the head
+			h.rise = 0.8
+			h.spin = 2.0
+		"wings": # wrap the shielded one for a moment
+			node.add_child(_voxel("angel_wings", func() -> Dictionary: return VoxelFx.angel_wings(), false, 0.85, 0.06))
+			h.life = 1.4
+			h.lift = 0.9
+			h.grow = 0.25
+		"angel": # comes down onto the fallen, in a column of light
+			node.add_child(_voxel("angel", func() -> Dictionary: return VoxelFx.angel(), false, 0.95, 0.07))
+			h.life = 1.8
+			h.from = 4.0
+			h.to = 1.0
+			h.erase("follow")
+			var column := Node3D.new()
+			column.add_child(_voxel("light_column", func() -> Dictionary: return VoxelFx.light_column(), true, 0.35, 0.12))
+			column.position = at
+			add_child(column)
+			_holy.append({"style": "angel_light", "node": column, "t": 0.0, "life": 1.8, "lift": 0.0})
+		"column":
+			node.add_child(_voxel("light_column", func() -> Dictionary: return VoxelFx.light_column(), true, 0.6, 0.12))
+			h.life = 1.0
+			h.lift = 0.0
+			h.grow = 0.2
+			h.erase("follow")
+		"nova": # a ring of crosses flying out from the cleric
+			for i in 8:
+				var c := _voxel("holy_cross_s", func() -> Dictionary: return VoxelFx.holy_cross(7), false, 1.0, 0.08)
+				c.rotation.y = TAU * float(i) / 8.0
+				node.add_child(c)
+			h.life = 0.9
+			h.lift = 1.2
+			h.ring = 4.0
+			h.erase("follow")
+		"hymn": # wings and a halo over the singing cleric
+			var wings := _voxel("angel_wings", func() -> Dictionary: return VoxelFx.angel_wings(), false, 0.8, 0.07)
+			wings.position = Vector3(0, 0.2, -0.25)
+			node.add_child(wings)
+			var halo := _voxel("halo", func() -> Dictionary: return VoxelFx.halo(6), true, 0.95, 0.05)
+			halo.position.y = 0.95
+			node.add_child(halo)
+			h.life = 2.0
+			h.grow = 0.3
+		"strike": # a cross flashing on the blow, in front of the templar
+			node.add_child(_voxel("holy_cross", func() -> Dictionary: return VoxelFx.holy_cross(), false, 1.0, 0.09))
+			h.life = 0.5
+			h.grow = 0.12
+			h.erase("follow")
+			if aim is Vector3:
+				var to := Vector3((aim as Vector3).x - at.x, 0, (aim as Vector3).z - at.z)
+				if to.length() > 0.01:
+					node.rotation.y = atan2(to.x, to.z)
+					at += to.normalized() * 1.2
+	node.position = at + Vector3(0, float(h.get("from", h.lift)), 0)
+	h.base = node.position
+	if h.has("grow"):
+		node.scale = Vector3.ONE * 0.05
+	add_child(node)
+	_holy.append(h)
+
+
+func _advance_holy(dt: float) -> void:
+	for caster: int in _holy_pending.keys():
+		var pend: Dictionary = _holy_pending[caster]
+		pend.t += dt
+		if pend.t >= HOLY_WAIT: # nothing said whom it touched (a cleanse): show it at the aim
+			_holy_pending.erase(caster)
+			if pend.aim != null:
+				_holy_spawn(str(pend.style), pend.aim, caster, pend.aim)
+	for h: Dictionary in _holy.duplicate():
+		h.t += dt
+		var node: Node3D = h.node
+		if h.t >= h.life or not is_instance_valid(node):
+			if is_instance_valid(node):
+				node.queue_free()
+			_holy.erase(h)
+			continue
+		var k: float = h.t / h.life
+		if h.has("base"):
+			node.position = h.base
+		if h.has("follow"):
+			var fp: Variant = _position_of.call(int(h.follow))
+			if fp != null:
+				node.position = (fp as Vector3) + Vector3(0, h.lift, 0)
+		if h.has("rise"):
+			node.position.y += float(h.rise) * k
+		if h.has("from"):
+			var e := 1.0 - pow(1.0 - minf(k * 1.6, 1.0), 2.0)
+			node.position.y = (h.base as Vector3).y - float(h.from) + lerpf(float(h.from), float(h.to), e)
+		if h.has("spin"):
+			node.rotation.y += float(h.spin) * dt
+		if h.has("grow"):
+			node.scale = Vector3.ONE * clampf(h.t / float(h.grow), 0.05, 1.0)
+		if h.has("ring"):
+			for c: Node3D in node.get_children():
+				c.position = Vector3(sin(c.rotation.y), 0.0, cos(c.rotation.y)) * float(h.ring) * k
+		var remaining: float = h.life - h.t
+		if remaining < 0.35:
+			_set_decor_alpha(node, remaining / 0.35)

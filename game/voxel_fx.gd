@@ -1,7 +1,7 @@
 class_name VoxelFx
 extends RefCounted
 ## Voxel models for spell effects, built in code: an arcane prism, a fire orb, ice crystals
-## and spikes, burning ground and a pentagram. A model is a Dictionary of cells
+## and spikes, burning ground, a pentagram and the cleric's crosses, wings and angel. A model is a Dictionary of cells
 ## (Vector3i -> Color) in cube units, merged into one mesh with vertex colours. Models face
 ## +Z (forward) with +Y up.
 
@@ -440,4 +440,115 @@ static func body_for(element: String, color: Color) -> Dictionary:
 			return fire_comet()
 		"frost":
 			return ice_crystal()
+		"holy":
+			return holy_cross(7)
 	return orb(color)
+
+
+# --- Holy (the cleric): gold and white crosses, wings, halos and an angel -------------
+
+const HOLY_GOLD := Color("#e3a623")
+const HOLY_LIGHT := Color("#fff4c2")
+const HOLY_WHITE := Color("#fbfbf4")
+
+
+## An upright cross in the XY plane (`h` cubes tall), two cubes deep, a pale core and gold rim.
+static func holy_cross(h: int = 9) -> Dictionary:
+	var cells := {}
+	var arm_y := int(h * 0.62)
+	var half := int(h * 0.3)
+	for y in h:
+		for x in [-1, 0, 1]:
+			for z in [0, 1]:
+				cells[Vector3i(x, y, z)] = HOLY_LIGHT if x == 0 and z == 0 else HOLY_GOLD
+	for x in range(-half - 1, half + 2):
+		for y in [arm_y - 1, arm_y, arm_y + 1]:
+			for z in [0, 1]:
+				cells[Vector3i(x, y, z)] = HOLY_LIGHT if y == arm_y and z == 0 and absi(x) <= half else HOLY_GOLD
+	# Centred on its crossing, so it turns about its heart.
+	var out := {}
+	for c: Vector3i in cells:
+		out[c - Vector3i(0, arm_y, 0)] = cells[c]
+	return out
+
+
+## Two spread wings of layered feathers, white with gold tips, behind the body (in XY).
+static func angel_wings() -> Dictionary:
+	var cells := {}
+	for side: int in [-1, 1]:
+		for row in 6: # each row a feather, longer toward the top
+			var length := 4 + row * 2
+			var y0 := 2 + row * 2
+			for k in length:
+				var x := side * (2 + k)
+				var y := y0 - int(k * 0.35) - (row % 2)
+				var col := HOLY_GOLD if k >= length - 2 else HOLY_WHITE
+				cells[Vector3i(x, y, 0)] = col
+				cells[Vector3i(x, y - 1, 0)] = HOLY_WHITE.darkened(0.05)
+				if row >= 3:
+					cells[Vector3i(x, y + 1, -1)] = HOLY_WHITE
+	return cells
+
+
+## A flat ring of light (radius in cubes) lying in XZ.
+static func halo(r: int = 6) -> Dictionary:
+	var cells := {}
+	var steps := maxi(int(TAU * r), 12)
+	for i in steps:
+		var a := TAU * float(i) / float(steps)
+		cells[Vector3i(roundi(cos(a) * r), 0, roundi(sin(a) * r))] = HOLY_GOLD
+		cells[Vector3i(roundi(cos(a) * (r - 1)), 0, roundi(sin(a) * (r - 1)))] = HOLY_LIGHT
+	return cells
+
+
+## A small angel: a flowing robe, head, halo and spread wings, arms open.
+static func angel() -> Dictionary:
+	var cells := {}
+	for y in 16: # the robe widens toward the hem
+		var w := 1 + int((15 - y) * 0.28)
+		for x in range(-w, w + 1):
+			for z in range(-1, 2):
+				cells[Vector3i(x, y, z)] = HOLY_WHITE if (x + y) % 5 != 0 else HOLY_LIGHT
+	for x in range(-2, 3): # head
+		for y in range(16, 20):
+			for z in range(-1, 2):
+				cells[Vector3i(x, y, z)] = HOLY_LIGHT
+	for c: Vector3i in halo(3):
+		cells[c + Vector3i(0, 21, 0)] = HOLY_GOLD
+	for c: Vector3i in angel_wings():
+		cells[c + Vector3i(0, 8, -2)] = angel_wings()[c]
+	for side: int in [-1, 1]: # open arms
+		for k in 5:
+			cells[Vector3i(side * (2 + k), 13 - int(k * 0.4), 1)] = HOLY_WHITE
+	return cells
+
+
+## A circle on the ground with a cross inside (consecrated ground, healing circles).
+static func holy_circle(radius_m: float, cube: float = 0.12) -> Dictionary:
+	var cells := {}
+	var r := radius_m * 0.92 / cube
+	var steps := maxi(int(TAU * r / 0.8), 12)
+	for i in steps:
+		var a := TAU * float(i) / float(steps)
+		cells[Vector3i(roundi(cos(a) * r), 0, roundi(sin(a) * r))] = HOLY_GOLD
+		cells[Vector3i(roundi(cos(a) * (r - 1.5)), 0, roundi(sin(a) * (r - 1.5)))] = HOLY_LIGHT
+	var arm := int(r * 0.7)
+	for k in range(-arm, arm + 1):
+		for w in [-1, 0, 1]:
+			cells[Vector3i(k, 0, w - int(r * 0.15))] = HOLY_LIGHT if w == 0 else HOLY_GOLD
+			cells[Vector3i(w, 0, k)] = HOLY_LIGHT if w == 0 else HOLY_GOLD
+	return cells
+
+
+## A column of light cubes, thinning and fading toward the top.
+static func light_column(height: int = 30, r: float = 2.5) -> Dictionary:
+	var cells := {}
+	var ri := int(ceil(r))
+	for y in height:
+		var rr := r * (1.0 - float(y) / float(height) * 0.5)
+		for x in range(-ri, ri + 1):
+			for z in range(-ri, ri + 1):
+				var d := Vector2(x, z).length()
+				if d <= rr and (d >= rr - 1.0 or (x + y + z) % 4 == 0):
+					cells[Vector3i(x, y, z)] = HOLY_LIGHT if d < rr - 0.8 else HOLY_GOLD
+	return cells

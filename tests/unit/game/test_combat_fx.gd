@@ -425,3 +425,89 @@ func test_a_teleport_leaves_a_streak_and_flashes() -> void:
 	assert_gt(fx.decor_count(), 8, "motes along the way and two flashes")
 	fx.advance(1.5)
 	assert_eq(fx.decor_count(), 0)
+
+
+# --- Cleric: golden crosses, wings and angels ------------------------------------------
+
+func _holy_at(style: String) -> Variant:
+	for h: Dictionary in fx.holy_effects():
+		if h.style == style:
+			return (h.node as Node3D).position
+	return null
+
+
+func test_smite_flies_as_a_spinning_golden_cross() -> void:
+	fx.handle(["projectile", 7, 1, "cleric_smite", Vector3(5, 0, 5), Vector2(1, 0), 20.0, 20.0])
+	var cross := fx.projectile_node(7).find_child("HolyCross", true, false) as Node3D
+	assert_not_null(cross)
+	var r := cross.rotation
+	fx.advance(0.05)
+	assert_ne(cross.rotation, r, "it turns")
+
+
+func test_heal_raises_a_cross_over_the_healed_ally() -> void:
+	fx.handle(["cast", 1, "cleric_heal", Vector3(8, 0, 5), 1.5])
+	fx.handle(["heal", 1000, 40.0])
+	var at: Variant = _holy_at("cross")
+	assert_not_null(at)
+	assert_almost_eq((at as Vector3).x, 8.0, 0.01, "over the ally, not the cleric")
+	fx.advance(0.3)
+	assert_gt((_holy_at("cross") as Vector3).y, (at as Vector3).y, "it rises")
+
+
+func test_renew_also_raises_a_cross() -> void:
+	fx.handle(["cast", 1, "cleric_renew", Vector3(8, 0, 5), 1.5])
+	fx.handle(["status", 1000, "hot", latest_tick + 90])
+	assert_not_null(_holy_at("cross"))
+
+
+func test_shield_wraps_the_target_in_wings() -> void:
+	fx.handle(["cast", 1, "cleric_shield", Vector3(8, 0, 5), 10.0])
+	fx.handle(["status", 1000, "shield", latest_tick + 120])
+	assert_almost_eq((_holy_at("wings") as Vector3).x, 8.0, 0.01)
+
+
+func test_resurrection_sends_down_an_angel() -> void:
+	fx.handle(["cast", 1, "cleric_resurrection", Vector3(8, 0, 5), 60.0])
+	fx.handle(["revived", 1000, 1])
+	var at: Variant = _holy_at("angel")
+	assert_not_null(at)
+	fx.advance(0.4)
+	assert_lt((_holy_at("angel") as Vector3).y, (at as Vector3).y, "it comes down")
+
+
+func test_holy_nova_throws_out_a_ring_of_crosses() -> void:
+	fx.handle(["cast", 1, "cleric_holy_nova", Vector3(5, 0, 5), 8.0])
+	assert_almost_eq((_holy_at("nova") as Vector3).x, 5.0, 0.01, "around the cleric")
+
+
+func test_purify_without_an_event_falls_back_to_the_aim() -> void:
+	fx.handle(["cast", 1, "cleric_purify", Vector3(7, 0, 6), 10.0])
+	fx.advance(0.2)
+	assert_almost_eq((_holy_at("column") as Vector3).x, 7.0, 0.01)
+
+
+func test_divine_hymn_gives_the_cleric_wings_and_a_halo() -> void:
+	fx.handle(["cast", 1, "cleric_divine_hymn", Vector3(5, 0, 5), 60.0])
+	assert_not_null(_holy_at("hymn"))
+
+
+func test_crusader_strike_flashes_a_cross_on_the_blow() -> void:
+	fx.handle(["cast", 1, "cleric_crusader_strike", Vector3(8, 0, 5), 4.0])
+	assert_not_null(_holy_at("strike"))
+
+
+func test_holy_areas_draw_a_circle_with_a_cross() -> void:
+	fx.handle(["area", 31, Vector3(6, 0, 6), 4.0, "cleric_consecration", 5, 1.0])
+	assert_eq(fx.mark_count(), 1)
+
+
+func test_holy_effects_fade_away() -> void:
+	fx.handle(["cast", 1, "cleric_holy_nova", Vector3(5, 0, 5), 8.0])
+	fx.advance(5.0)
+	assert_eq(fx.holy_effects().size(), 0)
+
+
+func test_holy_voxel_models_have_cubes() -> void:
+	for cells: Dictionary in [VoxelFx.holy_cross(), VoxelFx.angel_wings(), VoxelFx.halo(6), VoxelFx.angel(), VoxelFx.holy_circle(3.0)]:
+		assert_gt(cells.size(), 20)
