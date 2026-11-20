@@ -20,6 +20,7 @@ Cada plan de la [[14 Hoja de ruta]] tiene aquí su **spec** (diseño acordado) y
 | 6.2 · Humanoide y piezas (vóxel 2×) | [[Plan 6.2 — Humanoide y piezas a vóxel 2× (spec)\|Spec]] | [[Plan 6.2 — Humanoide y piezas a vóxel 2× (plan)\|Plan]] | Hecho (0.9.0, pendiente de tu prueba de juego) |
 | 6.3 · Equipo (vóxel 2×) | [[Plan 6.3 — Equipo a vóxel 2× (spec)\|Spec]] | [[Plan 6.3 — Equipo a vóxel 2× (plan)\|Plan]] | Hecho (0.9.0, pendiente de tu prueba de juego) |
 | 6.3.1 · Correcciones de la prueba 0.9.0 ([[Correcciones de la prueba 0.9.0\|lista]]) | [[Plan 6.3.1 — Correcciones de la prueba 0.9.0 (spec)\|Spec]] | [[Plan 6.3.1 — Correcciones de la prueba 0.9.0 (plan)\|Plan]] | Hecho (0.9.1, pendiente de tu prueba de juego) |
+| Correcciones de la prueba 0.9.1 | — | [[Correcciones de la prueba 0.9.1\|Lista]] | Pendiente (antes de la 6.4) |
 | 6.4 · Monstruos, PNJ y ropa que sigue al cuerpo | — | — | Pendiente |
 | 7 · Identidad y creación de personaje | — | — | Pendiente |
 | 8 · Mundo y misiones | — | — | Pendiente |
