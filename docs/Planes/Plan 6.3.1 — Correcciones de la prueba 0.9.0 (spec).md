@@ -2,7 +2,7 @@
 tags: [plan, spec]
 plan: 6.3.1
 fecha: 2026-11-20
-estado: diseñado
+estado: implementado
 actualizado: 2026-11-20
 ---
 # Plan 6.3.1 — Correcciones de la prueba 0.9.0: diseño
@@ -83,6 +83,11 @@ Todas son decisiones de Claude, pendientes de tu visto bueno:
 - el combo solo cambia `melee` y `heavy`;
 - un saquito para las pociones en el suelo;
 - 0.9.1.
+
+## Durante la implementación
+- Las estelas de los golpes buscaban solo piezas `weapon_`: también aceptan las del equipo (`w_`).
+- Si el mango queda fuera del alcance del brazo izquierdo, el derecho se cierra hacia el pecho hasta alcanzarlo.
+- Las cruces, alas y el ángel se dibujan opacos en dorado, para que se lean de día; la columna y el círculo brillan.
 
 ---
 ← [[Planes]]

@@ -2,7 +2,7 @@
 tags: [plan]
 plan: 6.3.1
 fecha: 2026-11-20
-estado: en curso
+estado: implementado
 actualizado: 2026-11-20
 ---
 # Plan 6.3.1 — Correcciones de la prueba 0.9.0: plan

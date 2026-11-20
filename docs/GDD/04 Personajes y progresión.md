@@ -83,7 +83,7 @@ Cada nivel sube **+5 a cada uno de los cinco atributos** automáticamente y otor
 | **Agilidad** | Probabilidad de crítico, esquiva, poder de ataque a distancia |
 | **Intelecto** | Poder de hechizos, maná máximo |
 | **Aguante** | Vida máxima |
-| **Espíritu** | Regeneración de vida y maná |
+| **Espíritu** | Regeneración de vida y maná (además, fuera de combate todos recuperan el 2 % de su vida máxima por segundo) |
 
 **Sin nivel máximo:** para que los números no se disparen, las conversiones de atributo a estadística tienen **rendimientos decrecientes** a partir de ciertos umbrales (definidos en `data/balance.json`), y la probabilidad de crítico, esquiva y bloqueo tiene topes.
 

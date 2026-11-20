@@ -1,6 +1,6 @@
 ---
 tags: [gdd]
-actualizado: 2026-11-19
+actualizado: 2026-11-20
 ---
 
 # Registro de cambios del GDD
@@ -45,3 +45,4 @@ Añade una fila por cada cambio de diseño o funcionalidad implementada.
 | 2.23 | 2026-11-18 | **Nuevo enemigo: Cultista Inquisidor**, élite común en las bandas de cultistas. Modelo vóxel de su hoja de referencia: capucha con ojos dorados dentro de una corona solar, hombreras escalonadas, brazales, cinturón de guerra con hebilla y espada ceremonial con filos dorados, que en reposo lleva con la punta hacia el suelo (agarre `blade_down`). Un ataque cuerpo a cuerpo (*Juicio solar*). Los monstruos pueden compartir manada con `pack_group`. Aparece junto a los cultistas de la arena (8, 22). |
 | 2.24 | 2026-11-18 | **Versión 0.6.1 publicada:** Acólito Cultista, Vaelthar, Nhazar, Cultista Inquisidor y el estado *Armadura rota*. Las notas de la 0.6.0 se corrigen con las novedades del Plan 4 y las de la publicación incluyen los controles nuevos (1–9, C, T). |
 | 2.30 | 2026-11-20 | **Identidad visual (sin versión publicada):** logo "Thalandor Online" con el Sol Negro del culto en las O, en la pantalla de inicio; el mismo sol como icono del ejecutable y de la ventana y de la barra de tareas. Ver [[11 Arte y audio]]. |
+| 2.31 | 2026-11-20 | **Versión 0.9.1 ([[Plan 6.3.1 — Correcciones de la prueba 0.9.0 (spec)\|Plan 6.3.1]]), sin publicar:**<br>• objetos caídos visibles en el suelo con su modelo;<br>• fondo rojo en lo que no puedes equipar;<br>• anillos y amuletos con modelo vóxel (solo icono y suelo);<br>• regeneración del 2 % de la vida por segundo fuera de combate;<br>• efectos sagrados del clérigo (cruces, alas, ángel, círculo);<br>• el *Castigo* del templario se ve cuerpo a cuerpo;<br>• combo: tajo a la izquierda, a la derecha y descendente;<br>• venta: precio mínimo de 1 oro, margen de distancia y aviso de rechazo;<br>• las armas a dos manos se agarran con las dos manos. |
