@@ -12,17 +12,21 @@ const SC = 1.25; // heads and blades grow by a quarter; grips stay
 const r = (v) => Math.round(v);
 
 // Steel tones of these weapons (indices 110+, outside the shared v1 palette).
-export const W = { ST_CORE: 110, ST_BODY: 111, ST_EDGE: 112, DK_CORE: 113, DK_BODY: 114, ST_CORE_T: 115, ST_BODY_T: 116, ST_EDGE_T: 117, DK_BODY_T: 118 };
+export const W = { ST_CORE: 110, ST_BODY: 111, ST_EDGE: 112, DK_CORE: 113, DK_BODY: 114, ST_CORE_T: 115, ST_BODY_T: 116, ST_EDGE_T: 117, DK_BODY_T: 118, IRON_T: 119, IRON_D_T: 120, IRON_L_T: 121, DK_CORE_T: 122 };
 export const WPALETTE = {
   ...PALETTE,
   [W.ST_CORE]: "#3f4757", [W.ST_BODY]: "#7a8698", [W.ST_EDGE]: "#e6edf5",
   [W.DK_CORE]: "#1f2330", [W.DK_BODY]: "#424a5e",
   [W.ST_CORE_T]: "#363d4b", [W.ST_BODY_T]: "#6f7b8d", [W.ST_EDGE_T]: "#cfd8e3", [W.DK_BODY_T]: "#394052",
+  [W.IRON_T]: "#80858c", [W.IRON_D_T]: "#53585f", [W.IRON_L_T]: "#a7acb2", [W.DK_CORE_T]: "#191c27",
 };
 // Each tone mixed with a near shade so no face is flat (texture() in gear_weapons_v2.mjs).
 export const WTEX = {
   [W.ST_CORE]: [W.ST_CORE, W.ST_CORE_T, W.ST_CORE], [W.ST_BODY]: [W.ST_BODY, W.ST_BODY_T, W.ST_BODY],
   [W.ST_EDGE]: [W.ST_EDGE, W.ST_EDGE_T, W.ST_EDGE], [W.DK_BODY]: [W.DK_BODY, W.DK_BODY_T, W.DK_BODY],
+  [W.DK_CORE]: [W.DK_CORE, W.DK_CORE_T, W.DK_CORE],
+  // Iron keeps its three tones apart (the shared texture would mix core, body and edge).
+  [C.IRON]: [C.IRON, W.IRON_T, C.IRON], [C.IRON_D]: [C.IRON_D, W.IRON_D_T, C.IRON_D], [C.IRON_L]: [C.IRON_L, W.IRON_L_T, C.IRON_L],
 };
 
 // Materials per tier: tier 1 iron and bronze, tier 2 steel and gold with a red gem, tier 3
@@ -39,7 +43,8 @@ export const BLADE_TONES = (t) => { const m = wmats2(t); return { core: m.core, 
 // The x cells of a blade at a relative distance d (0 middle .. 1 edge) from its spine: four
 // thick along the spine, two out to the edge (a diamond section).
 const thick = (d) => (d < 0.34 ? [-2, -1, 0, 1] : [-1, 0]);
-const toneAt = (d, half, m) => (d * half >= half - 1.01 ? m.edge : d < 0.34 ? m.core : m.body);
+// The outermost voxel on each side is the edge; inside, a dark core along the spine.
+const toneAt = (d, outer, m) => (outer ? m.edge : d < 0.34 ? m.core : m.body);
 
 // A blade along +Z from z0, len long, half-width hw at its widest; width(u) (u 0..1 along
 // it) shapes the outline; the point tapers over the last `tip` share. Runes on tier 3,
@@ -50,9 +55,10 @@ export function bladeV3(s, z0, len, hw, m, width = () => 1, tip = 0.18) {
     const u = (z - z0) / len;
     const k = u > 1 - tip ? Math.max(0.06, (1 - u) / tip) : 1;
     const half = Math.max(0.6, hw * width(u) * k);
-    for (let y = Math.ceil(CY - half); y <= Math.floor(CY + half); y++) {
+    const ylo = Math.ceil(CY - half), yhi = Math.floor(CY + half);
+    for (let y = ylo; y <= yhi; y++) {
       const d = Math.min(1, Math.abs(y - CY) / half);
-      for (const x of thick(d)) s.put(x, y, z, toneAt(d, half, m));
+      for (const x of thick(d)) s.put(x, y, z, toneAt(d, y === ylo || y === yhi, m));
     }
   }
   if (m.rune) for (let z = z0 + 5; z < z1 - hw * 2; z += 6) for (const x of [-2, 1]) s.put(x, r(CY), z, m.rune);
@@ -114,6 +120,7 @@ export function headsV3({ hilt, haft }) {
     },
     greatsword(s, m, t) {
       cylinder(s, [CX, CY, -12], [CX, CY, 3], 1.5, m.grip);
+      for (const v of s.cells.values()) if (v[3] === m.grip && (v[2] & 1) === 0) v[3] = C.LEATHER_D; // the leather wrap
       ellipsoid(s, [CX, CY, -14], [2.8, 2.8, 2.2], m.gold);
       if (t >= 2) ellipsoid(s, [-2.5, CY, -14], [0.8, 1.2, 1.2], m.gem);
       guardV3(s, 4, SC * (11 + 2 * t), m, t);
@@ -206,7 +213,7 @@ export function headsV3({ hilt, haft }) {
       }
       if (t >= 2) for (let k = 0; k < 8; k++) { // rays round the cage
         const a = (k / 8) * Math.PI * 2 + 0.4;
-        capsule(s, [CX, CY, z + 2], [CX + Math.cos(a) * SC * 8, CY + Math.sin(a) * SC * 8, z + 3], 0.9, 0.3, m.gold);
+        capsule(s, [CX, CY, z + 2], [CX + Math.cos(a) * SC * (6 + t), CY + Math.sin(a) * SC * (6 + t), z + 3], 0.9, 0.3, m.gold);
       }
       capsule(s, [CX, CY, z + 13], [CX, CY, z + 16 + t], 1, 0.4, m.gold); // a finial
       if (m.rune) cylinder(s, [CX, CY, z + 13], [CX, CY, z + 14], 1, m.rune);

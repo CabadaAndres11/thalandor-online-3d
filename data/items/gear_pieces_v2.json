@@ -3114,8 +3114,8 @@
 		"file": "res://assets/items/vox_v2/w_scepter_t3.vox",
 		"part": "hand_right",
 		"offset": [
-			-9,
-			-13,
+			-11,
+			-15,
 			-6
 		],
 		"tag": "weapon",

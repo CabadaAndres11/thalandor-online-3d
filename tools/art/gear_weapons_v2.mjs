@@ -6,7 +6,7 @@
 import { Shape, SHADE, TINT_SECONDARY, GLOW } from "./vox.mjs";
 import { ellipsoid, capsule, cylinder, roundBox, carve, tone } from "./sculpt.mjs";
 import { handV2 } from "./human_v2.mjs";
-import { C } from "./gear_style.mjs";
+import { C, wmats } from "./gear_style.mjs";
 import { headsV3, bladeV3, wmats2, WPALETTE, WTEX, BLADE_TONES } from "./weapon_heads_v2.mjs";
 
 export { BLADE_TONES };
@@ -123,7 +123,9 @@ const WEAPON = {
     if (t >= 3) for (const z of [-2, 13]) roundBox(s, [-1, 6, z], [6, 6, z], 0, GLOW);
   },
 };
-Object.assign(WEAPON, headsV3({ hilt, haft }));
+const HEADS_V3 = headsV3({ hilt, haft });
+const HEADS = new Set(Object.keys(HEADS_V3));
+Object.assign(WEAPON, HEADS_V3);
 const OFFHAND = ["shield", "orb", "tome"];
 
 // --- Boss uniques, each with its own glow -----------------------------------------------
@@ -177,8 +179,8 @@ const UNIQUES = {
 export function gearWeaponsV2() {
   const out = {};
   for (const t of [1, 2, 3]) {
-    const m = wmats2(t);
     for (const [type, build] of Object.entries(WEAPON)) {
+      const m = HEADS.has(type) ? wmats2(t) : wmats(t); // ranged weapons and off-hands keep their 6.3 colours
       const left = OFFHAND.includes(type) || type === "bow";
       const s = new Shape();
       build(s, m, t);

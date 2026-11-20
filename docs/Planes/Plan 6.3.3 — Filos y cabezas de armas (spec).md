@@ -72,6 +72,8 @@ Rehacer los filos y las cabezas de todas las armas v2 con el estilo de la refere
 ## Durante la implementación
 - Los filos y las cabezas viven en `tools/art/weapon_heads_v2.mjs`. Los tonos nuevos de acero (índices 110 a 118) son propios de las armas v2, así que la paleta compartida con el v1 no cambia.
 - El test de la 6.3 que fijaba la longitud de las armas respecto al v1 pasa de un tope de +25 % a uno de +50 %.
+- Las armas a distancia, la varita, el bastón y las de mano izquierda mantienen sus colores de la 6.3: el acero nuevo solo va en los filos y las cabezas rehechos. Así el escudo no cambia y la punta de la ballesta de nivel 3 sigue brillando.
+- El hierro del nivel 1 tiene su propia textura, para que el núcleo, el cuerpo y el borde no se mezclen.
 - Hoja de capturas por nivel: `tests/helpers/render_weapons.gd`, en `docs/Adjuntos/Plan 6.3.3/`.
 
 ---

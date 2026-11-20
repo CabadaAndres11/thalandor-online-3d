@@ -34,26 +34,39 @@ test("every blade has a dark core, a body and a bright edge", () => {
   }
 });
 
-test("families read apart by their side silhouette", () => {
-  const profile = (f) => new Set([...w[`w_${f}_t2`].shape.cells.values()].filter(([, , z]) => z > 3).map(([, y, z]) => `${Math.round(y - CY)},${z}`));
-  const fams = ZFAMILIES;
-  for (let i = 0; i < fams.length; i++) for (let j = i + 1; j < fams.length; j++) {
-    const a = profile(fams[i]), b = profile(fams[j]);
-    let both = 0;
-    for (const k of a) if (b.has(k)) both++;
-    const jaccard = both / (a.size + b.size - both);
-    assert.ok(jaccard < 0.6, `${fams[i]} vs ${fams[j]} overlap ${jaccard.toFixed(2)}`);
+test("families read apart by their side silhouette, at every tier", () => {
+  for (const t of [1, 2, 3]) {
+    const profile = (f) => new Set([...w[`w_${f}_t${t}`].shape.cells.values()].filter(([, , z]) => z > 3).map(([, y, z]) => `${Math.round(y - CY)},${z}`));
+    const fams = ZFAMILIES;
+    for (let i = 0; i < fams.length; i++) for (let j = i + 1; j < fams.length; j++) {
+      const a = profile(fams[i]), b = profile(fams[j]);
+      let both = 0;
+      for (const k of a) if (b.has(k)) both++;
+      const jaccard = both / (a.size + b.size - both);
+      assert.ok(jaccard < 0.6, `t${t} ${fams[i]} vs ${fams[j]} overlap ${jaccard.toFixed(2)}`);
+    }
   }
 });
 
 test("each tier is bigger than the last", () => {
   for (const f of ZFAMILIES) {
-    const m = [1, 2, 3].map((t) => metrics(w[`w_${f}_t${t}`].shape));
-    assert.ok(m[2].L * m[2].W > m[0].L * m[0].W, f);
+    const size = [1, 2, 3].map((t) => { const m = metrics(w[`w_${f}_t${t}`].shape); return m.L * m.W; });
+    assert.ok(size[1] > size[0] && size[2] > size[1], `${f}: ${size}`);
+  }
+});
+
+test("the bright edge is only on the outside of a blade", () => {
+  for (const f of ["sword", "short_sword", "dagger", "greatsword"]) for (const t of [1, 2, 3]) {
+    const s = w[`w_${f}_t${t}`].shape, edge = BLADE_TONES(t).edge;
+    for (const [x, y, z, i] of s.cells.values()) {
+      if (i !== edge || z < 8 || Math.abs(y - CY) < 1) continue;
+      const out = y > CY ? y + 1 : y - 1;
+      assert.ok(!s.cells.has(`${x},${out},${z}`), `${f} t${t}: an edge voxel inside the blade at ${x},${y},${z}`);
+    }
   }
 });
 
 test("deterministic", () => {
   const again = gearWeaponsV2();
-  for (const id of Object.keys(w)) assert.equal(again[id].shape.cells.size, w[id].shape.cells.size, id);
+  for (const id of Object.keys(w)) assert.deepEqual([...again[id].shape.cells.entries()], [...w[id].shape.cells.entries()], id);
 });
