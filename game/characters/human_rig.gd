@@ -508,16 +508,27 @@ func _two_hand_ik() -> void:
 	# When the grip is out of the left arm's reach, the right arm swings in toward the left
 	# shoulder (the weapon comes in front of the chest) until it is not.
 	var arm_r := part("arm_right")
-	var wrist := Vector3.ZERO
-	for i in 16:
-		wrist = _grip_point() - part("hand_right").global_basis * _fist_centre("left")
-		if wrist.distance_to(s) <= (l1 + l2) * 0.97:
-			break
+	var reach := (l1 + l2) * 0.97
+	var wrist := _left_wrist_target()
+	if wrist.distance_to(s) > reach:
+		# The smallest turn that brings the grip in reach, found by bisection so it changes
+		# smoothly from frame to frame (fixed steps made the arms flicker).
 		var a := arm_r.global_position
 		var axis := (wrist - a).cross(s - a)
-		if axis.is_zero_approx():
-			break
-		arm_r.global_basis = Basis(axis.normalized(), 0.08) * arm_r.global_basis
+		if not axis.is_zero_approx():
+			axis = axis.normalized()
+			var start := arm_r.global_basis
+			var lo := 0.0
+			var hi := 1.6
+			for i in 14:
+				var mid := (lo + hi) * 0.5
+				arm_r.global_basis = Basis(axis, mid) * start
+				if _left_wrist_target().distance_to(s) > reach:
+					lo = mid
+				else:
+					hi = mid
+			arm_r.global_basis = Basis(axis, hi) * start
+			wrist = _left_wrist_target()
 	var right_basis := part("hand_right").global_basis
 	var to := wrist - s
 	var d := clampf(to.length(), absf(l1 - l2) + 0.001, l1 + l2 - 0.001)
@@ -531,6 +542,11 @@ func _two_hand_ik() -> void:
 	_aim_bone(arm, fore.position, elbow - s)
 	_aim_bone(fore, hand.position, s + u * d - elbow)
 	hand.global_basis = right_basis
+
+
+## Where the left wrist must be for the left fist to close on the grip (global).
+func _left_wrist_target() -> Vector3:
+	return _grip_point() - part("hand_right").global_basis * _fist_centre("left")
 
 
 ## Turns a bone so the direction to its child (`child_pos`, in its own space) points along

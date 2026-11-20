@@ -626,3 +626,24 @@ func test_two_hand_weapons_held_with_both_hands() -> void:
 
 func test_one_hand_weapons_keep_the_left_hand_free() -> void:
 	assert_eq(_gear_rig("sword_t1").left_grip_error(), -1.0)
+
+
+## The largest jump of each fist between two moments 1/1100 of the chain apart: the swing
+## itself moves under 2 cm in that time; the old stepped IK made the arms jump ~5 cm.
+func _max_jump(main: String, side: String) -> float:
+	var rig := _gear_rig(main)
+	var worst := 0.0
+	for step in 3:
+		var prev := Vector3.INF
+		for i in 1100:
+			_tip_at(rig, "heavy", step, float(i) / 1100.0)
+			var p := rig.part("hand_" + side).global_position
+			if prev != Vector3.INF:
+				worst = maxf(worst, p.distance_to(prev))
+			prev = p
+	return worst
+
+
+func test_two_hand_arms_do_not_flicker() -> void:
+	for side: String in ["right", "left"]:
+		assert_lt(_max_jump("greatsword_t1", side), 0.025, side + " fist moves smoothly")
