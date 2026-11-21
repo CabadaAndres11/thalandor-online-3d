@@ -358,3 +358,10 @@ func test_every_appearance_piece_exists_v1_or_v2() -> void:
 	for r: Dictionary in catalog.options("race"):
 		for id: String in catalog.race_def(r.id).get("pieces", []):
 			assert_false(catalog.piece_v2(id).is_empty(), id)
+
+
+## A race added in data/ without, say, its skins would break the create screen.
+func test_every_race_has_options_for_every_kind() -> void:
+	for r: Dictionary in catalog.options("race"):
+		for kind: String in CharacterCatalog.KINDS:
+			assert_gt(catalog.options_for(kind, r.id).size(), 0, "%s / %s" % [r.id, kind])

@@ -56,7 +56,9 @@ func set_shot(id: String, instant: bool = false) -> void:
 
 ## The character standing in front of the altar ({} = nobody). Returns it.
 func show_character(look: Dictionary) -> HumanRig:
+	var turn := 0.0 # a new look keeps the way the player turned the character
 	if hero != null:
+		turn = hero.rotation.y
 		remove_child(hero)
 		hero.free()
 		hero = null
@@ -65,6 +67,7 @@ func show_character(look: Dictionary) -> HumanRig:
 	hero = HumanRig.build(look)
 	var spot: Array = _data.get("hero_spot", [0, 0, 0])
 	hero.position = _vec(spot)
+	hero.rotation.y = turn
 	add_child(hero)
 	return hero
 

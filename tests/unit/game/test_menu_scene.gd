@@ -58,3 +58,13 @@ func test_turn_hero() -> void:
 	var before := scene.hero.rotation_degrees.y
 	scene.turn_hero(30.0)
 	assert_almost_eq(scene.hero.rotation_degrees.y, before + 30.0, 0.01)
+
+
+## Dragging the hero round and then changing the hair must not turn it back to the front.
+func test_new_look_keeps_the_turn() -> void:
+	var catalog := CharacterCatalog.load_default()
+	scene.show_character(catalog.resolve("villager", {}))
+	scene.turn_hero(120.0)
+	var turned := scene.hero.rotation.y
+	scene.show_character(catalog.resolve("villager", {"hair_style": "hair_long"}))
+	assert_almost_eq(scene.hero.rotation.y, turned, 0.001)
