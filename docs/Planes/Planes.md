@@ -26,7 +26,7 @@ Cada plan de la [[14 Hoja de ruta]] tiene aquí su **spec** (diseño acordado) y
 | 6.4.2 · Bestias a alta resolución | [[Plan 6.4.2 — Bestias a alta resolución (spec)\|Spec]] | — (la spec lleva las tareas) | Hecho (0.9.5, publicada en la 0.9.7) |
 | 6.4.3 · Ropa que sigue al cuerpo | [[Plan 6.4.3 — Ropa que sigue al cuerpo (spec)\|Spec]] | — (la spec lleva las tareas) | Hecho (0.9.6, publicada en la 0.9.7) |
 | 6.4.4 · Correcciones de la prueba 0.9.6 | [[Plan 6.4.4 — Correcciones de la prueba 0.9.6 (spec)\|Spec]] | — (la spec lleva las tareas) | Hecho (0.9.7, publicada en la 0.9.7) |
-| 7 · Identidad y creación de personaje | [[Plan 7 — Identidad y creación de personaje (spec)\|Spec]] | [[Plan 7 — Identidad y creación de personaje (plan)\|Plan]] | Hecho (0.10.0, sin publicar) |
+| 7 · Identidad y creación de personaje | [[Plan 7 — Identidad y creación de personaje (spec)\|Spec]] | [[Plan 7 — Identidad y creación de personaje (plan)\|Plan]] | Hecho (0.10.0, publicada) |
 | 8 · Mundo y misiones | — | — | Pendiente |
 | 9 · Secretos y clases ocultas | — | — | Pendiente |
 | 10 · Oficios | — | — | Pendiente |

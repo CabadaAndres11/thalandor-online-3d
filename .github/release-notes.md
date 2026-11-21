@@ -5,7 +5,27 @@
    - **Si el navegador bloquea la descarga** por "no segura" (el juego es nuevo y no está firmado): en **Chrome**, abre las descargas (Ctrl+J) y pulsa **Conservar**. En **Edge**, pulsa **… → Conservar → Mostrar más → Conservar de todos modos**.
 2. Abre `ThalandorOnline.exe`.
 3. **Aviso de Windows (SmartScreen):** el juego no está firmado. Pulsa **Más información → Ejecutar de todas formas**.
-4. Pulsa **Jugar**. Se abre **Tus personajes**: crea uno con **Crear** (nombre y aspecto) o elige uno que ya tengas. Empiezas como **aldeano**: la clase se elige en la partida, hablando con **Brann** (pulsa **E** a su lado).
+4. Pulsa **Jugar**. Se abre **Tus personajes**: crea uno con **Crear** (nombre, raza y aspecto) o elige uno que ya tengas. Empiezas como **aldeano**: la clase se elige en la partida, hablando con **Brann** (pulsa **E** a su lado).
+
+### Novedades de la 0.10.0: identidad y razas
+- **Pantalla de inicio nueva:**
+  - una escena en vivo con cultistas orando alrededor del altar del Sol Negro, de noche, entre braseros, velas y brasas;
+  - **Jugar** abajo a la izquierda, y Ajustes, **Créditos** y Salir arriba a la derecha.
+- **Cinco razas**, solo de aspecto: **humano, elfo, enano, ogro y hombre lagarto**.
+  - El enano es bajo y ancho, y el elfo, alto y con orejas largas.
+  - El ogro es enorme y tiene colmillos.
+  - El lagarto tiene hocico, cola y **crestas** en lugar de pelo.
+  - Todo el equipo se adapta a cada raza.
+- **Más aspecto:**
+  - 8 peinados nuevos y 5 barbas, dos de ellas enanas;
+  - colores de pelo y ojos nuevos, y pieles propias de ogros y lagartos;
+  - **rasgos**: cicatrices, pintura de guerra, tatuaje rúnico y pecas.
+- **Tus personajes y Crear personaje:**
+  - tu personaje aparece delante del altar; en la creación se gira arrastrando con el ratón;
+  - los menús tienen ahora los colores del logo (piedra, oro y rojo);
+  - los botones brillan y se iluminan al pasar el ratón.
+- **Tus personajes de antes se abren como humanos**, con el mismo aspecto.
+- **Todo el grupo tiene que usar la misma versión.**
 
 ### Novedades de la 0.9.7: renovación gráfica
 **Todo el juego tiene un aspecto nuevo**, con vóxeles más finos y más detalle.
@@ -47,20 +67,6 @@
 - El chat se vacía al **Cerrar sesión**.
 - **Tus personajes de antes se actualizan solos.** Sus estadísticas se recalculan con los nuevos valores de los atributos.
 - **Todo el grupo tiene que usar la misma versión.**
-
-### Novedades de la 0.7.0: objetos
-- **Botín personal:** al morir un monstruo, cada jugador cercano recibe el suyo. El oro va directo a tu bolsa; los objetos caen al suelo con un **haz de luz** y su nombre en el color de su rareza, y **solo los ves tú**. Se recogen pasando por encima.
-- **Rarezas:** común, poco común, raro y épico, con propiedades aleatorias; y los **únicos de jefe** (Acólito Cultista, Vaelthar y Nhazar).
-- **Inventario (I)** de 30 casillas y **11 ranuras de equipo** en la ventana del personaje (C). Clic derecho para equipar, desequipar o beber. El tooltip compara con lo que llevas puesto.
-- **Equipo visible:** lo que llevas cambia tu aspecto y el grupo lo ve. **Cada clase tiene su propio juego** y solo puede llevar el suyo.
-- **Tres tramos de aspecto** según el nivel del objeto (1–19, 20–39 y 40+), cada uno más épico: colores propios y capas en el segundo; halos, coronas, runas y **aura** en el tercero.
-- **Armas a una y dos manos:** mandoble, gran hacha, martillo de guerra, alabarda, bastón, arco y ballesta ocupan las dos manos; nuevas **varita**, **cetro** y **tomo**. El arma cambia tu ataque básico (más lento y amplio, más alcance, disparo corto y rápido…); la ballesta siempre dispara cargada. **Solo bloqueas con escudo.**
-- El ataque básico cuerpo a cuerpo se ve como un **combo de tres golpes**.
-- **Pociones** de vida (**Q**) y de recurso (**R**), con recarga compartida de 30 s.
-- **Durabilidad:** al morir (no al quedar derribado) tu equipo pierde un 10 %. El HUD avisa cuando toca reparar.
-- **Mercader** junto a Brann: vende pociones y objetos comunes, compra lo tuyo al 25 % y repara.
-- Comandos de prueba para el anfitrión: `/oro <n>` y `/objeto <base> [nivel] [rareza]`.
-- **Tus personajes de antes se actualizan solos** y empiezan con el equipo de su clase.
 
 ### Jugar con amigos: dos redes para probar
 Esta versión trae **dos formas de conectarse**. Todos los del grupo tienen que usar la misma, y también **la misma versión** del juego.
