@@ -90,6 +90,8 @@ func _init() -> void:
 	join_row.add_child(code_edit)
 	join_button = _button(join_row, "BTN_JOIN", _on_join)
 	back_button = _button(right, "BTN_BACK", back_requested.emit)
+	MenuFx.decorate(play_button, MenuFx.CALL)
+	MenuFx.decorate_tree(self)
 	_refresh()
 
 

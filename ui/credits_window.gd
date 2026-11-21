@@ -26,6 +26,8 @@ func _init() -> void:
 	close_button.custom_minimum_size = Vector2(160, 44)
 	close_button.pressed.connect(close_requested.emit)
 	box.add_child(close_button)
+	MenuFx.decorate(self, MenuFx.PANEL)
+	MenuFx.decorate(close_button)
 
 
 ## Centred on the screen at its own size.

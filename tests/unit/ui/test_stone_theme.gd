@@ -21,15 +21,17 @@ func test_panel_is_stone_with_a_gold_border() -> void:
 	assert_gt(p.border_width_left, 0)
 
 
-## Play: a rounded ember pill (blood red to orange) with a play icon, like a launcher button.
-func test_primary_button_is_an_ember_pill_with_an_icon() -> void:
+## Play: a square ember slab (blood red to orange) with a gold rim, like a launcher button.
+func test_primary_button_is_a_square_ember_slab() -> void:
 	var b := Button.new()
 	StoneTheme.primary_button(b)
 	for state: String in ["normal", "hover", "pressed"]:
 		var box := b.get_theme_stylebox(state) as StyleBoxTexture
 		assert_not_null(box, state)
 		assert_not_null(box.texture, state)
-		assert_gt(box.texture_margin_left, 20.0, state + ": the round ends do not stretch")
+		var img := box.texture.get_image()
+		assert_eq(img.get_pixel(0, 0).a, 1.0, state + ": square corners")
+		assert_eq(img.get_pixel(img.get_width() - 1, img.get_height() - 1).a, 1.0, state + ": square corners")
 	assert_ne(b.get_theme_stylebox("hover"), b.get_theme_stylebox("normal"), "it lights up under the mouse")
 	b.free()
 

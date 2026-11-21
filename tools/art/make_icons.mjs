@@ -222,24 +222,23 @@ for (const [name, draw] of Object.entries(UI)) {
   draw(img, GOLD, 0);
   png.write(`${outDir}/ui/${name}.png`, img);
 }
-// The Play button (Plan 7): a rounded pill in an ember gradient (blood red to orange),
-// a thin gold rim and a light top half, for StyleBoxTexture with round ends that keep
-// their shape (texture margins of half the height). Normal, hover (brighter) and pressed.
+// The Play button (Plan 7): a square slab in an ember gradient (blood red to orange), a
+// gold rim with a dark inner line and a lighter top half, for a StyleBoxTexture whose
+// rims never stretch. Normal, hover (brighter) and pressed.
 function pill(file, from, to, light) {
-  const W = 256, H = 80, R = H / 2;
+  const W = 256, H = 80;
   const img = png.create(W, H);
-  const a = hex(from), b = hex(to), rim = hex("#e3b45a");
+  const a = hex(from), b = hex(to), rim = hex("#e3b45a"), dark = [40, 8, 4];
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-    const cx = Math.min(Math.max(x + 0.5, R), W - R), d = Math.hypot(x + 0.5 - cx, y + 0.5 - R);
-    if (d > R) continue;
     const t = x / (W - 1);
     let c = [0, 1, 2].map((i) => a[i] + (b[i] - a[i]) * t);
     const top = 1 - y / H; // light from above
     c = c.map((v) => Math.min(255, v * (0.78 + 0.42 * top) + (y < H * 0.45 ? light : 0)));
-    if (d > R - 2.5) c = [rim[0], rim[1], rim[2]];
-    else if (d > R - 4) c = c.map((v, i) => (v + rim[i]) / 2);
-    const alpha = d > R - 1 ? Math.round(255 * (R - d)) : 255; // soft edge
-    png.set(img, x, y, [...c.map(Math.round), alpha]);
+    const d = Math.min(x, y, W - 1 - x, H - 1 - y);
+    if (d < 2) c = [rim[0], rim[1], rim[2]];
+    else if (d < 3) c = dark;
+    else if (d < 4) c = c.map((v) => Math.min(255, v + 40)); // a bright bevel inside the rim
+    png.set(img, x, y, [...c.map(Math.round), 255]);
   }
   png.write(file, img);
 }

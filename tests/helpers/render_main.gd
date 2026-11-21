@@ -6,12 +6,16 @@ extends SceneTree
 var _screen := "title"
 var _frames := 0
 var _main: Main
+## --hover: light the buttons up as if the mouse were over them (MenuFx).
+var _hover := false
 
 
 func _initialize() -> void:
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--screen="):
 			_screen = arg.trim_prefix("--screen=")
+		elif arg == "--hover":
+			_hover = true
 	root.size = Vector2i(1280, 720)
 	_main = Main.new()
 	_main.settings_path = "user://render_main_settings.json"
@@ -30,9 +34,13 @@ func _process(_delta: float) -> bool:
 				_main._show_select()
 			"create":
 				_main._show_create()
+	if _frames == 100 and _hover:
+		for b: Node in _main.find_children("*", "BaseButton", true, false):
+			if (b as Control).is_visible_in_tree() and (b as Node).name != "Play":
+				MenuFx.set_hover(b as Control, true, true)
 	if _frames == 120:
 		DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("user://render"))
-		var path := "user://render/main_%s.png" % _screen
+		var path := "user://render/main_%s%s.png" % [_screen, "_hover" if _hover else ""]
 		root.get_texture().get_image().save_png(path)
 		print("saved ", ProjectSettings.globalize_path(path))
 		return true

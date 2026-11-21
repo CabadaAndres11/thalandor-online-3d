@@ -61,7 +61,7 @@ static func apply(theme: Theme) -> void:
 	theme.set_stylebox("focus", "LineEdit", _button(STONE_DARK, GOLD))
 
 
-## The call to action (Play): a rounded ember pill, blood red to orange with a gold rim,
+## The call to action (Play): a square ember slab, blood red to orange with a gold rim,
 ## a white play triangle and white text (tools/art/make_icons.mjs draws the textures).
 static func primary_button(b: Button) -> void:
 	for state: String in ["normal", "hover", "pressed"]:
@@ -102,10 +102,10 @@ static func primary_button(b: Button) -> void:
 static func _pill(state: String) -> StyleBoxTexture:
 	var s := StyleBoxTexture.new()
 	s.texture = load(PILL % state)
-	s.texture_margin_left = 40 # half the height: the round ends never stretch
-	s.texture_margin_right = 40
-	s.texture_margin_top = 20
-	s.texture_margin_bottom = 20
+	s.texture_margin_left = 6 # the rim and bevel never stretch
+	s.texture_margin_right = 6
+	s.texture_margin_top = 6
+	s.texture_margin_bottom = 6
 	s.content_margin_left = 28
 	s.content_margin_right = 28
 	s.content_margin_top = 4

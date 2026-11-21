@@ -98,6 +98,7 @@ func _init() -> void:
 	hint.offset_top = -56
 	hint.offset_bottom = -24
 	drag.add_child(hint)
+	MenuFx.decorate_tree(self)
 	reset("")
 
 

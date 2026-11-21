@@ -71,6 +71,8 @@ func _init() -> void:
 	version_label.offset_top = -MARGIN - 34
 	version_label.offset_bottom = -MARGIN
 	add_child(version_label)
+	MenuFx.decorate(play_button, MenuFx.CALL)
+	MenuFx.decorate_tree(self)
 
 
 func _icon(parent: Control, node_name: String, icon: String, tip: String, handler: Callable) -> Button:
