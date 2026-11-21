@@ -911,3 +911,26 @@ RACE_DWARF_DESC,"Bajos y recios, forjan en las entrañas de la montaña y nunca 
 RACE_OGRE_DESC,"Enormes y de piel curtida, temidos por su fuerza y leales hasta el final."
 RACE_LIZARD_DESC,"Escamosos hijos de los pantanos, pacientes como el agua quieta."
 MARK_NONE,Ninguno
+HAIR_BRAIDS,Trenzas
+HAIR_UNDERCUT,Rapado lateral
+HAIR_LOOSE,Melena suelta
+HAIR_HIGH_PONYTAIL,Coleta alta
+HAIR_WARRIOR_BRAID,Trenza de guerrero
+HAIR_CURLS,Rizos
+HAIR_SHAGGY,Desgreñado
+HAIR_HALF_UP,Medio recogido
+CREST_FIN,Cresta de aleta
+CREST_SPIKES,Cresta de púas
+CREST_FRILL,Gorguera
+CREST_HORNS,Cuernos
+CREST_NONE,Sin cresta
+BEARD_DWARF_BRAIDED,Trenzada enana
+BEARD_DWARF_FORKED,Doble trenza
+BEARD_SIDEBURNS,Patillas
+BEARD_CHINSTRAP,Barba de collar
+BEARD_STUBBLE,Barba de tres días
+MARK_SCAR_EYE,Cicatriz en el ojo
+MARK_SCAR_CHEEK,Cicatriz en la mejilla
+MARK_WARPAINT,Pintura de guerra
+MARK_RUNES,Tatuaje rúnico
+MARK_FRECKLES,Pecas

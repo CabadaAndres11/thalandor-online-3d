@@ -31,7 +31,8 @@ func test_every_v2_piece_file_exists() -> void:
 		var e: Dictionary = table[id]
 		assert_true(FileAccess.file_exists(str(e.file)), "%s: %s" % [id, e.file])
 		assert_not_null(VoxMesher.cached(str(e.file), {}), id)
-		assert_false(CharacterCatalog.load_default().piece(id).is_empty(), "%s has a v1 entry" % id)
+		# Plan 7 pieces (races, new hair, marks) exist only in v2 and carry their own tag.
+		assert_true(not CharacterCatalog.load_default().piece(id).is_empty() or str(e.get("tag", "")) != "", "%s has a v1 entry or its own tag" % id)
 
 
 func test_every_v2_gear_file_exists() -> void:

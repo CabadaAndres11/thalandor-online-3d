@@ -55,7 +55,8 @@ func _initialize() -> void:
 	if _name == "monsters_a":
 		_combat_scene()
 		return
-	var looks := _looks(_name)
+	var close := _name.ends_with("_close") # the same set, the camera on the heads
+	var looks := _looks(_name.trim_suffix("_close"))
 	var origin := Vector3(20.5 - (looks.size() - 1) * SPACING / 2.0, 0, 18.5)
 	for i in looks.size():
 		var rig := HumanRig.build(looks[i])
@@ -73,7 +74,10 @@ func _initialize() -> void:
 	var cam := Camera3D.new()
 	cam.fov = 30
 	root.add_child(cam)
-	cam.look_at_from_position(Vector3(20.5, 4.2, 18.5 + 9.5), Vector3(20.5, 0.9, 18.5))
+	if close:
+		cam.look_at_from_position(Vector3(20.5, 2.2, 18.5 + 5.0), Vector3(20.5, 1.5, 18.5))
+	else:
+		cam.look_at_from_position(Vector3(20.5, 4.2, 18.5 + 9.5), Vector3(20.5, 0.9, 18.5))
 
 
 func _process(_delta: float) -> bool:
@@ -91,6 +95,31 @@ func _process(_delta: float) -> bool:
 
 func _looks(set_name: String) -> Array:
 	match set_name:
+		"races", "races_back", "races_side":
+			# Plan 7: the five races side by side, the same hair and clothes where they can.
+			var rot: float = {"races": 20.0, "races_back": 180.0, "races_side": 90.0}[set_name]
+			return _resolved([
+				["villager", {"race": "human", "hair_style": "short", "hair_color": "brown", "beard": "short"}, rot],
+				["villager", {"race": "elf", "hair_style": "hair_long", "hair_color": "platinum", "skin": "elf_moon"}, rot],
+				["villager", {"race": "dwarf", "hair_style": "hair_warrior_braid", "hair_color": "auburn", "beard": "dwarf_braided", "skin": "skin_3"}, rot],
+				["villager", {"race": "ogre", "hair_style": "hair_mohawk", "hair_color": "black", "skin": "ogre_greygreen"}, rot],
+				["villager", {"race": "lizard", "hair_style": "crest_fin", "hair_color": "crimson", "skin": "lizard_green", "eyes": "reptile"}, rot],
+			])
+		"hair_new":
+			var out := []
+			for h: String in ["hair_braids", "hair_undercut", "hair_loose", "hair_high_ponytail", "hair_warrior_braid", "hair_curls", "hair_shaggy", "hair_half_up"]:
+				out.append(_resolved([["villager", {"hair_style": h, "hair_color": "chestnut"}, 35.0]])[0])
+			return out
+		"faces_new":
+			var out := []
+			for a: Array in [["dwarf", "dwarf_braided", "none"], ["dwarf", "dwarf_forked", "none"], ["human", "sideburns", "scar_eye"], ["human", "chinstrap", "scar_cheek"], ["human", "stubble", "warpaint"], ["elf", "none", "runes"], ["human", "none", "freckles"]]:
+				out.append(_resolved([["villager", {"race": a[0], "hair_style": "short", "hair_color": "black", "beard": a[1], "marks": a[2]}, 15.0]])[0])
+			return out
+		"crests":
+			var out := []
+			for c: String in ["crest_fin", "crest_spikes", "crest_frill", "crest_horns", "crest_none"]:
+				out.append(_resolved([["villager", {"race": "lizard", "hair_style": c, "hair_color": "crimson", "skin": "lizard_jade"}, 50.0]])[0])
+			return out
 		"classes":
 			return _resolved([
 				["warrior", {"skin": "skin_4", "hair_style": "short", "hair_color": "dark_brown", "beard": "full", "body": "robust"}],

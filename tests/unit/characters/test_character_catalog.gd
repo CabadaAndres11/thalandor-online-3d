@@ -8,7 +8,7 @@ func before_each() -> void:
 
 
 func test_all_kinds_have_expected_counts() -> void:
-	var expected := {"race": 5, "body": 2, "skin": 22, "eyes": 9, "hair_style": 8, "hair_color": 16, "beard": 5, "marks": 1}
+	var expected := {"race": 5, "body": 2, "skin": 22, "eyes": 9, "hair_style": 21, "hair_color": 16, "beard": 10, "marks": 6}
 	for kind: String in expected:
 		assert_eq(catalog.options(kind).size(), expected[kind], kind)
 
@@ -47,7 +47,7 @@ func test_every_referenced_piece_is_defined() -> void:
 		ids.append_array(c.get("pieces", []))
 		ids.append_array(c.get("weapons", []))
 	for id: String in ids:
-		assert_false(catalog.piece(id).is_empty(), id)
+		assert_false(catalog.piece(id).is_empty() and catalog.piece_v2(id).is_empty(), id)
 
 
 func test_warrior_wears_pauldrons_on_both_arms() -> void:
@@ -65,8 +65,9 @@ func _ids(look: Dictionary) -> Array:
 
 func test_every_appearance_id_resolves() -> void:
 	for hair: Dictionary in catalog.options("hair_style"):
-		for beard: Dictionary in catalog.options("beard"):
-			var look := catalog.resolve("warrior", {"hair_style": hair.id, "beard": beard.id})
+		var race: String = hair.get("races", ["human"])[0]
+		for beard: Dictionary in catalog.options_for("beard", race):
+			var look := catalog.resolve("warrior", {"race": race, "hair_style": hair.id, "beard": beard.id})
 			for key: String in look:
 				assert_false(key.ends_with("_layer"), key)
 			var ids := _ids(look)
@@ -331,3 +332,29 @@ func test_resolve_has_race_keys() -> void:
 	assert_eq(human.head_file, "")
 	assert_eq(float(human.race_height), 1.0)
 	assert_true(human.head_fit is Dictionary)
+
+
+func test_new_hair_hidden_by_the_hood() -> void:
+	var ids := _ids(catalog.resolve("archer", {"hair_style": "hair_braids"}))
+	assert_does_not_have(ids, "hair_braids")
+	assert_has(_ids(catalog.resolve("warrior", {"hair_style": "hair_braids"})), "hair_braids")
+
+
+func test_lizard_wears_a_crest_and_a_tail() -> void:
+	var ids := _ids(catalog.resolve("warrior", {"race": "lizard"}))
+	assert_has(ids, "crest_fin")
+	assert_has(ids, "tail_lizard")
+	assert_ne(catalog.resolve("warrior", {"race": "lizard"}).head_file, "")
+
+
+func test_every_appearance_piece_exists_v1_or_v2() -> void:
+	for kind: String in ["hair_style", "beard", "marks"]:
+		for o: Dictionary in catalog.options(kind):
+			var ids: Array = o.get("pieces", [])
+			if str(o.get("piece", "")) != "":
+				ids = ids + [o.piece]
+			for id: String in ids:
+				assert_false(catalog.piece(id).is_empty() and catalog.piece_v2(id).is_empty(), id)
+	for r: Dictionary in catalog.options("race"):
+		for id: String in catalog.race_def(r.id).get("pieces", []):
+			assert_false(catalog.piece_v2(id).is_empty(), id)

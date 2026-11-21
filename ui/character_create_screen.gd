@@ -20,7 +20,7 @@ var back_button: Button
 var preview: CharacterPreview
 
 var _catalog: CharacterCatalog
-var _index: Dictionary = {} # kind -> option index
+var _app: Dictionary = {} # the appearance shown (always valid for its race)
 var _value_labels: Dictionary = {} # kind -> Label
 var _swatches: Dictionary = {} # kind -> ColorRect
 var _rng := RandomNumberGenerator.new()
@@ -94,8 +94,7 @@ func _init() -> void:
 ## Fresh form: default appearance, `default_name` already written.
 func reset(default_name: String) -> void:
 	name_edit.text = default_name
-	for kind: String in CharacterCatalog.KINDS:
-		_index[kind] = 0
+	_app = _catalog.default_appearance()
 	_rng.randomize()
 	_on_name_changed(default_name)
 	_update()
@@ -110,27 +109,35 @@ func prev_option(kind: String) -> void:
 
 
 func current_appearance() -> Dictionary:
-	var app := {}
-	for kind: String in CharacterCatalog.KINDS:
-		app[kind] = _catalog.options(kind)[_index[kind]].id
-	return app
+	return _app.duplicate()
 
 
 func _step(kind: String, delta: int) -> void:
-	var n := _catalog.options(kind).size()
-	_index[kind] = posmod(int(_index[kind]) + delta, n)
+	var list := _catalog.options_for(kind, str(_app.race))
+	_app[kind] = list[posmod(_index_of(list, str(_app[kind])) + delta, list.size())].id
+	if kind == "race":
+		_app = _catalog.sanitize_appearance(_app) # what the new race cannot wear goes back to its first option
 	_update()
+
+
+static func _index_of(list: Array, id: String) -> int:
+	for i in list.size():
+		if list[i].id == id:
+			return i
+	return 0
 
 
 func _update() -> void:
 	for kind: String in CharacterCatalog.KINDS:
-		var o: Dictionary = _catalog.options(kind)[_index[kind]]
+		var list := _catalog.options_for(kind, str(_app.race))
+		var i := _index_of(list, str(_app[kind]))
+		var o: Dictionary = list[i]
 		var label: Label = _value_labels[kind]
 		var swatch: ColorRect = _swatches[kind]
 		if o.has("color"):
 			swatch.color = Color(str(o.color))
 			swatch.modulate.a = 1.0
-			label.text = "%d / %d" % [int(_index[kind]) + 1, _catalog.options(kind).size()]
+			label.text = "%d / %d" % [i + 1, list.size()]
 		else:
 			swatch.modulate.a = 0.0 # keeps its space so the arrows line up
 			label.text = tr(str(o.get("name", o.id)))
@@ -185,12 +192,7 @@ func _on_name_changed(_text: String) -> void:
 
 
 func _on_random() -> void:
-	var app := _catalog.random_appearance(_rng)
-	for kind: String in CharacterCatalog.KINDS:
-		var list := _catalog.options(kind)
-		for i in list.size():
-			if list[i].id == app[kind]:
-				_index[kind] = i
+	_app = _catalog.random_appearance(_rng)
 	_update()
 
 

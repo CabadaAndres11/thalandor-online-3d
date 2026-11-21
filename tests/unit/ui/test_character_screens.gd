@@ -102,12 +102,13 @@ func test_create_screen_arrows_cycle_options() -> void:
 	_host(c)
 	c.reset("Lyra")
 	var start: String = c.current_appearance().hair_style
+	var n := CharacterCatalog.load_default().options_for("hair_style", "human").size()
 	var seen := {}
-	for i in 8:
+	for i in n:
 		c.next_option("hair_style")
 		seen[c.current_appearance().hair_style] = true
-	assert_eq(c.current_appearance().hair_style, start, "8 presses go round")
-	assert_eq(seen.size(), 8)
+	assert_eq(c.current_appearance().hair_style, start, "a full round of the human styles")
+	assert_eq(seen.size(), n)
 	c.prev_option("hair_style")
 	assert_ne(c.current_appearance().hair_style, start)
 
@@ -167,3 +168,18 @@ func test_select_preview_wears_the_saved_gear() -> void:
 
 func test_leave_menu_says_log_out() -> void:
 	assert_eq(TranslationServer.translate("MENU_LEAVE"), "Cerrar sesión")
+
+
+func test_changing_race_fixes_invalid_options() -> void:
+	var c := CharacterCreateScreen.new()
+	_host(c)
+	c.reset("Lyra")
+	c.next_option("beard") # a human beard
+	assert_ne(c.current_appearance().beard, "none")
+	while c.current_appearance().race != "lizard":
+		c.next_option("race")
+	var app := c.current_appearance()
+	var catalog := CharacterCatalog.load_default()
+	assert_eq(app.beard, "none")
+	assert_eq(catalog.sanitize_appearance(app), app)
+	assert_true(str(app.hair_style).begins_with("crest_"))

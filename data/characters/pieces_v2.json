@@ -120,6 +120,281 @@
 		"tag": "beard",
 		"hides": []
 	},
+	"hair_braids": {
+		"file": "res://assets/characters/pieces_v2/hair_braids.vox",
+		"part": "head",
+		"offset": [
+			-9,
+			-11,
+			-9
+		],
+		"tag": "hair",
+		"hides": []
+	},
+	"hair_undercut": {
+		"file": "res://assets/characters/pieces_v2/hair_undercut.vox",
+		"part": "head",
+		"offset": [
+			-5,
+			14,
+			-10
+		],
+		"tag": "hair",
+		"hides": []
+	},
+	"hair_loose": {
+		"file": "res://assets/characters/pieces_v2/hair_loose.vox",
+		"part": "head",
+		"offset": [
+			-10,
+			-9,
+			-11
+		],
+		"tag": "hair",
+		"hides": []
+	},
+	"hair_high_ponytail": {
+		"file": "res://assets/characters/pieces_v2/hair_high_ponytail.vox",
+		"part": "head",
+		"offset": [
+			-9,
+			-2,
+			-12
+		],
+		"tag": "hair",
+		"hides": []
+	},
+	"hair_warrior_braid": {
+		"file": "res://assets/characters/pieces_v2/hair_warrior_braid.vox",
+		"part": "head",
+		"offset": [
+			-9,
+			-13,
+			-12
+		],
+		"tag": "hair",
+		"hides": []
+	},
+	"hair_curls": {
+		"file": "res://assets/characters/pieces_v2/hair_curls.vox",
+		"part": "head",
+		"offset": [
+			-10,
+			5,
+			-10
+		],
+		"tag": "hair",
+		"hides": []
+	},
+	"hair_shaggy": {
+		"file": "res://assets/characters/pieces_v2/hair_shaggy.vox",
+		"part": "head",
+		"offset": [
+			-11,
+			-1,
+			-10
+		],
+		"tag": "hair",
+		"hides": []
+	},
+	"hair_half_up": {
+		"file": "res://assets/characters/pieces_v2/hair_half_up.vox",
+		"part": "head",
+		"offset": [
+			-10,
+			1,
+			-11
+		],
+		"tag": "hair",
+		"hides": []
+	},
+	"beard_dwarf_braided": {
+		"file": "res://assets/characters/pieces_v2/beard_dwarf_braided.vox",
+		"part": "head",
+		"offset": [
+			-10,
+			-25,
+			-2
+		],
+		"tag": "beard",
+		"hides": []
+	},
+	"beard_dwarf_forked": {
+		"file": "res://assets/characters/pieces_v2/beard_dwarf_forked.vox",
+		"part": "head",
+		"offset": [
+			-6,
+			-19,
+			-1
+		],
+		"tag": "beard",
+		"hides": []
+	},
+	"beard_sideburns": {
+		"file": "res://assets/characters/pieces_v2/beard_sideburns.vox",
+		"part": "head",
+		"offset": [
+			-9,
+			3,
+			-2
+		],
+		"tag": "beard",
+		"hides": []
+	},
+	"beard_chinstrap": {
+		"file": "res://assets/characters/pieces_v2/beard_chinstrap.vox",
+		"part": "head",
+		"offset": [
+			-9,
+			-1,
+			-2
+		],
+		"tag": "beard",
+		"hides": []
+	},
+	"beard_stubble": {
+		"file": "res://assets/characters/pieces_v2/beard_stubble.vox",
+		"part": "head",
+		"offset": [
+			-5,
+			0,
+			2
+		],
+		"tag": "beard",
+		"hides": []
+	},
+	"mark_scar_eye": {
+		"file": "res://assets/characters/pieces_v2/mark_scar_eye.vox",
+		"part": "head",
+		"offset": [
+			3,
+			6,
+			5
+		],
+		"tag": "mark",
+		"hides": []
+	},
+	"mark_scar_cheek": {
+		"file": "res://assets/characters/pieces_v2/mark_scar_cheek.vox",
+		"part": "head",
+		"offset": [
+			-6,
+			4,
+			2
+		],
+		"tag": "mark",
+		"hides": []
+	},
+	"mark_warpaint": {
+		"file": "res://assets/characters/pieces_v2/mark_warpaint.vox",
+		"part": "head",
+		"offset": [
+			-6,
+			0,
+			2
+		],
+		"tag": "mark",
+		"hides": []
+	},
+	"mark_runes": {
+		"file": "res://assets/characters/pieces_v2/mark_runes.vox",
+		"part": "head",
+		"offset": [
+			-6,
+			4,
+			2
+		],
+		"tag": "mark",
+		"hides": []
+	},
+	"mark_freckles": {
+		"file": "res://assets/characters/pieces_v2/mark_freckles.vox",
+		"part": "head",
+		"offset": [
+			-7,
+			6,
+			0
+		],
+		"tag": "mark",
+		"hides": []
+	},
+	"crest_fin": {
+		"file": "res://assets/characters/pieces_v2/crest_fin.vox",
+		"part": "head",
+		"offset": [
+			-1,
+			16,
+			-8
+		],
+		"tag": "hair",
+		"hides": []
+	},
+	"crest_spikes": {
+		"file": "res://assets/characters/pieces_v2/crest_spikes.vox",
+		"part": "head",
+		"offset": [
+			-1,
+			14,
+			-8
+		],
+		"tag": "hair",
+		"hides": []
+	},
+	"crest_frill": {
+		"file": "res://assets/characters/pieces_v2/crest_frill.vox",
+		"part": "head",
+		"offset": [
+			-11,
+			8,
+			-9
+		],
+		"tag": "hair",
+		"hides": []
+	},
+	"crest_horns": {
+		"file": "res://assets/characters/pieces_v2/crest_horns.vox",
+		"part": "head",
+		"offset": [
+			-6,
+			14,
+			-9
+		],
+		"tag": "hair",
+		"hides": []
+	},
+	"ears_elf": {
+		"file": "res://assets/characters/pieces_v2/ears_elf.vox",
+		"part": "head",
+		"offset": [
+			-13,
+			6,
+			-5
+		],
+		"tag": "ears",
+		"hides": []
+	},
+	"nose_dwarf": {
+		"file": "res://assets/characters/pieces_v2/nose_dwarf.vox",
+		"part": "head",
+		"offset": [
+			-3,
+			4,
+			7
+		],
+		"tag": "face",
+		"hides": []
+	},
+	"tail_lizard": {
+		"file": "res://assets/characters/pieces_v2/tail_lizard.vox",
+		"part": "hips",
+		"offset": [
+			-5,
+			-40,
+			-36
+		],
+		"tag": "tail",
+		"hides": []
+	},
 	"outfit_warrior": {
 		"file": "res://assets/characters/pieces_v2/outfit_warrior.vox",
 		"part": "torso",

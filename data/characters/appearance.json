@@ -89,11 +89,24 @@
 		{"id": "short", "name": "HAIR_SHORT", "pieces": ["hair_short"], "races": ["human", "elf", "dwarf"]},
 		{"id": "bob", "name": "HAIR_BOB", "pieces": ["hair_bob"], "races": ["human", "elf", "dwarf"]},
 		{"id": "swept", "name": "HAIR_SWEPT", "pieces": ["hair_swept"], "races": ["human", "elf", "dwarf"]},
-		{"id": "bald", "name": "HAIR_BALD", "pieces": [], "races": ["human", "elf", "dwarf", "ogre", "lizard"]},
+		{"id": "bald", "name": "HAIR_BALD", "pieces": [], "races": ["human", "elf", "dwarf", "ogre"]},
 		{"id": "hair_long", "name": "HAIR_LONG", "pieces": ["hair_bob", "hair_long"], "races": ["human", "elf", "dwarf"]},
 		{"id": "hair_ponytail", "name": "HAIR_PONYTAIL", "pieces": ["hair_short", "hair_ponytail"], "races": ["human", "elf", "dwarf"]},
 		{"id": "hair_bun", "name": "HAIR_BUN", "pieces": ["hair_swept", "hair_bun"], "races": ["human", "elf", "dwarf", "ogre"]},
-		{"id": "hair_mohawk", "name": "HAIR_MOHAWK", "pieces": ["hair_mohawk"], "races": ["human", "elf", "dwarf", "ogre"]}
+		{"id": "hair_mohawk", "name": "HAIR_MOHAWK", "pieces": ["hair_mohawk"], "races": ["human", "elf", "dwarf", "ogre"]},
+		{"id": "hair_braids", "name": "HAIR_BRAIDS", "pieces": ["hair_braids"], "races": ["human", "elf", "dwarf"]},
+		{"id": "hair_undercut", "name": "HAIR_UNDERCUT", "pieces": ["hair_undercut"], "races": ["human", "elf", "dwarf"]},
+		{"id": "hair_loose", "name": "HAIR_LOOSE", "pieces": ["hair_loose"], "races": ["human", "elf", "dwarf"]},
+		{"id": "hair_high_ponytail", "name": "HAIR_HIGH_PONYTAIL", "pieces": ["hair_high_ponytail"], "races": ["human", "elf", "dwarf"]},
+		{"id": "hair_warrior_braid", "name": "HAIR_WARRIOR_BRAID", "pieces": ["hair_warrior_braid"], "races": ["human", "elf", "dwarf"]},
+		{"id": "hair_curls", "name": "HAIR_CURLS", "pieces": ["hair_curls"], "races": ["human", "elf", "dwarf"]},
+		{"id": "hair_shaggy", "name": "HAIR_SHAGGY", "pieces": ["hair_shaggy"], "races": ["human", "elf", "dwarf", "ogre"]},
+		{"id": "hair_half_up", "name": "HAIR_HALF_UP", "pieces": ["hair_half_up"], "races": ["human", "elf", "dwarf"]},
+		{"id": "crest_fin", "name": "CREST_FIN", "pieces": ["crest_fin"], "races": ["lizard"]},
+		{"id": "crest_spikes", "name": "CREST_SPIKES", "pieces": ["crest_spikes"], "races": ["lizard"]},
+		{"id": "crest_frill", "name": "CREST_FRILL", "pieces": ["crest_frill"], "races": ["lizard"]},
+		{"id": "crest_horns", "name": "CREST_HORNS", "pieces": ["crest_horns"], "races": ["lizard"]},
+		{"id": "crest_none", "name": "CREST_NONE", "pieces": [], "races": ["lizard"]}
 	],
 	"hair_color": [
 		{"id": "black", "color": "#1d1a19"},
@@ -118,9 +131,19 @@
 		{"id": "full", "name": "BEARD_FULL", "piece": "beard_full", "races": ["human", "dwarf"]},
 		{"id": "mustache", "name": "BEARD_MUSTACHE", "piece": "beard_mustache", "races": ["human", "dwarf", "ogre"]},
 		{"id": "short", "name": "BEARD_SHORT", "piece": "beard_short", "races": ["human", "dwarf", "ogre"]},
-		{"id": "goatee", "name": "BEARD_GOATEE", "piece": "beard_goatee", "races": ["human", "elf", "dwarf"]}
+		{"id": "goatee", "name": "BEARD_GOATEE", "piece": "beard_goatee", "races": ["human", "elf", "dwarf"]},
+		{"id": "dwarf_braided", "name": "BEARD_DWARF_BRAIDED", "piece": "beard_dwarf_braided", "races": ["dwarf"]},
+		{"id": "dwarf_forked", "name": "BEARD_DWARF_FORKED", "piece": "beard_dwarf_forked", "races": ["dwarf"]},
+		{"id": "sideburns", "name": "BEARD_SIDEBURNS", "piece": "beard_sideburns", "races": ["human", "dwarf", "ogre"]},
+		{"id": "chinstrap", "name": "BEARD_CHINSTRAP", "piece": "beard_chinstrap", "races": ["human", "dwarf"]},
+		{"id": "stubble", "name": "BEARD_STUBBLE", "piece": "beard_stubble", "races": ["human", "dwarf", "ogre"]}
 	],
 	"marks": [
-		{"id": "none", "name": "MARK_NONE", "pieces": []}
+		{"id": "none", "name": "MARK_NONE", "pieces": []},
+		{"id": "scar_eye", "name": "MARK_SCAR_EYE", "pieces": ["mark_scar_eye"], "races": ["human", "elf", "dwarf"]},
+		{"id": "scar_cheek", "name": "MARK_SCAR_CHEEK", "pieces": ["mark_scar_cheek"], "races": ["human", "elf", "dwarf"]},
+		{"id": "warpaint", "name": "MARK_WARPAINT", "pieces": ["mark_warpaint"], "races": ["human", "elf", "dwarf"]},
+		{"id": "runes", "name": "MARK_RUNES", "pieces": ["mark_runes"], "races": ["human", "elf", "dwarf"]},
+		{"id": "freckles", "name": "MARK_FRECKLES", "pieces": ["mark_freckles"], "races": ["human", "elf", "dwarf"]}
 	]
 }
