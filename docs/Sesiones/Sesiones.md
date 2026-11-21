@@ -20,3 +20,4 @@ Una nota por sesión de trabajo con Claude o por partida de prueba con amigos (p
 - [[Sesión 2026-11-18 — Jefes del culto y 0.6.1]]
 - [[Sesión 2026-11-19 — Plan 5 objetos]]
 - [[Sesión 2026-11-20 — Plan 6.1 iluminación y opciones]]
+- [[Sesión 2026-11-21 — Plan 7 identidad y razas]]

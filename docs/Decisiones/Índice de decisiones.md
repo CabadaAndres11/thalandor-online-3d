@@ -25,6 +25,7 @@ Cada decisión importante tiene su nota (plantilla **Decisión**). Las pendiente
 - [[D-013 Mejoras del nivel 50 revisadas]]
 - [[D-014 Objetos por clase, armas a dos manos y tramos épicos]]
 - [[D-015 Vóxel 2× y renovación gráfica en cuatro partes]]
+- [[D-016 Razas solo de aspecto con cabeza propia]]
 
 ---
 ← [[00 Inicio|Inicio]]

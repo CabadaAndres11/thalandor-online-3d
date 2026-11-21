@@ -1,7 +1,7 @@
 ---
 tags: [gdd]
 estado: diseñado
-actualizado: 2026-11-19
+actualizado: 2026-11-21
 ---
 
 # 11. Arte y audio **[En curso]** (0.5.0: todo el arte es propio, hecho por código)
@@ -22,6 +22,8 @@ actualizado: 2026-11-19
 - **Fuentes de assets [Decidido, [[D-010 Arte propio hecho por código]]]:** todo el arte se genera con los scripts de `tools/art/`; no se usan packs de terceros.
 - **Créditos:** archivo `CREDITS.md` con autor y licencia de cada asset, generado o mantenido con cada importación.
 - **Logo e icono [Implementado]:** logo "Thalandor Online" con el Sol Negro del culto en las O, en la pantalla de inicio (`assets/brand/logo.png`); el mismo sol como icono del ejecutable y de la ventana (`assets/brand/icono.ico`).
+- **Razas [Implementado 0.10.0]:** cabezas propias del ogro y del lagarto en `tools/art/races_v2.mjs`, que se escriben junto al cuerpo v2 (`human_v2.json`, apartado `heads`). Orejas, nariz, cola, crestas, peinados, barbas y rasgos nuevos en `make_pieces_v2.mjs`. Ver [[D-016 Razas solo de aspecto con cabeza propia]].
+- **Escena del menú [Implementado 0.10.0]:** altar del Sol Negro, columnas rotas, braseros, velas y losas en `make_props.mjs`, a vóxel de 5 cm. La escena es un dato (`data/scenes/title_altar.json`) y la construye `MenuScene`. Los cultistas usan la pose de oración en bucle (`pray`).
 - **Gráficos provisionales:** cubos y cápsulas de colores hasta tener los modelos definitivos.
 - **Audio:** música y efectos de packs gratuitos con licencia libre; volumen por canal (música, efectos, interfaz).
 

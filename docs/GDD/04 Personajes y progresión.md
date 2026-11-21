@@ -133,11 +133,18 @@ final = (base de clase + atributos + suma de bonos planos) × (1 + suma de bonos
 
 ## 4.10 Creación y apariencia del personaje **[Implementado]** (Plan 2, versión 0.2.0)
 - Hasta **8 personajes** por jugador.
-- Se eligen **nombre, clase y apariencia**.
+- Se eligen **nombre, raza y apariencia**. La clase se elige en el juego, con Brann.
 - **Apariencia vóxel:** tipo de cuerpo, tono de piel, peinado, color de pelo y color de ojos; los modelos se arman por piezas (cabeza, torso, brazos, piernas).
 - **Ropa inicial:** la decide la clase. Después cambia con el equipo ([[08 Botín y economía|§8]]).
 - **Nombres:** de 2 a 16 caracteres (letras con tildes, números, espacios, `-` y `'`), sin repetir entre los personajes del mismo jugador.
 - **Implementado (0.2.0):** modelo base de **Kenney Blocky Characters** (CC0, 27 vóxeles de alto, animado por piezas rígidas). Apariencia con **2 cuerpos** (esbelto y robusto, por proporciones), **8 tonos de piel**, **7 colores de ojos** (incluido rojo), **8 peinados** (corto, media melena, flequillo, calvo, y melena, coleta, moño y cresta en vóxel), **11 colores de pelo** (incluido rojo intenso) y **5 barbas**. La ropa inicial de cada clase es una capa de textura más piezas vóxel: hombreras del Guerrero, capucha baja del Clérigo, sombrero del Mago, capucha del Arquero y pañuelo del Asesino. Opciones en `data/characters/`.
+- **Razas [Implementado 0.10.0]** ([[D-016 Razas solo de aspecto con cabeza propia]]): **humano, elfo, enano, ogro y hombre lagarto**, solo de aspecto. Comparten el cuerpo v2 con proporciones propias:
+  - el enano, más bajo (0,8) y ancho;
+  - el elfo, alto y esbelto, con orejas largas;
+  - el ogro, enorme (1,3), con cabeza propia y colmillos;
+  - el lagarto, con cabeza propia, hocico y cola.
+  El ogro y el lagarto tienen sus propias pieles. El lagarto lleva **crestas** en lugar de pelo. Cada opción de apariencia indica qué razas la admiten. Datos en `data/characters/races.json`.
+- **Apariencia ampliada [Implementado 0.10.0]:** 16 peinados para las razas de cabeza humana, 4 crestas, 10 barbas (dos enanas), 16 colores de pelo, 9 de ojos, 22 pieles y **rasgos** de la cara (cicatrices, pintura de guerra, tatuaje rúnico y pecas). Un personaje anterior a la 0.10.0 se abre como humano.
 
 ---
 ← [[00 Índice del GDD|Índice del GDD]]

@@ -1,7 +1,7 @@
 ---
 tags: [gdd]
 estado: diseñado
-actualizado: 2026-11-19
+actualizado: 2026-11-21
 ---
 
 # 14. Hoja de ruta **[En curso]** (revisada el 2026-11-19, tras la 0.7.0)
@@ -16,6 +16,8 @@ Cada plan se diseña (spec), se planifica, se implementa con tests, se prueba y 
 | 3 | **Combate y las 5 clases** (3.1 y 3.2: vóxel propio, bestiario del prólogo, Brann) | 0.3.0–0.5.0 |
 | 4 | **Progresión:** experiencia sin tope, atributos, talentos, mejoras del nivel 50 | 0.6.x |
 | 5 | **Objetos:** botín, inventario, equipo visible por clase y tramo, mercader, durabilidad, pociones | 0.7.0 |
+| 6 | **Renovación gráfica:** vóxel 2×, iluminación, ambientes, equipo, monstruos y ropa que sigue al cuerpo | 0.8.0–0.9.7 |
+| 7 | **Identidad y creación de personaje:** cinco razas, apariencia ampliada, pantalla de inicio con el altar del Sol Negro y menús de piedra y oro | 0.10.0 |
 
 ## Pendientes (nuevo orden)
 El orden pone primero lo que cambia la base de todo lo demás: la renovación gráfica antes de crear más modelos, y el mundo antes de esconder secretos en él.

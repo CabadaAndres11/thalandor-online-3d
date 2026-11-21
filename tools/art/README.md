@@ -42,3 +42,11 @@ node --test tools/art/tests/
 - `sculpt.mjs`: formas redondeadas (elipsoide, cápsula, cilindro, caja redondeada), `carve`, `mirrorX`, `shellAround`, `tone` y `shadeByFacing`.
 - Tonos de textura de cada canal teñible: `TEX_D(t)` (t − 40) y `TEX_L(t)` (t − 50); `SHADE` y `LIGHT` quedan para la forma.
 - Capturas: sets `bodies`, `faces`, `heads` y `heads_back` de `render_characters.gd`.
+
+## Razas y menú (Plan 7)
+- `races_v2.mjs`: cabezas del ogro y del lagarto. `make_humans.mjs` las escribe junto al cuerpo v2 (`human_v2_head_<raza>.vox`, apartado `heads` de `human_v2.json`).
+- `make_pieces_v2.mjs` añade las orejas élficas, la nariz enana, la cola, las crestas, 8 peinados, 5 barbas y los rasgos de la cara.
+- `make_props.mjs` hace el decorado del menú: `altar_sun`, `column_broken`, `brazier`, `candles` y `flagstones`.
+- `make_icons.mjs` hace también los iconos del menú (`assets/icons/ui/`).
+- Capturas de las razas: `--set=races`, `races_back`, `races_side`, `hair_new`, `faces_new` y `crests`; cualquier set con `_close` acerca la cámara a las cabezas. El equipo en otra raza: `--set=gear --race=ogre --tier=3`.
+- Capturas del menú: `-s tests/helpers/render_menu.gd -- --shot=title|select|create` (solo la escena) y `-s tests/helpers/render_main.gd -- --screen=title|select|create` (con la interfaz).
