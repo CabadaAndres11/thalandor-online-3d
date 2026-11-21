@@ -195,3 +195,23 @@ func test_roundtrip_v4() -> void:
 
 func test_new_character_is_a_villager_with_a_wood_sword() -> void:
 	assert_eq(_worn(CharacterData.new()), ["wood_sword"])
+
+
+## A 0.9.7 character has no race: it opens as a human with the same looks.
+func test_v4_without_race_loads_as_human() -> void:
+	var d := _sample().to_dict()
+	var app := {"body": "robust", "skin": "skin_4", "eyes": "green", "hair_style": "hair_long", "hair_color": "red", "beard": "short"}
+	d.appearance = app
+	var c := CharacterData.from_dict(d, catalog)
+	assert_eq(c.appearance.race, "human")
+	assert_eq(c.appearance.marks, "none")
+	for kind: String in app:
+		assert_eq(c.appearance[kind], app[kind], kind)
+
+
+func test_unknown_race_falls_back() -> void:
+	var d := _sample().to_dict()
+	d.appearance = {"race": "dragon", "hair_style": "hair_long"}
+	var c := CharacterData.from_dict(d, catalog)
+	assert_eq(c.appearance.race, "human")
+	assert_eq(c.appearance.hair_style, "hair_long")

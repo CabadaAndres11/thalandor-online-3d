@@ -450,3 +450,14 @@ func test_snapshot_limits_to_nearest_32_monsters() -> void:
 	var rows_a: Array = _all_of(_messages(a), Protocol.Msg.SNAPSHOT)[-1].monsters
 	var elite_row: Array = rows_a.filter(func(r: Array) -> bool: return int(r[0]) == 1000)[0]
 	assert_eq(int(elite_row[8]), 1, "the elite flag travels in the row")
+
+
+func test_host_sanitizes_foreign_race_options() -> void:
+	var a := _guest("Ana", VERSION, Protocol.VERSION, "", {"race": "ogre", "skin": "skin_1", "beard": "full"})
+	host.tick()
+	var row: Array = _first(a, Protocol.Msg.WELCOME).roster[0]
+	var catalog := CharacterCatalog.load_default()
+	assert_eq(row[4].race, "ogre")
+	var skins: Array = catalog.options_for("skin", "ogre").map(func(o: Dictionary) -> String: return o.id)
+	assert_has(skins, row[4].skin)
+	assert_eq(row[4].beard, "none")
