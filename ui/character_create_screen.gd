@@ -9,7 +9,7 @@ signal create_requested(char_name: String, appearance: Dictionary)
 signal back_requested()
 
 const LABEL_KEYS := {
-	"body": "APPEAR_BODY", "skin": "APPEAR_SKIN", "eyes": "APPEAR_EYES",
+	"race": "APPEAR_RACE", "body": "APPEAR_BODY", "skin": "APPEAR_SKIN", "eyes": "APPEAR_EYES", "marks": "APPEAR_MARKS",
 	"hair_style": "APPEAR_HAIR_STYLE", "hair_color": "APPEAR_HAIR_COLOR", "beard": "APPEAR_BEARD",
 }
 

@@ -8,7 +8,7 @@ func before_each() -> void:
 
 
 func test_all_kinds_have_expected_counts() -> void:
-	var expected := {"body": 2, "skin": 8, "eyes": 7, "hair_style": 8, "hair_color": 11, "beard": 5}
+	var expected := {"race": 5, "body": 2, "skin": 22, "eyes": 9, "hair_style": 8, "hair_color": 16, "beard": 5, "marks": 1}
 	for kind: String in expected:
 		assert_eq(catalog.options(kind).size(), expected[kind], kind)
 
@@ -135,7 +135,7 @@ func test_sanitize_drops_extra_keys_and_non_strings() -> void:
 		junk["k%d" % i] = i
 	junk["beard"] = 5
 	var app := catalog.sanitize_appearance(junk)
-	assert_eq(app.keys().size(), 6)
+	assert_eq(app.keys().size(), CharacterCatalog.KINDS.size())
 	for kind: String in CharacterCatalog.KINDS:
 		assert_true(app.has(kind), kind)
 		assert_false(catalog.option(kind, app[kind]).is_empty(), kind)
@@ -276,3 +276,58 @@ func test_monster_look_is_v2() -> void:
 	assert_eq(look.body, "v2")
 	for p: Dictionary in look.get("pieces", []):
 		assert_false(p.has("voxel_scale"), str(p.id))
+
+
+# --- Races (Plan 7) ---------------------------------------------------------------
+
+func test_races_loaded() -> void:
+	var ids: Array = catalog.options("race").map(func(o: Dictionary) -> String: return o.id)
+	assert_eq(ids, ["human", "elf", "dwarf", "ogre", "lizard"])
+	assert_eq(float(catalog.race_def("dwarf").height), 0.8)
+	assert_eq(catalog.default_appearance().race, "human")
+
+
+func test_options_filtered_by_race() -> void:
+	var fake := {"id": "x_only_lizard", "races": ["lizard"]}
+	catalog._options["hair_style"].append(fake)
+	var lizard: Array = catalog.options_for("hair_style", "lizard").map(func(o: Dictionary) -> String: return o.id)
+	var human: Array = catalog.options_for("hair_style", "human").map(func(o: Dictionary) -> String: return o.id)
+	catalog._options["hair_style"].erase(fake)
+	assert_has(lizard, "x_only_lizard")
+	assert_does_not_have(human, "x_only_lizard")
+
+
+func test_sanitize_fixes_options_of_other_race() -> void:
+	var app := catalog.sanitize_appearance({"race": "lizard", "hair_style": "short", "skin": "skin_1", "beard": "full"})
+	for kind: String in ["hair_style", "skin", "beard"]:
+		var valid: Array = catalog.options_for(kind, "lizard").map(func(o: Dictionary) -> String: return o.id)
+		assert_has(valid, app[kind], kind)
+	assert_eq(app.hair_style, catalog.options_for("hair_style", "lizard")[0].id)
+
+
+func test_sanitize_missing_race_is_human() -> void:
+	var app := catalog.sanitize_appearance({"hair_style": "hair_long"})
+	assert_eq(app.race, "human")
+	assert_eq(app.marks, "none")
+	assert_eq(app.hair_style, "hair_long")
+
+
+func test_random_is_always_valid() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 11
+	var races := {}
+	for i in 200:
+		var app := catalog.random_appearance(rng)
+		races[app.race] = true
+		assert_eq(catalog.sanitize_appearance(app), app)
+	assert_eq(races.size(), 5)
+
+
+func test_resolve_has_race_keys() -> void:
+	var dwarf := catalog.resolve("warrior", {"race": "dwarf"})
+	assert_eq(float(dwarf.race_height), 0.8)
+	assert_true(dwarf.race_scale is Dictionary)
+	var human := catalog.resolve("warrior", {})
+	assert_eq(human.head_file, "")
+	assert_eq(float(human.race_height), 1.0)
+	assert_true(human.head_fit is Dictionary)

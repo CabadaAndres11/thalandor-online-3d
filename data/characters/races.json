@@ -1,0 +1,18 @@
+[
+	{"id": "human", "name": "RACE_HUMAN", "desc": "RACE_HUMAN_DESC", "height": 1.0, "scale": {},
+		"head_file": "", "pieces": [], "head_fit": {"scale": 1.0, "offset": [0, 0, 0]}},
+	{"id": "elf", "name": "RACE_ELF", "desc": "RACE_ELF_DESC", "height": 1.04,
+		"scale": {"torso": [0.94, 1.0, 0.95], "arm": [0.94, 1.0, 0.94], "leg": [0.96, 1.04, 0.96]},
+		"head_file": "", "pieces": ["ears_elf"], "head_fit": {"scale": 1.0, "offset": [0, 0, 0]}},
+	{"id": "dwarf", "name": "RACE_DWARF", "desc": "RACE_DWARF_DESC", "height": 0.8,
+		"scale": {"torso": [1.2, 0.95, 1.15], "arm": [1.12, 0.9, 1.12], "leg": [1.1, 0.82, 1.1], "head": [1.08, 1.08, 1.08]},
+		"head_file": "", "pieces": ["nose_dwarf"], "head_fit": {"scale": 1.0, "offset": [0, 0, 0]}},
+	{"id": "ogre", "name": "RACE_OGRE", "desc": "RACE_OGRE_DESC", "height": 1.3,
+		"scale": {"torso": [1.3, 1.0, 1.2], "arm": [1.2, 1.08, 1.2], "leg": [1.15, 0.95, 1.15]},
+		"head_file": "res://assets/characters/vox_v2/head_ogre.vox", "pieces": [],
+		"head_fit": {"scale": 1.15, "offset": [0, 0, 1]}},
+	{"id": "lizard", "name": "RACE_LIZARD", "desc": "RACE_LIZARD_DESC", "height": 1.05,
+		"scale": {"torso": [0.94, 1.0, 0.95], "leg": [0.95, 1.04, 0.95]},
+		"head_file": "res://assets/characters/vox_v2/head_lizard.vox", "pieces": ["tail_lizard"],
+		"head_fit": {"scale": 1.05, "offset": [0, 0, 1]}}
+]

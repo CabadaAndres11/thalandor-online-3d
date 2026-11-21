@@ -898,3 +898,16 @@ BTN_RESET,Restablecer
 AMBIENCE_LIST,"Ambiente: %s. Disponibles: %s"
 AMBIENCE_SET,"Ambiente cambiado a %s (solo en tu pantalla)"
 AMBIENCE_UNKNOWN,"No existe el ambiente «%s». Disponibles: %s"
+APPEAR_RACE,Raza
+APPEAR_MARKS,Rasgos
+RACE_HUMAN,Humano
+RACE_ELF,Elfo
+RACE_DWARF,Enano
+RACE_OGRE,Ogro
+RACE_LIZARD,Hombre lagarto
+RACE_HUMAN_DESC,"Gente de las llanuras y las ciudades de Thalandor, tenaz y de mil oficios."
+RACE_ELF_DESC,"Altos y esbeltos, guardan los bosques antiguos y recuerdan lo que otros olvidan."
+RACE_DWARF_DESC,"Bajos y recios, forjan en las entrañas de la montaña y nunca olvidan una deuda."
+RACE_OGRE_DESC,"Enormes y de piel curtida, temidos por su fuerza y leales hasta el final."
+RACE_LIZARD_DESC,"Escamosos hijos de los pantanos, pacientes como el agua quieta."
+MARK_NONE,Ninguno

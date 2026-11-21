@@ -4,7 +4,9 @@ extends RefCounted
 ## pieces. Sanitizes untrusted appearances (saves, imports, the network) and resolves a
 ## class + appearance into the "look" HumanRig builds.
 
-const KINDS := ["body", "skin", "eyes", "hair_style", "hair_color", "beard"]
+const KINDS := ["race", "body", "skin", "eyes", "hair_style", "hair_color", "beard", "marks"]
+## Races (Plan 7): only looks. Height, proportions, head and pieces of each one.
+const RACES_PATH := "res://data/characters/races.json"
 ## Every character starts as a villager and picks a class in the game (with Brann).
 const DEFAULT_CLASS := "villager"
 const APPEARANCE_PATH := "res://data/characters/appearance.json"
@@ -28,6 +30,7 @@ var _options: Dictionary = {} # kind -> Array of option dicts
 var _classes: Array = []
 var _pieces: Dictionary = {}
 var _pieces_v2: Dictionary = {}
+var _races: Dictionary = {} # id -> race dict
 
 
 static func load_default() -> CharacterCatalog:
@@ -46,6 +49,17 @@ func option(kind: String, id: String) -> Dictionary:
 		if o.id == id:
 			return o
 	return {}
+
+
+## The options of a kind that a race can wear (an option without "races" fits every race).
+func options_for(kind: String, race: String) -> Array:
+	if kind == "race":
+		return options(kind)
+	return options(kind).filter(func(o: Dictionary) -> bool: return not o.has("races") or (o.races as Array).has(race))
+
+
+func race_def(id: String) -> Dictionary:
+	return _races.get(id, {})
 
 
 func classes() -> Array:
@@ -82,8 +96,9 @@ func piece_ids() -> Array:
 
 func default_appearance() -> Dictionary:
 	var app := {}
+	var race := str(options("race")[0].id) if not options("race").is_empty() else ""
 	for kind: String in KINDS:
-		var list := options(kind)
+		var list := options_for(kind, race)
 		app[kind] = list[0].id if not list.is_empty() else ""
 	return app
 
@@ -99,18 +114,27 @@ func sanitize_appearance(app: Variant) -> Dictionary:
 	var out := default_appearance()
 	if not app is Dictionary:
 		return out
+	var r: Variant = (app as Dictionary).get("race")
+	var race: String = r if r is String and not option("race", r).is_empty() else out.race
 	for kind: String in KINDS:
-		var v: Variant = (app as Dictionary).get(kind)
-		if v is String and not option(kind, v).is_empty():
+		var valid := options_for(kind, race)
+		var v: Variant = (app as Dictionary).get(kind) if kind != "race" else race
+		var ids: Array = valid.map(func(o: Dictionary) -> String: return o.id)
+		if v is String and ids.has(v):
 			out[kind] = v
+		else:
+			out[kind] = ids[0] if not ids.is_empty() else ""
 	return out
 
 
 func random_appearance(rng: RandomNumberGenerator) -> Dictionary:
 	var app := {}
+	var races := options("race")
+	var race := str(races[rng.randi_range(0, races.size() - 1)].id)
 	for kind: String in KINDS:
-		var list := options(kind)
-		app[kind] = list[rng.randi_range(0, list.size() - 1)].id
+		var list := options_for(kind, race)
+		app[kind] = list[rng.randi_range(0, list.size() - 1)].id if not list.is_empty() else ""
+	app.race = race
 	return app
 
 
@@ -172,6 +196,13 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 	var beard := str(option("beard", app.beard).get("piece", ""))
 	if beard != "":
 		pieces.append(piece_entry(beard))
+	var race := race_def(app.race)
+	for id: String in race.get("pieces", []) + option("marks", app.marks).get("pieces", []):
+		if not piece(id).is_empty() or not piece_v2(id).is_empty():
+			pieces.append(piece_entry(id))
+	var head_file := str(race.get("head_file", ""))
+	if head_file != "" and not FileAccess.file_exists(head_file):
+		head_file = "" # not sculpted yet: the human head
 	return {
 		"skin_color": Color(str(option("skin", app.skin).color)),
 		"eyes_color": Color(str(option("eyes", app.eyes).color)),
@@ -181,6 +212,11 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 		"secondary": Color(str(c.get("secondary", "#808080"))),
 		"trousers": Color(str(c.trousers)) if c.has("trousers") else Color(str(c.get("primary", "#808080"))).darkened(HumanRig.TROUSERS_DARKEN),
 		"body_scale": option("body", app.body).get("scale", {}),
+		"race": str(app.race),
+		"race_height": float(race.get("height", 1.0)),
+		"race_scale": race.get("scale", {}),
+		"head_file": head_file,
+		"head_fit": race.get("head_fit", {"scale": 1.0, "offset": [0, 0, 0]}),
 		"grip": grip,
 		"auras": auras,
 		"pieces": pieces,
@@ -203,6 +239,10 @@ func _load(appearance_path: String, classes_path: String, pieces_path: String) -
 	if app is Dictionary:
 		for kind: String in KINDS:
 			_options[kind] = (app as Dictionary).get(kind, [])
+	var races: Variant = _read_json(RACES_PATH)
+	if races is Array:
+		for r: Dictionary in races:
+			_races[str(r.id)] = r
 	var cls: Variant = _read_json(classes_path)
 	if cls is Array:
 		_classes = cls
