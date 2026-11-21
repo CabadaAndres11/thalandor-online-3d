@@ -21,7 +21,7 @@ func test_builds_from_data() -> void:
 func test_shots_move_the_camera() -> void:
 	scene.set_shot("select", true)
 	var select := scene.camera.global_position
-	assert_almost_eq(select, Vector3(-1.1, 1.45, 7.8), Vector3.ONE * 0.01)
+	assert_almost_eq(select, Vector3(0.4, 1.45, 7.8), Vector3.ONE * 0.01)
 	scene.set_shot("create", true)
 	assert_ne(scene.camera.global_position, select)
 	scene.set_shot("title", true)
@@ -37,9 +37,9 @@ func test_shot_change_is_smooth() -> void:
 	scene._process(0.1)
 	var mid := scene.camera.global_position
 	assert_ne(mid, start)
-	assert_gt(mid.distance_to(Vector3(-1.3, 1.35, 6.8)), 0.05, "not there yet")
+	assert_gt(mid.distance_to(Vector3(-1.5, 1.3, 8.4)), 0.05, "not there yet")
 	scene._process(2.0)
-	assert_almost_eq(scene.camera.global_position, Vector3(-1.3, 1.35, 6.8), Vector3.ONE * 0.01)
+	assert_almost_eq(scene.camera.global_position, Vector3(-1.5, 1.3, 8.4), Vector3.ONE * 0.01)
 
 
 func test_show_character_replaces_hero() -> void:

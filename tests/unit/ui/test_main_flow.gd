@@ -526,3 +526,52 @@ func test_leaving_clears_the_chat() -> void:
 	main.chat.add_message("Ana", "hola", false)
 	main._leave_game()
 	assert_eq(main.chat.visible_lines().size(), 0, "a new session starts with an empty chat")
+
+
+# --- The altar scene behind the menus (Plan 7) --------------------------------------
+
+func test_menu_scene_follows_screens() -> void:
+	assert_not_null(main.menu_scene, "the title stands on the altar scene")
+	assert_eq(main.menu_scene.hero, null, "nobody in front of the altar on the title")
+	main._show_create()
+	assert_not_null(main.menu_scene.hero, "the new character stands in front of the altar")
+	main.create_screen.next_option("race")
+	var elf := HumanRig.create("villager", {"race": "elf"})
+	assert_almost_eq(main.menu_scene.hero.height(), elf.height(), 0.01)
+	elf.free()
+	main.title.play_requested.emit()
+	assert_eq(main.menu_scene.hero, null, "no characters yet: nobody")
+
+
+func test_dragging_the_create_screen_turns_the_hero() -> void:
+	main._show_create()
+	var before := main.menu_scene.hero.rotation_degrees.y
+	main.create_screen.turn_requested.emit(25.0)
+	assert_almost_eq(main.menu_scene.hero.rotation_degrees.y, before + 25.0, 0.01)
+
+
+func test_menu_scene_freed_in_game_and_back() -> void:
+	main._on_play("Prueba")
+	await wait_physics_frames(3)
+	assert_null(main.menu_scene, "the game has its own world")
+	assert_eq(main.find_children("*", "MenuScene", true, false).size(), 0)
+	main._leave_game()
+	await wait_physics_frames(1)
+	assert_not_null(main.menu_scene, "back on the altar")
+	assert_true(main.select_screen.visible)
+
+
+func test_credits_open_and_close() -> void:
+	main.title.credits_requested.emit()
+	assert_true(main.credits_window.visible)
+	main.credits_window.close_requested.emit()
+	assert_false(main.credits_window.visible)
+
+
+func test_menus_use_stone_theme() -> void:
+	for screen: Control in [main.title, main.select_screen, main.create_screen]:
+		var normal := screen.theme.get_stylebox("normal", "Button") as StyleBoxFlat
+		assert_eq(normal.border_color, StoneTheme.GOLD_DIM, screen.name)
+	var holo := main.combat_hud.theme
+	if holo != null:
+		assert_ne((holo.get_stylebox("normal", "Button") as StyleBoxFlat).border_color, StoneTheme.GOLD_DIM)

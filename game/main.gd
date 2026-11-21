@@ -24,6 +24,9 @@ var game: GameSession
 var title: TitleScreen
 var select_screen: CharacterSelectScreen
 var create_screen: CharacterCreateScreen
+## The black sun altar behind the menus (Plan 7); freed while a game runs.
+var menu_scene: MenuScene
+var credits_window: CreditsWindow
 var chat: ChatBox
 var combat_hud: CombatHud
 var party_frames: PartyFrames
@@ -72,15 +75,23 @@ func _ready() -> void:
 	theme.default_font_size = 24 # Teko is condensed: a bit larger than the default font
 	HoloTheme.apply(theme)
 
+	# The menus wear the stone and gold of the logo; the game windows stay holographic.
+	var menu_theme := Theme.new()
+	menu_theme.default_font_size = 24
+	StoneTheme.apply(menu_theme)
+	_ensure_menu_scene()
+
 	title = TitleScreen.new()
-	title.theme = theme
+	title.theme = menu_theme
 	title.play_requested.connect(_show_select)
 	title.quit_requested.connect(_quit)
 	title.options_requested.connect(_show_options)
+	title.credits_requested.connect(_show_credits)
 	_add_screen(title)
 
 	select_screen = CharacterSelectScreen.new()
-	select_screen.theme = theme
+	select_screen.theme = menu_theme
+	select_screen.look_changed.connect(_on_menu_look)
 	select_screen.play_requested.connect(_on_select_play)
 	select_screen.join_requested.connect(_on_select_join)
 	select_screen.create_requested.connect(_show_create)
@@ -91,10 +102,18 @@ func _ready() -> void:
 	_add_screen(select_screen)
 
 	create_screen = CharacterCreateScreen.new()
-	create_screen.theme = theme
+	create_screen.theme = menu_theme
+	create_screen.look_changed.connect(_on_menu_look)
+	create_screen.turn_requested.connect(_on_turn_hero)
 	create_screen.create_requested.connect(_on_create_requested)
 	create_screen.back_requested.connect(_show_select)
 	_add_screen(create_screen)
+
+	credits_window = CreditsWindow.new()
+	credits_window.theme = menu_theme
+	credits_window.visible = false
+	credits_window.close_requested.connect(func() -> void: credits_window.visible = false)
+	_ui.add_child(credits_window)
 
 	combat_hud = CombatHud.new()
 	combat_hud.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -539,10 +558,15 @@ func _show_only(screen: Control) -> void:
 
 
 func _show_title() -> void:
+	_ensure_menu_scene()
+	menu_scene.set_shot("title")
+	menu_scene.show_character({})
 	_show_only(title)
 
 
 func _show_select() -> void:
+	_ensure_menu_scene()
+	menu_scene.set_shot("select")
 	var list := store.load_all()
 	select_screen.set_characters(list, settings.last_character_id)
 	select_screen.set_code(settings.last_code)
@@ -553,8 +577,42 @@ func _show_select() -> void:
 
 func _show_create() -> void:
 	# The name typed in 0.1.x is suggested for the first character.
+	_ensure_menu_scene()
+	menu_scene.set_shot("create")
 	create_screen.reset(settings.player_name if store.load_all().is_empty() else "")
 	_show_only(create_screen)
+
+
+## The altar scene, built when a menu needs it (at start and back from a game).
+func _ensure_menu_scene() -> void:
+	if menu_scene != null:
+		return
+	menu_scene = MenuScene.new()
+	menu_scene.name = "MenuScene"
+	add_child(menu_scene)
+	menu_scene.build()
+	menu_scene.set_quality(settings.quality)
+
+
+func _free_menu_scene() -> void:
+	if menu_scene != null:
+		remove_child(menu_scene)
+		menu_scene.queue_free()
+		menu_scene = null
+
+
+func _on_menu_look(look: Dictionary) -> void:
+	_ensure_menu_scene()
+	menu_scene.show_character(look)
+
+
+func _on_turn_hero(deg: float) -> void:
+	if menu_scene != null:
+		menu_scene.turn_hero(deg)
+
+
+func _show_credits() -> void:
+	credits_window.visible = true
 
 
 func _on_create_requested(char_name: String, appearance: Dictionary) -> void:
@@ -777,6 +835,8 @@ func _on_settings_changed() -> void:
 		SettingsApplier.apply_quality_globals(settings.quality)
 		if game != null:
 			game.set_graphics_quality(settings.quality)
+		if menu_scene != null:
+			menu_scene.set_quality(settings.quality)
 	SettingsApplier.apply_audio(settings)
 	_applied = settings.duplicate_store()
 
@@ -790,6 +850,7 @@ func _on_resume() -> void:
 
 
 func _start_game() -> void:
+	_free_menu_scene() # the game builds its own world
 	game = GameSession.new()
 	game.name = "Game"
 	if net_mode != "":
