@@ -42,7 +42,7 @@ Cada punto tiene su test en la tarea que lo implementa (1 → T1 y T10; 2 → T3
 
 ---
 
-### T1 · Razas en el catálogo
+### Task 1: Razas en el catálogo
 **Archivos:**
 - Crear `data/characters/races.json`.
 - Modificar `game/characters/character_catalog.gd` y `data/characters/appearance.json` (añadir las filas `race` y `marks`; de momento solo `none` en `marks`).
@@ -81,7 +81,7 @@ Cada punto tiene su test en la tarea que lo implementa (1 → T1 y T10; 2 → T3
 - [ ] Ejecutar los tests: deben **pasar**, y también la suite completa (los tests de apariencia que esperaban 6 filas se actualizan a 8).
 - [ ] Commit: `feat: races and per-race appearance options in the character catalog`.
 
-### T2 · Guardado, importación y red
+### Task 2: Guardado, importación y red
 **Archivos:**
 - Tests: `tests/unit/save/test_character_data.gd` y `tests/unit/net/test_host_session.gd`.
 - Código: solo si algún test lo pide. Los tres caminos ya pasan por `sanitize_appearance`.
@@ -94,7 +94,7 @@ Cada punto tiene su test en la tarea que lo implementa (1 → T1 y T10; 2 → T3
 - [ ] Ejecutar: deben pasar sin cambiar código. Si alguno falla, arreglar el saneado en el sitio donde falle.
 - [ ] Commit: `test: old saves and network appearances with races`.
 
-### T3 · HumanRig con proporciones de raza
+### Task 3: HumanRig con proporciones de raza
 **Archivos:**
 - Modificar `game/characters/human_rig.gd` y `game/monster_avatar.gd` (`hover_height` y la altura de la barra de vida, si usan una constante).
 - Tests: `tests/unit/characters/test_human_rig.gd`.
@@ -124,7 +124,7 @@ Cada punto tiene su test en la tarea que lo implementa (1 → T1 y T10; 2 → T3
 - [ ] Ejecutar `test_human_rig`, `test_cloth` y la suite: deben **pasar**. Las capas (`CAPE_ANCHORS`) siguen funcionando con el ogro.
 - [ ] Commit: `feat: race proportions in HumanRig (pivots, pieces and custom heads)`.
 
-### T4 · Arte de las razas y la apariencia nueva
+### Task 4: Arte de las razas y la apariencia nueva
 **Archivos:**
 - Modificar:
   - `tools/art/human_v2.mjs`, con `headOgreV2()` y `headLizardV2()` exportadas; las escribe `make_humans.mjs` como `head_ogre.vox` y `head_lizard.vox` en `assets/characters/vox_v2/`;
@@ -153,7 +153,7 @@ Cada punto tiene su test en la tarea que lo implementa (1 → T1 y T10; 2 → T3
 - [ ] Capturas de `--set=races` (las 5 razas con el mismo peinado y ropa) y `--set=variety`, para que las revise el usuario.
 - [ ] Commit: `art: race heads, ears, tail, crests, new hair, beards and face marks`.
 
-### T5 · El equipo en las cabezas de ogro y lagarto
+### Task 5: El equipo en las cabezas de ogro y lagarto
 **Archivos:**
 - Modificar `races.json` (los `head_fit` definitivos) y `character_catalog.gd` (ajuste opcional por pieza: `"fit": {"ogre": {"scale": 1.1, "offset": [0, 2, 1]}}` en `pieces_v2.json`).
 - Tests: `test_character_catalog.gd` y `test_human_rig.gd`.
@@ -170,7 +170,7 @@ Cada punto tiene su test en la tarea que lo implementa (1 → T1 y T10; 2 → T3
 - [ ] Ejecutar los tests: deben **pasar**. Hacer capturas por tramo para el usuario.
 - [ ] Commit: `fix: fit headgear to ogre and lizard heads`.
 
-### T6 · Tema de piedra y oro
+### Task 6: Tema de piedra y oro
 **Archivos:**
 - Crear `ui/stone_theme.gd`.
 - Tests: `tests/unit/ui/test_stone_theme.gd`.
@@ -187,7 +187,7 @@ Cada punto tiene su test en la tarea que lo implementa (1 → T1 y T10; 2 → T3
 - [ ] Implementar y comprobar que pasa.
 - [ ] Commit: `feat: stone and gold menu theme`.
 
-### T7 · Decorado del altar y pose de oración
+### Task 7: Decorado del altar y pose de oración
 **Archivos:**
 - Modificar:
   - `tools/art/make_props.mjs`: `altar_sun` (un altar de piedra con el Sol Negro en vóxel brillante 253 con tono rojo), `column_broken`, `brazier`, `candles` y `flagstones`, a 5 cm/vóxel como la antorcha;
@@ -199,7 +199,7 @@ Cada punto tiene su test en la tarea que lo implementa (1 → T1 y T10; 2 → T3
 - [ ] Implementar, generar `assets/props/` y comprobar que pasan.
 - [ ] Commit: `art: black sun altar props and a praying loop`.
 
-### T8 · Escena del menú
+### Task 8: Escena del menú
 **Archivos:**
 - Crear `game/menu_scene.gd` y `data/scenes/title_altar.json`.
 - Tests: `tests/unit/game/test_menu_scene.gd`.
@@ -234,7 +234,7 @@ Cada punto tiene su test en la tarea que lo implementa (1 → T1 y T10; 2 → T3
 - [ ] Implementar y comprobar que pasan.
 - [ ] Commit: `feat: black sun altar menu scene driven by data`.
 
-### T9 · Pantalla de inicio y créditos
+### Task 9: Pantalla de inicio y créditos
 **Archivos:**
 - Modificar `ui/title_screen.gd`.
 - Crear `ui/credits_window.gd`.
@@ -265,7 +265,7 @@ Cada punto tiene su test en la tarea que lo implementa (1 → T1 y T10; 2 → T3
 - [ ] Implementar y comprobar que pasan.
 - [ ] Commit: `feat: final title screen with corner play button, icons and credits`.
 
-### T10 · Selección y creación sobre la escena
+### Task 10: Selección y creación sobre la escena
 **Archivos:**
 - Modificar `ui/character_select_screen.gd` y `ui/character_create_screen.gd`.
 - Tests: `tests/unit/ui/test_character_screens.gd`.
@@ -288,7 +288,7 @@ Cada punto tiene su test en la tarea que lo implementa (1 → T1 y T10; 2 → T3
 - [ ] Implementar y comprobar que pasan.
 - [ ] Commit: `feat: stone-themed character select and create over the altar scene`.
 
-### T11 · Integración en `main`
+### Task 11: Integración en `main`
 **Archivos:**
 - Modificar `game/main.gd`.
 - Tests: `tests/unit/ui/test_main_flow.gd`.
@@ -311,7 +311,7 @@ Cada punto tiene su test en la tarea que lo implementa (1 → T1 y T10; 2 → T3
 - [ ] Implementar, y comprobar que pasan los tests y la suite completa sin fugas.
 - [ ] Commit: `feat: wire the altar scene and stone theme into the menu flow`.
 
-### T12 · Documentación y versión
+### Task 12: Documentación y versión
 **Archivos:**
 - `project.godot` → `config/version="0.10.0"`.
 - `docs/Decisiones/D-016 Razas solo de aspecto con cabeza propia.md` y el índice de decisiones.
