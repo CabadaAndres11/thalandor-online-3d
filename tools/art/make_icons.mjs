@@ -222,4 +222,35 @@ for (const [name, draw] of Object.entries(UI)) {
   draw(img, GOLD, 0);
   png.write(`${outDir}/ui/${name}.png`, img);
 }
+// The Play button (Plan 7): a rounded pill in an ember gradient (blood red to orange),
+// a thin gold rim and a light top half, for StyleBoxTexture with round ends that keep
+// their shape (texture margins of half the height). Normal, hover (brighter) and pressed.
+function pill(file, from, to, light) {
+  const W = 256, H = 80, R = H / 2;
+  const img = png.create(W, H);
+  const a = hex(from), b = hex(to), rim = hex("#e3b45a");
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const cx = Math.min(Math.max(x + 0.5, R), W - R), d = Math.hypot(x + 0.5 - cx, y + 0.5 - R);
+    if (d > R) continue;
+    const t = x / (W - 1);
+    let c = [0, 1, 2].map((i) => a[i] + (b[i] - a[i]) * t);
+    const top = 1 - y / H; // light from above
+    c = c.map((v) => Math.min(255, v * (0.78 + 0.42 * top) + (y < H * 0.45 ? light : 0)));
+    if (d > R - 2.5) c = [rim[0], rim[1], rim[2]];
+    else if (d > R - 4) c = c.map((v, i) => (v + rim[i]) / 2);
+    const alpha = d > R - 1 ? Math.round(255 * (R - d)) : 255; // soft edge
+    png.set(img, x, y, [...c.map(Math.round), alpha]);
+  }
+  png.write(file, img);
+}
+pill(`${outDir}/ui/play_normal.png`, "#7a1414", "#d4471c", 6);
+pill(`${outDir}/ui/play_hover.png`, "#a01c1c", "#f0662a", 18);
+pill(`${outDir}/ui/play_pressed.png`, "#5c0f0f", "#a8361a", 0);
+// The play triangle drawn on the button, white with a dark outline.
+{
+  const img = canvas();
+  tri(img, [16, 8], [16, 56], [56, 32], OUTLINE);
+  tri(img, [20, 15], [20, 49], [49, 32], [255, 255, 255, 255]);
+  png.write(`${outDir}/ui/ui_play.png`, img);
+}
 console.log(`wrote ${Object.keys(ICONS).length} icons and ${Object.keys(STATUS).length} status icons`);

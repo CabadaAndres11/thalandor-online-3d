@@ -11,6 +11,8 @@ const GOLD_DIM := Color("#9c7a3c")
 const BLOOD := Color("#8e1b1b")
 const TEXT := Color("#f1e4c8")
 const TEXT_DIM := Color(0.95, 0.89, 0.78, 0.6)
+const PILL := "res://assets/icons/ui/play_%s.png"
+const PLAY_ICON := "res://assets/icons/ui/ui_play.png"
 
 
 ## A stone panel with a gold border and a carved inner edge.
@@ -59,17 +61,56 @@ static func apply(theme: Theme) -> void:
 	theme.set_stylebox("focus", "LineEdit", _button(STONE_DARK, GOLD))
 
 
-## The big gold call to action (Play).
+## The call to action (Play): a rounded ember pill, blood red to orange with a gold rim,
+## a white play triangle and white text (tools/art/make_icons.mjs draws the textures).
 static func primary_button(b: Button) -> void:
-	b.add_theme_stylebox_override("normal", _button(BLOOD.darkened(0.35), GOLD, 3))
-	b.add_theme_stylebox_override("hover", _button(BLOOD, GOLD.lightened(0.2), 3))
-	b.add_theme_stylebox_override("pressed", _button(BLOOD.lightened(0.15), Color.WHITE, 3))
+	for state: String in ["normal", "hover", "pressed"]:
+		b.add_theme_stylebox_override(state, _pill(state))
+	b.add_theme_stylebox_override("disabled", _pill("pressed"))
 	b.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
-	b.add_theme_font_size_override("font_size", 44)
-	b.add_theme_color_override("font_color", GOLD)
-	b.add_theme_color_override("font_hover_color", Color.WHITE)
-	b.add_theme_color_override("font_outline_color", STONE_DARK)
-	b.add_theme_constant_override("outline_size", 6)
+	# The triangle right before the word, the pair centred (a Button would put its icon at
+	# the edge or under the text), drawn by children that let the clicks through.
+	var group := HBoxContainer.new()
+	group.name = "PlayGroup"
+	group.alignment = BoxContainer.ALIGNMENT_CENTER
+	group.add_theme_constant_override("separation", 12)
+	group.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	b.add_child(group)
+	var icon := TextureRect.new()
+	icon.name = "PlayIcon"
+	icon.texture = load(PLAY_ICON)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.custom_minimum_size = Vector2(28, 28)
+	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.add_child(icon)
+	var label := Label.new()
+	label.name = "PlayText"
+	label.text = b.text
+	label.add_theme_font_size_override("font_size", 44)
+	label.add_theme_color_override("font_color", Color.WHITE)
+	label.add_theme_color_override("font_outline_color", Color(0.25, 0.04, 0.02))
+	label.add_theme_constant_override("outline_size", 5)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	group.add_child(label)
+	b.text = ""
+	b.tooltip_text = label.text
+
+
+static func _pill(state: String) -> StyleBoxTexture:
+	var s := StyleBoxTexture.new()
+	s.texture = load(PILL % state)
+	s.texture_margin_left = 40 # half the height: the round ends never stretch
+	s.texture_margin_right = 40
+	s.texture_margin_top = 20
+	s.texture_margin_bottom = 20
+	s.content_margin_left = 28
+	s.content_margin_right = 28
+	s.content_margin_top = 4
+	s.content_margin_bottom = 6
+	return s
 
 
 ## A carved button: a flat face, a gold border, a lighter top edge and a darker bottom one.

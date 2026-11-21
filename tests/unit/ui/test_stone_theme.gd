@@ -21,9 +21,35 @@ func test_panel_is_stone_with_a_gold_border() -> void:
 	assert_gt(p.border_width_left, 0)
 
 
-func test_primary_button_is_gold() -> void:
+## Play: a rounded ember pill (blood red to orange) with a play icon, like a launcher button.
+func test_primary_button_is_an_ember_pill_with_an_icon() -> void:
 	var b := Button.new()
 	StoneTheme.primary_button(b)
-	assert_eq((b.get_theme_stylebox("normal") as StyleBoxFlat).border_color, StoneTheme.GOLD)
-	assert_gte(b.get_theme_font_size("font_size"), 40)
+	for state: String in ["normal", "hover", "pressed"]:
+		var box := b.get_theme_stylebox(state) as StyleBoxTexture
+		assert_not_null(box, state)
+		assert_not_null(box.texture, state)
+		assert_gt(box.texture_margin_left, 20.0, state + ": the round ends do not stretch")
+	assert_ne(b.get_theme_stylebox("hover"), b.get_theme_stylebox("normal"), "it lights up under the mouse")
 	b.free()
+
+
+## The triangle sits right before the word, the pair centred on the button (as in the reference).
+func test_primary_button_centres_icon_and_text_together() -> void:
+	var b := Button.new()
+	b.text = "Jugar"
+	b.size = Vector2(300, 76)
+	StoneTheme.primary_button(b)
+	add_child_autofree(b)
+	await wait_frames(2)
+	var icon := b.find_child("PlayIcon", true, false) as TextureRect
+	var label := b.find_child("PlayText", true, false) as Label
+	assert_not_null(icon)
+	assert_eq(label.text, "Jugar")
+	assert_eq(label.get_theme_color("font_color"), Color.WHITE)
+	assert_gte(label.get_theme_font_size("font_size"), 40)
+	var gap := label.get_global_rect().position.x - icon.get_global_rect().end.x
+	assert_between(gap, 0.0, 24.0, "the icon next to the word")
+	var group := icon.get_global_rect().merge(label.get_global_rect())
+	assert_almost_eq(group.get_center().x, b.get_global_rect().get_center().x, 6.0, "centred together")
+	assert_eq(icon.mouse_filter, Control.MOUSE_FILTER_IGNORE)

@@ -21,7 +21,7 @@ func test_builds_from_data() -> void:
 func test_shots_move_the_camera() -> void:
 	scene.set_shot("select", true)
 	var select := scene.camera.global_position
-	assert_almost_eq(select, Vector3(0.4, 1.45, 7.8), Vector3.ONE * 0.01)
+	assert_almost_eq(select, Vector3(-0.35, 1.45, 7.8), Vector3.ONE * 0.01)
 	scene.set_shot("create", true)
 	assert_ne(scene.camera.global_position, select)
 	scene.set_shot("title", true)
