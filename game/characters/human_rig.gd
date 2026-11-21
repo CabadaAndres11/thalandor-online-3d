@@ -28,7 +28,7 @@ const SCALE_GROUP := {
 ## Seconds each action lasts; downed and die then stay.
 const ACTIONS := {"melee": 0.45, "shoot": 0.65, "cast": 0.6, "dash": 0.35, "downed": 0.5, "die": 0.7, "cast_long": 1.0,
 	"stab_right": 0.32, "stab_left": 0.32, "overhead": 0.6, "spin": 0.6, "flurry": 0.7,
-	"heavy": 0.55, "thrust": 0.45, "stab": 0.32}
+	"heavy": 0.55, "thrust": 0.45, "stab": 0.32, "pray": 4.0}
 const LASTING := ["downed", "die"]
 ## Melee swings (the weapon's path is traced by a SlashFx): action -> [start, end] of the swing in
 ## the animation, as a share of its length.
@@ -41,7 +41,7 @@ const SWINGS := {
 const COMBO_ACTIONS := ["melee", "heavy", "thrust", "stab"]
 const COMBO_RESET_S := 1.2
 ## Actions that repeat until another one starts (a long cast: arms up, the staff spinning).
-const LOOPING := ["cast_long"]
+const LOOPING := ["cast_long", "pray"]
 ## Trousers default to the primary color this much darker.
 const TROUSERS_DARKEN := 0.45
 const WALK_MIN_SPEED := 0.2 # m/s
@@ -525,6 +525,7 @@ func _pose() -> void:
 		"shoot": _shoot(k)
 		"cast": _cast(k)
 		"cast_long": _cast_long()
+		"pray": _pray()
 		"stab_right": _stab(k, true)
 		"stab_left": _stab(k, false)
 		"overhead": _overhead(k)
@@ -914,6 +915,21 @@ func _cast_long() -> void:
 	(_parts["torso"] as Node3D).rotation.y = 0.18 * sway
 	(_parts["head"] as Node3D).rotation.x = -0.2
 	_body.position.y = 0.03 * sin(_time * 5.0)
+
+
+## Praying to the black sun (the cultists of the title scene): arms raised forward and up,
+## the head lifted, swaying slowly on a 4 s breath.
+func _pray() -> void:
+	var sway := sin(_time * TAU / 4.0)
+	_rot("arm_left", -2.15 + 0.1 * sway)
+	_rot("arm_right", -2.15 + 0.1 * sway)
+	(_parts["arm_left"] as Node3D).rotation.z = 0.25
+	(_parts["arm_right"] as Node3D).rotation.z = -0.25
+	_rot("forearm_left", -0.35)
+	_rot("forearm_right", -0.35)
+	(_parts["torso"] as Node3D).rotation.x = -0.08 - 0.05 * sway # leaning back with the breath
+	(_parts["head"] as Node3D).rotation.x = -0.3
+	_body.position.y = 0.015 * sway
 
 
 ## A low lunge: lean forward, arms back, legs in a long stride.

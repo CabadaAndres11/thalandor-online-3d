@@ -666,3 +666,17 @@ func test_swings_are_exaggerated() -> void:
 		var into := _torso_at(rig, pair[1], 2, 0.55).x
 		assert_gt(into - back, 1.0, "%s blow from above" % pair[0])
 		assert_lt(rig._body.position.y, -0.1, "%s sinks into the blow" % pair[0])
+
+
+## The cultists of the title scene pray in a loop (Plan 7): arms raised over the shoulders.
+func test_pray_loops_with_arms_raised() -> void:
+	var rig := HumanRig.create("villager", {}, null)
+	add_child_autofree(rig)
+	rig.auto_update = false
+	rig.play_action("pray")
+	rig.update(10.0)
+	assert_eq(rig.current_action(), "pray")
+	for side: String in ["left", "right"]:
+		var hand := rig.part_mesh("hand_" + side)
+		var shoulder := rig.part("arm_" + side).global_position.y
+		assert_gt((hand.global_transform * hand.get_aabb()).get_center().y, shoulder, side + " hand over the shoulder")
