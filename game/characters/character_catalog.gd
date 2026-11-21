@@ -203,9 +203,15 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 	if beard != "":
 		pieces.append(piece_entry(beard))
 	var race := race_def(app.race)
+	if hidden.has("hair_cap"):
+		hidden["ears"] = true # what covers the scalp covers the elf ears too
 	for id: String in race.get("pieces", []) + option("marks", app.marks).get("pieces", []):
-		if not piece(id).is_empty() or not piece_v2(id).is_empty():
+		if (not piece(id).is_empty() or not piece_v2(id).is_empty()) and not hidden.has(str(meta(id).get("tag", ""))):
 			pieces.append(piece_entry(id))
+	var fits: Dictionary = race.get("piece_fit", {})
+	for e: Dictionary in pieces:
+		if fits.has(e.id):
+			e["fit"] = fits[e.id] # this piece fitted by hand to the race head
 	var head: Dictionary = HumanRig.rig_heads(BODY).get(str(race.get("head", "")), {})
 	return {
 		"skin_color": Color(str(option("skin", app.skin).color)),

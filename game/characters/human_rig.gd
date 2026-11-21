@@ -378,9 +378,10 @@ func _attach_piece(p: Dictionary, tints: Dictionary) -> void:
 	var f := _factor(_race_scale, _group(part_name)) # pieces follow the race, not the body type
 	var fit := 1.0
 	var fit_off := Vector3.ZERO
-	if part_name == "head" and not _head_fit.is_empty():
-		fit = float(_head_fit.get("scale", 1.0))
-		var fo: Array = _head_fit.get("offset", [0, 0, 0])
+	var fit_def: Dictionary = p.get("fit", _head_fit) # a piece fitted to the race head, or the head fit
+	if part_name == "head" and not fit_def.is_empty():
+		fit = float(fit_def.get("scale", 1.0))
+		var fo: Array = fit_def.get("offset", [0, 0, 0])
 		fit_off = Vector3(fo[0], fo[1], fo[2])
 	node.scale = Vector3.ONE * vs * fit * f
 	var o: Array = p.get("offset", [0, 0, 0])

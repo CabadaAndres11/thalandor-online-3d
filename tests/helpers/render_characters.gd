@@ -15,6 +15,8 @@ var _name := "classes"
 var _tier := 1
 var _rot := 0.0
 var _page := 0
+## --race=ogre: the gear set worn by that race (Plan 7).
+var _race := ""
 
 
 func _initialize() -> void:
@@ -25,6 +27,8 @@ func _initialize() -> void:
 			_tier = int(arg.trim_prefix("--tier="))
 		elif arg.begins_with("--rot="):
 			_rot = float(arg.trim_prefix("--rot="))
+		elif arg.begins_with("--race="):
+			_race = arg.trim_prefix("--race=")
 		elif arg.begins_with("--page="):
 			_page = int(arg.trim_prefix("--page="))
 	root.size = Vector2i(1600, 700)
@@ -85,8 +89,8 @@ func _process(_delta: float) -> bool:
 	if _frames == 30:
 		DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("user://render"))
 		var path := "user://render/%s.png" % _name
-		if _name in ["gear", "weapons"]:
-			path = "user://render/%s_t%d_%s.png" % [_name, _tier, str(int(_rot)) if _name == "gear" else str(_page)]
+		if _name.trim_suffix("_close") in ["gear", "weapons"]:
+			path = "user://render/%s%s_t%d_%s.png" % [_name, ("_" + _race) if _race != "" else "", _tier, str(int(_rot)) if _name == "gear" else str(_page)]
 		root.get_texture().get_image().save_png(path)
 		print("saved ", ProjectSettings.globalize_path(path))
 		return true
@@ -213,6 +217,9 @@ func _looks(set_name: String) -> Array:
 				["archer", ["bow" + t, ""] + armor.call("archer"), {"skin": "skin_3", "hair_style": "swept", "hair_color": "blond"}],
 				["assassin", ["dagger" + t, "dagger" + t] + armor.call("assassin"), {"skin": "skin_7", "hair_style": "short"}],
 			]
+			if _race != "":
+				for k: Array in kits:
+					k[2]["race"] = _race
 			return kits.map(func(k: Array) -> Dictionary: return _geared(k[0], k[2], k[1], _rot))
 		"weapons":
 			var t := "_t%d" % _tier

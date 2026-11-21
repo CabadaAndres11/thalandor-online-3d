@@ -84,3 +84,56 @@ func test_overhead_above_the_head() -> void:
 	for race: String in RACES:
 		var rig := _rig(race)
 		assert_gt(rig.overhead_height(), rig.height() + 0.3, race)
+
+
+# --- Equipment on race heads (Plan 7, Task 5) ------------------------------------------
+
+func _head_gear_ids() -> Array:
+	var ids: Array = []
+	var gear: Variant = JSON.parse_string(FileAccess.get_file_as_string(CharacterCatalog.GEAR_PIECES_V2))
+	for id: String in gear:
+		if gear[id].part == "head":
+			ids.append(id)
+	for id: String in ["hat_mage", "hood_archer", "helm_templar", "mask_assassin"]:
+		ids.append(id)
+	return ids
+
+
+func test_every_head_piece_attaches_to_every_race() -> void:
+	var ids := _head_gear_ids()
+	assert_gt(ids.size(), 18)
+	for race: String in RACES:
+		var look := catalog.resolve("villager", {"race": race})
+		for id: String in ids:
+			look.pieces.append(catalog.piece_entry(id))
+		var rig := HumanRig.build(look)
+		add_child_autofree(rig)
+		for id: String in ids:
+			assert_not_null(rig.piece_node(id), "%s on %s" % [id, race])
+
+
+func test_closed_headgear_hides_elf_ears() -> void:
+	var hooded: Array = catalog.resolve("archer", {"race": "elf"}).pieces.map(func(p: Dictionary) -> String: return p.id)
+	assert_does_not_have(hooded, "ears_elf")
+	var hatted: Array = catalog.resolve("mage", {"race": "elf"}).pieces.map(func(p: Dictionary) -> String: return p.id)
+	assert_has(hatted, "ears_elf", "the mage hat leaves the ears out")
+
+
+func test_tail_never_hidden() -> void:
+	for cls: String in ["archer", "warrior", "mage", "cleric", "assassin"]:
+		var ids: Array = catalog.resolve(cls, {"race": "lizard"}).pieces.map(func(p: Dictionary) -> String: return p.id)
+		assert_has(ids, "tail_lizard", cls)
+
+
+func test_piece_fit_overrides_head_fit() -> void:
+	var ogre := catalog.race_def("ogre")
+	ogre["piece_fit"] = {"hat_mage": {"scale": 1.4, "offset": [0, 3, 0]}}
+	var look := catalog.resolve("mage", {"race": "ogre"})
+	ogre.erase("piece_fit")
+	var hat: Dictionary = look.pieces.filter(func(p: Dictionary) -> bool: return p.id == "hat_mage")[0]
+	assert_eq(float(hat.fit.scale), 1.4)
+	var rig := HumanRig.build(look)
+	add_child_autofree(rig)
+	var plain := _rig("ogre", "slim", "mage")
+	assert_almost_eq(rig.piece_node("hat_mage").scale.x / plain.piece_node("hat_mage").scale.x,
+		1.4 / float(catalog.race_def("ogre").head_fit.scale), 0.001)
