@@ -181,5 +181,23 @@
 			],
 			"parent": "leg_right"
 		}
+	},
+	"heads": {
+		"ogre": {
+			"file": "res://assets/characters/vox_v2/human_v2_head_ogre.vox",
+			"offset": [
+				-9,
+				-1,
+				-8
+			]
+		},
+		"lizard": {
+			"file": "res://assets/characters/vox_v2/human_v2_head_lizard.vox",
+			"offset": [
+				-7,
+				-2,
+				-8
+			]
+		}
 	}
 }

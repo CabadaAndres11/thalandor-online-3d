@@ -53,7 +53,7 @@ export function frontZ(s, x, y) {
 }
 
 // Paints index i on the front surface at (x, y), `out` voxels proud of it (0 = on it).
-function face(s, x, y, i, out = 0) {
+export function face(s, x, y, i, out = 0) {
   const z = frontZ(s, x, y);
   if (z !== null) s.put(x, y, z + out, i);
 }

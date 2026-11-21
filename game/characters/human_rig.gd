@@ -61,6 +61,10 @@ var _parts: Dictionary = {} # name -> Node3D (pivot)
 var _meshes: Dictionary = {} # name -> MeshInstance3D
 var _rest: Dictionary = {} # name -> rest position of the pivot
 var _pieces: Dictionary = {} # piece id -> MeshInstance3D
+## Race proportions (Plan 7): group -> [x, y, z]; they also scale the pieces of each part.
+var _race_scale: Dictionary = {}
+## Fit of the pieces worn on a race head of its own: {scale, offset (voxels)}.
+var _head_fit: Dictionary = {}
 ## Cloth that follows the body (Plan 6.4.3): piece id -> {mode, node, anchor, span, drape, drape_v}.
 var _cloth: Dictionary = {}
 var _dt: float = 0.0 # the last update's step (the capes' spring)
@@ -231,7 +235,9 @@ func _setup(look: Dictionary) -> void:
 	body = str(look.get("body", DEFAULT_BODY))
 	if not BODIES.has(body):
 		body = DEFAULT_BODY
-	scale = Vector3.ONE * float(BODIES[body].scale)
+	scale = Vector3.ONE * float(BODIES[body].scale) * float(look.get("race_height", 1.0))
+	_race_scale = look.get("race_scale", {})
+	_head_fit = look.get("head_fit", {})
 	_grip = str(look.get("grip", ""))
 	_body = Node3D.new()
 	_body.name = "Body"
@@ -257,12 +263,18 @@ func _setup(look: Dictionary) -> void:
 		pivot.name = part_name
 		var scaler := Node3D.new()
 		scaler.name = "Scale"
-		scaler.scale = _factor(body_scale, SCALE_GROUP.get(part_name, ""))
+		scaler.scale = _factor(body_scale, SCALE_GROUP.get(part_name, "")) * _factor(_race_scale, _group(part_name))
 		pivot.add_child(scaler)
 		var mesh := MeshInstance3D.new()
 		mesh.name = "Mesh"
-		mesh.mesh = VoxMesher.cached(str(p.get("file", "")), tints)
+		var file := str(p.get("file", ""))
 		var off: Array = p.get("offset", [0, 0, 0])
+		if part_name == "head" and str(look.get("head_file", "")) != "":
+			file = str(look.head_file) # a race head of its own (Plan 7)
+			var ho: Array = look.get("head_offset", [])
+			if ho.size() == 3:
+				off = ho
+		mesh.mesh = VoxMesher.cached(file, tints)
 		mesh.position = Vector3(off[0], off[1], off[2]) * VoxMesher.VOXEL_SIZE
 		scaler.add_child(mesh)
 		_parts[part_name] = pivot
@@ -277,9 +289,11 @@ func _setup(look: Dictionary) -> void:
 			var parent_pos: Vector3 = pivots[parent_name]
 			if _in_arm(parent_name):
 				parent_pos.x *= torso_f.x
-			pivot.position = (pos - parent_pos) * VoxMesher.VOXEL_SIZE
+			# A race stretches each segment: the joint moves with the part it hangs from.
+			pivot.position = (pos - parent_pos) * _factor(_race_scale, _group(parent_name)) * VoxMesher.VOXEL_SIZE
 			(_parts[parent_name] as Node3D).add_child(pivot)
 		else:
+			pos.y *= _factor(_race_scale, "leg").y # the hips stand on the legs
 			pivot.position = pos * VoxMesher.VOXEL_SIZE
 			_body.add_child(pivot)
 		_rest[part_name] = pivot.position
@@ -360,12 +374,54 @@ func _attach_piece(p: Dictionary, tints: Dictionary) -> void:
 	node.mesh = mesh
 	# A v1 piece worn by the v2 body is drawn twice as big (voxel_scale 2) until it has its v2 version.
 	var vs := float(p.get("voxel_scale", 1.0))
-	node.scale = Vector3.ONE * vs
+	var part_name := str(p.get("part", ""))
+	var f := _factor(_race_scale, _group(part_name)) # pieces follow the race, not the body type
+	var fit := 1.0
+	var fit_off := Vector3.ZERO
+	if part_name == "head" and not _head_fit.is_empty():
+		fit = float(_head_fit.get("scale", 1.0))
+		var fo: Array = _head_fit.get("offset", [0, 0, 0])
+		fit_off = Vector3(fo[0], fo[1], fo[2])
+	node.scale = Vector3.ONE * vs * fit * f
 	var o: Array = p.get("offset", [0, 0, 0])
-	node.position = Vector3(o[0], o[1], o[2]) * VoxMesher.VOXEL_SIZE * vs
+	node.position = (Vector3(o[0], o[1], o[2]) * vs * fit + fit_off) * VoxMesher.VOXEL_SIZE * f
 	host.add_child(node)
 	_pieces[str(p.id)] = node
 	_setup_cloth(str(p.id), str(p.get("part", "")), node, o)
+
+
+## The proportion group of a part (SCALE_GROUP, and the head of its own).
+static func _group(part_name: String) -> String:
+	return "head" if part_name == "head" else str(SCALE_GROUP.get(part_name, ""))
+
+
+## The extra heads of a body (Plan 7 races): id -> {file, offset}.
+static func rig_heads(body_id: String) -> Dictionary:
+	if not BODIES.has(body_id):
+		return {}
+	return _load_rig(body_id).get("heads", {})
+
+
+## Height of the standing model in metres, from its origin to the top of its highest part.
+func height() -> float:
+	var top := 0.0
+	for part_name: String in _meshes:
+		var mi: MeshInstance3D = _meshes[part_name]
+		var t := Transform3D(Basis.from_scale(scale))
+		var chain: Array[Node3D] = []
+		var n: Node = mi
+		while n != null and n != self:
+			chain.push_front(n as Node3D)
+			n = n.get_parent()
+		for c: Node3D in chain:
+			t = t * c.transform
+		top = maxf(top, (t * mi.get_aabb()).end.y)
+	return top
+
+
+## Where the name and the bar float over the head.
+func overhead_height() -> float:
+	return height() + 0.5
 
 
 static func _in_arm(part_name: String) -> bool:

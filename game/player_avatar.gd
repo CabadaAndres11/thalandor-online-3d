@@ -53,9 +53,9 @@ func setup(player_name: String, slot: int, class_id: String, appearance: Diction
 	_label.pixel_size = 0.010
 	_label.font_size = 40
 	_label.outline_size = 10
-	_label.position.y = NAME_HEIGHT
+	_label.position.y = rig.overhead_height() # taller or shorter with the race
 	bar = OverheadBar.new()
-	bar.position.y = NAME_HEIGHT - 0.22
+	bar.position.y = _label.position.y - 0.22
 	add_child(bar)
 	bar.setup("", false, Color(0.3, 0.85, 0.35))
 	bar.icon_height = 0.5 # above the name

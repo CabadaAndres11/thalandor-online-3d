@@ -90,6 +90,12 @@ func piece_v2(id: String) -> Dictionary:
 	return _pieces_v2.get(id, {})
 
 
+## Tag and hides of a piece: its v1 entry, or the v2 one for the pieces made only in v2 (Plan 7).
+func meta(id: String) -> Dictionary:
+	var p := piece(id)
+	return p if not p.is_empty() else piece_v2(id)
+
+
 func piece_ids() -> Array:
 	return _pieces.keys()
 
@@ -159,7 +165,7 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 		var look: Dictionary = UpgradeDB.load_default().upgrade(upgrade).get("look", {}) if upgrade != "" else {}
 		var headgear := str(look.get("headgear", c.get("headgear", "")))
 		if headgear != "":
-			for tag: String in piece(headgear).get("hides", []):
+			for tag: String in meta(headgear).get("hides", []):
 				hidden[tag] = true
 			pieces.append(piece_entry(headgear))
 		for id: String in c.get("pieces", []) + look.get("pieces", []):
@@ -180,7 +186,7 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 			for id: String in ids:
 				if piece(id).is_empty():
 					continue
-				for tag: String in piece(id).get("hides", []):
+				for tag: String in meta(id).get("hides", []):
 					hidden[tag] = true
 				pieces.append(piece_entry(id))
 			if Inventory.VISIBLE[i] == "main":
@@ -191,7 +197,7 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 		for id: String in c.get("fixed_pieces", []):
 			pieces.append(piece_entry(id))
 	for id: String in hair.get("pieces", []):
-		if not hidden.has(str(piece(id).get("tag", ""))):
+		if not hidden.has(str(meta(id).get("tag", ""))):
 			pieces.append(piece_entry(id))
 	var beard := str(option("beard", app.beard).get("piece", ""))
 	if beard != "":
@@ -200,9 +206,7 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 	for id: String in race.get("pieces", []) + option("marks", app.marks).get("pieces", []):
 		if not piece(id).is_empty() or not piece_v2(id).is_empty():
 			pieces.append(piece_entry(id))
-	var head_file := str(race.get("head_file", ""))
-	if head_file != "" and not FileAccess.file_exists(head_file):
-		head_file = "" # not sculpted yet: the human head
+	var head: Dictionary = HumanRig.rig_heads(BODY).get(str(race.get("head", "")), {})
 	return {
 		"skin_color": Color(str(option("skin", app.skin).color)),
 		"eyes_color": Color(str(option("eyes", app.eyes).color)),
@@ -215,7 +219,8 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 		"race": str(app.race),
 		"race_height": float(race.get("height", 1.0)),
 		"race_scale": race.get("scale", {}),
-		"head_file": head_file,
+		"head_file": str(head.get("file", "")),
+		"head_offset": head.get("offset", []),
 		"head_fit": race.get("head_fit", {"scale": 1.0, "offset": [0, 0, 0]}),
 		"grip": grip,
 		"auras": auras,

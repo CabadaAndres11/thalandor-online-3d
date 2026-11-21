@@ -12,6 +12,7 @@ import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { write, Shape, SHADE, LIGHT, TINT_TROUSERS, TINT_SKIN, TINT_EYES, TINT_HAIR, TINT_PRIMARY } from "./vox.mjs";
 import { humanV2 } from "./human_v2.mjs";
+import { raceHeadsV2 } from "./races_v2.mjs";
 export { humanV2 };
 
 const T = TINT_TROUSERS, SK = TINT_SKIN, EY = TINT_EYES, HR = TINT_HAIR, P = TINT_PRIMARY;
@@ -133,7 +134,8 @@ export function human() {
 }
 
 // Writes one .vox per part and <name>.json (pivots, offsets, parents) for Godot.
-function writeRig(name, build, outDir, resDir) {
+// heads: extra heads (Plan 7 races) written as <name>_head_<id>.vox and listed in "heads".
+function writeRig(name, build, outDir, resDir, heads = {}) {
   fs.mkdirSync(outDir, { recursive: true });
   for (const f of fs.readdirSync(outDir)) if (f.startsWith(name + "_") && f.endsWith(".vox")) fs.unlinkSync(`${outDir}/${f}`);
   const { parts, palette } = build();
@@ -142,6 +144,11 @@ function writeRig(name, build, outDir, resDir) {
     const file = `${name}_${part}.vox`;
     write(`${outDir}/${file}`, shape.size(), shape.voxels(), palette);
     rig.parts[part] = { file: `${resDir}/${file}`, pivot, offset: shape.min(), ...(parent ? { parent } : {}) };
+  }
+  for (const [id, shape] of Object.entries(heads)) {
+    const file = `${name}_head_${id}.vox`;
+    write(`${outDir}/${file}`, shape.size(), shape.voxels(), palette);
+    (rig.heads ??= {})[id] = { file: `${resDir}/${file}`, offset: shape.min() };
   }
   fs.writeFileSync(`${outDir}/${name}.json`, JSON.stringify(rig, null, "\t") + "\n");
   console.log(`wrote ${name}: ${Object.keys(parts).join(", ")}`);
@@ -155,5 +162,5 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     process.exit(1);
   }
   writeRig("human", human, outDir, "res://assets/characters/vox");
-  writeRig("human_v2", humanV2, outDirV2, "res://assets/characters/vox_v2");
+  writeRig("human_v2", humanV2, outDirV2, "res://assets/characters/vox_v2", raceHeadsV2());
 }
