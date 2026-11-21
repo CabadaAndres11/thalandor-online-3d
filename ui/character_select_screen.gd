@@ -1,8 +1,9 @@
 class_name CharacterSelectScreen
 extends Control
-## "Tus personajes": the player's characters (up to 8) on the left, the selected one
-## turning on the right, and the actions: create, delete, export, import, play and
-## join a friend with a code.
+## "Tus personajes": the player's characters (up to 8) on a stone panel at the left,
+## the selected one standing in the menu scene (look_changed), and the actions: create,
+## delete, export, import, and in the bottom-right corner play, join a friend with a code
+## and back.
 
 signal play_requested(id: String)
 signal join_requested(id: String, code: String)
@@ -11,6 +12,8 @@ signal delete_requested(id: String)
 signal export_requested(id: String)
 signal import_requested()
 signal back_requested()
+## The character to show in the scene changed (a HumanRig look; {} = nobody).
+signal look_changed(look: Dictionary)
 
 var slot_buttons: Array[Button] = []
 var create_button: Button
@@ -21,7 +24,6 @@ var play_button: Button
 var join_button: Button
 var back_button: Button
 var code_edit: LineEdit
-var preview: CharacterPreview
 
 var _characters: Array[CharacterData] = []
 var _selected: String = ""
@@ -30,27 +32,18 @@ var _group := ButtonGroup.new()
 
 
 func _init() -> void:
-	var bg := ColorRect.new()
-	bg.color = Color("#1d2233")
-	bg.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
-	add_child(bg)
-	var margin := MarginContainer.new()
-	margin.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
-	for side: String in ["left", "right", "top", "bottom"]:
-		margin.add_theme_constant_override("margin_" + side, 40)
-	add_child(margin)
-	var columns := HBoxContainer.new()
-	columns.add_theme_constant_override("separation", 40)
-	margin.add_child(columns)
-
+	mouse_filter = MOUSE_FILTER_IGNORE
+	var panel := PanelContainer.new()
+	panel.add_theme_stylebox_override("panel", StoneTheme.panel(16))
+	panel.set_anchors_preset(PRESET_TOP_LEFT)
+	panel.offset_left = 24
+	panel.offset_right = 24 + 460
+	panel.offset_top = 24
+	add_child(panel)
 	var left := VBoxContainer.new()
-	left.custom_minimum_size.x = 560
-	left.add_theme_constant_override("separation", 8)
-	columns.add_child(left)
-	var title := Label.new()
-	title.text = tr("CHARS_TITLE")
-	title.add_theme_font_size_override("font_size", 36)
-	left.add_child(title)
+	left.add_theme_constant_override("separation", 6)
+	panel.add_child(left)
+	left.add_child(StoneTheme.title(tr("CHARS_TITLE"), 34))
 	for i in CharacterStore.MAX_CHARACTERS:
 		var b := Button.new()
 		b.toggle_mode = true
@@ -75,15 +68,18 @@ func _init() -> void:
 	import_button = _button(actions, "BTN_IMPORT", import_requested.emit)
 
 	var right := VBoxContainer.new()
-	right.size_flags_horizontal = SIZE_EXPAND_FILL
 	right.add_theme_constant_override("separation", 10)
-	columns.add_child(right)
-	preview = CharacterPreview.new()
-	preview.custom_minimum_size = Vector2(0, 400)
-	preview.size_flags_vertical = SIZE_EXPAND_FILL
-	right.add_child(preview)
+	right.set_anchors_preset(PRESET_BOTTOM_RIGHT)
+	right.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	right.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	right.offset_left = -40 - 380
+	right.offset_right = -40
+	right.offset_top = -40 - 200
+	right.offset_bottom = -40
+	add_child(right)
 	play_button = _button(right, "BTN_PLAY", _on_play)
-	play_button.custom_minimum_size.y = 48
+	StoneTheme.primary_button(play_button)
+	play_button.custom_minimum_size.y = 72
 	var join_row := HBoxContainer.new()
 	right.add_child(join_row)
 	code_edit = LineEdit.new()
@@ -120,7 +116,8 @@ func _refresh() -> void:
 		b.visible = i < _characters.size()
 		if b.visible:
 			var slot_char := _characters[i]
-			b.text = tr("CHAR_SLOT") % [slot_char.name, tr(str(catalog.class_def(slot_char.class_id).get("name", ""))), slot_char.progress.level]
+			var race := tr(str(catalog.option("race", str(slot_char.appearance.get("race", "human"))).get("name", "")))
+			b.text = tr("CHAR_SLOT") % [slot_char.name, race, tr(str(catalog.class_def(slot_char.class_id).get("name", ""))), slot_char.progress.level]
 			b.set_pressed_no_signal(slot_char.id == _selected)
 	_empty_label.visible = _characters.is_empty()
 	var has := _selected != ""
@@ -130,9 +127,7 @@ func _refresh() -> void:
 	create_button.disabled = full
 	import_button.disabled = full
 	var c := _current()
-	preview.visible = c != null
-	if c != null:
-		preview.show_character(c.class_id, c.appearance, c.inventory.visible_bases()) # as last equipped
+	look_changed.emit(catalog.resolve(c.class_id, c.appearance, "", c.inventory.visible_bases()) if c != null else {}) # as last equipped
 
 
 func _current() -> CharacterData:

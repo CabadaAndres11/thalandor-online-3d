@@ -59,7 +59,7 @@ CLASS_ASSASSIN,Asesino
 CLASS_ASSASSIN_DESC,"Se oculta en las sombras, envenena y remata con golpes críticos."
 CHARS_TITLE,Tus personajes
 CREATE_TITLE,Crear personaje
-CHAR_SLOT,"%s · %s · nivel %d"
+CHAR_SLOT,"%s · %s %s · nivel %d"
 CHAR_EMPTY,(hueco libre)
 CHARS_NONE,"Todavía no tienes personajes. Crea uno o importa uno exportado."
 BTN_CREATE,Crear

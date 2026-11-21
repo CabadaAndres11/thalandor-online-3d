@@ -1,12 +1,20 @@
 class_name CharacterCreateScreen
 extends Control
-## "Crear personaje": name and appearance, one ◀ ▶ row
-## per option (colors show a swatch), with a live preview that can be turned by
-## dragging. Options come from CharacterCatalog (data/characters/). Everyone starts
-## as a villager: the class is chosen in the game, talking to Brann.
+## "Crear personaje": name, race and appearance, one ◀ ▶ row per option (colors show a
+## swatch), on a stone panel at the left. The character itself stands in the menu scene
+## (look_changed) and turns when the empty right side is dragged (turn_requested).
+## Options come from CharacterCatalog (data/characters/) and only those of the race
+## are offered. Everyone starts as a villager: the class is chosen in the game, with Brann.
 
 signal create_requested(char_name: String, appearance: Dictionary)
 signal back_requested()
+## The character to show in the scene changed (a HumanRig look).
+signal look_changed(look: Dictionary)
+## The right side was dragged: turn the character this many degrees.
+signal turn_requested(deg: float)
+
+const DRAG_DEG_PER_PX := 0.6
+const ROW_HEIGHT := 36
 
 const LABEL_KEYS := {
 	"race": "APPEAR_RACE", "body": "APPEAR_BODY", "skin": "APPEAR_SKIN", "eyes": "APPEAR_EYES", "marks": "APPEAR_MARKS",
@@ -17,7 +25,7 @@ var name_edit: LineEdit
 var create_button: Button
 var random_button: Button
 var back_button: Button
-var preview: CharacterPreview
+var race_desc: Label
 
 var _catalog: CharacterCatalog
 var _app: Dictionary = {} # the appearance shown (always valid for its race)
@@ -28,27 +36,18 @@ var _rng := RandomNumberGenerator.new()
 
 func _init() -> void:
 	_catalog = CharacterCatalog.load_default()
-	var bg := ColorRect.new()
-	bg.color = Color("#1d2233")
-	bg.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
-	add_child(bg)
-	var margin := MarginContainer.new()
-	margin.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
-	for side: String in ["left", "right", "top", "bottom"]:
-		margin.add_theme_constant_override("margin_" + side, 40)
-	add_child(margin)
-	var columns := HBoxContainer.new()
-	columns.add_theme_constant_override("separation", 40)
-	margin.add_child(columns)
-
+	var panel := PanelContainer.new()
+	panel.add_theme_stylebox_override("panel", StoneTheme.panel(16))
+	panel.set_anchors_preset(PRESET_LEFT_WIDE)
+	panel.offset_left = 24
+	panel.offset_right = 24 + 600
+	panel.offset_top = 20
+	panel.offset_bottom = -20
+	add_child(panel)
 	var left := VBoxContainer.new()
-	left.custom_minimum_size.x = 600
-	left.add_theme_constant_override("separation", 8)
-	columns.add_child(left)
-	var title := Label.new()
-	title.text = tr("CREATE_TITLE")
-	title.add_theme_font_size_override("font_size", 36)
-	left.add_child(title)
+	left.add_theme_constant_override("separation", 5)
+	panel.add_child(left)
+	left.add_child(StoneTheme.title(tr("CREATE_TITLE"), 34))
 
 	var name_row := HBoxContainer.new()
 	left.add_child(name_row)
@@ -63,12 +62,18 @@ func _init() -> void:
 	var note := Label.new()
 	note.text = tr("CLASS_VILLAGER_DESC")
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	note.custom_minimum_size.y = 52
-	note.modulate = Color(1, 1, 1, 0.75)
+	note.add_theme_font_size_override("font_size", 18)
+	note.modulate = Color(1, 1, 1, 0.7)
 	left.add_child(note)
 
 	for kind: String in CharacterCatalog.KINDS:
 		left.add_child(_option_row(kind))
+		if kind == "race":
+			race_desc = Label.new()
+			race_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			race_desc.add_theme_font_size_override("font_size", 18)
+			race_desc.add_theme_color_override("font_color", StoneTheme.GOLD)
+			left.add_child(race_desc)
 
 	var buttons := HBoxContainer.new()
 	buttons.add_theme_constant_override("separation", 8)
@@ -77,17 +82,22 @@ func _init() -> void:
 	create_button = _button(buttons, "BTN_CREATE", _on_create)
 	back_button = _button(buttons, "BTN_BACK", back_requested.emit)
 
-	var right := VBoxContainer.new()
-	right.size_flags_horizontal = SIZE_EXPAND_FILL
-	columns.add_child(right)
-	preview = CharacterPreview.new()
-	preview.size_flags_vertical = SIZE_EXPAND_FILL
-	right.add_child(preview)
+	# The empty right side: dragging it turns the character in the scene.
+	var drag := Control.new()
+	drag.name = "TurnArea"
+	drag.set_anchors_preset(PRESET_FULL_RECT)
+	drag.offset_left = 24 + 600 + 20
+	drag.mouse_filter = MOUSE_FILTER_STOP
+	drag.gui_input.connect(_on_drag_input)
+	add_child(drag)
 	var hint := Label.new()
 	hint.text = tr("PREVIEW_HINT")
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.modulate = Color(1, 1, 1, 0.6)
-	right.add_child(hint)
+	hint.set_anchors_preset(PRESET_BOTTOM_WIDE)
+	hint.offset_top = -56
+	hint.offset_bottom = -24
+	drag.add_child(hint)
 	reset("")
 
 
@@ -141,7 +151,8 @@ func _update() -> void:
 		else:
 			swatch.modulate.a = 0.0 # keeps its space so the arrows line up
 			label.text = tr(str(o.get("name", o.id)))
-	preview.show_character(CharacterCatalog.DEFAULT_CLASS, current_appearance())
+	race_desc.text = tr(str(_catalog.race_def(str(_app.race)).get("desc", "")))
+	look_changed.emit(_catalog.resolve(CharacterCatalog.DEFAULT_CLASS, current_appearance()))
 
 
 func _option_row(kind: String) -> Control:
@@ -150,11 +161,11 @@ func _option_row(kind: String) -> Control:
 	row.add_child(_caption(LABEL_KEYS[kind]))
 	var prev := Button.new()
 	prev.text = "◀"
-	prev.custom_minimum_size = Vector2(44, 38)
+	prev.custom_minimum_size = Vector2(44, ROW_HEIGHT)
 	prev.pressed.connect(prev_option.bind(kind))
 	row.add_child(prev)
 	var swatch := ColorRect.new()
-	swatch.custom_minimum_size = Vector2(38, 30)
+	swatch.custom_minimum_size = Vector2(36, 26)
 	swatch.size_flags_vertical = SIZE_SHRINK_CENTER
 	row.add_child(swatch)
 	_swatches[kind] = swatch
@@ -165,10 +176,20 @@ func _option_row(kind: String) -> Control:
 	_value_labels[kind] = value
 	var next := Button.new()
 	next.text = "▶"
-	next.custom_minimum_size = Vector2(44, 38)
+	next.custom_minimum_size = Vector2(44, ROW_HEIGHT)
 	next.pressed.connect(next_option.bind(kind))
 	row.add_child(next)
 	return row
+
+
+## The kinds of the option rows, top to bottom.
+func row_kinds() -> Array:
+	return _value_labels.keys()
+
+
+func _on_drag_input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion and ((event as InputEventMouseMotion).button_mask & MOUSE_BUTTON_MASK_LEFT) != 0:
+		turn_requested.emit((event as InputEventMouseMotion).relative.x * DRAG_DEG_PER_PX)
 
 
 func _caption(key: String) -> Label:

@@ -161,9 +161,12 @@ func test_select_preview_wears_the_saved_gear() -> void:
 	list[0].inventory = Inventory.starter("warrior", ItemDB.load_default())
 	list[0].inventory.equipment["main"] = ItemRoll.new_item("greatsword_t2", 30)
 	list[0].inventory.equipment.erase("offhand")
+	watch_signals(s)
 	s.set_characters(list, list[0].id)
-	assert_has(s.preview.rig.pieces(), "w_greatsword_t2", "the weapon in hand")
-	assert_has(s.preview.rig.pieces(), "warrior_chest_t1", "the armour worn")
+	var look: Dictionary = get_signal_parameters(s, "look_changed")[0]
+	var ids: Array = look.pieces.map(func(p: Dictionary) -> String: return p.id)
+	assert_has(ids, "w_greatsword_t2", "the weapon in hand")
+	assert_has(ids, "warrior_chest_t1", "the armour worn")
 
 
 func test_leave_menu_says_log_out() -> void:
@@ -183,3 +186,76 @@ func test_changing_race_fixes_invalid_options() -> void:
 	assert_eq(app.beard, "none")
 	assert_eq(catalog.sanitize_appearance(app), app)
 	assert_true(str(app.hair_style).begins_with("crest_"))
+
+
+# --- Over the altar scene (Plan 7) ---------------------------------------------------
+
+func test_select_row_shows_race() -> void:
+	var s := CharacterSelectScreen.new()
+	_host(s)
+	var list := _chars(1)
+	list[0].appearance = CharacterCatalog.load_default().sanitize_appearance({"race": "elf"})
+	s.set_characters(list, list[0].id)
+	assert_true(s.slot_buttons[0].text.contains(tr("RACE_ELF")), s.slot_buttons[0].text)
+
+
+func test_select_without_characters_shows_nobody() -> void:
+	var s := CharacterSelectScreen.new()
+	_host(s)
+	watch_signals(s)
+	s.set_characters([] as Array[CharacterData], "")
+	assert_eq(get_signal_parameters(s, "look_changed")[0], {})
+
+
+func test_race_row_first_with_description() -> void:
+	var c := CreateScreenHelper.make(self)
+	assert_eq(c.row_kinds()[0], "race")
+	assert_eq(c.race_desc.text, tr("RACE_HUMAN_DESC"))
+	c.next_option("race")
+	assert_eq(c.race_desc.text, tr("RACE_ELF_DESC"))
+
+
+func test_random_respects_race() -> void:
+	var c := CreateScreenHelper.make(self)
+	var catalog := CharacterCatalog.load_default()
+	for i in 30:
+		c.random_button.pressed.emit()
+		assert_eq(catalog.sanitize_appearance(c.current_appearance()), c.current_appearance())
+
+
+func test_create_emits_race() -> void:
+	var c := CreateScreenHelper.make(self)
+	watch_signals(c)
+	while c.current_appearance().race != "dwarf":
+		c.next_option("race")
+	c.create_button.pressed.emit()
+	assert_eq(get_signal_parameters(c, "create_requested")[1].race, "dwarf")
+
+
+func test_create_emits_look_changed() -> void:
+	var c := CreateScreenHelper.make(self)
+	watch_signals(c)
+	c.next_option("race")
+	var look: Dictionary = get_signal_parameters(c, "look_changed")[0]
+	assert_eq(look.race, "elf")
+
+
+func test_screens_have_no_opaque_background() -> void:
+	for screen: Control in [CharacterSelectScreen.new(), CharacterCreateScreen.new()]:
+		_host(screen)
+		var opaque := screen.find_children("*", "ColorRect", true, false).filter(func(r: ColorRect) -> bool:
+			return r.color.a > 0.9 and r.anchor_right == 1.0 and r.anchor_bottom == 1.0)
+		assert_eq(opaque.size(), 0)
+		assert_eq(screen.find_children("*", "CharacterPreview", true, false).size(), 0, "the hero stands in the scene")
+
+
+class CreateScreenHelper:
+	static func make(t: GutTest) -> CharacterCreateScreen:
+		var root := Control.new()
+		root.size = SCREEN
+		t.add_child_autofree(root)
+		var c := CharacterCreateScreen.new()
+		root.add_child(c)
+		c.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		c.reset("Lyra")
+		return c
