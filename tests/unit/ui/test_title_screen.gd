@@ -136,3 +136,63 @@ func test_pause_menu_has_options_button() -> void:
 	watch_signals(menu)
 	menu.options_button.pressed.emit()
 	assert_signal_emitted(menu, "options_requested")
+
+
+# --- The final title screen (Plan 7) ------------------------------------------------
+
+func _center(c: Control) -> Vector2:
+	return c.get_global_rect().get_center()
+
+
+func test_play_bottom_left() -> void:
+	var title := TitleScreen.new()
+	_host(title)
+	await wait_frames(2)
+	var c := _center(title.play_button)
+	assert_lt(c.x, SCREEN.x / 2.0)
+	assert_gt(c.y, SCREEN.y * 0.75)
+	assert_gte(title.play_button.size.x, 260.0)
+
+
+func test_icons_top_right_in_order() -> void:
+	var title := TitleScreen.new()
+	_host(title)
+	await wait_frames(2)
+	var icons := [title.options_button, title.credits_button, title.quit_button]
+	for b: Button in icons:
+		assert_lt(_center(b).y, 100.0, b.name)
+		assert_gt(_center(b).x, SCREEN.x * 0.75, b.name)
+		assert_ne(b.tooltip_text, "", b.name)
+		assert_not_null(b.icon, b.name)
+	assert_lt(_center(icons[0]).x, _center(icons[1]).x)
+	assert_lt(_center(icons[1]).x, _center(icons[2]).x)
+
+
+func test_each_icon_emits_its_signal() -> void:
+	var title := TitleScreen.new()
+	_host(title)
+	watch_signals(title)
+	title.options_button.pressed.emit()
+	title.credits_button.pressed.emit()
+	title.quit_button.pressed.emit()
+	assert_signal_emitted(title, "options_requested")
+	assert_signal_emitted(title, "credits_requested")
+	assert_signal_emitted(title, "quit_requested")
+
+
+func test_no_opaque_background() -> void:
+	var title := TitleScreen.new()
+	_host(title)
+	var opaque := title.find_children("*", "ColorRect", true, false).filter(func(r: ColorRect) -> bool:
+		return r.color.a > 0.9 and r.anchor_right == 1.0 and r.anchor_bottom == 1.0)
+	assert_eq(opaque.size(), 0, "the altar scene shows through")
+
+
+func test_credits_window_lists_the_licences_and_closes() -> void:
+	var w := CreditsWindow.new()
+	_host(w)
+	watch_signals(w)
+	assert_true(w.body.text.contains("Godot"))
+	assert_true(w.body.text.contains("Teko"))
+	w.close_button.pressed.emit()
+	assert_signal_emitted(w, "close_requested")

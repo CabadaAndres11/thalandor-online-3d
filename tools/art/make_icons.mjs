@@ -195,4 +195,31 @@ for (const [name, [color, draw]] of Object.entries(STATUS)) {
   draw(img);
   png.write(`${outDir}/status/${name}.png`, img);
 }
+// Menu icons (Plan 7): gold symbols with a dark outline on a transparent ground.
+const GOLD = hex("#e3b45a"), OUTLINE = [23, 19, 15, 255];
+const UI = {
+  ui_gear(i, c, w) { // settings: a cog
+    for (let k = 0; k < 8; k++) { const a = k / 8 * Math.PI * 2; line(i, 32 + Math.cos(a) * 14, 32 + Math.sin(a) * 14, 32 + Math.cos(a) * 25, 32 + Math.sin(a) * 25, 9 + w, c); }
+    ring(i, 32, 32, 15, 10 + w, c);
+  },
+  ui_star(i, c, w) { // credits: a five-pointed star
+    const pts = [];
+    for (let k = 0; k < 10; k++) { const a = -Math.PI / 2 + k * Math.PI / 5, r = k % 2 ? 11 : 26; pts.push([32 + Math.cos(a) * r, 33 + Math.sin(a) * r]); }
+    for (let k = 0; k < 10; k += 2) tri(i, pts[k].map(Math.round), pts[(k + 1) % 10].map(Math.round), pts[(k + 9) % 10].map(Math.round), c);
+    disk(i, 32, 33, 11 + w / 2, c);
+    if (w) for (let k = 0; k < 10; k++) line(i, ...pts[k], ...pts[(k + 1) % 10], w, c);
+  },
+  ui_exit(i, c, w) { // quit: a door and an arrow leaving it
+    line(i, 14, 12, 14, 52, 6 + w, c); line(i, 14, 12, 34, 12, 6 + w, c); line(i, 14, 52, 34, 52, 6 + w, c);
+    line(i, 34, 12, 34, 20, 6 + w, c); line(i, 34, 44, 34, 52, 6 + w, c);
+    arrow(i, 26, 32, 54, 32, 6 + w, c, 12 + w);
+  },
+};
+fs.mkdirSync(`${outDir}/ui`, { recursive: true });
+for (const [name, draw] of Object.entries(UI)) {
+  const img = canvas();
+  draw(img, OUTLINE, 4);
+  draw(img, GOLD, 0);
+  png.write(`${outDir}/ui/${name}.png`, img);
+}
 console.log(`wrote ${Object.keys(ICONS).length} icons and ${Object.keys(STATUS).length} status icons`);

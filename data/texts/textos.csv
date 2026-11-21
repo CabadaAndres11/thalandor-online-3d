@@ -934,3 +934,6 @@ MARK_SCAR_CHEEK,Cicatriz en la mejilla
 MARK_WARPAINT,Pintura de guerra
 MARK_RUNES,Tatuaje rúnico
 MARK_FRECKLES,Pecas
+MENU_CREDITS,Créditos
+CREDITS_TITLE,Créditos
+CREDITS_BODY,"Thalandor Online, un juego hecho entre amigos.\n\nArte: todo el arte vóxel (personajes, razas, equipo, monstruos, decorados e iconos) está hecho para este juego con código propio.\nFuente: Teko, de Indian Type Foundry (SIL Open Font License).\nMotor: Godot Engine (MIT).\nPruebas: GUT, de Butch Wesley y colaboradores (MIT).\nRed: webrtc-native, de los colaboradores de Godot (MIT)."
