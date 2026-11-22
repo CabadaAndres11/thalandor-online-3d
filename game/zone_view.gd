@@ -82,6 +82,18 @@ func ground_cells() -> Dictionary:
 
 
 func _build_ground() -> void:
+	# Beyond the map's edge the ground goes on (darker, never walked), so the border shows no void.
+	var outer := MeshInstance3D.new()
+	outer.name = "GroundBeyond"
+	var plane := PlaneMesh.new()
+	plane.size = Vector2(layout.size) + Vector2(400, 400)
+	var outer_mat := StandardMaterial3D.new()
+	outer_mat.albedo_color = (GROUND.get(str(layout.terrain.get("base", "grass")), GROUND.grass) as Color).darkened(0.25)
+	outer_mat.roughness = 1.0
+	plane.material = outer_mat
+	outer.mesh = plane
+	outer.position = Vector3(layout.size.x / 2.0, -0.03, layout.size.y / 2.0)
+	add_child(outer)
 	var by_kind := {}
 	var cells := ground_cells()
 	for c: Vector2i in cells:

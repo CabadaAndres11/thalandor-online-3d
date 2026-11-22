@@ -1,0 +1,449 @@
+{
+	"name": "ZONE_ALDEA",
+	"size": [
+		96,
+		96
+	],
+	"ambience": "exterior_dia",
+	"levels": [
+		1,
+		5
+	],
+	"terrain": {
+		"base": "grass",
+		"areas": [
+			{
+				"kind": "dirt",
+				"area": [
+					38,
+					38,
+					20,
+					20
+				]
+			},
+			{
+				"kind": "water",
+				"area": [
+					6,
+					70,
+					10,
+					14
+				]
+			}
+		]
+	},
+	"paths": [
+		{
+			"points": [
+				[
+					48,
+					48
+				],
+				[
+					95,
+					48
+				]
+			],
+			"width": 3,
+			"terrain": "road"
+		},
+		{
+			"points": [
+				[
+					48,
+					48
+				],
+				[
+					48,
+					20
+				]
+			],
+			"width": 3,
+			"terrain": "road"
+		},
+		{
+			"points": [
+				[
+					48,
+					48
+				],
+				[
+					24,
+					60
+				]
+			],
+			"width": 3,
+			"terrain": "road"
+		}
+	],
+	"pieces": [
+		{
+			"id": "house_forge",
+			"at": [
+				28,
+				32
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_small",
+			"at": [
+				56,
+				30
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_large",
+			"at": [
+				58,
+				56
+			],
+			"rot": 180
+		},
+		{
+			"id": "house_small",
+			"at": [
+				36,
+				60
+			],
+			"rot": 180
+		},
+		{
+			"id": "house_large",
+			"at": [
+				24,
+				44
+			],
+			"rot": 90
+		},
+		{
+			"id": "house_small",
+			"at": [
+				66,
+				38
+			],
+			"rot": 270
+		},
+		{
+			"id": "well",
+			"at": [
+				45,
+				44
+			],
+			"rot": 0
+		},
+		{
+			"id": "cart",
+			"at": [
+				52,
+				40
+			],
+			"rot": 0
+		},
+		{
+			"id": "crates",
+			"at": [
+				36,
+				39
+			],
+			"rot": 0
+		},
+		{
+			"id": "crates",
+			"at": [
+				62,
+				52
+			],
+			"rot": 90
+		},
+		{
+			"id": "stump",
+			"at": [
+				30,
+				52
+			],
+			"rot": 0
+		},
+		{
+			"id": "rock_large",
+			"at": [
+				12,
+				30
+			],
+			"rot": 0
+		},
+		{
+			"id": "rock_small",
+			"at": [
+				80,
+				20
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				60,
+				62
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				62,
+				62
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				64,
+				62
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				66,
+				62
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				68,
+				62
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				70,
+				62
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				72,
+				62
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				74,
+				62
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				76,
+				62
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				78,
+				62
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				80,
+				62
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				82,
+				62
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				84,
+				62
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				86,
+				62
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				88,
+				62
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				90,
+				62
+			],
+			"rot": 0
+		}
+	],
+	"scatter": [
+		{
+			"area": [
+				0,
+				0,
+				96,
+				16
+			],
+			"pieces": [
+				"tree_oak",
+				"tree_pine",
+				"bush"
+			],
+			"density": 0.1,
+			"seed": 11
+		},
+		{
+			"area": [
+				0,
+				80,
+				96,
+				16
+			],
+			"pieces": [
+				"tree_oak",
+				"tree_pine",
+				"bush"
+			],
+			"density": 0.1,
+			"seed": 12
+		},
+		{
+			"area": [
+				0,
+				16,
+				14,
+				64
+			],
+			"pieces": [
+				"tree_oak",
+				"bush",
+				"rock_small"
+			],
+			"density": 0.08,
+			"seed": 13
+		}
+	],
+	"npcs": [
+		{
+			"id": "brann",
+			"at": [
+				32,
+				39
+			],
+			"facing": 0
+		},
+		{
+			"id": "merchant",
+			"at": [
+				54,
+				46
+			],
+			"facing": 270
+		}
+	],
+	"entries": {
+		"default": [
+			33,
+			41
+		],
+		"from_bosque": [
+			90,
+			48
+		]
+	},
+	"respawn": [
+		34,
+		42
+	],
+	"exits": [
+		{
+			"area": [
+				94,
+				46,
+				2,
+				5
+			],
+			"to": "bosque",
+			"entry": "from_aldea"
+		}
+	],
+	"torches": [
+		[
+			40,
+			40
+		],
+		[
+			56,
+			40
+		],
+		[
+			40,
+			56
+		],
+		[
+			56,
+			56
+		],
+		[
+			34,
+			38
+		]
+	],
+	"hordes": [
+		{
+			"area": [
+				70,
+				64,
+				22,
+				14
+			],
+			"monsters": [
+				[
+					"marked_boar",
+					1
+				]
+			],
+			"levels": [
+				1,
+				4
+			],
+			"count": 6,
+			"respawn_s": 10,
+			"elite_chance": 0
+		}
+	]
+}

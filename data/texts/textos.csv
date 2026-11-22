@@ -942,3 +942,7 @@ DUNGEON_LEVEL_HINT,Elige el nivel de los enemigos de la mazmorra.
 GROUP_LOCKED_TUTORIAL,Termina la defensa de la aldea para jugar con amigos.
 ERR_TUTORIAL,"Tu personaje aún no ha terminado la defensa de la aldea: termínala para jugar con amigos."
 CMD_TUTORIAL_DONE,Tutorial marcado como terminado.
+ZONE_ALDEA,La aldea
+ZONE_BOSQUE,El bosque
+ZONE_CRIPTA_PRUEBA,Cripta olvidada
+ZONE_ARENA,Arena de pruebas

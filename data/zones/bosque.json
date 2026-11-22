@@ -1,0 +1,329 @@
+{
+	"name": "ZONE_BOSQUE",
+	"size": [
+		160,
+		128
+	],
+	"ambience": "exterior_dia",
+	"levels": [
+		5,
+		20
+	],
+	"terrain": {
+		"base": "grass",
+		"areas": [
+			{
+				"kind": "dirt",
+				"area": [
+					18,
+					26,
+					30,
+					24
+				]
+			},
+			{
+				"kind": "dirt",
+				"area": [
+					66,
+					78,
+					30,
+					24
+				]
+			},
+			{
+				"kind": "dirt",
+				"area": [
+					106,
+					26,
+					36,
+					30
+				]
+			},
+			{
+				"kind": "water",
+				"area": [
+					96,
+					100,
+					30,
+					8
+				]
+			}
+		]
+	},
+	"paths": [
+		{
+			"points": [
+				[
+					0,
+					64
+				],
+				[
+					30,
+					60
+				],
+				[
+					60,
+					66
+				],
+				[
+					90,
+					62
+				],
+				[
+					120,
+					70
+				],
+				[
+					140,
+					90
+				],
+				[
+					140,
+					96
+				]
+			],
+			"width": 3,
+			"terrain": "road"
+		},
+		{
+			"points": [
+				[
+					30,
+					60
+				],
+				[
+					30,
+					38
+				]
+			],
+			"width": 2,
+			"terrain": "dirt"
+		},
+		{
+			"points": [
+				[
+					80,
+					64
+				],
+				[
+					80,
+					88
+				]
+			],
+			"width": 2,
+			"terrain": "dirt"
+		},
+		{
+			"points": [
+				[
+					120,
+					70
+				],
+				[
+					122,
+					40
+				]
+			],
+			"width": 2,
+			"terrain": "dirt"
+		}
+	],
+	"pieces": [
+		{
+			"id": "crypt_arch",
+			"at": [
+				138,
+				98
+			],
+			"rot": 0
+		},
+		{
+			"id": "bridge",
+			"at": [
+				108,
+				100
+			],
+			"rot": 90
+		},
+		{
+			"id": "rock_large",
+			"at": [
+				60,
+				40
+			],
+			"rot": 0
+		},
+		{
+			"id": "rock_large",
+			"at": [
+				100,
+				50
+			],
+			"rot": 90
+		},
+		{
+			"id": "cart",
+			"at": [
+				86,
+				90
+			],
+			"rot": 30
+		},
+		{
+			"id": "crates",
+			"at": [
+				74,
+				96
+			],
+			"rot": 0
+		}
+	],
+	"scatter": [
+		{
+			"area": [
+				0,
+				0,
+				160,
+				128
+			],
+			"pieces": [
+				"tree_oak",
+				"tree_pine",
+				"tree_pine",
+				"bush",
+				"rock_small",
+				"stump"
+			],
+			"density": 0.09,
+			"seed": 21
+		}
+	],
+	"entries": {
+		"default": [
+			4,
+			64
+		],
+		"from_aldea": [
+			4,
+			64
+		],
+		"from_cripta": [
+			140,
+			94
+		]
+	},
+	"respawn": [
+		6,
+		64
+	],
+	"exits": [
+		{
+			"area": [
+				0,
+				62,
+				2,
+				5
+			],
+			"to": "aldea",
+			"entry": "from_bosque"
+		},
+		{
+			"area": [
+				139,
+				100,
+				2,
+				2
+			],
+			"to": "cripta_prueba",
+			"entry": "default"
+		}
+	],
+	"hordes": [
+		{
+			"area": [
+				18,
+				26,
+				30,
+				24
+			],
+			"monsters": [
+				[
+					"marked_hound",
+					3
+				],
+				[
+					"marked_boar",
+					2
+				]
+			],
+			"levels": [
+				5,
+				9
+			],
+			"count": 10,
+			"elite_chance": 0.05
+		},
+		{
+			"area": [
+				66,
+				78,
+				30,
+				24
+			],
+			"monsters": [
+				[
+					"cultist",
+					3
+				],
+				[
+					"cult_archer",
+					1
+				]
+			],
+			"levels": [
+				9,
+				14
+			],
+			"count": 10,
+			"elite_chance": 0.08
+		},
+		{
+			"area": [
+				106,
+				26,
+				36,
+				30
+			],
+			"monsters": [
+				[
+					"cultist",
+					2
+				],
+				[
+					"cult_inquisitor",
+					1
+				],
+				[
+					"marked_hound",
+					2
+				]
+			],
+			"levels": [
+				14,
+				20
+			],
+			"count": 12,
+			"elite_chance": 0.15
+		}
+	],
+	"torches": [
+		[
+			136,
+			96
+		],
+		[
+			143,
+			96
+		]
+	]
+}

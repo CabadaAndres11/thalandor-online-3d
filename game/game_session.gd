@@ -13,7 +13,7 @@ const GAME_VERSION_SETTING := "application/config/version"
 const NET_WEBRTC := "webrtc"
 const NET_ENET := "enet"
 ## Where a game starts until characters remember their place (Plan 8.1, Task 9).
-const START_ZONE := "arena"
+const START_ZONE := "aldea"
 
 var balance: Balance
 var map: CollisionMap
