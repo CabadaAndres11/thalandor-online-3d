@@ -1,0 +1,5 @@
+{
+	"hut": {"vox": "res://assets/props/brazier.vox", "scale": 0.5, "footprint": [[0, 0], [1, 0]]},
+	"tree": {"vox": "res://assets/props/candles.vox", "scale": 0.5, "footprint": [[0, 0]]},
+	"bridge": {"vox": "res://assets/props/flagstones.vox", "scale": 0.5, "footprint": []}
+}

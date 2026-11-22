@@ -1,0 +1,16 @@
+{
+	"name": "ZONE_TEST",
+	"size": [30, 20],
+	"ambience": "exterior_dia",
+	"levels": [3, 7],
+	"terrain": {"base": "grass", "areas": [{"kind": "water", "area": [25, 0, 5, 20]}]},
+	"pieces": [{"id": "hut", "at": [5, 5], "rot": 0}, {"id": "hut", "at": [10, 5], "rot": 90}, {"id": "bridge", "at": [12, 12]}],
+	"scatter": [{"area": [0, 10, 24, 10], "pieces": ["tree"], "density": 0.5, "seed": 3}],
+	"paths": [{"points": [[0, 15], [23, 15]], "width": 1, "terrain": "road"}],
+	"npcs": [{"id": "brann", "at": [3, 3], "facing": 0}],
+	"entries": {"default": [2, 2], "from_east": [22, 2]},
+	"exits": [{"area": [23, 0, 2, 4], "to": "bosque", "entry": "from_aldea"}],
+	"respawn": [2, 3],
+	"hordes": [{"area": [1, 11, 10, 3], "monsters": [["marked_hound", 1]], "levels": [3, 5], "count": 4}],
+	"torches": [[4, 4]]
+}

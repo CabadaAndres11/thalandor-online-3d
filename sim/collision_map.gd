@@ -11,6 +11,10 @@ var respawn_cell: Vector2i = Vector2i.ZERO
 var spawns: Array = []
 ## NPCs standing on the map: {id, at: [x, z], facing (degrees)}.
 var npcs: Array = []
+## Hordes of the zone (Plan 8.1): see Spawner.
+var hordes: Array = []
+## The zone this map was made from ("" for a bare layout).
+var zone_id: String = ""
 var _solid: Dictionary = {}
 
 
