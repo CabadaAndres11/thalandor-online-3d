@@ -174,6 +174,11 @@ func _check_exits() -> void:
 			rec.offered = ""
 			continue
 		var w := world_of(id)
+		if _in_combat(id):
+			if w.tick - int(rec.get("warned_tick", -100000)) >= w.ticks(EXIT_WARN_S):
+				rec.warned_tick = w.tick
+				_send_to(id, Protocol.events(w.tick, [["zone_blocked", id]]), true)
+			continue
 		var target := zones.peek(str(ex.to))
 		if target != null and target.instanced:
 			# A dungeon: the player chooses its level first (ENTER_DUNGEON), once per visit.
@@ -181,11 +186,6 @@ func _check_exits() -> void:
 				rec.offered = str(ex.to)
 				var r := dungeon_range(p.progress.level)
 				_send_to(id, Protocol.dungeon_offer(str(ex.to), r.x, r.y, clampi(p.progress.level, r.x, r.y)), true)
-			continue
-		if w.tick - p.last_hurt_tick < w.ticks(EXIT_COMBAT_S):
-			if w.tick - int(rec.get("warned_tick", -100000)) >= w.ticks(EXIT_WARN_S):
-				rec.warned_tick = w.tick
-				_send_to(id, Protocol.events(w.tick, [["zone_blocked", id]]), true)
 			continue
 		var key := zones.open(str(ex.to))
 		if key == "":
@@ -211,7 +211,7 @@ func _on_enter_dungeon(rec: Dictionary, zone_id: String, level: int) -> void:
 	if p == null or not p.is_alive() or layout == null:
 		return
 	var ex := layout.exit_at(p.position)
-	if ex.is_empty() or str(ex.to) != zone_id:
+	if ex.is_empty() or str(ex.to) != zone_id or _in_combat(rec.id):
 		return
 	var key := ""
 	for other: int in _players:
@@ -223,7 +223,14 @@ func _on_enter_dungeon(rec: Dictionary, zone_id: String, level: int) -> void:
 		key = zones.open(zone_id, "group", clampi(level, r.x, r.y))
 	if key == "":
 		return
-	rec.outside = {"zone": layout.id, "at": [floori(p.position.x), floori(p.position.z)]} # saved while inside
+	# Saved while inside: the entry the dungeon's way out leads to (not the door itself,
+	# which would offer the dungeon again on return).
+	var back := "default"
+	for e: Dictionary in zones.layout(key).exits:
+		if str(e.to) == layout.id:
+			back = str(e.entry)
+	var out: Vector2i = layout.entries.get(back, layout.entries.default)
+	rec.outside = {"zone": layout.id, "at": [out.x, out.y]}
 	send_to_zone(rec.id, key, zones.layout(key).entry(str(ex.entry)))
 
 
@@ -267,11 +274,21 @@ func _send_places() -> void:
 			_send_to(id, Protocol.place(layout.id, [floori(p.position.x), floori(p.position.z)]), true)
 
 
+## Hurt within EXIT_COMBAT_S: no leaving the zone.
+func _in_combat(id: int) -> bool:
+	var p := state_of(id)
+	var w := world_of(id)
+	return p != null and w.tick - p.last_hurt_tick < w.ticks(EXIT_COMBAT_S)
+
+
 ## Moves a player to another open world and tells its client (ZONE).
 func send_to_zone(id: int, key: String, at: Vector3) -> void:
 	if transfer(id, key, at) == null:
 		return
 	_players[id].place_dirty = true
+	var to_layout := zones.layout(key)
+	if to_layout == null or not to_layout.instanced:
+		_players[id].erase("outside") # a door from an old visit is not this place
 	var layout := zones.layout(key)
 	var w := zones.world(key)
 	_send_to(id, Protocol.zone(layout.id if layout != null else "", key, w.instance_level), true)
@@ -392,7 +409,10 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 	var class_id := catalog.sanitize_class(msg.class_id)
 	var appearance := catalog.sanitize_appearance(msg.appearance)
 	var spawn := map.spawn_point() + Vector3(slot % 2, 0, slot / 2) * SPAWN_SPACING
-	var start := _place_for(msg.place, spawn)
+	var place: Dictionary = msg.place
+	if place.has("zone"):
+		place = CharacterData.sanitize_place(place) # a guest may send anything
+	var start := _place_for(place, spawn)
 	var player := zones.add_player(id, start.key, start.at)
 	# Whatever progress the guest brings is fixed up, never refused.
 	player.progress = ProgressRequests.sanitize(PlayerProgress.from_dict(msg.progress), class_id, world)
@@ -420,6 +440,10 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 	t.send(peer, Protocol.progress(player.progress.to_dict(), bar), true)
 	t.send(peer, Protocol.inventory(player.inventory.to_wire(), 0.0), true)
 	player.inventory_dirty = false
+	if start.key != zones.start_key:
+		# Its client draws the start zone until told otherwise.
+		var sl := zones.layout(start.key)
+		t.send(peer, Protocol.zone(sl.id if sl != null else "", start.key, zones.world(start.key).instance_level), true)
 	for other: int in _players:
 		if other != id:
 			_send_to(other, Protocol.player_joined(id, name, slot, class_id, appearance, player.progress.upgrade, _players[id].gear), true)
@@ -522,10 +546,11 @@ func _on_command(rec: Dictionary, text: String) -> void:
 			_send_to(rec.id, Protocol.chat(0, "CMD_NO_PLAYER"), true)
 			return
 	var n := parts[1].to_int()
+	var tw := world_of(target.id) # the target may be in another zone
 	if parts[0].to_lower() == "xp":
-		Xp.award(w, target, clampi(n, 1, Xp.MAX_AMOUNT))
+		Xp.award(tw, target, clampi(n, 1, Xp.MAX_AMOUNT))
 	elif n > target.progress.level:
-		Xp.set_level(w, target, mini(n, PlayerProgress.MAX_LEVEL))
+		Xp.set_level(tw, target, mini(n, PlayerProgress.MAX_LEVEL))
 
 
 ## Sends each owner their changed progress (and the bar). Level-ups also place the newly

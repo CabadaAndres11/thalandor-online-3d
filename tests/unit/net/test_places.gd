@@ -73,7 +73,7 @@ func test_place_sent_on_zone_change_and_every_30s() -> void:
 	assert_gt(_messages(c).filter(func(m: Dictionary) -> bool: return m.type == Protocol.Msg.PLACE).size(), 0)
 
 
-func test_place_inside_a_dungeon_is_its_door() -> void:
+func test_place_inside_a_dungeon_is_outside() -> void:
 	var c := _guest({"zone": "zone_a", "at": [10, 10]})
 	host.state_of(1).progress.level = 10
 	host.state_of(1).position = Vector3(10.5, 0, 25.5)
@@ -83,7 +83,7 @@ func test_place_inside_a_dungeon_is_its_door() -> void:
 	host.tick()
 	var places := _messages(c).filter(func(m: Dictionary) -> bool: return m.type == Protocol.Msg.PLACE)
 	assert_eq(places.back().zone, "zone_a")
-	assert_eq(places.back().at, [10, 25])
+	assert_eq(places.back().at, [5, 5], "the entry outside (no way back declared: the default one)")
 
 
 func test_host_rejects_guest_without_tutorial() -> void:
@@ -95,3 +95,38 @@ func test_host_rejects_guest_without_tutorial() -> void:
 	assert_eq(rejects.size(), 1)
 	assert_eq(rejects[0].reason, "tutorial")
 	assert_eq(host.player_count(), 1)
+
+
+# --- Final review fixes ----------------------------------------------------------------
+
+func test_joining_outside_the_start_zone_tells_the_client() -> void:
+	var c := _guest({"zone": "zone_b", "at": [12, 14]})
+	var zones := _messages(c).filter(func(m: Dictionary) -> bool: return m.type == Protocol.Msg.ZONE)
+	assert_eq(zones.size(), 1, "the client draws the zone it is really in")
+	assert_eq(zones[0].zone, "zone_b")
+
+
+func test_joining_in_the_start_zone_sends_no_zone() -> void:
+	var c := _guest({})
+	assert_eq(_messages(c).filter(func(m: Dictionary) -> bool: return m.type == Protocol.Msg.ZONE).size(), 0)
+
+
+func test_malformed_place_is_sanitized() -> void:
+	var c := net.connect_client(host_t)
+	c.send(Transport.HOST_PEER, Protocol.hello(VERSION, Protocol.VERSION, "Ana", "warrior", {}, [], {}, {}, {"zone": "zone_b", "at": "nope"}), true)
+	host.tick()
+	assert_eq(host.player_count(), 1, "let in")
+	assert_eq(host.world_of(1), host.zones.world("zone_b"))
+
+
+func test_dungeon_place_is_the_outside_entry_not_the_door() -> void:
+	var c := _guest({"zone": "zone_a", "at": [10, 10]})
+	host.state_of(1).progress.level = 10
+	host.state_of(1).position = Vector3(10.5, 0, 25.5)
+	host.tick()
+	c.send(Transport.HOST_PEER, Protocol.enter_dungeon("dungeon_t", 10), true)
+	host.tick()
+	host.tick()
+	var places := _messages(c).filter(func(m: Dictionary) -> bool: return m.type == Protocol.Msg.PLACE)
+	var at: Array = places.back().at
+	assert_true(host.zones.layout("zone_a").exit_at(Vector3(at[0] + 0.5, 0, at[1] + 0.5)).is_empty(), "not on the exit (no new offer on return)")

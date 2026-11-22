@@ -47,7 +47,9 @@ func adopt(map: CollisionMap, layout: ZoneLayout = null) -> String:
 ## Opens a zone (or returns it if already open) and gives its key; "" if it does not exist.
 ## An instanced zone gets its own world per instance id and level.
 func open(zone_id: String, instance: String = "", level: int = 0) -> String:
-	var layout := ZoneLayout.load_path(zone_dir + zone_id + ".json") if FileAccess.file_exists(zone_dir + zone_id + ".json") else null
+	if _worlds.has(zone_id):
+		return zone_id
+	var layout := peek(zone_id) # parsed once, shared by its worlds (read only)
 	if layout == null:
 		return ""
 	var key := zone_id
@@ -119,6 +121,10 @@ func move(id: int, from_key: String, to_key: String, at: Vector3) -> PlayerState
 	var p: PlayerState = from.players.get(id)
 	if p == null or to == null:
 		return p
+	# Combat stays behind: summons go, a monster's lingering effects end, a charge resets.
+	Combat.dismiss_summons(from, id)
+	p.statuses = p.statuses.filter(func(s: StatusEffect) -> bool: return s.source_id == id or s.source_id == 0)
+	p.charge_start = -1
 	from.remove_player(id)
 	_leave(id, from_key)
 	_wake(to_key)

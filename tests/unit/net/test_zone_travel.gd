@@ -141,3 +141,31 @@ func test_party_rows_for_other_zones() -> void:
 	assert_eq(row[0], 1)
 	assert_eq(row[1], "ZONE_TEST_A")
 	assert_eq(_of(_messages(a), Protocol.Msg.PARTY).back().rows[0][0], 2)
+
+
+func test_combat_state_stays_behind() -> void:
+	_in_a("Ana", Vector2(10, 5))
+	var p := host.state_of(1)
+	var w := host.world_of(1)
+	var dot := StatusEffect.new()
+	dot.kind = "poison"
+	dot.source_id = 1005
+	dot.end_tick = w.tick + 1000
+	p.statuses.append(dot)
+	p.charge_start = w.tick
+	var wolf := MonsterDB.load_default().make("marked_hound", w.next_monster_id(), p.position, w, 5)
+	wolf.team = CombatEntity.TEAM_PLAYERS
+	wolf.summoned_by = 1
+	w.add_entity(wolf)
+	host.send_to_zone(1, host.zones.open("zone_b"), Vector3(3.5, 0, 3.5))
+	assert_false(p.statuses.any(func(s: StatusEffect) -> bool: return s.source_id == 1005), "a monster's DoT does not follow")
+	assert_eq(p.charge_start, -1)
+	assert_false(w.monsters.has(wolf.id), "the summon is dismissed")
+
+
+func test_open_reuses_an_open_zone() -> void:
+	var key := host.zones.open("zone_b")
+	var w := host.zones.world(key)
+	assert_eq(host.zones.open("zone_b"), key)
+	assert_same(host.zones.world(key), w)
+	assert_same(host.zones.layout(key), host.zones.peek("zone_b"), "parsed once")

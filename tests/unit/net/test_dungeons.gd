@@ -115,3 +115,14 @@ func test_death_in_dungeon_respawns_at_its_entry() -> void:
 	c.send(Transport.HOST_PEER, Protocol.enter_dungeon("dungeon_t", 20), true)
 	host.tick()
 	assert_eq(host.world_of(1).map.respawn_point(), Vector3(2.5, 0, 3.5))
+
+
+func test_no_dungeon_while_in_combat() -> void:
+	var c := _guest("Ana")
+	host.state_of(1).last_hurt_tick = host.world_of(1).tick
+	_at_door(1)
+	host.tick()
+	assert_eq(_of(_messages(c), Protocol.Msg.DUNGEON_OFFER).size(), 0)
+	c.send(Transport.HOST_PEER, Protocol.enter_dungeon("dungeon_t", 20), true)
+	host.tick()
+	assert_eq(host.world_of(1), host.zones.world(a_key))

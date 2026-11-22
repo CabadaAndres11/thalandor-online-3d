@@ -68,3 +68,13 @@ func test_exit_at_and_entry_default() -> void:
 
 func test_unknown_zone_is_null() -> void:
 	assert_null(ZoneLayout.load_id("no_such_zone"))
+
+
+func test_unknown_monster_and_exit_are_reported_on_load() -> void:
+	var z := ZoneLayout.from_dict("bad", {"size": [5, 5],
+		"hordes": [{"area": [0, 0, 5, 5], "monsters": [["dragon", 1]], "levels": [1, 1], "count": 1}],
+		"spawns": [{"type": "kraken", "at": [1, 1]}],
+		"exits": [{"area": [0, 0, 1, 1], "to": "atlantis", "entry": "default"}]}, DIR + "pieces.json")
+	assert_has(z.errors, "unknown monster dragon")
+	assert_has(z.errors, "unknown monster kraken")
+	assert_has(z.warnings, "exit to unknown zone atlantis")

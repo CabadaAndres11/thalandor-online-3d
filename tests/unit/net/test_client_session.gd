@@ -270,3 +270,14 @@ func test_party_rows_are_kept() -> void:
 	var c := ClientSession.new(balance, map, VERSION, "Ana", "warrior", {})
 	c._handle(Protocol.decode(Protocol.party([[2, "ZONE_BOSQUE", 12, 0.5]])))
 	assert_eq(c.party[2], {"zone": "ZONE_BOSQUE", "level": 12, "hp": 0.5})
+
+
+func test_a_late_snapshot_of_the_old_zone_is_ignored() -> void:
+	var a := _client("Ana")
+	for i in 5:
+		_step()
+	var last := a.latest_tick()
+	a._handle(Protocol.decode(Protocol.zone("arena", "arena", 0)))
+	a._on_snapshot(last, [], [[1000, "marked_boar", Vector3.ONE, 0.0, 10.0, 10.0, 0, 0, 0, 1]])
+	assert_true(a.zone_loading, "still waiting for the new zone")
+	assert_true(a.monsters.is_empty())

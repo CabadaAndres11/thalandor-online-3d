@@ -38,6 +38,8 @@ var torches: Array = []
 var blocks: Array = []
 ## What could not be understood ("unknown piece dragon_statue").
 var errors: Array = []
+## What is suspicious but not broken ("exit to unknown zone atlantis").
+var warnings: Array = []
 
 static var _pieces_cache: Dictionary = {}
 var _piece_defs: Dictionary = {}
@@ -56,13 +58,15 @@ static func load_path(path: String, pieces_path: String = PIECES_PATH) -> ZoneLa
 	if not parsed is Dictionary:
 		push_error("ZoneLayout: bad JSON in " + path)
 		return null
-	var z := from_dict(path.get_file().get_basename(), parsed, pieces_path)
+	var z := from_dict(path.get_file().get_basename(), parsed, pieces_path, path.get_base_dir() + "/")
 	for e: String in z.errors:
 		push_error("ZoneLayout %s: %s" % [z.id, e])
+	for w: String in z.warnings:
+		push_warning("ZoneLayout %s: %s" % [z.id, w])
 	return z
 
 
-static func from_dict(zone_id: String, d: Dictionary, pieces_path: String = PIECES_PATH) -> ZoneLayout:
+static func from_dict(zone_id: String, d: Dictionary, pieces_path: String = PIECES_PATH, zone_dir: String = DIR) -> ZoneLayout:
 	var z := ZoneLayout.new()
 	z.id = zone_id
 	z._piece_defs = _load_pieces(pieces_path)
@@ -95,6 +99,17 @@ static func from_dict(zone_id: String, d: Dictionary, pieces_path: String = PIEC
 		z._place(str(p.get("id", "")), _v2i(p.get("at", [0, 0])), int(p.get("rot", 0)))
 	for s: Dictionary in d.get("scatter", []):
 		z._scatter(s)
+	var monsters := MonsterDB.load_default()
+	for h: Dictionary in z.hordes:
+		for m: Variant in h.get("monsters", []):
+			if m is Array and not (m as Array).is_empty() and monsters.get_type(str(m[0])).is_empty():
+				z.errors.append("unknown monster " + str(m[0]))
+	for sp: Dictionary in z.spawns:
+		if monsters.get_type(str(sp.get("type", ""))).is_empty():
+			z.errors.append("unknown monster " + str(sp.get("type", "")))
+	for e: Dictionary in z.exits:
+		if not FileAccess.file_exists(zone_dir + str(e.to) + ".json"):
+			z.warnings.append("exit to unknown zone " + str(e.to))
 	return z
 
 

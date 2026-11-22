@@ -329,7 +329,8 @@ func _on_zone(new_zone: String, key: String, level: int) -> void:
 	_buffers.clear()
 	_predicted = null # placed again by the first snapshot
 	_offset = Vector3.ZERO
-	_latest_tick = -1
+	# _latest_tick stays: host ticks are global, so a late snapshot of the old zone
+	# (older than the ZONE message) is still refused.
 	zone_changed.emit(new_zone, key, level)
 
 
