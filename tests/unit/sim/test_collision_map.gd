@@ -39,7 +39,7 @@ func test_set_solid_toggles() -> void:
 
 
 func test_real_arena_spawn_area_is_clear() -> void:
-	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/maps/test_arena.json"))
+	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/zones/arena.json"))
 	var map := CollisionMap.from_layout(data)
 	for x in range(17, 24):
 		for z in range(17, 24):

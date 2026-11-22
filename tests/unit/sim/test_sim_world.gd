@@ -6,7 +6,7 @@ var map: CollisionMap
 
 func before_each() -> void:
 	balance = Balance.load_from()
-	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/maps/test_arena.json"))
+	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/zones/arena.json"))
 	map = CollisionMap.from_layout(data)
 
 

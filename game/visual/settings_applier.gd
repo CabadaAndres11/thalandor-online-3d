@@ -2,7 +2,7 @@ class_name SettingsApplier
 extends RefCounted
 ## Applies the video and audio settings (SettingsStore) to the window, the viewport,
 ## the rendering server and the audio buses. The ambience lighting itself is rebuilt by
-## the arena (Arena.set_quality).
+## the zone (ZoneView.set_quality).
 
 const BUSES := ["Master", "Music", "SFX", "UI"]
 const SUN_ATLAS := [2048, 4096, 4096]

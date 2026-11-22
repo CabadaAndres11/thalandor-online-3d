@@ -1,6 +1,6 @@
 class_name GameSession
 extends Node3D
-## A running game: owns the arena, camera, avatars and the network sessions.
+## A running game: owns the zone view, camera, avatars and the network sessions.
 ## Playing always means hosting (with the local player on a zero-latency loopback)
 ## unless joining a friend, in which case there is no local HostSession.
 
@@ -12,6 +12,8 @@ signal group_failed(error_key: String)
 const GAME_VERSION_SETTING := "application/config/version"
 const NET_WEBRTC := "webrtc"
 const NET_ENET := "enet"
+## Where a game starts until characters remember their place (Plan 8.1, Task 9).
+const START_ZONE := "arena"
 
 var balance: Balance
 var map: CollisionMap
@@ -26,7 +28,7 @@ var last_error: String = ""
 ## Network used for groups: NET_WEBRTC (default) or NET_ENET; user argument --net=.
 var net_mode: String = NET_WEBRTC
 
-var arena: Arena
+var zone_view: ZoneView
 var camera: IsoCamera
 var _avatars: Dictionary = {} # id -> PlayerAvatar
 var _monster_avatars: Dictionary = {} # id -> MonsterAvatar
@@ -53,10 +55,10 @@ func _init() -> void:
 	var signaling_override := _user_arg("signaling")
 	if signaling_override != "":
 		balance.signaling_url = signaling_override
-	arena = Arena.new()
-	arena.name = "Arena"
-	add_child(arena)
-	map = arena.build(Arena.load_layout())
+	zone_view = ZoneView.new()
+	zone_view.name = "Zone"
+	add_child(zone_view)
+	map = zone_view.build(ZoneLayout.load_id(START_ZONE))
 	MonsterAvatar.prewarm_bosses() # while the game loads, not when a boss appears
 	_avatar_root = Node3D.new()
 	_avatar_root.name = "Players"
@@ -82,9 +84,9 @@ func _init() -> void:
 	_aim = map.spawn_point()
 
 
-## Rebuilds the arena lighting for a video quality level (GraphicsQuality).
+## Rebuilds the zone lighting for a video quality level (GraphicsQuality).
 func set_graphics_quality(q: int) -> void:
-	arena.set_quality(q)
+	zone_view.set_quality(q)
 
 
 static func game_version() -> String:
@@ -271,7 +273,7 @@ func _process(delta: float) -> void:
 	var own := client.render_state(client.my_id)
 	if not own.is_empty():
 		camera.follow(own.position)
-		arena.follow(own.position)
+		zone_view.follow(own.position)
 		for npc: NpcAvatar in _npc_avatars:
 			var d := Vector2(own.position.x - npc.position.x, own.position.z - npc.position.z).length()
 			npc.set_prompt_visible(d <= NpcDB.TALK_RANGE)

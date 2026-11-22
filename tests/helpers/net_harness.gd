@@ -20,7 +20,7 @@ var _remote_host: MemoryTransport
 
 func _init(latency_ms: float, jitter_ms: float, loss: float, seed_value: int) -> void:
 	balance = Balance.load_from()
-	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/maps/test_arena.json"))
+	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/zones/arena.json"))
 	map = CollisionMap.from_layout(data)
 	host = HostSession.new(balance, map, VERSION)
 	loopback = MemoryNetwork.new(seed_value)

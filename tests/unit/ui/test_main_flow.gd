@@ -476,11 +476,11 @@ func test_options_quality_reaches_the_game() -> void:
 	main.settings.quality = GraphicsQuality.LOW
 	main._on_play("Prueba")
 	await wait_physics_frames(3)
-	assert_eq(main.game.arena.quality, GraphicsQuality.LOW, "a new game uses the saved quality")
+	assert_eq(main.game.zone_view.quality, GraphicsQuality.LOW, "a new game uses the saved quality")
 	main.pause_menu.visible = true
 	main.pause_menu.options_requested.emit()
 	main.options_window.set_quality(GraphicsQuality.HIGH)
-	assert_eq(main.game.arena.quality, GraphicsQuality.HIGH)
+	assert_eq(main.game.zone_view.quality, GraphicsQuality.HIGH)
 	await wait_process_frames(1)
 	assert_true(main.game.input_blocked, "options block input")
 
@@ -489,7 +489,7 @@ func test_ambience_command_is_local() -> void:
 	main._on_play("Prueba")
 	await wait_physics_frames(3)
 	main._on_chat_submitted("/ambiente mazmorra_noche")
-	assert_eq(main.game.arena.ambience_id, "mazmorra_noche")
+	assert_eq(main.game.zone_view.ambience_id, "mazmorra_noche")
 	assert_true(main.chat.has_message(tr("AMBIENCE_SET") % "mazmorra_noche"))
 
 
@@ -498,12 +498,12 @@ func test_sound_changes_do_not_rebuild_the_lighting() -> void:
 	await wait_physics_frames(3)
 	main.pause_menu.visible = true
 	main.pause_menu.options_requested.emit()
-	var env_before: Environment = main.game.arena.get_node("Environment").environment
+	var env_before: Environment = main.game.zone_view.get_node("Environment").environment
 	main.options_window.set_volume("SFX", 0.4)
 	main.options_window.set_volume("SFX", 0.2)
-	assert_same(main.game.arena.get_node("Environment").environment, env_before, "volume leaves the lighting alone")
+	assert_same(main.game.zone_view.get_node("Environment").environment, env_before, "volume leaves the lighting alone")
 	main.options_window.set_quality(GraphicsQuality.HIGH)
-	assert_not_same(main.game.arena.get_node("Environment").environment, env_before, "quality rebuilds it")
+	assert_not_same(main.game.zone_view.get_node("Environment").environment, env_before, "quality rebuilds it")
 
 
 func test_esc_closes_options_and_keeps_pause() -> void:

@@ -35,7 +35,7 @@ func test_every_monster_loads() -> void:
 
 
 func test_map_spawns_exist() -> void:
-	var map: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/maps/test_arena.json"))
+	var map: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/zones/arena.json"))
 	for s: Dictionary in map.spawns:
 		assert_has(ROSTER, s.type)
 	var boss: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/monsters/cult_acolyte.json"))
@@ -45,6 +45,6 @@ func test_map_spawns_exist() -> void:
 func test_summon_only_monsters_are_not_on_the_map() -> void:
 	var only := _types().filter(func(t: Dictionary) -> bool: return t.get("summon_only", false)).map(func(t: Dictionary) -> String: return t.id)
 	assert_eq(only, ["hunter_wolf"])
-	var map: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/maps/test_arena.json"))
+	var map: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/zones/arena.json"))
 	for sp: Dictionary in map.spawns:
 		assert_does_not_have(only, sp.type)

@@ -32,9 +32,9 @@ func _initialize() -> void:
 		elif arg.begins_with("--page="):
 			_page = int(arg.trim_prefix("--page="))
 	root.size = Vector2i(1600, 700)
-	var arena := Arena.new()
+	var arena := ZoneView.new()
 	root.add_child(arena)
-	arena.build(Arena.load_layout())
+	arena.build(ZoneLayout.load_id("arena"))
 	if _name == "boss":
 		_boss_scene()
 		return

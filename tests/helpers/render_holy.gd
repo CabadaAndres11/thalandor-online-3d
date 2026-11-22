@@ -12,9 +12,9 @@ var _spots: Dictionary = {}
 
 func _initialize() -> void:
 	root.size = Vector2i(1600, 700)
-	var arena := Arena.new()
+	var arena := ZoneView.new()
 	root.add_child(arena)
-	arena.build(Arena.load_layout())
+	arena.build(ZoneLayout.load_id("arena"))
 	_fx = CombatFX.new()
 	root.add_child(_fx)
 	_fx.setup(func(id: int) -> Variant: return _spots.get(id), func() -> int: return 0, AbilityDB.load_default(), 30)

@@ -7,7 +7,7 @@ extends SceneTree
 const QUALITY_NAMES := ["baja", "media", "alta"]
 const FRAMES_PER_SHOT := 45
 
-var _arena: Arena
+var _arena: ZoneView
 var _shots: Array = [] # [ambience id, quality]
 var _frames := 0
 var _settings := SettingsStore.new()
@@ -28,9 +28,9 @@ func _initialize() -> void:
 			if only_quality == -1 or q == only_quality:
 				_shots.append([id, q])
 	root.size = Vector2i(1280, 720)
-	_arena = Arena.new()
+	_arena = ZoneView.new()
 	root.add_child(_arena)
-	var layout := Arena.load_layout()
+	var layout := ZoneLayout.load_id("arena")
 	_arena.build(layout)
 	var catalog := CharacterCatalog.load_default()
 	var looks := [
@@ -46,7 +46,7 @@ func _initialize() -> void:
 		rig.position = center + Vector3((i - 2) * 1.3, 0, 0)
 		rig.rotation_degrees.y = 200.0
 		root.add_child(rig)
-	var map := CollisionMap.from_layout(layout)
+	var map := layout.collision()
 	for n: Dictionary in NpcDB.placed(map):
 		var npc := NpcAvatar.new()
 		root.add_child(npc)

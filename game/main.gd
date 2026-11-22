@@ -789,10 +789,10 @@ func _on_group_failed(error_key: String) -> void:
 func _on_chat_submitted(text: String) -> void:
 	if game == null:
 		return
-	var local := AmbienceCommand.handle(text, game.arena.ambience_id, Ambience.ids())
+	var local := AmbienceCommand.handle(text, game.zone_view.ambience_id, Ambience.ids())
 	if local.handled:
 		if local.switch_to != "":
-			game.arena.set_ambience(local.switch_to)
+			game.zone_view.set_ambience(local.switch_to)
 		chat.add_message("", local.message, true)
 		return
 	if game.client != null:
