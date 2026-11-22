@@ -9,7 +9,11 @@ const NAME_MIN := 2
 const NAME_MAX := 16
 const SPAWN_SPACING := 1.5
 ## Events that only their owner (ev[1]) receives: personal loot and gold.
-const OWNER_EVENTS := ["gold", "loot", "loot_gone", "bag_full", "trade_refused"]
+const OWNER_EVENTS := ["gold", "loot", "loot_gone", "bag_full", "trade_refused", "zone_blocked"]
+## No changing zone within this long of being hurt (Plan 8.1).
+const EXIT_COMBAT_S := 5.0
+## How often a player blocked at an exit is told why.
+const EXIT_WARN_S := 3.0
 
 ## The world of the zone the host started in (its map). Each player lives in the world of
 ## its own zone: world_of(id).
@@ -29,6 +33,8 @@ var _next_id: int = 1
 ## The first player to join: the only one who may set the arena level and use commands.
 var _host_player_id: int = 0
 static var _name_regex: RegEx
+## Exits already reported as leading nowhere.
+var _bad_exits: Dictionary = {}
 
 
 func _init(p_balance: Balance, p_map: CollisionMap, p_game_version: String) -> void:
@@ -80,6 +86,9 @@ func tick() -> void:
 			# No new input this tick: keep moving/holding, but never repeat presses.
 			inputs[id] = (rec.last_input as PlayerInput).held_only()
 	zones.step_occupied(inputs_by_key)
+	_check_exits()
+	if zones.tick % balance.tick_rate == 0:
+		_send_party()
 	_flush_progress()
 	_flush_inventory()
 	# Each player gets the players, monsters and events of its own world only.
@@ -144,6 +153,57 @@ func world_of(id: int) -> SimWorld:
 
 func state_of(id: int) -> PlayerState:
 	return world_of(id).players.get(id)
+
+
+## A player alive on an exit goes to the zone it leads to (not while hurt in the last
+## EXIT_COMBAT_S; an exit to a zone that does not exist is ignored).
+func _check_exits() -> void:
+	for id: int in _players.keys():
+		var rec: Dictionary = _players[id]
+		var layout := zones.layout(rec.zone_key)
+		var p := state_of(id)
+		if layout == null or p == null or not p.is_alive():
+			continue
+		var ex := layout.exit_at(p.position)
+		if ex.is_empty():
+			continue
+		var w := world_of(id)
+		if w.tick - p.last_hurt_tick < w.ticks(EXIT_COMBAT_S):
+			if w.tick - int(rec.get("warned_tick", -100000)) >= w.ticks(EXIT_WARN_S):
+				rec.warned_tick = w.tick
+				_send_to(id, Protocol.events(w.tick, [["zone_blocked", id]]), true)
+			continue
+		var key := zones.open(str(ex.to))
+		if key == "":
+			if not _bad_exits.has(ex.to):
+				_bad_exits[ex.to] = true
+				push_warning("HostSession: an exit of %s leads to an unknown zone %s" % [layout.id, ex.to])
+			continue
+		send_to_zone(id, key, zones.layout(key).entry(str(ex.entry)))
+
+
+## Moves a player to another open world and tells its client (ZONE).
+func send_to_zone(id: int, key: String, at: Vector3) -> void:
+	if transfer(id, key, at) == null:
+		return
+	var layout := zones.layout(key)
+	var w := zones.world(key)
+	_send_to(id, Protocol.zone(layout.id if layout != null else "", key, w.instance_level), true)
+
+
+## Partners in other worlds: their zone, level and health, once a second.
+func _send_party() -> void:
+	for id: int in _players:
+		var rows := []
+		for other: int in _players:
+			if other == id or _players[other].zone_key == _players[id].zone_key:
+				continue
+			var p := state_of(other)
+			var layout := zones.layout(_players[other].zone_key)
+			if p != null:
+				rows.append([other, layout.name if layout != null else "", p.level, p.hp / maxf(p.stats.max_hp, 1.0)])
+		if not rows.is_empty():
+			_send_to(id, Protocol.party(rows), false)
 
 
 ## Moves a player to another open world (key), standing at a position.
@@ -335,6 +395,16 @@ func _on_command(rec: Dictionary, text: String) -> void:
 		_send_to(rec.id, Protocol.chat(0, "CMD_HOST_ONLY"), true)
 		return
 	var parts := text.substr(1).split(" ", false)
+	if parts.size() >= 1 and parts[0].to_lower() == "zonas":
+		_send_to(rec.id, Protocol.chat(0, "ZONES: " + ", ".join(zones.keys())), true)
+		return
+	if parts.size() >= 2 and parts[0].to_lower() == "zona":
+		var zkey := zones.open(parts[1])
+		if zkey == "":
+			_send_to(rec.id, Protocol.chat(0, "CMD_BAD"), true)
+		else:
+			send_to_zone(rec.id, zkey, zones.layout(zkey).entry("default"))
+		return
 	if parts.size() >= 2 and parts[0].to_lower() == "objeto":
 		_item_command(rec, parts)
 		return

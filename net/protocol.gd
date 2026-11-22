@@ -2,11 +2,11 @@ class_name Protocol
 extends RefCounted
 ## Network messages: Arrays [type, fields...] encoded with var_to_bytes (never objects).
 
-const VERSION := 7
+const VERSION := 8
 
 enum Msg { HELLO = 1, WELCOME, REJECT, INPUT, SNAPSHOT, PLAYER_JOINED, PLAYER_LEFT, CHAT, EVENTS, SET_BAR, CHOOSE_CLASS, PLAYER_CLASS,
 	SPEND_ATTRIBUTE, BUY_TALENT, BUY_MASTERY, RESET, SET_ARENA_LEVEL, PROGRESS, ARENA_LEVEL, CHOOSE_UPGRADE, PLAYER_UPGRADE,
-	ITEM_ACTION, INVENTORY, PLAYER_GEAR, MERCHANT_STOCK }
+	ITEM_ACTION, INVENTORY, PLAYER_GEAR, MERCHANT_STOCK, ZONE, PARTY }
 
 ## Field names and Variant types per message type.
 const SCHEMAS := {
@@ -38,6 +38,10 @@ const SCHEMAS := {
 	Msg.INVENTORY: [["inventory", TYPE_DICTIONARY], ["potion_cd_s", TYPE_FLOAT]],
 	Msg.PLAYER_GEAR: [["id", TYPE_INT], ["gear", TYPE_ARRAY]],
 	Msg.MERCHANT_STOCK: [["items", TYPE_ARRAY]],
+	# Plan 8.1: the player now stands in another zone (its world key and dungeon level).
+	Msg.ZONE: [["zone", TYPE_STRING], ["key", TYPE_STRING], ["level", TYPE_INT]],
+	# Partners in other zones: [[id, zone name key, level, hp ratio], ...], once a second.
+	Msg.PARTY: [["rows", TYPE_ARRAY]],
 }
 
 ## Element types of the nested arrays.
@@ -360,6 +364,14 @@ static func unpack_players(data: PackedByteArray) -> Variant:
 
 
 ## A level 50 player asks Brann for a class upgrade.
+static func zone(zone_id: String, key: String, level: int) -> PackedByteArray:
+	return pack([Msg.ZONE, zone_id, key, level])
+
+
+static func party(rows: Array) -> PackedByteArray:
+	return pack([Msg.PARTY, rows])
+
+
 static func choose_upgrade(id: String) -> PackedByteArray:
 	return pack([Msg.CHOOSE_UPGRADE, id])
 

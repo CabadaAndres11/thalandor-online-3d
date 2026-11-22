@@ -49,8 +49,8 @@ func _send(c: MemoryTransport, data: PackedByteArray) -> void:
 	host.tick()
 
 
-func test_protocol_is_7() -> void:
-	assert_eq(Protocol.VERSION, 7)
+func test_protocol_is_at_least_7() -> void:
+	assert_gte(Protocol.VERSION, 7)
 
 
 func test_old_protocol_hello_decodes_for_a_version_answer() -> void:

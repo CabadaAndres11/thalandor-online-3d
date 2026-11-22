@@ -193,8 +193,8 @@ func test_boss_fight_snapshot_fits_enet_mtu() -> void:
 
 # --- Protocol 6: progression ----------------------------------------------------------
 
-func test_version_is_7() -> void:
-	assert_eq(Protocol.VERSION, 7)
+func test_version_is_8() -> void:
+	assert_eq(Protocol.VERSION, 8) # Plan 8.1: ZONE and PARTY
 
 
 func test_progress_requests_roundtrip() -> void:
@@ -252,3 +252,10 @@ func test_level_65535_survives_snapshot_rows() -> void:
 func test_record_sizes() -> void:
 	assert_eq(Protocol.pack_players([[1, Vector3.ZERO, Vector3.ZERO, 0.0, 0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, Vector2.ZERO, 0, 1.0, 0, 0.0, 1]]).size(), Protocol.PLAYER_RECORD)
 	assert_eq(Protocol.pack_monsters([[1000, "cultist", Vector3.ZERO, 0.0, 1.0, 1.0, 0, 0, 0, 1]]).size(), Protocol.MONSTER_RECORD)
+
+
+func test_zone_and_party_roundtrip() -> void:
+	var z := Protocol.decode(Protocol.zone("bosque", "bosque", 0))
+	assert_eq([z.zone, z.key, z.level], ["bosque", "bosque", 0])
+	var p := Protocol.decode(Protocol.party([[2, "ZONE_BOSQUE", 12, 0.5]]))
+	assert_eq(p.rows, [[2, "ZONE_BOSQUE", 12, 0.5]])
