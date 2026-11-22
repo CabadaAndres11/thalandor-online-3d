@@ -52,6 +52,10 @@ func advance(_dt: float) -> void:
 		_box.move_child(_frames[id].panel, ids.find(id))
 		var f: Dictionary = _frames[id]
 		var c: Dictionary = _client.combat.get(id, {})
+		var far: Dictionary = _client.party.get(id, {}) if c.is_empty() else {}
+		if not far.is_empty():
+			# In another zone (Plan 8.1): its zone instead of a status, health once a second.
+			c = {"hp": float(far.hp), "max_hp": 1.0, "level": far.level}
 		var hp := float(c.get("hp", 0.0))
 		var max_hp := maxf(1.0, float(c.get("max_hp", 1.0)))
 		(f.hp as ProgressBar).max_value = max_hp
@@ -62,7 +66,7 @@ func advance(_dt: float) -> void:
 			status = tr("PARTY_DOWNED")
 		elif life == CombatEntity.DEAD:
 			status = tr("PARTY_DEAD")
-		(f.status as Label).text = status
+		(f.status as Label).text = tr(str(far.zone)) if not far.is_empty() else status
 		(f.level as Label).text = tr("LEVEL_SHORT") % int(c.get("level", 1))
 		(f.panel as Control).modulate = Color(1, 1, 1, 0.6) if life != CombatEntity.ALIVE else Color.WHITE
 

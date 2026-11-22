@@ -221,3 +221,52 @@ func test_dodge_prediction_matches_host() -> void:
 	assert_almost_eq(_own_pos(a).distance_to(host.world.players[1].position), 0.0, 0.01)
 	assert_lt(a.last_correction, 0.01, "no correction needed")
 	assert_gt(host.world.players[1].position.x, start.x + balance.dodge_distance)
+
+
+# --- Zones (Plan 8.1) ------------------------------------------------------------------
+
+func test_zone_message_swaps_the_prediction_map() -> void:
+	var c := ClientSession.new(balance, map, VERSION, "Ana", "warrior", {})
+	c.status = ClientSession.Status.IN_GAME
+	c.my_id = 1
+	c.monsters[9] = {"type": "x"}
+	watch_signals(c)
+	c._handle(Protocol.decode(Protocol.zone("arena", "arena", 0)))
+	assert_eq(c.map.zone_id, "arena")
+	assert_eq(c.map.size, Vector2i(48, 48))
+	assert_eq(c.zone_id, "arena")
+	assert_true(c.zone_loading)
+	assert_true(c.monsters.is_empty(), "the old zone's monsters are gone")
+	assert_signal_emitted_with_parameters(c, "zone_changed", ["arena", "arena", 0])
+
+
+func test_first_snapshot_after_a_zone_ends_the_loading() -> void:
+	var a := _client("Ana")
+	for i in 5:
+		_step()
+	watch_signals(a)
+	a._handle(Protocol.decode(Protocol.zone("arena", "arena", 0)))
+	for i in 3:
+		_step()
+	assert_false(a.zone_loading)
+	assert_signal_emitted(a, "zone_ready")
+
+
+func test_partner_out_of_the_snapshots_is_forgotten() -> void:
+	var a := _client("Ana")
+	var b := _client("Bea")
+	for i in 10:
+		_step()
+	assert_false(a.render_state(2).is_empty())
+	var key := host.zones.open("arena")
+	host.transfer(2, key, Vector3(20.5, 0, 20.5))
+	for i in 5:
+		_step()
+	assert_true(a.render_state(2).is_empty(), "Bea is in another zone")
+	assert_false(a.combat.has(2))
+
+
+func test_party_rows_are_kept() -> void:
+	var c := ClientSession.new(balance, map, VERSION, "Ana", "warrior", {})
+	c._handle(Protocol.decode(Protocol.party([[2, "ZONE_BOSQUE", 12, 0.5]])))
+	assert_eq(c.party[2], {"zone": "ZONE_BOSQUE", "level": 12, "hp": 0.5})

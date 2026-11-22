@@ -25,6 +25,10 @@ signal inventory_changed()
 signal gear_changed(id: int)
 ## What the merchant sells to this player (Item list), after merchant_open or a purchase.
 signal merchant_stock_received(items: Array)
+## Plan 8.1: this player now stands in another zone (the map is already swapped).
+signal zone_changed(zone_id: String, key: String, level: int)
+## The first snapshot of the new zone arrived: the loading screen can go.
+signal zone_ready()
 
 enum Status { CONNECTING, IN_GAME, CLOSED }
 
@@ -58,6 +62,13 @@ var arena_level: int = 1
 ## max_resource, life, status_bits}; monster id -> {type, hp, max_hp, status_bits, target}.
 var combat: Dictionary = {}
 var monsters: Dictionary = {}
+## The zone this player stands in (Plan 8.1) and its world key.
+var zone_id: String = ""
+var zone_key: String = ""
+## True from a ZONE message until the first snapshot of the new zone.
+var zone_loading: bool = false
+## Partners in other zones: id -> {zone (name key), level, hp (ratio)}.
+var party: Dictionary = {}
 
 var _transport: Transport
 var _seq: int = 0
@@ -277,6 +288,13 @@ func _handle(msg: Dictionary) -> void:
 			combat.erase(msg.id)
 			roster_changed.emit()
 			chat_received.emit("", tr_text("CHAT_LEFT") % name, true)
+		Protocol.Msg.ZONE:
+			_on_zone(msg.zone, msg.key, msg.level)
+		Protocol.Msg.PARTY:
+			party.clear()
+			for row: Variant in msg.rows:
+				if row is Array and (row as Array).size() >= 4:
+					party[int(row[0])] = {"zone": str(row[1]), "level": int(row[2]), "hp": float(row[3])}
 		Protocol.Msg.CHAT:
 			if msg.from_id == 0: # a system message from the host: the text is a translation key
 				chat_received.emit("", tr_text(msg.text), true)
@@ -285,9 +303,39 @@ func _handle(msg: Dictionary) -> void:
 			chat_received.emit(author, msg.text, false)
 
 
+## The host moved this player to another zone: its map, and nothing of the old zone.
+func _on_zone(new_zone: String, key: String, level: int) -> void:
+	var layout := ZoneLayout.load_id(new_zone)
+	if layout != null:
+		map = layout.collision()
+	zone_id = new_zone
+	zone_key = key
+	zone_loading = true
+	monsters.clear()
+	_monster_buffers.clear()
+	for id: int in _buffers.keys():
+		combat.erase(id)
+	_buffers.clear()
+	_predicted = null # placed again by the first snapshot
+	_offset = Vector3.ZERO
+	_latest_tick = -1
+	zone_changed.emit(new_zone, key, level)
+
+
 func _on_snapshot(tick: int, rows: Array, monster_rows: Array) -> void:
 	if status != Status.IN_GAME or tick <= _latest_tick:
 		return
+	if zone_loading:
+		zone_loading = false
+		zone_ready.emit()
+	var present := {}
+	for row: Array in rows:
+		present[row[0]] = true
+	# A partner no longer in the snapshots is in another zone: forget where it was.
+	for id: int in _buffers.keys():
+		if not present.has(id):
+			_buffers.erase(id)
+			combat.erase(id)
 	var first := _latest_tick < 0
 	_latest_tick = tick
 	if first:

@@ -33,6 +33,8 @@ func _init(p_balance: Balance, p_seed: int) -> void:
 ## Makes a world from a map the host was given (its start zone).
 func adopt(map: CollisionMap, layout: ZoneLayout = null) -> String:
 	var key := map.zone_id if map.zone_id != "" else "start"
+	if layout == null and map.zone_id != "" and FileAccess.file_exists(zone_dir + map.zone_id + ".json"):
+		layout = ZoneLayout.load_path(zone_dir + map.zone_id + ".json") # its exits and entries
 	_worlds[key] = SimWorld.new(balance, map, _seed)
 	_layouts[key] = layout
 	_occupants[key] = []

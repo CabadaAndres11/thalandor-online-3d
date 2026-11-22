@@ -575,3 +575,33 @@ func test_menus_use_stone_theme() -> void:
 	var holo := main.combat_hud.theme
 	if holo != null:
 		assert_ne((holo.get_stylebox("normal", "Button") as StyleBoxFlat).border_color, StoneTheme.GOLD_DIM)
+
+
+# --- Zones (Plan 8.1) ------------------------------------------------------------------
+
+func test_game_rebuilds_view_and_npcs_on_zone() -> void:
+	main._on_play("Prueba")
+	await wait_physics_frames(5)
+	var old_view := main.game.zone_view
+	main.game.client._handle(Protocol.decode(Protocol.zone("arena", "arena", 0)))
+	await wait_process_frames(2)
+	assert_ne(main.game.zone_view, old_view, "a new zone view")
+	assert_false(is_instance_valid(old_view), "the old one is freed")
+	assert_eq(main.game.find_children("Zone", "ZoneView", true, false).size(), 1)
+	assert_eq(main.game.map.zone_id, "arena")
+
+
+func test_loading_overlay_until_first_snapshot() -> void:
+	main._on_play("Prueba")
+	await wait_physics_frames(5)
+	main.game.client._handle(Protocol.decode(Protocol.zone("arena", "arena", 0)))
+	assert_true(main.game.loading.visible)
+	await wait_physics_frames(5)
+	assert_false(main.game.loading.visible)
+
+
+func test_host_start_zone_has_its_exits() -> void:
+	main._on_play("Prueba")
+	await wait_physics_frames(3)
+	var key: String = main.game.host.zones.start_key
+	assert_not_null(main.game.host.zones.layout(key), "the start zone knows its layout (exits)")

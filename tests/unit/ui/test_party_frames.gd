@@ -120,3 +120,16 @@ func test_party_frames_show_the_allys_level() -> void:
 	c.combat[2]["level"] = 15
 	frames.advance(0.0)
 	assert_eq(frames.frame_level(2), tr("LEVEL_SHORT") % 15)
+
+
+func test_party_frames_show_far_zone() -> void:
+	var c := _client()
+	c.combat.erase(3)
+	c.party[3] = {"zone": "ZONE_ALDEA", "level": 9, "hp": 0.25}
+	var frames := PartyFrames.new()
+	_root().add_child(frames)
+	frames.bind(c)
+	frames.advance(0.0)
+	assert_eq(frames.frame_status(3), tr("ZONE_ALDEA"))
+	assert_almost_eq(frames.frame_fraction(3), 0.25, 0.01)
+	assert_eq(frames.frame_level(3), tr("LEVEL_SHORT") % 9)

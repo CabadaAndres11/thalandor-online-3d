@@ -33,6 +33,9 @@ var camera: IsoCamera
 var _avatars: Dictionary = {} # id -> PlayerAvatar
 var _monster_avatars: Dictionary = {} # id -> MonsterAvatar
 var _npc_avatars: Array = [] # NpcAvatar
+## The loading screen between zones (Plan 8.1).
+var loading: LoadingOverlay
+var _quality: int = GraphicsQuality.MEDIUM
 ## Combat visuals (projectiles, warnings, numbers…) driven by host events.
 var fx: CombatFX
 ## The own player's loot on the ground and the gold they win.
@@ -63,12 +66,7 @@ func _init() -> void:
 	_avatar_root = Node3D.new()
 	_avatar_root.name = "Players"
 	add_child(_avatar_root)
-	for n: Dictionary in NpcDB.placed(map):
-		var npc := NpcAvatar.new()
-		npc.name = "Npc_" + str(n.id)
-		_avatar_root.add_child(npc)
-		npc.setup(n.id, n.position, n.facing)
-		_npc_avatars.append(npc)
+	_place_npcs()
 	camera = IsoCamera.new()
 	camera.name = "Camera"
 	add_child(camera)
@@ -78,6 +76,12 @@ func _init() -> void:
 	add_child(fx)
 	fx.setup(_entity_position, _latest_tick, AbilityDB.load_default(), balance.tick_rate)
 	fx.slash_owners = func(id: int) -> bool: return _avatars.has(id)
+	var overlay_layer := CanvasLayer.new()
+	overlay_layer.name = "Loading"
+	overlay_layer.layer = 50
+	add_child(overlay_layer)
+	loading = LoadingOverlay.new()
+	overlay_layer.add_child(loading)
 	loot_view = LootView.new()
 	loot_view.name = "Loot"
 	add_child(loot_view)
@@ -86,6 +90,7 @@ func _init() -> void:
 
 ## Rebuilds the zone lighting for a video quality level (GraphicsQuality).
 func set_graphics_quality(q: int) -> void:
+	_quality = q
 	zone_view.set_quality(q)
 
 
@@ -238,7 +243,42 @@ func _start_client(player_name: String, class_id: String, appearance: Dictionary
 	client.class_changed.connect(_on_class_changed)
 	client.upgrade_changed.connect(_on_upgrade_changed)
 	client.gear_changed.connect(_on_gear_changed)
+	client.zone_changed.connect(_on_zone_changed)
+	client.zone_ready.connect(loading.hide_overlay)
 	client.connect_to(t)
+
+
+## The host moved this player to another zone: draw it, with its NPCs, behind a short
+## loading screen; nothing of the old zone stays (monsters and loot go too).
+func _on_zone_changed(zone_id: String, _key: String, _level: int) -> void:
+	var layout := ZoneLayout.load_id(zone_id)
+	if layout == null:
+		return
+	loading.show_zone(layout.name)
+	remove_child(zone_view)
+	zone_view.free()
+	zone_view = ZoneView.new()
+	zone_view.name = "Zone"
+	add_child(zone_view)
+	move_child(zone_view, 0)
+	map = zone_view.build(layout, _quality)
+	for npc: Node in _npc_avatars:
+		npc.queue_free()
+	_npc_avatars.clear()
+	_place_npcs()
+	for id: int in _monster_avatars.keys():
+		(_monster_avatars[id] as Node).queue_free()
+	_monster_avatars.clear()
+	loot_view.clear()
+
+
+func _place_npcs() -> void:
+	for n: Dictionary in NpcDB.placed(map):
+		var npc := NpcAvatar.new()
+		npc.name = "Npc_" + str(n.id)
+		_avatar_root.add_child(npc)
+		npc.setup(n.id, n.position, n.facing)
+		_npc_avatars.append(npc)
 
 
 func _on_client_disconnected(reason: String) -> void:
@@ -304,7 +344,9 @@ func _sync_avatars(delta: float) -> void:
 			_avatar_root.add_child(avatar)
 			_avatars[id] = avatar
 		var avatar_node := _avatars[id] as PlayerAvatar
-		avatar_node.apply_state(client.render_state(id), delta)
+		var state := client.render_state(id)
+		avatar_node.visible = not state.is_empty() # a partner in another zone is not drawn here
+		avatar_node.apply_state(state, delta)
 		if client.combat.has(id):
 			var c: Dictionary = client.combat[id]
 			avatar_node.set_health(float(c.hp), float(c.max_hp), int(c.life) == CombatEntity.ALIVE)
