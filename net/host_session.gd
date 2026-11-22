@@ -35,6 +35,10 @@ var _host_player_id: int = 0
 static var _name_regex: RegEx
 ## Exits already reported as leading nowhere.
 var _bad_exits: Dictionary = {}
+## Where a player whose saved place is unknown (or a dungeon) appears (Plan 8.1).
+var fallback_zone: String = CharacterData.START_ZONE
+## How often each player is told where to save itself.
+const PLACE_EVERY_S := 30.0
 
 
 func _init(p_balance: Balance, p_map: CollisionMap, p_game_version: String) -> void:
@@ -87,6 +91,7 @@ func tick() -> void:
 			inputs[id] = (rec.last_input as PlayerInput).held_only()
 	zones.step_occupied(inputs_by_key)
 	_check_exits()
+	_send_places()
 	if zones.tick % balance.tick_rate == 0:
 		_send_party()
 	_flush_progress()
@@ -218,13 +223,55 @@ func _on_enter_dungeon(rec: Dictionary, zone_id: String, level: int) -> void:
 		key = zones.open(zone_id, "group", clampi(level, r.x, r.y))
 	if key == "":
 		return
+	rec.outside = {"zone": layout.id, "at": [floori(p.position.x), floori(p.position.z)]} # saved while inside
 	send_to_zone(rec.id, key, zones.layout(key).entry(str(ex.entry)))
+
+
+## Where a joining player appears: its saved place when the zone exists, is not a dungeon
+## and the cell is free; the fallback zone's entry otherwise; the host's start when it
+## brings no place at all. {key, at}.
+func _place_for(place: Dictionary, spawn: Vector3) -> Dictionary:
+	if place.is_empty() or str(place.get("zone", "")) == "":
+		return {"key": zones.start_key, "at": spawn}
+	var zone := str(place.zone)
+	var layout := zones.peek(zone)
+	if layout == null or layout.instanced:
+		var fk := zones.open(fallback_zone)
+		if fk == "":
+			return {"key": zones.start_key, "at": spawn}
+		return {"key": fk, "at": zones.layout(fk).entry("default")}
+	var key := zones.open(zone)
+	var at: Array = place.get("at", [])
+	var map := zones.world(key).map
+	if at.size() == 2 and not map.is_solid(Vector2i(int(at[0]), int(at[1]))):
+		return {"key": key, "at": Vector3(int(at[0]) + 0.5, 0, int(at[1]) + 0.5)}
+	return {"key": key, "at": zones.layout(key).entry("default")}
+
+
+## Tells each player where to save itself: after a zone change and every PLACE_EVERY_S.
+## Inside a dungeon that is its door outside.
+func _send_places() -> void:
+	var periodic := zones.tick % maxi(1, int(PLACE_EVERY_S * balance.tick_rate)) == 0
+	for id: int in _players:
+		var rec: Dictionary = _players[id]
+		if not (periodic or bool(rec.get("place_dirty", false))):
+			continue
+		rec.place_dirty = false
+		var p := state_of(id)
+		var layout := zones.layout(rec.zone_key)
+		if p == null or layout == null:
+			continue
+		if layout.instanced and rec.has("outside"):
+			_send_to(id, Protocol.place(str(rec.outside.zone), rec.outside.at), true)
+		else:
+			_send_to(id, Protocol.place(layout.id, [floori(p.position.x), floori(p.position.z)]), true)
 
 
 ## Moves a player to another open world and tells its client (ZONE).
 func send_to_zone(id: int, key: String, at: Vector3) -> void:
 	if transfer(id, key, at) == null:
 		return
+	_players[id].place_dirty = true
 	var layout := zones.layout(key)
 	var w := zones.world(key)
 	_send_to(id, Protocol.zone(layout.id if layout != null else "", key, w.instance_level), true)
@@ -341,7 +388,8 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 	var class_id := catalog.sanitize_class(msg.class_id)
 	var appearance := catalog.sanitize_appearance(msg.appearance)
 	var spawn := map.spawn_point() + Vector3(slot % 2, 0, slot / 2) * SPAWN_SPACING
-	var player := zones.add_player(id, zones.start_key, spawn)
+	var start := _place_for(msg.place, spawn)
+	var player := zones.add_player(id, start.key, start.at)
 	# Whatever progress the guest brings is fixed up, never refused.
 	player.progress = ProgressRequests.sanitize(PlayerProgress.from_dict(msg.progress), class_id, world)
 	player.inventory = Inventory.from_wire(msg.inventory, class_id, player.progress.level, world.items)
@@ -358,7 +406,8 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 		"upgrade": player.progress.upgrade, "bar_level": player.progress.level, "sent_other": _without_xp(player.progress.to_dict()),
 		"sent_bar": bar.duplicate(), "sent_tick": -100000,
 		"gear": player.inventory.visible_bases(),
-		"zone_key": zones.start_key,
+		"zone_key": start.key,
+		"place_dirty": true,
 	}
 	if _host_player_id == 0:
 		_host_player_id = id

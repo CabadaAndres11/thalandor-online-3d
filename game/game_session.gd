@@ -45,6 +45,8 @@ var _avatar_root: Node3D
 var character_bar: Array = []
 ## The saved inventory of the character playing (Inventory.to_dict), sent in HELLO.
 var character_inventory: Dictionary = {}
+## The saved place of the character playing (Plan 8.1), sent in HELLO.
+var character_place: Dictionary = {}
 var _loopback: MemoryNetwork
 var _group_code: String = ""
 var _opening: bool = false
@@ -243,6 +245,7 @@ func _start_client(player_name: String, class_id: String, appearance: Dictionary
 	client.class_changed.connect(_on_class_changed)
 	client.upgrade_changed.connect(_on_upgrade_changed)
 	client.gear_changed.connect(_on_gear_changed)
+	client.place = character_place.duplicate(true)
 	client.zone_changed.connect(_on_zone_changed)
 	client.zone_ready.connect(loading.hide_overlay)
 	client.connect_to(t)

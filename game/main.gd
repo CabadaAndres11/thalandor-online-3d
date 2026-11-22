@@ -872,11 +872,21 @@ func _start_game() -> void:
 	if _playing != null:
 		game.character_bar = _playing.bar.duplicate()
 		game.character_inventory = _playing.inventory.to_dict()
+		game.character_place = _playing.place.duplicate(true)
 	game.group_opened.connect(_on_group_opened)
 	game.group_failed.connect(_on_group_failed)
 	_show_only(null)
 	chat.visible = true
 	pause_menu.reset()
+
+
+## The host says where this character stands: saved at once (and again on leaving).
+func _on_place_changed(place: Dictionary) -> void:
+	if _playing == null:
+		return
+	_playing.place = CharacterData.sanitize_place(place)
+	if store.save(_playing) != OK:
+		dialog.show_message(tr(store.last_error))
 
 
 func _on_dungeon_offered(zone_id: String, min_level: int, max_level: int, default_level: int) -> void:
@@ -890,6 +900,7 @@ func _attach_client() -> void:
 	client.rejected.connect(_on_rejected)
 	client.chat_received.connect(chat.add_message)
 	client.dungeon_offered.connect(_on_dungeon_offered)
+	client.place_changed.connect(_on_place_changed)
 	client.combat_event.connect(_on_game_event)
 	client.class_changed.connect(_on_class_changed)
 	client.progress_changed.connect(_on_progress_changed)

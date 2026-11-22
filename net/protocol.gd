@@ -6,13 +6,13 @@ const VERSION := 8
 
 enum Msg { HELLO = 1, WELCOME, REJECT, INPUT, SNAPSHOT, PLAYER_JOINED, PLAYER_LEFT, CHAT, EVENTS, SET_BAR, CHOOSE_CLASS, PLAYER_CLASS,
 	SPEND_ATTRIBUTE, BUY_TALENT, BUY_MASTERY, RESET, SET_ARENA_LEVEL, PROGRESS, ARENA_LEVEL, CHOOSE_UPGRADE, PLAYER_UPGRADE,
-	ITEM_ACTION, INVENTORY, PLAYER_GEAR, MERCHANT_STOCK, ZONE, PARTY, DUNGEON_OFFER, ENTER_DUNGEON }
+	ITEM_ACTION, INVENTORY, PLAYER_GEAR, MERCHANT_STOCK, ZONE, PARTY, DUNGEON_OFFER, ENTER_DUNGEON, PLACE }
 
 ## Field names and Variant types per message type.
 const SCHEMAS := {
 	Msg.HELLO: [["game_version", TYPE_STRING], ["protocol", TYPE_INT], ["name", TYPE_STRING],
 		["class_id", TYPE_STRING], ["appearance", TYPE_DICTIONARY], ["bar", TYPE_ARRAY], ["progress", TYPE_DICTIONARY],
-		["inventory", TYPE_DICTIONARY]],
+		["inventory", TYPE_DICTIONARY], ["place", TYPE_DICTIONARY]],
 	Msg.WELCOME: [["player_id", TYPE_INT], ["tick", TYPE_INT], ["roster", TYPE_ARRAY], ["arena_level", TYPE_INT]],
 	Msg.REJECT: [["reason", TYPE_STRING], ["host_version", TYPE_STRING]],
 	Msg.INPUT: [["inputs", TYPE_ARRAY]],
@@ -45,6 +45,8 @@ const SCHEMAS := {
 	# At a dungeon's door: the levels the player may choose (host -> client), and the choice.
 	Msg.DUNGEON_OFFER: [["zone", TYPE_STRING], ["min_level", TYPE_INT], ["max_level", TYPE_INT], ["default_level", TYPE_INT]],
 	Msg.ENTER_DUNGEON: [["zone", TYPE_STRING], ["level", TYPE_INT]],
+	# Where to save the player (outside a dungeon: its door), at each zone change and every 30 s.
+	Msg.PLACE: [["zone", TYPE_STRING], ["at", TYPE_ARRAY]],
 }
 
 ## Element types of the nested arrays.
@@ -79,6 +81,7 @@ const LEGACY_HELLO_SIZE := 4
 const PROTOCOL2_HELLO_SIZE := 6
 const PROTOCOL5_HELLO_SIZE := 7
 const PROTOCOL6_HELLO_SIZE := 8
+const PROTOCOL7_HELLO_SIZE := 9
 const MAGIC_0 := 0x54 # "T"
 const MAGIC_1 := 0x4F # "O"
 const HEADER_SIZE := 6
@@ -93,8 +96,9 @@ static func pack(message: Array) -> PackedByteArray:
 
 
 static func hello(game_version: String, protocol: int, name: String, class_id: String,
-		appearance: Dictionary, bar: Array = [], progress: Dictionary = {}, inventory: Dictionary = {}) -> PackedByteArray:
-	return pack([Msg.HELLO, game_version, protocol, name, class_id, appearance, bar, progress, inventory])
+		appearance: Dictionary, bar: Array = [], progress: Dictionary = {}, inventory: Dictionary = {},
+		place: Dictionary = {}) -> PackedByteArray:
+	return pack([Msg.HELLO, game_version, protocol, name, class_id, appearance, bar, progress, inventory, place])
 
 
 static func welcome(player_id: int, tick: int, roster: Array, arena_level: int = 1) -> PackedByteArray:
@@ -219,12 +223,14 @@ static func decode(data: PackedByteArray) -> Dictionary:
 	var schema: Array = SCHEMAS[arr[0]]
 	# Older HELLOs (0.1.x, 0.2.x) are padded so the host can answer "version".
 	if arr[0] == Msg.HELLO and arr.size() == LEGACY_HELLO_SIZE:
-		arr = arr + ["", {}, [], {}, {}]
+		arr = arr + ["", {}, [], {}, {}, {}]
 	elif arr[0] == Msg.HELLO and arr.size() == PROTOCOL2_HELLO_SIZE:
-		arr = arr + [[], {}, {}]
+		arr = arr + [[], {}, {}, {}]
 	elif arr[0] == Msg.HELLO and arr.size() == PROTOCOL5_HELLO_SIZE:
-		arr = arr + [{}, {}]
+		arr = arr + [{}, {}, {}]
 	elif arr[0] == Msg.HELLO and arr.size() == PROTOCOL6_HELLO_SIZE:
+		arr = arr + [{}, {}]
+	elif arr[0] == Msg.HELLO and arr.size() == PROTOCOL7_HELLO_SIZE:
 		arr = arr + [{}]
 	if arr.size() != schema.size() + 1:
 		return {}
@@ -377,6 +383,10 @@ static func dungeon_offer(zone_id: String, min_level: int, max_level: int, defau
 
 static func enter_dungeon(zone_id: String, level: int) -> PackedByteArray:
 	return pack([Msg.ENTER_DUNGEON, zone_id, level])
+
+
+static func place(zone_id: String, at: Array) -> PackedByteArray:
+	return pack([Msg.PLACE, zone_id, at])
 
 
 static func party(rows: Array) -> PackedByteArray:

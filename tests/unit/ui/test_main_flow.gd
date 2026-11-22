@@ -616,3 +616,13 @@ func test_dungeon_offer_opens_the_window() -> void:
 	assert_true(main._modal_open(), "it blocks the game input like the other choices")
 	main.dungeon_window.cancel_button.pressed.emit()
 	assert_false(main.dungeon_window.visible)
+
+
+func test_main_saves_place_on_message() -> void:
+	main._show_create()
+	var c := _create("Lyra", "archer")
+	main._on_select_play(c.id)
+	await wait_physics_frames(5)
+	main.game.client.place_changed.emit({"zone": "bosque", "at": [40, 12]})
+	var saved: CharacterData = main.store.load_all().filter(func(x: CharacterData) -> bool: return x.id == c.id)[0]
+	assert_eq(saved.place, {"zone": "bosque", "at": [40, 12]})

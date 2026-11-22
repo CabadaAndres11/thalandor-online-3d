@@ -183,12 +183,12 @@ func test_v3_assassin_two_daggers() -> void:
 	assert_eq(c.inventory.equipment.offhand.base_id, "dagger_t1")
 
 
-func test_roundtrip_v4() -> void:
+func test_roundtrip_current_version() -> void:
 	var c := _sample()
 	c.inventory.gold = 321
 	c.inventory.add(ItemRoll.new_item("wand_t1", 3, "rare"), ItemDB.load_default())
 	var d := c.to_dict()
-	assert_eq(d.version, 4)
+	assert_eq(d.version, CharacterData.VERSION)
 	var back := CharacterData.from_dict(JSON.parse_string(JSON.stringify(d)), catalog)
 	assert_eq(back.to_dict(), d)
 
@@ -215,3 +215,31 @@ func test_unknown_race_falls_back() -> void:
 	var c := CharacterData.from_dict(d, catalog)
 	assert_eq(c.appearance.race, "human")
 	assert_eq(c.appearance.hair_style, "hair_long")
+
+
+# --- Place and tutorial (Plan 8.1) -----------------------------------------------------
+
+func test_v4_save_opens_in_the_village() -> void:
+	var d := _sample().to_dict()
+	d.version = 4
+	d.erase("place")
+	d.erase("tutorial_done")
+	var c := CharacterData.from_dict(d, catalog)
+	assert_eq(c.place.zone, "aldea")
+	assert_eq(c.place.at, [], "the village's default entry")
+	assert_true(c.tutorial_done, "they have already played")
+
+
+func test_place_roundtrip() -> void:
+	var c := _sample()
+	c.place = {"zone": "bosque", "at": [40, 12]}
+	c.tutorial_done = false
+	var back := CharacterData.from_dict(c.to_dict(), catalog)
+	assert_eq(back.place, {"zone": "bosque", "at": [40, 12]})
+	assert_false(back.tutorial_done)
+
+
+func test_new_character_starts_in_the_village_without_tutorial() -> void:
+	var c := CharacterData.new()
+	assert_eq(c.place.zone, "aldea")
+	assert_false(c.tutorial_done)

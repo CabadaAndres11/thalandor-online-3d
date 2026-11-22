@@ -4,7 +4,7 @@ extends RefCounted
 ## Files are versioned; from_dict() migrates old versions and sanitizes everything
 ## (a file may be old, hand-edited or imported from elsewhere).
 
-const VERSION := 4
+const VERSION := 5
 
 var id: String = ""
 var name: String = ""
@@ -17,6 +17,12 @@ var created_at: int = 0
 var inventory: Inventory = Inventory.starter(CharacterCatalog.DEFAULT_CLASS, ItemDB.load_default())
 ## Abilities in slots 1-4 (sanitized to the class's actives).
 var bar: Array = []
+## Where the character stands (Plan 8.1): {zone, at: [x, z]} (at [] = the zone's entry).
+var place: Dictionary = {"zone": START_ZONE, "at": []}
+## The village tutorial (the assault) is done: playing in a group is allowed.
+var tutorial_done: bool = false
+
+const START_ZONE := "aldea"
 
 
 func to_dict() -> Dictionary:
@@ -24,6 +30,7 @@ func to_dict() -> Dictionary:
 		"version": VERSION, "id": id, "name": name, "class_id": class_id,
 		"appearance": appearance.duplicate(), "progress": progress.to_dict(), "created_at": created_at,
 		"bar": bar.duplicate(), "inventory": inventory.to_dict(),
+		"place": place.duplicate(true), "tutorial_done": tutorial_done,
 	}
 
 
@@ -52,7 +59,23 @@ static func from_dict(d: Variant, catalog: CharacterCatalog, abilities: AbilityD
 	c.created_at = int(t) if (t is int or t is float) else 0
 	c.inventory = Inventory.from_dict(m.get("inventory"), c.class_id, c.progress.level, ItemDB.load_default())
 	c.bar = (abilities if abilities != null else AbilityDB.load_default()).sanitize_bar(c.class_id, m.get("bar"), c.progress.level, c.progress.upgrade)
+	c.place = sanitize_place(m.get("place"))
+	c.tutorial_done = bool(m.get("tutorial_done", false)) if m.get("tutorial_done") is bool else false
 	return c
+
+
+## {zone: a short id, at: [x, z] or []} from anything (a save may be hand-edited).
+static func sanitize_place(v: Variant) -> Dictionary:
+	var out := {"zone": START_ZONE, "at": []}
+	if not v is Dictionary:
+		return out
+	var z: Variant = (v as Dictionary).get("zone")
+	if z is String and (z as String).length() > 0 and (z as String).length() <= 64 and (z as String).is_valid_filename():
+		out.zone = z
+	var at: Variant = (v as Dictionary).get("at")
+	if at is Array and (at as Array).size() == 2 and (at as Array).all(func(n: Variant) -> bool: return n is int or n is float):
+		out.at = [int(at[0]), int(at[1])]
+	return out
 
 
 ## Brings an older dictionary to the current layout (step by step per version).
@@ -76,5 +99,9 @@ static func migrate(d: Dictionary) -> Dictionary:
 		# Version 3 had no items: everyone gets the starter kit of their class.
 		var cls := CharacterCatalog.load_default().sanitize_class(m.get("class_id"))
 		m["inventory"] = Inventory.starter(cls, ItemDB.load_default()).to_dict()
+	if version < 5:
+		# Version 4 had no world: everyone is in the village, and has played the arena.
+		m["place"] = {"zone": START_ZONE, "at": []}
+		m["tutorial_done"] = true
 	m["version"] = VERSION
 	return m

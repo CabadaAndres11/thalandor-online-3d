@@ -29,6 +29,8 @@ signal merchant_stock_received(items: Array)
 signal zone_changed(zone_id: String, key: String, level: int)
 ## The first snapshot of the new zone arrived: the loading screen can go.
 signal zone_ready()
+## Where to save this character (Plan 8.1): {zone, at}.
+signal place_changed(place: Dictionary)
 ## At a dungeon's door: choose its level (DungeonWindow), then enter_dungeon().
 signal dungeon_offered(zone_id: String, min_level: int, max_level: int, default_level: int)
 
@@ -71,6 +73,8 @@ var zone_key: String = ""
 var zone_loading: bool = false
 ## Partners in other zones: id -> {zone (name key), level, hp (ratio)}.
 var party: Dictionary = {}
+## The saved place this character joins with (HELLO): {zone, at}; {} = the host's start.
+var place: Dictionary = {}
 
 var _transport: Transport
 var _seq: int = 0
@@ -201,7 +205,7 @@ func latest_tick() -> int:
 func _on_peer_connected(peer: int) -> void:
 	if peer == Transport.HOST_PEER:
 		_transport.send(Transport.HOST_PEER,
-			Protocol.hello(game_version, Protocol.VERSION, player_name, class_id, appearance, bar, progress.to_dict(), inventory.to_wire()), true)
+			Protocol.hello(game_version, Protocol.VERSION, player_name, class_id, appearance, bar, progress.to_dict(), inventory.to_wire(), place), true)
 
 
 func _on_peer_disconnected(peer: int) -> void:
@@ -294,6 +298,9 @@ func _handle(msg: Dictionary) -> void:
 			_on_zone(msg.zone, msg.key, msg.level)
 		Protocol.Msg.DUNGEON_OFFER:
 			dungeon_offered.emit(msg.zone, msg.min_level, msg.max_level, msg.default_level)
+		Protocol.Msg.PLACE:
+			place = {"zone": msg.zone, "at": msg.at}
+			place_changed.emit(place)
 		Protocol.Msg.PARTY:
 			party.clear()
 			for row: Variant in msg.rows:
