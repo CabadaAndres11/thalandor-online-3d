@@ -1,0 +1,664 @@
+{
+	"house_small": {
+		"vox": "res://assets/world/house_small.vox",
+		"scale": 0.5,
+		"offset": [
+			-3,
+			0,
+			-3
+		],
+		"footprint": [
+			[
+				0,
+				0
+			],
+			[
+				0,
+				1
+			],
+			[
+				0,
+				2
+			],
+			[
+				0,
+				3
+			],
+			[
+				1,
+				0
+			],
+			[
+				1,
+				1
+			],
+			[
+				1,
+				2
+			],
+			[
+				1,
+				3
+			],
+			[
+				2,
+				0
+			],
+			[
+				2,
+				1
+			],
+			[
+				2,
+				2
+			],
+			[
+				2,
+				3
+			],
+			[
+				3,
+				0
+			],
+			[
+				3,
+				1
+			],
+			[
+				3,
+				2
+			],
+			[
+				3,
+				3
+			]
+		]
+	},
+	"house_large": {
+		"vox": "res://assets/world/house_large.vox",
+		"scale": 0.5,
+		"offset": [
+			-3,
+			0,
+			-3
+		],
+		"footprint": [
+			[
+				0,
+				0
+			],
+			[
+				0,
+				1
+			],
+			[
+				0,
+				2
+			],
+			[
+				0,
+				3
+			],
+			[
+				0,
+				4
+			],
+			[
+				1,
+				0
+			],
+			[
+				1,
+				1
+			],
+			[
+				1,
+				2
+			],
+			[
+				1,
+				3
+			],
+			[
+				1,
+				4
+			],
+			[
+				2,
+				0
+			],
+			[
+				2,
+				1
+			],
+			[
+				2,
+				2
+			],
+			[
+				2,
+				3
+			],
+			[
+				2,
+				4
+			],
+			[
+				3,
+				0
+			],
+			[
+				3,
+				1
+			],
+			[
+				3,
+				2
+			],
+			[
+				3,
+				3
+			],
+			[
+				3,
+				4
+			],
+			[
+				4,
+				0
+			],
+			[
+				4,
+				1
+			],
+			[
+				4,
+				2
+			],
+			[
+				4,
+				3
+			],
+			[
+				4,
+				4
+			],
+			[
+				5,
+				0
+			],
+			[
+				5,
+				1
+			],
+			[
+				5,
+				2
+			],
+			[
+				5,
+				3
+			],
+			[
+				5,
+				4
+			]
+		]
+	},
+	"house_forge": {
+		"vox": "res://assets/world/house_forge.vox",
+		"scale": 0.5,
+		"offset": [
+			-3,
+			0,
+			-3
+		],
+		"footprint": [
+			[
+				0,
+				0
+			],
+			[
+				0,
+				1
+			],
+			[
+				0,
+				2
+			],
+			[
+				0,
+				3
+			],
+			[
+				0,
+				4
+			],
+			[
+				0,
+				5
+			],
+			[
+				1,
+				0
+			],
+			[
+				1,
+				1
+			],
+			[
+				1,
+				2
+			],
+			[
+				1,
+				3
+			],
+			[
+				1,
+				4
+			],
+			[
+				1,
+				5
+			],
+			[
+				2,
+				0
+			],
+			[
+				2,
+				1
+			],
+			[
+				2,
+				2
+			],
+			[
+				2,
+				3
+			],
+			[
+				2,
+				4
+			],
+			[
+				3,
+				0
+			],
+			[
+				3,
+				1
+			],
+			[
+				3,
+				2
+			],
+			[
+				3,
+				3
+			],
+			[
+				3,
+				4
+			],
+			[
+				3,
+				5
+			],
+			[
+				4,
+				0
+			],
+			[
+				4,
+				1
+			],
+			[
+				4,
+				2
+			],
+			[
+				4,
+				3
+			],
+			[
+				4,
+				4
+			]
+		]
+	},
+	"fence": {
+		"vox": "res://assets/world/fence.vox",
+		"scale": 0.5,
+		"offset": [
+			0,
+			0,
+			9
+		],
+		"footprint": [
+			[
+				0,
+				0
+			],
+			[
+				1,
+				0
+			]
+		]
+	},
+	"wall_low": {
+		"vox": "res://assets/world/wall_low.vox",
+		"scale": 0.5,
+		"offset": [
+			0,
+			0,
+			6
+		],
+		"footprint": [
+			[
+				0,
+				0
+			],
+			[
+				1,
+				0
+			]
+		]
+	},
+	"well": {
+		"vox": "res://assets/world/well.vox",
+		"scale": 0.5,
+		"offset": [
+			0,
+			0,
+			5
+		],
+		"footprint": [
+			[
+				0,
+				0
+			],
+			[
+				0,
+				1
+			],
+			[
+				1,
+				0
+			],
+			[
+				1,
+				1
+			]
+		]
+	},
+	"cart": {
+		"vox": "res://assets/world/cart.vox",
+		"scale": 0.5,
+		"offset": [
+			4,
+			0,
+			3
+		],
+		"footprint": [
+			[
+				0,
+				0
+			],
+			[
+				0,
+				1
+			],
+			[
+				1,
+				0
+			],
+			[
+				1,
+				1
+			],
+			[
+				2,
+				0
+			],
+			[
+				2,
+				1
+			],
+			[
+				3,
+				0
+			],
+			[
+				3,
+				1
+			]
+		]
+	},
+	"crates": {
+		"vox": "res://assets/world/crates.vox",
+		"scale": 0.5,
+		"offset": [
+			2,
+			0,
+			2
+		],
+		"footprint": [
+			[
+				0,
+				0
+			],
+			[
+				0,
+				1
+			],
+			[
+				1,
+				0
+			],
+			[
+				1,
+				1
+			]
+		]
+	},
+	"tree_oak": {
+		"vox": "res://assets/world/tree_oak.vox",
+		"scale": 0.5,
+		"offset": [
+			-15,
+			-3,
+			-17
+		],
+		"footprint": [
+			[
+				0,
+				0
+			]
+		]
+	},
+	"tree_pine": {
+		"vox": "res://assets/world/tree_pine.vox",
+		"scale": 0.5,
+		"offset": [
+			-8,
+			0,
+			-8
+		],
+		"footprint": [
+			[
+				0,
+				0
+			]
+		]
+	},
+	"bush": {
+		"vox": "res://assets/world/bush.vox",
+		"scale": 0.5,
+		"offset": [
+			-1,
+			0,
+			0
+		],
+		"footprint": []
+	},
+	"rock_small": {
+		"vox": "res://assets/world/rock_small.vox",
+		"scale": 0.5,
+		"offset": [
+			1,
+			0,
+			1
+		],
+		"footprint": [
+			[
+				0,
+				0
+			]
+		]
+	},
+	"rock_large": {
+		"vox": "res://assets/world/rock_large.vox",
+		"scale": 0.5,
+		"offset": [
+			0,
+			0,
+			0
+		],
+		"footprint": [
+			[
+				0,
+				0
+			],
+			[
+				0,
+				1
+			],
+			[
+				0,
+				2
+			],
+			[
+				1,
+				0
+			],
+			[
+				1,
+				1
+			],
+			[
+				1,
+				2
+			],
+			[
+				2,
+				0
+			],
+			[
+				2,
+				1
+			],
+			[
+				2,
+				2
+			]
+		]
+	},
+	"stump": {
+		"vox": "res://assets/world/stump.vox",
+		"scale": 0.5,
+		"offset": [
+			4,
+			0,
+			4
+		],
+		"footprint": [
+			[
+				0,
+				0
+			]
+		]
+	},
+	"bridge": {
+		"vox": "res://assets/world/bridge.vox",
+		"scale": 0.5,
+		"offset": [
+			0,
+			0,
+			1
+		],
+		"footprint": []
+	},
+	"torch": {
+		"vox": "res://assets/world/torch.vox",
+		"scale": 0.5,
+		"offset": [
+			6,
+			0,
+			6
+		],
+		"footprint": []
+	},
+	"crypt_arch": {
+		"vox": "res://assets/world/crypt_arch.vox",
+		"scale": 0.5,
+		"offset": [
+			0,
+			0,
+			6
+		],
+		"footprint": [
+			[
+				0,
+				0
+			],
+			[
+				0,
+				1
+			],
+			[
+				3,
+				0
+			],
+			[
+				3,
+				1
+			]
+		]
+	},
+	"crypt_wall": {
+		"vox": "res://assets/world/crypt_wall.vox",
+		"scale": 0.5,
+		"offset": [
+			0,
+			0,
+			0
+		],
+		"footprint": [
+			[
+				0,
+				0
+			],
+			[
+				1,
+				0
+			]
+		]
+	},
+	"crypt_pillar": {
+		"vox": "res://assets/world/crypt_pillar.vox",
+		"scale": 0.5,
+		"offset": [
+			1,
+			0,
+			1
+		],
+		"footprint": [
+			[
+				0,
+				0
+			]
+		]
+	}
+}
