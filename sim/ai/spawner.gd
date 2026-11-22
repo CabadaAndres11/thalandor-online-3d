@@ -3,16 +3,29 @@ extends RefCounted
 ## Keeps the map's spawn points populated: spawns `count` monsters around each point,
 ## removes corpses after CORPSE_S (clients play the death) and respawns each one
 ## respawn_s after it died. Monster health scales with the group size.
+## Hordes (Plan 8.1): an area kept full of `count` monsters of weighted types, each at a
+## random level of the band (or the dungeon instance level); every dead one comes back
+## respawn_s (8 s) after its death, one by one, so there is always something to hunt.
 
 const CORPSE_S := 2.0
 const PLACE_TRIES := 12
+const HORDE_RESPAWN_S := 8.0
 
 var points: Array = []
 ## Per point: ticks at which a monster is due.
 var _due: Array = []
+var hordes: Array = []
+## Per horde: ticks at which a monster is due.
+var _horde_due: Array = []
 
 
-func _init(spawns: Array) -> void:
+func _init(spawns: Array, p_hordes: Array = []) -> void:
+	hordes = p_hordes
+	for h: Dictionary in hordes:
+		var hdue: Array = []
+		for i in int(h.get("count", 1)):
+			hdue.append(0)
+		_horde_due.append(hdue)
 	points = spawns
 	for p: Dictionary in points:
 		var due: Array = []
@@ -30,7 +43,10 @@ func tick(world: SimWorld) -> void:
 			m.died_tick = world.tick
 		elif world.tick - m.died_tick >= world.ticks(CORPSE_S):
 			world.remove_entity(m.id)
-			if m.spawn_index >= 0 and m.spawn_index < _due.size():
+			if m.horde_index >= 0 and m.horde_index < _horde_due.size():
+				var hr := float((hordes[m.horde_index] as Dictionary).get("respawn_s", HORDE_RESPAWN_S))
+				(_horde_due[m.horde_index] as Array).append(m.died_tick + world.ticks(hr))
+			elif m.spawn_index >= 0 and m.spawn_index < _due.size():
 				var respawn := float(points[m.spawn_index].get("respawn_s", 30.0))
 				if bool(m.def.get("boss", false)):
 					respawn = world.balance.boss_respawn_s
@@ -44,6 +60,15 @@ func tick(world: SimWorld) -> void:
 			else:
 				keep.append(t)
 		_due[i] = keep
+	for i in hordes.size():
+		var hdue: Array = _horde_due[i]
+		var hkeep: Array = []
+		for t: int in hdue:
+			if t <= world.tick:
+				_spawn_horde(world, i)
+			else:
+				hkeep.append(t)
+		_horde_due[i] = hkeep
 
 
 func _spawn(world: SimWorld, index: int) -> void:
@@ -68,6 +93,43 @@ func _spawn(world: SimWorld, index: int) -> void:
 	scale_health(world, m, 1.0)
 	world.add_entity(m)
 	world.emit(["spawned", m.id, m.type_id, m.position])
+
+
+func _spawn_horde(world: SimWorld, index: int) -> void:
+	var h: Dictionary = hordes[index]
+	var a: Array = h.get("area", [0, 0, 1, 1])
+	var pos := Vector3(float(a[0]) + 0.5, 0, float(a[1]) + 0.5)
+	for attempt in PLACE_TRIES:
+		var c := Vector3(world.rng.randf_range(float(a[0]), float(a[0]) + float(a[2])), 0,
+			world.rng.randf_range(float(a[1]), float(a[1]) + float(a[3])))
+		if not world.map.is_solid(Vector2i(floori(c.x), floori(c.z))):
+			pos = c
+			break
+	var type_id := _pick_type(world, h.get("monsters", []))
+	if type_id == "":
+		return
+	var band: Array = h.get("levels", [1, 1])
+	var level := world.instance_level if world.instance_level > 0 else world.rng.randi_range(int(band[0]), int(band[1]))
+	var m := MonsterDB.load_default().make(type_id, world.next_monster_id(), pos, world, level)
+	m.horde_index = index
+	if world.rng.randf() < float(h.get("elite_chance", 0.0)):
+		MonsterDB.make_elite(m, world.balance)
+	scale_health(world, m, 1.0)
+	world.add_entity(m)
+	world.emit(["spawned", m.id, m.type_id, m.position])
+
+
+## A type id by weight from [[type, weight], ...].
+static func _pick_type(world: SimWorld, list: Array) -> String:
+	var total := 0.0
+	for e: Array in list:
+		total += float(e[1])
+	var roll := world.rng.randf() * total
+	for e: Array in list:
+		roll -= float(e[1])
+		if roll <= 0.0:
+			return str(e[0])
+	return str(list.back()[0]) if not list.is_empty() else ""
 
 
 ## Sets max health for the current group size, keeping `fraction` of it as health.

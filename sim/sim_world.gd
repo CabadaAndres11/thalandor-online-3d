@@ -52,6 +52,9 @@ func next_object_id() -> int:
 
 ## Level of the monsters the arena spawns (Brann sets it, 1..60).
 var arena_level: int = 1
+## The level of a dungeon instance (Plan 8.1): its hordes use it instead of their band.
+## 0 in the open world.
+var instance_level: int = 0
 
 
 ## Changes the arena level; idle monsters (no target, no threat) are rebuilt at the new
@@ -87,8 +90,8 @@ func _init(p_balance: Balance, p_map: CollisionMap, p_seed: int = 1) -> void:
 	balance = p_balance
 	map = p_map
 	rng.seed = p_seed
-	if not p_map.spawns.is_empty():
-		spawner = Spawner.new(p_map.spawns)
+	if not p_map.spawns.is_empty() or not p_map.hordes.is_empty():
+		spawner = Spawner.new(p_map.spawns, p_map.hordes)
 
 
 func add_player(id: int, position: Vector3) -> PlayerState:

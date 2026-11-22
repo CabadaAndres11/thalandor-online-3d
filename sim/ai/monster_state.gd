@@ -20,6 +20,8 @@ var elite: bool = false
 var phase: int = 1
 ## Spawn point index (Spawner), -1 if none.
 var spawn_index: int = -1
+## The horde it belongs to (Plan 8.1), -1 if none.
+var horde_index: int = -1
 var died_tick: int = -1
 ## Ticks spent unable to find a way to the target (gives up after a while).
 var unreachable_ticks: int = 0
