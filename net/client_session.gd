@@ -29,6 +29,8 @@ signal merchant_stock_received(items: Array)
 signal zone_changed(zone_id: String, key: String, level: int)
 ## The first snapshot of the new zone arrived: the loading screen can go.
 signal zone_ready()
+## At a dungeon's door: choose its level (DungeonWindow), then enter_dungeon().
+signal dungeon_offered(zone_id: String, min_level: int, max_level: int, default_level: int)
 
 enum Status { CONNECTING, IN_GAME, CLOSED }
 
@@ -290,6 +292,8 @@ func _handle(msg: Dictionary) -> void:
 			chat_received.emit("", tr_text("CHAT_LEFT") % name, true)
 		Protocol.Msg.ZONE:
 			_on_zone(msg.zone, msg.key, msg.level)
+		Protocol.Msg.DUNGEON_OFFER:
+			dungeon_offered.emit(msg.zone, msg.min_level, msg.max_level, msg.default_level)
 		Protocol.Msg.PARTY:
 			party.clear()
 			for row: Variant in msg.rows:
@@ -435,6 +439,11 @@ func set_arena_level(level: int) -> void:
 
 
 ## Asks Brann for a class upgrade (level 50, next to him); upgrade_changed follows.
+func enter_dungeon(zone: String, level: int) -> void:
+	if status == Status.IN_GAME:
+		_transport.send(Transport.HOST_PEER, Protocol.enter_dungeon(zone, level), true)
+
+
 func choose_upgrade(id: String) -> void:
 	if status == Status.IN_GAME:
 		_transport.send(Transport.HOST_PEER, Protocol.choose_upgrade(id), true)

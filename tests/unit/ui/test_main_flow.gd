@@ -605,3 +605,14 @@ func test_host_start_zone_has_its_exits() -> void:
 	await wait_physics_frames(3)
 	var key: String = main.game.host.zones.start_key
 	assert_not_null(main.game.host.zones.layout(key), "the start zone knows its layout (exits)")
+
+
+func test_dungeon_offer_opens_the_window() -> void:
+	main._on_play("Prueba")
+	await wait_physics_frames(3)
+	main.game.client.dungeon_offered.emit("arena", 5, 20, 10)
+	assert_true(main.dungeon_window.visible)
+	assert_eq(main.dungeon_window.level, 10)
+	assert_true(main._modal_open(), "it blocks the game input like the other choices")
+	main.dungeon_window.cancel_button.pressed.emit()
+	assert_false(main.dungeon_window.visible)

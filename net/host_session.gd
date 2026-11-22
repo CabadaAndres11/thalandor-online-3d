@@ -166,8 +166,17 @@ func _check_exits() -> void:
 			continue
 		var ex := layout.exit_at(p.position)
 		if ex.is_empty():
+			rec.offered = ""
 			continue
 		var w := world_of(id)
+		var target := zones.peek(str(ex.to))
+		if target != null and target.instanced:
+			# A dungeon: the player chooses its level first (ENTER_DUNGEON), once per visit.
+			if str(rec.get("offered", "")) != str(ex.to):
+				rec.offered = str(ex.to)
+				var r := dungeon_range(p.progress.level)
+				_send_to(id, Protocol.dungeon_offer(str(ex.to), r.x, r.y, clampi(p.progress.level, r.x, r.y)), true)
+			continue
 		if w.tick - p.last_hurt_tick < w.ticks(EXIT_COMBAT_S):
 			if w.tick - int(rec.get("warned_tick", -100000)) >= w.ticks(EXIT_WARN_S):
 				rec.warned_tick = w.tick
@@ -180,6 +189,36 @@ func _check_exits() -> void:
 				push_warning("HostSession: an exit of %s leads to an unknown zone %s" % [layout.id, ex.to])
 			continue
 		send_to_zone(id, key, zones.layout(key).entry(str(ex.entry)))
+
+
+## The levels a player may choose for a dungeon: -5 to +10 of its own, within the balance.
+func dungeon_range(level: int) -> Vector2i:
+	var lo := int(balance.monster_scaling.get("arena_min", 1))
+	var hi := int(balance.monster_scaling.get("arena_max", 60))
+	return Vector2i(clampi(level - 5, lo, hi), clampi(level + 10, lo, hi))
+
+
+## A player at a dungeon's door enters it: the instance a partner is already in, or a new
+## one at the chosen level (clamped to the offered range).
+func _on_enter_dungeon(rec: Dictionary, zone_id: String, level: int) -> void:
+	var p := state_of(rec.id)
+	var layout := zones.layout(rec.zone_key)
+	if p == null or not p.is_alive() or layout == null:
+		return
+	var ex := layout.exit_at(p.position)
+	if ex.is_empty() or str(ex.to) != zone_id:
+		return
+	var key := ""
+	for other: int in _players:
+		var k := str(_players[other].zone_key)
+		if other != rec.id and k.begins_with(zone_id + "#"):
+			key = k
+	if key == "":
+		var r := dungeon_range(p.progress.level)
+		key = zones.open(zone_id, "group", clampi(level, r.x, r.y))
+	if key == "":
+		return
+	send_to_zone(rec.id, key, zones.layout(key).entry(str(ex.entry)))
 
 
 ## Moves a player to another open world and tells its client (ZONE).
@@ -272,6 +311,8 @@ func _handle(index: int, peer: int, data: PackedByteArray) -> void:
 				ProgressRequests.choose_upgrade(w, cp, msg.id, NpcDB.load_default().near_with_role(w.map, cp.position, "class_trainer") != "")
 		Protocol.Msg.SET_ARENA_LEVEL:
 			_on_set_arena_level(rec, msg.level)
+		Protocol.Msg.ENTER_DUNGEON:
+			_on_enter_dungeon(rec, msg.zone, msg.level)
 		Protocol.Msg.ITEM_ACTION:
 			_on_item_action(rec, msg.action, msg.args)
 		Protocol.Msg.CHAT:

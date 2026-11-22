@@ -1,7 +1,53 @@
 {
 	"name": "ZONE_TEST_A",
-	"size": [30, 30],
-	"entries": {"default": [5, 5], "from_b": [20, 5]},
-	"respawn": [5, 6],
-	"exits": [{"area": [25, 4, 2, 3], "to": "zone_b", "entry": "from_a"}, {"area": [5, 25, 2, 2], "to": "nowhere", "entry": "default"}]
+	"size": [
+		30,
+		30
+	],
+	"entries": {
+		"default": [
+			5,
+			5
+		],
+		"from_b": [
+			20,
+			5
+		]
+	},
+	"respawn": [
+		5,
+		6
+	],
+	"exits": [
+		{
+			"area": [
+				25,
+				4,
+				2,
+				3
+			],
+			"to": "zone_b",
+			"entry": "from_a"
+		},
+		{
+			"area": [
+				5,
+				25,
+				2,
+				2
+			],
+			"to": "nowhere",
+			"entry": "default"
+		},
+		{
+			"area": [
+				10,
+				25,
+				2,
+				2
+			],
+			"to": "dungeon_t",
+			"entry": "default"
+		}
+	]
 }

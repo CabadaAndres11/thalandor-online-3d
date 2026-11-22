@@ -1,7 +1,39 @@
 {
 	"name": "ZONE_TEST_DUNGEON",
-	"size": [20, 20],
+	"size": [
+		20,
+		20
+	],
 	"instanced": true,
-	"entries": {"default": [2, 2]},
-	"hordes": [{"area": [10, 10, 5, 5], "monsters": [["marked_hound", 1]], "levels": [10, 12], "count": 3}]
+	"entries": {
+		"default": [
+			2,
+			2
+		]
+	},
+	"hordes": [
+		{
+			"area": [
+				10,
+				10,
+				5,
+				5
+			],
+			"monsters": [
+				[
+					"marked_hound",
+					1
+				]
+			],
+			"levels": [
+				10,
+				12
+			],
+			"count": 3
+		}
+	],
+	"respawn": [
+		2,
+		3
+	]
 }

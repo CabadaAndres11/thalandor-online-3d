@@ -6,7 +6,7 @@ const VERSION := 8
 
 enum Msg { HELLO = 1, WELCOME, REJECT, INPUT, SNAPSHOT, PLAYER_JOINED, PLAYER_LEFT, CHAT, EVENTS, SET_BAR, CHOOSE_CLASS, PLAYER_CLASS,
 	SPEND_ATTRIBUTE, BUY_TALENT, BUY_MASTERY, RESET, SET_ARENA_LEVEL, PROGRESS, ARENA_LEVEL, CHOOSE_UPGRADE, PLAYER_UPGRADE,
-	ITEM_ACTION, INVENTORY, PLAYER_GEAR, MERCHANT_STOCK, ZONE, PARTY }
+	ITEM_ACTION, INVENTORY, PLAYER_GEAR, MERCHANT_STOCK, ZONE, PARTY, DUNGEON_OFFER, ENTER_DUNGEON }
 
 ## Field names and Variant types per message type.
 const SCHEMAS := {
@@ -42,6 +42,9 @@ const SCHEMAS := {
 	Msg.ZONE: [["zone", TYPE_STRING], ["key", TYPE_STRING], ["level", TYPE_INT]],
 	# Partners in other zones: [[id, zone name key, level, hp ratio], ...], once a second.
 	Msg.PARTY: [["rows", TYPE_ARRAY]],
+	# At a dungeon's door: the levels the player may choose (host -> client), and the choice.
+	Msg.DUNGEON_OFFER: [["zone", TYPE_STRING], ["min_level", TYPE_INT], ["max_level", TYPE_INT], ["default_level", TYPE_INT]],
+	Msg.ENTER_DUNGEON: [["zone", TYPE_STRING], ["level", TYPE_INT]],
 }
 
 ## Element types of the nested arrays.
@@ -366,6 +369,14 @@ static func unpack_players(data: PackedByteArray) -> Variant:
 ## A level 50 player asks Brann for a class upgrade.
 static func zone(zone_id: String, key: String, level: int) -> PackedByteArray:
 	return pack([Msg.ZONE, zone_id, key, level])
+
+
+static func dungeon_offer(zone_id: String, min_level: int, max_level: int, default_level: int) -> PackedByteArray:
+	return pack([Msg.DUNGEON_OFFER, zone_id, min_level, max_level, default_level])
+
+
+static func enter_dungeon(zone_id: String, level: int) -> PackedByteArray:
+	return pack([Msg.ENTER_DUNGEON, zone_id, level])
 
 
 static func party(rows: Array) -> PackedByteArray:

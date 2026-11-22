@@ -23,6 +23,7 @@ var _worlds: Dictionary = {} # key -> SimWorld
 var _layouts: Dictionary = {} # key -> ZoneLayout (null for a world made from a bare map)
 var _occupants: Dictionary = {} # key -> Array of player ids
 var _empty_since: Dictionary = {} # key -> time_s it emptied (instances only)
+var _peeked: Dictionary = {} # zone id -> ZoneLayout or null
 
 
 func _init(p_balance: Balance, p_seed: int) -> void:
@@ -64,6 +65,14 @@ func open(zone_id: String, instance: String = "", level: int = 0) -> String:
 	if layout.instanced:
 		_empty_since[key] = time_s
 	return key
+
+
+## A zone's layout without opening it (null if it does not exist).
+func peek(zone_id: String) -> ZoneLayout:
+	if not _peeked.has(zone_id):
+		var path := zone_dir + zone_id + ".json"
+		_peeked[zone_id] = ZoneLayout.load_path(path) if FileAccess.file_exists(path) else null
+	return _peeked[zone_id]
 
 
 func world(key: String) -> SimWorld:

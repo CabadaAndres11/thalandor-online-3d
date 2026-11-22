@@ -44,6 +44,8 @@ var _merchant_stock: Array = []
 var talents_window: TalentsWindow
 var trainer_menu: TrainerMenu
 var upgrade_window: UpgradeWindow
+## At a dungeon's door: choose its level (Plan 8.1).
+var dungeon_window: DungeonWindow
 var _upgrade_sent_at: int = -10000
 var abilities: AbilityDB
 var dialog: MessageDialog
@@ -189,6 +191,15 @@ func _ready() -> void:
 	upgrade_window.visibility_changed.connect(_update_input_block)
 	_ui.add_child(upgrade_window)
 
+	dungeon_window = DungeonWindow.new()
+	dungeon_window.theme = theme
+	dungeon_window.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	dungeon_window.enter_requested.connect(func(zone: String, level: int) -> void:
+		if game != null and game.client != null:
+			game.client.enter_dungeon(zone, level))
+	dungeon_window.visibility_changed.connect(_update_input_block)
+	_ui.add_child(dungeon_window)
+
 	trainer_menu = TrainerMenu.new()
 	trainer_menu.theme = theme
 	trainer_menu.chosen.connect(_on_trainer_choice)
@@ -325,7 +336,7 @@ func _request_item(action: String, args: Array) -> void:
 
 ## Class choice and Brann's menu take the whole input while they are open.
 func _modal_open() -> bool:
-	return class_choice_window.visible or trainer_menu.visible or upgrade_window.visible
+	return class_choice_window.visible or trainer_menu.visible or upgrade_window.visible or dungeon_window.visible
 
 
 ## Esc: closes whatever window is open and says whether there was one.
@@ -868,11 +879,17 @@ func _start_game() -> void:
 	pause_menu.reset()
 
 
+func _on_dungeon_offered(zone_id: String, min_level: int, max_level: int, default_level: int) -> void:
+	var layout := ZoneLayout.load_id(zone_id)
+	dungeon_window.open(zone_id, layout.name if layout != null else zone_id, min_level, max_level, default_level)
+
+
 func _attach_client() -> void:
 	var client := game.client
 	client.welcomed.connect(_on_welcomed)
 	client.rejected.connect(_on_rejected)
 	client.chat_received.connect(chat.add_message)
+	client.dungeon_offered.connect(_on_dungeon_offered)
 	client.combat_event.connect(_on_game_event)
 	client.class_changed.connect(_on_class_changed)
 	client.progress_changed.connect(_on_progress_changed)
