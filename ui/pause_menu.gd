@@ -13,6 +13,7 @@ var copy_button: Button
 var options_button: Button
 var _hint: Label
 var _code: String = ""
+var _lock_hint: String = ""
 
 
 func _init() -> void:
@@ -76,6 +77,20 @@ func _init() -> void:
 	leave.text = tr("MENU_LEAVE")
 	leave.pressed.connect(func() -> void: leave_requested.emit())
 	box.add_child(leave)
+
+
+## Until the village tutorial is done (Plan 8.1) the group cannot be opened: the button
+## is greyed out and the hint says why.
+func set_group_locked(locked: bool) -> void:
+	open_group_button.disabled = locked
+	_lock_hint = tr("GROUP_LOCKED_TUTORIAL") if locked else ""
+	if locked:
+		_hint.text = _lock_hint
+		_hint.visible = true
+
+
+func lock_hint() -> String:
+	return _lock_hint
 
 
 ## Hosts can open their group; guests see a hint instead.

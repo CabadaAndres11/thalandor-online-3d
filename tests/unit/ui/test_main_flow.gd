@@ -626,3 +626,43 @@ func test_main_saves_place_on_message() -> void:
 	main.game.client.place_changed.emit({"zone": "bosque", "at": [40, 12]})
 	var saved: CharacterData = main.store.load_all().filter(func(x: CharacterData) -> bool: return x.id == c.id)[0]
 	assert_eq(saved.place, {"zone": "bosque", "at": [40, 12]})
+
+
+# --- Group locked until the village tutorial (Plan 8.1) --------------------------------
+
+func _new_character(done: bool) -> CharacterData:
+	main._show_create()
+	var c := _create("Lyra", "archer")
+	c.tutorial_done = done
+	main.store.save(c)
+	main._show_select()
+	return c
+
+
+func test_new_character_cannot_open_group_or_join() -> void:
+	var c := _new_character(false)
+	main.select_screen.set_characters(main.store.load_all(), c.id)
+	assert_true(main.select_screen.join_button.disabled, "no joining a friend yet")
+	main._on_select_play(c.id)
+	await wait_physics_frames(3)
+	assert_true(main.pause_menu.open_group_button.disabled)
+	assert_eq(main.pause_menu.lock_hint(), tr("GROUP_LOCKED_TUTORIAL"))
+
+
+func test_old_character_can() -> void:
+	var c := _new_character(true)
+	main.select_screen.set_characters(main.store.load_all(), c.id)
+	assert_false(main.select_screen.join_button.disabled)
+	main._on_select_play(c.id)
+	await wait_physics_frames(3)
+	assert_false(main.pause_menu.open_group_button.disabled)
+
+
+func test_tutorial_command_unlocks_and_saves() -> void:
+	var c := _new_character(false)
+	main._on_select_play(c.id)
+	await wait_physics_frames(3)
+	main._on_chat_submitted("/tutorial hecho")
+	assert_false(main.pause_menu.open_group_button.disabled)
+	var saved: CharacterData = main.store.load_all().filter(func(x: CharacterData) -> bool: return x.id == c.id)[0]
+	assert_true(saved.tutorial_done)

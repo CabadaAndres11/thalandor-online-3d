@@ -381,6 +381,10 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 	if _players.size() >= balance.max_players:
 		t.send(peer, Protocol.reject("full", game_version), true)
 		return
+	# A guest who has not finished the village tutorial cannot join (Plan 8.1).
+	if _host_player_id != 0 and (msg.place as Dictionary).get("tutorial_done", true) == false:
+		t.send(peer, Protocol.reject("tutorial", game_version), true)
+		return
 	var id := _next_id
 	_next_id += 1
 	var slot := _free_slot()

@@ -125,6 +125,12 @@ func _refresh() -> void:
 	var has := _selected != ""
 	for b: Button in [play_button, join_button, delete_button, export_button]:
 		b.disabled = not has
+	var chosen := _current()
+	if chosen != null and not chosen.tutorial_done:
+		join_button.disabled = true # playing with friends opens after the village tutorial
+		join_button.tooltip_text = tr("GROUP_LOCKED_TUTORIAL")
+	else:
+		join_button.tooltip_text = ""
 	var full := _characters.size() >= CharacterStore.MAX_CHARACTERS
 	create_button.disabled = full
 	import_button.disabled = full

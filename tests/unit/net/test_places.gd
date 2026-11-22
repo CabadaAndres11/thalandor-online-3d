@@ -84,3 +84,14 @@ func test_place_inside_a_dungeon_is_its_door() -> void:
 	var places := _messages(c).filter(func(m: Dictionary) -> bool: return m.type == Protocol.Msg.PLACE)
 	assert_eq(places.back().zone, "zone_a")
 	assert_eq(places.back().at, [10, 25])
+
+
+func test_host_rejects_guest_without_tutorial() -> void:
+	_guest({"zone": "zone_b", "at": [12, 14], "tutorial_done": true}) # the host's own player
+	var c := net.connect_client(host_t)
+	c.send(Transport.HOST_PEER, Protocol.hello(VERSION, Protocol.VERSION, "Bea", "warrior", {}, [], {}, {}, {"zone": "zone_b", "at": [], "tutorial_done": false}), true)
+	host.tick()
+	var rejects := _messages(c).filter(func(m: Dictionary) -> bool: return m.type == Protocol.Msg.REJECT)
+	assert_eq(rejects.size(), 1)
+	assert_eq(rejects[0].reason, "tutorial")
+	assert_eq(host.player_count(), 1)

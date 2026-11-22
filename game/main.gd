@@ -11,6 +11,7 @@ const ERROR_KEYS := {
 	"host_left": "ERR_HOST_LEFT",
 	"timeout": "ERR_TIMEOUT",
 	"failed": "ERR_CONNECT",
+	"tutorial": "ERR_TUTORIAL",
 }
 
 var settings: SettingsStore
@@ -800,6 +801,13 @@ func _on_group_failed(error_key: String) -> void:
 func _on_chat_submitted(text: String) -> void:
 	if game == null:
 		return
+	if text.strip_edges() == "/tutorial hecho" and _playing != null:
+		# Development (Plan 8.1): marks the village tutorial done until Plan 8.2 does it.
+		_playing.tutorial_done = true
+		store.save(_playing)
+		pause_menu.set_group_locked(false)
+		chat.add_message("", tr("CMD_TUTORIAL_DONE"), true)
+		return
 	var local := AmbienceCommand.handle(text, game.zone_view.ambience_id, Ambience.ids())
 	if local.handled:
 		if local.switch_to != "":
@@ -873,6 +881,7 @@ func _start_game() -> void:
 		game.character_bar = _playing.bar.duplicate()
 		game.character_inventory = _playing.inventory.to_dict()
 		game.character_place = _playing.place.duplicate(true)
+		game.character_place["tutorial_done"] = _playing.tutorial_done
 	game.group_opened.connect(_on_group_opened)
 	game.group_failed.connect(_on_group_failed)
 	_show_only(null)
@@ -918,6 +927,7 @@ func _attach_client() -> void:
 	downed_overlay.bind(client)
 	downed_overlay.visible = true
 	pause_menu.set_can_open_group(game.is_hosting())
+	pause_menu.set_group_locked(_playing != null and not _playing.tutorial_done)
 
 
 ## A new bar from the K window: the host, the HUD and the saved character get it.
