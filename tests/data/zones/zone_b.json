@@ -1,0 +1,7 @@
+{
+	"name": "ZONE_TEST_B",
+	"size": [30, 30],
+	"entries": {"default": [5, 5], "from_a": [3, 3]},
+	"respawn": [5, 6],
+	"spawns": [{"type": "marked_hound", "at": [20, 20], "count": 2, "radius": 1, "respawn_s": 30}]
+}

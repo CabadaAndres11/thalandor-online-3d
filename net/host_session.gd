@@ -11,7 +11,11 @@ const SPAWN_SPACING := 1.5
 ## Events that only their owner (ev[1]) receives: personal loot and gold.
 const OWNER_EVENTS := ["gold", "loot", "loot_gone", "bag_full", "trade_refused"]
 
+## The world of the zone the host started in (its map). Each player lives in the world of
+## its own zone: world_of(id).
 var world: SimWorld
+## Every open zone and dungeon instance (Plan 8.1).
+var zones: ZoneManager
 ## Sanitizes the class and appearance guests bring (they may send anything).
 var catalog: CharacterCatalog = CharacterCatalog.load_default()
 var balance: Balance
@@ -31,7 +35,8 @@ func _init(p_balance: Balance, p_map: CollisionMap, p_game_version: String) -> v
 	balance = p_balance
 	map = p_map
 	game_version = p_game_version
-	world = SimWorld.new(balance, map, randi())
+	zones = ZoneManager.new(balance, randi())
+	world = zones.world(zones.adopt(map))
 
 
 static func is_valid_name(name: String) -> bool:
@@ -52,14 +57,18 @@ func add_transport(t: Transport) -> void:
 
 
 func tick() -> void:
-	world.events.clear()
+	for key: String in zones.keys():
+		zones.world(key).events.clear()
 	for index in _transports.size():
 		var t: Transport = _transports[index]
 		for packet: Dictionary in t.poll():
 			_handle(index, packet.peer, packet.data)
-	var inputs := {}
+	var inputs_by_key := {}
 	for id: int in _players:
 		var rec: Dictionary = _players[id]
+		if not inputs_by_key.has(rec.zone_key):
+			inputs_by_key[rec.zone_key] = {}
+		var inputs: Dictionary = inputs_by_key[rec.zone_key]
 		var queue: Array = rec.queue
 		if not queue.is_empty():
 			var next: PlayerInput = queue.pop_front()
@@ -70,18 +79,25 @@ func tick() -> void:
 		elif rec.last_input != null:
 			# No new input this tick: keep moving/holding, but never repeat presses.
 			inputs[id] = (rec.last_input as PlayerInput).held_only()
-	world.step(inputs)
+	zones.step_occupied(inputs_by_key)
 	_flush_progress()
 	_flush_inventory()
-	var player_rows := _snapshot_rows()
-	for id: int in _players:
-		var viewer: Vector3 = world.players[id].position if world.players.has(id) else Vector3.ZERO
-		_send_to(id, Protocol.snapshot(world.tick, player_rows, _monster_rows(viewer)), false)
-	if not world.events.is_empty():
-		for id: int in _players:
-			var mine := events_for(id, world.events)
-			if not mine.is_empty():
-				_send_to(id, Protocol.events(world.tick, mine), true)
+	# Each player gets the players, monsters and events of its own world only.
+	for key: String in zones.keys():
+		var ids: Array = zones.occupants(key)
+		if ids.is_empty():
+			continue
+		var w := zones.world(key)
+		var player_rows := _snapshot_rows(w, ids)
+		for id: int in ids:
+			var viewer: Vector3 = w.players[id].position if w.players.has(id) else Vector3.ZERO
+			_send_to(id, Protocol.snapshot(w.tick, player_rows, _monster_rows(w, viewer)), false)
+		if not w.events.is_empty():
+			for id: int in ids:
+				var mine := events_for(id, w.events)
+				if not mine.is_empty():
+					_send_to(id, Protocol.events(w.tick, mine), true)
+	zones.close_idle(zones.time_s)
 
 
 ## The events a player receives: everything except other players' loot and gold.
@@ -91,30 +107,53 @@ static func events_for(id: int, events: Array) -> Array:
 
 ## Presses of a new input become casts: basic, secondary and the bar slots.
 func _cast_from_input(rec: Dictionary, input: PlayerInput) -> void:
-	var p: PlayerState = world.players.get(rec.id)
+	var w := world_of(rec.id)
+	var p: PlayerState = state_of(rec.id)
 	if p == null:
 		return
-	var basic := world.abilities.get_ability(rec.basic_id)
-	if basic.has("charge") and bool(WeaponFamily.of(p, world).get("auto_charge", false)):
+	var basic := w.abilities.get_ability(rec.basic_id)
+	if basic.has("charge") and bool(WeaponFamily.of(p, w).get("auto_charge", false)):
 		# A crossbow is never drawn: every press is the full charged shot.
 		if input.pressed(PlayerInput.BTN_BASIC):
-			ClassRules.release_charged(world, p, rec.basic_id, input.aim, 1.0)
+			ClassRules.release_charged(w, p, rec.basic_id, input.aim, 1.0)
 	elif basic.has("charge"):
 		# Archer: press starts charging, release fires (a quick tap = normal shot).
 		if input.pressed(PlayerInput.BTN_BASIC) and p.charge_start < 0:
-			p.charge_start = world.tick
+			p.charge_start = w.tick
 		elif p.charge_start >= 0 and not input.pressed(PlayerInput.BTN_BASIC_HELD):
-			var max_ticks := maxi(1, world.ticks(float(basic.charge.get("max_s", 1.5))))
-			var ratio := float(world.tick - p.charge_start) / float(max_ticks)
+			var max_ticks := maxi(1, w.ticks(float(basic.charge.get("max_s", 1.5))))
+			var ratio := float(w.tick - p.charge_start) / float(max_ticks)
 			p.charge_start = -1
-			ClassRules.release_charged(world, p, rec.basic_id, input.aim, ratio)
+			ClassRules.release_charged(w, p, rec.basic_id, input.aim, ratio)
 	elif input.pressed(PlayerInput.BTN_BASIC):
-		Combat.try_cast(world, p, rec.basic_id, input.aim)
+		Combat.try_cast(w, p, rec.basic_id, input.aim)
 	if input.pressed(PlayerInput.BTN_SECONDARY):
-		Combat.try_cast(world, p, rec.secondary_id, input.aim)
+		Combat.try_cast(w, p, rec.secondary_id, input.aim)
 	for i in PlayerInput.SLOT_BITS.size():
 		if input.pressed(PlayerInput.SLOT_BITS[i]) and str(rec.bar[i]) != "":
-			Combat.try_cast(world, p, rec.bar[i], input.aim)
+			Combat.try_cast(w, p, rec.bar[i], input.aim)
+
+
+## The world of a player's zone (the start world for an unknown id).
+func world_of(id: int) -> SimWorld:
+	if not _players.has(id):
+		return world
+	var w := zones.world(str(_players[id].zone_key))
+	return w if w != null else world
+
+
+func state_of(id: int) -> PlayerState:
+	return world_of(id).players.get(id)
+
+
+## Moves a player to another open world (key), standing at a position.
+func transfer(id: int, key: String, at: Vector3) -> PlayerState:
+	if not _players.has(id) or zones.world(key) == null:
+		return null
+	var rec: Dictionary = _players[id]
+	var p := zones.move(id, rec.zone_key, key, at)
+	rec.zone_key = key
+	return p
 
 
 func close() -> void:
@@ -155,21 +194,22 @@ func _handle(index: int, peer: int, data: PackedByteArray) -> void:
 	if not _by_conn.has(key):
 		return
 	var rec: Dictionary = _players[_by_conn[key]]
+	var w := world_of(rec.id)
 	match msg.type:
 		Protocol.Msg.INPUT:
 			_on_input(rec, msg.inputs)
 		Protocol.Msg.SET_BAR:
-			var bp: PlayerState = world.players.get(rec.id)
-			rec.bar = world.abilities.sanitize_bar(rec.class_id, msg.bar, bp.level, bp.progress.upgrade)
+			var bp: PlayerState = state_of(rec.id)
+			rec.bar = w.abilities.sanitize_bar(rec.class_id, msg.bar, bp.level, bp.progress.upgrade)
 			rec.sent_bar = rec.bar.duplicate() # the client already has it
 		Protocol.Msg.CHOOSE_CLASS:
 			_on_choose_class(rec, msg.class_id)
 		Protocol.Msg.SPEND_ATTRIBUTE, Protocol.Msg.BUY_TALENT, Protocol.Msg.BUY_MASTERY, Protocol.Msg.RESET:
 			_on_progress_request(rec, msg)
 		Protocol.Msg.CHOOSE_UPGRADE:
-			var cp: PlayerState = world.players.get(rec.id)
+			var cp: PlayerState = state_of(rec.id)
 			if cp != null:
-				ProgressRequests.choose_upgrade(world, cp, msg.id, NpcDB.load_default().near_with_role(map, cp.position, "class_trainer") != "")
+				ProgressRequests.choose_upgrade(w, cp, msg.id, NpcDB.load_default().near_with_role(w.map, cp.position, "class_trainer") != "")
 		Protocol.Msg.SET_ARENA_LEVEL:
 			_on_set_arena_level(rec, msg.level)
 		Protocol.Msg.ITEM_ACTION:
@@ -200,7 +240,7 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 	var class_id := catalog.sanitize_class(msg.class_id)
 	var appearance := catalog.sanitize_appearance(msg.appearance)
 	var spawn := map.spawn_point() + Vector3(slot % 2, 0, slot / 2) * SPAWN_SPACING
-	var player := world.add_player(id, spawn)
+	var player := zones.add_player(id, zones.start_key, spawn)
 	# Whatever progress the guest brings is fixed up, never refused.
 	player.progress = ProgressRequests.sanitize(PlayerProgress.from_dict(msg.progress), class_id, world)
 	player.inventory = Inventory.from_wire(msg.inventory, class_id, player.progress.level, world.items)
@@ -217,6 +257,7 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 		"upgrade": player.progress.upgrade, "bar_level": player.progress.level, "sent_other": _without_xp(player.progress.to_dict()),
 		"sent_bar": bar.duplicate(), "sent_tick": -100000,
 		"gear": player.inventory.visible_bases(),
+		"zone_key": zones.start_key,
 	}
 	if _host_player_id == 0:
 		_host_player_id = id
@@ -233,59 +274,63 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 
 ## A villager next to a class trainer learns a class: final, for everyone to see.
 func _on_choose_class(rec: Dictionary, class_id: String) -> void:
-	var p: PlayerState = world.players.get(rec.id)
+	var w := world_of(rec.id)
+	var p: PlayerState = state_of(rec.id)
 	if p == null or not p.is_alive() or catalog.is_selectable(rec.class_id) or not catalog.is_selectable(class_id):
 		return
-	if NpcDB.load_default().near_with_role(map, p.position, "class_trainer") == "":
+	if NpcDB.load_default().near_with_role(w.map, p.position, "class_trainer") == "":
 		return
 	# Same share of health as before: learning a class mid-fight is not a free heal.
 	var ratio := p.hp / maxf(p.stats.max_hp, 1.0)
 	# The villager's gear goes; the class's starter kit is worn (bag and gold stay).
-	p.inventory.wear_starter(class_id, world.items)
+	p.inventory.wear_starter(class_id, w.items)
 	p.inventory_dirty = true
-	ClassRules.setup_player(p, class_id, catalog, world)
+	ClassRules.setup_player(p, class_id, catalog, w)
 	p.hp = p.stats.max_hp * ratio
 	rec.class_id = class_id
-	rec.basic_id = world.abilities.kind_of(class_id, "basic")
-	rec.secondary_id = world.abilities.kind_of(class_id, "secondary")
-	rec.bar = world.abilities.default_bar(class_id, p.level, p.progress.upgrade)
+	rec.basic_id = w.abilities.kind_of(class_id, "basic")
+	rec.secondary_id = w.abilities.kind_of(class_id, "secondary")
+	rec.bar = w.abilities.default_bar(class_id, p.level, p.progress.upgrade)
 	rec.sent_bar = rec.bar.duplicate()
 	_broadcast(Protocol.player_class(rec.id, class_id, rec.bar), true)
 
 
 ## Spend a point, buy a node or reset: the host checks everything (ProgressRequests).
 func _on_progress_request(rec: Dictionary, msg: Dictionary) -> void:
-	var p: PlayerState = world.players.get(rec.id)
+	var w := world_of(rec.id)
+	var p: PlayerState = state_of(rec.id)
 	if p == null:
 		return
 	match msg.type:
 		Protocol.Msg.SPEND_ATTRIBUTE:
-			ProgressRequests.spend_attribute(world, p, msg.attr)
+			ProgressRequests.spend_attribute(w, p, msg.attr)
 		Protocol.Msg.BUY_TALENT:
-			ProgressRequests.buy_talent(world, p, msg.id)
+			ProgressRequests.buy_talent(w, p, msg.id)
 		Protocol.Msg.BUY_MASTERY:
-			ProgressRequests.buy_mastery(world, p, msg.dir)
+			ProgressRequests.buy_mastery(w, p, msg.dir)
 		Protocol.Msg.RESET:
-			var near := NpcDB.load_default().near_with_role(map, p.position, "class_trainer") != ""
-			if ProgressRequests.reset(world, p, msg.what, near):
-				rec.bar = world.abilities.sanitize_bar(rec.class_id, rec.bar, p.level, p.progress.upgrade)
+			var near := NpcDB.load_default().near_with_role(w.map, p.position, "class_trainer") != ""
+			if ProgressRequests.reset(w, p, msg.what, near):
+				rec.bar = w.abilities.sanitize_bar(rec.class_id, rec.bar, p.level, p.progress.upgrade)
 
 
 ## Only the host player, next to the class trainer, sets the monster level of the arena.
 func _on_set_arena_level(rec: Dictionary, level: int) -> void:
-	var p: PlayerState = world.players.get(rec.id)
+	var w := world_of(rec.id)
+	var p: PlayerState = state_of(rec.id)
 	if p == null or rec.id != _host_player_id or not p.is_alive():
 		return
-	if NpcDB.load_default().near_with_role(map, p.position, "class_trainer") == "":
+	if NpcDB.load_default().near_with_role(w.map, p.position, "class_trainer") == "":
 		return
-	world.set_arena_level(level)
-	_broadcast(Protocol.arena_level(world.arena_level), true)
+	w.set_arena_level(level)
+	_broadcast(Protocol.arena_level(w.arena_level), true)
 
 
 ## Test commands (host player only): /xp <n> [name], /nivel <n> [name], /oro <n> [name] and
 ## /objeto <base> [level] [rarity] [name]. They are not chat. Anything else starting with
 ## "/" is refused with a system message to the author.
 func _on_command(rec: Dictionary, text: String) -> void:
+	var w := world_of(rec.id)
 	if rec.id != _host_player_id:
 		_send_to(rec.id, Protocol.chat(0, "CMD_HOST_ONLY"), true)
 		return
@@ -302,21 +347,21 @@ func _on_command(rec: Dictionary, text: String) -> void:
 	if parts.size() < 2 or not parts[0].to_lower() in ["xp", "nivel"] or not parts[1].is_valid_int() or parts[1].to_int() < 1:
 		_send_to(rec.id, Protocol.chat(0, "CMD_BAD"), true)
 		return
-	var target: PlayerState = world.players.get(rec.id)
+	var target: PlayerState = state_of(rec.id)
 	if parts.size() > 2:
 		target = null
 		var wanted := " ".join(parts.slice(2)).to_lower()
 		for id: int in _players:
 			if str(_players[id].name).to_lower() == wanted:
-				target = world.players.get(id)
+				target = state_of(id)
 		if target == null:
 			_send_to(rec.id, Protocol.chat(0, "CMD_NO_PLAYER"), true)
 			return
 	var n := parts[1].to_int()
 	if parts[0].to_lower() == "xp":
-		Xp.award(world, target, clampi(n, 1, Xp.MAX_AMOUNT))
+		Xp.award(w, target, clampi(n, 1, Xp.MAX_AMOUNT))
 	elif n > target.progress.level:
-		Xp.set_level(world, target, mini(n, PlayerProgress.MAX_LEVEL))
+		Xp.set_level(w, target, mini(n, PlayerProgress.MAX_LEVEL))
 
 
 ## Sends each owner their changed progress (and the bar). Level-ups also place the newly
@@ -325,20 +370,21 @@ func _on_command(rec: Dictionary, text: String) -> void:
 func _flush_progress() -> void:
 	for id: int in _players:
 		var rec: Dictionary = _players[id]
-		var p: PlayerState = world.players.get(id)
+		var p: PlayerState = state_of(id)
 		if p == null:
 			continue
+		var w := world_of(id)
 		if p.progress.upgrade != rec.upgrade:
 			# An upgrade was chosen (its abilities go to free slots) or reset (they leave the bar).
 			var old_upgrade: String = rec.upgrade
 			rec.upgrade = p.progress.upgrade
-			rec.bar = world.abilities.sanitize_bar(rec.class_id, rec.bar, p.level, p.progress.upgrade)
+			rec.bar = w.abilities.sanitize_bar(rec.class_id, rec.bar, p.level, p.progress.upgrade)
 			if old_upgrade == "":
-				rec.bar = world.abilities.place_unlocked(rec.bar, rec.class_id, ProgressRequests.UPGRADE_LEVEL - 1, p.level, p.progress.upgrade)
+				rec.bar = w.abilities.place_unlocked(rec.bar, rec.class_id, ProgressRequests.UPGRADE_LEVEL - 1, p.level, p.progress.upgrade)
 			p.progress_dirty = true
 			_broadcast(Protocol.player_upgrade(id, p.progress.upgrade), true)
 		if p.progress.level != rec.bar_level:
-			rec.bar = world.abilities.place_unlocked(rec.bar, rec.class_id, rec.bar_level, p.progress.level, p.progress.upgrade)
+			rec.bar = w.abilities.place_unlocked(rec.bar, rec.class_id, rec.bar_level, p.progress.level, p.progress.upgrade)
 			rec.bar_level = p.progress.level
 			p.progress_dirty = true
 		if not p.progress_dirty:
@@ -346,12 +392,12 @@ func _flush_progress() -> void:
 		var d := p.progress.to_dict()
 		var other := _without_xp(d)
 		var only_xp: bool = other == rec.sent_other and rec.bar == rec.sent_bar
-		if only_xp and world.tick - int(rec.sent_tick) < balance.tick_rate:
+		if only_xp and w.tick - int(rec.sent_tick) < balance.tick_rate:
 			continue
 		_send_to(id, Protocol.progress(d, rec.bar), true)
 		rec.sent_other = other
 		rec.sent_bar = (rec.bar as Array).duplicate()
-		rec.sent_tick = world.tick
+		rec.sent_tick = w.tick
 		p.progress_dirty = false
 
 
@@ -359,18 +405,19 @@ func _flush_progress() -> void:
 ## message) when nobody has that name.
 func _command_target(rec: Dictionary, name_parts: Array) -> PlayerState:
 	if name_parts.is_empty():
-		return world.players.get(rec.id)
+		return state_of(rec.id)
 	var wanted := " ".join(name_parts).to_lower()
 	for id: int in _players:
 		if str(_players[id].name).to_lower() == wanted:
-			return world.players.get(id)
+			return state_of(id)
 	_send_to(rec.id, Protocol.chat(0, "CMD_NO_PLAYER"), true)
 	return null
 
 
 ## /objeto <base> [level] [rarity] [name]: the item goes straight to the bag.
 func _item_command(rec: Dictionary, parts: Array) -> void:
-	var db := world.items
+	var w := world_of(rec.id)
+	var db := w.items
 	var base_id := str(parts[1])
 	if db.base(base_id).is_empty():
 		_send_to(rec.id, Protocol.chat(0, "CMD_BAD"), true)
@@ -385,7 +432,7 @@ func _item_command(rec: Dictionary, parts: Array) -> void:
 	var who := _command_target(rec, rest)
 	if who == null:
 		return
-	var it := ItemRoll.roll_gear(base_id, level if level > 0 else who.progress.level, rarity, world.rng, db) \
+	var it := ItemRoll.roll_gear(base_id, level if level > 0 else who.progress.level, rarity, w.rng, db) \
 		if not db.is_consumable(base_id) else ItemRoll.new_item(base_id, 1)
 	if not who.inventory.add(it, db):
 		_send_to(rec.id, Protocol.chat(0, "ITEM_BAG_FULL"), true)
@@ -397,11 +444,12 @@ func _item_command(rec: Dictionary, parts: Array) -> void:
 func _flush_inventory() -> void:
 	for id: int in _players:
 		var rec: Dictionary = _players[id]
-		var p: PlayerState = world.players.get(id)
+		var p: PlayerState = state_of(id)
 		if p == null or not p.inventory_dirty:
 			continue
+		var w := world_of(id)
 		p.inventory_dirty = false
-		var cd := maxf(0.0, float(p.potion_ready_tick - world.tick) / float(balance.tick_rate))
+		var cd := maxf(0.0, float(p.potion_ready_tick - w.tick) / float(balance.tick_rate))
 		_send_to(id, Protocol.inventory(p.inventory.to_wire(), cd), true)
 		var gear := p.inventory.visible_bases()
 		if gear != rec.gear:
@@ -411,7 +459,8 @@ func _flush_inventory() -> void:
 
 ## Item requests: the host checks everything (ItemRequests, Merchant); malformed ones are ignored.
 func _on_item_action(rec: Dictionary, action: String, args: Array) -> void:
-	var p: PlayerState = world.players.get(rec.id)
+	var w := world_of(rec.id)
+	var p: PlayerState = state_of(rec.id)
 	if p == null:
 		return
 	var int_arg := args.size() >= 1 and args[0] is int
@@ -419,31 +468,32 @@ func _on_item_action(rec: Dictionary, action: String, args: Array) -> void:
 	match action:
 		"equip":
 			if int_arg:
-				ItemRequests.equip(world, p, args[0], str(args[1]) if args.size() > 1 and args[1] is String else "")
+				ItemRequests.equip(w, p, args[0], str(args[1]) if args.size() > 1 and args[1] is String else "")
 		"unequip":
 			if str_arg:
-				ItemRequests.unequip(world, p, args[0])
+				ItemRequests.unequip(w, p, args[0])
 		"use":
 			if int_arg:
-				ItemRequests.use(world, p, args[0])
+				ItemRequests.use(w, p, args[0])
 		"potion":
 			if str_arg:
-				ItemRequests.use_potion(world, p, args[0])
+				ItemRequests.use_potion(w, p, args[0])
 		"merchant_open":
 			_send_stock(rec.id, p)
 		"buy":
-			if int_arg and Merchant.buy(world, p, args[0]):
+			if int_arg and Merchant.buy(w, p, args[0]):
 				_send_stock(rec.id, p)
 		"sell":
 			if int_arg:
-				Merchant.sell(world, p, args[0])
+				Merchant.sell(w, p, args[0])
 		"repair":
-			Merchant.repair_all(world, p)
+			Merchant.repair_all(w, p)
 
 
 func _send_stock(id: int, p: PlayerState) -> void:
-	if Merchant.near(world, p, Merchant.TRADE_MARGIN): # the same reach as the trades
-		_send_to(id, Protocol.merchant_stock(Merchant.stock(world, p).map(func(it: Item) -> Array: return it.to_wire())), true)
+	var w := world_of(id)
+	if Merchant.near(w, p, Merchant.TRADE_MARGIN): # the same reach as the trades
+		_send_to(id, Protocol.merchant_stock(Merchant.stock(w, p).map(func(it: Item) -> Array: return it.to_wire())), true)
 
 
 static func _without_xp(d: Dictionary) -> Dictionary:
@@ -474,8 +524,8 @@ func _on_peer_disconnected(peer: int, index: int) -> void:
 		return
 	var id: int = _by_conn[key]
 	_by_conn.erase(key)
+	zones.remove_player(id, str(_players[id].zone_key))
 	_players.erase(id)
-	world.remove_player(id)
 	_broadcast(Protocol.player_left(id), true)
 	player_left.emit(id)
 
@@ -490,21 +540,21 @@ func _free_slot() -> int:
 	return 0
 
 
-func _snapshot_rows() -> Array:
+func _snapshot_rows(w: SimWorld, ids: Array) -> Array:
 	var rows := []
-	for id: int in _players:
-		var s: PlayerState = world.players[id]
+	for id: int in ids:
+		var s: PlayerState = w.players[id]
 		rows.append([id, s.position, s.aim, s.facing, int(_players[id].last_seq), s.hp, s.stats.max_hp,
 			s.resource, s.stats.max_resource, s.life, StatusEffect.bits_of(s), s.dash_ticks, s.dash_dir,
-			s.dodge_ready_seq, s.move_mult(), s.combo, _charge_ratio(s), s.level])
+			s.dodge_ready_seq, s.move_mult(), s.combo, _charge_ratio(w, s), s.level])
 	return rows
 
 
 ## Monster rows for one player: the nearest max_monsters_per_snapshot (all of them when
 ## there are fewer), so a big map never overflows the packet.
-func _monster_rows(viewer: Vector3) -> Array:
-	var list: Array = world.monsters.values()
-	var cap := world.balance.max_monsters_per_snapshot
+func _monster_rows(w: SimWorld, viewer: Vector3) -> Array:
+	var list: Array = w.monsters.values()
+	var cap := w.balance.max_monsters_per_snapshot
 	if list.size() > cap:
 		var at := Effects.flat(viewer)
 		list.sort_custom(func(a: CombatEntity, b: CombatEntity) -> bool:
@@ -531,9 +581,9 @@ func _broadcast(data: PackedByteArray, reliable: bool) -> void:
 
 
 ## How far the archer's held shot is charged (0..1), for the HUD.
-func _charge_ratio(p: PlayerState) -> float:
+func _charge_ratio(w: SimWorld, p: PlayerState) -> float:
 	if p.charge_start < 0:
 		return 0.0
-	var basic := world.abilities.get_ability(world.abilities.kind_of(p.class_id, "basic"))
-	var max_ticks := maxi(1, world.ticks(float((basic.get("charge", {}) as Dictionary).get("max_s", 1.5))))
-	return clampf(float(world.tick - p.charge_start) / float(max_ticks), 0.0, 1.0)
+	var basic := w.abilities.get_ability(w.abilities.kind_of(p.class_id, "basic"))
+	var max_ticks := maxi(1, w.ticks(float((basic.get("charge", {}) as Dictionary).get("max_s", 1.5))))
+	return clampf(float(w.tick - p.charge_start) / float(max_ticks), 0.0, 1.0)
