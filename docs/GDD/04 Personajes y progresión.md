@@ -1,7 +1,7 @@
 ---
 tags: [gdd]
 estado: diseñado
-actualizado: 2026-11-20
+actualizado: 2026-11-22
 ---
 
 # 4. Personajes y clases
@@ -117,6 +117,7 @@ final = (base de clase + atributos + suma de bonos planos) × (1 + suma de bonos
 - **Al subir de nivel:** vida y recurso al máximo, efecto visual y aviso en el chat para todos.
 - **Cada 50 niveles:** rango de clase (mejora a elegir, [[04 Personajes y progresión|§4.4]]) y anillo nuevo del árbol de talentos ([[04 Personajes y progresión|§4.6]]).
 - **Muerte:** no hace perder experiencia.
+- **De dónde sale la experiencia** ([[D-017 Mundo por zonas, hordas y demo del prólogo y arco 1]]): sobre todo de **matar hordas y de las mazmorras**. Completar una misión da 1 o 2 niveles, más la experiencia de sus enemigos.
 
 ## 4.9 Cambio de clase **[Diseñado; requisitos [Abierto]]**
 - **Qué es:** un personaje puede cambiar a otra de las 5 clases cuando cumple ciertos requisitos.

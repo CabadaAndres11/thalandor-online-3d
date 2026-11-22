@@ -1,7 +1,7 @@
 ---
 tags: [gdd]
 estado: diseñado
-actualizado: 2026-11-21
+actualizado: 2026-11-22
 ---
 
 # 15. Decisiones abiertas **[Abierto]**
@@ -16,6 +16,9 @@ actualizado: 2026-11-21
 - **Clases ocultas** (Plan 9): cuántas en la demo, cómo se descubren y si conviven con el cambio de clase.
 - **Oficios** (Plan 10): cuáles, cómo se obtienen los materiales y qué parte del equipo se fabrica en vez de caer.
 - Proyección de cámara: perspectiva u ortográfica ([[03 Cámara y controles|§3.1]]), a decidir viendo el resultado.
+
+## Cerradas con el Plan 8.1
+- Contenido de la demo y estructura del mundo: [[D-017 Mundo por zonas, hordas y demo del prólogo y arco 1]].
 
 ## Cerradas con el Plan 7
 - Razas: [[D-016 Razas solo de aspecto con cabeza propia]].

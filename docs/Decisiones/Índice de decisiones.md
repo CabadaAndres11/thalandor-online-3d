@@ -26,6 +26,7 @@ Cada decisión importante tiene su nota (plantilla **Decisión**). Las pendiente
 - [[D-014 Objetos por clase, armas a dos manos y tramos épicos]]
 - [[D-015 Vóxel 2× y renovación gráfica en cuatro partes]]
 - [[D-016 Razas solo de aspecto con cabeza propia]]
+- [[D-017 Mundo por zonas, hordas y demo del prólogo y arco 1]]
 
 ---
 ← [[00 Inicio|Inicio]]

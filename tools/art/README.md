@@ -50,3 +50,10 @@ node --test tools/art/tests/
 - `make_icons.mjs` hace también los iconos del menú (`assets/icons/ui/`).
 - Capturas de las razas: `--set=races`, `races_back`, `races_side`, `hair_new`, `faces_new` y `crests`; cualquier set con `_close` acerca la cámara a las cabezas. El equipo en otra raza: `--set=gear --race=ogre --tier=3`.
 - Capturas del menú: `-s tests/helpers/render_menu.gd -- --shot=title|select|create` (solo la escena) y `-s tests/helpers/render_main.gd -- --screen=title|select|create` (con la interfaz).
+
+## Mundo (Plan 8.1)
+```bash
+# Piezas del mundo (casas, bosque, rocas, cripta) y su tabla con las casillas que bloquean
+node tools/art/make_world.mjs assets/world data/zones/pieces.json
+```
+- Capturas de una zona: `-s tests/helpers/render_zone.gd -- --zone=aldea --view=top|iso`.

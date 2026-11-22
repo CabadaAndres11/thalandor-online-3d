@@ -2,7 +2,7 @@
 tags: [plan, spec]
 plan: 8.1
 fecha: 2026-11-22
-estado: aprobado
+estado: implementado
 actualizado: 2026-11-22
 ---
 # Plan 8.1 — Zonas y mundo: diseño

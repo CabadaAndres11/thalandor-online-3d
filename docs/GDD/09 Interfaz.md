@@ -1,13 +1,15 @@
 ---
 tags: [gdd]
 estado: en curso
-actualizado: 2026-11-21
+actualizado: 2026-11-22
 ---
 
 # 9. Interfaz y flujo
 
 ## 9.1 Flujo **[En curso]** (título, selección y creación de personaje, Jugar, Abrir grupo y Unirse implementados en la 0.2.0; falta la última ubicación y "Ir con el grupo")
 1. **Pantalla de título [Implementado 0.10.0]:** el logo sobre una escena vóxel en vivo: cultistas orando alrededor del altar del Sol Negro, de noche, con braseros, velas y brasas, mientras la cámara gira despacio. **Jugar** va abajo a la izquierda; arriba a la derecha están los iconos de Ajustes, Créditos y Salir; la versión, abajo a la derecha. Las tres pantallas de menú usan el tema de **piedra, oro y rojo** del logo (`StoneTheme`); las ventanas del juego siguen en azul hasta el Plan 11. Los botones y paneles de los menús tienen **luz dinámica** (`MenuFx`, `assets/ui/ember_glow.gdshader`): sus bordes se encienden al pasar el ratón, les cruzan destellos de luz y Jugar respira.
+- **Juego en grupo** **[Implementado 0.11.0]**: hasta terminar la defensa de la aldea (el tutorial), **Abrir grupo** y **Unirse a un amigo** están desactivados y el anfitrión rechaza a quien no la ha terminado.
+- **Mazmorras** **[Implementado 0.11.0]**: en su puerta, una ventana para elegir el nivel; entre zonas, una pantalla de carga con el nombre de la zona.
 2. **Selección de personaje:** lista de hasta 8 personajes (nombre, raza, clase y nivel) en un panel de piedra; el elegido aparece **delante del altar**, en la misma escena; opciones de crear, borrar (con confirmación), exportar e importar personajes. **[Implementado]**
 3. **Jugar:** entra al mundo como host de su propia partida.
    - **"Abrir grupo"** está disponible en cualquier momento y genera un código.

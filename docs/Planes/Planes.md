@@ -28,7 +28,7 @@ Cada plan de la [[14 Hoja de ruta]] tiene aquí su **spec** (diseño acordado) y
 | 6.4.4 · Correcciones de la prueba 0.9.6 | [[Plan 6.4.4 — Correcciones de la prueba 0.9.6 (spec)\|Spec]] | — (la spec lleva las tareas) | Hecho (0.9.7, publicada en la 0.9.7) |
 | 7 · Identidad y creación de personaje | [[Plan 7 — Identidad y creación de personaje (spec)\|Spec]] | [[Plan 7 — Identidad y creación de personaje (plan)\|Plan]] | Hecho (0.10.0, publicada) |
 | 8 · Mundo y misiones (prólogo y arco 1) | — | — | En curso, en cinco partes |
-| 8.1 · Zonas y mundo | [[Plan 8.1 — Zonas y mundo (spec)\|Spec]] | [[Plan 8.1 — Zonas y mundo (plan)\|Plan]] | En curso (0.11.0) |
+| 8.1 · Zonas y mundo | [[Plan 8.1 — Zonas y mundo (spec)\|Spec]] | [[Plan 8.1 — Zonas y mundo (plan)\|Plan]] | Hecho (0.11.0, sin publicar) |
 | 9 · Secretos y clases ocultas | — | — | Pendiente |
 | 10 · Oficios | — | — | Pendiente |
 | 11 · Interfaz y audio | — | — | Pendiente |
