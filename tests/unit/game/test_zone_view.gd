@@ -331,3 +331,14 @@ func test_band_ground_is_forest_floor() -> void:
 	assert_eq(view.ground_cells()[Vector2i(2, 2)], "forest")
 	assert_eq(view.ground_cells()[Vector2i(20, 15)], "grass")
 	assert_false(view.find_children("Ground_forest#*", "", true, false).is_empty())
+
+
+## The edge band and outer forest cast no shadow (square shadows beside the paths).
+func test_edge_pieces_cast_no_shadow() -> void:
+	var view: ZoneView = add_child_autofree(ZoneView.new())
+	view.build(ZoneLayout.from_dict("e", {"size": [40, 30], "margin": "forest", "entries": {"default": [20, 15]}}), GraphicsQuality.HIGH)
+	var edge := view.find_children("*#*e", "MultiMeshInstance3D", true, false)
+	assert_false(edge.is_empty(), "edge pieces have their own nodes")
+	assert_true(view.find_children("*e~shadow", "", true, false).is_empty(), "no shadow copies for the edge")
+	for n: GeometryInstance3D in edge:
+		assert_eq(n.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)

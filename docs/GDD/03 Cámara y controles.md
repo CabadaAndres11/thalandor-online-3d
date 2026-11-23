@@ -9,7 +9,7 @@ actualizado: 2026-11-15
 ## 3.1 Cámara
 - **Isométrica/cenital** en perspectiva (o proyección ortográfica si se ve mejor), alta e inclinada unos 50–60°, siguiendo al personaje.
 - **Zoom** con la rueda del ratón entre unos límites; sin rotación libre en la demo (la rotación en pasos de 90° es una opción futura).
-- **F9 alterna entre isométrica y tercera persona** (0.6.0): la tercera persona es una cámara baja y cercana tras el personaje, que se gira con Z / X o arrastrando el botón central; cada modo recuerda su propio zoom. Sustituye a la alternancia perspectiva/ortográfica.
+- **F9 alterna entre isométrica y tercera persona** (0.6.0): la tercera persona es una cámara baja y cercana tras el personaje, que se gira con Z / X o arrastrando el botón central; la tercera persona recuerda su zoom; al volver, la isométrica es siempre la misma vista fija (esquina, altura y zoom), desde la 0.11.2. Sustituye a la alternancia perspectiva/ortográfica.
 - **Objetos que tapan:** los tejados y paredes entre la cámara y el personaje se vuelven translúcidos.
 
 ## 3.2 Controles **[Implementado]** (0.4.0: moverse, apuntar, CI, CD, 1–4, Espacio, E para levantar a un aliado, K, Enter, Esc, F3, F9 y zoom; faltan las pociones Q/R, las ventanas C, I, N, J y M y reasignar teclas)

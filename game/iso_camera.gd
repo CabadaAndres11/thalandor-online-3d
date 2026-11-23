@@ -65,7 +65,8 @@ func turn(radians: float) -> void:
 		_apply()
 
 
-## Isometric <-> third person (keeps the yaw and each mode's own zoom).
+## Isometric <-> third person. Third person keeps its own zoom; the isometric view is
+## always the same fixed view (corner, height and zoom).
 func toggle_mode() -> void:
 	_distances[mode] = distance
 	mode = Mode.THIRD_PERSON if mode == Mode.ISOMETRIC else Mode.ISOMETRIC
@@ -77,6 +78,7 @@ func toggle_mode() -> void:
 	fov = cfg.fov
 	if mode == Mode.ISOMETRIC:
 		yaw_deg = 45.0 # the isometric view always looks from the same corner
+		distance = ISO.distance
 	_apply()
 
 

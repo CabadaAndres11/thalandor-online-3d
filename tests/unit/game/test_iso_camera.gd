@@ -30,15 +30,14 @@ func test_the_third_person_camera_turns_but_the_isometric_one_does_not() -> void
 	assert_ne(cam.yaw_deg, 45.0)
 
 
-func test_each_mode_keeps_its_own_zoom() -> void:
+func test_third_person_keeps_its_zoom_isometric_resets() -> void:
 	cam.zoom(2)
-	var iso := cam.distance
 	cam.toggle_mode()
-	assert_ne(cam.distance, iso)
+	assert_ne(cam.distance, IsoCamera.ISO.distance)
 	cam.zoom(1)
 	var third := cam.distance
 	cam.toggle_mode()
-	assert_eq(cam.distance, iso)
+	assert_eq(cam.distance, IsoCamera.ISO.distance, "the isometric view is fixed")
 	cam.toggle_mode()
 	assert_eq(cam.distance, third)
 
@@ -67,3 +66,16 @@ func test_camera_inset() -> void:
 	c.inset = 10.0
 	c.follow(Vector3(-50, 0, 200))
 	assert_eq(c.target(), Vector3(10, 0, 86))
+
+
+## Back from third person, the isometric view is always the same fixed view.
+func test_isometric_is_fixed_after_third_person() -> void:
+	var fresh: IsoCamera = add_child_autofree(IsoCamera.new())
+	fresh.follow(Vector3(10, 0, 10))
+	cam.zoom(3)
+	cam.toggle_mode()
+	cam.turn(1.3)
+	cam.zoom(-2)
+	cam.toggle_mode()
+	assert_eq(cam.mode, IsoCamera.Mode.ISOMETRIC)
+	assert_true(cam.global_transform.is_equal_approx(fresh.global_transform), "%s vs %s" % [cam.global_transform, fresh.global_transform])

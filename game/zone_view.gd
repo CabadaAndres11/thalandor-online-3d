@@ -23,6 +23,9 @@ const LOD_NEAR := 45.0
 const RANGE_DEFAULT := 90.0
 ## A signpost's zone name shows within this distance of the camera.
 const SIGN_READ_RANGE := 40.0
+## Suffix of the nodes of the edge band and the outer forest: they cast no shadow (their
+## square shadows on the paths looked bad, Plan 8.1.2).
+const EDGE := "e"
 ## Coarse meshes merge COARSE³ voxels into one.
 const COARSE := 2
 
@@ -201,10 +204,11 @@ func _build_pieces(groups: Dictionary, kind: String) -> void:
 		if mesh == null:
 			continue
 		var draw_range := float(def.get("range", RANGE_DEFAULT))
-		var shadow := str(def.get("shadow", "medium")) != "never"
+		var small := str(def.get("shadow", "medium")) == "never"
+		var shadow := not small and not key.ends_with(EDGE)
 		var near := _chunk_node(root, key, mesh, list, Transform3D.IDENTITY)
 		near.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		if not shadow or draw_range <= LOD_NEAR:
+		if small or draw_range <= LOD_NEAR:
 			near.visibility_range_end = draw_range # small pieces: one detailed mesh, no shadow
 			continue
 		near.visibility_range_end = LOD_NEAR
@@ -224,13 +228,14 @@ func _build_pieces(groups: Dictionary, kind: String) -> void:
 ## "id#cx,cz" -> the placed pieces of that kind in that chunk (houses are HouseViews).
 func _piece_groups() -> Dictionary:
 	var groups := {}
-	for p: Dictionary in layout.pieces + layout.margin_pieces:
-		if layout.piece_def(str(p.id)).has("parts"):
-			continue
-		var key := chunk_name(str(p.id), p.at)
-		if not groups.has(key):
-			groups[key] = []
-		(groups[key] as Array).append(p)
+	for edge: bool in [false, true]:
+		for p: Dictionary in (layout.margin_pieces if edge else layout.pieces):
+			if layout.piece_def(str(p.id)).has("parts"):
+				continue
+			var key := chunk_name(str(p.id), p.at) + (EDGE if edge else "") # the edge: its own nodes, no shadow
+			if not groups.has(key):
+				groups[key] = []
+			(groups[key] as Array).append(p)
 	return groups
 
 
@@ -322,7 +327,7 @@ func _build_exit_marks() -> void:
 		var len := float(ZoneLayout.MARGIN)
 		strip.size = Vector2(len, r.size.y) if inward.x != 0 else Vector2(r.size.x, len)
 		var tmat := StandardMaterial3D.new()
-		tmat.albedo_color = (GROUND.road as Color).darkened(0.2)
+		tmat.albedo_color = GROUND.road
 		tmat.roughness = 1.0
 		strip.material = tmat
 		track.mesh = strip
