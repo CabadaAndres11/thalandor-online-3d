@@ -72,7 +72,9 @@
 				3,
 				3
 			]
-		]
+		],
+		"shadow": "medium",
+		"range": 90
 	},
 	"house_large": {
 		"vox": "res://assets/world/house_large.vox",
@@ -203,7 +205,9 @@
 				5,
 				4
 			]
-		]
+		],
+		"shadow": "medium",
+		"range": 90
 	},
 	"house_forge": {
 		"vox": "res://assets/world/house_forge.vox",
@@ -326,7 +330,9 @@
 				4,
 				4
 			]
-		]
+		],
+		"shadow": "medium",
+		"range": 90
 	},
 	"fence": {
 		"vox": "res://assets/world/fence.vox",
@@ -345,7 +351,9 @@
 				1,
 				0
 			]
-		]
+		],
+		"shadow": "medium",
+		"range": 90
 	},
 	"wall_low": {
 		"vox": "res://assets/world/wall_low.vox",
@@ -364,7 +372,9 @@
 				1,
 				0
 			]
-		]
+		],
+		"shadow": "medium",
+		"range": 90
 	},
 	"well": {
 		"vox": "res://assets/world/well.vox",
@@ -391,7 +401,9 @@
 				1,
 				1
 			]
-		]
+		],
+		"shadow": "medium",
+		"range": 90
 	},
 	"cart": {
 		"vox": "res://assets/world/cart.vox",
@@ -434,7 +446,9 @@
 				3,
 				1
 			]
-		]
+		],
+		"shadow": "medium",
+		"range": 90
 	},
 	"crates": {
 		"vox": "res://assets/world/crates.vox",
@@ -461,7 +475,9 @@
 				1,
 				1
 			]
-		]
+		],
+		"shadow": "medium",
+		"range": 90
 	},
 	"tree_oak": {
 		"vox": "res://assets/world/tree_oak.vox",
@@ -476,7 +492,9 @@
 				0,
 				0
 			]
-		]
+		],
+		"shadow": "medium",
+		"range": 90
 	},
 	"tree_pine": {
 		"vox": "res://assets/world/tree_pine.vox",
@@ -491,7 +509,9 @@
 				0,
 				0
 			]
-		]
+		],
+		"shadow": "medium",
+		"range": 90
 	},
 	"bush": {
 		"vox": "res://assets/world/bush.vox",
@@ -501,7 +521,9 @@
 			0,
 			0
 		],
-		"footprint": []
+		"footprint": [],
+		"shadow": "never",
+		"range": 55
 	},
 	"rock_small": {
 		"vox": "res://assets/world/rock_small.vox",
@@ -516,7 +538,9 @@
 				0,
 				0
 			]
-		]
+		],
+		"shadow": "never",
+		"range": 55
 	},
 	"rock_large": {
 		"vox": "res://assets/world/rock_large.vox",
@@ -563,7 +587,9 @@
 				2,
 				2
 			]
-		]
+		],
+		"shadow": "medium",
+		"range": 90
 	},
 	"stump": {
 		"vox": "res://assets/world/stump.vox",
@@ -578,7 +604,9 @@
 				0,
 				0
 			]
-		]
+		],
+		"shadow": "never",
+		"range": 55
 	},
 	"bridge": {
 		"vox": "res://assets/world/bridge.vox",
@@ -588,7 +616,9 @@
 			0,
 			1
 		],
-		"footprint": []
+		"footprint": [],
+		"shadow": "medium",
+		"range": 90
 	},
 	"torch": {
 		"vox": "res://assets/world/torch.vox",
@@ -598,7 +628,9 @@
 			0,
 			6
 		],
-		"footprint": []
+		"footprint": [],
+		"shadow": "never",
+		"range": 55
 	},
 	"crypt_arch": {
 		"vox": "res://assets/world/crypt_arch.vox",
@@ -625,7 +657,9 @@
 				3,
 				1
 			]
-		]
+		],
+		"shadow": "medium",
+		"range": 90
 	},
 	"crypt_wall": {
 		"vox": "res://assets/world/crypt_wall.vox",
@@ -644,7 +678,9 @@
 				1,
 				0
 			]
-		]
+		],
+		"shadow": "medium",
+		"range": 90
 	},
 	"crypt_pillar": {
 		"vox": "res://assets/world/crypt_pillar.vox",
@@ -659,6 +695,8 @@
 				0,
 				0
 			]
-		]
+		],
+		"shadow": "medium",
+		"range": 90
 	}
 }

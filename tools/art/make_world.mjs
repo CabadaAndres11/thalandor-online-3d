@@ -12,6 +12,8 @@ import { ellipsoid, capsule, cylinder, roundBox, carve, noise3 } from "./sculpt.
 
 export const CELL = 20; // voxels per metre-cell
 const BASE_H = 24; // voxels under this height block the cell (1.2 m)
+// Small pieces: no shadow and a shorter draw distance (Plan 8.1.1).
+export const SMALL_PIECES = ["bush", "rock_small", "stump", "torch"];
 
 const WOOD = 1, WOOD_D = 2, WOOD_L = 3, PLANK = 4, PLANK_D = 5, THATCH = 6, THATCH_D = 7, THATCH_L = 8,
   STONE = 9, STONE_D = 10, STONE_L = 11, MOSS = 12, LEAF = 13, LEAF_D = 14, LEAF_L = 15, PINE = 16, PINE_D = 17,
@@ -25,11 +27,12 @@ const PALETTE = {
   [HAY]: "#d1b060", [GLOW]: "#ffb347",
 };
 
-// Two or three tones of a material mixed per voxel.
+// Two or three tones of a material mixed in patches of 3 voxels (Plan 8.1.1: less grain,
+// and equal faces side by side merge into far fewer triangles).
 function paint(s, from, tones, seed) {
   for (const v of s.cells.values()) {
     if (v[3] !== from) continue;
-    const n = noise3(v[0], v[1], v[2], seed);
+    const n = noise3(Math.floor(v[0] / 3), Math.floor(v[1] / 3), Math.floor(v[2] / 3), seed);
     v[3] = n < 0.25 ? tones[1] : n > 0.8 ? tones[2] ?? tones[0] : tones[0];
   }
   return s;
@@ -217,7 +220,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const table = {};
   for (const [id, p] of Object.entries(worldPieces())) {
     write(`${outDir}/${id}.vox`, p.shape.size(), p.shape.voxels(), PALETTE);
-    table[id] = { vox: `res://assets/world/${id}.vox`, scale: 0.5, offset: p.shape.min(), footprint: p.footprint };
+    const small = SMALL_PIECES.includes(id);
+    table[id] = { vox: `res://assets/world/${id}.vox`, scale: 0.5, offset: p.shape.min(), footprint: p.footprint,
+      shadow: small ? "never" : "medium", range: small ? 55 : 90 };
   }
   fs.writeFileSync(jsonPath, JSON.stringify(table, null, "\t") + "\n");
   console.log(`wrote ${Object.keys(table).length} world pieces and ${jsonPath}`);

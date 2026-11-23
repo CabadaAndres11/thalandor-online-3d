@@ -15,6 +15,16 @@ const GROUND := {
 }
 const WATER_DEPTH := 0.12
 const VOXEL := 0.05 # world pieces are 5 cm voxels (VoxMesher's 0.1 m at scale 0.5)
+## Pieces and ground are grouped in chunks of CHUNK×CHUNK cells (Plan 8.1.1).
+const CHUNK := 16
+## Closer than this (from the camera) a piece uses its detailed mesh; beyond, a coarse one.
+const LOD_NEAR := 45.0
+## Draw distance of a piece without "range" in pieces.json.
+const RANGE_DEFAULT := 90.0
+## Coarse meshes merge COARSE³ voxels into one.
+const COARSE := 2
+
+static var _coarse_cache: Dictionary = {}
 
 var grid: GridMap
 var layout: ZoneLayout
@@ -25,6 +35,7 @@ var _sun: DirectionalLight3D
 var _world_env: WorldEnvironment
 var _particles: GPUParticles3D
 var _follow := Vector3.ZERO
+var _shadow_proxies: Array[GeometryInstance3D] = []
 
 
 ## Builds the zone; returns its collision (the same as layout.collision()).
@@ -94,18 +105,20 @@ func _build_ground() -> void:
 	outer.mesh = plane
 	outer.position = Vector3(layout.size.x / 2.0, -0.03, layout.size.y / 2.0)
 	add_child(outer)
-	var by_kind := {}
+	var by_kind := {} # "kind#cx,cz" -> cells (one mesh per kind and chunk, Plan 8.1.1)
 	var cells := ground_cells()
 	for c: Vector2i in cells:
-		if not by_kind.has(cells[c]):
-			by_kind[cells[c]] = []
-		(by_kind[cells[c]] as Array).append(c)
-	for kind: String in by_kind:
+		var key := chunk_name(str(cells[c]), c)
+		if not by_kind.has(key):
+			by_kind[key] = []
+		(by_kind[key] as Array).append(c)
+	for key: String in by_kind:
+		var kind := key.get_slice("#", 0)
 		var st := SurfaceTool.new()
 		st.begin(Mesh.PRIMITIVE_TRIANGLES)
 		var base: Color = GROUND.get(kind, GROUND.grass)
 		var y := -WATER_DEPTH if kind == "water" else 0.0
-		for c: Vector2i in by_kind[kind]:
+		for c: Vector2i in by_kind[key]:
 			var n := (hash(c) % 1000) / 1000.0
 			st.set_color(base.darkened(0.08 * n) if n < 0.5 else base.lightened(0.05 * n))
 			st.set_normal(Vector3.UP)
@@ -116,37 +129,79 @@ func _build_ground() -> void:
 		mat.vertex_color_use_as_albedo = true
 		mat.roughness = 0.2 if kind == "water" else 0.95
 		var mi := MeshInstance3D.new()
-		mi.name = "Ground_" + kind
+		mi.name = "Ground_" + key
 		mi.mesh = st.commit()
 		mi.material_override = mat
 		add_child(mi)
 
 
+## Pieces of a kind in a 16×16 chunk share nodes (Plan 8.1.1): Godot culls whole chunks
+## off camera. Pieces that cast shadow have the detailed mesh up close (LOD_NEAR), a coarse
+## copy beyond and a coarse shadow-only copy (no shadows at LOW); small pieces one mesh.
 func _build_pieces() -> void:
-	var by_id := {}
+	var groups := {} # "id#cx,cz" -> [piece]
 	for p: Dictionary in layout.pieces:
-		if not by_id.has(p.id):
-			by_id[p.id] = []
-		(by_id[p.id] as Array).append(p)
+		var key := chunk_name(str(p.id), p.at)
+		if not groups.has(key):
+			groups[key] = []
+		(groups[key] as Array).append(p)
 	var root := Node3D.new()
 	root.name = "Pieces"
 	add_child(root)
-	for piece_id: String in by_id:
+	for key: String in groups:
+		var list: Array = groups[key]
+		var piece_id := str(list[0].id)
 		var def := layout.piece_def(piece_id)
-		var mesh := VoxMesher.cached(str(def.get("vox", "")), {})
+		var path := str(def.get("vox", ""))
+		var mesh := VoxMesher.cached(path, {})
 		if mesh == null:
 			continue
-		var mm := MultiMesh.new()
-		mm.transform_format = MultiMesh.TRANSFORM_3D
-		mm.mesh = mesh
-		var list: Array = by_id[piece_id]
-		mm.instance_count = list.size()
-		for i in list.size():
-			mm.set_instance_transform(i, piece_transform(list[i]))
-		var mmi := MultiMeshInstance3D.new()
-		mmi.name = piece_id
-		mmi.multimesh = mm
-		root.add_child(mmi)
+		var draw_range := float(def.get("range", RANGE_DEFAULT))
+		var shadow := str(def.get("shadow", "medium")) != "never"
+		var near := _chunk_node(root, key, mesh, list, Transform3D.IDENTITY)
+		near.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		if not shadow or draw_range <= LOD_NEAR:
+			near.visibility_range_end = draw_range # small pieces: one detailed mesh, no shadow
+			continue
+		near.visibility_range_end = LOD_NEAR
+		var coarse := _coarse_mesh(path)
+		var scale := Transform3D(Basis.from_scale(Vector3.ONE * COARSE), Vector3.ZERO)
+		var far := _chunk_node(root, key + "~far", coarse, list, scale)
+		far.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		far.visibility_range_begin = LOD_NEAR
+		far.visibility_range_end = draw_range
+		if shadow:
+			var proxy := _chunk_node(root, key + "~shadow", coarse, list, scale)
+			proxy.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
+			proxy.visibility_range_end = draw_range
+			_shadow_proxies.append(proxy)
+
+
+## "id#cx,cz": the node of a piece kind in the chunk holding `at`.
+static func chunk_name(piece_id: String, at: Vector2i) -> String:
+	return "%s#%d,%d" % [piece_id, floori(at.x / float(CHUNK)), floori(at.y / float(CHUNK))]
+
+
+func _chunk_node(root: Node, node_name: String, mesh: Mesh, list: Array, local: Transform3D) -> MultiMeshInstance3D:
+	var mm := MultiMesh.new()
+	mm.transform_format = MultiMesh.TRANSFORM_3D
+	mm.mesh = mesh
+	mm.instance_count = list.size()
+	for i in list.size():
+		mm.set_instance_transform(i, piece_transform(list[i]) * local)
+	var mmi := MultiMeshInstance3D.new()
+	mmi.name = node_name
+	mmi.multimesh = mm
+	root.add_child(mmi)
+	return mmi
+
+
+## The 2× coarse mesh of a piece (shared by every zone).
+static func _coarse_mesh(path: String) -> ArrayMesh:
+	if not _coarse_cache.has(path):
+		var vox := VoxFile.load_file(path)
+		_coarse_cache[path] = VoxMesher.build(VoxMesher.downsample(vox, COARSE), {}) if vox != null else null
+	return _coarse_cache[path]
 
 
 ## Where a placed piece is drawn: turned about the centre of its cell (0, 0) like its
@@ -227,3 +282,5 @@ func _apply_lighting() -> void:
 	for torch: Torch in torches:
 		torch.set_quality(quality)
 		torch.energy_scale = a.torch_energy
+	for proxy: GeometryInstance3D in _shadow_proxies:
+		proxy.visible = quality >= GraphicsQuality.MEDIUM

@@ -1,7 +1,7 @@
 // Plan 8.1: world pieces (houses, forest, rocks, crypt) and the cells they block.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { worldPieces, footprintOf, CELL } from "../make_world.mjs";
+import { worldPieces, footprintOf, CELL, SMALL_PIECES } from "../make_world.mjs";
 
 const p = worldPieces();
 const IDS = ["house_small", "house_large", "house_forge", "fence", "wall_low", "well", "cart", "crates",
@@ -32,4 +32,8 @@ test("the table carries vox, scale, offset and footprint", () => {
   const t = p.house_forge;
   assert.ok(t.shape.cells.size > 1000);
   assert.ok(Array.isArray(footprintOf(t)));
+});
+
+test("small pieces cast no shadow and are drawn closer (Plan 8.1.1)", () => {
+  assert.deepEqual([...SMALL_PIECES].sort(), ["bush", "rock_small", "stump", "torch"]);
 });
