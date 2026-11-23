@@ -100,7 +100,7 @@ func _reach(map: CollisionMap, from: Vector2i) -> Dictionary:
 
 
 func test_house_interior_reachable_from_door_all_rotations() -> void:
-	for id: String in ["house_small", "house_large", "house_forge"]:
+	for id: String in ["house_small", "house_large", "house_forge", "forge_shed"]:
 		for rot: int in [0, 90, 180, 270]:
 			var z := _house_zone(id, rot)
 			var map := z.collision()

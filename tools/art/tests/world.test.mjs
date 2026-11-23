@@ -1,7 +1,7 @@
 // Plan 8.1: world pieces (houses, forest, rocks, crypt) and the cells they block.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { worldPieces, footprintOf, CELL, SMALL_PIECES, HOUSE_CELL } from "../make_world.mjs";
+import { worldPieces, footprintOf, CELL, SMALL_PIECES, HOUSE_CELL, DECOR } from "../make_world.mjs";
 
 const p = worldPieces();
 const IDS = ["house_small", "house_large", "house_forge", "fence", "wall_low", "well", "cart", "crates",
@@ -61,4 +61,32 @@ test("the table carries vox, scale, offset and footprint", () => {
 
 test("small pieces cast no shadow and are drawn closer (Plan 8.1.1)", () => {
   assert.deepEqual([...SMALL_PIECES].sort(), ["bush", "rock_small", "stump", "torch"]);
+});
+
+// Plan 8.1.3: the stone forge, its open shed and the ground details.
+test("the forge is stone and timber with two lit furnaces inside", () => {
+  const f = p.house_forge;
+  const idx = new Set([...f.parts.walls.cells.values()].map((v) => v[3]));
+  assert.ok(!idx.has(22), "no plaster walls");
+  assert.equal(f.lights.length, 2, "two furnaces");
+});
+
+test("the forge shed is an open house with a lit hearth", () => {
+  const s = p.forge_shed;
+  assert.ok(s, "forge_shed exists");
+  assert.deepEqual(Object.keys(s.parts).sort(), ["floor", "roof", "walls", "walls_cut"]);
+  assert.equal(s.scale, 1);
+  assert.equal(s.lights.length, 1);
+  const fp = new Set(s.footprint.map(([x, z]) => x + "," + z));
+  const free = s.interior.filter(([x, z]) => !fp.has(x + "," + z));
+  assert.ok(free.length >= 8, "walkable under the roof: " + free.length);
+  for (const [x, z] of s.door) assert.ok(!fp.has(x + "," + z), "open front");
+});
+
+test("ground details are tiny and block nothing", () => {
+  for (const id of DECOR) {
+    assert.ok(p[id], id);
+    assert.deepEqual(p[id].footprint, [], id);
+    for (const d of p[id].shape.size()) assert.ok(d <= 12, id + " is small");
+  }
 });

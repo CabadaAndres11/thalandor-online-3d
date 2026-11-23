@@ -15,6 +15,8 @@ const GROUND := {
 	"forest": Color("#3f5530"), # the floor under the edge band (Plan 8.1.2)
 }
 const WATER_DEPTH := 0.12
+## Pixels per cell of the ground texture (Plan 8.1.3).
+const GROUND_PX := 4
 ## Pieces and ground are grouped in chunks of CHUNK×CHUNK cells (Plan 8.1.1).
 const CHUNK := 16
 ## Closer than this (from the camera) a piece uses its detailed mesh; beyond, a coarse one.
@@ -41,6 +43,9 @@ var _world_env: WorldEnvironment
 var _particles: GPUParticles3D
 var _follow := Vector3.ZERO
 var _shadow_proxies: Array[GeometryInstance3D] = []
+## The ground picture (Plan 8.1.3) and the details sown on it: {id, at, rot, off}.
+var ground_image: Image
+var decor: Array = []
 ## The house open around the own player (-1: none), Plan 8.1.1.
 var open_index: int = -1
 
@@ -59,6 +64,7 @@ func build_steps(p_layout: ZoneLayout, quality_level: int = GraphicsQuality.MEDI
 	quality = GraphicsQuality.clamp_level(quality_level)
 	ambience_id = Ambience.resolve_id(layout.ambience)
 	var steps: Array[Callable] = [_build_ground]
+	_sow_decor()
 	var groups := _piece_groups()
 	var kinds := {}
 	for key: String in groups:
@@ -161,6 +167,14 @@ func _build_ground() -> void:
 		if not by_kind.has(key):
 			by_kind[key] = []
 		(by_kind[key] as Array).append(c)
+	# One pixel texture for the whole zone (Plan 8.1.3): GROUND_PX × GROUND_PX pixels per
+	# cell in patches of three tones, borders between kinds dithered.
+	ground_image = make_ground_image(cells)
+	var ground_mat := StandardMaterial3D.new()
+	ground_mat.albedo_texture = ImageTexture.create_from_image(ground_image)
+	ground_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	ground_mat.roughness = 0.95
+	var inv := Vector2(1.0 / layout.size.x, 1.0 / layout.size.y)
 	for key: String in by_kind:
 		var kind := key.get_slice("#", 0)
 		var st := SurfaceTool.new()
@@ -173,10 +187,13 @@ func _build_ground() -> void:
 			st.set_normal(Vector3.UP)
 			var p0 := Vector3(c.x, y, c.y)
 			for v: Vector3 in [p0, p0 + Vector3(1, 0, 0), p0 + Vector3(1, 0, 1), p0, p0 + Vector3(1, 0, 1), p0 + Vector3(0, 0, 1)]:
+				st.set_uv(Vector2(v.x, v.z) * inv)
 				st.add_vertex(v)
-		var mat := StandardMaterial3D.new()
-		mat.vertex_color_use_as_albedo = true
-		mat.roughness = 0.2 if kind == "water" else 0.95
+		var mat := ground_mat
+		if kind == "water":
+			mat = StandardMaterial3D.new()
+			mat.vertex_color_use_as_albedo = true
+			mat.roughness = 0.2
 		var mi := MeshInstance3D.new()
 		mi.name = "Ground_" + key
 		mi.mesh = st.commit()
@@ -187,6 +204,89 @@ func _build_ground() -> void:
 ## Pieces of a kind in a 16×16 chunk share nodes (Plan 8.1.1): Godot culls whole chunks
 ## off camera. Pieces that cast shadow have the detailed mesh up close (LOD_NEAR), a coarse
 ## copy beyond and a coarse shadow-only copy (no shadows at LOW); small pieces one mesh.
+## The ground picture: per cell GROUND_PX² pixels of three tones of its kind in patches
+## of 2×2, and on a border with another kind a few pixels of the neighbour's colour.
+func make_ground_image(cells: Dictionary) -> Image:
+	var px := GROUND_PX
+	var w := layout.size.x * px
+	var h := layout.size.y * px
+	var tones := {}
+	for kind: String in GROUND:
+		var c: Color = GROUND[kind]
+		tones[kind] = [c, c.darkened(0.12), c.lightened(0.08)]
+	var data := PackedByteArray()
+	data.resize(w * h * 3)
+	var i := 0
+	for y in h:
+		var cz := y / px
+		var sy := y % px
+		for x in w:
+			var cx := x / px
+			var sx := x % px
+			var kind: String = cells.get(Vector2i(cx, cz), "grass")
+			var r := _hash3(x, y, 7)
+			# A border pixel may take the colour of the neighbour on that side.
+			var side := Vector2i.ZERO
+			if sx == 0:
+				side = Vector2i(-1, 0)
+			elif sx == px - 1:
+				side = Vector2i(1, 0)
+			elif sy == 0:
+				side = Vector2i(0, -1)
+			elif sy == px - 1:
+				side = Vector2i(0, 1)
+			if side != Vector2i.ZERO and r < 0.4:
+				var other: Variant = cells.get(Vector2i(cx, cz) + side)
+				if other != null and other != kind and other != "water" and kind != "water":
+					kind = other
+			var patch := _hash3(x / 2, y / 2, 11)
+			var col: Color = (tones.get(kind, tones.grass) as Array)[0 if patch < 0.55 else (1 if patch < 0.8 else 2)]
+			data[i] = col.r8
+			data[i + 1] = col.g8
+			data[i + 2] = col.b8
+			i += 3
+	return Image.create_from_data(w, h, false, Image.FORMAT_RGB8, data)
+
+
+static func _hash3(a: int, b: int, c: int) -> float:
+	var n := (a * 73856093) ^ (b * 19349663) ^ (c * 83492791)
+	n = (n ^ (n >> 13)) * 1274126177
+	return float((n ^ (n >> 16)) & 1023) / 1024.0
+
+
+## Grass tufts and flowers on grass, pebbles on dirt and roads (Plan 8.1.3): sown by cell
+## (the same every time), never on pieces, in houses, on water or in the edge band; fewer
+## at LOW quality. Drawn like the small pieces (by chunk, no shadow, close only).
+func _sow_decor() -> void:
+	decor.clear()
+	var taken := {}
+	for p: Dictionary in layout.pieces:
+		for c: Vector2i in layout.footprint(str(p.id), p.at, p.rot):
+			taken[c] = true
+	for h: Dictionary in layout.houses:
+		for c: Vector2i in h.cells + h.door:
+			taken[c] = true
+	var scale_d := 0.4 if quality <= GraphicsQuality.LOW else 1.0
+	var cells := ground_cells()
+	for c: Vector2i in cells:
+		if taken.has(c) or layout.in_band(c):
+			continue
+		var kind: String = cells[c]
+		var r := _hash3(c.x, c.y, 31)
+		var id := ""
+		if kind == "grass":
+			if r < 0.035 * scale_d:
+				id = ["flower_blue", "flower_white", "flower_yellow"][int(_hash3(c.x, c.y, 37) * 3.0)]
+			elif r < 0.3 * scale_d:
+				id = "grass_tuft"
+		elif kind in ["dirt", "road", "forest"] and r < 0.06 * scale_d:
+			id = "pebbles" if kind != "forest" else "grass_tuft"
+		if id == "" or layout.piece_def(id).is_empty():
+			continue
+		decor.append({"id": id, "at": c, "rot": int(_hash3(c.x, c.y, 41) * 4.0) * 90,
+			"off": Vector3(_hash3(c.x, c.y, 43) - 0.5, 0.0, _hash3(c.x, c.y, 47) - 0.5) * 0.6})
+
+
 func _build_pieces(groups: Dictionary, kind: String) -> void:
 	var root := get_node_or_null("Pieces")
 	if root == null:
@@ -228,6 +328,11 @@ func _build_pieces(groups: Dictionary, kind: String) -> void:
 ## "id#cx,cz" -> the placed pieces of that kind in that chunk (houses are HouseViews).
 func _piece_groups() -> Dictionary:
 	var groups := {}
+	for p: Dictionary in decor:
+		var dkey := chunk_name(str(p.id), p.at)
+		if not groups.has(dkey):
+			groups[dkey] = []
+		(groups[dkey] as Array).append(p)
 	for edge: bool in [false, true]:
 		for p: Dictionary in (layout.margin_pieces if edge else layout.pieces):
 			if layout.piece_def(str(p.id)).has("parts"):
@@ -274,6 +379,8 @@ func piece_transform(p: Dictionary) -> Transform3D:
 	var scale_f := float(def.get("scale", 0.5))
 	var local := Transform3D(Basis.from_scale(Vector3.ONE * scale_f),
 		Vector3(float(off[0]), float(off[1]), float(off[2])) * VoxMesher.VOXEL_SIZE * scale_f)
+	if p.has("off"): # ground details sit anywhere in their cell
+		return Transform3D.IDENTITY.translated(p.off) * placement(p) * local
 	return placement(p) * local
 
 

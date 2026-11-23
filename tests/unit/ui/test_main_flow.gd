@@ -385,7 +385,8 @@ func test_level_up_is_announced_in_the_chat_and_changes_the_bar_xp() -> void:
 	main._on_play("Prueba", "warrior")
 	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
 	main.game.client.send_chat("/nivel 4") # the host player's test command: the level-up happens inside a tick
-	await wait_physics_frames(4)
+	# (the zone may still be loading: wait for the message rather than a fixed few frames)
+	await wait_until(func() -> bool: return main.combat_hud.xp_bar.text() == tr("XP_BAR_TEXT") % [4, 0, Xp.to_next(4, main.game.balance)], 5.0)
 	var lines := main.chat.visible_lines()
 	assert_string_contains(lines[lines.size() - 1], tr("CHAT_LEVEL_UP") % ["Prueba", 4])
 	assert_eq(main.combat_hud.xp_bar.text(), tr("XP_BAR_TEXT") % [4, 0, Xp.to_next(4, main.game.balance)])

@@ -14,6 +14,8 @@ export const CELL = 20; // voxels per metre-cell
 const BASE_H = 24; // voxels under this height block the cell (1.2 m)
 // Small pieces: no shadow and a shorter draw distance (Plan 8.1.1).
 export const SMALL_PIECES = ["bush", "rock_small", "stump", "torch"];
+// Ground details (Plan 8.1.3): tiny, no shadow, only seen up close; ZoneView sows them.
+export const DECOR = ["grass_tuft", "flower_blue", "flower_white", "flower_yellow", "pebbles"];
 
 const WOOD = 1, WOOD_D = 2, WOOD_L = 3, PLANK = 4, PLANK_D = 5, THATCH = 6, THATCH_D = 7, THATCH_L = 8,
   STONE = 9, STONE_D = 10, STONE_L = 11, MOSS = 12, LEAF = 13, LEAF_D = 14, LEAF_L = 15, PINE = 16, PINE_D = 17,
@@ -25,6 +27,8 @@ const PALETTE = {
   [PINE]: "#2e5a36", [PINE_D]: "#1f4027", [BARK]: "#5a4030", [BARK_D]: "#3f2c20", [IRON]: "#3a3a40",
   [IRON_L]: "#62626b", [PLASTER]: "#d8ccb2", [PLASTER_D]: "#b8aa8e", [WATER]: "#3d6f8f", [COAL]: "#22160f",
   [HAY]: "#d1b060", [GLOW]: "#ffb347", [27]: "#8a3b32", [28]: "#6a2b25",
+  [29]: "#9a4a32", [30]: "#7a3826", [31]: "#b8644a", [32]: "#4f7fd6", [33]: "#eeeae0", [34]: "#e8c73a",
+  [35]: "#5f9a40", [36]: "#477a30", [37]: "#7fb552",
 };
 
 // Two or three tones of a material mixed in patches of 3 voxels (Plan 8.1.1: less grain,
@@ -65,8 +69,27 @@ function roof(s, x0, x1, z0, z1, y, overhang = 3) {
 // furniture blocks its cells too. Origin at the corner of cell (0, 0).
 export const HOUSE_CELL = 10;
 const HOUSE_H = 30, CUT_H = 10;
+const BRICK = 29, BRICK_D = 30, BRICK_L = 31, FLOWER_B = 32, FLOWER_W = 33, FLOWER_Y = 34, GRASS = 35, GRASS_D = 36, GRASS_L = 37;
 
-function houseParts(w, d, furnish = () => {}) {
+// Bricks: courses of 2 voxels, staggered joints in mortar-dark tone.
+function brick(s, x0, y0, z0, x1, y1, z1) {
+  for (let x = x0; x <= x1; x++) for (let y = y0; y <= y1; y++) for (let z = z0; z <= z1; z++) {
+    const course = Math.floor(y / 2);
+    const along = (x1 - x0 >= z1 - z0 ? x : z) + (course % 2) * 2;
+    s.put(x, y, z, y % 2 === 0 || along % 4 === 0 ? BRICK_D : (noise3(x >> 1, y >> 1, z >> 1, 3) > 0.7 ? BRICK_L : BRICK));
+  }
+  return s;
+}
+
+// A roof of planks (instead of thatch): the same gable, in boards with dark seams.
+function plankRoof(s) {
+  for (const v of s.cells.values()) {
+    if (v[3] === THATCH || v[3] === THATCH_D || v[3] === THATCH_L) v[3] = v[0] % 4 === 0 ? PLANK_D : (v[3] === THATCH_D ? WOOD : PLANK);
+  }
+  return s;
+}
+
+function houseParts(w, d, furnish = () => {}, style = {}) {
   const C = HOUSE_CELL, W = w * C, D = d * C;
   const floor = new Shape(), walls = new Shape(), roofShape = new Shape();
   const door = [[Math.floor(w / 2) - 1, d - 1], [Math.floor(w / 2), d - 1]];
@@ -81,6 +104,10 @@ function houseParts(w, d, furnish = () => {}) {
   walls.box(0, 1, 0, W - 1, HOUSE_H, 2, PLASTER).box(0, 1, D - 3, W - 1, HOUSE_H, D - 1, PLASTER);
   walls.box(0, 1, 0, 2, HOUSE_H, D - 1, PLASTER).box(W - 3, 1, 0, W - 1, HOUSE_H, D - 1, PLASTER);
   paint(walls, PLASTER, [PLASTER, PLASTER_D], 5);
+  if (style.stone) { // the forge (Plan 8.1.3): rough stone, darker at the foot
+    for (const v of walls.cells.values()) v[3] = v[1] < 6 ? STONE_D : STONE;
+    paint(walls, STONE, [STONE, STONE_D, STONE_L], 51);
+  }
   for (const x of [0, W - 3]) for (const z of [0, D - 3]) walls.box(x, 1, z, x + 2, HOUSE_H, z + 2, WOOD);
   for (const y of [1, HOUSE_H]) {
     walls.box(0, y, 0, W - 1, y, 2, WOOD).box(0, y, D - 3, W - 1, y, D - 1, WOOD);
@@ -102,11 +129,13 @@ function houseParts(w, d, furnish = () => {}) {
     for (let h = 0; h <= half; h++) {
       const z0 = Math.round(mid - half + h) + 1, z1 = Math.round(mid + half - h) - 1;
       for (const x of [0, 1, 2, W - 3, W - 2, W - 1]) for (let z = Math.max(z0, 0); z <= Math.min(z1, D - 1); z++) {
-        roofShape.put(x, HOUSE_H + 1 + h, z, z === Math.max(z0, 0) || z === Math.min(z1, D - 1) ? WOOD : PLASTER);
+        roofShape.put(x, HOUSE_H + 1 + h, z, z === Math.max(z0, 0) || z === Math.min(z1, D - 1) ? WOOD : (style.stone ? STONE : PLASTER));
       }
     }
     paint(roofShape, PLASTER, [PLASTER, PLASTER_D], 47);
+    paint(roofShape, STONE, [STONE, STONE_D, STONE_L], 49);
   }
+  if (style.planks) plankRoof(roofShape);
   const blocked = new Set();
   const block = (cx, cz) => blocked.add(cx + "," + cz);
   const lights = [];
@@ -175,6 +204,117 @@ function forgeFire(f, cx, cz) {
   f.lights.push([cx, cz]);
   f.block(cx, cz);
 }
+// A brick furnace against the back wall: an arched mouth full of embers, and (the first)
+// a brick chimney up through the roof with an iron cap.
+function furnace(f, cx, cz, chimney) {
+  const x0 = cx * f.C, z0 = cz * f.C;
+  brick(f.floor, x0, 1, z0, x0 + 9, 16, z0 + 8);
+  f.floor.remove(x0 + 2, 1, z0 + 4, x0 + 7, 7, z0 + 8); // the mouth
+  for (let x = x0 + 3; x <= x0 + 6; x++) f.floor.put(x, 8, z0 + 8, BRICK_D);
+  f.floor.box(x0 + 2, 1, z0 + 4, x0 + 7, 1, z0 + 7, COAL);
+  for (const [x, z] of [[3, 5], [5, 6], [4, 7], [6, 5]]) f.floor.put(x0 + x, 2, z0 + z, GLOW);
+  if (chimney) {
+    brick(f.roof, x0 + 2, 31, z0 + 1, x0 + 7, 66, z0 + 6);
+    f.roof.box(x0 + 1, 67, z0, x0 + 8, 68, z0 + 7, IRON).box(x0 + 3, 69, z0 + 2, x0 + 6, 72, z0 + 5, IRON_L);
+  }
+  f.lights.push([cx, cz]);
+  f.block(cx, cz);
+}
+function bellows(f, cx, cz) {
+  const x0 = cx * f.C, z0 = cz * f.C;
+  f.floor.box(x0 + 2, 1, z0 + 2, x0 + 7, 4, z0 + 7, WOOD).box(x0 + 3, 5, z0 + 3, x0 + 6, 7, z0 + 6, CLOTH_D);
+  f.floor.box(x0 + 4, 4, z0, x0 + 5, 5, z0 + 1, IRON);
+  f.block(cx, cz);
+}
+function toolRack(f, cx, cz) {
+  const x0 = cx * f.C, z0 = cz * f.C;
+  f.floor.box(x0 + 1, 1, z0 + 1, x0 + 8, 20, z0 + 2, WOOD);
+  for (const x of [2, 4, 6]) f.floor.box(x0 + x, 10, z0 + 3, x0 + x, 17, z0 + 3, IRON_L).put(x0 + x, 17, z0 + 4, IRON);
+  f.block(cx, cz);
+}
+function workbench(f, cx, cz) {
+  const x0 = cx * f.C, z0 = cz * f.C;
+  f.floor.box(x0 + 1, 7, z0 + 1, x0 + 8, 8, z0 + 8, PLANK).box(x0 + 1, 5, z0 + 2, x0 + 8, 6, z0 + 7, WOOD);
+  for (const x of [1, 8]) for (const z of [1, 8]) f.floor.box(x0 + x, 1, z0 + z, x0 + x, 6, z0 + z, WOOD_D);
+  f.floor.box(x0 + 4, 6, z0 + 7, x0 + 5, 6, z0 + 7, IRON); // drawer handle
+  f.block(cx, cz);
+}
+function anvilStump(f, cx, cz) {
+  const x0 = cx * f.C, z0 = cz * f.C;
+  cylinder(f.floor, [x0 + 4.5, 1, z0 + 4.5], [x0 + 4.5, 6, z0 + 4.5], 3.4, BARK);
+  f.floor.box(x0 + 3, 7, z0 + 3, x0 + 6, 8, z0 + 6, IRON).box(x0 + 1, 9, z0 + 3, x0 + 8, 10, z0 + 6, IRON).box(x0 + 1, 10, z0 + 4, x0 + 2, 10, z0 + 5, IRON_L);
+  f.floor.box(x0 + 5, 11, z0 + 4, x0 + 7, 11, z0 + 4, WOOD).put(x0 + 4, 11, z0 + 4, IRON_L); // a hammer
+  f.block(cx, cz);
+}
+
+// The open shed beside the forge (Plan 8.1.3, after the user's reference): posts and a
+// plank roof, cobbles, a brick wall at the back and on the right, an outdoor forge, an
+// anvil on a stump, a workbench and a water barrel. A house without front or left wall.
+function shedParts(w, d) {
+  const C = HOUSE_CELL, W = w * C, D = d * C, H = 26;
+  const floor = new Shape(), walls = new Shape(), roofShape = new Shape();
+  for (let x = 0; x < W; x++) for (let z = 0; z < D; z++) { // cobbles: stones with dark joints
+    const j = (x % 4 === 0) || ((z + (Math.floor(x / 4) % 2) * 2) % 4 === 0);
+    floor.put(x, 0, z, j ? STONE_D : (noise3(x >> 2, 0, z >> 2, 9) > 0.6 ? STONE_L : STONE));
+  }
+  brick(walls, 0, 1, 0, W - 1, H, 2); // back wall
+  brick(walls, W - 3, 1, 0, W - 1, H, D - 1); // right wall
+  for (const [x, z] of [[0, D - 3], [0, 0]]) walls.box(x, 1, z, x + 2, H + 2, z + 2, WOOD); // posts
+  walls.box(W - 3, 1, D - 3, W - 1, H + 2, D - 1, WOOD);
+  walls.box(0, H, D - 3, W - 1, H + 1, D - 1, WOOD).box(0, H, 0, 2, H + 1, D - 1, WOOD); // beams
+  paint(walls, WOOD, [WOOD, WOOD_D, WOOD_L], 53);
+  const cut = new Shape();
+  for (const v of walls.cells.values()) if (v[1] <= CUT_H) cut.put(v[0], v[1], v[2], v[3]);
+  // A flat roof of boards falling to the front, overhanging all round.
+  for (let x = -2; x <= W + 1; x++) for (let z = -2; z <= D + 2; z++) {
+    const y = H + 4 - Math.floor((z + 2) / 8);
+    roofShape.put(x, y, z, x % 5 === 0 ? PLANK_D : PLANK).put(x, y - 1, z, WOOD);
+  }
+  const blocked = new Set();
+  const block = (cx, cz) => blocked.add(cx + "," + cz);
+  const lights = [];
+  const f = { floor, roof: roofShape, W, D, C, block, lights };
+  workbench(f, 0, 1);
+  anvilStump(f, 2, 1);
+  furnace(f, w - 2, 1, false);
+  barrel(f, w - 2, 2);
+  block(0, d - 1); // the front post
+  const footprint = [], interior = [], door = [];
+  for (let x = 0; x < w; x++) for (let z = 0; z < d; z++) {
+    if (z === 0 || x === w - 1) { footprint.push([x, z]); continue; } // brick walls
+    interior.push([x, z]);
+    if (blocked.has(x + "," + z)) footprint.push([x, z]);
+    else if (z === d - 1) door.push([x, z]);
+  }
+  footprint.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  return { parts: { floor, walls, walls_cut: cut, roof: roofShape }, footprint, interior, door, lights };
+}
+
+// Ground details (Plan 8.1.3), at 5 cm voxels: a tuft of grass blades, flowers, pebbles.
+function grassTuft(seed) {
+  const s = new Shape();
+  for (let i = 0; i < 7; i++) {
+    const x = 2 + Math.floor(noise3(i, 1, seed, 1) * 6), z = 2 + Math.floor(noise3(i, 2, seed, 1) * 6);
+    const h = 2 + Math.floor(noise3(i, 3, seed, 1) * 4);
+    for (let y = 0; y < h; y++) s.put(x, y, z, y === h - 1 ? GRASS_L : (y < 1 ? GRASS_D : GRASS));
+  }
+  return s;
+}
+function flower(petal) {
+  const s = new Shape();
+  s.box(4, 0, 4, 4, 4, 4, GRASS_D).put(5, 1, 4, GRASS).put(3, 2, 4, GRASS);
+  s.put(4, 6, 4, FLOWER_Y === petal ? WOOD_L : FLOWER_Y);
+  for (const [dx, dz] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) s.put(4 + dx, 5, 4 + dz, petal);
+  s.put(4, 5, 4, petal);
+  return s;
+}
+function pebbles() {
+  const s = new Shape();
+  for (const [x, z, w, d] of [[1, 1, 2, 2], [5, 2, 3, 2], [3, 5, 2, 3], [7, 6, 1, 1]]) s.box(x, 0, z, x + w - 1, 0, z + d - 1, noise3(x, 0, z, 5) > 0.5 ? STONE_L : STONE);
+  s.box(5, 1, 2, 6, 1, 2, STONE_L);
+  return s;
+}
+
 function barrel(f, cx, cz) {
   const x0 = cx * f.C, z0 = cz * f.C;
   cylinder(f.floor, [x0 + 4.5, 1, z0 + 4.5], [x0 + 4.5, 10, z0 + 4.5], 3.6, WOOD);
@@ -234,7 +374,15 @@ export function worldPieces() {
   addHouse("house_large", houseParts(8, 7, (f) => {
     bed(f, 1, 1); bed(f, 2, 1); table(f, 4, 3, 2); hearth(f, 6, 1); shelf(f, 6, 5);
   }));
-  addHouse("house_forge", houseParts(7, 7, (f) => { forgeFire(f, 5, 1); anvil(f, 3, 3); barrel(f, 1, 5); barrel(f, 1, 1); }));
+  addHouse("house_forge", houseParts(7, 7, (f) => {
+    furnace(f, 1, 1, true); furnace(f, 5, 1, false); bellows(f, 3, 1); toolRack(f, 5, 4); barrel(f, 1, 5);
+  }, { stone: true, planks: true }));
+  addHouse("forge_shed", shedParts(6, 4));
+  add("grass_tuft", grassTuft(3), { footprint: [] });
+  add("flower_blue", flower(FLOWER_B), { footprint: [] });
+  add("flower_white", flower(FLOWER_W), { footprint: [] });
+  add("flower_yellow", flower(FLOWER_Y), { footprint: [] });
+  add("pebbles", pebbles(), { footprint: [] });
   const fence = new Shape();
   for (const x of [1, 19, 38]) fence.box(x, 0, 9, x + 1, 22, 10, WOOD);
   for (const y of [8, 17]) fence.box(0, y, 9, 39, y + 1, 9, PLANK);
@@ -334,9 +482,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       continue;
     }
     write(`${outDir}/${id}.vox`, p.shape.size(), p.shape.voxels(), PALETTE);
-    const small = SMALL_PIECES.includes(id);
+    const small = SMALL_PIECES.includes(id) || DECOR.includes(id);
     table[id] = { vox: `res://assets/world/${id}.vox`, scale: 0.5, offset: p.shape.min(), footprint: p.footprint,
-      shadow: small ? "never" : "medium", range: small ? 55 : 90 };
+      shadow: small ? "never" : "medium", range: DECOR.includes(id) ? 30 : (small ? 55 : 90) };
   }
   fs.writeFileSync(jsonPath, JSON.stringify(table, null, "\t") + "\n");
   console.log(`wrote ${Object.keys(table).length} world pieces and ${jsonPath}`);

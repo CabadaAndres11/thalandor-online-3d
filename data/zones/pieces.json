@@ -603,7 +603,7 @@
 			],
 			[
 				3,
-				3
+				1
 			],
 			[
 				4,
@@ -620,6 +620,10 @@
 			[
 				5,
 				1
+			],
+			[
+				5,
+				4
 			],
 			[
 				5,
@@ -768,12 +772,259 @@
 		],
 		"lights": [
 			[
+				1,
+				1
+			],
+			[
 				5,
 				1
 			]
 		],
 		"shadow": "medium",
 		"range": 90
+	},
+	"forge_shed": {
+		"parts": {
+			"floor": {
+				"vox": "res://assets/world/forge_shed_floor.vox",
+				"offset": [
+					0,
+					0,
+					0
+				]
+			},
+			"walls": {
+				"vox": "res://assets/world/forge_shed_walls.vox",
+				"offset": [
+					0,
+					1,
+					0
+				]
+			},
+			"walls_cut": {
+				"vox": "res://assets/world/forge_shed_walls_cut.vox",
+				"offset": [
+					0,
+					1,
+					0
+				]
+			},
+			"roof": {
+				"vox": "res://assets/world/forge_shed_roof.vox",
+				"offset": [
+					-2,
+					24,
+					-2
+				]
+			}
+		},
+		"scale": 1,
+		"footprint": [
+			[
+				0,
+				0
+			],
+			[
+				0,
+				1
+			],
+			[
+				0,
+				3
+			],
+			[
+				1,
+				0
+			],
+			[
+				2,
+				0
+			],
+			[
+				2,
+				1
+			],
+			[
+				3,
+				0
+			],
+			[
+				4,
+				0
+			],
+			[
+				4,
+				1
+			],
+			[
+				4,
+				2
+			],
+			[
+				5,
+				0
+			],
+			[
+				5,
+				1
+			],
+			[
+				5,
+				2
+			],
+			[
+				5,
+				3
+			]
+		],
+		"interior": [
+			[
+				0,
+				1
+			],
+			[
+				0,
+				2
+			],
+			[
+				0,
+				3
+			],
+			[
+				1,
+				1
+			],
+			[
+				1,
+				2
+			],
+			[
+				1,
+				3
+			],
+			[
+				2,
+				1
+			],
+			[
+				2,
+				2
+			],
+			[
+				2,
+				3
+			],
+			[
+				3,
+				1
+			],
+			[
+				3,
+				2
+			],
+			[
+				3,
+				3
+			],
+			[
+				4,
+				1
+			],
+			[
+				4,
+				2
+			],
+			[
+				4,
+				3
+			]
+		],
+		"door": [
+			[
+				1,
+				3
+			],
+			[
+				2,
+				3
+			],
+			[
+				3,
+				3
+			],
+			[
+				4,
+				3
+			]
+		],
+		"lights": [
+			[
+				4,
+				1
+			]
+		],
+		"shadow": "medium",
+		"range": 90
+	},
+	"grass_tuft": {
+		"vox": "res://assets/world/grass_tuft.vox",
+		"scale": 0.5,
+		"offset": [
+			3,
+			0,
+			3
+		],
+		"footprint": [],
+		"shadow": "never",
+		"range": 30
+	},
+	"flower_blue": {
+		"vox": "res://assets/world/flower_blue.vox",
+		"scale": 0.5,
+		"offset": [
+			3,
+			0,
+			3
+		],
+		"footprint": [],
+		"shadow": "never",
+		"range": 30
+	},
+	"flower_white": {
+		"vox": "res://assets/world/flower_white.vox",
+		"scale": 0.5,
+		"offset": [
+			3,
+			0,
+			3
+		],
+		"footprint": [],
+		"shadow": "never",
+		"range": 30
+	},
+	"flower_yellow": {
+		"vox": "res://assets/world/flower_yellow.vox",
+		"scale": 0.5,
+		"offset": [
+			3,
+			0,
+			3
+		],
+		"footprint": [],
+		"shadow": "never",
+		"range": 30
+	},
+	"pebbles": {
+		"vox": "res://assets/world/pebbles.vox",
+		"scale": 0.5,
+		"offset": [
+			1,
+			0,
+			1
+		],
+		"footprint": [],
+		"shadow": "never",
+		"range": 30
 	},
 	"fence": {
 		"vox": "res://assets/world/fence.vox",

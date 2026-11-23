@@ -342,3 +342,42 @@ func test_edge_pieces_cast_no_shadow() -> void:
 	assert_true(view.find_children("*e~shadow", "", true, false).is_empty(), "no shadow copies for the edge")
 	for n: GeometryInstance3D in edge:
 		assert_eq(n.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
+
+
+# --- Ground texture and details (Plan 8.1.3) -------------------------------------------
+
+func _meadow() -> ZoneLayout:
+	return ZoneLayout.from_dict("m", {"size": [40, 30], "terrain": {"base": "grass", "areas": [{"kind": "water", "area": [30, 0, 10, 30]}]},
+		"paths": [{"points": [[0, 15], [29, 15]], "width": 3, "terrain": "road"}], "entries": {"default": [5, 5]}})
+
+
+func test_ground_texture_pixels() -> void:
+	var view: ZoneView = add_child_autofree(ZoneView.new())
+	view.build(_meadow())
+	var img := view.ground_image
+	assert_eq(img.get_size(), Vector2i(40, 30) * ZoneView.GROUND_PX)
+	var c := img.get_pixel(10 * ZoneView.GROUND_PX + 2, 15 * ZoneView.GROUND_PX + 2)
+	var road: Color = ZoneView.GROUND.road
+	assert_almost_eq(c.r, road.r, 0.12)
+	assert_almost_eq(c.g, road.g, 0.12)
+	var mat := (view.find_children("Ground_grass#*", "", true, false)[0] as MeshInstance3D).material_override as StandardMaterial3D
+	assert_not_null(mat.albedo_texture, "the ground is textured")
+	assert_eq(mat.texture_filter, BaseMaterial3D.TEXTURE_FILTER_NEAREST)
+
+
+func test_ground_details_on_grass_not_water() -> void:
+	var view: ZoneView = add_child_autofree(ZoneView.new())
+	view.build(_meadow(), GraphicsQuality.HIGH)
+	assert_gt(view.decor.size(), 50)
+	for d: Dictionary in view.decor:
+		var at: Vector2i = d.at
+		assert_lt(at.x, 30, "nothing on the water")
+	assert_false(view.find_children("grass_tuft#*", "MultiMeshInstance3D", true, false).is_empty())
+
+
+func test_fewer_details_at_low() -> void:
+	var hi: ZoneView = add_child_autofree(ZoneView.new())
+	hi.build(_meadow(), GraphicsQuality.HIGH)
+	var lo: ZoneView = add_child_autofree(ZoneView.new())
+	lo.build(_meadow(), GraphicsQuality.LOW)
+	assert_lt(lo.decor.size(), hi.decor.size() * 0.6)

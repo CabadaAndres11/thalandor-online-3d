@@ -93,7 +93,9 @@ func test_village_npcs_and_houses_reachable() -> void:
 		var c := Vector2i(int(n.at[0]), int(n.at[1]))
 		assert_false(map.is_solid(c), "%s stands free" % n.id)
 		assert_true(reach.has(c), "%s reachable" % n.id)
-	assert_eq(z.houses.size(), 6)
+	assert_eq(z.houses.size(), 7, "six houses and the forge shed")
+	var brann: Dictionary = z.npcs.filter(func(n: Dictionary) -> bool: return n.id == "brann")[0]
+	assert_lt(Vector2(float(brann.at[0]), float(brann.at[1])).distance_to(Vector2(z.entries.default)), 2.5, "Brann beside the default entry")
 	for h: Dictionary in z.houses:
 		for c: Vector2i in h.cells:
 			if not map.is_solid(c):
