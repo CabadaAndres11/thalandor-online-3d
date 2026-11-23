@@ -8,6 +8,8 @@ signal session_ended(reason: String)
 ## WebRTC opens groups asynchronously: the code arrives from the signaling server.
 signal group_opened(code: String)
 signal group_failed(error_key: String)
+## The zone finished building (all its steps ran, Plan 8.1.1).
+signal zone_built()
 
 const GAME_VERSION_SETTING := "application/config/version"
 const NET_WEBRTC := "webrtc"
@@ -29,6 +31,10 @@ var last_error: String = ""
 var net_mode: String = NET_WEBRTC
 
 var zone_view: ZoneView
+## True while the zone is still being built, one step per frame (Plan 8.1.1).
+var zone_building: bool = false
+var _build_steps: Array[Callable] = []
+var _drawn_loading := false # the loading screen gets one frame on screen before any step
 var camera: IsoCamera
 var _avatars: Dictionary = {} # id -> PlayerAvatar
 var _monster_avatars: Dictionary = {} # id -> MonsterAvatar
@@ -60,11 +66,14 @@ func _init() -> void:
 	var signaling_override := _user_arg("signaling")
 	if signaling_override != "":
 		balance.signaling_url = signaling_override
-	zone_view = ZoneView.new()
-	zone_view.name = "Zone"
-	add_child(zone_view)
-	map = zone_view.build(ZoneLayout.load_id(START_ZONE))
-	MonsterAvatar.prewarm_bosses() # while the game loads, not when a boss appears
+	var overlay_layer := CanvasLayer.new()
+	overlay_layer.name = "Loading"
+	overlay_layer.layer = 50
+	add_child(overlay_layer)
+	loading = LoadingOverlay.new()
+	overlay_layer.add_child(loading)
+	build_zone(ZoneLayout.load_id(START_ZONE), ["build"])
+	_build_steps.append(MonsterAvatar.prewarm_bosses) # while the game loads, not when a boss appears
 	_avatar_root = Node3D.new()
 	_avatar_root.name = "Players"
 	add_child(_avatar_root)
@@ -78,12 +87,6 @@ func _init() -> void:
 	add_child(fx)
 	fx.setup(_entity_position, _latest_tick, AbilityDB.load_default(), balance.tick_rate)
 	fx.slash_owners = func(id: int) -> bool: return _avatars.has(id)
-	var overlay_layer := CanvasLayer.new()
-	overlay_layer.name = "Loading"
-	overlay_layer.layer = 50
-	add_child(overlay_layer)
-	loading = LoadingOverlay.new()
-	overlay_layer.add_child(loading)
 	loot_view = LootView.new()
 	loot_view.name = "Loot"
 	add_child(loot_view)
@@ -247,7 +250,7 @@ func _start_client(player_name: String, class_id: String, appearance: Dictionary
 	client.gear_changed.connect(_on_gear_changed)
 	client.place = character_place.duplicate(true)
 	client.zone_changed.connect(_on_zone_changed)
-	client.zone_ready.connect(loading.hide_overlay)
+	client.zone_ready.connect(loading.done.bind("ready"))
 	client.connect_to(t)
 
 
@@ -257,14 +260,7 @@ func _on_zone_changed(zone_id: String, _key: String, _level: int) -> void:
 	var layout := ZoneLayout.load_id(zone_id)
 	if layout == null:
 		return
-	loading.show_zone(layout.name)
-	remove_child(zone_view)
-	zone_view.free()
-	zone_view = ZoneView.new()
-	zone_view.name = "Zone"
-	add_child(zone_view)
-	move_child(zone_view, 0)
-	map = zone_view.build(layout, _quality)
+	build_zone(layout, ["build", "ready"])
 	for npc: Node in _npc_avatars:
 		npc.queue_free()
 	_npc_avatars.clear()
@@ -273,6 +269,42 @@ func _on_zone_changed(zone_id: String, _key: String, _level: int) -> void:
 		(_monster_avatars[id] as Node).queue_free()
 	_monster_avatars.clear()
 	loot_view.clear()
+
+
+## Starts drawing a zone behind the loading screen: its collision at once, its view one
+## step per frame (Plan 8.1.1). A zone still building is dropped for the new one.
+func build_zone(layout: ZoneLayout, waits: Array = ["build", "ready"]) -> void:
+	loading.show_zone(layout.name, waits)
+	if zone_view != null:
+		remove_child(zone_view)
+		zone_view.free()
+	zone_view = ZoneView.new()
+	zone_view.name = "Zone"
+	add_child(zone_view)
+	move_child(zone_view, 0)
+	map = layout.collision()
+	_build_steps = zone_view.build_steps(layout, _quality)
+	zone_building = true
+	_drawn_loading = false
+
+
+## Runs the next build step; false when there was none.
+func run_build_step() -> bool:
+	if _build_steps.is_empty():
+		return false
+	var step: Callable = _build_steps.pop_front()
+	step.call()
+	if _build_steps.is_empty():
+		zone_building = false
+		loading.done("build")
+		zone_built.emit()
+	return true
+
+
+## Runs every step left (tests, and nothing else waits for frames).
+func finish_zone_build() -> void:
+	while run_build_step():
+		pass
 
 
 func _place_npcs() -> void:
@@ -306,6 +338,9 @@ func _physics_process(delta: float) -> void:
 
 
 func _process(delta: float) -> void:
+	if _drawn_loading:
+		run_build_step()
+	_drawn_loading = true
 	if client == null:
 		return
 	client.update(delta)

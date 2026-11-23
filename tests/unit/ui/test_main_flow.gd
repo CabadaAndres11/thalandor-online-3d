@@ -597,7 +597,9 @@ func test_loading_overlay_until_first_snapshot() -> void:
 	main.game.client._handle(Protocol.decode(Protocol.zone("arena", "arena", 0)))
 	assert_true(main.game.loading.visible)
 	await wait_physics_frames(5)
-	assert_false(main.game.loading.visible)
+	assert_true(main.game.loading.visible, "at least LoadingOverlay.MIN_SHOW_S (Plan 8.1.1)")
+	await wait_until(func() -> bool: return not main.game.loading.visible, 5.0)
+	assert_false(main.game.loading.visible, "gone once built, snapshot in and time over")
 
 
 func test_host_start_zone_has_its_exits() -> void:
@@ -666,3 +668,12 @@ func test_tutorial_command_unlocks_and_saves() -> void:
 	assert_false(main.pause_menu.open_group_button.disabled)
 	var saved: CharacterData = main.store.load_all().filter(func(x: CharacterData) -> bool: return x.id == c.id)[0]
 	assert_true(saved.tutorial_done)
+
+
+## Plan 8.1.1: Play shows the loading screen at once; the zone is built over the next frames.
+func test_play_shows_loading() -> void:
+	main._on_play("Prueba")
+	assert_true(main.game.loading.visible)
+	assert_true(main.game.zone_building)
+	main.game.finish_zone_build()
+	assert_false(main.game.zone_building)

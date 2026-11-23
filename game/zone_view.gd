@@ -40,15 +40,28 @@ var _shadow_proxies: Array[GeometryInstance3D] = []
 
 ## Builds the zone; returns its collision (the same as layout.collision()).
 func build(p_layout: ZoneLayout, quality_level: int = GraphicsQuality.MEDIUM) -> CollisionMap:
+	for step: Callable in build_steps(p_layout, quality_level):
+		step.call()
+	return layout.collision()
+
+
+## The same build cut into steps to run one per frame behind the loading screen (Plan
+## 8.1.1): the ground, each kind of piece, the blocks and torches, then the lighting.
+func build_steps(p_layout: ZoneLayout, quality_level: int = GraphicsQuality.MEDIUM) -> Array[Callable]:
 	layout = p_layout
-	_build_ground()
-	_build_pieces()
-	_build_blocks()
-	_add_torches(layout.torches)
 	quality = GraphicsQuality.clamp_level(quality_level)
 	ambience_id = Ambience.resolve_id(layout.ambience)
-	_apply_lighting()
-	return layout.collision()
+	var steps: Array[Callable] = [_build_ground]
+	var groups := _piece_groups()
+	var kinds := {}
+	for key: String in groups:
+		kinds[key.get_slice("#", 0)] = true
+	for kind: String in kinds:
+		steps.append(_build_pieces.bind(groups, kind))
+	steps.append(_build_blocks)
+	steps.append(func() -> void: _add_torches(layout.torches))
+	steps.append(_apply_lighting)
+	return steps
 
 
 ## Switches to another data ambience; false (and no change) if it does not exist.
@@ -138,17 +151,15 @@ func _build_ground() -> void:
 ## Pieces of a kind in a 16×16 chunk share nodes (Plan 8.1.1): Godot culls whole chunks
 ## off camera. Pieces that cast shadow have the detailed mesh up close (LOD_NEAR), a coarse
 ## copy beyond and a coarse shadow-only copy (no shadows at LOW); small pieces one mesh.
-func _build_pieces() -> void:
-	var groups := {} # "id#cx,cz" -> [piece]
-	for p: Dictionary in layout.pieces:
-		var key := chunk_name(str(p.id), p.at)
-		if not groups.has(key):
-			groups[key] = []
-		(groups[key] as Array).append(p)
-	var root := Node3D.new()
-	root.name = "Pieces"
-	add_child(root)
+func _build_pieces(groups: Dictionary, kind: String) -> void:
+	var root := get_node_or_null("Pieces")
+	if root == null:
+		root = Node3D.new()
+		root.name = "Pieces"
+		add_child(root)
 	for key: String in groups:
+		if key.get_slice("#", 0) != kind:
+			continue
 		var list: Array = groups[key]
 		var piece_id := str(list[0].id)
 		var def := layout.piece_def(piece_id)
@@ -175,6 +186,17 @@ func _build_pieces() -> void:
 			proxy.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
 			proxy.visibility_range_end = draw_range
 			_shadow_proxies.append(proxy)
+
+
+## "id#cx,cz" -> the placed pieces of that kind in that chunk.
+func _piece_groups() -> Dictionary:
+	var groups := {}
+	for p: Dictionary in layout.pieces:
+		var key := chunk_name(str(p.id), p.at)
+		if not groups.has(key):
+			groups[key] = []
+		(groups[key] as Array).append(p)
+	return groups
 
 
 ## "id#cx,cz": the node of a piece kind in the chunk holding `at`.

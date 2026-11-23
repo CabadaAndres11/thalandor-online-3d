@@ -220,3 +220,27 @@ func test_ground_split_by_chunk() -> void:
 	view.build(_two_trees())
 	assert_not_null(view.find_child("Ground_grass#2,2", true, false))
 	assert_not_null(view.find_child("Ground_grass#0,0", true, false))
+
+
+# --- Staged build (Plan 8.1.1) ----------------------------------------------------------
+
+func _names(n: Node) -> Array:
+	var out := []
+	for c: Node in n.find_children("*", "", true, false):
+		var line := str(n.get_path_to(c))
+		if c is MultiMeshInstance3D:
+			line += ":%d" % (c as MultiMeshInstance3D).multimesh.instance_count
+		out.append(line)
+	out.sort()
+	return out
+
+
+func test_steps_build_same_scene_as_build() -> void:
+	var a: ZoneView = add_child_autofree(ZoneView.new())
+	a.build(_forest())
+	var b: ZoneView = add_child_autofree(ZoneView.new())
+	var steps := b.build_steps(_forest(), GraphicsQuality.MEDIUM)
+	assert_gt(steps.size(), 3, "several steps")
+	for s: Callable in steps:
+		s.call()
+	assert_eq(_names(b), _names(a))
