@@ -149,3 +149,9 @@ func test_path_reaches_crypt() -> void:
 	for c: Vector2i in seen:
 		near = near or door.grow(2).has_point(c)
 	assert_true(near, "the road leads to the crypt door")
+
+
+## Plan 8.1.2: the world's names (the user's).
+func test_zone_names() -> void:
+	assert_eq(tr("ZONE_ALDEA"), "Aelhest")
+	assert_eq(tr("ZONE_BOSQUE"), "Bosque de Eldarra")

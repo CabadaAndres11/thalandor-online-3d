@@ -21,6 +21,9 @@ actualizado: 2026-11-22
 - **Rendimiento** **[Implementado 0.11.1]**: las caras iguales de los modelos vóxel se fusionan; las piezas y el suelo van en trozos de 16×16 casillas; de cerca se ve el modelo completo y lejos una copia de la mitad de resolución; las sombras las da una copia simplificada y nunca las piezas pequeñas (sin sombras de piezas en calidad baja). La zona se construye por pasos detrás de la pantalla de carga, que dura al menos 0,6 s; un invitado se conecta cuando su zona ya está cargada.
 - **Iluminación:** cada zona elige un **ambiente** de `data/ambiences/` con `"ambience"` en su JSON y coloca antorchas con `"torches"` **[Implementado 0.8.0]**. Ciclo de día y noche opcional por zona (Plan 8); las mazmorras usan luces locales (antorchas) para dar ambiente.
 
+## Nombres del mundo
+El continente es **Velmora**; el reino, **Valdrenn**, con capital en **Sumerhold**. La aldea del prólogo es **Aelhest** y el bosque camino de la capital, **Eldarra** («Bosque de Eldarra»). La cripta del sello del arco 1 es la **Cripta de Sumerhold**. Se usan en diálogos, carteles, mapa y pantallas de carga.
+
 ## 6.2 Contenido de la demo **[En curso]** (Plan 8, según el guion)
 La demo cubre el **prólogo y el arco 1** (misiones 1–14) y termina hacia el **nivel 50** al salir de la capital rumbo al volcán.
 
