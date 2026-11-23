@@ -8,12 +8,12 @@ actualizado: 2026-11-22
 
 ## 9.1 Flujo **[En curso]** (título, selección y creación de personaje, Jugar, Abrir grupo y Unirse implementados en la 0.2.0; falta la última ubicación y "Ir con el grupo")
 1. **Pantalla de título [Implementado 0.10.0]:** el logo sobre una escena vóxel en vivo: cultistas orando alrededor del altar del Sol Negro, de noche, con braseros, velas y brasas, mientras la cámara gira despacio. **Jugar** va abajo a la izquierda; arriba a la derecha están los iconos de Ajustes, Créditos y Salir; la versión, abajo a la derecha. Las tres pantallas de menú usan el tema de **piedra, oro y rojo** del logo (`StoneTheme`); las ventanas del juego siguen en azul hasta el Plan 11. Los botones y paneles de los menús tienen **luz dinámica** (`MenuFx`, `assets/ui/ember_glow.gdshader`): sus bordes se encienden al pasar el ratón, les cruzan destellos de luz y Jugar respira.
-- **Juego en grupo** **[Implementado 0.11.0]**: hasta terminar la defensa de la aldea (el tutorial), **Abrir grupo** y **Unirse a un amigo** están desactivados y el anfitrión rechaza a quien no la ha terminado.
+- **Juego en grupo** **[Implementado 0.11.0]**: hasta terminar la defensa de la aldea (el tutorial), **Abrir grupo** y **Unirse a un grupo** están desactivados y el anfitrión rechaza a quien no la ha terminado.
 - **Mazmorras** **[Implementado 0.11.0]**: en su puerta, una ventana para elegir el nivel; entre zonas, una pantalla de carga con el nombre de la zona.
 2. **Selección de personaje:** lista de hasta 8 personajes (nombre, raza, clase y nivel) en un panel de piedra; el elegido aparece **delante del altar**, en la misma escena; opciones de crear, borrar (con confirmación), exportar e importar personajes. **[Implementado]**
 3. **Jugar:** entra al mundo como host de su propia partida.
    - **"Abrir grupo"** está disponible en cualquier momento y genera un código.
-   - **"Unirse a un amigo":** desde la selección de personaje, introduciendo el código.
+   - **"Unirse a un grupo"** **[0.11.1]**: desde el menú de pausa, con el código; guarda el personaje, deja la partida en solitario y entra en la del amigo con ese mismo personaje. La selección de personaje ya solo tiene Jugar.
    - **Al unirse**, el invitado aparece en su última ubicación guardada.
    - **"Ir con el grupo"** teletransporta junto al líder, solo fuera de combate.
 
@@ -25,6 +25,13 @@ actualizado: 2026-11-22
 - Minimapa y seguimiento de misiones.
 - Números de daño flotantes; nombre y vida sobre personajes y enemigos.
 - **Textos nítidos:** los textos sobre el mundo (nombres, botín) se dibujan como interfaz (`Label` en pantalla o `Label3D` con fuente de alta resolución), nunca escalados de forma que se vean borrosos.
+
+## Barra de iconos, mapa y minimapa (0.11.1) **[Implementado]**
+- **Barra de iconos** arriba a la derecha: Personaje (C), Bolsa (I), Habilidades (K), Talentos (T), Misiones (J, atenuado hasta el Plan 8.2), Mapa (M) y Menú (Esc). Cada icono muestra su tecla, brilla al pasar el ratón y se queda encendido con su ventana abierta.
+- **Mapa (M):** la zona entera sin scroll, dibujada desde sus datos, con marcas para ti (flecha), tu grupo, los PNJ con su nombre, las salidas con su destino y las puertas de mazmorra, y una leyenda.
+- **Minimapa:** cuadrado de 180 px bajo la barra, centrado en el jugador y girado con la cámara, con la N en el borde y el nombre de la zona. Se puede quitar en Ajustes (Minimapa).
+- **Bolsa:** botón **Ordenar** (por hueco, rareza, nivel y nombre; junta las pilas; no toca lo equipado).
+- **Elección de clase:** la vista previa lleva el equipo inicial real de la clase.
 
 ## 9.3 Ventanas **[En curso]** (Habilidades (K) implementada en la 0.4.0; en la 0.4.1 muestra también CI y CD y un detalle calculado de cada habilidad; el resto está diseñado)
 - **Norma:** **ninguna ventana puede necesitar scroll** para verse entera (en una pantalla de 1280×720). Si una ventana se llena, su contenido se reparte en otra ventana con su propia tecla.

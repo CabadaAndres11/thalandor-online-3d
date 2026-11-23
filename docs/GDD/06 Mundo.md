@@ -16,6 +16,9 @@ actualizado: 2026-11-22
 - **Mazmorras:** al llegar a la puerta se **elige el nivel** (del propio −5 a +10). El grupo comparte la misma instancia.
 - **Reaparición** en el punto de la zona (en una mazmorra, en su entrada). El personaje **guarda su zona y su posición** (en una mazmorra, su puerta).
 - **Puntos de control** para reaparecer y **reaparición de monstruos** con temporizador.
+- **Bordes y salidas** **[Implementado 0.11.1]**: alrededor de cada zona hay una franja de 14 casillas de bosque espeso (en las mazmorras, roca) que nunca se pisa; cada salida del borde es un hueco con su camino, un poste con el nombre de la zona de destino, dos antorchas y un brillo en el suelo. La cámara no pasa del borde menos 6 casillas, así que nunca enseña el vacío. Nada se siembra a menos de 6 casillas de una salida.
+- **Casas accesibles** **[Implementado 0.11.1]**: las casas se dibujan a 10 cm por vóxel en cuatro partes (suelo y muebles, paredes, paredes recortadas a 1 m y tejado). Se entra por una puerta de 2 casillas; al pisar el interior, el tejado se funde y las paredes se recortan, solo en la pantalla de quien está dentro.
+- **Rendimiento** **[Implementado 0.11.1]**: las caras iguales de los modelos vóxel se fusionan; las piezas y el suelo van en trozos de 16×16 casillas; de cerca se ve el modelo completo y lejos una copia de la mitad de resolución; las sombras las da una copia simplificada y nunca las piezas pequeñas (sin sombras de piezas en calidad baja). La zona se construye por pasos detrás de la pantalla de carga, que dura al menos 0,6 s; un invitado se conecta cuando su zona ya está cargada.
 - **Iluminación:** cada zona elige un **ambiente** de `data/ambiences/` con `"ambience"` en su JSON y coloca antorchas con `"torches"` **[Implementado 0.8.0]**. Ciclo de día y noche opcional por zona (Plan 8); las mazmorras usan luces locales (antorchas) para dar ambiente.
 
 ## 6.2 Contenido de la demo **[En curso]** (Plan 8, según el guion)

@@ -2,7 +2,7 @@
 tags: [plan, spec]
 plan: 8.1.1
 fecha: 2026-11-23
-estado: aprobado
+estado: implementado
 actualizado: 2026-11-23
 ---
 # Plan 8.1.1 — Correcciones de la prueba 0.11.0: diseño
