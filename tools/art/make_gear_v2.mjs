@@ -20,7 +20,7 @@ const PART_BODY = { head: "head", torso: "torso", hips: "hips", arm_left: "arm",
 export function gearV2() {
   const all = { ...armorV2(), ...weapons() };
   for (const p of Object.values(all)) {
-    const part = BODY[PART_BODY[p.part]];
+    const part = p.body ?? BODY[PART_BODY[p.part]]; // a race variant is carved by its race head
     if (part) carve(p.shape, (c) => { for (const [x, y, z] of part.cells.values()) c.put(x, y, z, 0); });
   }
   // Jewelry is never worn (only icons and loot use it), so it is not carved.
@@ -43,8 +43,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       file: `res://assets/items/vox_v2/${id}.vox`,
       part: p.part,
       offset: p.shape.min(),
-      tag: v1[id]?.tag ?? "gear",
-      hides: v1[id]?.hides ?? [],
+      tag: v1[p.like ?? id]?.tag ?? "gear",
+      hides: v1[p.like ?? id]?.hides ?? [],
     };
   }
   fs.writeFileSync(jsonPath, JSON.stringify(table, null, "\t") + "\n");

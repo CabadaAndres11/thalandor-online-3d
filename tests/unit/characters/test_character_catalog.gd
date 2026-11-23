@@ -365,3 +365,13 @@ func test_every_race_has_options_for_every_kind() -> void:
 	for r: Dictionary in catalog.options("race"):
 		for kind: String in CharacterCatalog.KINDS:
 			assert_gt(catalog.options_for(kind, r.id).size(), 0, "%s / %s" % [r.id, kind])
+
+
+## Plan 8.1.1: a lizard wears the assassin hood and mask drawn for its snout.
+func test_lizard_swaps_the_assassin_head_piece() -> void:
+	var look := catalog.resolve("assassin", {"race": "lizard"}, "", ["", "", "assassin_head_t1", "", "", "", "", ""], ItemDB.load_default())
+	var ids: Array = look.pieces.map(func(e: Dictionary) -> String: return e.id)
+	assert_has(ids, "assassin_head_t1_lizard")
+	assert_does_not_have(ids, "assassin_head_t1")
+	var human := catalog.resolve("assassin", {"race": "human"}, "", ["", "", "assassin_head_t1", "", "", "", "", ""], ItemDB.load_default())
+	assert_has(human.pieces.map(func(e: Dictionary) -> String: return e.id), "assassin_head_t1")

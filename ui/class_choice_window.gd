@@ -106,7 +106,13 @@ func select(id: String) -> void:
 	_desc.text = tr(str(def.get("desc", "")))
 	var kind := str((def.get("resource", {}) as Dictionary).get("kind", ""))
 	_resource.text = tr(RESOURCE_KEYS.get(kind, "")) if RESOURCE_KEYS.has(kind) else ""
-	preview.show_character(id, _appearance)
+	preview.show_character(id, _appearance, preview_gear(id))
+
+
+## What the class is given on choosing it (Plan 8.1.1): the starter kit the host dresses
+## the character in, so the preview shows exactly that.
+func preview_gear(class_id: String) -> Array:
+	return Inventory.starter(class_id, ItemDB.load_default()).visible_bases()
 
 
 func selected() -> String:

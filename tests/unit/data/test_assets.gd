@@ -40,6 +40,9 @@ func test_every_v2_gear_file_exists() -> void:
 	var v1: Variant = JSON.parse_string(FileAccess.get_file_as_string(CharacterCatalog.GEAR_PIECES_PATH))
 	var jewels := (table as Dictionary).keys().filter(func(id: String) -> bool: return id.begins_with("jewel_"))
 	assert_eq(jewels.size(), 6, "a ring and an amulet per tier (never worn)")
-	assert_eq((table as Dictionary).size() - jewels.size(), (v1 as Dictionary).size(), "one v2 piece per v1 gear piece")
+	# Race variants (Plan 8.1.1: "<id>_lizard") are v2 only, drawn for one race head.
+	var races := (table as Dictionary).keys().filter(func(id: String) -> bool: return id.ends_with("_lizard"))
+	assert_eq(races.size(), 3, "the assassin head, three tiers")
+	assert_eq((table as Dictionary).size() - jewels.size() - races.size(), (v1 as Dictionary).size(), "one v2 piece per v1 gear piece")
 	for id: String in table:
 		assert_true(FileAccess.file_exists(str(table[id].file)), id)

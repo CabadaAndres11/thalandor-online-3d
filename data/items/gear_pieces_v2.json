@@ -640,6 +640,20 @@
 			"hair_cap"
 		]
 	},
+	"assassin_head_t1_lizard": {
+		"file": "res://assets/items/vox_v2/assassin_head_t1_lizard.vox",
+		"part": "head",
+		"offset": [
+			-14,
+			-8,
+			-10
+		],
+		"tag": "gear",
+		"hides": [
+			"hair",
+			"hair_cap"
+		]
+	},
 	"assassin_shoulders_t1_l": {
 		"file": "res://assets/items/vox_v2/assassin_shoulders_t1_l.vox",
 		"part": "arm_left",
@@ -1439,6 +1453,20 @@
 			-14,
 			-8,
 			-9
+		],
+		"tag": "gear",
+		"hides": [
+			"hair",
+			"hair_cap"
+		]
+	},
+	"assassin_head_t2_lizard": {
+		"file": "res://assets/items/vox_v2/assassin_head_t2_lizard.vox",
+		"part": "head",
+		"offset": [
+			-14,
+			-8,
+			-10
 		],
 		"tag": "gear",
 		"hides": [
@@ -2344,6 +2372,20 @@
 			-14,
 			-8,
 			-9
+		],
+		"tag": "gear",
+		"hides": [
+			"hair",
+			"hair_cap"
+		]
+	},
+	"assassin_head_t3_lizard": {
+		"file": "res://assets/items/vox_v2/assassin_head_t3_lizard.vox",
+		"part": "head",
+		"offset": [
+			-14,
+			-8,
+			-10
 		],
 		"tag": "gear",
 		"hides": [

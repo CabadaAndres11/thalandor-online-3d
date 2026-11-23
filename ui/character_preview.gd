@@ -7,6 +7,8 @@ const TURN_DEG_PER_S := 6.0 # slow enough to look at the details
 const DRAG_DEG_PER_PX := 0.6
 
 var rig: HumanRig
+## The gear the shown character wears (Inventory.VISIBLE base ids; [] = the class outfit).
+var gear: Array = []
 ## false: the character stays facing the camera (character window).
 var turning: bool = true
 
@@ -44,6 +46,7 @@ func _init() -> void:
 
 
 func show_character(class_id: String, appearance: Dictionary, gear: Array = []) -> void:
+	self.gear = gear
 	if rig != null:
 		rig.queue_free()
 	rig = HumanRig.create(class_id, appearance, null, "", gear)

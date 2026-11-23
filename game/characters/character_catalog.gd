@@ -208,6 +208,11 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 	for id: String in race.get("pieces", []) + option("marks", app.marks).get("pieces", []):
 		if (not piece(id).is_empty() or not piece_v2(id).is_empty()) and not hidden.has(str(meta(id).get("tag", ""))):
 			pieces.append(piece_entry(id))
+	var swaps: Dictionary = race.get("piece_swap", {}) # pieces drawn again for the race head (Plan 8.1.1)
+	for i in pieces.size():
+		var swap := str(swaps.get(pieces[i].id, ""))
+		if swap != "" and not (piece(swap).is_empty() and piece_v2(swap).is_empty()):
+			pieces[i] = piece_entry(swap)
 	var fits: Dictionary = race.get("piece_fit", {})
 	for e: Dictionary in pieces:
 		if fits.has(e.id):

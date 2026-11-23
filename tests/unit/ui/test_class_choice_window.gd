@@ -20,7 +20,7 @@ func test_selecting_shows_its_description_and_preview() -> void:
 	win.select("archer")
 	assert_eq(win.selected(), "archer")
 	assert_string_contains(win.description_text(), tr("CLASS_ARCHER_DESC"))
-	assert_has(win.preview.rig.pieces(), "weapon_bow")
+	assert_has(win.preview.rig.pieces(), "w_bow_t1", "the starter bow (Plan 8.1.1)")
 
 
 func test_confirm_emits() -> void:
@@ -41,3 +41,14 @@ func test_window_fits_1280x720() -> void:
 		var r := win.panel_rect()
 		assert_true(Rect2(0, 0, 1280, 720).encloses(r), "%s: panel %s" % [id, r])
 		assert_gt(r.size.x, 500.0, "laid out")
+
+
+## Plan 8.1.1: the preview wears the starter kit the host gives that class.
+func test_preview_shows_starter_kit() -> void:
+	win.show_for({})
+	var db := ItemDB.load_default()
+	for id: String in win.class_ids():
+		var kit := Inventory.starter(id, db).visible_bases()
+		assert_eq(win.preview_gear(id), kit, id)
+		win.select(id)
+		assert_eq(win.preview.gear, kit, id + " rig built with that gear")

@@ -7,6 +7,7 @@ import { Shape, SHADE, LIGHT, TEX_D, TEX_L, GLOW } from "./vox.mjs";
 import { ellipsoid, capsule, cylinder, roundBox, carve, tone, shadeByFacing, shellAround, noise3 } from "./sculpt.mjs";
 import { headV2, torsoV2, hipsV2, upperArmV2, forearmV2, handV2, thighV2, shinV2, frontZ } from "./human_v2.mjs";
 import { P, S, C, CLASS_SETS, cmats, tierPalette } from "./gear_style.mjs";
+import { headLizardV2 } from "./races_v2.mjs";
 
 export const BODY = {
   head: headV2(), torso: torsoV2(), hips: hipsV2(), arm: upperArmV2(), fore: forearmV2(),
@@ -540,6 +541,20 @@ const ARMOR = {
   },
 };
 
+// The assassin's hood and mask drawn on the lizard head (Plan 8.1.1): the hood over the
+// skull behind the eyes, the mask over the snout and jaw (the eyes and nostrils bare).
+export const LIZARD_HEAD = headLizardV2();
+function assassinLizard(t, m) {
+  const hood = shellOn(LIZARD_HEAD, 2, m.b, (x, y, z) => z <= 1 && y >= 2);
+  const mask = shellOn(LIZARD_HEAD, 1, m.d, (x, y, z) => z >= 2 && y >= 1 && y <= 6);
+  const s = merge(mantle(m), hood, mask);
+  finish(s, m, 131 + t);
+  recolor(s, (x, y, z, i) => y === 6 && z >= 2 && i === m.d, m.trim); // mask edge
+  if (t >= 2) recolor(s, (x, y, z) => y === 13 && z <= 1, m.trim);
+  if (t >= 3) for (const dir of [-1, 1]) capsule(s, [dir > 0 ? 4 : -5, 15, -4], [dir > 0 ? 8 : -9, 21, -6], 1.3, 0.5, m.acc);
+  return without(s, LIZARD_HEAD);
+}
+
 // Every class × tier piece, with its part and palette: {id: {shape, part, palette}}.
 export function armorV2() {
   const out = {};
@@ -553,6 +568,7 @@ export function armorV2() {
       const ex = extras(cls, t, m);
       const head = HEADS[cls] ? HEADS[cls](t, m) : plateHead(t, m);
       add(id("head"), head.s, "head");
+      if (cls === "assassin") out[`${id("head")}_lizard`] = { shape: assassinLizard(t, m), part: "head", palette, body: LIZARD_HEAD, like: id("head") };
       for (const [suffix, part, shape] of ex.head) add(`${id("head")}_${suffix}`, shape, part);
       add(`${id("shoulders")}_l`, ARMOR.shoulder(kind, t, m, 1), "arm_left");
       add(`${id("shoulders")}_r`, ARMOR.shoulder(kind, t, m, -1), "arm_right");

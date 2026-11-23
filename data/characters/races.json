@@ -15,5 +15,6 @@
 		"scale": {"torso": [0.94, 1.0, 0.95], "leg": [0.95, 1.04, 0.95]},
 		"head": "lizard", "pieces": ["tail_lizard"],
 		"head_fit": {"scale": 1.05, "offset": [0, 0, 1]},
-		"piece_fit": {"hat_mage": {"scale": 1.05, "offset": [0, -7, 0]}, "mage_head_t1": {"scale": 1.05, "offset": [0, -7, 0]}, "mage_head_t2": {"scale": 1.05, "offset": [0, -7, 0]}, "mage_head_t3": {"scale": 1.05, "offset": [0, -7, 0]}}}
+		"piece_swap": {"assassin_head_t1": "assassin_head_t1_lizard", "assassin_head_t2": "assassin_head_t2_lizard", "assassin_head_t3": "assassin_head_t3_lizard"},
+		"piece_fit": {"assassin_head_t1_lizard": {"scale": 1.0, "offset": [0, 0, 0]}, "assassin_head_t2_lizard": {"scale": 1.0, "offset": [0, 0, 0]}, "assassin_head_t3_lizard": {"scale": 1.0, "offset": [0, 0, 0]}, "hat_mage": {"scale": 1.05, "offset": [0, -7, 0]}, "mage_head_t1": {"scale": 1.05, "offset": [0, -7, 0]}, "mage_head_t2": {"scale": 1.05, "offset": [0, -7, 0]}, "mage_head_t3": {"scale": 1.05, "offset": [0, -7, 0]}}}
 ]
