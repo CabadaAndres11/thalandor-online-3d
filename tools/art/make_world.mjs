@@ -95,6 +95,18 @@ function houseParts(w, d, furnish = () => {}) {
   for (const v of walls.cells.values()) if (v[1] <= CUT_H) cut.put(v[0], v[1], v[2], v[3]);
   // Gabled thatch, ridge along x.
   roof(roofShape, 0, W - 1, 0, D - 1, HOUSE_H + 1, 3);
+  // The gable ends under the roof are closed (plaster with a timber edge); they belong to
+  // the roof, so they go with it when the house opens.
+  {
+    const half = (D - 1) / 2 + 3, mid = (D - 1) / 2;
+    for (let h = 0; h <= half; h++) {
+      const z0 = Math.round(mid - half + h) + 1, z1 = Math.round(mid + half - h) - 1;
+      for (const x of [0, 1, 2, W - 3, W - 2, W - 1]) for (let z = Math.max(z0, 0); z <= Math.min(z1, D - 1); z++) {
+        roofShape.put(x, HOUSE_H + 1 + h, z, z === Math.max(z0, 0) || z === Math.min(z1, D - 1) ? WOOD : PLASTER);
+      }
+    }
+    paint(roofShape, PLASTER, [PLASTER, PLASTER_D], 47);
+  }
   const blocked = new Set();
   const block = (cx, cz) => blocked.add(cx + "," + cz);
   const lights = [];

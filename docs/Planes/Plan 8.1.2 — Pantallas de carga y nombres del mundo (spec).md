@@ -2,7 +2,7 @@
 tags: [plan, spec]
 plan: 8.1.2
 fecha: 2026-11-23
-estado: aprobado
+estado: implementado
 actualizado: 2026-11-23
 ---
 # Plan 8.1.2 — Pantallas de carga y nombres del mundo: diseño

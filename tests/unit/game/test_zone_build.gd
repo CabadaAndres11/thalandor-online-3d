@@ -75,3 +75,14 @@ func test_webrtc_signaling_waits_for_the_load() -> void:
 	game.finish_zone_build()
 	assert_not_null(game.join_signaling)
 	game.leave()
+
+
+## Plan 8.1.2: the loading bar follows the build and ends full.
+func test_build_progress_reaches_one() -> void:
+	var game: GameSession = add_child_autofree(GameSession.new())
+	game.run_build_step()
+	var p := game.loading.bar.value
+	assert_gt(p, 0.0)
+	assert_lt(p, 1.0)
+	game.finish_zone_build()
+	assert_almost_eq(game.loading.bar.value, 1.0, 0.001)

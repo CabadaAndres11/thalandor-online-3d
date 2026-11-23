@@ -32,6 +32,7 @@ actualizado: 2026-11-22
 - **Minimapa:** cuadrado de 180 px bajo la barra, centrado en el jugador y girado con la cámara, con la N en el borde y el nombre de la zona. Se puede quitar en Ajustes (Minimapa).
 - **Bolsa:** botón **Ordenar** (por hueco, rareza, nivel y nombre; junta las pilas; no toca lo equipado).
 - **Elección de clase:** la vista previa lleva el equipo inicial real de la clase.
+- **Pantalla de carga** **[0.11.2]**: una captura real de la zona de destino a pantalla completa (2 o 3 por zona, al azar; `data/loading.json`, hechas con `tests/helpers/render_loading.gd`), el nombre de la zona en piedra y oro, un consejo al azar y una barra dorada que sigue los pasos reales de la carga.
 
 ## 9.3 Ventanas **[En curso]** (Habilidades (K) implementada en la 0.4.0; en la 0.4.1 muestra también CI y CD y un detalle calculado de cada habilidad; el resto está diseñado)
 - **Norma:** **ninguna ventana puede necesitar scroll** para verse entera (en una pantalla de 1280×720). Si una ventana se llena, su contenido se reparte en otra ventana con su propia tecla.

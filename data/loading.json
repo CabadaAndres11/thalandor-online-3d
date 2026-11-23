@@ -1,0 +1,10 @@
+{
+	"images": {
+		"aldea": ["res://assets/ui/loading/aldea_1.jpg", "res://assets/ui/loading/aldea_2.jpg", "res://assets/ui/loading/aldea_3.jpg"],
+		"bosque": ["res://assets/ui/loading/bosque_1.jpg", "res://assets/ui/loading/bosque_2.jpg", "res://assets/ui/loading/bosque_3.jpg"],
+		"cripta_prueba": ["res://assets/ui/loading/cripta_prueba_1.jpg", "res://assets/ui/loading/cripta_prueba_2.jpg"],
+		"default": ["res://assets/ui/loading/aldea_1.jpg", "res://assets/ui/loading/bosque_1.jpg"]
+	},
+	"tips": ["TIP_ATTRIBUTES", "TIP_TALENTS", "TIP_ABILITIES", "TIP_MAP", "TIP_SORT", "TIP_DODGE", "TIP_POTIONS",
+		"TIP_GROUP", "TIP_DUNGEON_LEVEL", "TIP_HORDES", "TIP_COMBAT_EXIT", "TIP_BRANN"]
+}

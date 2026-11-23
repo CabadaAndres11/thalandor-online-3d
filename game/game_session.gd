@@ -38,6 +38,8 @@ var zone_building: bool = false
 var _build_steps: Array[Callable] = []
 ## Monster models built ahead (after the zone), kept across zone changes (review fix).
 var _prewarm: Array[Callable] = []
+var _build_total := 0 # steps of this load, for the loading bar (Plan 8.1.2)
+var _build_done := 0
 ## The signaling of a WebRTC join, opened once the zone is loaded (review fix).
 var join_signaling: Signaling
 var _drawn_loading := false # the loading screen gets one frame on screen before any step
@@ -304,7 +306,7 @@ func _on_zone_changed(zone_id: String, _key: String, _level: int) -> void:
 ## Starts drawing a zone behind the loading screen: its collision at once, its view one
 ## step per frame (Plan 8.1.1). A zone still building is dropped for the new one.
 func build_zone(layout: ZoneLayout, waits: Array = ["build", "ready"]) -> void:
-	loading.show_zone(layout.name, waits)
+	loading.show_zone(layout.name, waits, layout.id)
 	if zone_view != null:
 		remove_child(zone_view)
 		zone_view.free()
@@ -318,6 +320,8 @@ func build_zone(layout: ZoneLayout, waits: Array = ["build", "ready"]) -> void:
 	_build_steps = zone_view.build_steps(layout, _quality)
 	_build_steps.insert(1, func() -> void: map_texture = ImageTexture.create_from_image(ZoneMapImage.make(layout)))
 	zone_building = true
+	_build_total = _build_steps.size() + _prewarm.size()
+	_build_done = 0
 	_drawn_loading = false
 
 
@@ -327,6 +331,8 @@ func run_build_step() -> bool:
 		return false
 	var step: Callable = _build_steps.pop_front() if not _build_steps.is_empty() else _prewarm.pop_front()
 	step.call()
+	_build_done += 1
+	loading.set_progress(float(_build_done) / maxf(1.0, float(_build_total)))
 	if _build_steps.is_empty() and _prewarm.is_empty() and zone_building:
 		zone_building = false
 		loading.done("build")
