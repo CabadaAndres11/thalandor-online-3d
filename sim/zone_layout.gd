@@ -10,6 +10,9 @@ const DIR := "res://data/zones/"
 const PIECES_PATH := "res://data/zones/pieces.json"
 ## Exits and entries keep this many cells around them free of scattered pieces.
 const CLEAR_RADIUS := 2
+## Nothing is scattered this close to an exit area, so every way out (a crypt door in the
+## woods) can be seen from afar (Plan 8.1.1).
+const EXIT_CLEAR := 6
 ## Cells of decorated, never walkable land drawn around a zone (Plan 8.1.1).
 const MARGIN := 14
 const MARGIN_KINDS := {
@@ -253,7 +256,7 @@ func _scatter(s: Dictionary) -> void:
 			var roll := rng.randf()
 			var kind := str(kinds[rng.randi_range(0, kinds.size() - 1)])
 			var rot := rng.randi_range(0, 3) * 90
-			if roll >= density or _road.has(c) or taken.has(c) or _near_any(c, keep_clear):
+			if roll >= density or _road.has(c) or taken.has(c) or _near_any(c, keep_clear) or _near_exit(c):
 				continue
 			if not _piece_defs.has(kind):
 				errors.append("unknown piece " + kind)
@@ -339,6 +342,13 @@ func _in_way_out(c: Vector2i, open: Array) -> bool:
 		if inward.x != 0 and c.y >= r.position.y and c.y < r.end.y and (c.x < 0 if inward.x > 0 else c.x >= size.x):
 			return true
 		if inward.y != 0 and c.x >= r.position.x and c.x < r.end.x and (c.y < 0 if inward.y > 0 else c.y >= size.y):
+			return true
+	return false
+
+
+func _near_exit(c: Vector2i) -> bool:
+	for e: Dictionary in exits:
+		if (e.area as Rect2i).grow(EXIT_CLEAR).has_point(c):
 			return true
 	return false
 

@@ -116,3 +116,36 @@ func test_houses_do_not_overlap_roads_or_pieces() -> void:
 	for h: Dictionary in z.houses:
 		for c: Vector2i in z.footprint(h.id, h.at, h.rot) + h.cells:
 			assert_false(road.has(c), "%s on the road at %s" % [h.id, c])
+
+
+## Plan 8.1.1: the crypt can be found: a clearing around its door and a road to it.
+func test_crypt_has_clearing() -> void:
+	var z := ZoneLayout.load_id("bosque")
+	var door: Rect2i = z.exits.filter(func(e: Dictionary) -> bool: return e.to == "cripta_prueba")[0].area
+	var around := door.grow(ZoneLayout.EXIT_CLEAR)
+	for p: Dictionary in z.pieces:
+		if p.id in ["tree_oak", "tree_pine", "bush", "rock_small", "stump"]:
+			assert_false(around.has_point(p.at), "%s at %s hides the crypt" % [p.id, p.at])
+
+
+func test_path_reaches_crypt() -> void:
+	var z := ZoneLayout.load_id("bosque")
+	var road := {}
+	for p: Dictionary in z.paths:
+		for c: Vector2i in ZoneLayout.path_cells(p):
+			road[c] = true
+	var from := Vector2i(0, 64)
+	assert_true(road.has(from))
+	var seen := {from: true}
+	var queue := [from]
+	while not queue.is_empty():
+		var c: Vector2i = queue.pop_front()
+		for d: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+			if road.has(c + d) and not seen.has(c + d):
+				seen[c + d] = true
+				queue.append(c + d)
+	var door: Rect2i = z.exits.filter(func(e: Dictionary) -> bool: return e.to == "cripta_prueba")[0].area
+	var near := false
+	for c: Vector2i in seen:
+		near = near or door.grow(2).has_point(c)
+	assert_true(near, "the road leads to the crypt door")
