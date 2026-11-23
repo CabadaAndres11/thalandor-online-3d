@@ -22,10 +22,6 @@ func test_single_voxel_has_6_faces() -> void:
 	assert_eq((arrays[Mesh.ARRAY_INDEX] as PackedInt32Array).size(), 36)
 
 
-func test_two_adjacent_voxels_have_10_faces() -> void:
-	var arrays := _arrays(VoxMesher.build(_vox([[0, 0, 0, 1], [1, 0, 0, 1]]), {}))
-	assert_eq((arrays[Mesh.ARRAY_INDEX] as PackedInt32Array).size(), 10 * 6)
-
 
 func test_tint_index_uses_given_color() -> void:
 	var vox := _vox([[0, 0, 0, VoxMesher.TINT_HAIR]])
@@ -169,3 +165,81 @@ func test_hidden_voxels_hide_faces_but_draw_nothing() -> void:
 	# A voxel with a hidden one beside it: the shared face is not drawn, nor the hidden one.
 	var arrays := _arrays(VoxMesher.build(_vox([[0, 0, 0, 1], [1, 0, 0, VoxMesher.HIDDEN]]), {}))
 	assert_eq((arrays[Mesh.ARRAY_INDEX] as PackedInt32Array).size(), 30, "5 faces of the visible voxel only")
+
+
+## Plan 8.1.1: equal faces side by side merge into one rectangle (greedy meshing).
+func test_single_colour_cube_is_twelve_triangles() -> void:
+	var cells := []
+	for x in 4:
+		for y in 4:
+			for z in 4:
+				cells.append([x, y, z, 1])
+	assert_eq(VoxMesher.triangle_count(VoxMesher.build(_vox(cells), {})), 12)
+
+
+func test_two_adjacent_voxels_merge_to_6_faces() -> void:
+	var arrays := _arrays(VoxMesher.build(_vox([[0, 0, 0, 1], [1, 0, 0, 1]]), {}))
+	assert_eq((arrays[Mesh.ARRAY_INDEX] as PackedInt32Array).size(), 6 * 6)
+
+
+## Face area per (colour, normal), summed over every triangle.
+func _area_by_key(mesh: ArrayMesh) -> Dictionary:
+	var out := {}
+	for s in mesh.get_surface_count():
+		var a := mesh.surface_get_arrays(s)
+		var v := a[Mesh.ARRAY_VERTEX] as PackedVector3Array
+		var n := a[Mesh.ARRAY_NORMAL] as PackedVector3Array
+		var c := a[Mesh.ARRAY_COLOR] as PackedColorArray
+		var idx := a[Mesh.ARRAY_INDEX] as PackedInt32Array
+		for t in range(0, idx.size(), 3):
+			var area := (v[idx[t + 1]] - v[idx[t]]).cross(v[idx[t + 2]] - v[idx[t]]).length() / 2.0
+			var col := c[idx[t]]
+			var key := "%d|%s|%d,%d,%d" % [s, col.to_html(), roundi(n[idx[t]].x), roundi(n[idx[t]].y), roundi(n[idx[t]].z)]
+			out[key] = float(out.get(key, 0.0)) + area
+	return out
+
+
+func test_merged_mesh_covers_same_area_per_colour() -> void:
+	var vox := VoxFile.load_file("res://assets/world/tree_pine.vox")
+	var merged := _area_by_key(VoxMesher.build(vox, {}))
+	var single := _area_by_key(VoxMesher.build_unmerged(vox, {}))
+	var total_m := 0.0
+	var total_s := 0.0
+	for k: String in single:
+		total_s += float(single[k])
+	for k: String in merged:
+		total_m += float(merged[k])
+	assert_almost_eq(total_m, total_s, 0.001)
+
+
+func test_tree_has_fewer_triangles() -> void:
+	var vox := VoxFile.load_file("res://assets/world/tree_oak.vox")
+	var merged := VoxMesher.triangle_count(VoxMesher.build(vox, {}))
+	var single := VoxMesher.triangle_count(VoxMesher.build_unmerged(vox, {}))
+	assert_lt(float(merged), single * 0.8, "%d vs %d" % [merged, single])
+
+
+## Plan 8.1.1: a coarse copy (2x2x2 voxels -> 1) for shadows and far away.
+func test_downsample_halves_the_grid() -> void:
+	var cells := []
+	for x in 4:
+		for y in 4:
+			for z in 4:
+				cells.append([x, y, z, 1])
+	var small := VoxMesher.downsample(_vox(cells), 2)
+	assert_eq(small.size, Vector3i(2, 2, 2))
+	assert_eq(small.voxels.size(), 8)
+
+
+func test_downsample_keeps_thin_parts() -> void:
+	# A single voxel still leaves one coarse voxel (a thin branch does not vanish).
+	var small := VoxMesher.downsample(_vox([[3, 3, 3, 5]]), 2)
+	assert_eq(small.voxels.size(), 1)
+	assert_eq(int(small.voxels[0][3]), 5)
+
+
+func test_coarse_tree_has_a_quarter_of_the_triangles() -> void:
+	var vox := VoxFile.load_file("res://assets/world/tree_oak.vox")
+	var full := VoxMesher.triangle_count(VoxMesher.build(vox, {}))
+	var coarse := VoxMesher.triangle_count(VoxMesher.build(VoxMesher.downsample(vox, 2), {}))
+	assert_lt(float(coarse), full * 0.3, "%d vs %d" % [coarse, full])

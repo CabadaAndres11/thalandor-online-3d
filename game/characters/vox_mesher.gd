@@ -47,34 +47,63 @@ static var _material: StandardMaterial3D
 static var _glow_material: StandardMaterial3D
 
 
+## Equal faces side by side (same plane, colour and corner shading) are merged into one
+## rectangle (greedy meshing, Plan 8.1.1): the same look with far fewer triangles.
 static func build(vox: VoxFile, tints: Dictionary) -> ArrayMesh:
+	return _build(vox, tints, true)
+
+
+## One quad per visible voxel side (the old mesher; tests compare against it).
+static func build_unmerged(vox: VoxFile, tints: Dictionary) -> ArrayMesh:
+	return _build(vox, tints, false)
+
+
+## Triangles of a mesh, over all its surfaces.
+static func triangle_count(mesh: Mesh) -> int:
+	var n := 0
+	for s in mesh.get_surface_count():
+		n += (mesh.surface_get_arrays(s)[Mesh.ARRAY_INDEX] as PackedInt32Array).size() / 3
+	return n
+
+
+static func _build(vox: VoxFile, tints: Dictionary, merge: bool) -> ArrayMesh:
 	var solid := {}
 	for v: Array in vox.voxels:
 		solid[Vector3i(v[0], v[1], v[2])] = true
 	# Two surfaces: lit voxels, and glowing ones (index GLOW) drawn unshaded.
 	var lit := _new_surface()
 	var glow := _new_surface()
+	# Faces waiting to be merged: Vector3i(side, slice, glow) -> {Vector2i(u, v): colour}.
+	var planes := {}
 	for v: Array in vox.voxels:
 		var cell := Vector3i(v[0], v[1], v[2])
 		var index: int = v[3]
 		if index == HIDDEN:
 			continue
 		var color := _color(index, tints, vox.palette)
-		var s: Dictionary = glow if index == GLOW else lit
-		for side: Array in SIDES:
-			var normal: Vector3i = side[0]
+		var is_glow := index == GLOW
+		var s: Dictionary = glow if is_glow else lit
+		for si in SIDES.size():
+			var normal: Vector3i = SIDES[si][0]
 			if solid.has(cell + normal):
 				continue
-			var base: int = (s.verts as PackedVector3Array).size()
-			for corner: Vector3 in side[1]:
-				s.verts.append((Vector3(cell) + corner) * VOXEL_SIZE)
-				s.normals.append(Vector3(normal))
-				if index == GLOW:
-					s.colors.append(color)
-				else:
+			var cols: Array = []
+			for corner: Vector3 in SIDES[si][1]:
+				var c := color
+				if not is_glow:
 					var f: float = AO_LEVELS[_openness(solid, cell, normal, corner)]
-					s.colors.append(Color(color.r * f, color.g * f, color.b * f, color.a))
-			s.indices.append_array(PackedInt32Array([base, base + 2, base + 1, base, base + 3, base + 2]))
+					c = Color(color.r * f, color.g * f, color.b * f, color.a)
+				cols.append(c)
+			if merge:
+				var a := _axis(normal)
+				var key := Vector3i(si, cell[a], int(is_glow))
+				if not planes.has(key):
+					planes[key] = {}
+				(planes[key] as Dictionary)[Vector2i(cell[(a + 1) % 3], cell[(a + 2) % 3])] = cols
+			else:
+				_emit(s, si, cell, Vector2i.ONE, cols)
+	for key: Vector3i in planes:
+		_merge_plane(glow if key.z == 1 else lit, key.x, key.y, planes[key])
 	var mesh := ArrayMesh.new()
 	for pair: Array in [[lit, material()], [glow, glow_material()]]:
 		var s: Dictionary = pair[0]
@@ -89,6 +118,106 @@ static func build(vox: VoxFile, tints: Dictionary) -> ArrayMesh:
 		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 		mesh.surface_set_material(mesh.get_surface_count() - 1, pair[1])
 	return mesh
+
+
+## A coarse copy: each factor³ block with any voxel becomes one voxel of its most common
+## colour (Plan 8.1.1: shadow casters and far pieces). Its mesh is drawn `factor` times bigger.
+static func downsample(vox: VoxFile, factor: int) -> VoxFile:
+	var counts := {} # block -> {index: n}
+	for v: Array in vox.voxels:
+		var b := Vector3i(floori(v[0] / float(factor)), floori(v[1] / float(factor)), floori(v[2] / float(factor)))
+		if not counts.has(b):
+			counts[b] = {}
+		var c: Dictionary = counts[b]
+		c[v[3]] = int(c.get(v[3], 0)) + 1
+	var out := VoxFile.new()
+	out.palette = vox.palette
+	out.size = Vector3i(ceili(vox.size.x / float(factor)), ceili(vox.size.y / float(factor)), ceili(vox.size.z / float(factor)))
+	for b: Vector3i in counts:
+		var c: Dictionary = counts[b]
+		var best := -1
+		for index: int in c:
+			if best == -1 or int(c[index]) > int(c[best]) or (c[index] == c[best] and index == GLOW):
+				best = index
+		out.voxels.append([b.x, b.y, b.z, best])
+	return out
+
+
+static func _axis(normal: Vector3i) -> int:
+	return 0 if normal.x != 0 else (1 if normal.y != 0 else 2)
+
+
+## Greedy rectangles over one plane of faces (side `si`, layer `slice`): faces with the
+## same 4 corner colours merge, along u only if their colour does not change along u
+## (and the same for v), so the stretched shading looks exactly as before.
+static func _merge_plane(s: Dictionary, si: int, slice: int, faces: Dictionary) -> void:
+	var a := _axis(SIDES[si][0])
+	var corners: Array = SIDES[si][1]
+	var done := {}
+	var cells := faces.keys()
+	cells.sort()
+	for start: Vector2i in cells:
+		if done.has(start):
+			continue
+		var col: Array = faces[start]
+		var along_u := _flat_along(corners, col, (a + 1) % 3)
+		var along_v := _flat_along(corners, col, (a + 2) % 3)
+		var du := 1
+		while along_u and not done.has(start + Vector2i(du, 0)) and faces.get(start + Vector2i(du, 0)) == col:
+			du += 1
+		var dv := 1
+		var grow := along_v
+		while grow:
+			for i in du:
+				var c := start + Vector2i(i, dv)
+				if done.has(c) or faces.get(c) != col:
+					grow = false
+					break
+			if grow:
+				dv += 1
+		for i in du:
+			for j in dv:
+				done[start + Vector2i(i, j)] = true
+		var cell := Vector3i.ZERO
+		cell[a] = slice
+		cell[(a + 1) % 3] = start.x
+		cell[(a + 2) % 3] = start.y
+		_emit(s, si, cell, Vector2i(du, dv), col)
+
+
+## True if the corner colours do not change along `axis` (corners at 0 and 1 on that
+## axis, the other coordinates equal, have the same colour).
+static func _flat_along(corners: Array, cols: Array, axis: int) -> bool:
+	for i in corners.size():
+		for j in corners.size():
+			var ci: Vector3 = corners[i]
+			var cj: Vector3 = corners[j]
+			if i < j and ci[axis] != cj[axis]:
+				var di := ci
+				di[axis] = cj[axis]
+				if di == cj and cols[i] != cols[j]:
+					return false
+	return true
+
+
+## One quad on side `si` of the voxel `cell`, stretched to `span` voxels along the side's
+## in-plane axes (u = axis + 1, v = axis + 2), with a colour per corner.
+static func _emit(s: Dictionary, si: int, cell: Vector3i, span: Vector2i, cols: Array) -> void:
+	var a := _axis(SIDES[si][0])
+	var u := (a + 1) % 3
+	var w := (a + 2) % 3
+	var base: int = (s.verts as PackedVector3Array).size()
+	var k := 0
+	for corner: Vector3 in SIDES[si][1]:
+		var p := Vector3(cell)
+		p[a] += corner[a]
+		p[u] += corner[u] * span.x
+		p[w] += corner[w] * span.y
+		s.verts.append(p * VOXEL_SIZE)
+		s.normals.append(Vector3(SIDES[si][0]))
+		s.colors.append(cols[k])
+		k += 1
+	s.indices.append_array(PackedInt32Array([base, base + 2, base + 1, base, base + 3, base + 2]))
 
 
 static func _color(index: int, tints: Dictionary, palette: PackedColorArray) -> Color:
