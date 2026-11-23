@@ -29,6 +29,7 @@ const BINDINGS := {
 	"window_talents": [KEY_T],
 	"window_inventory": [KEY_I],
 	"window_map": [KEY_M],
+	"window_quests": [KEY_J], # the quest log (Plan 8.2); nothing yet
 	"potion_health": [KEY_Q],
 	"potion_resource": [KEY_R],
 }

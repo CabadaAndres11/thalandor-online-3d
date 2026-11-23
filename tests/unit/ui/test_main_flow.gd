@@ -722,3 +722,29 @@ func test_minimap_hidden_by_setting() -> void:
 	main.settings.minimap = false
 	await wait_process_frames(2)
 	assert_false(main.minimap.visible)
+
+
+## Plan 8.1.1: the icon bar opens the windows; it sits in the top-right corner, above the minimap.
+func test_icon_bar_opens_windows_top_right() -> void:
+	get_tree().root.size = Vector2i(1280, 720)
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	main.game.finish_zone_build()
+	await wait_process_frames(2)
+	assert_true(main.icon_bar.visible)
+	var r: Rect2 = main.icon_bar.get_global_rect()
+	assert_gt(r.position.x, 640.0, "right half")
+	assert_lt(r.end.y, 80.0, "top")
+	assert_lt(r.end.x, 1280.1)
+	assert_false(r.intersects(main.minimap.get_global_rect()), "above the minimap")
+	main.icon_bar.button("character").pressed.emit()
+	assert_true(main.character_window.visible)
+	await wait_process_frames(1)
+	assert_true(main.icon_bar.is_open("character"))
+	main.icon_bar.button("inventory").pressed.emit()
+	assert_true(main.inventory_window.visible)
+	# Like Esc: each press closes an open window first, then opens the menu.
+	for i in 3:
+		main.icon_bar.button("menu").pressed.emit()
+	assert_false(main.inventory_window.visible or main.character_window.visible)
+	assert_true(main.pause_menu.visible)

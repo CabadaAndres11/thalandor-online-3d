@@ -34,6 +34,8 @@ var party_frames: PartyFrames
 ## The minimap and the zone map (M), Plan 8.1.1.
 var minimap: Minimap
 var map_window: MapWindow
+## The windows as icons in the top-right corner (Plan 8.1.1).
+var icon_bar: IconBar
 const MINIMAP_MARGIN := Vector2(12, 64)
 var downed_overlay: DownedOverlay
 var pause_menu: PauseMenu
@@ -130,6 +132,12 @@ func _ready() -> void:
 	party_frames.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	party_frames.visible = false
 	_ui.add_child(party_frames)
+	icon_bar = IconBar.new()
+	icon_bar.visible = false
+	icon_bar.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	icon_bar.position = Vector2(-icon_bar.get_combined_minimum_size().x - MINIMAP_MARGIN.x, 10)
+	icon_bar.pressed_entry.connect(_on_icon)
+	_ui.add_child(icon_bar)
 	minimap = Minimap.new()
 	minimap.visible = false
 	minimap.set_anchors_preset(Control.PRESET_TOP_RIGHT)
@@ -863,9 +871,43 @@ func _update_input_block() -> void:
 func _process(_delta: float) -> void:
 	_update_input_block()
 	_update_minimap()
+	_update_icon_bar()
 	# Walking away from the merchant closes the trade.
 	if merchant_window.visible and game != null and game.client != null 			and str(game.interaction().action) != NpcInteraction.TRADE:
 		merchant_window.visible = false
+
+
+## An icon of the bar: the same as its key.
+func _on_icon(id: String) -> void:
+	if game == null or game.client == null:
+		return
+	match id:
+		"character":
+			_toggle_window(character_window)
+		"inventory":
+			_toggle_inventory()
+		"abilities":
+			_toggle_window(abilities_window)
+		"talents":
+			_toggle_window(talents_window)
+		"map":
+			_toggle_window(map_window)
+		"menu":
+			if not _close_open_window():
+				pause_menu.visible = not pause_menu.visible
+
+
+## The icons light up while their windows are open.
+func _update_icon_bar() -> void:
+	icon_bar.visible = game != null and game.client != null
+	if not icon_bar.visible:
+		return
+	icon_bar.set_open("character", character_window.visible)
+	icon_bar.set_open("inventory", inventory_window.visible)
+	icon_bar.set_open("abilities", abilities_window.visible)
+	icon_bar.set_open("talents", talents_window.visible)
+	icon_bar.set_open("map", map_window.visible)
+	icon_bar.set_open("menu", pause_menu.visible)
 
 
 ## The minimap follows the player and the camera (Plan 8.1.1); hidden by its setting.

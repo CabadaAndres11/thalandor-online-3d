@@ -736,6 +736,14 @@ INV_GOLD,%d oro
 INV_HINT,Clic derecho: equipar o usar
 BTN_SORT,Ordenar
 WINDOW_MAP,Mapa
+QUESTS_SOON,Llega con las misiones
+ICON_CHARACTER,Personaje
+ICON_INVENTORY,Bolsa
+ICON_ABILITIES,Habilidades
+ICON_TALENTS,Talentos
+ICON_QUESTS,Misiones
+ICON_MAP,Mapa
+ICON_MENU,Menú
 MAP_LEGEND_YOU,Tú
 MAP_LEGEND_PARTY,Grupo
 MAP_LEGEND_NPC,Personajes
