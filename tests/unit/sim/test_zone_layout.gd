@@ -78,3 +78,59 @@ func test_unknown_monster_and_exit_are_reported_on_load() -> void:
 	assert_has(z.errors, "unknown monster dragon")
 	assert_has(z.errors, "unknown monster kraken")
 	assert_has(z.warnings, "exit to unknown zone atlantis")
+
+
+# --- Walkable houses (Plan 8.1.1) -------------------------------------------------------
+
+func _house_zone(id: String, rot: int) -> ZoneLayout:
+	return ZoneLayout.from_dict("h", {"size": [30, 30], "pieces": [{"id": id, "at": [12, 12], "rot": rot}]})
+
+
+func _reach(map: CollisionMap, from: Vector2i) -> Dictionary:
+	var seen := {from: true}
+	var queue := [from]
+	while not queue.is_empty():
+		var c: Vector2i = queue.pop_front()
+		for d: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+			var n := c + d
+			if not seen.has(n) and not map.is_solid(n) and n.x >= 0 and n.y >= 0 and n.x < 30 and n.y < 30:
+				seen[n] = true
+				queue.append(n)
+	return seen
+
+
+func test_house_interior_reachable_from_door_all_rotations() -> void:
+	for id: String in ["house_small", "house_large", "house_forge"]:
+		for rot: int in [0, 90, 180, 270]:
+			var z := _house_zone(id, rot)
+			var map := z.collision()
+			var reach := _reach(map, Vector2i(0, 0)) # from outside, far from the house
+			var h: Dictionary = z.houses[0]
+			var walkable := 0
+			for c: Vector2i in h.cells:
+				if not map.is_solid(c):
+					walkable += 1
+					assert_true(reach.has(c), "%s rot %d: %s reachable" % [id, rot, c])
+			assert_gt(walkable, 9, "%s rot %d walkable inside" % [id, rot])
+			for c: Vector2i in h.door:
+				assert_false(map.is_solid(c), "%s rot %d door %s" % [id, rot, c])
+
+
+func test_house_at() -> void:
+	var z := _house_zone("house_small", 0)
+	assert_eq(z.house_at(Vector2i(14, 14)), 0, "inside")
+	assert_eq(z.house_at(Vector2i(12, 12)), -1, "a wall")
+	assert_eq(z.house_at(Vector2i(2, 2)), -1, "outside")
+
+
+func test_nothing_scattered_inside_a_house() -> void:
+	var z := ZoneLayout.from_dict("h", {"size": [30, 30], "pieces": [{"id": "house_large", "at": [10, 10]}],
+		"scatter": [{"area": [0, 0, 30, 30], "pieces": ["bush", "tree_pine"], "density": 1.0, "seed": 2}]})
+	var inside := {}
+	for c: Vector2i in z.houses[0].cells:
+		inside[c] = true
+	for c: Vector2i in z.houses[0].door:
+		inside[c] = true
+	for p: Dictionary in z.pieces:
+		if p.id != "house_large":
+			assert_false(inside.has(p.at), "%s at %s" % [p.id, p.at])

@@ -352,9 +352,19 @@ func _process(delta: float) -> void:
 	if not own.is_empty():
 		camera.follow(own.position)
 		zone_view.follow(own.position)
+		update_house(own.position)
 		for npc: NpcAvatar in _npc_avatars:
 			var d := Vector2(own.position.x - npc.position.x, own.position.z - npc.position.z).length()
 			npc.set_prompt_visible(d <= NpcDB.TALK_RANGE)
+
+
+## Opens the house the own player stands in (and only that one), Plan 8.1.1.
+func update_house(pos: Vector3) -> void:
+	if zone_view.layout == null:
+		return
+	var index := zone_view.layout.house_at(Vector2i(floori(pos.x), floori(pos.z)))
+	if index != zone_view.open_index:
+		zone_view.open_house(index)
 
 
 func _update_aim() -> void:

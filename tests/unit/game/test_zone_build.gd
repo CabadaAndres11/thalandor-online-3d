@@ -27,3 +27,15 @@ func test_zone_built_emitted_once() -> void:
 	watch_signals(game)
 	game.finish_zone_build()
 	assert_signal_emit_count(game, "zone_built", 1)
+
+
+func test_only_local_player_opens_house() -> void:
+	var game: GameSession = add_child_autofree(GameSession.new())
+	game.finish_zone_build()
+	var z := game.zone_view.layout
+	assert_false(z.houses.is_empty(), "the village has houses")
+	var inside: Vector2i = z.houses[0].cells[0]
+	game.update_house(Vector3(2.5, 0, 2.5)) # own player outside
+	assert_eq(game.zone_view.open_index, -1)
+	game.update_house(Vector3(inside.x + 0.5, 0, inside.y + 0.5))
+	assert_eq(game.zone_view.open_index, 0)

@@ -244,3 +244,49 @@ func test_steps_build_same_scene_as_build() -> void:
 	for s: Callable in steps:
 		s.call()
 	assert_eq(_names(b), _names(a))
+
+
+# --- Houses that open (Plan 8.1.1) ------------------------------------------------------
+
+func _village() -> ZoneLayout:
+	return ZoneLayout.from_dict("v", {"size": [40, 40], "pieces": [
+		{"id": "house_small", "at": [2, 2]}, {"id": "house_forge", "at": [20, 20], "rot": 90}]})
+
+
+func test_houses_are_house_views() -> void:
+	var view: ZoneView = add_child_autofree(ZoneView.new())
+	view.build(_village())
+	var h := view.find_child("house_0", true, false) as HouseView
+	assert_not_null(h)
+	for part: String in ["Floor", "Walls", "WallsCut", "Roof"]:
+		assert_not_null(h.get_node_or_null(part), part)
+	assert_null(view.find_child("house_small#0,0", true, false), "not drawn as a multimesh")
+
+
+func test_open_house_hides_roof_and_cuts_walls() -> void:
+	var view: ZoneView = add_child_autofree(ZoneView.new())
+	view.build(_village())
+	var h0 := view.find_child("house_0", true, false) as HouseView
+	var h1 := view.find_child("house_1", true, false) as HouseView
+	assert_false(h0.open)
+	assert_true(h0.get_node("Walls").visible)
+	assert_false(h0.get_node("WallsCut").visible)
+	view.open_house(0)
+	h0._process(HouseView.FADE_S + 0.05)
+	assert_true(h0.open)
+	assert_false(h0.get_node("Roof").visible, "roof gone after the fade")
+	assert_true(h0.get_node("WallsCut").visible)
+	assert_false(h0.get_node("Walls").visible)
+	assert_false(h1.open, "the other house stays closed")
+	view.open_house(-1)
+	h0._process(HouseView.FADE_S + 0.05)
+	assert_false(h0.open)
+	assert_true(h0.get_node("Roof").visible)
+	assert_true(h0.get_node("Walls").visible)
+
+
+func test_forge_has_a_light() -> void:
+	var view: ZoneView = add_child_autofree(ZoneView.new())
+	view.build(_village())
+	var forge := view.find_child("house_1", true, false) as HouseView
+	assert_false(forge.find_children("*", "OmniLight3D", true, false).is_empty())

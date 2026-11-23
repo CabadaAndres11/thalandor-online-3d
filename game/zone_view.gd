@@ -14,7 +14,6 @@ const GROUND := {
 	"sand": Color("#c2ad7c"), "water": Color("#3d6f8f"), "crypt": Color("#3d3a36"),
 }
 const WATER_DEPTH := 0.12
-const VOXEL := 0.05 # world pieces are 5 cm voxels (VoxMesher's 0.1 m at scale 0.5)
 ## Pieces and ground are grouped in chunks of CHUNK×CHUNK cells (Plan 8.1.1).
 const CHUNK := 16
 ## Closer than this (from the camera) a piece uses its detailed mesh; beyond, a coarse one.
@@ -36,6 +35,8 @@ var _world_env: WorldEnvironment
 var _particles: GPUParticles3D
 var _follow := Vector3.ZERO
 var _shadow_proxies: Array[GeometryInstance3D] = []
+## The house open around the own player (-1: none), Plan 8.1.1.
+var open_index: int = -1
 
 
 ## Builds the zone; returns its collision (the same as layout.collision()).
@@ -58,6 +59,8 @@ func build_steps(p_layout: ZoneLayout, quality_level: int = GraphicsQuality.MEDI
 		kinds[key.get_slice("#", 0)] = true
 	for kind: String in kinds:
 		steps.append(_build_pieces.bind(groups, kind))
+	if not layout.houses.is_empty():
+		steps.append(_build_houses)
 	steps.append(_build_blocks)
 	steps.append(func() -> void: _add_torches(layout.torches))
 	steps.append(_apply_lighting)
@@ -188,10 +191,12 @@ func _build_pieces(groups: Dictionary, kind: String) -> void:
 			_shadow_proxies.append(proxy)
 
 
-## "id#cx,cz" -> the placed pieces of that kind in that chunk.
+## "id#cx,cz" -> the placed pieces of that kind in that chunk (houses are HouseViews).
 func _piece_groups() -> Dictionary:
 	var groups := {}
 	for p: Dictionary in layout.pieces:
+		if layout.piece_def(str(p.id)).has("parts"):
+			continue
 		var key := chunk_name(str(p.id), p.at)
 		if not groups.has(key):
 			groups[key] = []
@@ -231,12 +236,40 @@ static func _coarse_mesh(path: String) -> ArrayMesh:
 func piece_transform(p: Dictionary) -> Transform3D:
 	var def := layout.piece_def(str(p.id))
 	var off: Array = def.get("offset", [0, 0, 0])
-	var local := Transform3D(Basis.from_scale(Vector3.ONE * float(def.get("scale", 0.5))),
-		Vector3(float(off[0]), float(off[1]), float(off[2])) * VOXEL)
+	var scale_f := float(def.get("scale", 0.5))
+	var local := Transform3D(Basis.from_scale(Vector3.ONE * scale_f),
+		Vector3(float(off[0]), float(off[1]), float(off[2])) * VoxMesher.VOXEL_SIZE * scale_f)
+	return placement(p) * local
+
+
+## The cell (0, 0) corner of a placed piece, turned like its footprint.
+static func placement(p: Dictionary) -> Transform3D:
 	var at: Vector2i = p.at
 	var turn := Transform3D(Basis(Vector3.UP, -deg_to_rad(float(p.rot))), Vector3.ZERO)
 	return Transform3D.IDENTITY.translated(Vector3(at.x + 0.5, 0, at.y + 0.5)) * turn \
-		* Transform3D.IDENTITY.translated(Vector3(-0.5, 0, -0.5)) * local
+		* Transform3D.IDENTITY.translated(Vector3(-0.5, 0, -0.5))
+
+
+func _build_houses() -> void:
+	var root := Node3D.new()
+	root.name = "Houses"
+	add_child(root)
+	for h: Dictionary in layout.houses:
+		var view := HouseView.new()
+		view.name = "house_%d" % h.index
+		root.add_child(view)
+		view.setup(layout.piece_def(str(h.id)), placement(h))
+
+
+## Opens the house `index` (its roof fades, its walls are cut) and closes the others; -1
+## closes them all. Only the own player's house opens (Plan 8.1.1).
+func open_house(index: int) -> void:
+	open_index = index
+	var root := get_node_or_null("Houses")
+	if root == null:
+		return
+	for view: HouseView in root.get_children():
+		view.set_open(view.name == "house_%d" % index)
 
 
 func _build_blocks() -> void:

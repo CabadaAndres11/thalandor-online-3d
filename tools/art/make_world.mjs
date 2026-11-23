@@ -24,7 +24,7 @@ const PALETTE = {
   [STONE_L]: "#99948a", [MOSS]: "#55683a", [LEAF]: "#3f7a32", [LEAF_D]: "#2c5a24", [LEAF_L]: "#5a9640",
   [PINE]: "#2e5a36", [PINE_D]: "#1f4027", [BARK]: "#5a4030", [BARK_D]: "#3f2c20", [IRON]: "#3a3a40",
   [IRON_L]: "#62626b", [PLASTER]: "#d8ccb2", [PLASTER_D]: "#b8aa8e", [WATER]: "#3d6f8f", [COAL]: "#22160f",
-  [HAY]: "#d1b060", [GLOW]: "#ffb347",
+  [HAY]: "#d1b060", [GLOW]: "#ffb347", [27]: "#8a3b32", [28]: "#6a2b25",
 };
 
 // Two or three tones of a material mixed in patches of 3 voxels (Plan 8.1.1: less grain,
@@ -58,27 +58,116 @@ function roof(s, x0, x1, z0, z1, y, overhang = 3) {
   return paint(s, THATCH, [THATCH, THATCH_D, THATCH_L], 7);
 }
 
-// A village house of w × d cells: timber frame on stone footing, plaster walls, a door
-// on the front (+Z), small windows and a thatched roof.
-function house(w, d, extra = () => {}) {
-  const s = new Shape();
-  const W = w * CELL - 1, D = d * CELL - 1, H = 52;
-  s.box(0, 0, 0, W, 5, D, STONE); // footing
-  paint(s, STONE, [STONE, STONE_D, STONE_L], 3);
-  s.box(1, 6, 1, W - 1, H, D - 1, PLASTER);
-  s.remove(3, 6, 3, W - 3, H, D - 3); // hollow
-  paint(s, PLASTER, [PLASTER, PLASTER_D], 5);
-  for (const x of [1, W - 1, Math.round(W / 2)]) s.box(x, 6, 1, x, H, 1, WOOD).box(x, 6, D - 1, x, H, D - 1, WOOD); // posts
-  for (const z of [1, D - 1]) s.box(1, 6, z, W - 1, 7, z, WOOD).box(1, H - 1, z, W - 1, H, z, WOOD); // beams
-  for (const x of [1, W - 1]) s.box(x, 6, 1, x, 7, D - 1, WOOD).box(x, H - 1, 1, x, H, D - 1, WOOD);
-  const door = Math.round(W / 2) - 6;
-  s.remove(door, 6, D - 2, door + 9, 32, D); // doorway
-  s.box(door, 6, D - 3, door + 9, 32, D - 3, PLANK); // the door, set back
-  paint(s, PLANK, [PLANK, PLANK_D], 9);
-  for (const x of [8, W - 16]) { s.remove(x, 26, D - 1, x + 7, 34, D - 1); s.box(x, 25, D, x + 7, 25, D, WOOD); } // windows
-  roof(s, 0, W, 0, D, H + 1);
-  extra(s, W, D, H);
-  return s;
+// Walkable houses (Plan 8.1.1): 10 cm voxels (shown at scale 1.0), w × d cells, four
+// parts so the game can open a house when its player steps inside: the floor with its
+// furniture, the walls (3 m), the same walls cut at 1 m, and the roof. The wall ring
+// blocks its cells but for a 2-cell door in the middle of the front (+Z); large
+// furniture blocks its cells too. Origin at the corner of cell (0, 0).
+export const HOUSE_CELL = 10;
+const HOUSE_H = 30, CUT_H = 10;
+
+function houseParts(w, d, furnish = () => {}) {
+  const C = HOUSE_CELL, W = w * C, D = d * C;
+  const floor = new Shape(), walls = new Shape(), roofShape = new Shape();
+  const door = [[Math.floor(w / 2) - 1, d - 1], [Math.floor(w / 2), d - 1]];
+  const dx0 = door[0][0] * C, dx1 = (door[1][0] + 1) * C - 1;
+  // Stone footing and plank floor.
+  floor.box(0, 0, 0, W - 1, 0, D - 1, STONE);
+  paint(floor, STONE, [STONE, STONE_D, STONE_L], 3);
+  floor.box(3, 0, 3, W - 4, 0, D - 4, PLANK);
+  floor.box(dx0, 0, D - 3, dx1, 0, D - 1, PLANK);
+  for (let x = 3; x <= W - 4; x += 4) floor.box(x, 0, 3, x, 0, D - 4, PLANK_D); // board seams
+  // Plaster walls 3 voxels thick on the outer edge of the ring, timber corners and beams.
+  walls.box(0, 1, 0, W - 1, HOUSE_H, 2, PLASTER).box(0, 1, D - 3, W - 1, HOUSE_H, D - 1, PLASTER);
+  walls.box(0, 1, 0, 2, HOUSE_H, D - 1, PLASTER).box(W - 3, 1, 0, W - 1, HOUSE_H, D - 1, PLASTER);
+  paint(walls, PLASTER, [PLASTER, PLASTER_D], 5);
+  for (const x of [0, W - 3]) for (const z of [0, D - 3]) walls.box(x, 1, z, x + 2, HOUSE_H, z + 2, WOOD);
+  for (const y of [1, HOUSE_H]) {
+    walls.box(0, y, 0, W - 1, y, 2, WOOD).box(0, y, D - 3, W - 1, y, D - 1, WOOD);
+    walls.box(0, y, 0, 2, y, D - 1, WOOD).box(W - 3, y, 0, W - 1, y, D - 1, WOOD);
+  }
+  walls.remove(dx0, 1, D - 3, dx1, 21, D - 1); // doorway
+  walls.box(dx0 - 1, 1, D - 3, dx0 - 1, 22, D - 1, WOOD).box(dx1 + 1, 1, D - 3, dx1 + 1, 22, D - 1, WOOD);
+  walls.box(dx0 - 1, 22, D - 3, dx1 + 1, 22, D - 1, WOOD);
+  for (const x of [C + 3, W - C - 7]) if (x + 4 < dx0 - 1 || x > dx1 + 1) walls.remove(x, 13, D - 3, x + 4, 18, D - 1); // front windows
+  walls.remove(Math.floor(W / 2) - 2, 13, 0, Math.floor(W / 2) + 2, 18, 2); // back window
+  const cut = new Shape();
+  for (const v of walls.cells.values()) if (v[1] <= CUT_H) cut.put(v[0], v[1], v[2], v[3]);
+  // Gabled thatch, ridge along x.
+  roof(roofShape, 0, W - 1, 0, D - 1, HOUSE_H + 1, 3);
+  const blocked = new Set();
+  const block = (cx, cz) => blocked.add(cx + "," + cz);
+  const lights = [];
+  furnish({ floor, roof: roofShape, W, D, C, block, lights });
+  const footprint = [], interior = [];
+  for (let x = 0; x < w; x++) for (let z = 0; z < d; z++) {
+    const ring = x === 0 || z === 0 || x === w - 1 || z === d - 1;
+    const isDoor = door.some(([a, b]) => a === x && b === z);
+    if (ring && !isDoor) footprint.push([x, z]);
+    else if (!ring) {
+      interior.push([x, z]);
+      if (blocked.has(x + "," + z)) footprint.push([x, z]);
+    }
+  }
+  footprint.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  return { parts: { floor, walls, walls_cut: cut, roof: roofShape }, footprint, interior, door, lights };
+}
+
+// Furniture, drawn in a cell (cx, cz) of a house; each one blocks its cells.
+const CLOTH = 27, CLOTH_D = 28;
+function bed(f, cx, cz) { // two cells long along z
+  const x0 = cx * f.C, z0 = cz * f.C;
+  f.floor.box(x0 + 1, 1, z0 + 1, x0 + 8, 4, z0 + 18, WOOD).box(x0 + 1, 5, z0 + 1, x0 + 8, 6, z0 + 18, CLOTH);
+  f.floor.box(x0 + 2, 7, z0 + 2, x0 + 7, 7, z0 + 5, PLASTER).box(x0 + 1, 5, z0 + 7, x0 + 8, 6, z0 + 8, CLOTH_D);
+  f.block(cx, cz);
+  f.block(cx, cz + 1);
+}
+function table(f, cx, cz, len = 1) { // len cells along x
+  const x0 = cx * f.C, z0 = cz * f.C, x1 = (cx + len) * f.C - 1;
+  f.floor.box(x0 + 1, 8, z0 + 1, x1 - 1, 8, z0 + 8, PLANK);
+  for (const x of [x0 + 2, x1 - 2]) for (const z of [z0 + 2, z0 + 7]) f.floor.box(x, 1, z, x, 7, z, WOOD);
+  f.floor.box(x0 + 3, 9, z0 + 3, x0 + 4, 10, z0 + 4, IRON_L); // a mug
+  for (let i = 0; i < len; i++) f.block(cx + i, cz);
+}
+function chest(f, cx, cz) {
+  const x0 = cx * f.C, z0 = cz * f.C;
+  f.floor.box(x0 + 2, 1, z0 + 3, x0 + 7, 5, z0 + 7, WOOD).box(x0 + 2, 6, z0 + 3, x0 + 7, 6, z0 + 7, WOOD_L);
+  f.floor.box(x0 + 2, 4, z0 + 2, x0 + 7, 4, z0 + 2, IRON).put(x0 + 4, 3, z0 + 2, IRON_L);
+  f.block(cx, cz);
+}
+function shelf(f, cx, cz) {
+  const x0 = cx * f.C, z0 = cz * f.C;
+  f.floor.box(x0 + 1, 1, z0 + 1, x0 + 8, 18, z0 + 3, WOOD);
+  for (const y of [6, 12]) f.floor.box(x0 + 2, y, z0 + 1, x0 + 7, y + 1, z0 + 2, HAY);
+  f.block(cx, cz);
+}
+function hearth(f, cx, cz) {
+  const x0 = cx * f.C, z0 = cz * f.C;
+  f.floor.box(x0, 1, z0, x0 + 9, 12, z0 + 6, STONE).remove(x0 + 2, 1, z0 + 2, x0 + 7, 7, z0 + 6);
+  f.floor.box(x0 + 2, 1, z0 + 2, x0 + 7, 1, z0 + 5, COAL).put(x0 + 4, 2, z0 + 3, GLOW).put(x0 + 5, 2, z0 + 4, GLOW);
+  roundBox(f.roof, [x0 + 1, 31, z0 + 1], [x0 + 8, 62, z0 + 6], 0, STONE); // chimney through the roof
+  f.lights.push([cx, cz]);
+  f.block(cx, cz);
+}
+function anvil(f, cx, cz) {
+  const x0 = cx * f.C, z0 = cz * f.C;
+  f.floor.box(x0 + 3, 1, z0 + 3, x0 + 6, 6, z0 + 6, WOOD).box(x0 + 1, 7, z0 + 3, x0 + 8, 9, z0 + 6, IRON);
+  f.floor.box(x0 + 2, 10, z0 + 3, x0 + 7, 10, z0 + 6, IRON_L);
+  f.block(cx, cz);
+}
+function forgeFire(f, cx, cz) {
+  const x0 = cx * f.C, z0 = cz * f.C;
+  f.floor.box(x0, 1, z0, x0 + 9, 8, z0 + 9, STONE).box(x0 + 2, 8, z0 + 2, x0 + 7, 8, z0 + 7, COAL);
+  for (const [x, z] of [[3, 3], [5, 4], [4, 6], [6, 6]]) f.floor.put(x0 + x, 9, z0 + z, GLOW);
+  roundBox(f.roof, [x0 + 2, 31, z0 + 2], [x0 + 7, 66, z0 + 7], 0, STONE);
+  f.lights.push([cx, cz]);
+  f.block(cx, cz);
+}
+function barrel(f, cx, cz) {
+  const x0 = cx * f.C, z0 = cz * f.C;
+  cylinder(f.floor, [x0 + 4.5, 1, z0 + 4.5], [x0 + 4.5, 10, z0 + 4.5], 3.6, WOOD);
+  for (const y of [3, 8]) cylinder(f.floor, [x0 + 4.5, y, z0 + 4.5], [x0 + 4.5, y, z0 + 4.5], 3.8, IRON);
+  f.block(cx, cz);
 }
 
 function treeOak(seed) {
@@ -128,15 +217,12 @@ export function worldPieces() {
     out[id] = { shape, ...opts };
     out[id].footprint = opts.footprint ?? footprintOf(out[id]);
   };
-  add("house_small", house(4, 4));
-  add("house_large", house(6, 5));
-  add("house_forge", house(5, 5, (s, W, D) => {
-    roundBox(s, [W - 18, 0, 4], [W - 6, 90, 14], 1, STONE); // chimney
-    paint(s, STONE, [STONE, STONE_D, STONE_L], 13);
-    s.box(8, 6, D + 2, 18, 14, D + 8, IRON).box(6, 15, D + 1, 20, 17, D + 9, IRON_L); // anvil
-    s.box(W - 30, 6, D + 1, W - 22, 12, D + 9, STONE).box(W - 29, 13, D + 2, W - 23, 13, D + 8, COAL);
-    s.put(W - 27, 14, D + 5, GLOW).put(W - 25, 14, D + 4, GLOW);
+  const addHouse = (id, h) => { out[id] = { ...h, scale: 1 }; };
+  addHouse("house_small", houseParts(6, 6, (f) => { bed(f, 1, 1); table(f, 4, 1); chest(f, 4, 4); }));
+  addHouse("house_large", houseParts(8, 7, (f) => {
+    bed(f, 1, 1); bed(f, 2, 1); table(f, 4, 3, 2); hearth(f, 6, 1); shelf(f, 6, 5);
   }));
+  addHouse("house_forge", houseParts(7, 7, (f) => { forgeFire(f, 5, 1); anvil(f, 3, 3); barrel(f, 1, 5); barrel(f, 1, 1); }));
   const fence = new Shape();
   for (const x of [1, 19, 38]) fence.box(x, 0, 9, x + 1, 22, 10, WOOD);
   for (const y of [8, 17]) fence.box(0, y, 9, 39, y + 1, 9, PLANK);
@@ -219,6 +305,16 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   fs.mkdirSync(outDir, { recursive: true });
   const table = {};
   for (const [id, p] of Object.entries(worldPieces())) {
+    if (p.parts) {
+      const parts = {};
+      for (const [part, sh] of Object.entries(p.parts)) {
+        write(`${outDir}/${id}_${part}.vox`, sh.size(), sh.voxels(), PALETTE);
+        parts[part] = { vox: `res://assets/world/${id}_${part}.vox`, offset: sh.min() };
+      }
+      table[id] = { parts, scale: 1.0, footprint: p.footprint, interior: p.interior, door: p.door, lights: p.lights,
+        shadow: "medium", range: 90 };
+      continue;
+    }
     write(`${outDir}/${id}.vox`, p.shape.size(), p.shape.voxels(), PALETTE);
     const small = SMALL_PIECES.includes(id);
     table[id] = { vox: `res://assets/world/${id}.vox`, scale: 0.5, offset: p.shape.min(), footprint: p.footprint,

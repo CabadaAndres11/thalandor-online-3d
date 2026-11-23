@@ -40,6 +40,10 @@ var blocks: Array = []
 var errors: Array = []
 ## What is suspicious but not broken ("exit to unknown zone atlantis").
 var warnings: Array = []
+## Walkable houses placed (Plan 8.1.1), in placing order: {index, id, at, rot,
+## cells: Array (world interior cells), door: Array (world door cells)}.
+var houses: Array = []
+var _house_cells: Dictionary = {} # Vector2i -> house index
 
 static var _pieces_cache: Dictionary = {}
 var _piece_defs: Dictionary = {}
@@ -133,14 +137,28 @@ static func path_cells(p: Dictionary) -> Array:
 
 ## The cells a piece blocks at `at`, turned `rot` degrees (90° steps: (dx, dz) -> (-dz, dx)).
 func footprint(piece_id: String, at: Vector2i, rot: int) -> Array:
+	return cells_of(piece_id, "footprint", at, rot)
+
+
+## A list of relative cells of a piece's data ("footprint", "interior", "door"), placed
+## at `at` and turned like its footprint.
+func cells_of(piece_id: String, key: String, at: Vector2i, rot: int) -> Array:
 	var out: Array = []
-	var turns := posmod(roundi(rot / 90.0), 4)
-	for f: Array in (_piece_defs.get(piece_id, {}) as Dictionary).get("footprint", []):
-		var c := Vector2i(int(f[0]), int(f[1]))
-		for i in turns:
-			c = Vector2i(-c.y, c.x)
-		out.append(at + c)
+	for f: Array in (_piece_defs.get(piece_id, {}) as Dictionary).get(key, []):
+		out.append(at + turn(Vector2i(int(f[0]), int(f[1])), rot))
 	return out
+
+
+## A relative cell turned `rot` degrees ((dx, dz) -> (-dz, dx) per 90°).
+static func turn(c: Vector2i, rot: int) -> Vector2i:
+	for i in posmod(roundi(rot / 90.0), 4):
+		c = Vector2i(-c.y, c.x)
+	return c
+
+
+## The house whose inside holds `cell` (its index in houses), or -1.
+func house_at(cell: Vector2i) -> int:
+	return int(_house_cells.get(cell, -1))
 
 
 func piece_def(piece_id: String) -> Dictionary:
@@ -189,6 +207,12 @@ func _place(piece_id: String, at: Vector2i, rot: int) -> void:
 		errors.append("unknown piece " + piece_id)
 		return
 	pieces.append({"id": piece_id, "at": at, "rot": rot})
+	if (_piece_defs[piece_id] as Dictionary).has("interior"):
+		var h := {"index": houses.size(), "id": piece_id, "at": at, "rot": rot,
+			"cells": cells_of(piece_id, "interior", at, rot), "door": cells_of(piece_id, "door", at, rot)}
+		for c: Vector2i in h.cells:
+			_house_cells[c] = h.index
+		houses.append(h)
 
 
 func _scatter(s: Dictionary) -> void:
@@ -203,6 +227,11 @@ func _scatter(s: Dictionary) -> void:
 	for p: Dictionary in pieces:
 		for c: Vector2i in footprint(p.id, p.at, p.rot):
 			taken[c] = true
+	for h: Dictionary in houses: # the inside, the door and the cell in front of it stay free
+		for c: Vector2i in h.cells + h.door:
+			taken[c] = true
+		for c: Vector2i in h.door:
+			taken[c + turn(Vector2i(0, 1), h.rot)] = true
 	var keep_clear: Array = entries.values()
 	for e: Dictionary in exits:
 		keep_clear.append((e.area as Rect2i).get_center())

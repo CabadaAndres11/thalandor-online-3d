@@ -81,3 +81,38 @@ func test_hordes_have_room_and_real_monsters() -> void:
 
 func test_the_game_starts_in_the_village() -> void:
 	assert_eq(GameSession.START_ZONE, "aldea")
+
+
+## Plan 8.1.1: the bigger village houses leave Brann, the merchant and every house inside
+## reachable, and no house stands on a road or on another piece.
+func test_village_npcs_and_houses_reachable() -> void:
+	var z := ZoneLayout.load_id("aldea")
+	var map := z.collision()
+	var reach := _reach(map, z.entries.default)
+	for n: Dictionary in z.npcs:
+		var c := Vector2i(int(n.at[0]), int(n.at[1]))
+		assert_false(map.is_solid(c), "%s stands free" % n.id)
+		assert_true(reach.has(c), "%s reachable" % n.id)
+	assert_eq(z.houses.size(), 6)
+	for h: Dictionary in z.houses:
+		for c: Vector2i in h.cells:
+			if not map.is_solid(c):
+				assert_true(reach.has(c), "%s %d inside %s" % [h.id, h.index, c])
+	for t: Array in z.torches:
+		assert_false(map.is_solid(Vector2i(int(t[0]), int(t[1]))), "torch %s" % [t])
+
+
+func test_houses_do_not_overlap_roads_or_pieces() -> void:
+	var z := ZoneLayout.load_id("aldea")
+	var road := {}
+	for p: Dictionary in z.paths:
+		for c: Vector2i in ZoneLayout.path_cells(p):
+			road[c] = true
+	var owner := {}
+	for p: Dictionary in z.pieces:
+		for c: Vector2i in z.footprint(p.id, p.at, p.rot):
+			assert_false(owner.has(c), "%s overlaps %s at %s" % [p.id, owner.get(c, ""), c])
+			owner[c] = p.id
+	for h: Dictionary in z.houses:
+		for c: Vector2i in z.footprint(h.id, h.at, h.rot) + h.cells:
+			assert_false(road.has(c), "%s on the road at %s" % [h.id, c])
