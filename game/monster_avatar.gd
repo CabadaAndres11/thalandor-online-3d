@@ -91,14 +91,23 @@ func setup(type: Dictionary, elite: bool = false, elite_scale: float = 1.3, ally
 ## cache), so a boss's huge pieces (Nhazar's head) and a summoned wolf are made while the
 ## game loads, not mid-fight.
 static func prewarm_bosses() -> void:
+	for step: Callable in prewarm_steps():
+		step.call()
+
+
+## The same, one monster model per step, so a loading game keeps answering the network
+## between them (Plan 8.1.1).
+static func prewarm_steps() -> Array[Callable]:
+	var steps: Array[Callable] = []
 	var db := MonsterDB.load_default()
 	for id: String in db.type_ids():
 		var type := db.get_type(id)
 		var model := str(type.get("model", ""))
 		if bool(type.get("boss", false)) and model.begins_with("humanoid:"):
-			HumanRig.build(look_of(type)).free()
+			steps.append(func() -> void: HumanRig.build(look_of(type)).free())
 		elif model.begins_with("rig:"):
-			BeastRig.build(model.trim_prefix("rig:"), Color(str(type.get("tint", "#ffffff")))).free()
+			steps.append(func() -> void: BeastRig.build(model.trim_prefix("rig:"), Color(str(type.get("tint", "#ffffff")))).free())
+	return steps
 
 
 static func look_of(type: Dictionary) -> Dictionary:

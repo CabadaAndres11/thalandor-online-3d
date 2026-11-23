@@ -28,6 +28,7 @@ const BINDINGS := {
 	"window_character": [KEY_C],
 	"window_talents": [KEY_T],
 	"window_inventory": [KEY_I],
+	"window_map": [KEY_M],
 	"potion_health": [KEY_Q],
 	"potion_resource": [KEY_R],
 }

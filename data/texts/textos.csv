@@ -735,6 +735,12 @@ INV_TITLE,Inventario
 INV_GOLD,%d oro
 INV_HINT,Clic derecho: equipar o usar
 BTN_SORT,Ordenar
+WINDOW_MAP,Mapa
+MAP_LEGEND_YOU,Tú
+MAP_LEGEND_PARTY,Grupo
+MAP_LEGEND_NPC,Personajes
+MAP_LEGEND_EXIT,Salida
+MAP_LEGEND_DUNGEON,Mazmorra
 BTN_JOIN_GROUP,Unirse a un grupo
 JOIN_CODE_HINT,Código del grupo
 HUD_KEY_POTION_HEALTH,Q
@@ -890,6 +896,7 @@ QUALITY_HIGH,Alta
 OPTIONS_RENDER_SCALE,Escala de resolución
 OPTIONS_FULLSCREEN,Pantalla completa
 OPTIONS_VSYNC,Sincronización vertical (VSync)
+OPT_MINIMAP,Minimapa
 OPTIONS_MAX_FPS,Límite de FPS
 OPTIONS_FPS_UNLIMITED,Sin límite
 OPTIONS_VOL_MASTER,General

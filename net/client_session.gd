@@ -142,8 +142,8 @@ func tick(move: Vector2, aim: Vector3, buttons: int = 0) -> void:
 
 ## Called once per rendered frame.
 func update(delta: float) -> void:
-	if status == Status.CLOSED:
-		return
+	if status == Status.CLOSED or _transport == null:
+		return # (not connecting yet: a joining game connects once its zone is loaded)
 	_clock_ms += delta * 1000.0
 	_silence += delta
 	if _silence > balance.timeout_s:

@@ -152,3 +152,18 @@ func test_corrupt_file_gives_defaults() -> void:
 	var s := SettingsStore.load_from(PATH)
 	assert_eq(s.quality, GraphicsQuality.MEDIUM)
 	assert_true(s.vsync)
+
+
+## Plan 8.1.1: the minimap setting, on by default (old files too).
+func test_settings_v3_migrates_minimap_true() -> void:
+	var path := "user://test_settings_v3.json"
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	f.store_string(JSON.stringify({"version": 3, "quality": 2}))
+	f.close()
+	var s := SettingsStore.load_from(path)
+	assert_true(s.minimap)
+	s.minimap = false
+	s.save_to(path)
+	assert_false(SettingsStore.load_from(path).minimap)
+	assert_false(s.duplicate_store().minimap)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))

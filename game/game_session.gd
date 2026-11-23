@@ -31,6 +31,8 @@ var last_error: String = ""
 var net_mode: String = NET_WEBRTC
 
 var zone_view: ZoneView
+## The zone's picture for the map and the minimap (Plan 8.1.1), made with each zone.
+var map_texture: ImageTexture
 ## True while the zone is still being built, one step per frame (Plan 8.1.1).
 var zone_building: bool = false
 var _build_steps: Array[Callable] = []
@@ -73,7 +75,7 @@ func _init() -> void:
 	loading = LoadingOverlay.new()
 	overlay_layer.add_child(loading)
 	build_zone(ZoneLayout.load_id(START_ZONE), ["build"])
-	_build_steps.append(MonsterAvatar.prewarm_bosses) # while the game loads, not when a boss appears
+	_build_steps.append_array(MonsterAvatar.prewarm_steps()) # while the game loads, not when a boss appears
 	_avatar_root = Node3D.new()
 	_avatar_root.name = "Players"
 	add_child(_avatar_root)
@@ -180,19 +182,31 @@ func join(code: String, player_name: String, class_id: String = CharacterCatalog
 			return ERR_UNCONFIGURED
 		join_with(WebSocketSignaling.join(balance.signaling_url, code), player_name, class_id, appearance, progress)
 		return OK
-	var t: Transport = EnetTransport.join(ip, balance.port)
-	if t == null:
-		last_error = "ERR_CONNECT"
-		return ERR_CANT_CONNECT
-	_start_client(player_name, class_id, appearance, _with_debug_lag(t), progress)
+	_start_client(player_name, class_id, appearance, null, progress)
+	_when_loaded(func() -> void:
+		var t: Transport = EnetTransport.join(ip, balance.port)
+		if t == null:
+			_on_client_disconnected("failed")
+		else:
+			client.connect_to(_with_debug_lag(t)))
 	return OK
 
 
 ## Joins a WebRTC group through the given signaling channel (tests pass a fake one).
 func join_with(signaling: Signaling, player_name: String, class_id: String = CharacterCatalog.DEFAULT_CLASS,
 		appearance: Dictionary = {}, progress: Dictionary = {}) -> void:
-	var t := WebRtcTransport.join(signaling, WebRtcTransport.ice_from_url(balance.stun_url))
-	_start_client(player_name, class_id, appearance, _with_debug_lag(t), progress)
+	_start_client(player_name, class_id, appearance, null, progress)
+	_when_loaded(func() -> void:
+		client.connect_to(_with_debug_lag(WebRtcTransport.join(signaling, WebRtcTransport.ice_from_url(balance.stun_url)))))
+
+
+## A guest connects only once its zone is loaded (Plan 8.1.1): loading stalls frames
+## (a big model takes seconds to build) and a connection must not wait on them.
+func _when_loaded(connect_now: Callable) -> void:
+	if zone_building:
+		zone_built.connect(connect_now, CONNECT_ONE_SHOT)
+	else:
+		connect_now.call()
 
 
 func _with_debug_lag(t: Transport) -> Transport:
@@ -252,7 +266,8 @@ func _start_client(player_name: String, class_id: String, appearance: Dictionary
 	client.place = character_place.duplicate(true)
 	client.zone_changed.connect(_on_zone_changed)
 	client.zone_ready.connect(loading.done.bind("ready"))
-	client.connect_to(t)
+	if t != null:
+		client.connect_to(t)
 
 
 ## The host moved this player to another zone: draw it, with its NPCs, behind a short
@@ -287,6 +302,7 @@ func build_zone(layout: ZoneLayout, waits: Array = ["build", "ready"]) -> void:
 	if camera != null:
 		camera.bounds = Rect2(Vector2.ZERO, Vector2(layout.size))
 	_build_steps = zone_view.build_steps(layout, _quality)
+	_build_steps.insert(1, func() -> void: map_texture = ImageTexture.create_from_image(ZoneMapImage.make(layout)))
 	zone_building = true
 	_drawn_loading = false
 

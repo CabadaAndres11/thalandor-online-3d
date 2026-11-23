@@ -6,7 +6,7 @@ extends RefCounted
 ## Version 3 adds video (quality, resolution scale, window, VSync, FPS cap) and audio
 ## (bus volumes, mute). Missing or invalid values fall back to their defaults.
 
-const VERSION := 3
+const VERSION := 4
 const DEFAULT_PATH := "user://settings.json"
 const FPS_CHOICES := [0, 30, 60, 120, 144]
 const MIN_RENDER_SCALE := 0.5
@@ -24,6 +24,8 @@ var vsync: bool = true
 var max_fps: int = 0
 var volumes: Dictionary = DEFAULT_VOLUMES.duplicate()
 var muted: bool = false
+## The minimap under the icon bar (Plan 8.1.1; version 4, on in older files).
+var minimap: bool = true
 
 
 static func load_from(path: String = DEFAULT_PATH) -> SettingsStore:
@@ -57,6 +59,8 @@ static func load_from(path: String = DEFAULT_PATH) -> SettingsStore:
 				s.volumes[bus] = clampf(float(v), 0.0, 1.0)
 	if data.get("muted") is bool:
 		s.muted = data.muted
+	if data.get("minimap") is bool:
+		s.minimap = data.minimap
 	return s
 
 
@@ -83,7 +87,7 @@ func save_to(path: String = DEFAULT_PATH) -> Error:
 	f.store_string(JSON.stringify({
 		"version": VERSION, "last_code": last_code, "last_character_id": last_character_id,
 		"quality": quality, "render_scale": render_scale, "fullscreen": fullscreen,
-		"vsync": vsync, "max_fps": max_fps, "volumes": volumes, "muted": muted,
+		"vsync": vsync, "max_fps": max_fps, "volumes": volumes, "muted": muted, "minimap": minimap,
 	}, "\t"))
 	f.close()
 	return OK
@@ -112,4 +116,5 @@ func duplicate_store() -> SettingsStore:
 	d.max_fps = max_fps
 	d.volumes = volumes.duplicate()
 	d.muted = muted
+	d.minimap = minimap
 	return d

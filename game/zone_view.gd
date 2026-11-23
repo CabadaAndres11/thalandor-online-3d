@@ -59,8 +59,22 @@ func build_steps(p_layout: ZoneLayout, quality_level: int = GraphicsQuality.MEDI
 	var kinds := {}
 	for key: String in groups:
 		kinds[key.get_slice("#", 0)] = true
+	# Each model is meshed in a step of its own (the slow part, once per game) so no frame
+	# stalls long: the network keeps answering while a zone loads.
 	for kind: String in kinds:
+		var def := layout.piece_def(kind)
+		var path := str(def.get("vox", ""))
+		steps.append(func() -> void: VoxMesher.cached(path, {}))
+		if str(def.get("shadow", "medium")) != "never" and float(def.get("range", RANGE_DEFAULT)) > LOD_NEAR:
+			steps.append(func() -> void: _coarse_mesh(path))
 		steps.append(_build_pieces.bind(groups, kind))
+	var house_kinds := {}
+	for h: Dictionary in layout.houses:
+		house_kinds[str(h.id)] = true
+	for kind: String in house_kinds:
+		for part: Dictionary in (layout.piece_def(kind).get("parts", {}) as Dictionary).values():
+			var part_path := str(part.get("vox", ""))
+			steps.append(func() -> void: VoxMesher.cached(part_path, {}))
 	if not layout.houses.is_empty():
 		steps.append(_build_houses)
 	steps.append(_build_blocks)
@@ -93,6 +107,10 @@ func follow(pos: Vector3) -> void:
 
 ## The ground kind of every cell: the base, painted areas on top, then paths.
 func ground_cells() -> Dictionary:
+	return ground_cells_of(layout)
+
+
+static func ground_cells_of(layout: ZoneLayout) -> Dictionary:
 	var kinds := {}
 	var base := str(layout.terrain.get("base", "grass"))
 	for a: Dictionary in layout.terrain.get("areas", []):

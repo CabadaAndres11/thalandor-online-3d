@@ -414,7 +414,8 @@ func test_villager_learns_a_class_from_brann() -> void:
 	var first := AbilityDB.load_default().kind_of("mage", "basic") # slot 0 is the basic attack
 	await wait_until(func() -> bool: return main.combat_hud.slot_ability(0) == first, 3.0)
 	assert_eq(main.combat_hud.slot_ability(0), first, "the HUD has the mage bar")
-	await wait_physics_frames(3)
+	# The avatar is rebuilt with the new class and comes back on a following sync.
+	await wait_until(func() -> bool: return main.game.player_avatar(main.game.client.my_id) != null, 3.0)
 	assert_has(main.game.player_avatar(main.game.client.my_id).rig.pieces(), "w_staff_t1", "the avatar is redressed")
 	_press("interact")
 	assert_false(main.class_choice_window.visible, "with a class, Brann only talks")
@@ -698,3 +699,26 @@ func test_pause_join_saves_and_connects() -> void:
 	assert_eq(main.game.client.class_id, "cleric")
 	assert_eq(main.game.client.player_name, "Viajera")
 	main._leave_game()
+
+
+## Plan 8.1.1: M opens the zone map; the minimap follows the setting.
+func test_m_toggles_map() -> void:
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	main.game.finish_zone_build()
+	_press("window_map")
+	assert_true(main.map_window.visible)
+	assert_true(main.game.attacks_blocked or main._panel_open(), "a panel window")
+	_press("window_map")
+	assert_false(main.map_window.visible)
+
+
+func test_minimap_hidden_by_setting() -> void:
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	main.game.finish_zone_build()
+	await wait_process_frames(2)
+	assert_true(main.minimap.visible)
+	main.settings.minimap = false
+	await wait_process_frames(2)
+	assert_false(main.minimap.visible)

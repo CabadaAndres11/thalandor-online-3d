@@ -22,6 +22,7 @@ var _scale: HSlider
 var _scale_label: Label
 var _fullscreen: CheckButton
 var _vsync: CheckButton
+var _minimap: CheckButton
 var _fps: OptionButton
 var _volume_sliders := {}
 var _volume_labels := {}
@@ -149,6 +150,9 @@ func _video_tab() -> Control:
 	_vsync = CheckButton.new()
 	_vsync.toggled.connect(func(on: bool) -> void: _edit(func() -> void: _store.vsync = on))
 	v.add_child(_row("OPTIONS_VSYNC", _vsync))
+	_minimap = CheckButton.new()
+	_minimap.toggled.connect(func(on: bool) -> void: _edit(func() -> void: _store.minimap = on))
+	v.add_child(_row("OPT_MINIMAP", _minimap))
 
 	_fps = OptionButton.new()
 	for fps: int in SettingsStore.FPS_CHOICES:
@@ -227,6 +231,7 @@ func _sync_from_store() -> void:
 	_scale_label.text = "%d %%" % roundi(_store.render_scale * 100.0)
 	_fullscreen.button_pressed = _store.fullscreen
 	_vsync.button_pressed = _store.vsync
+	_minimap.button_pressed = _store.minimap
 	_fps.select(maxi(0, SettingsStore.FPS_CHOICES.find(_store.max_fps)))
 	for bus: String in _volume_sliders:
 		var v := float(_store.volumes.get(bus, 1.0))

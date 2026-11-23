@@ -31,6 +31,10 @@ var credits_window: CreditsWindow
 var chat: ChatBox
 var combat_hud: CombatHud
 var party_frames: PartyFrames
+## The minimap and the zone map (M), Plan 8.1.1.
+var minimap: Minimap
+var map_window: MapWindow
+const MINIMAP_MARGIN := Vector2(12, 64)
 var downed_overlay: DownedOverlay
 var pause_menu: PauseMenu
 var options_window: OptionsWindow
@@ -126,6 +130,11 @@ func _ready() -> void:
 	party_frames.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	party_frames.visible = false
 	_ui.add_child(party_frames)
+	minimap = Minimap.new()
+	minimap.visible = false
+	minimap.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	minimap.position = Vector2(-Minimap.SIZE - MINIMAP_MARGIN.x, MINIMAP_MARGIN.y)
+	_ui.add_child(minimap)
 
 	downed_overlay = DownedOverlay.new()
 	downed_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -148,6 +157,10 @@ func _ready() -> void:
 
 	debug_overlay = DebugOverlay.new()
 	_ui.add_child(debug_overlay)
+
+	map_window = MapWindow.new()
+	map_window.theme = theme
+	_ui.add_child(map_window)
 
 	abilities_window = AbilitiesWindow.new()
 	abilities_window.theme = theme
@@ -261,6 +274,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("window_talents"):
 		_toggle_window(talents_window)
 		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("window_map"):
+		_toggle_window(map_window)
+		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("window_inventory"):
 		_toggle_inventory()
 		get_viewport().set_input_as_handled()
@@ -274,7 +290,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## The windows opened with K, C and T (one at a time): they block mouse attacks, not movement.
 func _panel_windows() -> Array:
-	return [abilities_window, character_window, talents_window]
+	return [abilities_window, character_window, talents_window, map_window]
 
 
 func _panel_open() -> bool:
@@ -366,6 +382,10 @@ func _toggle_window(w: Control) -> void:
 			_show_character()
 		talents_window:
 			talents_window.show_for(game.client.progress, TalentDB.load_default(), game.client.balance)
+		map_window:
+			var layout := game.zone_view.layout
+			map_window.refresh(game.map_texture, ZoneMapImage.markers(layout, game.client), layout.name)
+			map_window.visible = true
 
 
 func _show_character() -> void:
@@ -842,9 +862,24 @@ func _update_input_block() -> void:
 
 func _process(_delta: float) -> void:
 	_update_input_block()
+	_update_minimap()
 	# Walking away from the merchant closes the trade.
 	if merchant_window.visible and game != null and game.client != null 			and str(game.interaction().action) != NpcInteraction.TRADE:
 		merchant_window.visible = false
+
+
+## The minimap follows the player and the camera (Plan 8.1.1); hidden by its setting.
+func _update_minimap() -> void:
+	var on := game != null and game.client != null and settings.minimap and game.map_texture != null
+	minimap.visible = on
+	if not on:
+		return
+	var own := game.client.render_state(game.client.my_id)
+	if own.is_empty():
+		return
+	var pos: Vector3 = own.position
+	var layout := game.zone_view.layout
+	minimap.refresh(game.map_texture, ZoneMapImage.markers(layout, game.client), Vector2(pos.x, pos.z), game.camera.yaw(), layout.name)
 
 
 ## Options window (from the title or the pause menu): changes apply live, saved on close.

@@ -67,6 +67,7 @@ func _run_session(extra_args: Array, min_ping_ms: float, signaling_url: String =
 	_main._on_play(HOST_NAME)
 	await wait_physics_frames(2)
 	var game := _main.game
+	game.finish_zone_build() # a player opens the group once the game has loaded
 	game.client.chat_received.connect(_on_host_chat)
 
 	var code := ""
