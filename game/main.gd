@@ -96,7 +96,6 @@ func _ready() -> void:
 	select_screen.theme = menu_theme
 	select_screen.look_changed.connect(_on_menu_look)
 	select_screen.play_requested.connect(_on_select_play)
-	select_screen.join_requested.connect(_on_select_join)
 	select_screen.create_requested.connect(_show_create)
 	select_screen.delete_requested.connect(_on_select_delete)
 	select_screen.export_requested.connect(_on_select_export)
@@ -213,6 +212,7 @@ func _ready() -> void:
 	pause_menu.resume_requested.connect(_on_resume)
 	pause_menu.leave_requested.connect(_leave_game)
 	pause_menu.open_group_requested.connect(_on_open_group)
+	pause_menu.join_requested.connect(_on_pause_join)
 	pause_menu.options_requested.connect(_show_options)
 	_ui.add_child(pause_menu)
 
@@ -581,7 +581,6 @@ func _show_select() -> void:
 	menu_scene.set_shot("select")
 	var list := store.load_all()
 	select_screen.set_characters(list, settings.last_character_id)
-	select_screen.set_code(settings.last_code)
 	_show_only(select_screen)
 	if not store.skipped_files.is_empty():
 		dialog.show_message(tr("ERR_CHAR_SKIPPED") % store.skipped_files.size())
@@ -662,6 +661,16 @@ func _on_select_join(id: String, code: String) -> void:
 		_remember_character(id)
 		_playing = c
 		_on_join(c.name, code, c.class_id, c.appearance, c.progress.to_dict())
+
+
+## Joining a friend from the pause menu (Plan 8.1.1): the solo game ends (its character
+## saved) and the same character joins the friend's group.
+func _on_pause_join(code: String) -> void:
+	if _playing == null or not _playing.tutorial_done:
+		return
+	var id := _playing.id
+	_leave_game()
+	_on_select_join(id, code)
 
 
 func _on_select_delete(id: String) -> void:
@@ -882,6 +891,7 @@ func _start_game() -> void:
 		game.character_inventory = _playing.inventory.to_dict()
 		game.character_place = _playing.place.duplicate(true)
 		game.character_place["tutorial_done"] = _playing.tutorial_done
+	pause_menu.join_code_edit.text = settings.last_code
 	game.group_opened.connect(_on_group_opened)
 	game.group_failed.connect(_on_group_failed)
 	_show_only(null)

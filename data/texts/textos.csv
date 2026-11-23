@@ -735,6 +735,8 @@ INV_TITLE,Inventario
 INV_GOLD,%d oro
 INV_HINT,Clic derecho: equipar o usar
 BTN_SORT,Ordenar
+BTN_JOIN_GROUP,Unirse a un grupo
+JOIN_CODE_HINT,Código del grupo
 HUD_KEY_POTION_HEALTH,Q
 HUD_KEY_POTION_RESOURCE,R
 HUD_REPAIR,¡Reparar!

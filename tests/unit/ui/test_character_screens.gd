@@ -28,7 +28,7 @@ func test_select_disables_buttons_without_selection() -> void:
 	var s := CharacterSelectScreen.new()
 	_host(s)
 	s.set_characters([] as Array[CharacterData], "")
-	for b: Button in [s.play_button, s.join_button, s.delete_button, s.export_button]:
+	for b: Button in [s.play_button, s.delete_button, s.export_button]:
 		assert_true(b.disabled, b.text)
 	assert_false(s.create_button.disabled)
 	assert_false(s.import_button.disabled)
@@ -65,15 +65,12 @@ func test_unknown_selected_id_selects_first() -> void:
 	assert_eq(s.selected_id(), list[0].id)
 
 
-func test_join_emits_id_and_code() -> void:
+## Plan 8.1.1: joining a friend happens in the game (pause menu), not here.
+func test_select_screen_has_no_join() -> void:
 	var s := CharacterSelectScreen.new()
 	_host(s)
-	var list := _chars(1)
-	s.set_characters(list, list[0].id)
-	s.set_code("abcd-efgh")
-	watch_signals(s)
-	s.join_button.pressed.emit()
-	assert_signal_emitted_with_parameters(s, "join_requested", [list[0].id, "abcd-efgh"])
+	assert_false("join_button" in s)
+	assert_false(s.has_signal("join_requested"))
 
 
 func test_create_screen_invalid_name_disables_create() -> void:

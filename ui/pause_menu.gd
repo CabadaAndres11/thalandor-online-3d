@@ -6,11 +6,16 @@ signal resume_requested()
 signal leave_requested()
 signal open_group_requested()
 signal options_requested()
+## Join a friend's group with this code (Plan 8.1.1: no longer from the character list).
+signal join_requested(code: String)
 
 var open_group_button: Button
 var code_label: Label
 var copy_button: Button
 var options_button: Button
+var join_code_edit: LineEdit
+var join_button: Button
+var _locked: bool = false
 var _hint: Label
 var _code: String = ""
 var _lock_hint: String = ""
@@ -68,6 +73,21 @@ func _init() -> void:
 	copy_button.pressed.connect(_on_copy)
 	code_row.add_child(copy_button)
 
+	var join_row := HBoxContainer.new()
+	box.add_child(join_row)
+	join_code_edit = LineEdit.new()
+	join_code_edit.placeholder_text = tr("JOIN_CODE_HINT")
+	join_code_edit.max_length = 12
+	join_code_edit.size_flags_horizontal = SIZE_EXPAND_FILL
+	join_code_edit.text_changed.connect(func(_t: String) -> void: _refresh_join())
+	join_code_edit.text_submitted.connect(func(_t: String) -> void: _on_join())
+	join_row.add_child(join_code_edit)
+	join_button = Button.new()
+	join_button.text = tr("BTN_JOIN_GROUP")
+	join_button.pressed.connect(_on_join)
+	join_row.add_child(join_button)
+	_refresh_join()
+
 	options_button = Button.new()
 	options_button.text = tr("MENU_OPTIONS")
 	options_button.pressed.connect(func() -> void: options_requested.emit())
@@ -83,6 +103,8 @@ func _init() -> void:
 ## is greyed out and the hint says why.
 func set_group_locked(locked: bool) -> void:
 	open_group_button.disabled = locked
+	_locked = locked
+	_refresh_join()
 	_lock_hint = tr("GROUP_LOCKED_TUTORIAL") if locked else ""
 	if locked:
 		_hint.text = _lock_hint
@@ -109,6 +131,7 @@ func show_code(code: String) -> void:
 	open_group_button.visible = false
 	_hint.text = tr("MENU_CODE_HINT")
 	_hint.visible = true
+	_refresh_join()
 
 
 ## While a WebRTC group is opening: the button waits with "Abriendo grupo…".
@@ -128,6 +151,18 @@ func reset() -> void:
 	code_label.visible = false
 	copy_button.visible = false
 	visible = false
+	_refresh_join()
+
+
+## Joining needs a code, the tutorial done and no group of one's own open.
+func _refresh_join() -> void:
+	join_button.disabled = join_code_edit.text.strip_edges() == "" or _locked or _code != ""
+	join_button.tooltip_text = tr("GROUP_LOCKED_TUTORIAL") if _locked else ""
+
+
+func _on_join() -> void:
+	if not join_button.disabled:
+		join_requested.emit(join_code_edit.text.strip_edges())
 
 
 func _on_copy() -> void:

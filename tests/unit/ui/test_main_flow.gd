@@ -644,20 +644,24 @@ func _new_character(done: bool) -> CharacterData:
 func test_new_character_cannot_open_group_or_join() -> void:
 	var c := _new_character(false)
 	main.select_screen.set_characters(main.store.load_all(), c.id)
-	assert_true(main.select_screen.join_button.disabled, "no joining a friend yet")
 	main._on_select_play(c.id)
 	await wait_physics_frames(3)
 	assert_true(main.pause_menu.open_group_button.disabled)
+	main.pause_menu.join_code_edit.text = "abcd-efgh"
+	main.pause_menu.join_code_edit.text_changed.emit("abcd-efgh")
+	assert_true(main.pause_menu.join_button.disabled, "no joining a friend yet")
 	assert_eq(main.pause_menu.lock_hint(), tr("GROUP_LOCKED_TUTORIAL"))
 
 
 func test_old_character_can() -> void:
 	var c := _new_character(true)
 	main.select_screen.set_characters(main.store.load_all(), c.id)
-	assert_false(main.select_screen.join_button.disabled)
 	main._on_select_play(c.id)
 	await wait_physics_frames(3)
 	assert_false(main.pause_menu.open_group_button.disabled)
+	main.pause_menu.join_code_edit.text = "abcd-efgh"
+	main.pause_menu.join_code_edit.text_changed.emit("abcd-efgh")
+	assert_false(main.pause_menu.join_button.disabled)
 
 
 func test_tutorial_command_unlocks_and_saves() -> void:
@@ -677,3 +681,20 @@ func test_play_shows_loading() -> void:
 	assert_true(main.game.zone_building)
 	main.game.finish_zone_build()
 	assert_false(main.game.zone_building)
+
+
+## Plan 8.1.1: joining from the pause menu leaves the solo game and joins with the same character.
+func test_pause_join_saves_and_connects() -> void:
+	var c := _create("Viajera", "cleric")
+	c.tutorial_done = true
+	main.store.save(c)
+	main._on_select_play(c.id)
+	await wait_physics_frames(3)
+	var solo := main.game
+	main._on_pause_join(GroupCode.encode("127.0.0.1"))
+	assert_true(main.in_game())
+	assert_ne(main.game, solo, "a new game")
+	assert_false(main.game.is_hosting(), "joined, not hosting")
+	assert_eq(main.game.client.class_id, "cleric")
+	assert_eq(main.game.client.player_name, "Viajera")
+	main._leave_game()

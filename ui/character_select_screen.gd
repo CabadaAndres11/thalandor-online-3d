@@ -2,11 +2,10 @@ class_name CharacterSelectScreen
 extends Control
 ## "Tus personajes": the player's characters (up to 8) on a stone panel at the left,
 ## the selected one standing in the menu scene (look_changed), and the actions: create,
-## delete, export, import, and in the bottom-right corner play, join a friend with a code
+## delete, export, import, and in the bottom-right corner play (joining a friend is in the game's pause menu, Plan 8.1.1)
 ## and back.
 
 signal play_requested(id: String)
-signal join_requested(id: String, code: String)
 signal create_requested()
 signal delete_requested(id: String)
 signal export_requested(id: String)
@@ -21,9 +20,7 @@ var delete_button: Button
 var export_button: Button
 var import_button: Button
 var play_button: Button
-var join_button: Button
 var back_button: Button
-var code_edit: LineEdit
 
 var _characters: Array[CharacterData] = []
 var _selected: String = ""
@@ -80,15 +77,6 @@ func _init() -> void:
 	play_button = _button(right, "BTN_PLAY", _on_play)
 	StoneTheme.primary_button(play_button)
 	play_button.custom_minimum_size.y = 72
-	var join_row := HBoxContainer.new()
-	right.add_child(join_row)
-	code_edit = LineEdit.new()
-	code_edit.placeholder_text = tr("CODE_PLACEHOLDER")
-	code_edit.max_length = 12
-	code_edit.size_flags_horizontal = SIZE_EXPAND_FILL
-	code_edit.text_submitted.connect(_on_code_submitted)
-	join_row.add_child(code_edit)
-	join_button = _button(join_row, "BTN_JOIN", _on_join)
 	back_button = _button(right, "BTN_BACK", back_requested.emit)
 	MenuFx.decorate(play_button, MenuFx.CALL)
 	MenuFx.decorate_tree(self)
@@ -107,10 +95,6 @@ func selected_id() -> String:
 	return _selected
 
 
-func set_code(code: String) -> void:
-	code_edit.text = code
-
-
 func _refresh() -> void:
 	var catalog := CharacterCatalog.load_default()
 	for i in slot_buttons.size():
@@ -123,14 +107,8 @@ func _refresh() -> void:
 			b.set_pressed_no_signal(slot_char.id == _selected)
 	_empty_label.visible = _characters.is_empty()
 	var has := _selected != ""
-	for b: Button in [play_button, join_button, delete_button, export_button]:
+	for b: Button in [play_button, delete_button, export_button]:
 		b.disabled = not has
-	var chosen := _current()
-	if chosen != null and not chosen.tutorial_done:
-		join_button.disabled = true # playing with friends opens after the village tutorial
-		join_button.tooltip_text = tr("GROUP_LOCKED_TUTORIAL")
-	else:
-		join_button.tooltip_text = ""
 	var full := _characters.size() >= CharacterStore.MAX_CHARACTERS
 	create_button.disabled = full
 	import_button.disabled = full
@@ -165,13 +143,7 @@ func _on_play() -> void:
 		play_requested.emit(_selected)
 
 
-func _on_join() -> void:
-	if _selected != "":
-		join_requested.emit(_selected, code_edit.text.strip_edges())
 
-
-func _on_code_submitted(_t: String) -> void:
-	_on_join()
 
 
 func _on_delete() -> void:
