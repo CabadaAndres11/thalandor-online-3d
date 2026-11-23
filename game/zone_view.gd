@@ -331,6 +331,9 @@ func _build_houses() -> void:
 		view.name = "house_%d" % h.index
 		root.add_child(view)
 		view.setup(layout.piece_def(str(h.id)), placement(h))
+		view.set_quality(quality)
+	if open_index >= 0:
+		open_house(open_index) # the player was already inside when the zone loaded
 
 
 ## Opens the house `index` (its roof fades, its walls are cut) and closes the others; -1
@@ -411,3 +414,7 @@ func _apply_lighting() -> void:
 		torch.energy_scale = a.torch_energy
 	for proxy: GeometryInstance3D in _shadow_proxies:
 		proxy.visible = quality >= GraphicsQuality.MEDIUM
+	var houses := get_node_or_null("Houses")
+	if houses != null:
+		for view: HouseView in houses.get_children():
+			view.set_quality(quality)

@@ -40,6 +40,13 @@ func setup(def: Dictionary, place: Transform3D) -> void:
 		add_child(light)
 
 
+## Houses cast shadow at MEDIUM and HIGH, none at LOW (like the other pieces).
+func set_quality(q: int) -> void:
+	var cast := GeometryInstance3D.SHADOW_CASTING_SETTING_ON if q >= GraphicsQuality.MEDIUM else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	for part: String in ["Floor", "Walls", "WallsCut", "Roof"]:
+		(get_node(part) as GeometryInstance3D).cast_shadow = cast
+
+
 func set_open(value: bool) -> void:
 	if value == open:
 		return

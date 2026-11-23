@@ -696,6 +696,9 @@ func _on_select_join(id: String, code: String) -> void:
 func _on_pause_join(code: String) -> void:
 	if _playing == null or not _playing.tutorial_done:
 		return
+	if GroupCode.decode(code) == "":
+		dialog.show_message(tr("ERR_BAD_CODE")) # the solo game goes on
+		return
 	var id := _playing.id
 	_leave_game()
 	_on_select_join(id, code)

@@ -39,3 +39,39 @@ func test_only_local_player_opens_house() -> void:
 	assert_eq(game.zone_view.open_index, -1)
 	game.update_house(Vector3(inside.x + 0.5, 0, inside.y + 0.5))
 	assert_eq(game.zone_view.open_index, 0)
+
+
+## Review fix: a player already inside a house when the houses get built sees it open.
+func test_house_opens_when_built_with_the_player_inside() -> void:
+	var game: GameSession = add_child_autofree(GameSession.new())
+	var z := ZoneLayout.load_id("aldea")
+	game.build_zone(z)
+	var inside: Vector2i = z.houses[0].cells[0]
+	game.update_house(Vector3(inside.x + 0.5, 0, inside.y + 0.5)) # before the houses step
+	game.finish_zone_build()
+	var h := game.zone_view.find_child("house_0", true, false) as HouseView
+	assert_true(h.open)
+
+
+## Review fix: a zone change during the first load keeps the monster prewarm.
+func test_zone_change_keeps_the_prewarm() -> void:
+	var game: GameSession = add_child_autofree(GameSession.new())
+	var total := game.prewarm_left()
+	assert_gt(total, 0)
+	game.build_zone(ZoneLayout.load_id("bosque"))
+	assert_eq(game.prewarm_left(), total, "not dropped by the new zone")
+	game.finish_zone_build()
+	assert_eq(game.prewarm_left(), 0)
+
+
+## Review fix: a WebRTC join opens its signaling only once the zone is loaded (an
+## unpolled socket would time out while the game loads).
+func test_webrtc_signaling_waits_for_the_load() -> void:
+	var game: GameSession = add_child_autofree(GameSession.new())
+	game.net_mode = GameSession.NET_WEBRTC
+	game.balance.signaling_url = "ws://127.0.0.1:9"
+	assert_eq(game.join(GroupCode.encode("127.0.0.1"), "Ana"), OK)
+	assert_null(game.join_signaling, "not while loading")
+	game.finish_zone_build()
+	assert_not_null(game.join_signaling)
+	game.leave()

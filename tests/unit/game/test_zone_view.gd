@@ -312,3 +312,13 @@ func test_margin_drawn() -> void:
 
 func _edge() -> ZoneLayout:
 	return ZoneLayout.from_dict("e", {"size": [40, 30], "entries": {"default": [5, 5]}})
+
+
+## Review fix: no house shadows at LOW quality (the spec: no piece casts shadow at low).
+func test_house_shadows_follow_quality() -> void:
+	var view: ZoneView = add_child_autofree(ZoneView.new())
+	view.build(_village(), GraphicsQuality.HIGH)
+	var roof := view.find_child("house_0", true, false).get_node("Roof") as GeometryInstance3D
+	assert_eq(roof.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_ON)
+	view.set_quality(GraphicsQuality.LOW)
+	assert_eq(roof.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)

@@ -36,6 +36,10 @@ var map_texture: ImageTexture
 ## True while the zone is still being built, one step per frame (Plan 8.1.1).
 var zone_building: bool = false
 var _build_steps: Array[Callable] = []
+## Monster models built ahead (after the zone), kept across zone changes (review fix).
+var _prewarm: Array[Callable] = []
+## The signaling of a WebRTC join, opened once the zone is loaded (review fix).
+var join_signaling: Signaling
 var _drawn_loading := false # the loading screen gets one frame on screen before any step
 var camera: IsoCamera
 var _avatars: Dictionary = {} # id -> PlayerAvatar
@@ -75,7 +79,7 @@ func _init() -> void:
 	loading = LoadingOverlay.new()
 	overlay_layer.add_child(loading)
 	build_zone(ZoneLayout.load_id(START_ZONE), ["build"])
-	_build_steps.append_array(MonsterAvatar.prewarm_steps()) # while the game loads, not when a boss appears
+	_prewarm = MonsterAvatar.prewarm_steps() # while the game loads, not when a boss appears
 	_avatar_root = Node3D.new()
 	_avatar_root.name = "Players"
 	add_child(_avatar_root)
@@ -180,10 +184,18 @@ func join(code: String, player_name: String, class_id: String = CharacterCatalog
 		if balance.signaling_url == "":
 			last_error = "ERR_SIGNALING"
 			return ERR_UNCONFIGURED
-		join_with(WebSocketSignaling.join(balance.signaling_url, code), player_name, class_id, appearance, progress)
+		var url := balance.signaling_url
+		_start_client(player_name, class_id, appearance, null, progress)
+		_when_loaded(func() -> void:
+			if client == null:
+				return
+			join_signaling = WebSocketSignaling.join(url, code)
+			client.connect_to(_with_debug_lag(WebRtcTransport.join(join_signaling, WebRtcTransport.ice_from_url(balance.stun_url)))))
 		return OK
 	_start_client(player_name, class_id, appearance, null, progress)
 	_when_loaded(func() -> void:
+		if client == null:
+			return
 		var t: Transport = EnetTransport.join(ip, balance.port)
 		if t == null:
 			_on_client_disconnected("failed")
@@ -197,7 +209,9 @@ func join_with(signaling: Signaling, player_name: String, class_id: String = Cha
 		appearance: Dictionary = {}, progress: Dictionary = {}) -> void:
 	_start_client(player_name, class_id, appearance, null, progress)
 	_when_loaded(func() -> void:
-		client.connect_to(_with_debug_lag(WebRtcTransport.join(signaling, WebRtcTransport.ice_from_url(balance.stun_url)))))
+		if client != null:
+			join_signaling = signaling
+			client.connect_to(_with_debug_lag(WebRtcTransport.join(signaling, WebRtcTransport.ice_from_url(balance.stun_url)))))
 
 
 ## A guest connects only once its zone is loaded (Plan 8.1.1): loading stalls frames
@@ -307,17 +321,22 @@ func build_zone(layout: ZoneLayout, waits: Array = ["build", "ready"]) -> void:
 	_drawn_loading = false
 
 
-## Runs the next build step; false when there was none.
+## Runs the next build step (the zone's, then the monster prewarm); false when none is left.
 func run_build_step() -> bool:
-	if _build_steps.is_empty():
+	if _build_steps.is_empty() and _prewarm.is_empty():
 		return false
-	var step: Callable = _build_steps.pop_front()
+	var step: Callable = _build_steps.pop_front() if not _build_steps.is_empty() else _prewarm.pop_front()
 	step.call()
-	if _build_steps.is_empty():
+	if _build_steps.is_empty() and _prewarm.is_empty() and zone_building:
 		zone_building = false
 		loading.done("build")
 		zone_built.emit()
 	return true
+
+
+## Monster models still to build ahead.
+func prewarm_left() -> int:
+	return _prewarm.size()
 
 
 ## Runs every step left (tests, and nothing else waits for frames).

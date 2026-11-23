@@ -748,3 +748,16 @@ func test_icon_bar_opens_windows_top_right() -> void:
 		main.icon_bar.button("menu").pressed.emit()
 	assert_false(main.inventory_window.visible or main.character_window.visible)
 	assert_true(main.pause_menu.visible)
+
+
+## Review fix: a mistyped code in the pause menu keeps the solo game.
+func test_pause_join_bad_code_keeps_the_game() -> void:
+	var c := _create("Viajera", "cleric")
+	c.tutorial_done = true
+	main.store.save(c)
+	main._on_select_play(c.id)
+	await wait_physics_frames(3)
+	var solo := main.game
+	main._on_pause_join("no-es-un-codigo")
+	assert_same(main.game, solo, "still playing")
+	assert_true(main.dialog.visible, "says the code is wrong")
