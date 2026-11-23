@@ -27,6 +27,7 @@ Cada decisión importante tiene su nota (plantilla **Decisión**). Las pendiente
 - [[D-015 Vóxel 2× y renovación gráfica en cuatro partes]]
 - [[D-016 Razas solo de aspecto con cabeza propia]]
 - [[D-017 Mundo por zonas, hordas y demo del prólogo y arco 1]]
+- [[D-018 Misiones en el anfitrión con objetivos fijos y marcas]]
 
 ---
 ← [[00 Inicio|Inicio]]
