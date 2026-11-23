@@ -26,3 +26,11 @@ func test_markers() -> void:
 	var brann := village.filter(func(m: Dictionary) -> bool: return m.kind == "npc" and m.label == tr("NPC_BRANN"))
 	assert_eq(brann.size(), 1)
 	assert_eq(Vector2(brann[0].cell), Vector2(33.5, 39.5))
+
+
+## Plan 8.1.2: the edge band is drawn as forest on the map.
+func test_band_drawn_as_forest() -> void:
+	var z := ZoneLayout.load_id("aldea")
+	var img := ZoneMapImage.make(z)
+	var c: Color = img.get_pixel(2 * ZoneMapImage.PX + 1, 2 * ZoneMapImage.PX + 1)
+	assert_almost_eq(c.g, ZoneMapImage.TREE.g, 0.05)

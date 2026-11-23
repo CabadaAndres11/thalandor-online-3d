@@ -33,6 +33,11 @@ static func make(layout: ZoneLayout, px: int = PX) -> Image:
 		for c: Vector2i in layout.footprint(id, p.at, p.rot):
 			if Rect2i(Vector2i.ZERO, layout.size).has_point(c):
 				img.fill_rect(Rect2i(c * px, Vector2i(px, px)), col)
+	if layout.band > 0: # the edge band: thick forest
+		for x in layout.size.x:
+			for z in layout.size.y:
+				if layout.in_band(Vector2i(x, z)):
+					img.fill_rect(Rect2i(Vector2i(x, z) * px, Vector2i(px, px)), TREE)
 	for h: Dictionary in layout.houses:
 		for c: Vector2i in layout.footprint(h.id, h.at, h.rot) + h.cells:
 			img.fill_rect(Rect2i(c * px, Vector2i(px, px)), HOUSE)

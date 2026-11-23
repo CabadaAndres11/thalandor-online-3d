@@ -12,6 +12,7 @@ const BLOCK_COLORS := {ITEM_BLOCK_A: Color("#9c8b74"), ITEM_BLOCK_B: Color("#7d8
 const GROUND := {
 	"grass": Color("#5f8a49"), "dirt": Color("#7a6446"), "road": Color("#8c7a5a"), "stone": Color("#6f6c66"),
 	"sand": Color("#c2ad7c"), "water": Color("#3d6f8f"), "crypt": Color("#3d3a36"),
+	"forest": Color("#3f5530"), # the floor under the edge band (Plan 8.1.2)
 }
 const WATER_DEPTH := 0.12
 ## Pieces and ground are grouped in chunks of CHUNK×CHUNK cells (Plan 8.1.1).
@@ -122,6 +123,11 @@ static func ground_cells_of(layout: ZoneLayout) -> Dictionary:
 		for c: Vector2i in ZoneLayout.path_cells(p):
 			kinds[c] = str(p.get("terrain", "road"))
 	var out := {}
+	if layout.band > 0:
+		for x in layout.size.x:
+			for z in layout.size.y:
+				if layout.in_band(Vector2i(x, z)):
+					kinds[Vector2i(x, z)] = "forest"
 	for x in layout.size.x:
 		for z in layout.size.y:
 			var c := Vector2i(x, z)
@@ -136,7 +142,10 @@ func _build_ground() -> void:
 	var plane := PlaneMesh.new()
 	plane.size = Vector2(layout.size) + Vector2(400, 400)
 	var outer_mat := StandardMaterial3D.new()
-	outer_mat.albedo_color = (GROUND.get(str(layout.terrain.get("base", "grass")), GROUND.grass) as Color).darkened(0.25)
+	# Under the outer margin: forest floor (or the dungeon's rock), so gaps between trees
+	# read as undergrowth, not as void (Plan 8.1.2).
+	var beyond: Color = GROUND.crypt if layout.instanced else GROUND.forest
+	outer_mat.albedo_color = beyond.darkened(0.15)
 	outer_mat.roughness = 1.0
 	plane.material = outer_mat
 	outer.mesh = plane

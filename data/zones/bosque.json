@@ -5,6 +5,7 @@
 		128
 	],
 	"ambience": "exterior_dia",
+	"margin": "forest",
 	"levels": [
 		5,
 		20
@@ -200,11 +201,11 @@
 	],
 	"entries": {
 		"default": [
-			4,
+			12,
 			64
 		],
 		"from_aldea": [
-			4,
+			12,
 			64
 		],
 		"from_cripta": [
@@ -213,7 +214,7 @@
 		]
 	},
 	"respawn": [
-		6,
+		13,
 		64
 	],
 	"exits": [

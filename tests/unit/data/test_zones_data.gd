@@ -155,3 +155,20 @@ func test_path_reaches_crypt() -> void:
 func test_zone_names() -> void:
 	assert_eq(tr("ZONE_ALDEA"), "Aelhest")
 	assert_eq(tr("ZONE_BOSQUE"), "Bosque de Eldarra")
+
+
+## Plan 8.1.2: entries, NPCs and hordes are never inside the edge band nor on an exit.
+func test_entries_npcs_and_hordes_off_the_band() -> void:
+	for id: String in _ids():
+		var z := ZoneLayout.load_id(id)
+		for name: String in z.entries:
+			var c: Vector2i = z.entries[name]
+			assert_true(z.walkable(c), "%s: entry %s %s" % [id, name, c])
+			for e: Dictionary in z.exits:
+				assert_false((e.area as Rect2i).has_point(c), "%s: entry %s on an exit" % [id, name])
+		for n: Dictionary in z.npcs:
+			assert_true(z.walkable(Vector2i(int(n.at[0]), int(n.at[1]))), "%s: %s" % [id, n.id])
+		for h: Dictionary in z.hordes:
+			var a: Array = h.area
+			for c: Vector2i in [Vector2i(a[0], a[1]), Vector2i(int(a[0]) + int(a[2]) - 1, int(a[1]) + int(a[3]) - 1)]:
+				assert_true(z.walkable(c), "%s: horde corner %s" % [id, c])

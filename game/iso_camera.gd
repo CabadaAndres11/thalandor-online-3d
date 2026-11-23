@@ -22,6 +22,8 @@ var mode: Mode = Mode.ISOMETRIC
 ## view never reaches the void past the zone's margin (Plan 8.1.1). Empty: no limit.
 var bounds: Rect2 = Rect2()
 const BOUNDS_INSET := 6.0
+## How far inside the bounds the followed point stays (a zone's edge band, Plan 8.1.2).
+var inset: float = BOUNDS_INSET
 var _target: Vector3 = Vector3.ZERO
 var _dragging: bool = false
 var _distances: Dictionary = {Mode.ISOMETRIC: 18.0, Mode.THIRD_PERSON: 9.0}
@@ -36,7 +38,7 @@ func _ready() -> void:
 func follow(target: Vector3) -> void:
 	_target = target
 	if bounds.has_area():
-		var inner := bounds.grow(-BOUNDS_INSET)
+		var inner := bounds.grow(-inset)
 		_target.x = clampf(target.x, inner.position.x, inner.end.x)
 		_target.z = clampf(target.z, inner.position.y, inner.end.y)
 	_apply()

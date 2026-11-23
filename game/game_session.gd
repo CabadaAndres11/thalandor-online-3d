@@ -89,6 +89,7 @@ func _init() -> void:
 	camera = IsoCamera.new()
 	camera.name = "Camera"
 	camera.bounds = Rect2(Vector2.ZERO, Vector2(map.size))
+	camera.inset = float(zone_view.layout.band) if zone_view.layout.band > 0 else IsoCamera.BOUNDS_INSET
 	add_child(camera)
 	camera.follow(map.spawn_point())
 	fx = CombatFX.new()
@@ -317,6 +318,7 @@ func build_zone(layout: ZoneLayout, waits: Array = ["build", "ready"]) -> void:
 	map = layout.collision()
 	if camera != null:
 		camera.bounds = Rect2(Vector2.ZERO, Vector2(layout.size))
+		camera.inset = float(layout.band) if layout.band > 0 else IsoCamera.BOUNDS_INSET
 	_build_steps = zone_view.build_steps(layout, _quality)
 	_build_steps.insert(1, func() -> void: map_texture = ImageTexture.create_from_image(ZoneMapImage.make(layout)))
 	zone_building = true

@@ -53,6 +53,13 @@ Que la pantalla de carga sea una **imagen fija de una escena del propio juego**,
   - salir de combate antes de cambiar de zona;
   - Brann.
 
+## Linde del mapa (usuario, tras la prueba de la 0.11.1)
+- El borde deja de ser solo decorado de fuera: las **últimas 10 casillas** de las zonas con `"margin": "forest"` son una **linde** de árboles y rocas dentro del mapa que bloquea el paso.
+- **Salidas:** cada salida del borde es una **senda** tan ancha como la salida que cruza la linde. El cambio de zona salta **5 casillas antes del borde**, dentro de la senda. El cartel y las antorchas están en la boca de la senda, y las llegadas a la zona, justo dentro.
+- **Fuera del mapa:** el bosque decorado sigue durante **30 casillas**, muy denso cerca. El suelo de debajo es de sotobosque oscuro, así que los huecos se leen como bosque.
+- **Cámara:** no se acerca a menos de 10 casillas del borde. Con la isométrica a su zoom máximo se ven unos 30 m: la linde y el bosque de fuera los cubren.
+- **Mazmorras:** sin linde; siguen con sus muros y la roca decorada de fuera.
+
 ## Pruebas (GUT)
 - **Imagen:** la pantalla elige una imagen de la zona de destino, o una genérica si la zona no tiene.
 - **Datos:** cada imagen de `loading.json` existe.

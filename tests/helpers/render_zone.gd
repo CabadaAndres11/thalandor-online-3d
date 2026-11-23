@@ -1,6 +1,6 @@
 extends SceneTree
 ## Screenshots of a zone (Plan 8.1), from above and from the game's camera angle:
-##   Godot --path . -s tests/helpers/render_zone.gd -- --zone=aldea [--view=top|iso] [--at=x,z]
+##   Godot --path . -s tests/helpers/render_zone.gd -- --zone=aldea [--view=top|iso|game] [--at=x,z]
 ## Saves user://render/zone_<zone>_<view>.png.
 
 var _zone := "aldea"
@@ -27,6 +27,17 @@ func _initialize() -> void:
 	root.add_child(cam)
 	var size := Vector2(layout.size)
 	var center := Vector3(size.x / 2.0, 0, size.y / 2.0)
+	if _view == "game": # the real game camera at its widest zoom, clamped like in the game (Plan 8.1.2)
+		cam.free()
+		var ic := IsoCamera.new()
+		root.add_child(ic)
+		ic.bounds = Rect2(Vector2.ZERO, size)
+		ic.inset = float(layout.band) if layout.band > 0 else IsoCamera.BOUNDS_INSET
+		ic.zoom(100.0)
+		var at := Vector3(_at.x, 0, _at.y) if _at.x >= 0 else layout.entry("default")
+		ic.follow(at)
+		view.follow(at)
+		return
 	if _view == "top":
 		cam.projection = Camera3D.PROJECTION_ORTHOGONAL
 		cam.size = maxf(size.x, size.y) * 1.05

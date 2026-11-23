@@ -322,3 +322,12 @@ func test_house_shadows_follow_quality() -> void:
 	assert_eq(roof.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_ON)
 	view.set_quality(GraphicsQuality.LOW)
 	assert_eq(roof.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
+
+
+## Plan 8.1.2: the edge band has forest floor under its trees.
+func test_band_ground_is_forest_floor() -> void:
+	var view: ZoneView = add_child_autofree(ZoneView.new())
+	view.build(ZoneLayout.from_dict("e", {"size": [40, 30], "margin": "forest", "entries": {"default": [20, 15]}}))
+	assert_eq(view.ground_cells()[Vector2i(2, 2)], "forest")
+	assert_eq(view.ground_cells()[Vector2i(20, 15)], "grass")
+	assert_false(view.find_children("Ground_forest#*", "", true, false).is_empty())

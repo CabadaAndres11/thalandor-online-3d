@@ -86,3 +86,11 @@ func test_build_progress_reaches_one() -> void:
 	assert_lt(p, 1.0)
 	game.finish_zone_build()
 	assert_almost_eq(game.loading.bar.value, 1.0, 0.001)
+
+
+## Plan 8.1.2: the camera keeps the band's depth from the edge.
+func test_camera_inset_follows_the_band() -> void:
+	var game: GameSession = add_child_autofree(GameSession.new())
+	assert_eq(game.camera.inset, float(ZoneLayout.BAND))
+	game.build_zone(ZoneLayout.load_id("cripta_prueba"))
+	assert_eq(game.camera.inset, IsoCamera.BOUNDS_INSET)

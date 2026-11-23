@@ -58,3 +58,12 @@ func test_camera_clamped() -> void:
 	cam.bounds = Rect2()
 	cam.follow(Vector3(-50, 0, 200))
 	assert_eq(cam.target(), Vector3(-50, 0, 200), "no bounds, no limit")
+
+
+## Plan 8.1.2: the inset follows the edge band of the zone.
+func test_camera_inset() -> void:
+	var c: IsoCamera = add_child_autofree(IsoCamera.new())
+	c.bounds = Rect2(0, 0, 96, 96)
+	c.inset = 10.0
+	c.follow(Vector3(-50, 0, 200))
+	assert_eq(c.target(), Vector3(10, 0, 86))

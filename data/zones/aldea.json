@@ -5,6 +5,7 @@
 		96
 	],
 	"ambience": "exterior_dia",
+	"margin": "forest",
 	"levels": [
 		1,
 		5
@@ -381,7 +382,7 @@
 			41
 		],
 		"from_bosque": [
-			90,
+			83,
 			48
 		]
 	},
@@ -426,10 +427,10 @@
 	"hordes": [
 		{
 			"area": [
-				70,
+				64,
 				64,
 				22,
-				14
+				12
 			],
 			"monsters": [
 				[

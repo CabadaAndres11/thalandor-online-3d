@@ -13,8 +13,14 @@ const CLEAR_RADIUS := 2
 ## Nothing is scattered this close to an exit area, so every way out (a crypt door in the
 ## woods) can be seen from afar (Plan 8.1.1).
 const EXIT_CLEAR := 6
-## Cells of decorated, never walkable land drawn around a zone (Plan 8.1.1).
-const MARGIN := 14
+## Cells of decorated, never walkable land drawn around a zone (Plan 8.1.1; deeper in
+## 8.1.2 so the camera never sees past it).
+const MARGIN := 30
+## The last cells inside an outdoor zone are a thick band of trees, never walked but by
+## the path of each way out (Plan 8.1.2).
+const BAND := 10
+## A way out triggers this many cells before the edge, inside its path.
+const EXIT_DEPTH := 5
 const MARGIN_KINDS := {
 	"forest": ["tree_oak", "tree_pine", "tree_pine", "tree_oak", "rock_large"],
 	"rock": ["crypt_wall", "crypt_wall", "rock_large"],
@@ -55,6 +61,9 @@ var houses: Array = []
 var _house_cells: Dictionary = {} # Vector2i -> house index
 ## Pieces outside the map (a thick tree line or rock), drawn only: {id, at, rot}.
 var margin_pieces: Array = []
+## Depth of the edge band (0: none, as in dungeons) and the paths through it.
+var band: int = 0
+var _paths_out: Array = [] # Rect2i
 ## A signpost and two torches at each way out on the zone's edge: {at, to, rot, exit}.
 var exit_markers: Array = []
 
@@ -114,10 +123,15 @@ static func from_dict(zone_id: String, d: Dictionary, pieces_path: String = PIEC
 			z._road[c] = true
 	for p: Dictionary in d.get("pieces", []):
 		z._place(str(p.get("id", "")), _v2i(p.get("at", [0, 0])), int(p.get("rot", 0)))
+	var margin_kind := str(d.get("margin", "rock" if z.instanced else "forest"))
+	# Zones that say "margin": "forest" end in a band of trees inside the map (Plan 8.1.2).
+	z.band = int(d.get("band", BAND if str(d.get("margin", "")) == "forest" else 0))
+	z._open_paths()
 	z._add_exit_markers()
 	for s: Dictionary in d.get("scatter", []):
 		z._scatter(s)
-	z._add_margin(str(d.get("margin", "rock" if z.instanced else "forest")))
+	if margin_kind != "none":
+		z._add_margin(margin_kind)
 	var monsters := MonsterDB.load_default()
 	for h: Dictionary in z.hordes:
 		for m: Variant in h.get("monsters", []):
@@ -200,7 +214,32 @@ func collision() -> CollisionMap:
 					map.set_solid(Vector2i(x, z), true)
 	for b: Array in blocks:
 		map.set_solid(Vector2i(int(b[0]), int(b[1])), true)
+	if band > 0:
+		for x in size.x:
+			for zz in size.y:
+				if in_band(Vector2i(x, zz)):
+					map.set_solid(Vector2i(x, zz), true)
 	return map
+
+
+## How far a cell is from the zone's edge (0 on the edge).
+func depth(c: Vector2i) -> int:
+	return mini(mini(c.x, c.y), mini(size.x - 1 - c.x, size.y - 1 - c.y))
+
+
+## Inside the edge band and off every path out.
+func in_band(c: Vector2i) -> bool:
+	if band <= 0 or c.x < 0 or c.y < 0 or c.x >= size.x or c.y >= size.y or depth(c) >= band:
+		return false
+	for r: Rect2i in _paths_out:
+		if r.has_point(c):
+			return false
+	return true
+
+
+## Inside the map and not in the edge band (pieces and water aside).
+func walkable(c: Vector2i) -> bool:
+	return c.x >= 0 and c.y >= 0 and c.x < size.x and c.y < size.y and not in_band(c)
 
 
 func entry(entry_name: String) -> Vector3:
@@ -256,7 +295,7 @@ func _scatter(s: Dictionary) -> void:
 			var roll := rng.randf()
 			var kind := str(kinds[rng.randi_range(0, kinds.size() - 1)])
 			var rot := rng.randi_range(0, 3) * 90
-			if roll >= density or _road.has(c) or taken.has(c) or _near_any(c, keep_clear) or _near_exit(c):
+			if roll >= density or _road.has(c) or taken.has(c) or _near_any(c, keep_clear) or _near_exit(c) or in_band(c):
 				continue
 			if not _piece_defs.has(kind):
 				errors.append("unknown piece " + kind)
@@ -282,21 +321,48 @@ func exit_inward(area: Rect2i) -> Vector2i:
 	return Vector2i.ZERO
 
 
+## With an edge band, each way out on the edge becomes a path through it, as wide as the
+## exit, and the exit triggers EXIT_DEPTH cells before the edge (Plan 8.1.2).
+func _open_paths() -> void:
+	if band <= 0:
+		return
+	for e: Dictionary in exits:
+		var r: Rect2i = e.area
+		var inward := exit_inward(r)
+		if inward == Vector2i.ZERO:
+			continue
+		if inward.x != 0:
+			var x0 := 0 if inward.x > 0 else size.x - band
+			var t0 := 0 if inward.x > 0 else size.x - EXIT_DEPTH
+			_paths_out.append(Rect2i(x0, r.position.y, band, r.size.y))
+			e.area = Rect2i(t0, r.position.y, EXIT_DEPTH, r.size.y)
+		else:
+			var z0 := 0 if inward.y > 0 else size.y - band
+			var t1 := 0 if inward.y > 0 else size.y - EXIT_DEPTH
+			_paths_out.append(Rect2i(r.position.x, z0, r.size.x, band))
+			e.area = Rect2i(r.position.x, t1, r.size.x, EXIT_DEPTH)
+
+
 func _add_exit_markers() -> void:
 	for i in exits.size():
 		var r: Rect2i = exits[i].area
 		var inward := exit_inward(r)
 		if inward == Vector2i.ZERO:
 			continue
-		# The exit's inner line, and the two cells just beyond its ends along that line.
+		# The exit's inner line (with a band, the mouth of its path), and the two cells
+		# just beyond its ends along that line.
 		var a: Vector2i
 		var b: Vector2i
 		if inward.x != 0:
 			var x := r.position.x if inward.x < 0 else r.end.x - 1
+			if band > 0:
+				x = band if inward.x > 0 else size.x - 1 - band
 			a = Vector2i(x, r.position.y - 1)
 			b = Vector2i(x, r.end.y)
 		else:
 			var zz := r.position.y if inward.y < 0 else r.end.y - 1
+			if band > 0:
+				zz = band if inward.y > 0 else size.y - 1 - band
 			a = Vector2i(r.position.x - 1, zz)
 			b = Vector2i(r.end.x, zz)
 		torches.append([a.x, a.y])
@@ -323,14 +389,15 @@ func _add_margin(kind: String) -> void:
 	for x in range(-MARGIN, size.x + MARGIN):
 		for zz in range(-MARGIN, size.y + MARGIN):
 			var c := Vector2i(x, zz)
-			if x >= 0 and zz >= 0 and x < size.x and zz < size.y:
+			var inside := x >= 0 and zz >= 0 and x < size.x and zz < size.y
+			if inside and not in_band(c):
 				continue
 			var ring := maxi(maxi(-x, x - size.x + 1), maxi(-zz, zz - size.y + 1))
-			var density := 0.9 if ring <= 2 else (0.45 if ring <= 6 else 0.2)
+			var density := 0.85 if inside else (0.9 if ring <= 4 else (0.6 if ring <= 12 else 0.4))
 			var roll := rng.randf()
 			var piece := str(kinds[rng.randi_range(0, kinds.size() - 1)])
 			var rot := rng.randi_range(0, 3) * 90
-			if roll >= density or _in_way_out(c, open):
+			if roll >= density or (not inside and _in_way_out(c, open)):
 				continue
 			margin_pieces.append({"id": piece, "at": c, "rot": rot})
 

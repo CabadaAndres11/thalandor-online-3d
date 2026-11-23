@@ -139,7 +139,7 @@ func test_nothing_scattered_inside_a_house() -> void:
 # --- Zone edges and exit markers (Plan 8.1.1) -------------------------------------------
 
 func _edge_zone() -> ZoneLayout:
-	return ZoneLayout.from_dict("e", {"size": [40, 30], "exits": [{"area": [38, 12, 2, 5], "to": "bosque", "entry": "from_aldea"}],
+	return ZoneLayout.from_dict("e", {"size": [40, 30], "margin": "forest", "exits": [{"area": [38, 12, 2, 5], "to": "bosque", "entry": "from_aldea"}],
 		"entries": {"default": [5, 5]}})
 
 
@@ -149,7 +149,7 @@ func test_margin_surrounds_zone_except_exits() -> void:
 	var near := {}
 	for p: Dictionary in z.margin_pieces:
 		var at: Vector2i = p.at
-		assert_true(at.x < 0 or at.y < 0 or at.x >= 40 or at.y >= 30, "margin outside the map: %s" % at)
+		assert_false(z.walkable(at), "margin never on walkable ground: %s" % at)
 		for dx in range(-2, 3):
 			for dz in range(-2, 3):
 				near[at + Vector2i(dx, dz)] = true
@@ -185,3 +185,48 @@ func test_exit_markers() -> void:
 func test_margin_kind_rock_for_dungeons() -> void:
 	var z := ZoneLayout.from_dict("d", {"size": [20, 20], "instanced": true, "entries": {"default": [5, 5]}})
 	assert_true(z.margin_pieces.all(func(p: Dictionary) -> bool: return p.id in ["crypt_wall", "rock_large"]))
+
+
+# --- The edge as an obstacle inside the map (Plan 8.1.2) --------------------------------
+
+func test_band_blocks_the_edge_but_not_the_path() -> void:
+	var z := _edge_zone()
+	assert_eq(z.band, ZoneLayout.BAND)
+	var map := z.collision()
+	assert_true(map.is_solid(Vector2i(35, 5)), "inside the band")
+	assert_true(map.is_solid(Vector2i(5, 20)), "west band")
+	assert_true(map.is_solid(Vector2i(20, 29 - 9)), "south band, depth 9")
+	assert_false(map.is_solid(Vector2i(20, 29 - 10)), "depth 10 is walkable")
+	for x in range(30, 40):
+		assert_false(map.is_solid(Vector2i(x, 14)), "the path through the band at %d" % x)
+	assert_false(z.walkable(Vector2i(35, 5)))
+	assert_true(z.walkable(Vector2i(20, 15)))
+
+
+func test_exit_triggers_inside_the_path_before_the_edge() -> void:
+	var z := _edge_zone()
+	var r: Rect2i = z.exits[0].area
+	assert_eq(r, Rect2i(40 - ZoneLayout.EXIT_DEPTH, 12, ZoneLayout.EXIT_DEPTH, 5))
+
+
+func test_markers_at_the_mouth_of_the_path() -> void:
+	var z := _edge_zone()
+	var at: Vector2i = z.exit_markers[0].at
+	assert_lte(at.x, 39 - ZoneLayout.BAND, "the signpost stands on walkable ground")
+	for t: Array in z.torches:
+		assert_eq(int(t[0]), 39 - ZoneLayout.BAND, "torches flank the mouth")
+
+
+func test_margin_runs_deep() -> void:
+	var z := _edge_zone()
+	var deepest := 0
+	for m: Dictionary in z.margin_pieces:
+		deepest = maxi(deepest, -(m.at as Vector2i).x)
+	assert_gte(deepest, ZoneLayout.MARGIN - 2)
+
+
+func test_no_band_for_dungeons_or_without_margin() -> void:
+	assert_eq(ZoneLayout.from_dict("d", {"size": [20, 20], "instanced": true, "entries": {"default": [5, 5]}}).band, 0)
+	var none := ZoneLayout.from_dict("n", {"size": [20, 20], "margin": "none", "entries": {"default": [5, 5]}})
+	assert_eq(none.band, 0)
+	assert_true(none.margin_pieces.is_empty())
