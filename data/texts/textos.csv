@@ -960,7 +960,7 @@ DUNGEON_LEVEL_HINT,Elige el nivel de los enemigos de la mazmorra.
 GROUP_LOCKED_TUTORIAL,Termina la defensa de la aldea para jugar con amigos.
 ERR_TUTORIAL,"Tu personaje aún no ha terminado la defensa de la aldea: termínala para jugar con amigos."
 CMD_TUTORIAL_DONE,Tutorial marcado como terminado.
-ZONE_ALDEA,Aelhest
+ZONE_ALDEA,Aldea de Aelhest
 ZONE_BOSQUE,Bosque de Eldarra
 ZONE_CRIPTA_PRUEBA,Cripta olvidada
 ZONE_ARENA,Arena de pruebas
@@ -975,4 +975,4 @@ TIP_GROUP,"Para jugar con amigos, abre un grupo o únete con un código desde el
 TIP_DUNGEON_LEVEL,"En la puerta de una mazmorra eliges su nivel: cuanto más alto, más experiencia."
 TIP_HORDES,Las hordas de monstruos son la forma más rápida de subir de nivel.
 TIP_COMBAT_EXIT,No puedes cambiar de zona hasta 5 segundos después del último golpe recibido.
-TIP_BRANN,"Brann, el herrero de Aelhest, te enseña tu clase y te ayuda con tus mejoras."
+TIP_BRANN,"Brann, el herrero de la Aldea de Aelhest, te enseña tu clase y te ayuda con tus mejoras."

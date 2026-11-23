@@ -25,7 +25,7 @@ actualizado: 2026-11-22
 - **Iluminación:** cada zona elige un **ambiente** de `data/ambiences/` con `"ambience"` en su JSON y coloca antorchas con `"torches"` **[Implementado 0.8.0]**. Ciclo de día y noche opcional por zona (Plan 8); las mazmorras usan luces locales (antorchas) para dar ambiente.
 
 ## Nombres del mundo
-El continente es **Velmora**; el reino, **Valdrenn**, con capital en **Sumerhold**. La aldea del prólogo es **Aelhest** y el bosque camino de la capital, **Eldarra** («Bosque de Eldarra»). La cripta del sello del arco 1 es la **Cripta de Sumerhold**. Se usan en diálogos, carteles, mapa y pantallas de carga.
+El continente es **Velmora**; el reino, **Valdrenn**, con capital en **Sumerhold**. La aldea del prólogo es **Aelhest** y el bosque camino de la capital, **Eldarra** («Bosque de Eldarra»). La cripta del sello del arco 1 es la **Cripta de Sumerhold**. En pantallas de carga, carteles, mapa y textos se usa el **nombre completo**: «Aldea de Aelhest», «Bosque de Eldarra», «Sumerhold, Capital del Reino», «Cripta de Sumerhold».
 
 ## 6.2 Contenido de la demo **[En curso]** (Plan 8, según el guion)
 La demo cubre el **prólogo y el arco 1** (misiones 1–14) y termina hacia el **nivel 50** al salir de la capital rumbo al volcán.

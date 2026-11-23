@@ -7,6 +7,24 @@
 3. **Aviso de Windows (SmartScreen):** el juego no está firmado. Pulsa **Más información → Ejecutar de todas formas**.
 4. Pulsa **Jugar**. Se abre **Tus personajes**: crea uno con **Crear** (nombre, raza y aspecto) o elige uno que ya tengas. Empiezas como **aldeano**: la clase se elige en la partida, hablando con **Brann** (pulsa **E** a su lado).
 
+### Novedades de la 0.11.3: el mundo por zonas
+- **El juego empieza en la Aldea de Aelhest**, junto a la herrería de Brann, y se sale al **Bosque de Eldarra** por la senda del este.
+- **Zonas:**
+  - cada zona tiene su **nivel de monstruos** y sus **hordas**, que reaparecen y son la mejor forma de subir de nivel;
+  - las zonas acaban en una linde de árboles; se sale por las **sendas** con cartel;
+  - no se puede cambiar de zona en combate (5 s desde el último golpe).
+- **Mazmorras:** en la puerta de la cripta del bosque (al sureste) se **elige su nivel**. El grupo entra en la misma.
+- **Casas que se pueden visitar:** al entrar, el tejado se desvanece. La herrería nueva tiene hornos dentro y un cobertizo con fragua.
+- **Pantallas de carga** con imágenes de la zona, consejos y barra de carga.
+- **Interfaz:**
+  - iconos arriba a la derecha (Personaje, Bolsa, Habilidades, Talentos, Mapa y Menú);
+  - **mapa** con la **M** y **minimapa** (se puede quitar en Ajustes);
+  - botón **Ordenar** en la bolsa.
+- **Jugar en grupo:** se abre o se une un grupo desde el **menú de pausa (Esc)**. Un personaje nuevo no puede jugar en grupo hasta terminar la defensa de la aldea; mientras llegan las misiones, escribe `/tutorial hecho` en el chat para desbloquearlo.
+- **Rendimiento:** modelos más ligeros, sombras simplificadas y la zona se carga por pasos.
+- Tu personaje recuerda la zona y el sitio donde lo dejaste.
+- **Todo el grupo tiene que usar la misma versión.**
+
 ### Novedades de la 0.10.0: identidad y razas
 - **Pantalla de inicio nueva:**
   - una escena en vivo con cultistas orando alrededor del altar del Sol Negro, de noche, entre braseros, velas y brasas;

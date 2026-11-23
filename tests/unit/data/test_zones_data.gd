@@ -155,7 +155,7 @@ func test_path_reaches_crypt() -> void:
 
 ## Plan 8.1.2: the world's names (the user's).
 func test_zone_names() -> void:
-	assert_eq(tr("ZONE_ALDEA"), "Aelhest")
+	assert_eq(tr("ZONE_ALDEA"), "Aldea de Aelhest")
 	assert_eq(tr("ZONE_BOSQUE"), "Bosque de Eldarra")
 
 
