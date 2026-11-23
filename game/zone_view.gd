@@ -20,6 +20,8 @@ const CHUNK := 16
 const LOD_NEAR := 45.0
 ## Draw distance of a piece without "range" in pieces.json.
 const RANGE_DEFAULT := 90.0
+## A signpost's zone name shows within this distance of the camera.
+const SIGN_READ_RANGE := 40.0
 ## Coarse meshes merge COARSE³ voxels into one.
 const COARSE := 2
 
@@ -62,6 +64,7 @@ func build_steps(p_layout: ZoneLayout, quality_level: int = GraphicsQuality.MEDI
 	if not layout.houses.is_empty():
 		steps.append(_build_houses)
 	steps.append(_build_blocks)
+	steps.append(_build_exit_marks)
 	steps.append(func() -> void: _add_torches(layout.torches))
 	steps.append(_apply_lighting)
 	return steps
@@ -194,7 +197,7 @@ func _build_pieces(groups: Dictionary, kind: String) -> void:
 ## "id#cx,cz" -> the placed pieces of that kind in that chunk (houses are HouseViews).
 func _piece_groups() -> Dictionary:
 	var groups := {}
-	for p: Dictionary in layout.pieces:
+	for p: Dictionary in layout.pieces + layout.margin_pieces:
 		if layout.piece_def(str(p.id)).has("parts"):
 			continue
 		var key := chunk_name(str(p.id), p.at)
@@ -248,6 +251,57 @@ static func placement(p: Dictionary) -> Transform3D:
 	var turn := Transform3D(Basis(Vector3.UP, -deg_to_rad(float(p.rot))), Vector3.ZERO)
 	return Transform3D.IDENTITY.translated(Vector3(at.x + 0.5, 0, at.y + 0.5)) * turn \
 		* Transform3D.IDENTITY.translated(Vector3(-0.5, 0, -0.5))
+
+
+## The name of the zone each way out leads to on its signpost, and a soft glow on the
+## ground of each exit (Plan 8.1.1).
+func _build_exit_marks() -> void:
+	var root := Node3D.new()
+	root.name = "Exits"
+	add_child(root)
+	for m: Dictionary in layout.exit_markers:
+		var label := Label3D.new()
+		label.text = tr("ZONE_" + str(m.to).to_upper())
+		label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		label.font_size = 96
+		label.outline_size = 12
+		label.modulate = Color("#ffe2a8")
+		label.visibility_range_end = SIGN_READ_RANGE
+		var at: Vector2i = m.at
+		label.position = Vector3(at.x + 0.5, 2.8, at.y + 0.5)
+		root.add_child(label)
+	for i in layout.exits.size():
+		var r: Rect2i = layout.exits[i].area
+		var glow := MeshInstance3D.new()
+		glow.name = "ExitGlow_%d" % i
+		var plane := PlaneMesh.new()
+		plane.size = Vector2(r.size)
+		var mat := StandardMaterial3D.new()
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		mat.albedo_color = Color(1.0, 0.8, 0.45, 0.28)
+		plane.material = mat
+		glow.mesh = plane
+		glow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		glow.position = Vector3(r.position.x + r.size.x / 2.0, 0.03, r.position.y + r.size.y / 2.0)
+		root.add_child(glow)
+		# The way goes on through the margin (a dirt track into the trees).
+		var inward := layout.exit_inward(r)
+		if inward == Vector2i.ZERO:
+			continue
+		var track := MeshInstance3D.new()
+		track.name = "ExitTrack_%d" % i
+		var strip := PlaneMesh.new()
+		var len := float(ZoneLayout.MARGIN)
+		strip.size = Vector2(len, r.size.y) if inward.x != 0 else Vector2(r.size.x, len)
+		var tmat := StandardMaterial3D.new()
+		tmat.albedo_color = (GROUND.road as Color).darkened(0.2)
+		tmat.roughness = 1.0
+		strip.material = tmat
+		track.mesh = strip
+		var c := Vector2(r.position) + Vector2(r.size) / 2.0 - Vector2(inward) * (len / 2.0 + (r.size.x if inward.x != 0 else r.size.y) / 2.0)
+		track.position = Vector3(c.x, -0.01, c.y)
+		root.add_child(track)
 
 
 func _build_houses() -> void:

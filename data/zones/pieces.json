@@ -1061,6 +1061,23 @@
 		"shadow": "medium",
 		"range": 90
 	},
+	"signpost": {
+		"vox": "res://assets/world/signpost.vox",
+		"scale": 0.5,
+		"offset": [
+			-7,
+			0,
+			7
+		],
+		"footprint": [
+			[
+				0,
+				0
+			]
+		],
+		"shadow": "medium",
+		"range": 90
+	},
 	"torch": {
 		"vox": "res://assets/world/torch.vox",
 		"scale": 0.5,

@@ -134,3 +134,54 @@ func test_nothing_scattered_inside_a_house() -> void:
 	for p: Dictionary in z.pieces:
 		if p.id != "house_large":
 			assert_false(inside.has(p.at), "%s at %s" % [p.id, p.at])
+
+
+# --- Zone edges and exit markers (Plan 8.1.1) -------------------------------------------
+
+func _edge_zone() -> ZoneLayout:
+	return ZoneLayout.from_dict("e", {"size": [40, 30], "exits": [{"area": [38, 12, 2, 5], "to": "bosque", "entry": "from_aldea"}],
+		"entries": {"default": [5, 5]}})
+
+
+func test_margin_surrounds_zone_except_exits() -> void:
+	var z := _edge_zone()
+	assert_false(z.margin_pieces.is_empty())
+	var near := {}
+	for p: Dictionary in z.margin_pieces:
+		var at: Vector2i = p.at
+		assert_true(at.x < 0 or at.y < 0 or at.x >= 40 or at.y >= 30, "margin outside the map: %s" % at)
+		for dx in range(-2, 3):
+			for dz in range(-2, 3):
+				near[at + Vector2i(dx, dz)] = true
+	for x in range(-1, 41):
+		for zz in [-1, 30]:
+			assert_true(near.has(Vector2i(x, zz)), "ring %d,%d" % [x, zz])
+	for zz in range(-1, 31):
+		assert_true(near.has(Vector2i(-1, zz)), "ring -1,%d" % zz)
+		if zz < 11 or zz > 17:
+			assert_true(near.has(Vector2i(40, zz)), "ring 40,%d" % zz)
+	for p: Dictionary in z.margin_pieces:
+		var at: Vector2i = p.at
+		assert_false(at.x >= 40 and at.y >= 11 and at.y <= 17, "the way out stays open: %s" % at)
+
+
+func test_margin_not_walkable() -> void:
+	var map := _edge_zone().collision()
+	for c: Vector2i in [Vector2i(-1, 5), Vector2i(40, 5), Vector2i(5, -1), Vector2i(5, 30)]:
+		assert_true(map.is_solid(c), str(c))
+
+
+func test_exit_markers() -> void:
+	var z := _edge_zone()
+	assert_eq(z.exit_markers.size(), 1)
+	var m: Dictionary = z.exit_markers[0]
+	assert_eq(m.to, "bosque")
+	var at: Vector2i = m.at
+	assert_true(at.x >= 0 and at.x < 40 and at.y >= 0 and at.y < 30, "the signpost stands inside")
+	assert_true(z.pieces.any(func(p: Dictionary) -> bool: return p.id == "signpost" and p.at == at))
+	assert_eq(z.torches.size(), 2, "two torches at the exit")
+
+
+func test_margin_kind_rock_for_dungeons() -> void:
+	var z := ZoneLayout.from_dict("d", {"size": [20, 20], "instanced": true, "entries": {"default": [5, 5]}})
+	assert_true(z.margin_pieces.all(func(p: Dictionary) -> bool: return p.id in ["crypt_wall", "rock_large"]))

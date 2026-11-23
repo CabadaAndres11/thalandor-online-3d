@@ -47,3 +47,14 @@ func test_the_camera_keys_are_registered() -> void:
 	InputSetup.ensure_actions()
 	for a: String in ["toggle_camera", "camera_left", "camera_right"]:
 		assert_true(InputMap.has_action(a), a)
+
+
+## Plan 8.1.1: the camera never follows past the zone (it would show the void beyond).
+func test_camera_clamped() -> void:
+	var cam: IsoCamera = add_child_autofree(IsoCamera.new())
+	cam.bounds = Rect2(0, 0, 96, 96)
+	cam.follow(Vector3(-50, 0, 200))
+	assert_eq(cam.target(), Vector3(6, 0, 90))
+	cam.bounds = Rect2()
+	cam.follow(Vector3(-50, 0, 200))
+	assert_eq(cam.target(), Vector3(-50, 0, 200), "no bounds, no limit")

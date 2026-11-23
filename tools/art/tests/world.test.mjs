@@ -6,7 +6,7 @@ import { worldPieces, footprintOf, CELL, SMALL_PIECES, HOUSE_CELL } from "../mak
 const p = worldPieces();
 const IDS = ["house_small", "house_large", "house_forge", "fence", "wall_low", "well", "cart", "crates",
   "tree_oak", "tree_pine", "bush", "rock_small", "rock_large", "stump", "bridge", "torch",
-  "crypt_arch", "crypt_wall", "crypt_pillar"];
+  "crypt_arch", "crypt_wall", "crypt_pillar", "signpost"];
 
 test("every piece exists and fits a vox model", () => {
   for (const id of IDS) {

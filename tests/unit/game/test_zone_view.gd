@@ -130,6 +130,7 @@ func test_pieces_of_a_kind_share_a_node_per_chunk() -> void:
 	view.build(z)
 	var oaks := z.pieces.filter(func(p: Dictionary) -> bool: return p.id == "tree_oak").size()
 	assert_gt(oaks, 20)
+	oaks += z.margin_pieces.filter(func(p: Dictionary) -> bool: return p.id == "tree_oak").size()
 	var total := 0
 	for mm: MultiMeshInstance3D in view.find_children("tree_oak#*", "MultiMeshInstance3D", true, false):
 		if not "~" in mm.name:
@@ -290,3 +291,24 @@ func test_forge_has_a_light() -> void:
 	view.build(_village())
 	var forge := view.find_child("house_1", true, false) as HouseView
 	assert_false(forge.find_children("*", "OmniLight3D", true, false).is_empty())
+
+
+# --- Zone edges (Plan 8.1.1) ------------------------------------------------------------
+
+func test_signpost_label_text() -> void:
+	var view: ZoneView = add_child_autofree(ZoneView.new())
+	view.build(ZoneLayout.load_id("aldea"))
+	var labels := view.find_children("*", "Label3D", true, false)
+	assert_eq(labels.size(), 1)
+	assert_eq((labels[0] as Label3D).text, tr("ZONE_BOSQUE"))
+	assert_not_null(view.find_child("ExitGlow_0", true, false))
+
+
+func test_margin_drawn() -> void:
+	var view: ZoneView = add_child_autofree(ZoneView.new())
+	view.build(_edge())
+	assert_false(view.find_children("tree_*#-1,*", "MultiMeshInstance3D", true, false).is_empty(), "trees west of the map")
+
+
+func _edge() -> ZoneLayout:
+	return ZoneLayout.from_dict("e", {"size": [40, 30], "entries": {"default": [5, 5]}})

@@ -10,6 +10,12 @@ const DIR := "res://data/zones/"
 const PIECES_PATH := "res://data/zones/pieces.json"
 ## Exits and entries keep this many cells around them free of scattered pieces.
 const CLEAR_RADIUS := 2
+## Cells of decorated, never walkable land drawn around a zone (Plan 8.1.1).
+const MARGIN := 14
+const MARGIN_KINDS := {
+	"forest": ["tree_oak", "tree_pine", "tree_pine", "tree_oak", "rock_large"],
+	"rock": ["crypt_wall", "crypt_wall", "rock_large"],
+}
 ## sim/ does not know the visual Ambience class: the same default id.
 const DEFAULT_AMBIENCE := "exterior_dia"
 
@@ -44,6 +50,10 @@ var warnings: Array = []
 ## cells: Array (world interior cells), door: Array (world door cells)}.
 var houses: Array = []
 var _house_cells: Dictionary = {} # Vector2i -> house index
+## Pieces outside the map (a thick tree line or rock), drawn only: {id, at, rot}.
+var margin_pieces: Array = []
+## A signpost and two torches at each way out on the zone's edge: {at, to, rot, exit}.
+var exit_markers: Array = []
 
 static var _pieces_cache: Dictionary = {}
 var _piece_defs: Dictionary = {}
@@ -101,8 +111,10 @@ static func from_dict(zone_id: String, d: Dictionary, pieces_path: String = PIEC
 			z._road[c] = true
 	for p: Dictionary in d.get("pieces", []):
 		z._place(str(p.get("id", "")), _v2i(p.get("at", [0, 0])), int(p.get("rot", 0)))
+	z._add_exit_markers()
 	for s: Dictionary in d.get("scatter", []):
 		z._scatter(s)
+	z._add_margin(str(d.get("margin", "rock" if z.instanced else "forest")))
 	var monsters := MonsterDB.load_default()
 	for h: Dictionary in z.hordes:
 		for m: Variant in h.get("monsters", []):
@@ -252,6 +264,83 @@ func _scatter(s: Dictionary) -> void:
 			for k: Vector2i in cells:
 				taken[k] = true
 			pieces.append({"id": kind, "at": c, "rot": rot})
+
+
+## The inward direction of an exit on the zone's edge (ZERO for one inside the map).
+func exit_inward(area: Rect2i) -> Vector2i:
+	if area.end.x >= size.x:
+		return Vector2i(-1, 0)
+	if area.position.x <= 0:
+		return Vector2i(1, 0)
+	if area.end.y >= size.y:
+		return Vector2i(0, -1)
+	if area.position.y <= 0:
+		return Vector2i(0, 1)
+	return Vector2i.ZERO
+
+
+func _add_exit_markers() -> void:
+	for i in exits.size():
+		var r: Rect2i = exits[i].area
+		var inward := exit_inward(r)
+		if inward == Vector2i.ZERO:
+			continue
+		# The exit's inner line, and the two cells just beyond its ends along that line.
+		var a: Vector2i
+		var b: Vector2i
+		if inward.x != 0:
+			var x := r.position.x if inward.x < 0 else r.end.x - 1
+			a = Vector2i(x, r.position.y - 1)
+			b = Vector2i(x, r.end.y)
+		else:
+			var zz := r.position.y if inward.y < 0 else r.end.y - 1
+			a = Vector2i(r.position.x - 1, zz)
+			b = Vector2i(r.end.x, zz)
+		torches.append([a.x, a.y])
+		torches.append([b.x, b.y])
+		var sign := a + inward + (a - b).sign()
+		if _piece_defs.has("signpost"): # (test piece tables have none)
+			_place("signpost", sign, 0)
+		exit_markers.append({"at": sign, "to": str(exits[i].to), "rot": 0, "exit": i})
+
+
+## A thick band of trees (or rock) around the map, denser near the edge, leaving the
+## way out of each exit open; seeded by the zone id so it never changes.
+func _add_margin(kind: String) -> void:
+	var kinds: Array = MARGIN_KINDS.get(kind, MARGIN_KINDS.forest)
+	if not _piece_defs.has(str(kinds[0])):
+		return
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash(id + "#margin")
+	var open := []
+	for e: Dictionary in exits:
+		var r: Rect2i = e.area
+		if exit_inward(r) != Vector2i.ZERO:
+			open.append(r.grow(1))
+	for x in range(-MARGIN, size.x + MARGIN):
+		for zz in range(-MARGIN, size.y + MARGIN):
+			var c := Vector2i(x, zz)
+			if x >= 0 and zz >= 0 and x < size.x and zz < size.y:
+				continue
+			var ring := maxi(maxi(-x, x - size.x + 1), maxi(-zz, zz - size.y + 1))
+			var density := 0.9 if ring <= 2 else (0.45 if ring <= 6 else 0.2)
+			var roll := rng.randf()
+			var piece := str(kinds[rng.randi_range(0, kinds.size() - 1)])
+			var rot := rng.randi_range(0, 3) * 90
+			if roll >= density or _in_way_out(c, open):
+				continue
+			margin_pieces.append({"id": piece, "at": c, "rot": rot})
+
+
+## Outside the map in line with an exit (its rows or columns, one more on each side).
+func _in_way_out(c: Vector2i, open: Array) -> bool:
+	for r: Rect2i in open:
+		var inward := exit_inward(r.grow(-1))
+		if inward.x != 0 and c.y >= r.position.y and c.y < r.end.y and (c.x < 0 if inward.x > 0 else c.x >= size.x):
+			return true
+		if inward.y != 0 and c.x >= r.position.x and c.x < r.end.x and (c.y < 0 if inward.y > 0 else c.y >= size.y):
+			return true
+	return false
 
 
 static func _near_any(c: Vector2i, points: Array) -> bool:

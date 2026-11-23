@@ -265,6 +265,12 @@ export function worldPieces() {
   for (const z of [1, 38]) { bridge.box(0, 6, z, 79, 18, z, 0); bridge.box(0, 17, z, 79, 18, z, WOOD); for (let x = 0; x < 80; x += 10) bridge.box(x, 0, z, x + 1, 18, z, WOOD); }
   for (const v of [...bridge.cells.values()]) if (v[3] === 0) bridge.cells.delete(`${v[0]},${v[1]},${v[2]}`);
   add("bridge", bridge, { footprint: [] });
+  // A signpost at each way out of a zone (Plan 8.1.1): a post and a board.
+  const sign = new Shape();
+  sign.box(8, 0, 8, 11, 44, 11, WOOD);
+  sign.box(0, 30, 7, 19, 39, 8, PLANK).box(0, 30, 9, 19, 39, 9, PLANK_D);
+  sign.box(-6, 31, 7, -1, 38, 8, PLANK).put(-7, 34, 7, PLANK).put(-7, 35, 7, PLANK); // arrow tip
+  add("signpost", paint(sign, WOOD, [WOOD, WOOD_D], 45), { footprint: [[0, 0]] });
   const torch = new Shape();
   torch.box(7, 0, 7, 11, 1, 11, IRON).box(8, 2, 8, 9, 25, 9, WOOD).box(7, 26, 7, 10, 26, 10, IRON);
   torch.box(6, 27, 6, 11, 29, 11, IRON).remove(7, 27, 7, 10, 29, 10).box(7, 27, 7, 10, 27, 10, COAL).box(8, 28, 8, 9, 29, 9, GLOW);

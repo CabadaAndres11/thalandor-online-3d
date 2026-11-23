@@ -80,6 +80,7 @@ func _init() -> void:
 	_place_npcs()
 	camera = IsoCamera.new()
 	camera.name = "Camera"
+	camera.bounds = Rect2(Vector2.ZERO, Vector2(map.size))
 	add_child(camera)
 	camera.follow(map.spawn_point())
 	fx = CombatFX.new()
@@ -283,6 +284,8 @@ func build_zone(layout: ZoneLayout, waits: Array = ["build", "ready"]) -> void:
 	add_child(zone_view)
 	move_child(zone_view, 0)
 	map = layout.collision()
+	if camera != null:
+		camera.bounds = Rect2(Vector2.ZERO, Vector2(layout.size))
 	_build_steps = zone_view.build_steps(layout, _quality)
 	zone_building = true
 	_drawn_loading = false
