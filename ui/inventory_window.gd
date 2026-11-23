@@ -6,6 +6,8 @@ extends Control
 
 signal item_action(action: String, args: Array)
 signal sell_requested(index: int)
+## Asks the host to sort the bag (Plan 8.1.1).
+var sort_button: Button
 
 const COLUMNS := 5
 const MARGIN := 24.0
@@ -41,7 +43,15 @@ func _init() -> void:
 	box.add_child(HoloTheme.divider())
 	_gold = Label.new()
 	_gold.add_theme_color_override("font_color", HoloTheme.ACCENT)
-	box.add_child(_gold)
+	sort_button = Button.new()
+	sort_button.text = tr("BTN_SORT")
+	sort_button.focus_mode = Control.FOCUS_NONE
+	sort_button.pressed.connect(func() -> void: item_action.emit("sort", []))
+	var row := HBoxContainer.new()
+	row.add_child(_gold)
+	_gold.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(sort_button)
+	box.add_child(row)
 	var hint := Label.new()
 	hint.text = tr("INV_HINT")
 	hint.add_theme_font_size_override("font_size", 13)

@@ -677,6 +677,9 @@ func _on_item_action(rec: Dictionary, action: String, args: Array) -> void:
 				Merchant.sell(w, p, args[0])
 		"repair":
 			Merchant.repair_all(w, p)
+		"sort":
+			p.inventory.sort_bag(w.items)
+			p.inventory_dirty = true
 
 
 func _send_stock(id: int, p: PlayerState) -> void:

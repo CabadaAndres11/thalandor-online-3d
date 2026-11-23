@@ -233,3 +233,14 @@ func test_second_sale_sells_the_item_the_client_sees() -> void:
 	assert_eq(ring, 1, "the ring keeps its slot on the client")
 	_send(a, Protocol.item_action("sell", [ring]))
 	assert_true(p.inventory.bag.all(func(it: Variant) -> bool: return it == null), "the ring is sold")
+
+
+## Plan 8.1.1: the host sorts the bag on request and sends the new one.
+func test_host_sort_action() -> void:
+	var a := _guest("Ana")
+	_all(a)
+	var p: PlayerState = host.world.players[1]
+	p.inventory.bag[5] = ItemRoll.new_item("warrior_chest_t1", 1)
+	_send(a, Protocol.item_action("sort", []))
+	assert_eq(p.inventory.bag[0].base_id, "warrior_chest_t1")
+	assert_eq(_msgs(a, Protocol.Msg.INVENTORY).size(), 1)

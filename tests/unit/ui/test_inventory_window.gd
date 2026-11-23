@@ -76,3 +76,12 @@ func test_windows_fit_720() -> void:
 	assert_true(screen.encloses(inv_win.panel_rect()), "inventory %s" % inv_win.panel_rect())
 	assert_true(screen.encloses(c.panel_rect()), "character %s" % c.panel_rect())
 	assert_false(inv_win.panel_rect().intersects(c.panel_rect()), "side by side: %s %s" % [inv_win.panel_rect(), c.panel_rect()])
+
+
+## Plan 8.1.1: the Sort button asks the host to sort the bag.
+func test_sort_button_requests_sort() -> void:
+	inv_win.show_for(Inventory.new(), "warrior", 1)
+	watch_signals(inv_win)
+	assert_eq(inv_win.sort_button.text, tr("BTN_SORT"))
+	inv_win.sort_button.pressed.emit()
+	assert_signal_emitted_with_parameters(inv_win, "item_action", ["sort", []])

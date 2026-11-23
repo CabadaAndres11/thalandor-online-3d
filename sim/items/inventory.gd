@@ -130,6 +130,50 @@ func unequip(slot: String, _db: ItemDB = null) -> bool:
 	return true
 
 
+## Bag order (Plan 8.1.1): by the slot an item is worn in, then rarity (best first),
+## level (highest first) and base id; consumables and the rest last.
+const SORT_SLOTS := ["main", "offhand", "head", "shoulders", "chest", "hands", "legs", "feet", "neck", "ring", "consumable"]
+
+
+## Sorts the bag: equal consumables merge up to their stack, empty slots go to the end,
+## the bag keeps its size and what is worn is not touched.
+func sort_bag(db: ItemDB) -> void:
+	var stack := int((db.loot().get("potion", {}) as Dictionary).get("stack", 20))
+	var rarities: Array = db.loot().get("rarities", [])
+	var items: Array = []
+	var counts := {} # consumable base -> total count
+	for it: Variant in bag:
+		if it == null:
+			continue
+		var item: Item = it
+		if db.is_consumable(item.base_id):
+			counts[item.base_id] = int(counts.get(item.base_id, 0)) + item.count
+		else:
+			items.append(item)
+	for base_id: String in counts:
+		var left: int = counts[base_id]
+		while left > 0:
+			var part := ItemRoll.new_item(base_id, 1)
+			part.count = mini(left, stack)
+			left -= part.count
+			items.append(part)
+	var key := func(it: Item) -> Array:
+		var slot := SORT_SLOTS.find(str(db.base(it.base_id).get("slot", "")))
+		return [slot if slot >= 0 else SORT_SLOTS.size(), -rarities.find(it.rarity), -it.level, it.base_id]
+	items.sort_custom(func(a: Item, b: Item) -> bool:
+		var ka: Array = key.call(a)
+		var kb: Array = key.call(b)
+		for i in ka.size():
+			if ka[i] != kb[i]:
+				return ka[i] < kb[i]
+		return false)
+	var size := bag.size()
+	bag.clear()
+	bag.resize(size)
+	for i in items.size():
+		bag[i] = items[i]
+
+
 ## The starter kit of a class worn (level 1, common), with an empty bag and no gold.
 static func starter(class_id: String, db: ItemDB) -> Inventory:
 	var inv := Inventory.new()

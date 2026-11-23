@@ -212,3 +212,49 @@ func test_the_client_copies_the_host_inventory_as_is() -> void:
 	assert_eq(seen.equipment.chest.base_id, "mage_chest_t1", "the host's word, not re-checked")
 	assert_eq(seen.bag[4].base_id, "sword_t1")
 	assert_null(seen.bag[0], "nothing moved into the gaps")
+
+
+# --- Sorting the bag (Plan 8.1.1) -------------------------------------------------------
+
+func _put(i: int, base_id: String, level := 1, rarity := "common", count := 1) -> void:
+	var it := _it(base_id, level)
+	it.rarity = rarity
+	it.count = count
+	inv.bag[i] = it
+
+
+func test_sort_order() -> void:
+	_put(0, "potion_health", 1, "common", 5)
+	_put(3, "warrior_chest_t1", 3, "common")
+	_put(5, "sword_t1", 2, "common")
+	_put(7, "warrior_chest_t1", 5, "rare")
+	_put(9, "sword_t1", 4, "common")
+	_put(12, "warrior_head_t1", 1, "uncommon")
+	inv.sort_bag(db)
+	var got := []
+	for it: Variant in inv.bag:
+		if it != null:
+			got.append("%s/%s/%d" % [(it as Item).base_id, (it as Item).rarity, (it as Item).level])
+	assert_eq(got, ["sword_t1/common/4", "sword_t1/common/2", "warrior_head_t1/uncommon/1",
+		"warrior_chest_t1/rare/5", "warrior_chest_t1/common/3", "potion_health/common/1"])
+	assert_eq(inv.bag.size(), 30, "same size")
+	assert_null(inv.bag[6], "empty slots at the end")
+
+
+func test_sort_merges_stacks_without_loss() -> void:
+	for i: int in [2, 8, 20]:
+		_put(i, "potion_health", 1, "common", 15)
+	inv.sort_bag(db)
+	assert_eq(inv.bag[0].count, 20)
+	assert_eq(inv.bag[1].count, 20)
+	assert_eq(inv.bag[2].count, 5)
+	assert_null(inv.bag[3])
+
+
+func test_sort_keeps_equipment() -> void:
+	var worn := _it("sword_t1")
+	inv.equipment["main"] = worn
+	_put(4, "sword_t1", 3)
+	inv.sort_bag(db)
+	assert_same(inv.equipment["main"], worn)
+	assert_eq(inv.bag[0].level, 3)
