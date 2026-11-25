@@ -40,6 +40,8 @@ var _bad_exits: Dictionary = {}
 var fallback_zone: String = CharacterData.START_ZONE
 ## How often each player is told where to save itself.
 const PLACE_EVERY_S := 30.0
+## The longest a player stays safe in a cutscene (Plan 8.2), should the client never say it ended.
+const SCENE_MAX_S := 120.0
 
 
 func _init(p_balance: Balance, p_map: CollisionMap, p_game_version: String) -> void:
@@ -88,6 +90,11 @@ func tick() -> void:
 			inputs_by_key[rec.zone_key] = {}
 		var inputs: Dictionary = inputs_by_key[rec.zone_key]
 		var queue: Array = rec.queue
+		var ps := state_of(id)
+		if ps != null and ps.in_scene():
+			queue.clear() # watching a cutscene: the player stands still
+			rec.last_input = null
+			continue
 		if not queue.is_empty():
 			var next: PlayerInput = queue.pop_front()
 			rec.last_input = next
@@ -324,6 +331,8 @@ func transfer(id: int, key: String, at: Vector3) -> PlayerState:
 		return null
 	var rec: Dictionary = _players[id]
 	var p := zones.move(id, rec.zone_key, key, at)
+	if p != null:
+		p.remove_status("in_scene") # a scene never follows a player to another zone
 	rec.zone_key = key
 	return p
 
@@ -634,7 +643,13 @@ func _on_quest_action(rec: Dictionary, action: String, args: Array) -> void:
 			QuestRules.report(w, p, "talk", a0, a1)
 		"interact":
 			QuestRules.report(w, p, "interact", a0)
+		"scene_start":
+			if p.is_alive() and not _in_combat(rec.id):
+				p.add_status(StatusEffect.make("in_scene", w.tick + w.ticks(SCENE_MAX_S)))
+				rec.queue.clear()
+				rec.last_input = null
 		"scene_done":
+			p.remove_status("in_scene")
 			QuestRules.report(w, p, "scene", a0)
 		"turn_in":
 			if args.size() >= 1:

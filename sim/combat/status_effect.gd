@@ -54,7 +54,7 @@ static func tick_entity(e: CombatEntity, world: SimWorld) -> void:
 
 
 static func _periodic(e: CombatEntity, s: StatusEffect, world: SimWorld) -> void:
-	if not e.is_alive():
+	if not e.is_alive() or e.has_status("in_scene"):
 		return
 	var amount := s.magnitude * s.stacks
 	match s.kind:
@@ -73,7 +73,7 @@ static func _periodic(e: CombatEntity, s: StatusEffect, world: SimWorld) -> void
 
 ## Order of the status bits sent in snapshots (for icons and stealth on clients).
 const BIT_KINDS := ["stun", "root", "freeze", "slow", "poison", "burn", "mark", "damage_buff",
-	"damage_reduction", "evasion", "taunted", "stealth", "invulnerable", "hot", "bleed", "haste", "vulnerable", "attack_slow", "weaken", "ice_block", "armor_break"]
+	"damage_reduction", "evasion", "taunted", "stealth", "invulnerable", "hot", "bleed", "haste", "vulnerable", "attack_slow", "weaken", "ice_block", "armor_break", "in_scene"]
 
 
 static func bits_of(e: CombatEntity) -> int:

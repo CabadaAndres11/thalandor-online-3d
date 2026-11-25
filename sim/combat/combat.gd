@@ -186,7 +186,7 @@ static func _finish_cast(world: SimWorld, pc: PendingCast, caster: CombatEntity,
 
 ## Rolls and applies the damage (and statuses) of `effect` from source to target.
 static func deal(world: SimWorld, source: CombatEntity, target: CombatEntity, effect: Dictionary, _ability: Dictionary) -> void:
-	if not target.is_alive():
+	if not target.is_alive() or target.has_status("in_scene"):
 		return
 	if target.has_status("invulnerable") or target.has_status("ice_block"):
 		_dodged(world, target)

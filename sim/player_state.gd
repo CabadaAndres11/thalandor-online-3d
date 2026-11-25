@@ -28,8 +28,6 @@ var inventory_dirty: bool = false
 ## Quests (Plan 8.2): the host owns them while playing and sends changes to the owner.
 var quests := QuestLog.new()
 var quests_dirty: bool = false
-## While watching a cutscene (Plan 8.2): untouchable until this tick (-1: not in a scene).
-var in_scene_until_tick: int = -1
 ## Tick from which a potion can be drunk again (shared by health and resource potions).
 var potion_ready_tick: int = 0
 ## What the merchant offers this player and when it was rolled (-1 = never), see Merchant.
@@ -66,3 +64,8 @@ func clone() -> PlayerState:
 	var c := PlayerState.new()
 	c.copy_from(self)
 	return c
+
+
+## Watching a cutscene (Plan 8.2): the status "in_scene" keeps the player out of reach.
+func in_scene() -> bool:
+	return has_status("in_scene")

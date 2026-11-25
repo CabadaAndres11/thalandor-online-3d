@@ -144,7 +144,8 @@ static func _ally_target(world: SimWorld, m: MonsterState, owner: CombatEntity) 
 
 
 static func _valid_target(e: CombatEntity) -> bool:
-	return e != null and e.team == CombatEntity.TEAM_PLAYERS and e.is_alive() and not e.has_status("stealth")
+	return e != null and e.team == CombatEntity.TEAM_PLAYERS and e.is_alive() and not e.has_status("stealth") \
+			and not e.has_status("in_scene")
 
 
 static func _clean_threat(world: SimWorld, m: MonsterState) -> void:
