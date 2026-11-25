@@ -71,6 +71,8 @@ var monsters: Dictionary = {}
 ## The zone this player stands in (Plan 8.1) and its world key.
 var zone_id: String = ""
 var zone_key: String = ""
+## The story variant of that zone (Plan 8.2), "" for the shared zone.
+var zone_variant: String = ""
 ## True from a ZONE message until the first snapshot of the new zone.
 var zone_loading: bool = false
 ## Partners in other zones: id -> {zone (name key), level, hp (ratio)}.
@@ -299,7 +301,7 @@ func _handle(msg: Dictionary) -> void:
 			roster_changed.emit()
 			chat_received.emit("", tr_text("CHAT_LEFT") % name, true)
 		Protocol.Msg.ZONE:
-			_on_zone(msg.zone, msg.key, msg.level)
+			_on_zone(msg.zone, msg.key, msg.level, msg.variant)
 		Protocol.Msg.DUNGEON_OFFER:
 			dungeon_offered.emit(msg.zone, msg.min_level, msg.max_level, msg.default_level)
 		Protocol.Msg.QUESTS:
@@ -322,8 +324,9 @@ func _handle(msg: Dictionary) -> void:
 
 
 ## The host moved this player to another zone: its map, and nothing of the old zone.
-func _on_zone(new_zone: String, key: String, level: int) -> void:
-	var layout := ZoneLayout.load_id(new_zone)
+func _on_zone(new_zone: String, key: String, level: int, variant: String = "") -> void:
+	var layout := ZoneLayout.load_variant(new_zone, variant)
+	zone_variant = variant if layout != null and layout.variant == variant else ""
 	if layout != null:
 		map = layout.collision()
 	zone_id = new_zone

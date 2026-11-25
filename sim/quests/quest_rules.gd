@@ -118,6 +118,18 @@ static func current_objectives(world: SimWorld, p: PlayerState, id: String) -> A
 	return q.steps[step].objectives if step < (q.steps as Array).size() else []
 
 
+## The story moment a player stands in, from the steps it finished: {zone, variant}, or {}.
+static func current_moment(world: SimWorld, p: PlayerState) -> Dictionary:
+	var out := {}
+	for id: String in p.quests.active:
+		var q := _db(world).quest(id)
+		for i in mini(int(p.quests.active[id].step), (q.steps as Array).size()):
+			var od: Dictionary = q.steps[i].on_done
+			if od.has("moment"):
+				out = od.moment if od.moment is Dictionary else {}
+	return out
+
+
 static func is_ready(world: SimWorld, p: PlayerState, id: String) -> bool:
 	var q := _db(world).quest(id)
 	return not q.is_empty() and p.quests.is_active(id) and int(p.quests.active[id].step) >= (q.steps as Array).size()

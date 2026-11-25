@@ -105,6 +105,7 @@ func tick() -> void:
 			# No new input this tick: keep moving/holding, but never repeat presses.
 			inputs[id] = (rec.last_input as PlayerInput).held_only()
 	zones.step_occupied(inputs_by_key)
+	_follow_story_moments()
 	_check_exits()
 	_send_places()
 	if zones.tick % balance.tick_rate == 0:
@@ -290,6 +291,35 @@ func _send_places() -> void:
 			_send_to(id, Protocol.place(layout.id, [floori(p.position.x), floori(p.position.z)]), true)
 
 
+## Quest steps that open or close a story moment (Plan 8.2).
+func _follow_story_moments() -> void:
+	for key: String in zones.keys():
+		for ev: Array in zones.world(key).events.duplicate():
+			if ev[0] == "quest_moment" and _players.has(ev[1]):
+				send_to_moment(ev[1], ev[2], ev[3])
+
+
+## Sends a player into its own copy of a zone variant; zone "" brings it back to the shared
+## zone it stood in (its entry).
+func send_to_moment(id: int, zone: String, variant: String) -> void:
+	if not _players.has(id):
+		return
+	if zone == "":
+		var here := zones.layout(_players[id].zone_key)
+		if here == null or here.variant == "":
+			return
+		var back := zones.open(here.id)
+		if back != "":
+			send_to_zone(id, back, zones.layout(back).entry("default"))
+		return
+	var key := zones.open_personal(zone, variant, id)
+	if key == "":
+		push_warning("HostSession: no story moment %s/%s" % [zone, variant])
+		return
+	if key != _players[id].zone_key:
+		send_to_zone(id, key, zones.layout(key).entry("default"))
+
+
 ## Hurt within EXIT_COMBAT_S: no leaving the zone.
 func _in_combat(id: int) -> bool:
 	var p := state_of(id)
@@ -307,7 +337,7 @@ func send_to_zone(id: int, key: String, at: Vector3) -> void:
 		_players[id].erase("outside") # a door from an old visit is not this place
 	var layout := zones.layout(key)
 	var w := zones.world(key)
-	_send_to(id, Protocol.zone(layout.id if layout != null else "", key, w.instance_level), true)
+	_send_to(id, Protocol.zone(layout.id if layout != null else "", key, w.instance_level, layout.variant if layout != null else ""), true)
 
 
 ## Partners in other worlds: their zone, level and health, once a second.
@@ -467,7 +497,11 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 	if start.key != zones.start_key:
 		# Its client draws the start zone until told otherwise.
 		var sl := zones.layout(start.key)
-		t.send(peer, Protocol.zone(sl.id if sl != null else "", start.key, zones.world(start.key).instance_level), true)
+		t.send(peer, Protocol.zone(sl.id if sl != null else "", start.key, zones.world(start.key).instance_level, sl.variant if sl != null else ""), true)
+	# Back inside the story moment it left (Plan 8.2), made anew.
+	var moment := QuestRules.current_moment(zones.world(start.key), player)
+	if not moment.is_empty():
+		send_to_moment(id, str(moment.zone), str(moment.variant))
 	for other: int in _players:
 		if other != id:
 			_send_to(other, Protocol.player_joined(id, name, slot, class_id, appearance, player.progress.upgrade, _players[id].gear), true)

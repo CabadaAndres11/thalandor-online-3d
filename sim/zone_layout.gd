@@ -84,6 +84,14 @@ static func load_id(zone_id: String) -> ZoneLayout:
 	return load_path(DIR + zone_id + ".json")
 
 
+## A zone with a story variant applied (Plan 8.2); the base zone when the variant is "" or unknown.
+static func load_variant(zone_id: String, variant: String) -> ZoneLayout:
+	var z := load_id(zone_id)
+	if z == null or variant == "" or not z.has_variant(variant):
+		return z
+	return z.apply_variant(variant)
+
+
 static func load_path(path: String, pieces_path: String = PIECES_PATH) -> ZoneLayout:
 	if not FileAccess.file_exists(path):
 		push_warning("ZoneLayout: no zone at " + path)

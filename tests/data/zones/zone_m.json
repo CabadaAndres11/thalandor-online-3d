@@ -1,0 +1,15 @@
+{
+	"name": "ZONE_TEST_A",
+	"size": [30, 30],
+	"entries": {"default": [5, 5]},
+	"respawn": [5, 6],
+	"npcs": [{"id": "brann", "at": [3, 3], "facing": 0}],
+	"variants": {
+		"noche": {
+			"ambience": "noche_fuego",
+			"npcs": [{"id": "merchant", "at": [4, 4], "facing": 0}],
+			"respawn": [12, 12],
+			"hordes": [{"area": [20, 20, 4, 4], "monsters": [["cultist", 1]], "levels": [3, 3], "count": 2, "respawn": false}]
+		}
+	}
+}

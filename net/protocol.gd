@@ -40,7 +40,7 @@ const SCHEMAS := {
 	Msg.PLAYER_GEAR: [["id", TYPE_INT], ["gear", TYPE_ARRAY]],
 	Msg.MERCHANT_STOCK: [["items", TYPE_ARRAY]],
 	# Plan 8.1: the player now stands in another zone (its world key and dungeon level).
-	Msg.ZONE: [["zone", TYPE_STRING], ["key", TYPE_STRING], ["level", TYPE_INT]],
+	Msg.ZONE: [["zone", TYPE_STRING], ["key", TYPE_STRING], ["level", TYPE_INT], ["variant", TYPE_STRING]],
 	# Partners in other zones: [[id, zone name key, level, hp ratio], ...], once a second.
 	Msg.PARTY: [["rows", TYPE_ARRAY]],
 	# At a dungeon's door: the levels the player may choose (host -> client), and the choice.
@@ -380,8 +380,8 @@ static func unpack_players(data: PackedByteArray) -> Variant:
 
 
 ## A level 50 player asks Brann for a class upgrade.
-static func zone(zone_id: String, key: String, level: int) -> PackedByteArray:
-	return pack([Msg.ZONE, zone_id, key, level])
+static func zone(zone_id: String, key: String, level: int, variant: String = "") -> PackedByteArray:
+	return pack([Msg.ZONE, zone_id, key, level, variant])
 
 
 static func dungeon_offer(zone_id: String, min_level: int, max_level: int, default_level: int) -> PackedByteArray:

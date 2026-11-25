@@ -293,7 +293,7 @@ func _start_client(player_name: String, class_id: String, appearance: Dictionary
 ## The host moved this player to another zone: draw it, with its NPCs, behind a short
 ## loading screen; nothing of the old zone stays (monsters and loot go too).
 func _on_zone_changed(zone_id: String, _key: String, _level: int) -> void:
-	var layout := ZoneLayout.load_id(zone_id)
+	var layout := ZoneLayout.load_variant(zone_id, client.zone_variant)
 	if layout == null:
 		return
 	build_zone(layout, ["build", "ready"])

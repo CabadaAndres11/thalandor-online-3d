@@ -75,6 +75,27 @@ func open(zone_id: String, instance: String = "", level: int = 0) -> String:
 	return key
 
 
+## A story moment (Plan 8.2): a player's own copy of a zone variant, keyed
+## "<zone>~<variant>#p<player>"; it closes like an instance once empty. "" if it does not exist.
+func open_personal(zone_id: String, variant: String, player_id: int) -> String:
+	var key := "%s~%s#p%d" % [zone_id, variant, player_id]
+	if _worlds.has(key):
+		return key
+	var base := peek(zone_id)
+	if base == null or not base.has_variant(variant):
+		return ""
+	var layout := base.apply_variant(variant)
+	var w := SimWorld.new(balance, layout.collision(), _seed + hash(key))
+	w.tick = tick
+	if quests != null:
+		w.quests = quests
+	_worlds[key] = w
+	_layouts[key] = layout
+	_occupants[key] = []
+	_empty_since[key] = time_s
+	return key
+
+
 ## A zone's layout without opening it (null if it does not exist).
 func peek(zone_id: String) -> ZoneLayout:
 	if not _peeked.has(zone_id):
