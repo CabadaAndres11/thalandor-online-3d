@@ -1,0 +1,2 @@
+{"id": "q_deliver", "name": "ITEM_Q_PAQUETE", "summary": "ITEM_Q_PAQUETE", "giver": "brann", "turn_in": "",
+ "steps": [{"text": "ITEM_Q_PAQUETE", "objectives": [{"type": "deliver", "npc": "merchant", "item": "q_paquete", "count": 1}]}]}

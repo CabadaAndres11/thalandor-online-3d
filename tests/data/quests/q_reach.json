@@ -1,0 +1,2 @@
+{"id": "q_reach", "name": "ITEM_Q_PAQUETE", "summary": "ITEM_Q_PAQUETE", "giver": "brann",
+ "steps": [{"text": "ITEM_Q_PAQUETE", "objectives": [{"type": "reach", "point": "claro"}]}, {"text": "ITEM_Q_PAQUETE", "objectives": [{"type": "interact", "point": "claro"}]}]}

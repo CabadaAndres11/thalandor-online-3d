@@ -1,0 +1,2 @@
+{"id": "q_nochance", "name": "ITEM_Q_PAQUETE", "summary": "ITEM_Q_PAQUETE", "giver": "brann",
+ "steps": [{"text": "ITEM_Q_PAQUETE", "objectives": [{"type": "collect", "item": "q_colmillo", "from": "hunter_wolf", "chance": 0.0, "count": 2}]}]}

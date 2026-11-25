@@ -1,0 +1,3 @@
+{"id": "q_req", "name": "ITEM_Q_PAQUETE", "summary": "ITEM_Q_PAQUETE", "giver": "brann",
+ "requires": {"quests": ["q_one"], "level": 5, "classes": ["warrior"], "flags": ["visto"], "not_flags": ["malo"]},
+ "steps": [{"text": "ITEM_Q_PAQUETE", "objectives": [{"type": "scene", "scene": "s_req"}]}]}

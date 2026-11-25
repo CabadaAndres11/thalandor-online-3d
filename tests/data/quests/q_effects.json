@@ -1,0 +1,5 @@
+{"id": "q_effects", "name": "ITEM_Q_PAQUETE", "summary": "ITEM_Q_PAQUETE", "giver": "brann", "turn_in": "",
+ "steps": [{"text": "ITEM_Q_PAQUETE", "objectives": [{"type": "scene", "scene": "s1"}],
+   "on_done": {"scene": "s2", "moment": {"zone": "aldea", "variant": "noche"}}},
+  {"text": "ITEM_Q_PAQUETE", "objectives": [{"type": "scene", "scene": "s3"}], "on_done": {"moment": null}}],
+ "on_done": {"flags": ["hecho"], "clear_flags": ["antes"], "marks": ["tutorial_done"], "next": "q_next"}}

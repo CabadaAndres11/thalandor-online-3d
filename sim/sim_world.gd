@@ -17,6 +17,8 @@ var abilities: AbilityDB = AbilityDB.load_default()
 var upgrades: UpgradeDB = UpgradeDB.load_default()
 ## Items, loot and merchant numbers (data/items), see ItemDB.
 var items: ItemDB = ItemDB.load_default()
+## Quests (Plan 8.2), see QuestDB and QuestRules.
+var quests: QuestDB = QuestDB.load_default()
 ## Items lying on the ground: drop id -> {owner, item: Item, pos, expire_tick, warned} (see Loot).
 var loot: Dictionary = {}
 ## Non-player entities (monsters; test dummies), id -> CombatEntity.
@@ -146,6 +148,8 @@ func step(inputs: Dictionary) -> void:
 	Loot.step(self)
 	if spawner != null:
 		spawner.tick(self)
+	if tick % maxi(1, ticks(QuestRules.REACH_EVERY_S)) == 0:
+		QuestRules.step_reach(self)
 	tick += 1
 
 

@@ -74,3 +74,9 @@ func test_character_saves_quests() -> void:
 	var back := CharacterData.from_dict(c.to_dict(), CharacterCatalog.load_default())
 	assert_eq(back.quests.flags, ["vio_lobos"])
 	assert_true(back.tutorial_done, "a story mark tutorial_done unlocks group play")
+
+
+func test_ready_to_turn_in_is_kept() -> void:
+	var l := QuestLog.from_dict({"active": {"q_one": {"step": 2, "counts": [5]}}}, db)
+	assert_true(l.is_active("q_one"), "all steps done: waiting to be turned in")
+	assert_eq(l.active.q_one.counts, [])

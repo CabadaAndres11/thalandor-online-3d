@@ -69,9 +69,9 @@ static func from_dict(v: Variant, db: QuestDB) -> QuestLog:
 			if q.is_empty() or not st is Dictionary:
 				continue
 			var step: Variant = (st as Dictionary).get("step", 0)
-			if not (step is int or step is float) or int(step) < 0 or int(step) >= (q.steps as Array).size():
+			if not (step is int or step is float) or int(step) < 0 or int(step) > (q.steps as Array).size():
 				continue
-			var objs: Array = q.steps[int(step)].objectives
+			var objs: Array = q.steps[int(step)].objectives if int(step) < (q.steps as Array).size() else []
 			var raw_counts: Variant = (st as Dictionary).get("counts", [])
 			var counts: Array = []
 			for i in objs.size():

@@ -1,0 +1,2 @@
+{"id": "q_next", "name": "ITEM_Q_PAQUETE", "summary": "ITEM_Q_PAQUETE", "giver": "brann", "requires": {"quests": ["q_effects"]},
+ "steps": [{"text": "ITEM_Q_PAQUETE", "objectives": [{"type": "scene", "scene": "s4"}]}]}

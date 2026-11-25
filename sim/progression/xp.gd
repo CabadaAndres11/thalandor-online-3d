@@ -64,16 +64,23 @@ static func share(world: SimWorld, m: MonsterState) -> void:
 	if m.summoned_by != 0 or m.def.is_empty():
 		return
 	var b := world.balance
-	var range_m := _f(b, "share_range")
-	var near: Array = []
-	for p: PlayerState in world.players.values():
-		if p.life != CombatEntity.DEAD and Effects.flat(p.position).distance_to(Effects.flat(m.position)) <= range_m:
-			near.append(p)
+	var near := sharers(world, m)
 	if near.is_empty():
 		return
 	var each := group_share(monster_xp(m.level, m.elite, bool(m.def.get("boss", false)), b), near.size(), b)
 	for p: PlayerState in near:
 		award(world, p, roundi(each * level_factor(p.progress.level, m.level, b)))
+
+
+## The players that share a dead monster's experience (and its quest kills): not dead,
+## within share_range of it.
+static func sharers(world: SimWorld, m: MonsterState) -> Array:
+	var range_m := _f(world.balance, "share_range")
+	var near: Array = []
+	for p: PlayerState in world.players.values():
+		if p.life != CombatEntity.DEAD and Effects.flat(p.position).distance_to(Effects.flat(m.position)) <= range_m:
+			near.append(p)
+	return near
 
 
 ## Gives experience to a player; on a level-up refills health and resource (not rage).
