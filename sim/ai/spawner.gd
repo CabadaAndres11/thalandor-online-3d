@@ -44,6 +44,8 @@ func tick(world: SimWorld) -> void:
 		elif world.tick - m.died_tick >= world.ticks(CORPSE_S):
 			world.remove_entity(m.id)
 			if m.horde_index >= 0 and m.horde_index < _horde_due.size():
+				if not bool((hordes[m.horde_index] as Dictionary).get("respawn", true)):
+					continue # a story horde (Plan 8.2): once killed, it is gone
 				var hr := float((hordes[m.horde_index] as Dictionary).get("respawn_s", HORDE_RESPAWN_S))
 				(_horde_due[m.horde_index] as Array).append(m.died_tick + world.ticks(hr))
 			elif m.spawn_index >= 0 and m.spawn_index < _due.size():

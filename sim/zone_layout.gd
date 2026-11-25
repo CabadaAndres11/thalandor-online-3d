@@ -41,6 +41,14 @@ var pieces: Array = []
 var terrain: Dictionary = {}
 var paths: Array = []
 var npcs: Array = []
+## Quest points (Plan 8.2): id -> {at: Vector2i, radius: float, look: String}.
+var quest_points: Dictionary = {}
+## Variants of this zone for story moments (raw data) and the one applied ("" for the base).
+var variants: Dictionary = {}
+var variant: String = ""
+var _raw: Dictionary = {}
+var _pieces_path: String = PIECES_PATH
+var _zone_dir: String = DIR
 ## {area: Rect2i, to: zone id, entry: entry name}
 var exits: Array = []
 ## entry name -> Vector2i
@@ -105,6 +113,14 @@ static func from_dict(zone_id: String, d: Dictionary, pieces_path: String = PIEC
 	z.terrain = d.get("terrain", {"base": "grass", "areas": []})
 	z.paths = d.get("paths", [])
 	z.npcs = (d.get("npcs", []) as Array).duplicate(true)
+	z._raw = d
+	z._pieces_path = pieces_path
+	z._zone_dir = zone_dir
+	z.variants = d.get("variants", {}) if d.get("variants") is Dictionary else {}
+	for qp: Variant in d.get("quest_points", []):
+		if qp is Dictionary and str((qp as Dictionary).get("id", "")) != "":
+			z.quest_points[str(qp.id)] = {"at": _v2i(qp.get("at", [0, 0])), "radius": float(qp.get("radius", 2.0)),
+				"look": str(qp.get("look", ""))}
 	z.hordes = d.get("hordes", [])
 	z.spawns = d.get("spawns", [])
 	z.torches = d.get("torches", [])
@@ -194,6 +210,32 @@ func piece_def(piece_id: String) -> Dictionary:
 	return _piece_defs.get(piece_id, {})
 
 
+func has_variant(name: String) -> bool:
+	return variants.has(name) and variants[name] is Dictionary
+
+
+## A new layout: this zone with a variant applied (null if there is no such variant). A
+## variant replaces the ambience, NPCs, hordes or respawn, adds pieces and quest points, and
+## removes pieces by id and cell ("remove_pieces": [{id, at}]).
+func apply_variant(name: String) -> ZoneLayout:
+	if not has_variant(name):
+		return null
+	var v: Dictionary = variants[name]
+	var d := _raw.duplicate(true)
+	for k in ["ambience", "npcs", "hordes", "respawn", "spawns", "torches"]:
+		if v.has(k):
+			d[k] = v[k]
+	var gone: Array = v.get("remove_pieces", [])
+	d["pieces"] = (d.get("pieces", []) as Array).filter(func(p: Dictionary) -> bool:
+		return not gone.any(func(g: Dictionary) -> bool:
+			return str(g.get("id", "")) == str(p.get("id", "")) and _v2i(g.get("at", [-1, -1])) == _v2i(p.get("at", [0, 0]))))
+	d["pieces"] += (v.get("add_pieces", []) as Array).duplicate(true)
+	d["quest_points"] = (d.get("quest_points", []) as Array) + (v.get("quest_points", []) as Array).duplicate(true)
+	var z := from_dict(id, d, _pieces_path, _zone_dir)
+	z.variant = name
+	return z
+
+
 func collision() -> CollisionMap:
 	var map := CollisionMap.new()
 	map.zone_id = id
@@ -203,6 +245,7 @@ func collision() -> CollisionMap:
 	map.spawns = spawns
 	map.hordes = hordes
 	map.npcs = npcs.duplicate(true)
+	map.quest_points = quest_points.duplicate(true)
 	for p: Dictionary in pieces:
 		for c: Vector2i in footprint(p.id, p.at, p.rot):
 			map.set_solid(c, true)

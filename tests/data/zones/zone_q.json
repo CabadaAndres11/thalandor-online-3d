@@ -1,0 +1,21 @@
+{
+	"name": "ZONE_TEST",
+	"size": [30, 20],
+	"ambience": "exterior_dia",
+	"levels": [3, 7],
+	"pieces": [{"id": "hut", "at": [5, 5], "rot": 0}, {"id": "hut", "at": [10, 5], "rot": 90}],
+	"npcs": [{"id": "brann", "at": [3, 3], "facing": 0}],
+	"entries": {"default": [2, 2]},
+	"respawn": [2, 3],
+	"quest_points": [{"id": "claro", "at": [15, 12], "radius": 3, "look": "sparkle"}],
+	"variants": {
+		"noche": {
+			"ambience": "mazmorra_noche",
+			"add_pieces": [{"id": "hut", "at": [20, 10], "rot": 0}],
+			"remove_pieces": [{"id": "hut", "at": [10, 5]}],
+			"npcs": [{"id": "merchant", "at": [4, 4], "facing": 0}],
+			"hordes": [{"area": [1, 11, 6, 3], "monsters": [["cultist", 1]], "levels": [3, 3], "count": 2, "respawn": false}],
+			"quest_points": [{"id": "plaza", "at": [8, 14], "radius": 2}]
+		}
+	}
+}
