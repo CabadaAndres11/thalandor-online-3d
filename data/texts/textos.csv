@@ -976,3 +976,6 @@ TIP_DUNGEON_LEVEL,"En la puerta de una mazmorra eliges su nivel: cuanto más alt
 TIP_HORDES,Las hordas de monstruos son la forma más rápida de subir de nivel.
 TIP_COMBAT_EXIT,No puedes cambiar de zona hasta 5 segundos después del último golpe recibido.
 TIP_BRANN,"Brann, el herrero de la Aldea de Aelhest, te enseña tu clase y te ayuda con tus mejoras."
+ITEM_Q_PAQUETE,"Paquete de Brann"
+ITEM_Q_COLMILLO,"Colmillo de lobo"
+ITEM_QUEST_TAG,"Objeto de misión"

@@ -6,7 +6,7 @@ extends RefCounted
 
 const DIR := "res://data/items"
 ## Equipment slots of a base ("ring" goes to ring_1 or ring_2; "consumable" is not worn).
-const BASE_SLOTS := ["main", "offhand", "head", "shoulders", "chest", "hands", "legs", "feet", "neck", "ring", "consumable"]
+const BASE_SLOTS := ["main", "offhand", "head", "shoulders", "chest", "hands", "legs", "feet", "neck", "ring", "consumable", "quest"]
 const ARMOR_SLOTS := ["head", "shoulders", "chest", "hands", "legs", "feet"]
 ## Stats an item may give: the five attributes and the Progression modifiers.
 const ATTRIBUTE_STATS := ["strength", "agility", "intellect", "stamina", "spirit"]
@@ -105,6 +105,11 @@ func is_consumable(base_id: String) -> bool:
 	return str(base(base_id).get("slot", "")) == "consumable"
 
 
+## Quest items (Plan 8.2): they stack in the bag and only their quest takes them away.
+func is_quest(base_id: String) -> bool:
+	return str(base(base_id).get("slot", "")) == "quest"
+
+
 ## Starter kit of a class: base ids, worn at level 1 and common.
 func starter(class_id: String) -> Array:
 	return (_weapons.get("starter", {}) as Dictionary).get(class_id, [])
@@ -115,6 +120,8 @@ func can_use(class_id: String, base_id: String) -> bool:
 	if b.is_empty():
 		return false
 	var slot := str(b.slot)
+	if slot == "quest":
+		return false
 	if slot in ["neck", "ring", "consumable"]:
 		return true
 	var rules: Dictionary = (_weapons.get("classes", {}) as Dictionary).get(class_id, {})
@@ -133,7 +140,7 @@ func bases_for(level: int, class_id: String = "", slot: String = "") -> Array:
 	var out: Array = []
 	for id: String in _order:
 		var b: Dictionary = _bases[id]
-		if int(b.get("tier", 0)) < 1 or b.has("unique_of") or b.slot == "consumable":
+		if int(b.get("tier", 0)) < 1 or b.has("unique_of") or b.slot in ["consumable", "quest"]:
 			continue
 		if level < int(b.get("min_level", 1)) or level > int(b.get("max_level", 0)):
 			continue
@@ -174,7 +181,7 @@ func validate() -> Array[String]:
 			errors.append("%s: unknown weapon type %s" % [id, b.get("kind")])
 		if str(b.slot) == "main" and family_of(id).is_empty():
 			errors.append("%s: weapon without family" % id)
-		if not classes.any(func(c: String) -> bool: return can_use(c, id)):
+		if str(b.slot) != "quest" and not classes.any(func(c: String) -> bool: return can_use(c, id)):
 			errors.append("%s: no class can use it" % id)
 		if b.has("unique_of") and str(b.get("unique_of")) == "":
 			errors.append("%s: empty unique_of" % id)

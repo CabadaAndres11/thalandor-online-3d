@@ -62,8 +62,8 @@ static func from_dict(v: Variant, db: ItemDB) -> Item:
 	var rarity: Variant = d.get("rarity")
 	it.rarity = rarity if rarity is String and rarity in (db.loot().get("rarities", []) as Array) else "common"
 	it.durability = clampi(_int(d.get("durability"), 100), 0, 100)
-	var stack := int((db.loot().get("potion", {}) as Dictionary).get("stack", 20))
-	it.count = clampi(_int(d.get("count"), 1), 1, stack) if db.is_consumable(base_id) else 1
+	var stack := Inventory.QUEST_STACK if db.is_quest(base_id) else int((db.loot().get("potion", {}) as Dictionary).get("stack", 20))
+	it.count = clampi(_int(d.get("count"), 1), 1, stack) if db.is_consumable(base_id) or db.is_quest(base_id) else 1
 	var raw: Variant = d.get("affixes", [])
 	var seen := {}
 	if raw is Array:

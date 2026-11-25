@@ -114,6 +114,8 @@ func reserved_width() -> float:
 func right_click(index: int) -> void:
 	if _inv == null or index < 0 or index >= _inv.bag.size() or _inv.bag[index] == null:
 		return
+	if ItemDB.load_default().is_quest((_inv.bag[index] as Item).base_id):
+		return # quest items stay in the bag until their quest takes them
 	if sell_mode:
 		sell_requested.emit(index)
 		return

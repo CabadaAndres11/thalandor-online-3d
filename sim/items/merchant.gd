@@ -37,7 +37,7 @@ static func potion_price(level: int, db: ItemDB) -> int:
 
 ## What the merchant pays: sell_factor of the value, at least 1 gold for anything but potions.
 static func sell_price(it: Item, db: ItemDB) -> int:
-	if db.is_consumable(it.base_id):
+	if db.is_consumable(it.base_id) or db.is_quest(it.base_id):
 		return 0
 	return maxi(1, floori(ItemRoll.value(it, db) * float(db.loot().get("sell_factor", 0.25))))
 

@@ -8,6 +8,8 @@ const SLOTS := ["main", "offhand", "head", "shoulders", "chest", "hands", "legs"
 const VISIBLE := ["main", "offhand", "head", "shoulders", "chest", "hands", "legs", "feet"]
 const SIZE := 30
 const MAX_GOLD := 2_000_000_000
+## How many of one quest item fit in a bag slot.
+const QUEST_STACK := 99
 
 var gold: int = 0
 ## Item or null per slot.
@@ -26,8 +28,8 @@ func free_slots() -> int:
 
 ## Stacks consumables of the same base, then takes the first free slot. False if it does not fit.
 func add(item: Item, db: ItemDB) -> bool:
-	if db.is_consumable(item.base_id):
-		var stack := int((db.loot().get("potion", {}) as Dictionary).get("stack", 20))
+	if db.is_consumable(item.base_id) or db.is_quest(item.base_id):
+		var stack := _stack_of(item.base_id, db)
 		var left := item.count
 		var room := 0
 		for it: Variant in bag:
@@ -51,6 +53,36 @@ func add(item: Item, db: ItemDB) -> bool:
 		return false
 	bag[i] = item
 	return true
+
+
+func _stack_of(base_id: String, db: ItemDB) -> int:
+	if db.is_quest(base_id):
+		return QUEST_STACK
+	return int((db.loot().get("potion", {}) as Dictionary).get("stack", 20))
+
+
+## How many items of this base the bag holds (stacks added up).
+func count_of(base_id: String) -> int:
+	var n := 0
+	for it: Variant in bag:
+		if it != null and it.base_id == base_id:
+			n += int(it.count)
+	return n
+
+
+## Takes up to `n` items of this base out of the bag; returns how many it took.
+func remove_count(base_id: String, n: int) -> int:
+	var taken := 0
+	for i in bag.size():
+		var it: Variant = bag[i]
+		if taken >= n or it == null or it.base_id != base_id:
+			continue
+		var k := mini(int(it.count), n - taken)
+		it.count -= k
+		taken += k
+		if it.count <= 0:
+			bag[i] = null
+	return taken
 
 
 func take(index: int) -> Item:
@@ -132,13 +164,12 @@ func unequip(slot: String, _db: ItemDB = null) -> bool:
 
 ## Bag order (Plan 8.1.1): by the slot an item is worn in, then rarity (best first),
 ## level (highest first) and base id; consumables and the rest last.
-const SORT_SLOTS := ["main", "offhand", "head", "shoulders", "chest", "hands", "legs", "feet", "neck", "ring", "consumable"]
+const SORT_SLOTS := ["main", "offhand", "head", "shoulders", "chest", "hands", "legs", "feet", "neck", "ring", "consumable", "quest"]
 
 
 ## Sorts the bag: equal consumables merge up to their stack, empty slots go to the end,
 ## the bag keeps its size and what is worn is not touched.
 func sort_bag(db: ItemDB) -> void:
-	var stack := int((db.loot().get("potion", {}) as Dictionary).get("stack", 20))
 	var rarities: Array = db.loot().get("rarities", [])
 	var items: Array = []
 	var counts := {} # consumable base -> total count
@@ -146,12 +177,13 @@ func sort_bag(db: ItemDB) -> void:
 		if it == null:
 			continue
 		var item: Item = it
-		if db.is_consumable(item.base_id):
+		if db.is_consumable(item.base_id) or db.is_quest(item.base_id):
 			counts[item.base_id] = int(counts.get(item.base_id, 0)) + item.count
 		else:
 			items.append(item)
 	for base_id: String in counts:
 		var left: int = counts[base_id]
+		var stack := _stack_of(base_id, db)
 		while left > 0:
 			var part := ItemRoll.new_item(base_id, 1)
 			part.count = mini(left, stack)

@@ -30,7 +30,7 @@ func test_every_base_has_model() -> void:
 	var cat := CharacterCatalog.load_default()
 	for id: String in db.base_ids():
 		var b := db.base(id)
-		if b.slot in ["consumable", "neck", "ring"]:
+		if b.slot in ["consumable", "neck", "ring", "quest"]:
 			continue
 		var look: Array = b.get("look", [])
 		assert_false(look.is_empty(), id + " has a model")

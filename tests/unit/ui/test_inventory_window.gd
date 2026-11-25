@@ -85,3 +85,36 @@ func test_sort_button_requests_sort() -> void:
 	assert_eq(inv_win.sort_button.text, tr("BTN_SORT"))
 	inv_win.sort_button.pressed.emit()
 	assert_signal_emitted_with_parameters(inv_win, "item_action", ["sort", []])
+
+
+func test_quest_item_offers_nothing() -> void:
+	var inv := _inv()
+	var q := ItemRoll.new_item("q_colmillo", 1)
+	q.count = 3
+	inv.add(q, db)
+	inv_win.show_for(inv, "warrior", 5)
+	watch_signals(inv_win)
+	inv_win.right_click(2)
+	inv_win.sell_mode = true
+	inv_win.right_click(2)
+	assert_signal_not_emitted(inv_win, "item_action")
+	assert_signal_not_emitted(inv_win, "sell_requested")
+
+
+func test_quest_item_tooltip() -> void:
+	var q := ItemRoll.new_item("q_colmillo", 1)
+	q.count = 3
+	var text := "\n".join(ItemTooltip.lines(q, "warrior", 5, null, db).map(func(r: Array) -> String: return str(r[0])))
+	assert_string_contains(text, "Colmillo de lobo")
+	assert_string_contains(text, "Objeto de misión")
+	assert_string_contains(text, "3")
+
+
+func test_quest_slot_is_not_unusable() -> void:
+	var s := ItemSlot.new()
+	add_child_autofree(s)
+	s.class_id = "warrior"
+	s.level = 5
+	s.set_item(ItemRoll.new_item("q_colmillo", 1))
+	assert_false(s.unusable())
+	assert_eq(s.border_color(), ItemSlot.QUEST_BORDER)

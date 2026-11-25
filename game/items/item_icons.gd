@@ -29,7 +29,8 @@ static func icon(base_id: String) -> Texture2D:
 	var tex := ImageTexture.create_from_image(_placeholder(base_id))
 	_cache[base_id] = tex
 	if _instance != null and is_instance_valid(_instance) and _instance.is_inside_tree() \
-			and not ItemDB.load_default().is_consumable(base_id) and not ItemDB.load_default().base(base_id).is_empty():
+			and not ItemDB.load_default().is_consumable(base_id) and not ItemDB.load_default().is_quest(base_id) \
+			and not ItemDB.load_default().base(base_id).is_empty():
 		_instance._queue.append(base_id)
 	return tex
 
@@ -61,6 +62,17 @@ static func _placeholder(base_id: String) -> Image:
 		for x in range(c - SIZE / 8, c + SIZE / 8):
 			for y in range(SIZE / 8, SIZE / 6):
 				img.set_pixel(x, y, Color("#7a5230")) # cork
+		return img
+	if db.is_quest(base_id):
+		# A rolled parchment with a gold seal until quest items get their own models.
+		for y in range(SIZE / 4, SIZE * 3 / 4):
+			for x in range(SIZE / 5, SIZE * 4 / 5):
+				img.set_pixel(x, y, Color("#d9c39a") if (x + y) % 7 != 0 else Color("#c2a878"))
+		var seal := Vector2(SIZE * 0.62, SIZE * 0.6)
+		for y in SIZE:
+			for x in SIZE:
+				if Vector2(x, y).distance_to(seal) <= SIZE * 0.1:
+					img.set_pixel(x, y, Color("#e0b84a"))
 		return img
 	for y in range(6, SIZE - 6):
 		for x in range(6, SIZE - 6):

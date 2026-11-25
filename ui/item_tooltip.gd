@@ -18,6 +18,10 @@ static func lines(it: Item, class_id: String, level: int, worn: Item, db: ItemDB
 	var out: Array = []
 	var b := db.base(it.base_id)
 	out.append([tr_text(str(b.get("name", it.base_id))), ItemIcons.rarity_color(it.rarity)])
+	if db.is_quest(it.base_id):
+		out.append([tr_text("ITEM_QUEST_TAG"), DIM])
+		out.append([tr_text("ITEM_STACK") % it.count, DIM])
+		return out
 	if db.is_consumable(it.base_id):
 		out.append([tr_text("ITEM_POTION_%s_DESC" % str(b.get("potion", "")).to_upper()), HoloTheme.TEXT])
 		out.append([tr_text("ITEM_STACK") % it.count, DIM])

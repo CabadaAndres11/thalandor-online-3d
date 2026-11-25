@@ -8,6 +8,8 @@ signal right_clicked()
 const SIZE := 48.0
 ## Background of an item the viewer cannot equip (another class's, or above their level).
 const UNUSABLE_BG := Color(0.55, 0.08, 0.08, 0.55)
+## Quest items (Plan 8.2) wear a gold border.
+const QUEST_BORDER := Color("#e0b84a")
 
 var item: Item
 ## For the tooltip: who looks at it and what they wear in that slot.
@@ -51,7 +53,7 @@ func set_item(it: Item) -> void:
 	_count.text = str(it.count) if it != null and it.count > 1 else ""
 	var style := HoloTheme.box_style()
 	if it != null:
-		style.border_color = ItemIcons.rarity_color(it.rarity)
+		style.border_color = QUEST_BORDER if ItemDB.load_default().is_quest(it.base_id) else ItemIcons.rarity_color(it.rarity)
 		style.set_border_width_all(2)
 		if unusable():
 			style.bg_color = UNUSABLE_BG
@@ -64,9 +66,14 @@ func set_item(it: Item) -> void:
 ## nor when no viewer class is set.
 func unusable() -> bool:
 	var db := ItemDB.load_default()
-	if item == null or class_id == "" or db.is_consumable(item.base_id):
+	if item == null or class_id == "" or db.is_consumable(item.base_id) or db.is_quest(item.base_id):
 		return false
 	return not db.can_use(class_id, item.base_id) or item.level > level
+
+
+func border_color() -> Color:
+	var sb := get_theme_stylebox("panel") as StyleBoxFlat
+	return sb.border_color if sb != null else Color.TRANSPARENT
 
 
 func count_text() -> String:
