@@ -1,0 +1,15 @@
+{
+	"id": "q_broken", "name": "NO_SUCH_TEXT", "summary": "NO_SUCH_TEXT_2",
+	"giver": "nadie", "turn_in": "brann",
+	"steps": [
+		{"text": "NO_SUCH_TEXT_3", "objectives": [
+			{"type": "kill", "monster": "lobo", "count": 2},
+			{"type": "collect", "item": "q_nada", "from": "hunter_wolf", "count": 1},
+			{"type": "reach", "zone": "zone_a", "point": "no_point"},
+			{"type": "talk", "npc": "brann", "dialogue": "no_dialogue"},
+			{"type": "scene", "scene": "no_scene"},
+			{"type": "bailar"}
+		]}
+	],
+	"rewards": {"items": ["no_item"]}
+}
