@@ -32,7 +32,7 @@ Cada plan de la [[14 Hoja de ruta]] tiene aquí su **spec** (diseño acordado) y
 | 8.1.1 · Correcciones de la prueba 0.11.0 | [[Plan 8.1.1 — Correcciones de la prueba 0.11.0 (spec)\|Spec]] | [[Plan 8.1.1 — Correcciones de la prueba 0.11.0 (plan)\|Plan]] | Hecho (0.11.1, publicada en la 0.11.3) |
 | 8.1.2 · Pantallas de carga y nombres del mundo | [[Plan 8.1.2 — Pantallas de carga y nombres del mundo (spec)|Spec]] | — (la spec lleva las tareas) | Hecho (0.11.2, publicada en la 0.11.3) |
 | 8.1.3 · Herrería y suelo | [[Plan 8.1.3 — Herrería y suelo (spec)|Spec]] | — (la spec lleva las tareas) | Hecho (0.11.3, publicada en la 0.11.3) |
-| 8.2 · Misiones, diálogos y escenas | [[Plan 8.2 — Misiones, diálogos y escenas (spec)\|Spec]] | [[Plan 8.2 — Misiones, diálogos y escenas (plan)|Plan]] | Plan en revisión |
+| 8.2 · Misiones, diálogos y escenas | [[Plan 8.2 — Misiones, diálogos y escenas (spec)\|Spec]] | [[Plan 8.2 — Misiones, diálogos y escenas (plan)\|Plan]] | Plan en revisión |
 | 9 · Secretos y clases ocultas | — | — | Pendiente |
 | 10 · Oficios | — | — | Pendiente |
 | 11 · Interfaz y audio | — | — | Pendiente |
