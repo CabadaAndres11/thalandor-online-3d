@@ -193,8 +193,8 @@ func test_boss_fight_snapshot_fits_enet_mtu() -> void:
 
 # --- Protocol 6: progression ----------------------------------------------------------
 
-func test_version_is_8() -> void:
-	assert_eq(Protocol.VERSION, 8) # Plan 8.1: ZONE and PARTY
+func test_version_is_9() -> void:
+	assert_eq(Protocol.VERSION, 9) # Plan 8.2: QUESTS and QUEST_ACTION
 
 
 func test_progress_requests_roundtrip() -> void:
@@ -259,3 +259,9 @@ func test_zone_and_party_roundtrip() -> void:
 	assert_eq([z.zone, z.key, z.level], ["bosque", "bosque", 0])
 	var p := Protocol.decode(Protocol.party([[2, "ZONE_BOSQUE", 12, 0.5]]))
 	assert_eq(p.rows, [[2, "ZONE_BOSQUE", 12, 0.5]])
+
+
+func test_protocol8_hello_decodes_so_the_host_can_answer_version() -> void:
+	var m := Protocol.decode(Protocol.pack([Protocol.Msg.HELLO, "0.11.3", 8, "Ana", "warrior", {}, [], {}, {}, {}]))
+	assert_eq(m.protocol, 8)
+	assert_eq(m.quests, {})

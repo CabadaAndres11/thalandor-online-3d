@@ -19,6 +19,8 @@ var time_s: float = 0.0
 var tick: int = 0
 
 var _seed: int
+## Quests the worlds use (Plan 8.2); null keeps each world's default (data/quests).
+var quests: QuestDB
 var _worlds: Dictionary = {} # key -> SimWorld
 var _layouts: Dictionary = {} # key -> ZoneLayout (null for a world made from a bare map)
 var _occupants: Dictionary = {} # key -> Array of player ids
@@ -37,6 +39,8 @@ func adopt(map: CollisionMap, layout: ZoneLayout = null) -> String:
 	if layout == null and map.zone_id != "" and FileAccess.file_exists(zone_dir + map.zone_id + ".json"):
 		layout = ZoneLayout.load_path(zone_dir + map.zone_id + ".json") # its exits and entries
 	_worlds[key] = SimWorld.new(balance, map, _seed)
+	if quests != null:
+		(_worlds[key] as SimWorld).quests = quests
 	_layouts[key] = layout
 	_occupants[key] = []
 	if start_key == "":
@@ -59,6 +63,8 @@ func open(zone_id: String, instance: String = "", level: int = 0) -> String:
 		return key
 	var w := SimWorld.new(balance, layout.collision(), _seed + hash(key))
 	w.tick = tick
+	if quests != null:
+		w.quests = quests
 	if layout.instanced:
 		w.instance_level = level
 	_worlds[key] = w

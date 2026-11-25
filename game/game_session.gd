@@ -61,6 +61,8 @@ var character_bar: Array = []
 var character_inventory: Dictionary = {}
 ## The saved place of the character playing (Plan 8.1), sent in HELLO.
 var character_place: Dictionary = {}
+## The character's quest log (Plan 8.2), sent in HELLO.
+var character_quests: Dictionary = {}
 var _loopback: MemoryNetwork
 var _group_code: String = ""
 var _opening: bool = false
@@ -281,6 +283,7 @@ func _start_client(player_name: String, class_id: String, appearance: Dictionary
 	client.upgrade_changed.connect(_on_upgrade_changed)
 	client.gear_changed.connect(_on_gear_changed)
 	client.place = character_place.duplicate(true)
+	client.quests = QuestLog.from_dict(character_quests, QuestDB.load_default())
 	client.zone_changed.connect(_on_zone_changed)
 	client.zone_ready.connect(loading.done.bind("ready"))
 	if t != null:

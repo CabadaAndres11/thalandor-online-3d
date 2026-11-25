@@ -565,6 +565,17 @@ func _on_progress_changed() -> void:
 
 
 ## The host sent this player's inventory: open windows show it and the saved character keeps it.
+## The host changed this character's quests: saved (a story mark may unlock group play).
+func _on_quests_changed() -> void:
+	if _playing == null or game == null or game.client == null:
+		return
+	_playing.quests = game.client.quests.duplicate()
+	if "tutorial_done" in _playing.quests.marks and not _playing.tutorial_done:
+		_playing.tutorial_done = true
+		pause_menu.set_group_locked(false)
+	store.queue_save(_playing)
+
+
 func _on_inventory_changed() -> void:
 	if game == null or game.client == null:
 		return
@@ -971,6 +982,7 @@ func _start_game() -> void:
 		game.character_inventory = _playing.inventory.to_dict()
 		game.character_place = _playing.place.duplicate(true)
 		game.character_place["tutorial_done"] = _playing.tutorial_done
+		game.character_quests = _playing.quests.to_dict()
 	pause_menu.join_code_edit.text = settings.last_code
 	game.group_opened.connect(_on_group_opened)
 	game.group_failed.connect(_on_group_failed)
@@ -1004,6 +1016,7 @@ func _attach_client() -> void:
 	client.class_changed.connect(_on_class_changed)
 	client.progress_changed.connect(_on_progress_changed)
 	client.inventory_changed.connect(_on_inventory_changed)
+	client.quests_changed.connect(_on_quests_changed)
 	client.merchant_stock_received.connect(_on_merchant_stock)
 	client.leveled_up.connect(_on_leveled_up)
 	client.upgrade_changed.connect(_on_upgrade_changed)

@@ -9,7 +9,8 @@ const NAME_MIN := 2
 const NAME_MAX := 16
 const SPAWN_SPACING := 1.5
 ## Events that only their owner (ev[1]) receives: personal loot and gold.
-const OWNER_EVENTS := ["gold", "loot", "loot_gone", "bag_full", "trade_refused", "zone_blocked"]
+const OWNER_EVENTS := ["gold", "loot", "loot_gone", "bag_full", "trade_refused", "zone_blocked",
+	"quest_started", "quest_step", "quest_ready", "quest_done", "quest_scene", "quest_moment", "quest_bag_full"]
 ## No changing zone within this long of being hurt (Plan 8.1).
 const EXIT_COMBAT_S := 5.0
 ## How often a player blocked at an exit is told why.
@@ -47,6 +48,13 @@ func _init(p_balance: Balance, p_map: CollisionMap, p_game_version: String) -> v
 	game_version = p_game_version
 	zones = ZoneManager.new(balance, randi())
 	world = zones.world(zones.adopt(map))
+
+
+## The quests every world uses (tests give their own; by default data/quests).
+func set_quests(db: QuestDB) -> void:
+	zones.quests = db
+	for key: String in zones.keys():
+		zones.world(key).quests = db
 
 
 static func is_valid_name(name: String) -> bool:
@@ -96,6 +104,7 @@ func tick() -> void:
 		_send_party()
 	_flush_progress()
 	_flush_inventory()
+	_flush_quests()
 	# Each player gets the players, monsters and events of its own world only.
 	for key: String in zones.keys():
 		var ids: Array = zones.occupants(key)
@@ -379,6 +388,8 @@ func _handle(index: int, peer: int, data: PackedByteArray) -> void:
 			_on_enter_dungeon(rec, msg.zone, msg.level)
 		Protocol.Msg.ITEM_ACTION:
 			_on_item_action(rec, msg.action, msg.args)
+		Protocol.Msg.QUEST_ACTION:
+			_on_quest_action(rec, msg.action, msg.args)
 		Protocol.Msg.CHAT:
 			var text: String = (msg.text as String).strip_edges().left(balance.chat_max_len)
 			if text.begins_with("/"):
@@ -417,6 +428,7 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 	# Whatever progress the guest brings is fixed up, never refused.
 	player.progress = ProgressRequests.sanitize(PlayerProgress.from_dict(msg.progress), class_id, world)
 	player.inventory = Inventory.from_wire(msg.inventory, class_id, player.progress.level, world.items)
+	player.quests = QuestLog.from_dict(msg.quests, zones.world(start.key).quests)
 	ClassRules.setup_player(player, class_id, catalog, world)
 	var bar := world.abilities.sanitize_bar(class_id, msg.bar, player.level, player.progress.upgrade)
 	_players[id] = {
@@ -440,6 +452,9 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 	t.send(peer, Protocol.progress(player.progress.to_dict(), bar), true)
 	t.send(peer, Protocol.inventory(player.inventory.to_wire(), 0.0), true)
 	player.inventory_dirty = false
+	QuestRules.check_auto(zones.world(start.key), player)
+	t.send(peer, Protocol.quests(player.quests.to_dict()), true)
+	player.quests_dirty = false
 	if start.key != zones.start_key:
 		# Its client draws the start zone until told otherwise.
 		var sl := zones.layout(start.key)
@@ -523,6 +538,9 @@ func _on_command(rec: Dictionary, text: String) -> void:
 		else:
 			send_to_zone(rec.id, zkey, zones.layout(zkey).entry("default"))
 		return
+	if parts.size() >= 2 and parts[0].to_lower() in ["mision", "misión", "marca"]:
+		_quest_command(rec, parts)
+		return
 	if parts.size() >= 2 and parts[0].to_lower() == "objeto":
 		_item_command(rec, parts)
 		return
@@ -588,6 +606,78 @@ func _flush_progress() -> void:
 		rec.sent_bar = (rec.bar as Array).duplicate()
 		rec.sent_tick = w.tick
 		p.progress_dirty = false
+
+
+## Sends each owner their quest log when it changed.
+func _flush_quests() -> void:
+	for id: int in _players:
+		var p := state_of(id)
+		if p != null and p.quests_dirty:
+			p.quests_dirty = false
+			_send_to(id, Protocol.quests(p.quests.to_dict()), true)
+
+
+## Quest requests (Plan 8.2): the host checks each one (QuestRules); malformed ones are ignored.
+func _on_quest_action(rec: Dictionary, action: String, args: Array) -> void:
+	var w := world_of(rec.id)
+	var p := state_of(rec.id)
+	if p == null or not args.all(func(a: Variant) -> bool: return a is String):
+		return
+	var a0: String = args[0] if args.size() >= 1 else ""
+	var a1: String = args[1] if args.size() >= 2 else ""
+	match action:
+		"accept":
+			var q := w.quests.quest(a0)
+			if not q.is_empty() and (str(q.giver) == "" or QuestRules.near_npc(w, p, str(q.giver))):
+				QuestRules.start(w, p, a0)
+		"talk_done":
+			QuestRules.report(w, p, "talk", a0, a1)
+		"interact":
+			QuestRules.report(w, p, "interact", a0)
+		"scene_done":
+			QuestRules.report(w, p, "scene", a0)
+		"turn_in":
+			if args.size() >= 1:
+				QuestRules.turn_in(w, p, a0, a1)
+		"track":
+			if p.quests.is_active(a0) and p.quests.tracked != a0:
+				p.quests.tracked = a0
+				p.quests_dirty = true
+		"abandon":
+			QuestRules.abandon(w, p, a0)
+	QuestRules.check_auto(w, p)
+
+
+## /mision <id> | paso | fin | borrar <id>; /marca <name> | quitar <name> (host only, Plan 8.2).
+func _quest_command(rec: Dictionary, parts: Array) -> void:
+	var w := world_of(rec.id)
+	var p := state_of(rec.id)
+	var sub: String = str(parts[1]).to_lower()
+	if parts[0].to_lower() == "marca":
+		if sub == "quitar" and parts.size() >= 3:
+			p.quests.flags.erase(str(parts[2]))
+			p.quests_dirty = true
+		else:
+			QuestRules.set_flag(w, p, str(parts[1]))
+		return
+	var tracked := p.quests.tracked
+	match sub:
+		"paso":
+			if tracked != "":
+				QuestRules.complete_step(w, p, tracked)
+		"fin":
+			while tracked != "" and p.quests.is_active(tracked) and not QuestRules.is_ready(w, p, tracked):
+				QuestRules.complete_step(w, p, tracked)
+		"borrar":
+			if parts.size() >= 3:
+				p.quests.active.erase(str(parts[2]))
+				p.quests.done.erase(str(parts[2]))
+				if p.quests.tracked == str(parts[2]):
+					p.quests.tracked = ""
+				p.quests_dirty = true
+		_:
+			if not QuestRules.force_start(w, p, str(parts[1])):
+				_send_to(rec.id, Protocol.chat(0, "CMD_BAD"), true)
 
 
 ## The player a command names (by name after its arguments), or its author; null (and a

@@ -61,6 +61,40 @@ static func start(world: SimWorld, p: PlayerState, id: String) -> bool:
 	return true
 
 
+## Starts a quest whatever its requirements (the /mision test command).
+static func force_start(world: SimWorld, p: PlayerState, id: String) -> bool:
+	var q := _db(world).quest(id)
+	if q.is_empty() or p.quests.is_active(id):
+		return false
+	p.quests.done.erase(id)
+	p.quests.active[id] = {"step": 0, "counts": _zeros(q, 0)}
+	p.quests.tracked = id
+	p.quests_dirty = true
+	world.emit(["quest_started", p.id, id])
+	_refresh(world, p, id)
+	return true
+
+
+## Completes every objective of the current step (the /mision paso test command).
+static func complete_step(world: SimWorld, p: PlayerState, id: String) -> void:
+	var objs := current_objectives(world, p, id)
+	if objs.is_empty():
+		return
+	var st: Dictionary = p.quests.active[id]
+	for i in objs.size():
+		var o: Dictionary = objs[i]
+		if str(o.type) == "collect":
+			var missing := int(o.count) - p.inventory.count_of(str(o.item))
+			if missing > 0:
+				var it := ItemRoll.new_item(str(o.item), 1)
+				it.count = missing
+				p.inventory.add(it, world.items)
+				p.inventory_dirty = true
+		st.counts[i] = int(o.count)
+	p.quests_dirty = true
+	_refresh(world, p, id)
+
+
 ## Starts every automatic quest whose requirements are met (the story chains itself).
 static func check_auto(world: SimWorld, p: PlayerState) -> void:
 	var db := _db(world)
