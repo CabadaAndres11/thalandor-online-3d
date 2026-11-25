@@ -4,7 +4,7 @@ extends RefCounted
 ## Files are versioned; from_dict() migrates old versions and sanitizes everything
 ## (a file may be old, hand-edited or imported from elsewhere).
 
-const VERSION := 5
+const VERSION := 6
 
 var id: String = ""
 var name: String = ""
@@ -21,6 +21,8 @@ var bar: Array = []
 var place: Dictionary = {"zone": START_ZONE, "at": []}
 ## The village tutorial (the assault) is done: playing in a group is allowed.
 var tutorial_done: bool = false
+## Quests, story flags and story marks (Plan 8.2).
+var quests := QuestLog.new()
 
 const START_ZONE := "aldea"
 
@@ -30,7 +32,8 @@ func to_dict() -> Dictionary:
 		"version": VERSION, "id": id, "name": name, "class_id": class_id,
 		"appearance": appearance.duplicate(), "progress": progress.to_dict(), "created_at": created_at,
 		"bar": bar.duplicate(), "inventory": inventory.to_dict(),
-		"place": place.duplicate(true), "tutorial_done": tutorial_done,
+		"place": place.duplicate(true), "tutorial_done": tutorial_done or "tutorial_done" in quests.marks,
+		"quests": quests.to_dict(),
 	}
 
 
@@ -60,7 +63,9 @@ static func from_dict(d: Variant, catalog: CharacterCatalog, abilities: AbilityD
 	c.inventory = Inventory.from_dict(m.get("inventory"), c.class_id, c.progress.level, ItemDB.load_default())
 	c.bar = (abilities if abilities != null else AbilityDB.load_default()).sanitize_bar(c.class_id, m.get("bar"), c.progress.level, c.progress.upgrade)
 	c.place = sanitize_place(m.get("place"))
-	c.tutorial_done = bool(m.get("tutorial_done", false)) if m.get("tutorial_done") is bool else false
+	c.quests = QuestLog.from_dict(m.get("quests"), QuestDB.load_default())
+	var saved_done: bool = m.get("tutorial_done") is bool and bool(m.get("tutorial_done"))
+	c.tutorial_done = saved_done or "tutorial_done" in c.quests.marks
 	return c
 
 
@@ -103,5 +108,8 @@ static func migrate(d: Dictionary) -> Dictionary:
 		# Version 4 had no world: everyone is in the village, and has played the arena.
 		m["place"] = {"zone": START_ZONE, "at": []}
 		m["tutorial_done"] = true
+	if version < 6:
+		# Version 5 had no quests (Plan 8.2).
+		m["quests"] = {}
 	m["version"] = VERSION
 	return m
