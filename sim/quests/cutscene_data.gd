@@ -7,7 +7,7 @@ extends RefCounted
 
 const DIR := "res://data/cutscenes/"
 const STEP_KEYS := ["camera", "move", "pose", "line", "wait", "fade", "ambience", "show", "hide", "shake", "fx"]
-const POSES := ["idle", "melee", "shoot", "cast", "cast_long", "heavy", "thrust", "stab", "pray", "downed", "die", "dash"]
+const POSES := ["idle", "melee", "shoot", "cast", "cast_long", "heavy", "thrust", "stab", "pray", "downed", "die", "dash", "kneel", "point", "lie"]
 const FX := ["fire", "smoke", "flash", "embers"]
 
 ## Where cutscenes are read from (tests point it at their own).

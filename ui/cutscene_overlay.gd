@@ -7,11 +7,14 @@ signal skip_requested()
 
 const BAR_SHARE := 0.12
 const HOLD_S := 0.5
+const FLASH_S := 0.4
 
 var skippable: bool = true
 var _top: ColorRect
 var _bottom: ColorRect
 var _black: ColorRect
+## The white flash of the awakening (Plan 8.3a).
+var _white: ColorRect
 var _speaker: Label
 var _text: Label
 var _skip_hint: Label
@@ -28,6 +31,7 @@ func _init() -> void:
 	mouse_filter = MOUSE_FILTER_STOP
 	set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	_black = _rect(Color(0, 0, 0, 0))
+	_white = _rect(Color(1, 1, 1, 0))
 	_top = _rect(Color.BLACK)
 	_bottom = _rect(Color.BLACK)
 	var sub := VBoxContainer.new()
@@ -80,6 +84,8 @@ func _layout() -> void:
 	_bottom.size = Vector2(size.x, h)
 	_black.position = Vector2.ZERO
 	_black.size = size
+	_white.position = Vector2.ZERO
+	_white.size = size
 	_skip_hint.position = Vector2(size.x - 220, 8)
 	_skip_bar.position = Vector2(size.x - 220, 32)
 
@@ -95,8 +101,14 @@ func open(can_skip: bool) -> void:
 	_layout()
 
 
+## A white flash over the whole screen that fades in FLASH_S.
+func flash() -> void:
+	_white.color.a = 1.0
+
+
 func close() -> void:
 	visible = false
+	_white.color.a = 0.0
 	_black.color.a = 0.0
 	_fade_s = 0.0
 
@@ -118,6 +130,8 @@ func set_fade(to_black: bool, seconds: float) -> void:
 
 ## The clock (the game calls it every frame): the fade and the held Esc.
 func step(delta: float, esc_held: bool) -> void:
+	if _white.color.a > 0.0:
+		_white.color.a = maxf(0.0, _white.color.a - delta / FLASH_S)
 	if _fade_s > 0.0:
 		_fade_t = minf(_fade_s, _fade_t + delta)
 		_black.color.a = lerpf(_fade_from, _fade_to, _fade_t / _fade_s)
@@ -143,6 +157,10 @@ func bar_height() -> float:
 
 func subtitle() -> String:
 	return ("%s: %s" % [_speaker.text, _text.text]) if _speaker.text != "" else _text.text
+
+
+func white() -> float:
+	return _white.color.a
 
 
 func black() -> float:

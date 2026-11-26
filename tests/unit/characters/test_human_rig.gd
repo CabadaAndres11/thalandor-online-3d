@@ -680,3 +680,41 @@ func test_pray_loops_with_arms_raised() -> void:
 		var hand := rig.part_mesh("hand_" + side)
 		var shoulder := rig.part("arm_" + side).global_position.y
 		assert_gt((hand.global_transform * hand.get_aabb()).get_center().y, shoulder, side + " hand over the shoulder")
+
+
+func _posed(action: String) -> HumanRig:
+	var rig := HumanRig.create("villager", {}, null)
+	add_child_autofree(rig)
+	rig.auto_update = false
+	rig.play_action(action)
+	rig.update(2.0)
+	return rig
+
+
+func test_kneel_lowers_the_hips_and_lasts() -> void:
+	var standing := HumanRig.create("villager", {}, null)
+	add_child_autofree(standing)
+	standing.auto_update = false
+	standing.update(0.1)
+	var rig := _posed("kneel")
+	assert_eq(rig.current_action(), "kneel", "it stays kneeling")
+	assert_lt(rig.part("torso").global_position.y, standing.part("torso").global_position.y - 0.2)
+	assert_gt(rig.part("hips").global_position.y, 0.2, "not through the ground")
+
+
+func test_lie_is_flat_on_the_ground() -> void:
+	var rig := _posed("lie")
+	assert_eq(rig.current_action(), "lie")
+	assert_lt(rig.part("head").global_position.y, 0.6, "the head is near the ground")
+
+
+func test_point_raises_the_right_arm_forward() -> void:
+	var rig := HumanRig.create("villager", {}, null)
+	add_child_autofree(rig)
+	rig.auto_update = false
+	rig.play_action("point")
+	rig.update(0.6)
+	var hand := rig.part("hand_right").global_position
+	var shoulder := rig.part("arm_right").global_position
+	assert_gt(hand.y, shoulder.y - 0.25, "about shoulder height")
+	assert_gt(Vector2(hand.x - shoulder.x, hand.z - shoulder.z).length(), 0.4, "reaching out")

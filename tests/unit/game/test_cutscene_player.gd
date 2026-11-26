@@ -98,3 +98,16 @@ func test_all_cutscenes_valid() -> void:
 	for id: String in CutsceneData.ids():
 		var errors := CutsceneData.validate(id)
 		assert_eq(errors, [] as Array[String], "\n".join(errors))
+
+
+func test_fx_calls_context() -> void:
+	var calls := []
+	var ctx := _ctx()
+	ctx["fx"] = func(name: String, at: Vector3) -> void: calls.append([name, at])
+	player.play({"id": "x", "tracks": [[{"fx": "fire", "at": [3, 4]}]]}, ctx)
+	assert_eq(calls, [["fire", Vector3(3.5, 0, 4.5)]])
+
+
+func test_new_poses_are_valid() -> void:
+	for pose in ["kneel", "point", "lie"]:
+		assert_true(pose in CutsceneData.POSES, pose)

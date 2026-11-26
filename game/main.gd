@@ -590,6 +590,8 @@ func _start_scene(scene_id: String) -> void:
 	cutscene_overlay.open(bool(CutsceneData.load_id(scene_id).get("skippable", true)))
 	cut.line.connect(_on_scene_line)
 	cut.fade.connect(cutscene_overlay.set_fade)
+	if not game.scene_flash.is_connected(cutscene_overlay.flash):
+		game.scene_flash.connect(cutscene_overlay.flash)
 	game.cutscene_ended.connect(_on_scene_ended, CONNECT_ONE_SHOT)
 
 

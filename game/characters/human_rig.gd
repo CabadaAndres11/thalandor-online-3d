@@ -28,8 +28,9 @@ const SCALE_GROUP := {
 ## Seconds each action lasts; downed and die then stay.
 const ACTIONS := {"melee": 0.45, "shoot": 0.65, "cast": 0.6, "dash": 0.35, "downed": 0.5, "die": 0.7, "cast_long": 1.0,
 	"stab_right": 0.32, "stab_left": 0.32, "overhead": 0.6, "spin": 0.6, "flurry": 0.7,
-	"heavy": 0.55, "thrust": 0.45, "stab": 0.32, "pray": 4.0}
-const LASTING := ["downed", "die"]
+	"heavy": 0.55, "thrust": 0.45, "stab": 0.32, "pray": 4.0, "kneel": 0.6, "point": 1.2, "lie": 0.1}
+## kneel, point and lie are for cutscenes (Plan 8.3a).
+const LASTING := ["downed", "die", "kneel", "lie"]
 ## Melee swings (the weapon's path is traced by a SlashFx): action -> [start, end] of the swing in
 ## the animation, as a share of its length.
 const SWINGS := {
@@ -534,6 +535,9 @@ func _pose() -> void:
 		"dash": _dash(k)
 		"downed": _fall(_ease(k), true)
 		"die": _fall(_ease(k), false)
+		"kneel": _kneel(_ease(k))
+		"point": _point(k)
+		"lie": _fall(1.0, false)
 	_to_metres()
 	_two_hand_ik()
 	_update_cloth()
@@ -943,6 +947,29 @@ func _dash(k: float) -> void:
 	_rot("shin_left", 0.7 * e)
 	_rot("shin_right", 0.3 * e)
 	_body.position.y = -0.12 * e
+
+
+## How far the body sinks to kneel, in the rig's own units (see _to_metres).
+const KNEEL_DROP := 1.25
+
+
+## Down on one knee (cutscenes): the right knee on the ground, the left foot forward.
+func _kneel(e: float) -> void:
+	_body.position.y = -KNEEL_DROP * e
+	_rot("leg_left", -1.45 * e)
+	_rot("shin_left", 1.5 * e)
+	_rot("leg_right", 0.15 * e)
+	_rot("shin_right", 1.65 * e)
+	(_parts["torso"] as Node3D).rotation.x = 0.12 * e
+	(_parts["head"] as Node3D).rotation.x = 0.25 * e
+
+
+## Points ahead with the right arm, held level, then lowers it.
+func _point(k: float) -> void:
+	var e := _ease(minf(1.0, k * 3.0)) * (1.0 - _ease(maxf(0.0, (k - 0.8) / 0.2)))
+	_rot("arm_right", -1.55 * e)
+	_rot("forearm_right", -0.05 * e)
+	(_parts["torso"] as Node3D).rotation.y = -0.2 * e
 
 
 ## Tips over backwards onto the ground. Downed keeps an arm raised and the head up.

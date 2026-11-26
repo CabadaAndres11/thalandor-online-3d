@@ -36,6 +36,10 @@ var zone_view: ZoneView
 ## The cutscene playing now (Plan 8.2), or null; while it plays the camera is its own.
 var cutscene: CutscenePlayer
 var _stage_view: ZoneView
+## Fire and smoke a cutscene lit (Plan 8.3a); they go with the scene.
+var _scene_fx_nodes: Array = []
+## The white flash of a scene goes to the overlay (Main connects it).
+signal scene_flash()
 ## Glows on the quest points the local player has an objective for (Plan 8.2).
 var _point_marks: Dictionary = {} # point id -> Node3D
 var _cut_fov: float = 40.0
@@ -504,11 +508,45 @@ func play_cutscene(scene_id: String) -> CutscenePlayer:
 	cutscene.name = "Cutscene"
 	add_child(cutscene)
 	cutscene.finished.connect(_end_cutscene, CONNECT_ONE_SHOT | CONNECT_DEFERRED)
-	cutscene.play(data, {"camera": camera, "actor_factory": _cutscene_actor,
+	cutscene.play(data, {"camera": camera, "actor_factory": _cutscene_actor, "fx": _scene_fx,
 		"set_ambience": func(id: String) -> void:
 			if view != null:
 				view.set_ambience(id)})
 	return cutscene
+
+
+## The effects a cutscene asks for: fire (voxel flames with a light), smoke (a rising grey
+## column) and flash (a white flash on screen).
+func _scene_fx(name: String, at: Vector3) -> void:
+	match name:
+		"flash":
+			scene_flash.emit()
+		"fire", "embers":
+			var fire := VoxelFx.node(VoxelFx.flame_patch(0.9), true)
+			fire.position = at
+			var light := OmniLight3D.new()
+			light.light_color = Color(1.0, 0.55, 0.2)
+			light.light_energy = 2.0
+			light.omni_range = 6.0
+			light.position = Vector3(0, 1.0, 0)
+			fire.add_child(light)
+			add_child(fire)
+			_scene_fx_nodes.append(fire)
+		"smoke":
+			var smoke := MeshInstance3D.new()
+			var cyl := CylinderMesh.new()
+			cyl.top_radius = 1.4
+			cyl.bottom_radius = 0.6
+			cyl.height = 6.0
+			smoke.mesh = cyl
+			var mat := StandardMaterial3D.new()
+			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			mat.albedo_color = Color(0.25, 0.24, 0.24, 0.45)
+			mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			smoke.material_override = mat
+			smoke.position = at + Vector3(0, 3.0, 0)
+			add_child(smoke)
+			_scene_fx_nodes.append(smoke)
 
 
 func _cutscene_actor(spec: Dictionary) -> Node3D:
@@ -533,6 +571,9 @@ func _end_cutscene() -> void:
 		return
 	cutscene.queue_free()
 	cutscene = null
+	for n: Node in _scene_fx_nodes:
+		n.queue_free()
+	_scene_fx_nodes.clear()
 	if _stage_view != null:
 		_stage_view.queue_free()
 		remove_child(_stage_view)

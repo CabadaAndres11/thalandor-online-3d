@@ -44,3 +44,10 @@ func test_fade() -> void:
 	assert_eq(o.black(), 1.0)
 	o.set_fade(false, 0.0)
 	assert_eq(o.black(), 0.0)
+
+
+func test_flash() -> void:
+	o.flash()
+	assert_gt(o.white(), 0.9)
+	o.step(0.45, false)
+	assert_eq(o.white(), 0.0)
