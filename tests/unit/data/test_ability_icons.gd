@@ -1,6 +1,6 @@
 extends GutTest
-## Every ability points at an icon that exists, and the class-kit icons are the
-## painted 128 px set (not the old 64 px placeholders).
+## Every player ability points at an icon that exists, and every class-kit icon
+## (passives included) is from the painted 128 px set, not an old placeholder.
 
 const ABILITY_DIR := "res://data/abilities/"
 const ICON_PATH := "res://assets/icons/%s.png"
@@ -23,11 +23,9 @@ func test_every_player_ability_icon_exists() -> void:
 			assert_true(ResourceLoader.exists(ICON_PATH % icon), "%s -> %s" % [a.get("id"), icon])
 
 
-func test_kit_active_icons_are_painted_set() -> void:
+func test_kit_icons_are_painted_set() -> void:
 	for file in KIT_FILES:
 		for a in _abilities(file):
-			if str(a.get("kind", "")) == "passive":
-				continue # passives still share one placeholder icon per class
 			var tex := load(ICON_PATH % str(a.get("icon", ""))) as Texture2D
 			assert_not_null(tex, str(a.get("id")))
 			if tex != null:

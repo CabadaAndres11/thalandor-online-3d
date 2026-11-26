@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ckm02meg30cmc"
-path="res://.godot/imported/passive_warrior.png-92a7163be8e73d9c9d653a5688a1b8c6.ctex"
+uid="uid://c0l8wy61pjl7r"
+path="res://.godot/imported/unshakable_faith.png-e2da0ff82cf43130e03ba90b849e0d00.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/icons/passive_warrior.png"
-dest_files=["res://.godot/imported/passive_warrior.png-92a7163be8e73d9c9d653a5688a1b8c6.ctex"]
+source_file="res://assets/icons/unshakable_faith.png"
+dest_files=["res://.godot/imported/unshakable_faith.png-e2da0ff82cf43130e03ba90b849e0d00.ctex"]
 
 [params]
 
