@@ -101,7 +101,7 @@ export function headFemaleV2() {
   roundBox(h, [-3, 0.5, -1], [2, 3, 5], 1.6, SK); // a small chin
   carve(h, (t) => roundBox(t, [-9, -2, -10], [8, 16.5 + 3, -7.5], 0, 0));
   carve(h, (t) => roundBox(t, [-9, 17, -10], [8, 22, 8], 0, 0));
-  finish(h, [SK], 12, [0.7, 0.2, 0.1]);
+  finish(h, [SK], 12, [0.88, 0.08, 0.04]); // smoother skin
   for (const x of [-8, 7]) roundBox(h, [x, 6, -2], [x, 9, 0], 0.6, SK);
   for (const x of [-8, 7]) h.put(x, 8, -1, SHADE(SK));
   // Fine brows (hair colour), one row, arched at the outer end.
@@ -120,9 +120,9 @@ export function headFemaleV2() {
   for (const x of [-2, 1]) face(h, x, 5, SHADE(SK));
   for (const x of [-1, 0]) face(h, x, 5, SHADE(SK));
   // Fuller lips: the upper lip, the mouth line and a full lower lip.
-  for (let x = -2; x <= 1; x++) face(h, x, 4, LIP);
-  for (let x = -3; x <= 2; x++) face(h, x, 3, x === -3 || x === 2 ? SHADE(SK) : MOUTH);
-  for (let x = -2; x <= 1; x++) face(h, x, 2, LIP);
+  for (let x = -2; x <= 1; x++) face(h, x, 4, x === -2 || x === 1 ? SK : LIP);
+  for (let x = -3; x <= 2; x++) face(h, x, 3, x === -3 || x === 2 ? SK : x === -1 || x === 0 ? SHADE(LIP) : LIP); // closed lips
+  for (let x = -2; x <= 1; x++) face(h, x, 2, x === -2 || x === 1 ? SK : LIP);
   return h;
 }
 

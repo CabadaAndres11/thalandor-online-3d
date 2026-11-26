@@ -652,6 +652,10 @@ function miraHood() {
 
 function miraChest() {
   const s = ARMOR.chest("leather", 2, MIRA);
+  // A woman's cuirass (Plan 8.3e): shaped over the chest like the body's own.
+  const bust = new Shape();
+  for (const x of [-4.5, 3.5]) ellipsoid(bust, [x, 17.0, 7.4], [3.8, 3.3, 3.0], MIRA.b);
+  for (const v of bust.cells.values()) s.put(v[0], v[1], v[2], v[1] <= 15 ? MIRA.d : MIRA.b);
   // Belts: two brown belts at the waist with bronze buckles, a pouch on the right hip.
   for (const y of [1, 2, 4]) recolor(s, (x, yy) => yy === y, C.LEATHER);
   for (const [x, y] of [[-1, 2], [0, 2], [-1, 4]]) onFront(s, x, y, C.BRONZE);
