@@ -1,0 +1,8 @@
+{"id": "q_track", "name": "ITEM_Q_COLMILLO", "summary": "ITEM_Q_PAQUETE", "giver": "merchant", "turn_in": "brann",
+ "steps": [
+  {"text": "ITEM_Q_PAQUETE", "objectives": [
+   {"type": "kill", "monster": "hunter_wolf", "count": 5, "zone": "bosque"},
+   {"type": "collect", "item": "q_colmillo", "from": "hunter_wolf", "chance": 0.5, "count": 3}]},
+  {"text": "ITEM_Q_PAQUETE", "objectives": [{"type": "reach", "zone": "bosque", "point": "claro"}]}
+ ],
+ "rewards": {"gold": 5, "choice": ["sword_t1", "warrior_chest_t1"]}}

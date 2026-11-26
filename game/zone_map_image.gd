@@ -57,6 +57,9 @@ static func markers(layout: ZoneLayout, client: ClientSession) -> Array:
 		out.append({"kind": "dungeon" if _is_instanced(to) else "exit", "cell": Vector2(r.position) + Vector2(r.size) / 2.0,
 			"label": tr_key("ZONE_" + to.to_upper()), "yaw": 0.0})
 	if client != null:
+		var target := quest_target(layout, client.quests, QuestDB.load_default())
+		if not target.is_empty():
+			out.append({"kind": "quest", "cell": target.get("at", target.get("exit", Vector2.ZERO)), "label": "", "yaw": 0.0})
 		for id: int in client.roster:
 			var rs := client.render_state(id)
 			if rs.is_empty():
@@ -65,6 +68,40 @@ static func markers(layout: ZoneLayout, client: ClientSession) -> Array:
 			out.append({"kind": "self" if id == client.my_id else "partner", "cell": Vector2(pos.x, pos.z),
 				"label": str(client.roster[id].get("name", "")), "yaw": float(rs.get("facing", 0.0))})
 	return out
+
+
+## Where the tracked objective is on this zone's map (Plan 8.2): {at} (a cell centre) when it
+## is here, {exit} (the way out toward its zone) when it is elsewhere, {} when unknown.
+static func quest_target(layout: ZoneLayout, log: QuestLog, quests: QuestDB) -> Dictionary:
+	var id := log.tracked
+	if layout == null or id == "" or not log.is_active(id):
+		return {}
+	var objs := QuestText.objectives(log, quests, id)
+	var q := quests.quest(id)
+	var targets: Array = []
+	for i in objs.size():
+		var o: Dictionary = objs[i]
+		if int(log.active[id].counts[i]) >= int(o.count):
+			continue
+		targets.append(o)
+	if objs.is_empty():
+		targets.append({"type": "talk", "npc": str(q.turn_in)})
+	for o: Dictionary in targets:
+		var zone := str(o.get("zone", ""))
+		if zone != "" and zone != layout.id:
+			for e: Dictionary in layout.exits:
+				if str(e.to) == zone:
+					var r: Rect2i = e.area
+					return {"exit": Vector2(r.position) + Vector2(r.size) / 2.0}
+			continue
+		if str(o.type) in ["reach", "interact"] and layout.quest_points.has(str(o.get("point", ""))):
+			var at: Vector2i = layout.quest_points[str(o.point)].at
+			return {"at": Vector2(at.x + 0.5, at.y + 0.5)}
+		if o.has("npc"):
+			for n: Dictionary in layout.npcs:
+				if str(n.id) == str(o.npc):
+					return {"at": Vector2(float(n.at[0]) + 0.5, float(n.at[1]) + 0.5)}
+	return {}
 
 
 static func tr_key(key: String) -> String:

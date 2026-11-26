@@ -107,7 +107,7 @@ func test_two_players_differ() -> void:
 	b.active = {"q_collect": {"step": 1, "counts": []}}
 	assert_eq(NpcTalk.mark("brann", a, 5, "warrior", quests), "!")
 	assert_eq(NpcTalk.mark("brann", b, 5, "warrior", quests), "?")
-	assert_eq(NpcTalk.mark("merchant", a, 5, "warrior", quests), "")
+	assert_eq(NpcTalk.mark("vecina", a, 5, "warrior", quests), "")
 
 
 func test_grey_mark_for_level() -> void:

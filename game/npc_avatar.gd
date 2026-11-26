@@ -10,6 +10,9 @@ var rig: HumanRig
 var npc_id: String = ""
 var _label: Label3D
 var _prompt: Label3D
+## The quest sign over the head (Plan 8.2): "!", "!grey", "?" or "".
+var _mark: Label3D
+var _mark_kind: String = ""
 var _name: String = ""
 
 
@@ -24,6 +27,8 @@ func setup(id: String, at: Vector3, facing: float) -> void:
 	_label = _text(_name, NAME_HEIGHT, 40, NAME_COLOR)
 	_prompt = _text(tr("CLASS_CHOICE_TALK"), NAME_HEIGHT + 0.3, 32, Color.WHITE)
 	_prompt.visible = false
+	_mark = _text("", NAME_HEIGHT + 0.75, 72, Color("#ffcc33"))
+	_mark.outline_size = 14
 
 
 ## A HumanRig look from an NPC's data: a class and appearance resolved by the catalog,
@@ -42,6 +47,20 @@ static func look_of(look: Dictionary) -> Dictionary:
 				pieces.append(catalog.piece_entry(id)) # the v2 version, or the v1 one at double size
 		out["pieces"] = pieces
 	return out
+
+
+## The quest sign for the local player: "!" a quest to take, "!grey" one at a higher level,
+## "?" something to hand in or say, "" none.
+func set_mark(kind: String) -> void:
+	_mark_kind = kind
+	if _mark == null:
+		return
+	_mark.text = "!" if kind.begins_with("!") else ("?" if kind == "?" else "")
+	_mark.modulate = Color(0.6, 0.6, 0.6) if kind == "!grey" else Color("#ffcc33")
+
+
+func mark_text() -> String:
+	return _mark.text if _mark != null else ""
 
 
 ## Turns to look at a point on the ground (talking to the player, Plan 8.2).

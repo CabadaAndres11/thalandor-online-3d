@@ -55,6 +55,11 @@ var upgrade_window: UpgradeWindow
 var dungeon_window: DungeonWindow
 var dialogue_window: DialogueWindow
 var cutscene_overlay: CutsceneOverlay
+var quest_journal: QuestJournal
+var quest_tracker: QuestTracker
+var quest_notice: QuestNotice
+var quest_turn_in: QuestTurnInWindow
+var _turn_in_quest: String = ""
 ## A scene the host said to play while the zone was still loading (Plan 8.2).
 var _pending_scene: String = ""
 var _playing_scene: String = ""
@@ -151,6 +156,14 @@ func _ready() -> void:
 	minimap.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 	minimap.position = Vector2(-Minimap.SIZE - MINIMAP_MARGIN.x, MINIMAP_MARGIN.y)
 	_ui.add_child(minimap)
+	quest_tracker = QuestTracker.new()
+	quest_tracker.theme = theme
+	quest_tracker.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	quest_tracker.position = Vector2(-Minimap.SIZE - MINIMAP_MARGIN.x, MINIMAP_MARGIN.y + Minimap.SIZE + 34)
+	_ui.add_child(quest_tracker)
+	quest_notice = QuestNotice.new()
+	quest_notice.theme = theme
+	_ui.add_child(quest_notice)
 
 	downed_overlay = DownedOverlay.new()
 	downed_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -243,6 +256,16 @@ func _ready() -> void:
 	dialogue_window.action.connect(_on_dialogue_action)
 	_ui.add_child(dialogue_window)
 
+	quest_journal = QuestJournal.new()
+	quest_journal.theme = theme
+	quest_journal.track_requested.connect(func(id: String) -> void: game.client.request_quest("track", [id]))
+	quest_journal.abandon_requested.connect(func(id: String) -> void: game.client.request_quest("abandon", [id]))
+	_ui.add_child(quest_journal)
+	quest_turn_in = QuestTurnInWindow.new()
+	quest_turn_in.theme = theme
+	quest_turn_in.confirmed.connect(func(choice: String) -> void: game.client.request_quest("turn_in", [_turn_in_quest, choice]))
+	_ui.add_child(quest_turn_in)
+
 	cutscene_overlay = CutsceneOverlay.new()
 	cutscene_overlay.theme = menu_theme
 	cutscene_overlay.skip_requested.connect(_on_scene_skip)
@@ -294,6 +317,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		_on_interact() # no set_input_as_handled: holding E also revives
 	elif pause_menu.visible or _modal_open() or game.client == null:
 		return
+	elif event.is_action_pressed("window_quests"):
+		_toggle_window(quest_journal)
+		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("abilities_window"):
 		_toggle_window(abilities_window)
 		get_viewport().set_input_as_handled()
@@ -319,7 +345,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## The windows opened with K, C and T (one at a time): they block mouse attacks, not movement.
 func _panel_windows() -> Array:
-	return [abilities_window, character_window, talents_window, map_window]
+	return [abilities_window, character_window, talents_window, map_window, quest_journal]
 
 
 func _panel_open() -> bool:
@@ -383,7 +409,7 @@ func _request_item(action: String, args: Array) -> void:
 ## Class choice and Brann's menu take the whole input while they are open.
 func _modal_open() -> bool:
 	return class_choice_window.visible or trainer_menu.visible or upgrade_window.visible or dungeon_window.visible \
-		or dialogue_window.visible
+		or dialogue_window.visible or quest_turn_in.visible
 
 
 ## Esc: closes whatever window is open and says whether there was one.
@@ -412,6 +438,8 @@ func _toggle_window(w: Control) -> void:
 			_show_character()
 		talents_window:
 			talents_window.show_for(game.client.progress, TalentDB.load_default(), game.client.balance)
+		quest_journal:
+			quest_journal.show_for(game.client.quests, QuestDB.load_default(), ItemDB.load_default(), game.client.inventory)
 		map_window:
 			var layout := game.zone_view.layout
 			map_window.refresh(game.map_texture, ZoneMapImage.markers(layout, game.client), layout.name)
@@ -429,6 +457,10 @@ func _show_character() -> void:
 ## this player (Plan 8.2), or else its trade, Brann's menu or a greeting.
 func _on_interact() -> void:
 	if dialogue_window.visible:
+		return
+	var point := game.quest_point_near()
+	if point != "":
+		game.client.request_quest("interact", [point])
 		return
 	var r := game.interaction()
 	if str(r.action) != NpcInteraction.CHOOSE_CLASS and str(r.npc) != "" and _talk_to(str(r.npc)):
@@ -540,7 +572,14 @@ func _end_talk() -> void:
 
 ## The rewards of a finished quest (Plan 8.2); without choices it is handed in at once.
 func _open_turn_in(quest_id: String) -> void:
-	game.client.request_quest("turn_in", [quest_id, ""])
+	var q := QuestDB.load_default().quest(quest_id)
+	if q.is_empty():
+		return
+	if (q.rewards.get("choice", []) as Array).is_empty() and (q.rewards.get("items", []) as Array).is_empty():
+		game.client.request_quest("turn_in", [quest_id, ""])
+		return
+	_turn_in_quest = quest_id
+	quest_turn_in.show_for(q, ItemDB.load_default(), game.client.class_id, game.client.progress.level)
 
 
 ## A cutscene asked by a dialogue (Plan 8.2, T11 plays it).
@@ -728,11 +767,36 @@ func _on_progress_changed() -> void:
 
 
 ## The host sent this player's inventory: open windows show it and the saved character keeps it.
+func _refresh_quest_ui() -> void:
+	if game == null or game.client == null:
+		return
+	var db := QuestDB.load_default()
+	quest_tracker.refresh(game.client.quests, db, game.client.inventory)
+	if quest_journal.visible:
+		quest_journal.show_for(game.client.quests, db, ItemDB.load_default(), game.client.inventory)
+	game.refresh_quest_marks()
+
+
+## Quest notices (Plan 8.2), only for this player (the host sends them to their owner).
+func _quest_notice(ev: Array) -> void:
+	var db := QuestDB.load_default()
+	match str(ev[0]):
+		"quest_started":
+			quest_notice.show_text("UI_QUEST_NEW", tr(str(db.quest(str(ev[2])).get("name", ""))))
+		"quest_step":
+			quest_notice.show_text("UI_QUEST_STEP", "")
+		"quest_done":
+			quest_notice.show_text("UI_QUEST_DONE_NOTICE", tr(str(db.quest(str(ev[2])).get("name", ""))))
+		"quest_bag_full":
+			quest_notice.show_text("UI_QUEST_BAG_FULL", "")
+
+
 ## The host changed this character's quests: saved (a story mark may unlock group play).
 func _on_quests_changed() -> void:
 	if _playing == null or game == null or game.client == null:
 		return
 	_playing.quests = game.client.quests.duplicate()
+	_refresh_quest_ui()
 	if "tutorial_done" in _playing.quests.marks and not _playing.tutorial_done:
 		_playing.tutorial_done = true
 		pause_menu.set_group_locked(false)
@@ -740,6 +804,7 @@ func _on_quests_changed() -> void:
 
 
 func _on_inventory_changed() -> void:
+	_refresh_quest_ui()
 	if game == null or game.client == null:
 		return
 	if inventory_window.visible:
@@ -1073,6 +1138,8 @@ func _on_icon(id: String) -> void:
 			_toggle_window(talents_window)
 		"map":
 			_toggle_window(map_window)
+		"quests":
+			_toggle_window(quest_journal)
 		"menu":
 			if not _close_open_window():
 				pause_menu.visible = not pause_menu.visible
@@ -1214,6 +1281,8 @@ func _on_bar_changed(bar: Array) -> void:
 
 ## Game-wide announcements in the chat (everyone gets the same events).
 func _on_game_event(ev: Array) -> void:
+	if ev.size() >= 2 and str(ev[0]).begins_with("quest_") and game != null and game.client != null and int(ev[1]) == game.client.my_id:
+		_quest_notice(ev)
 	if ev.size() >= 3 and str(ev[0]) == "scene_go" and game != null and game.client != null and int(ev[1]) == game.client.my_id:
 		_start_scene(str(ev[2]))
 	if ev.size() >= 2 and str(ev[0]) == "hit" and game != null and game.client != null \

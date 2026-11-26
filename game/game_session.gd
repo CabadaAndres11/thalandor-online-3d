@@ -36,6 +36,8 @@ var zone_view: ZoneView
 ## The cutscene playing now (Plan 8.2), or null; while it plays the camera is its own.
 var cutscene: CutscenePlayer
 var _stage_view: ZoneView
+## Glows on the quest points the local player has an objective for (Plan 8.2).
+var _point_marks: Dictionary = {} # point id -> Node3D
 var _cut_fov: float = 40.0
 ## The zone's picture for the map and the minimap (Plan 8.1.1), made with each zone.
 var map_texture: ImageTexture
@@ -307,6 +309,10 @@ func _on_zone_changed(zone_id: String, _key: String, _level: int) -> void:
 		npc.queue_free()
 	_npc_avatars.clear()
 	_place_npcs()
+	for id: String in _point_marks.keys():
+		(_point_marks[id] as Node).queue_free()
+	_point_marks.clear()
+	refresh_quest_marks()
 	for id: int in _monster_avatars.keys():
 		(_monster_avatars[id] as Node).queue_free()
 	_monster_avatars.clear()
@@ -536,6 +542,52 @@ func _end_cutscene() -> void:
 	if own != null:
 		own.visible = true
 	cutscene_ended.emit()
+
+
+## The quest signs over the NPCs and the glows on quest points, for the local player's log.
+func refresh_quest_marks() -> void:
+	if client == null:
+		return
+	var db := QuestDB.load_default()
+	for npc: NpcAvatar in _npc_avatars:
+		npc.set_mark(NpcTalk.mark(npc.npc_id, client.quests, client.progress.level, client.class_id, db))
+	var want := QuestText.visible_points(map.quest_points, client.quests, db, map.zone_id)
+	for id: String in _point_marks.keys():
+		if not id in want:
+			(_point_marks[id] as Node).queue_free()
+			_point_marks.erase(id)
+	for id: String in want:
+		if _point_marks.has(id) or str(map.quest_points[id].get("look", "")) == "":
+			continue
+		var at: Vector2i = map.quest_points[id].at
+		var glow := MeshInstance3D.new()
+		var sphere := SphereMesh.new()
+		sphere.radius = 0.25
+		sphere.height = 0.5
+		glow.mesh = sphere
+		var mat := StandardMaterial3D.new()
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mat.albedo_color = Color(1.0, 0.85, 0.3, 0.8)
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		mat.emission_enabled = true
+		mat.emission = Color(1.0, 0.8, 0.3)
+		glow.material_override = mat
+		glow.position = Vector3(at.x + 0.5, 1.2, at.y + 0.5)
+		glow.name = "QuestPoint_" + id
+		_avatar_root.add_child(glow)
+		_point_marks[id] = glow
+
+
+## The interact quest point the local player can examine here ("" if none).
+func quest_point_near() -> String:
+	var own := client.render_state(client.my_id)
+	if own.is_empty():
+		return ""
+	return QuestText.interact_point_near(map.quest_points, client.quests, QuestDB.load_default(), map.zone_id, own.position)
+
+
+func quest_point_count() -> int:
+	return _point_marks.size()
 
 
 func npc_avatar(id: String) -> NpcAvatar:

@@ -783,3 +783,17 @@ func test_cutscene_plays_and_reports() -> void:
 	assert_true(main.combat_hud.visible)
 	assert_false(p.in_scene(), "scene_done reached the host")
 	CutsceneData.dir = CutsceneData.DIR
+
+
+func test_journal_key_and_tracker() -> void:
+	main._on_play("Prueba")
+	await wait_physics_frames(5)
+	var ev := InputEventAction.new()
+	ev.action = "window_quests"
+	ev.pressed = true
+	main._unhandled_input(ev)
+	assert_true(main.quest_journal.visible)
+	main._unhandled_input(ev)
+	assert_false(main.quest_journal.visible)
+	main._on_icon("quests")
+	assert_true(main.quest_journal.visible)
