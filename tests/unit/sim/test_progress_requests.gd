@@ -82,6 +82,7 @@ func test_buy_mastery() -> void:
 
 func test_reset_attributes_and_talents() -> void:
 	var p := _hero(10)
+	p.inventory.gold = 10000 # resets cost gold (Plan 8.3b)
 	ProgressRequests.spend_attribute(f.world, p, "strength")
 	ProgressRequests.buy_talent(f.world, p, "might_1")
 	p.progress_dirty = false

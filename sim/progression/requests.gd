@@ -42,12 +42,21 @@ static func choose_upgrade(world: SimWorld, p: PlayerState, id: String, _near_tr
 	return _accept(world, p)
 
 
-## what: "attributes", "talents" or "upgrade". Needs the class trainer nearby, a player on
-## their feet and out of combat. Returns false when there is nothing to reset.
+## What a reset costs (Plan 8.3b): reset_gold_per_level gold per level.
+static func reset_cost(level: int, b: Balance) -> int:
+	return b.reset_gold_per_level * maxi(1, level)
+
+
+## what: "attributes" or "talents" (the level 50 upgrade is final). Needs the class trainer
+## nearby, a player on their feet, out of combat and with the gold (reset_cost). Returns
+## false, charging nothing, when there is nothing to reset or the gold is short.
 static func reset(world: SimWorld, p: PlayerState, what: String, near_trainer: bool) -> bool:
 	if not near_trainer or p.life != CombatEntity.ALIVE or p.in_combat(world):
 		return false
 	var pr := p.progress
+	var cost := reset_cost(pr.level, world.balance)
+	if p.inventory.gold < cost:
+		return false
 	match what:
 		"attributes":
 			if Attributes.free_points(pr, world.balance) == int(world.balance.attributes.get("points_per_level", 5)) * (pr.level - 1):
@@ -62,6 +71,8 @@ static func reset(world: SimWorld, p: PlayerState, what: String, near_trainer: b
 			return false # the level 50 upgrade is final (Plan 8.3a)
 		_:
 			return false
+	p.inventory.gold -= cost
+	p.inventory_dirty = true
 	return _accept(world, p)
 
 

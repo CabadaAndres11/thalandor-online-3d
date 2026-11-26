@@ -58,6 +58,8 @@ var quest_journal: QuestJournal
 var quest_tracker: QuestTracker
 var quest_notice: QuestNotice
 var quest_turn_in: QuestTurnInWindow
+## The capital's trainer: resets for gold (Plan 8.3b).
+var reset_window: ResetWindow
 var _turn_in_quest: String = ""
 ## A scene the host said to play while the zone was still loading (Plan 8.2).
 var _pending_scene: String = ""
@@ -259,6 +261,10 @@ func _ready() -> void:
 	quest_turn_in.theme = theme
 	quest_turn_in.confirmed.connect(func(choice: String) -> void: game.client.request_quest("turn_in", [_turn_in_quest, choice]))
 	_ui.add_child(quest_turn_in)
+	reset_window = ResetWindow.new()
+	reset_window.theme = theme
+	reset_window.reset_requested.connect(func(what: String) -> void: game.client.reset_progress(what))
+	_ui.add_child(reset_window)
 
 	cutscene_overlay = CutsceneOverlay.new()
 	cutscene_overlay.theme = menu_theme
@@ -403,12 +409,12 @@ func _request_item(action: String, args: Array) -> void:
 ## Class choice and Brann's menu take the whole input while they are open.
 func _modal_open() -> bool:
 	return class_choice_window.visible or upgrade_window.visible or dungeon_window.visible \
-		or dialogue_window.visible or quest_turn_in.visible
+		or dialogue_window.visible or quest_turn_in.visible or reset_window.visible
 
 
 ## Esc: closes whatever window is open and says whether there was one.
 func _close_open_window() -> bool:
-	for w: Control in [class_choice_window, upgrade_window] + _panel_windows() + [merchant_window, inventory_window]:
+	for w: Control in [class_choice_window, upgrade_window, reset_window] + _panel_windows() + [merchant_window, inventory_window]:
 		if w.visible:
 			if (w == upgrade_window and upgrade_window.mandatory) or (w == class_choice_window and class_choice_window.mandatory):
 				return true # the choice cannot be skipped
@@ -469,7 +475,15 @@ func _on_interact() -> void:
 		NpcInteraction.TRADE:
 			_request_item("merchant_open", []) # the host answers with the stock
 		NpcInteraction.TALK:
-			_greet(str(r.npc))
+			if str(NpcDB.load_default().npc(str(r.npc)).get("role", "")) == "class_trainer":
+				_open_resets()
+			else:
+				_greet(str(r.npc))
+
+
+## The capital's trainer: the resets window with this player's price (Plan 8.3b).
+func _open_resets() -> void:
+	reset_window.show_for(game.client.progress, game.client.inventory.gold, game.client.balance)
 
 
 ## An NPC with nothing for this player greets in the chat (Plan 8.3a: nobody trains any more).

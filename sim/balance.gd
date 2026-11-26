@@ -53,6 +53,8 @@ var monster_scaling: Dictionary = {}
 var armor_k_per_level: float = 6.0
 ## Attribute effects, soft caps and stat caps (see Attributes, Progression).
 var attributes: Dictionary = {}
+## Gold per character level that a reset of attributes or talents costs (Plan 8.3b).
+var reset_gold_per_level: int = 20
 ## Mastery per direction: {stat, value}; "half_at" is the rank that gives half of the linear value.
 var masteries: Dictionary = {}
 
