@@ -1,7 +1,7 @@
 extends GutTest
 ## The prologue's bestiary (the night the cult attacks the village) as data.
 
-const ROSTER := ["cult_acolyte", "cult_archer", "cult_inquisitor", "cultist", "heraldo", "marked_boar", "marked_hound", "nhazar", "training_dummy", "vaelthar"]
+const ROSTER := ["bandit", "bandit_archer", "bandit_chief", "cult_acolyte", "cult_archer", "cult_inquisitor", "cultist", "heraldo", "marked_boar", "marked_hound", "nhazar", "training_dummy", "vaelthar"]
 
 
 func _types() -> Array:
@@ -51,3 +51,17 @@ func test_summon_only_monsters_are_not_on_the_map() -> void:
 	var map: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/zones/arena.json"))
 	for sp: Dictionary in map.spawns:
 		assert_does_not_have(only, sp.type)
+
+
+## Plan 8.3b: the bandits are plain people, not the cult, and their avatars build.
+func test_bandits_are_not_cult() -> void:
+	for id: String in ["bandit", "bandit_archer", "bandit_chief"]:
+		var t := MonsterDB.load_default().get_type(id)
+		assert_false(t.is_empty(), id)
+		for piece: String in t.look.pieces:
+			assert_false(piece.begins_with("cult_") or piece.begins_with("acolyte_") or piece.begins_with("inquisitor_") or piece.begins_with("mask_"), "%s wears %s" % [id, piece])
+		var a := MonsterAvatar.new()
+		add_child_autofree(a)
+		a.setup(t)
+		assert_gt(a.find_children("*", "MeshInstance3D", true, false).size(), 0, id + " has a body")
+	assert_eq(MonsterDB.load_default().get_type("bandit_chief").abilities[0], "bandit_chief_smash", "the chief's heavy blow is announced")

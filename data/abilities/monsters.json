@@ -92,5 +92,9 @@
 		"statuses": [{"kind": "slow", "duration_s": 1.5, "magnitude": 0.3}, {"kind": "weaken", "duration_s": 1.5, "magnitude": 0.15}]}]},
 	{"id": "nhazar_choir", "monster": "nhazar", "name": "AB_NHAZAR_CHOIR", "desc": "AB_NHAZAR_CHOIR_DESC", "icon": "battle_cry", "kind": "active", "level": 1,
 	 "cost": 0, "cooldown_s": 0, "gcd": false, "range": 0, "anim": "cast",
-	 "effects": [{"type": "status", "target": "self", "statuses": [{"kind": "haste", "duration_s": 600, "magnitude": 0.3}, {"kind": "damage_reduction", "duration_s": 600, "magnitude": 0.25}]}]}
+	 "effects": [{"type": "status", "target": "self", "statuses": [{"kind": "haste", "duration_s": 600, "magnitude": 0.3}, {"kind": "damage_reduction", "duration_s": 600, "magnitude": 0.25}]}]},
+	{"id":"bandit_slash","monster":"bandit","name":"AB_BANDIT_SLASH","desc":"AB_BANDIT_SLASH_DESC","icon":"slash","kind":"active","level":1,"cost":0,"cooldown_s":1.2,"gcd":false,"range":1.6,"anim":"melee","effects":[{"type":"melee_arc","angle_deg":80,"range":1.6,"damage":{"base":8,"coef":0,"kind":"physical"}}]},
+	{"id":"bandit_arrow","monster":"bandit_archer","name":"AB_BANDIT_ARROW","desc":"AB_BANDIT_ARROW_DESC","icon":"missile","kind":"active","level":1,"cost":0,"cooldown_s":1.9,"gcd":false,"range":11,"anim":"shoot","effects":[{"type":"projectile","speed":18,"radius":0.2,"range":12,"pierce":false,"damage":{"base":8,"coef":0,"kind":"physical"}}]},
+	{"id":"bandit_chief_smash","monster":"bandit_chief","name":"AB_BANDIT_CHIEF_SMASH","desc":"AB_BANDIT_CHIEF_SMASH_DESC","icon":"brutal","kind":"active","level":1,"cost":0,"cooldown_s":9,"gcd":false,"range":2.4,"anim":"overhead","effects":[{"type":"area","at":"cursor","radius":2.5,"delay_s":1,"telegraph":true,"damage":{"base":28,"coef":0,"kind":"physical"}}]},
+	{"id":"bandit_chief_chop","monster":"bandit_chief","name":"AB_BANDIT_CHIEF_CHOP","desc":"AB_BANDIT_CHIEF_CHOP_DESC","icon":"slash","kind":"active","level":1,"cost":0,"cooldown_s":1.5,"gcd":false,"range":2.2,"anim":"melee","effects":[{"type":"melee_arc","angle_deg":100,"range":2.2,"damage":{"base":13,"coef":0,"kind":"physical"}}]}
 ]
