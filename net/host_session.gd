@@ -197,6 +197,12 @@ func _check_exits() -> void:
 				rec.warned_tick = w.tick
 				_send_to(id, Protocol.events(w.tick, [["zone_blocked", id]]), true)
 			continue
+		if not ZoneLayout.exit_open(ex, p.quests):
+			# Closed until the story opens it (Plan 8.3b): the crypt's gate.
+			if w.tick - int(rec.get("warned_tick", -100000)) >= w.ticks(EXIT_WARN_S):
+				rec.warned_tick = w.tick
+				_send_to(id, Protocol.events(w.tick, [["exit_locked", id]]), true)
+			continue
 		var target := zones.peek(str(ex.to))
 		if target != null and target.instanced:
 			# A dungeon: the player chooses its level first (ENTER_DUNGEON), once per visit.

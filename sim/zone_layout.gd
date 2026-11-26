@@ -144,7 +144,9 @@ static func from_dict(zone_id: String, d: Dictionary, pieces_path: String = PIEC
 	for e: Dictionary in d.get("exits", []):
 		var a: Array = e.get("area", [0, 0, 1, 1])
 		z.exits.append({"area": Rect2i(int(a[0]), int(a[1]), int(a[2]), int(a[3])), "to": str(e.get("to", "")),
-			"entry": str(e.get("entry", "default"))})
+			"entry": str(e.get("entry", "default")),
+			"requires": e.get("requires", {}) if e.get("requires") is Dictionary else {},
+			"gate": e.get("gate", {}) if e.get("gate") is Dictionary else {}})
 	for p: Dictionary in z.paths:
 		for c: Vector2i in path_cells(p):
 			z._road[c] = true
@@ -309,6 +311,14 @@ func entry(entry_name: String) -> Vector3:
 
 
 ## The exit whose area holds `pos`, or {}.
+## True when this player's story opens the exit (Plan 8.3b): no "requires", or every flag it asks.
+static func exit_open(exit: Dictionary, log: QuestLog) -> bool:
+	for fl: Variant in (exit.get("requires", {}) as Dictionary).get("flags", []):
+		if log == null or not log.has_flag(str(fl)):
+			return false
+	return true
+
+
 func exit_at(pos: Vector3) -> Dictionary:
 	var c := Vector2i(floori(pos.x), floori(pos.z))
 	for e: Dictionary in exits:

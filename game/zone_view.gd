@@ -392,6 +392,39 @@ static func placement(p: Dictionary) -> Transform3D:
 		* Transform3D.IDENTITY.translated(Vector3(-0.5, 0, -0.5))
 
 
+## The gates of the exits the story opens (Plan 8.3b): the closed or the open piece, for this
+## player's own story. Only drawn: the exit itself refuses (or lets through) on the host.
+func show_gates(log: QuestLog) -> void:
+	for i in layout.exits.size():
+		var e: Dictionary = layout.exits[i]
+		var gate: Dictionary = e.get("gate", {})
+		if gate.is_empty():
+			continue
+		var want := str(gate.get("open" if ZoneLayout.exit_open(e, log) else "closed", ""))
+		var node_name := "Gate_%d" % i
+		var old := get_node_or_null(node_name)
+		if old != null and old.get_meta("piece", "") == want:
+			continue
+		if old != null:
+			remove_child(old)
+			old.queue_free()
+		var mesh := VoxMesher.cached(str(layout.piece_def(want).get("vox", "")), {})
+		if mesh == null:
+			continue
+		var mi := MeshInstance3D.new()
+		mi.name = node_name
+		mi.mesh = mesh
+		mi.set_meta("piece", want)
+		mi.transform = piece_transform({"id": want, "at": ZoneLayout._v2i(gate.get("at", [0, 0])), "rot": int(gate.get("rot", 0))})
+		add_child(mi)
+
+
+## The piece a gate shows now ("" if none).
+func gate_piece(index: int) -> String:
+	var n := get_node_or_null("Gate_%d" % index)
+	return str(n.get_meta("piece", "")) if n != null else ""
+
+
 ## The name of the zone each way out leads to on its signpost, and a soft glow on the
 ## ground of each exit (Plan 8.1.1).
 func _build_exit_marks() -> void:

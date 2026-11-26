@@ -612,6 +612,8 @@ func _end_cutscene() -> void:
 func refresh_quest_marks() -> void:
 	if client == null:
 		return
+	if zone_view != null and zone_view.layout != null:
+		zone_view.show_gates(client.quests)
 	var db := QuestDB.load_default()
 	for npc: NpcAvatar in _npc_avatars:
 		npc.set_mark(NpcTalk.mark(npc.npc_id, client.quests, client.progress.level, client.class_id, db))
@@ -801,6 +803,8 @@ func _on_combat_event(ev: Array) -> void:
 	loot_view.handle(ev)
 	if str(ev[0]) == "bag_full" and ev.size() > 1 and int(ev[1]) == client.my_id:
 		client.chat_received.emit("", tr("ITEM_BAG_FULL"), true)
+	if str(ev[0]) == "exit_locked" and ev.size() > 1 and int(ev[1]) == client.my_id:
+		client.chat_received.emit("", tr("UI_EXIT_LOCKED"), true)
 	if str(ev[0]) == "trade_refused" and ev.size() > 2 and int(ev[1]) == client.my_id:
 		client.chat_received.emit("", tr("TRADE_REFUSED_" + str(ev[2]).to_upper()), true)
 	match str(ev[0]):
