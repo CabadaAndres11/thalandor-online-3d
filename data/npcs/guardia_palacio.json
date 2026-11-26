@@ -1,0 +1,25 @@
+{
+	"id": "guardia_palacio",
+	"name": "NPC_GUARDIA_PALACIO",
+	"role": "villager",
+	"lines": {
+		"greet": "NPC_GUARDIA_PALACIO_GREET"
+	},
+	"look": {
+		"class": "warrior",
+		"appearance": {
+			"body": "robust",
+			"skin": "skin_3",
+			"eyes": "brown",
+			"hair_style": "short",
+			"hair_color": "dark_brown",
+			"beard": "stubble"
+		},
+		"primary": "#2f4f8f",
+		"secondary": "#d4a62a",
+		"trousers": "#2a2a33",
+		"weapons": [
+			"weapon_sword"
+		]
+	}
+}

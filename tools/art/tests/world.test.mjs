@@ -121,6 +121,38 @@ test("pieces fit in their footprint", () => {
   assert.deepEqual(p.cart_tracks.footprint, []);
 });
 
+// Plan 8.3b: the road, the capital and the palace.
+const CAPITAL = ["city_wall", "city_gate", "house_city", "market_stall", "fountain", "city_lamp", "palace_column", "palace_carpet",
+  "throne", "brazier", "crypt_gate_closed", "crypt_gate_open", "caravan_wagon", "horse", "bandit_palisade"];
+
+test("every capital piece exists and fits a vox model", () => {
+  for (const id of CAPITAL) {
+    assert.ok(p[id], id);
+    for (const sh of p[id].parts ? Object.values(p[id].parts) : [p[id].shape]) {
+      assert.ok(sh.cells.size > 0, id);
+      for (const d of sh.size()) assert.ok(d <= 126, `${id} size ${d}`);
+    }
+  }
+});
+
+test("the city house has two storeys, a free door and a walkable inside", () => {
+  const h = p.house_city;
+  const top = Math.max(...[...h.parts.walls.cells.values()].map((v) => v[1]));
+  assert.ok(top >= 60, "two storeys: " + top);
+  const fp = new Set(h.footprint.map(([x, z]) => x + "," + z));
+  for (const [x, z] of h.door) assert.ok(!fp.has(x + "," + z), "door free");
+  assert.ok(h.interior.filter(([x, z]) => !fp.has(x + "," + z)).length >= 10, "walkable inside");
+});
+
+test("the gate leaves its way through free, and both crypt gates share their footprint", () => {
+  assert.deepEqual(p.city_gate.footprint, [[0, 0], [4, 0]]);
+  assert.deepEqual(p.crypt_gate_closed.footprint, p.crypt_gate_open.footprint);
+  assert.deepEqual(p.palace_carpet.footprint, []);
+  const low = (sh) => [...sh.cells.values()].filter((v) => v[0] >= 21 && v[0] <= 38 && v[1] < 40).length;
+  assert.ok(low(p.crypt_gate_closed.shape) > 0, "closed: bars across");
+  assert.equal(low(p.crypt_gate_open.shape), 0, "open: the way is clear");
+});
+
 test("ground details are tiny and block nothing", () => {
   for (const id of DECOR) {
     assert.ok(p[id], id);

@@ -1,0 +1,23 @@
+{
+	"id": "ciudadana_2",
+	"name": "NPC_CIUDADANA",
+	"role": "villager",
+	"lines": {
+		"greet": "NPC_CIUDADANA_2_GREET"
+	},
+	"look": {
+		"class": "villager",
+		"appearance": {
+			"body": "slim",
+			"skin": "skin_7",
+			"eyes": "amber",
+			"hair_style": "hair_bun",
+			"hair_color": "dark_brown",
+			"beard": "none"
+		},
+		"primary": "#2a6a6a",
+		"secondary": "#d8c9a0",
+		"trousers": "#2e2a26",
+		"weapons": []
+	}
+}

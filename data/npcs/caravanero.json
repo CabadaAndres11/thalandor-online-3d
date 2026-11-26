@@ -1,0 +1,23 @@
+{
+	"id": "caravanero",
+	"name": "NPC_CARAVANERO",
+	"role": "villager",
+	"lines": {
+		"greet": "NPC_CARAVANERO_GREET"
+	},
+	"look": {
+		"class": "villager",
+		"appearance": {
+			"body": "robust",
+			"skin": "skin_4",
+			"eyes": "brown",
+			"hair_style": "hair_shaggy",
+			"hair_color": "brown",
+			"beard": "full"
+		},
+		"primary": "#7a5a32",
+		"secondary": "#c9a14a",
+		"trousers": "#3a2e22",
+		"weapons": []
+	}
+}

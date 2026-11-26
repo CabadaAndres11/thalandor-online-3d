@@ -30,7 +30,10 @@ const PALETTE = {
   [29]: "#9a4a32", [30]: "#7a3826", [31]: "#b8644a", [32]: "#4f7fd6", [33]: "#eeeae0", [34]: "#e8c73a",
   [35]: "#5f9a40", [36]: "#477a30", [37]: "#7fb552",
   [38]: "#3a3530", [39]: "#5b4632", [40]: "#c8bc9a", [41]: "#a89b78", [42]: "#2f4f8f", [43]: "#d4a62a",
+  [44]: "#b9b2a4", [45]: "#9b9486", [46]: "#8a2a2a", [47]: "#6a1e1e", [48]: "#7a5232",
 };
+// Plan 8.3b: city stone (light and dark), the palace red (light and dark) and a horse's coat.
+const CSTONE = 44, CSTONE_D = 45, RED = 46, RED_D = 47, HORSE = 48;
 // Plan 8.3a: ash, earth, army canvas (light and dark), the kingdom's blue and gold.
 const ASH = 38, EARTH = 39, CANVAS = 40, CANVAS_D = 41, ROYAL = 42, ROYAL_GOLD = 43;
 
@@ -93,7 +96,7 @@ function plankRoof(s) {
 }
 
 function houseParts(w, d, furnish = () => {}, style = {}) {
-  const C = HOUSE_CELL, W = w * C, D = d * C;
+  const C = HOUSE_CELL, W = w * C, D = d * C, HH = style.tall ? HOUSE_H * 2 : HOUSE_H;
   const floor = new Shape(), walls = new Shape(), roofShape = new Shape();
   const door = [[Math.floor(w / 2) - 1, d - 1], [Math.floor(w / 2), d - 1]];
   const dx0 = door[0][0] * C, dx1 = (door[1][0] + 1) * C - 1;
@@ -104,15 +107,15 @@ function houseParts(w, d, furnish = () => {}, style = {}) {
   floor.box(dx0, 0, D - 3, dx1, 0, D - 1, PLANK);
   for (let x = 3; x <= W - 4; x += 4) floor.box(x, 0, 3, x, 0, D - 4, PLANK_D); // board seams
   // Plaster walls 3 voxels thick on the outer edge of the ring, timber corners and beams.
-  walls.box(0, 1, 0, W - 1, HOUSE_H, 2, PLASTER).box(0, 1, D - 3, W - 1, HOUSE_H, D - 1, PLASTER);
-  walls.box(0, 1, 0, 2, HOUSE_H, D - 1, PLASTER).box(W - 3, 1, 0, W - 1, HOUSE_H, D - 1, PLASTER);
+  walls.box(0, 1, 0, W - 1, HH, 2, PLASTER).box(0, 1, D - 3, W - 1, HH, D - 1, PLASTER);
+  walls.box(0, 1, 0, 2, HH, D - 1, PLASTER).box(W - 3, 1, 0, W - 1, HH, D - 1, PLASTER);
   paint(walls, PLASTER, [PLASTER, PLASTER_D], 5);
   if (style.stone) { // the forge (Plan 8.1.3): rough stone, darker at the foot
     for (const v of walls.cells.values()) v[3] = v[1] < 6 ? STONE_D : STONE;
     paint(walls, STONE, [STONE, STONE_D, STONE_L], 51);
   }
-  for (const x of [0, W - 3]) for (const z of [0, D - 3]) walls.box(x, 1, z, x + 2, HOUSE_H, z + 2, WOOD);
-  for (const y of [1, HOUSE_H]) {
+  for (const x of [0, W - 3]) for (const z of [0, D - 3]) walls.box(x, 1, z, x + 2, HH, z + 2, WOOD);
+  for (const y of style.tall ? [1, HOUSE_H, HH] : [1, HH]) {
     walls.box(0, y, 0, W - 1, y, 2, WOOD).box(0, y, D - 3, W - 1, y, D - 1, WOOD);
     walls.box(0, y, 0, 2, y, D - 1, WOOD).box(W - 3, y, 0, W - 1, y, D - 1, WOOD);
   }
@@ -124,7 +127,7 @@ function houseParts(w, d, furnish = () => {}, style = {}) {
   const cut = new Shape();
   for (const v of walls.cells.values()) if (v[1] <= CUT_H) cut.put(v[0], v[1], v[2], v[3]);
   // Gabled thatch, ridge along x.
-  roof(roofShape, 0, W - 1, 0, D - 1, HOUSE_H + 1, 3);
+  roof(roofShape, 0, W - 1, 0, D - 1, HH + 1, 3);
   // The gable ends under the roof are closed (plaster with a timber edge); they belong to
   // the roof, so they go with it when the house opens.
   {
@@ -132,7 +135,7 @@ function houseParts(w, d, furnish = () => {}, style = {}) {
     for (let h = 0; h <= half; h++) {
       const z0 = Math.round(mid - half + h) + 1, z1 = Math.round(mid + half - h) - 1;
       for (const x of [0, 1, 2, W - 3, W - 2, W - 1]) for (let z = Math.max(z0, 0); z <= Math.min(z1, D - 1); z++) {
-        roofShape.put(x, HOUSE_H + 1 + h, z, z === Math.max(z0, 0) || z === Math.min(z1, D - 1) ? WOOD : (style.stone ? STONE : PLASTER));
+        roofShape.put(x, HH + 1 + h, z, z === Math.max(z0, 0) || z === Math.min(z1, D - 1) ? WOOD : (style.stone ? STONE : PLASTER));
       }
     }
     paint(roofShape, PLASTER, [PLASTER, PLASTER_D], 47);
@@ -502,6 +505,101 @@ export function worldPieces() {
   for (const y of [20, 31]) dummy.box(3, y, 4, 16, y, 15, WOOD_D);
   dummy.box(-4, 29, 8, 23, 31, 10, WOOD).box(-5, 27, 8, -3, 31, 10, WOOD_D).box(22, 27, 8, 24, 31, 10, WOOD_D);
   add("training_dummy", paint(dummy, THATCH, [THATCH, THATCH_D, THATCH_L], 41), { footprint: [[0, 0]] });
+
+  // --- The road and the capital (Plan 8.3b) ---
+  // The city wall: 2 m of dressed stone, 4 m high, with merlons.
+  const cityWall = new Shape();
+  cityWall.box(0, 0, 4, 39, 72, 15, CSTONE);
+  for (let x = 0; x < 40; x += 10) cityWall.box(x, 73, 4, x + 5, 80, 15, CSTONE);
+  for (let y = 10; y < 72; y += 12) cityWall.box(0, y, 4, 39, y, 4, CSTONE_D);
+  add("city_wall", paint(cityWall, CSTONE, [CSTONE, CSTONE_D], 91));
+  // The cityGate: two towers and an arch over a 3 m way through (cells 1-3 stay free).
+  const cityGate = new Shape();
+  for (const x0 of [0, 80]) { cityGate.box(x0, 0, 0, x0 + 19, 100, 19, CSTONE); for (let x = x0; x < x0 + 20; x += 8) cityGate.box(x, 101, 0, x + 4, 108, 19, CSTONE); }
+  cityGate.box(20, 64, 4, 79, 84, 15, CSTONE);
+  ellipsoid(cityGate, [49.5, 64, 9.5], [30, 10, 6], 0);
+  for (const v of [...cityGate.cells.values()]) if (v[3] === 0) cityGate.cells.delete(`${v[0]},${v[1]},${v[2]}`);
+  cityGate.box(42, 86, 2, 57, 99, 3, ROYAL).box(48, 90, 1, 51, 95, 1, ROYAL_GOLD);
+  add("city_gate", paint(cityGate, CSTONE, [CSTONE, CSTONE_D], 93), { footprint: [[0, 0], [4, 0]] });
+  // A two-storey stone house of the capital, walkable like the village's.
+  addHouse("house_city", houseParts(7, 6, (f) => { table(f, 2, 2, 2); shelf(f, 5, 1); chest(f, 5, 3); }, { stone: true, tall: true }));
+  // A market stall: a counter, four posts and a striped awning; goods on the counter.
+  const stall = new Shape();
+  stall.box(2, 0, 10, 37, 16, 17, PLANK).box(2, 16, 9, 37, 17, 18, PLANK_D);
+  for (const [x, z] of [[2, 2], [36, 2], [2, 17], [36, 17]]) stall.box(x, 0, z, x + 1, 44, z + 1, WOOD);
+  for (let x = 0; x < 40; x++) for (let z = 0; z < 22; z++) stall.put(x, 45 + Math.floor((21 - z) / 7), z, Math.floor(x / 5) % 2 ? FLOWER_W : CLOTH);
+  for (let x = 5; x < 36; x += 7) ellipsoid(stall, [x, 19, 13.5], [2.5, 2, 2.5], x % 2 ? HAY : CLOTH);
+  add("market_stall", paint(stall, PLANK, [PLANK, PLANK_D], 95));
+  // The fountain of the square: a round basin, water and a column with a bowl.
+  const fountain = new Shape();
+  cylinder(fountain, [29.5, 0, 29.5], [29.5, 12, 29.5], 28, CSTONE);
+  cylinder(fountain, [29.5, 3, 29.5], [29.5, 13, 29.5], 25, 0);
+  for (const v of [...fountain.cells.values()]) if (v[3] === 0) fountain.cells.delete(`${v[0]},${v[1]},${v[2]}`);
+  cylinder(fountain, [29.5, 3, 29.5], [29.5, 9, 29.5], 25, WATER);
+  cylinder(fountain, [29.5, 0, 29.5], [29.5, 40, 29.5], 3, CSTONE);
+  cylinder(fountain, [29.5, 40, 29.5], [29.5, 43, 29.5], 9, CSTONE_D);
+  cylinder(fountain, [29.5, 43, 29.5], [29.5, 44, 29.5], 7, WATER);
+  add("fountain", paint(fountain, CSTONE, [CSTONE, CSTONE_D], 97));
+  // A street cityLamp of the city: an iron post and a glowing cage.
+  const cityLamp = new Shape();
+  cityLamp.box(7, 0, 7, 12, 2, 12, CSTONE_D).box(9, 3, 9, 10, 54, 10, IRON).box(6, 55, 6, 13, 64, 13, IRON).box(7, 56, 7, 12, 63, 12, GLOW).box(8, 65, 8, 11, 67, 11, IRON_L);
+  add("city_lamp", cityLamp, { footprint: [[0, 0]] });
+  // The palace: a column 6 m high, a red carpet, the throne on its dais, braziers and the crypt's cityGate.
+  const column = new Shape();
+  cylinder(column, [9.5, 4, 9.5], [9.5, 116, 9.5], 7, CSTONE);
+  column.box(0, 0, 0, 19, 4, 19, CSTONE_D).box(0, 116, 0, 19, 120, 19, CSTONE_D);
+  for (let y = 10; y < 116; y += 3) for (let a = 0; a < 8; a++) column.put(Math.round(9.5 + Math.cos(a * Math.PI / 4) * 7), y, Math.round(9.5 + Math.sin(a * Math.PI / 4) * 7), CSTONE_D);
+  add("palace_column", column, { footprint: [[0, 0]] });
+  const carpet = new Shape();
+  carpet.box(0, 0, 0, 39, 0, 79, RED);
+  for (const x of [1, 38]) carpet.box(x, 0, 0, x, 0, 79, ROYAL_GOLD);
+  for (let z = 6; z < 80; z += 14) carpet.box(16, 0, z, 23, 0, z + 2, RED_D);
+  add("palace_carpet", carpet, { footprint: [] });
+  const throne = new Shape();
+  throne.box(0, 0, 0, 39, 4, 39, CSTONE).box(4, 5, 0, 35, 8, 30, CSTONE_D);
+  throne.box(10, 9, 8, 29, 18, 24, ROYAL_GOLD).box(12, 19, 8, 27, 20, 22, RED);
+  throne.box(10, 9, 4, 29, 64, 8, ROYAL_GOLD).box(13, 22, 8, 26, 58, 9, RED);
+  throne.box(17, 64, 4, 22, 72, 8, ROYAL_GOLD);
+  for (const x of [8, 29]) throne.box(x, 18, 8, x + 2, 28, 24, ROYAL_GOLD);
+  add("throne", throne);
+  const brazier = new Shape();
+  brazier.box(8, 0, 8, 11, 26, 11, IRON);
+  cylinder(brazier, [9.5, 26, 9.5], [9.5, 31, 9.5], 7, IRON);
+  cylinder(brazier, [9.5, 30, 9.5], [9.5, 31, 9.5], 6, COAL);
+  for (let i = 0; i < 18; i++) brazier.put(6 + (i * 7) % 8, 32 + (i % 4), 6 + (i * 5) % 8, GLOW);
+  add("brazier", brazier, { footprint: [[0, 0]] });
+  const gatePosts = (sh) => { for (const x0 of [0, 40]) sh.box(x0, 0, 6, x0 + 19, 90, 13, STONE_D); sh.box(20, 80, 6, 39, 90, 13, STONE_D); };
+  const shut = new Shape();
+  gatePosts(shut);
+  for (let x = 21; x < 40; x += 4) shut.box(x, 0, 9, x + 1, 79, 10, IRON);
+  for (let y = 10; y < 80; y += 18) shut.box(20, y, 9, 39, y + 1, 10, IRON_L);
+  add("crypt_gate_closed", paint(shut, STONE_D, [STONE_D, STONE], 99), { footprint: [[0, 0], [2, 0]] });
+  const raised = new Shape();
+  gatePosts(raised);
+  for (let x = 21; x < 40; x += 4) raised.box(x, 70, 9, x + 1, 79, 10, IRON);
+  add("crypt_gate_open", paint(raised, STONE_D, [STONE_D, STONE], 99), { footprint: [[0, 0], [2, 0]] });
+  // The road: the caravan's wagon with its canvas, a horse standing still, the bandits' palisade.
+  const wagon = new Shape();
+  wagon.box(4, 12, 6, 70, 14, 33, PLANK).box(4, 15, 6, 70, 22, 7, PLANK).box(4, 15, 32, 70, 22, 33, PLANK);
+  for (const [x, z] of [[16, 3], [16, 36], [58, 3], [58, 36]]) cylinder(wagon, [x, 10, z], [x, 10, z + 2], 10, WOOD);
+  for (let x = 6; x <= 68; x++) for (let a = 0; a <= 20; a++) {
+    const t = (a / 20) * Math.PI;
+    wagon.put(x, 22 + Math.round(Math.sin(t) * 22), Math.round(19.5 - Math.cos(t) * 14), x % 12 < 2 ? CANVAS_D : CANVAS);
+  }
+  wagon.box(70, 12, 18, 90, 13, 21, WOOD);
+  add("caravan_wagon", paint(wagon, PLANK, [PLANK, PLANK_D], 101));
+  const horse = new Shape();
+  ellipsoid(horse, [20, 30, 9.5], [16, 8, 6], HORSE);
+  for (const [x, z] of [[9, 6], [9, 13], [31, 6], [31, 13]]) horse.box(x, 0, z, x + 2, 24, z + 2, HORSE);
+  capsule(horse, [33, 34, 9.5], [40, 46, 9.5], 4, 3, HORSE);
+  ellipsoid(horse, [43, 46, 9.5], [6, 3.5, 3], HORSE);
+  horse.box(32, 38, 9, 37, 48, 10, COAL).box(2, 22, 9, 5, 34, 10, COAL);
+  for (const [x, z] of [[9, 6], [9, 13], [31, 6], [31, 13]]) horse.box(x, 0, z, x + 2, 2, z + 2, COAL);
+  add("horse", paint(horse, HORSE, [HORSE, WOOD_D], 103));
+  const palisade = new Shape();
+  for (let x = 1; x < 60; x += 5) { cylinder(palisade, [x + 1.5, 0, 9.5], [x + 1.5, 44, 9.5], 2.3, x % 2 ? WOOD : BARK); palisade.box(x + 1, 45, 9, x + 2, 48, 10, WOOD_L); }
+  palisade.box(0, 20, 7, 59, 21, 7, WOOD_D).box(0, 34, 7, 59, 35, 7, WOOD_D);
+  add("bandit_palisade", paint(palisade, WOOD, [WOOD, WOOD_D], 105));
 
   // --- The prologue (Plan 8.3a) ---
   // The festival on the eve: pennants on a rope between two posts, 3 m wide.

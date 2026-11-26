@@ -1,0 +1,26 @@
+{
+	"id": "maese_corwin",
+	"name": "NPC_MAESE_CORWIN",
+	"role": "class_trainer",
+	"lines": {
+		"greet": "NPC_MAESE_CORWIN_GREET"
+	},
+	"look": {
+		"class": "warrior",
+		"appearance": {
+			"body": "robust",
+			"skin": "skin_5",
+			"eyes": "grey",
+			"hair_style": "short",
+			"hair_color": "grey",
+			"beard": "short",
+			"marks": "scar_eye"
+		},
+		"primary": "#4a4a52",
+		"secondary": "#b0a080",
+		"trousers": "#2a2a30",
+		"weapons": [
+			"weapon_sword"
+		]
+	}
+}
