@@ -6,7 +6,8 @@ actualizado: 2026-11-22
 
 # 4. Personajes y clases
 
-## 4.0 Creación y elección de clase **[Implementado]** (0.5.0, [[D-011 La clase se elige dentro de la partida]])
+## 4.0 Creación y elección de clase **[Implementado]** (0.5.0, [[D-011 La clase se elige dentro de la partida]]; desde la 0.13.0 en el asalto, [[D-019 Prólogo como tutorial y clase en el asalto]])
+- **Desde la 0.13.0** la clase se elige en el prólogo, al despertar el poder durante el asalto: el paso de misión con el objetivo `class` deja elegir en cualquier sitio y la ventana sale sola, sin poder cerrarla. Brann ya no enseña clases ni hay reinicios hasta la 8.3b (un PNJ de la capital). Lo que sigue en esta sección describe la 0.5.0.
 - **Crear personaje:** solo nombre y aspecto. Todo personaje nace **aldeano**:
   - 120 de vida y sin recurso de clase;
   - un golpe con espada de madera como ataque básico;
@@ -61,7 +62,7 @@ Desde la 0.7.0 la armadura va **por clase**: cada clase lleva solo su propio jue
 - **Cada 50 niveles** (50, 100, 150…) se alcanza un **rango de clase** y se elige **una mejora entre 2 o 3** (el Mago tiene 3).
 - **Cada mejora aporta:** 2 habilidades activas nuevas, 2 pasivas y la **evolución de una habilidad base** (por ejemplo, el Tajo del Guerrero pasa a golpear dos veces).
 - **Las mejoras se acumulan:** al nivel 100 se elige otra mejora de un segundo rango, cuyas opciones dependen de la elegida al 50 (árbol de evolución de la clase).
-- **Cambiar de mejora:** posible en la capital (instructor de clase) pagando oro, fuera de combate.
+- **Cambiar de mejora:** posible en la capital (instructor de clase) pagando oro, fuera de combate. Hasta entonces (0.13.0) la mejora del nivel 50 es **definitiva**.
 - **Primer rango (nivel 50):** definido en el **anexo A**. Los rangos siguientes se diseñarán a medida que haya contenido para esos niveles.
 
 | Clase | Mejora A (nivel 50) | Mejora B (nivel 50) | Mejora C (nivel 50) |
@@ -134,7 +135,7 @@ final = (base de clase + atributos + suma de bonos planos) × (1 + suma de bonos
 
 ## 4.10 Creación y apariencia del personaje **[Implementado]** (Plan 2, versión 0.2.0)
 - Hasta **8 personajes** por jugador.
-- Se eligen **nombre, raza y apariencia**. La clase se elige en el juego, con Brann.
+- Se eligen **nombre, raza y apariencia**. La clase se elige en el juego, durante el asalto del prólogo (0.13.0).
 - **Apariencia vóxel:** tipo de cuerpo, tono de piel, peinado, color de pelo y color de ojos; los modelos se arman por piezas (cabeza, torso, brazos, piernas).
 - **Ropa inicial:** la decide la clase. Después cambia con el equipo ([[08 Botín y economía|§8]]).
 - **Nombres:** de 2 a 16 caracteres (letras con tildes, números, espacios, `-` y `'`), sin repetir entre los personajes del mismo jugador.

@@ -5,7 +5,18 @@
    - **Si el navegador bloquea la descarga** por "no segura" (el juego es nuevo y no está firmado): en **Chrome**, abre las descargas (Ctrl+J) y pulsa **Conservar**. En **Edge**, pulsa **… → Conservar → Mostrar más → Conservar de todos modos**.
 2. Abre `ThalandorOnline.exe`.
 3. **Aviso de Windows (SmartScreen):** el juego no está firmado. Pulsa **Más información → Ejecutar de todas formas**.
-4. Pulsa **Jugar**. Se abre **Tus personajes**: crea uno con **Crear** (nombre, raza y aspecto) o elige uno que ya tengas. Empiezas como **aldeano**: la clase se elige en la partida, hablando con **Brann** (pulsa **E** a su lado).
+4. Pulsa **Jugar**. Se abre **Tus personajes**: crea uno con **Crear** (nombre, raza y aspecto). Empiezas como **aldeano** en el prólogo, que es el tutorial: la clase se elige durante el asalto a la aldea.
+
+### Novedades de la 0.13.0: el prólogo
+- **El juego empieza por la historia.** Tres misiones en la Aldea de Aelhest que enseñan a jugar con el recuadro de objetivos bajo el minimapa:
+  - **La víspera** (a solas, al atardecer de fiesta): moverse, hablar, los recados de Brann, el **muñeco de práctica** (clic izquierdo, clic derecho y Espacio), la colina con Mira y la fiesta;
+  - **El asalto** (a solas, de noche): salvar a los vecinos, perseguir a Mira, **elegir la clase** cuando despierta tu poder, el alba y **el Heraldo**, que huye al dejarlo al 10 % de vida;
+  - **Llegan tarde** (en el mundo compartido): la aldea en ruinas, la capitana **Verrin** y el rastro del culto en el bosque, hasta que la anciana te da un nombre.
+- **La aldea en tres momentos:** sana y de fiesta, en llamas, y en ruinas con el campamento del ejército. **Aldeanos que pasean** por sus calles (con **E** saludan).
+- **Sin Brann**, la clase se elige en la historia, ya **no hay reinicios** (llegarán con un PNJ de la capital) y la **mejora del nivel 50 es definitiva**. El nivel de la arena pasa al comando `/arena <n>` del anfitrión. El mercader se ha ido de la aldea.
+- **Tus personajes de antes no valen:** la historia empieza desde el principio. Se guardan aparte en la carpeta `antiguos` y no se pueden usar ni importar.
+- El juego en grupo se abre al terminar el asalto.
+- **Todo el grupo tiene que usar la misma versión.**
 
 ### Novedades de la 0.12.0: misiones, diálogos y escenas
 - **Misiones:** los PNJ con algo para ti llevan una **!** encima (una **?** si tienes algo que entregarles o decirles). Pulsa **E** a su lado para hablar.

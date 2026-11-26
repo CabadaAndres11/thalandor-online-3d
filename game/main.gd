@@ -745,9 +745,16 @@ func _story_asks_class() -> bool:
 	if CharacterCatalog.load_default().is_selectable(c.class_id):
 		return false
 	for id: String in c.quests.active:
-		for o: Dictionary in QuestText.objectives(c.quests, QuestDB.load_default(), id):
-			if str(o.type) == "class":
-				return true
+		var objs := QuestText.objectives(c.quests, QuestDB.load_default(), id)
+		var asks := false
+		var scene_first := false # the awakening scene plays before the window opens
+		for i in objs.size():
+			var o: Dictionary = objs[i]
+			asks = asks or str(o.type) == "class"
+			if str(o.type) == "scene" and int(c.quests.active[id].counts[i]) < int(o.count):
+				scene_first = true
+		if asks and not scene_first:
+			return true
 	return false
 
 

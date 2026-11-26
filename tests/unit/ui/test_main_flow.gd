@@ -782,3 +782,20 @@ func test_no_class_window_without_the_story() -> void:
 	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
 	_press("interact")
 	assert_false(main.class_choice_window.visible, "nobody teaches classes any more")
+
+
+## The awakening scene plays before the class window opens (Plan 8.3a).
+func test_class_window_waits_for_the_scene() -> void:
+	QuestDB._default = QuestDB.load_dir("res://tests/data/quests/")
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	var w: SimWorld = main.game.host.world_of(main.game.client.my_id)
+	var p := _host_player()
+	QuestRules.force_start(w, p, "q_wake")
+	await wait_until(func() -> bool: return main.game.client.quests.is_active("q_wake"), 3.0)
+	await wait_frames(10)
+	assert_false(main.class_choice_window.visible, "not before the scene")
+	p.quests.active.q_wake.counts[0] = 1
+	p.quests_dirty = true
+	await wait_until(func() -> bool: return main.class_choice_window.visible, 3.0)
+	assert_true(main.class_choice_window.visible, "after it")

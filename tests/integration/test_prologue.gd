@@ -83,6 +83,7 @@ func _clear_monsters(keep: String = "") -> void:
 	for id: int in w.monsters.keys():
 		if (w.monsters[id] as MonsterState).type_id != keep:
 			w.remove_entity(id)
+	_p().last_hurt_tick = -100000 # the horde was biting: out of combat now, so the scene may start
 
 
 func _kill(type_id: String) -> void:
@@ -233,3 +234,21 @@ func test_the_prologue_data_is_valid() -> void:
 		assert_eq(CutsceneData.validate(id), [], id)
 	assert_eq(DialogueRunner.validate_dir(DialogueRunner.DIR), [])
 	assert_eq(QuestDB.load_default().ids(), ["prologo_1", "prologo_2", "prologo_3"])
+
+
+## Review point 1: leaving in the middle of the awakening and coming back puts the player in
+## the assault again, and the scene plays again (its step waits for it), then the class.
+func test_coming_back_in_the_awakening() -> void:
+	var log := QuestLog.new()
+	log.done.append("prologo_1")
+	log.active["prologo_2"] = {"step": 3, "counts": [0, 0]}
+	var t := net.connect_client(host_t)
+	t.send(Transport.HOST_PEER, Protocol.hello(VERSION, Protocol.VERSION, "Ciro", "villager", {}, [], {"level": 1}, {}, {}, log.to_dict()), true)
+	host.tick()
+	host.tick()
+	var id := 2
+	assert_eq(str(host._players[id].zone_key), "aldea~asalto#p%d" % id, "back in the assault")
+	assert_true(host.state_of(id).in_scene(), "the awakening plays again")
+	t.send(Transport.HOST_PEER, Protocol.quest_action("scene_done", ["prologo_despertar"]), true)
+	host.tick()
+	assert_true(QuestRules.allows_class_choice(host.world_of(id), host.state_of(id)), "and the class is chosen")

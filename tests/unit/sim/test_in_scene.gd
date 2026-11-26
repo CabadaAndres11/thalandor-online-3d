@@ -109,7 +109,7 @@ func test_objective_survives_disconnect() -> void:
 	var p := host.state_of(host._players.keys()[0])
 	assert_true(p.quests.is_active("q_req"))
 	assert_eq(p.quests.active.q_req.counts, [0])
-	assert_false(p.in_scene())
+	assert_true(p.in_scene(), "the scene it left plays again (Plan 8.3a): its step waits for it")
 
 
 func test_scene_waits_for_combat_to_end() -> void:

@@ -33,14 +33,21 @@ La demo cubre el **prólogo y el arco 1** (misiones 1–14) y termina hacia el *
 
 | Zona | Niveles | Contenido |
 |---|---|---|
-| **Aldea** | 1–5 | Tutorial en solitario (misiones 1–2); Brann en la forja |
+| **Aldea** | 1–5 | Tutorial en solitario (misiones 1–2, variantes `vispera` y `asalto`); después, en ruinas, con el campamento de Verrin (0.13.0) |
 | **Bosque**, camino de la capital | 5–20 | Hordas, el rastro del Heraldo y la emboscada de bandidos (misiones 3–4) |
 | **Capital** | — | Zona segura: mercaderes, instructor, alijo y misiones |
 | **Afueras de la capital** | 20–35 | Hordas entre misiones del arco 1 |
 | **Alcantarillas y submundo** | 30–40 | Misión 8 |
 | **Cripta bajo el palacio** | 35–50+ | Mazmorra instanciada y repetible (misiones 5, 11 y 12) |
 
-- **Provisional (0.11.0):** una aldea y un bosque de prueba conectados y una **cripta de prueba** instanciada al fondo del bosque. Su diseño definitivo llega con el prólogo (Plan 8.3).
+- **Provisional (0.11.0):** una aldea y un bosque de prueba conectados y una **cripta de prueba** instanciada al fondo del bosque.
+- **La aldea en tres momentos (0.13.0, [[Plan 8.3a — Prólogo en la aldea (spec)|Plan 8.3a]])** **[Implementado]**:
+  - **base (compartida):** en ruinas, con casas quemadas (mismas casillas que las sanas), escombros, vigas, tumbas junto a la colina y el campamento del ejército (tiendas y estandarte). PNJ: Verrin, la anciana Edda, Tobías el panadero y Garet el cazador. Sin Brann ni mercader;
+  - **`vispera`:** casas sanas, guirnaldas, farolillos, mesas de fiesta y hoguera, luz de atardecer, muñeco de práctica en el patio de la forja, Brann y Mira. Se empieza dentro de la casa de la forja;
+  - **`asalto`:** de noche con fuego, cultistas de nivel 1–2 junto a los vecinos, sabuesos y el Heraldo al norte; se reaparece a salvo en la casa de la forja, a más de 15 m de toda horda.
+  - Las variantes pueden cambiar también `entries` y `walkers`.
+- **Aldeanos que pasean** (0.13.0): ancianos sobre todo, por rutas (`walkers`). Se mueven en cada cliente con el reloj del anfitrión, no chocan con nadie y saludan con **E**.
+- **Rastro del culto en el Bosque de Eldarra** (0.13.0): al sur del camino, lejos de las hordas, un campamento abandonado, huellas de carro y la orilla de un río donde el rastro se pierde.
 - **Crecimiento:** el mundo crece por **arcos** del guion (un sello por arco).
 
 ## 6.3 Pipeline de contenido **[Diseñado]**

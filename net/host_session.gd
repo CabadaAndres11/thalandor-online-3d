@@ -522,6 +522,9 @@ func _on_hello(index: int, peer: int, key: String, msg: Dictionary) -> void:
 	var moment := QuestRules.current_moment(zones.world(start.key), player)
 	if not moment.is_empty():
 		send_to_moment(id, str(moment.zone), str(moment.variant))
+	var owed := QuestRules.owed_scene(world_of(id), player)
+	if owed != "":
+		_players[id].pending_scene = owed # it left in the middle of it: it plays again
 	for other: int in _players:
 		if other != id:
 			_send_to(other, Protocol.player_joined(id, name, slot, class_id, appearance, player.progress.upgrade, _players[id].gear), true)

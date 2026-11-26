@@ -156,6 +156,17 @@ static func current_moment(world: SimWorld, p: PlayerState) -> Dictionary:
 	return out
 
 
+## A scene the current step still waits for ("" if none): a player who left in the middle of
+## one sees it again when it comes back, or the step would wait forever (Plan 8.3a).
+static func owed_scene(world: SimWorld, p: PlayerState) -> String:
+	for id: String in p.quests.active:
+		var objs := current_objectives(world, p, id)
+		for i in objs.size():
+			if str(objs[i].type) == "scene" and int(p.quests.active[id].counts[i]) < int(objs[i].count):
+				return str(objs[i].get("scene", ""))
+	return ""
+
+
 static func is_ready(world: SimWorld, p: PlayerState, id: String) -> bool:
 	var q := _db(world).quest(id)
 	return not q.is_empty() and p.quests.is_active(id) and int(p.quests.active[id].step) >= (q.steps as Array).size()

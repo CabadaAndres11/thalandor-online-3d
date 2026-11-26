@@ -38,7 +38,8 @@ actualizado: 2026-11-26
 - **Diálogo:** panel ancho de piedra abajo, con quién habla y el texto letra a letra (40 por segundo). E, espacio o clic completan o avanzan; 1–4 eligen. La cámara se acerca un poco y el PNJ se gira hacia ti. Un golpe o Esc lo cierran sin contar.
 - **Escena:** barras negras (12 % arriba y abajo), subtítulos con el nombre, la interfaz oculta y *Mantén Esc para saltar* (0,5 s).
 - **Diario (J):** misiones a la izquierda (*Activas* y *Hechas*, las de la historia primero, 8 por página) y a la derecha el detalle (resumen, paso, objetivos con contadores, recompensas), con *Seguir* y *Abandonar* (no las de la historia).
-- **Objetivo seguido** bajo el minimapa: nombre, paso y contadores (*Sabueso marcado 3/5*).
+- **Objetivo seguido** bajo el minimapa: nombre, paso y contadores (*Sabueso marcado 3/5*). En el prólogo es el tutorial (0.13.0): el paso dice qué hacer (*Golpea el muñeco con el clic izquierdo*) y los objetivos llevan su cuenta (*Golpes al muñeco 3/10*, *Esquivas 1/3*).
+- **Ventana de clase obligatoria** (0.13.0): cuando la historia pide elegir clase, sale sola y no tiene botón de cerrar.
 - **Marcas:** **!** dorado (una misión para ti), **!** gris (a más nivel), **?** (algo que entregar o decir) sobre los PNJ; una estrella en el mapa y el minimapa en el objetivo seguido, o en la salida hacia su zona; un brillo en los puntos de misión que te tocan.
 - **Avisos** arriba en el centro: misión nueva, objetivo cumplido, misión completada y bolsa llena.
 - **Entrega:** ventana con las recompensas y, si hay que elegir, los objetos con su ficha.
