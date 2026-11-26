@@ -34,7 +34,7 @@ Cada plan de la [[14 Hoja de ruta]] tiene aquí su **spec** (diseño acordado) y
 | 8.1.3 · Herrería y suelo | [[Plan 8.1.3 — Herrería y suelo (spec)|Spec]] | — (la spec lleva las tareas) | Hecho (0.11.3, publicada en la 0.11.3) |
 | 8.2 · Misiones, diálogos y escenas | [[Plan 8.2 — Misiones, diálogos y escenas (spec)\|Spec]] | [[Plan 8.2 — Misiones, diálogos y escenas (plan)\|Plan]] | Hecho (0.12.0, sin publicar) |
 | 8.3a · Prólogo en la aldea | [[Plan 8.3a — Prólogo en la aldea (spec)\|Spec]] | [[Plan 8.3a — Prólogo en la aldea (plan)\|Plan]] | Hecho (0.13.0, sin publicar) |
-| 8.3b · Camino y capital | — | — | Pendiente |
+| 8.3b · Camino y capital | [[Plan 8.3b — Camino y capital (spec)|Spec]] | — | Spec en revisión |
 | 9 · Secretos y clases ocultas | — | — | Pendiente |
 | 10 · Oficios | — | — | Pendiente |
 | 11 · Interfaz y audio | — | — | Pendiente |
