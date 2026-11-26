@@ -48,6 +48,8 @@ La demo cubre el **prólogo y el arco 1** (misiones 1–14) y termina hacia el *
   - **`vispera`:** casas sanas, guirnaldas, farolillos, mesas de fiesta y hoguera, luz de atardecer, muñeco de práctica en el patio de la forja, Brann y Mira. Se empieza dentro de la casa de la forja;
   - **`asalto`:** de noche con fuego, cultistas de nivel 1–2 junto a los vecinos, sabuesos y el Heraldo al norte; se reaparece a salvo en la casa de la forja, a más de 15 m de toda horda.
   - Las variantes pueden cambiar también `entries` y `walkers`.
+- **Relieve** (0.15.0, [[Plan 8.3d — Relieve, aldea nueva y correcciones (spec)|Plan 8.3d]]): `relief` en la zona (`hill`, `hollow`, `plateau` con `slope`); `ZoneLayout.height_at` da la altura y un desnivel de más de 0,6 m entre casillas es un acantilado. La simulación sigue en plano; cada cliente dibuja suelo, piezas, personajes, efectos y escenas a esa altura. El agua se queda en su hondonada.
+- **La aldea desde la 0.15.0:** calle mayor de oeste a este con 14 casas en hilera (cabaña, entramado de dos plantas, troncos, piedra y casa grande), plaza en el cruce con el camino del norte, callejones a la herrería, la colina (tumbas) y el río; **rancho** con establo, cercado, comederos y vacas que pasean. Los jabalíes, en el prado del noreste.
 - **Aldeanos que pasean** (0.13.0): ancianos sobre todo, por rutas (`walkers`). Se mueven en cada cliente con el reloj del anfitrión, no chocan con nadie y saludan con **E**.
 - **Rastro del culto en el Bosque de Eldarra** (0.13.0): al sur del camino, lejos de las hordas, un campamento abandonado, huellas de carro y la orilla de un río donde el rastro se pierde.
 - **Crecimiento:** el mundo crece por **arcos** del guion (un sello por arco).

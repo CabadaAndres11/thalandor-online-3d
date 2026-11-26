@@ -6,48 +6,48 @@
 		"anciana": {
 			"npc": "anciana_cantora",
 			"at": [
-				42,
-				50
+				19,
+				45
 			],
 			"facing": 90
 		},
 		"yo": {
 			"player": true,
 			"at": [
-				44,
-				50
+				21,
+				45
 			],
 			"facing": 270
 		},
 		"v1": {
 			"npc": "aldeano_anciano_1",
 			"at": [
-				43,
-				52
+				20,
+				47
 			],
 			"facing": 0
 		},
 		"v2": {
 			"npc": "aldeana_anciana_1",
 			"at": [
-				45,
-				52
+				22,
+				47
 			],
 			"facing": 0
 		},
 		"v3": {
 			"npc": "panadero",
 			"at": [
-				41,
-				52
+				18,
+				47
 			],
 			"facing": 0
 		},
 		"v4": {
 			"npc": "cazador",
 			"at": [
-				46,
-				48
+				23,
+				43
 			],
 			"facing": 270
 		}
@@ -57,14 +57,14 @@
 			{
 				"camera": {
 					"at": [
-						43,
+						20,
 						4,
-						57
+						52
 					],
 					"look": [
-						43,
+						20,
 						1.2,
-						50
+						45
 					],
 					"fov": 46
 				},
@@ -73,14 +73,14 @@
 			{
 				"camera": {
 					"at": [
-						43,
+						20,
 						2.6,
-						54
+						49
 					],
 					"look": [
-						43,
+						20,
 						1.5,
-						50
+						45
 					]
 				},
 				"time": 16,

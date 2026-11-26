@@ -7,6 +7,14 @@
 3. **Aviso de Windows (SmartScreen):** el juego no está firmado. Pulsa **Más información → Ejecutar de todas formas**.
 4. Pulsa **Jugar**. Se abre **Tus personajes**: crea uno con **Crear** (nombre, raza y aspecto). Empiezas como **aldeano** en el prólogo, que es el tutorial: la clase se elige durante el asalto a la aldea.
 
+### Novedades de la 0.15.0: relieve, aldea nueva y correcciones
+- **Relieve:** colinas, cuestas, altos y bajos; todo se dibuja a la altura del suelo, y los desniveles bruscos no se cruzan.
+- **La Aldea de Aelhest, rehecha:** calle mayor con casas en hilera a los dos lados, **cuatro diseños de casa** más la casa grande (cabaña, casa de entramado de dos plantas, cabaña de troncos y casa de piedra del panadero), callejones, la colina con las tumbas, el río en su hondonada y un **rancho con vacas**.
+- **El asalto:** el secuestro y las peleas pasan en la escena; **el primer combate ya es con tu clase** (cultistas derrotados).
+- **Escenas:** Brann aparece ya caído, sobre un charco de sangre; heridos tumbados en «Llegan tarde»; los escombros se apartan de verdad; sin nombres flotando durante las escenas; sin brillo donde empiezan.
+- **Interfaz:** el recuadro del código empieza vacío; botón **Cerrar juego** en Esc; las casas que te tapan se abren; los **enemigos de misión** salen como puntos rojos en el minimapa y el mapa, y el muñeco brilla; la flecha del mapa se mueve con él abierto; sin zoom al hablar; aviso **¡Nivel N!** y destello azul al subir de nivel; el aviso del tutorial desaparece al terminarlo.
+- **Todo el grupo tiene que usar la misma versión.**
+
 ### Novedades de la 0.14.1: correcciones
 - Antes de tener clase solo hay **clic izquierdo**; la práctica del muñeco ya no pide el clic derecho.
 - Los PNJ muestran **[E] Hablar** (ya no «Hablar con Brann»).

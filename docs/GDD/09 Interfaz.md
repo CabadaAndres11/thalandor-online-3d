@@ -39,6 +39,7 @@ actualizado: 2026-11-26
 - **Escena:** barras negras (12 % arriba y abajo), subtítulos con el nombre, la interfaz oculta y *Mantén Esc para saltar* (0,5 s).
 - **Diario (J):** misiones a la izquierda (*Activas* y *Hechas*, las de la historia primero, 8 por página) y a la derecha el detalle (resumen, paso, objetivos con contadores, recompensas), con *Seguir* y *Abandonar* (no las de la historia).
 - **Objetivo seguido** bajo el minimapa: nombre, paso y contadores (*Sabueso marcado 3/5*). En el prólogo es el tutorial (0.13.0): el paso dice qué hacer (*Golpea el muñeco con el clic izquierdo*) y los objetivos llevan su cuenta (*Golpes al muñeco 3/10*, *Esquivas 1/3*).
+- **Desde la 0.15.0:** los enemigos de las misiones activas salen como **puntos rojos** en el minimapa y el mapa (que se actualiza abierto); sin nombres ni barras sobre nadie durante las escenas; aviso **«¡Nivel N!»** al subir de nivel; botón **Cerrar juego** en el menú de pausa; el recuadro de unirse empieza vacío.
 - **Ventana de reinicios** (0.14.0): junto a maese Corwin, dos botones (atributos y talentos) con su precio; apagados con el motivo si no hay oro o nada que reiniciar.
 - **Ventana de clase obligatoria** (0.13.0): cuando la historia pide elegir clase, sale sola y no tiene botón de cerrar.
 - **Marcas:** **!** dorado (una misión para ti), **!** gris (a más nivel), **?** (algo que entregar o decir) sobre los PNJ; una estrella en el mapa y el minimapa en el objetivo seguido, o en la salida hacia su zona; un brillo en los puntos de misión que te tocan.
