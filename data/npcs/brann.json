@@ -1,7 +1,7 @@
 {
 	"id": "brann",
 	"name": "NPC_BRANN",
-	"role": "class_trainer",
+	"role": "villager",
 	"lines": {
 		"has_class": "BRANN_HAS_CLASS"
 	},
@@ -21,27 +21,5 @@
 		"weapons": [
 			"weapon_sword"
 		]
-	},
-	"talk": [
-		{
-			"when": {
-				"quest": "ej_noche",
-				"state": "done",
-				"flags": [
-					"ej_vigilar"
-				]
-			},
-			"dialogue": "ej_brann_vigilar"
-		},
-		{
-			"when": {
-				"quest": "ej_noche",
-				"state": "done",
-				"flags": [
-					"ej_avisar"
-				]
-			},
-			"dialogue": "ej_brann_avisar"
-		}
-	]
+	}
 }

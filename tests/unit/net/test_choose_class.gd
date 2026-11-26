@@ -1,9 +1,10 @@
 extends GutTest
-## A villager picks a class by talking to Brann: the client asks, the host checks it
-## (a villager, alive, next to a class trainer, a class that can be chosen) and tells
-## everyone.
+## A villager picks a class when the story asks for it (Plan 8.3a: the awakening in the
+## assault): the client asks, the host checks it (a villager, alive, with the class step
+## active, a class that can be chosen) and tells everyone.
 
 const VERSION := "0.1.0"
+const STORY := {"active": {"q_train": {"step": 1, "counts": [0]}}}
 
 var balance: Balance
 var net: MemoryNetwork
@@ -11,19 +12,19 @@ var host_t: MemoryTransport
 var host: HostSession
 
 
-func _start(brann_at: Array) -> void:
+func _start() -> void:
 	balance = Balance.load_from()
-	var map := CollisionMap.from_layout({"size": [40, 40], "spawn": [20, 20], "blocks": [],
-		"npcs": [{"id": "brann", "at": brann_at, "facing": 0}]})
+	var map := CollisionMap.from_layout({"size": [40, 40], "spawn": [20, 20], "blocks": []})
 	net = MemoryNetwork.new(7)
 	host_t = net.create_host()
 	host = HostSession.new(balance, map, VERSION)
+	host.set_quests(QuestDB.load_dir("res://tests/data/quests/"))
 	host.add_transport(host_t)
 
 
-func _guest(name: String, class_id := "villager") -> MemoryTransport:
+func _guest(name: String, class_id := "villager", story := true) -> MemoryTransport:
 	var c := net.connect_client(host_t)
-	c.send(Transport.HOST_PEER, Protocol.hello(VERSION, Protocol.VERSION, name, class_id, {}), true)
+	c.send(Transport.HOST_PEER, Protocol.hello(VERSION, Protocol.VERSION, name, class_id, {}, [], {}, {}, {}, STORY if story else {}), true)
 	host.tick()
 	return c
 
@@ -50,8 +51,8 @@ func test_choose_class_roundtrip() -> void:
 	assert_eq([m.id, m.class_id, m.bar], [3, "archer", ["a", "", "", "", "", "", "", "", ""]])
 
 
-func test_host_accepts_a_villager_next_to_brann() -> void:
-	_start([22, 20]) # 2 m from the spawn
+func test_host_accepts_a_villager_in_the_awakening() -> void:
+	_start()
 	var a := _guest("Ana")
 	var b := _guest("Bea")
 	_decoded(a)
@@ -71,7 +72,7 @@ func test_host_accepts_a_villager_next_to_brann() -> void:
 
 
 func test_host_rejects_bad_choices() -> void:
-	_start([22, 20])
+	_start()
 	var a := _guest("Ana")
 	_decoded(a)
 	for bad: String in ["villager", "druid", ""]:
@@ -85,9 +86,9 @@ func test_host_rejects_bad_choices() -> void:
 	assert_eq(_class_msgs(a).size(), 0)
 
 
-func test_host_rejects_far_from_brann() -> void:
-	_start([24, 20]) # 3.5 m away
-	var a := _guest("Ana")
+func test_host_rejects_without_the_story_step() -> void:
+	_start()
+	var a := _guest("Ana", "villager", false)
 	_decoded(a)
 	_choose(a, "mage")
 	assert_eq(host.world.players[1].class_id, "villager")
@@ -95,7 +96,7 @@ func test_host_rejects_far_from_brann() -> void:
 
 
 func test_host_rejects_downed_or_dead() -> void:
-	_start([22, 20])
+	_start()
 	var a := _guest("Ana")
 	_decoded(a)
 	for life: int in [CombatEntity.DOWNED, CombatEntity.DEAD]:
@@ -114,8 +115,9 @@ func _pump(client: ClientSession, n: int) -> void:
 
 
 func test_client_updates_roster_and_emits() -> void:
-	_start([22, 20])
+	_start()
 	var client := ClientSession.new(balance, CollisionMap.from_layout({"size": [40, 40], "spawn": [20, 20], "blocks": []}), VERSION, "Ana")
+	client.quests = QuestLog.from_dict(STORY, QuestDB.load_dir("res://tests/data/quests/"))
 	client.connect_to(net.connect_client(host_t))
 	_pump(client, 10)
 	assert_eq(client.class_id, "villager")
@@ -131,7 +133,7 @@ func test_client_updates_roster_and_emits() -> void:
 
 
 func test_choosing_keeps_the_health_ratio() -> void:
-	_start([22, 20])
+	_start()
 	var a := _guest("Ana")
 	_decoded(a)
 	var p: PlayerState = host.world.players[1]
@@ -142,7 +144,7 @@ func test_choosing_keeps_the_health_ratio() -> void:
 
 
 func test_choose_class_gives_kit() -> void:
-	_start([22, 20])
+	_start()
 	var a := _guest("Ana")
 	_decoded(a)
 	var p: PlayerState = host.world.players[1]

@@ -577,8 +577,6 @@ func _on_set_arena_level(rec: Dictionary, level: int) -> void:
 	var p: PlayerState = state_of(rec.id)
 	if p == null or rec.id != _host_player_id or not p.is_alive():
 		return
-	if NpcDB.load_default().near_with_role(w.map, p.position, "class_trainer") == "":
-		return
 	w.set_arena_level(level)
 	_broadcast(Protocol.arena_level(w.arena_level), true)
 
@@ -601,6 +599,9 @@ func _on_command(rec: Dictionary, text: String) -> void:
 			_send_to(rec.id, Protocol.chat(0, "CMD_BAD"), true)
 		else:
 			send_to_zone(rec.id, zkey, zones.layout(zkey).entry("default"))
+		return
+	if parts.size() >= 2 and parts[0].to_lower() == "arena" and parts[1].is_valid_int():
+		_on_set_arena_level(rec, parts[1].to_int()) # Brann's menu is gone (Plan 8.3a)
 		return
 	if parts.size() >= 2 and parts[0].to_lower() in ["mision", "misión", "marca"]:
 		_quest_command(rec, parts)

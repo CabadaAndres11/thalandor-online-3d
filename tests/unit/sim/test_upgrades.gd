@@ -104,7 +104,8 @@ func test_reset_upgrade_clears_upgrade_and_ring2() -> void:
 	ProgressRequests.choose_upgrade(f.world, p, "berserker", true)
 	for id: String in ["might_1", "might_2", "might_3", "might_4", "might_key", "might_5"]:
 		assert_true(ProgressRequests.buy_talent(f.world, p, id), id)
-	assert_true(ProgressRequests.reset(f.world, p, "upgrade", true))
+	ProgressRequests.clear_upgrade(f.world, p)
+	Progression.rebuild(p, f.world)
 	assert_eq(p.progress.upgrade, "")
 	assert_does_not_have(p.progress.talents, "might_5")
 	assert_has(p.progress.talents, "might_key")
@@ -120,6 +121,7 @@ func test_reset_upgrade_cancels_channel() -> void:
 	pc.left = 5
 	pc.ability = f.world.abilities.get_ability("w_up_a")
 	f.world.pending_casts.append(pc)
-	assert_true(ProgressRequests.reset(f.world, p, "upgrade", true))
+	ProgressRequests.clear_upgrade(f.world, p)
+	Progression.rebuild(p, f.world)
 	assert_eq(f.world.pending_casts.size(), 0)
 	assert_eq(f.events_of("channel_end").size(), 1)

@@ -1,5 +1,54 @@
 [
-	{"id": "villager_strike", "class": "villager", "name": "AB_VILLAGER_STRIKE", "desc": "AB_VILLAGER_STRIKE_DESC", "icon": "slash", "kind": "basic", "level": 1,
-	 "cost": 0, "cooldown_s": 0.55, "gcd": false, "range": 2.0, "anim": "melee",
-	 "effects": [{"type": "melee_arc", "angle_deg": 100, "range": 2.0, "damage": {"base": 5.5, "coef": 0.33, "kind": "physical"}}]}
+	{
+		"id": "villager_strike",
+		"class": "villager",
+		"name": "AB_VILLAGER_STRIKE",
+		"desc": "AB_VILLAGER_STRIKE_DESC",
+		"icon": "slash",
+		"kind": "basic",
+		"level": 1,
+		"cost": 0,
+		"cooldown_s": 0.55,
+		"gcd": false,
+		"range": 2,
+		"anim": "melee",
+		"effects": [
+			{
+				"type": "melee_arc",
+				"angle_deg": 100,
+				"range": 2,
+				"damage": {
+					"base": 5.5,
+					"coef": 0.33,
+					"kind": "physical"
+				}
+			}
+		]
+	},
+	{
+		"id": "villager_shove",
+		"class": "villager",
+		"name": "AB_VILLAGER_SHOVE",
+		"desc": "AB_VILLAGER_SHOVE_DESC",
+		"icon": "slash",
+		"kind": "secondary",
+		"level": 1,
+		"cost": 0,
+		"cooldown_s": 3,
+		"gcd": false,
+		"range": 2.2,
+		"anim": "heavy",
+		"effects": [
+			{
+				"type": "melee_arc",
+				"angle_deg": 70,
+				"range": 2.2,
+				"damage": {
+					"base": 9,
+					"coef": 0.5,
+					"kind": "physical"
+				}
+			}
+		]
+	}
 ]

@@ -103,10 +103,10 @@ func test_hello_with_upgrade_is_announced_to_the_others() -> void:
 	assert_eq(j[0].upgrade, "berserker")
 
 
-func test_reset_removes_the_upgrade_ability_from_the_bar() -> void:
+func test_the_upgrade_cannot_be_reset() -> void:
 	var a := _guest("Ana", {"level": 50, "upgrade": "berserker"})
 	assert_eq(host._players[1].bar, ["w_a1", "w_up", "", "", "", "", "", "", ""])
 	_msgs(a, Protocol.Msg.PLAYER_UPGRADE)
 	_send(a, Protocol.reset("upgrade"))
-	assert_eq(host._players[1].bar, ["w_a1", "", "", "", "", "", "", "", ""])
-	assert_eq(_msgs(a, Protocol.Msg.PLAYER_UPGRADE)[0].upgrade, "")
+	assert_eq(host._players[1].bar, ["w_a1", "w_up", "", "", "", "", "", "", ""], "final (Plan 8.3a)")
+	assert_eq(_msgs(a, Protocol.Msg.PLAYER_UPGRADE).size(), 0)

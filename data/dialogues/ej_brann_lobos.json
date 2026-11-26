@@ -1,9 +1,0 @@
-{
-	"id": "ej_brann_lobos",
-	"nodes": {
-		"start": {
-			"lines": [["player", "DLG_EJ_BL_1"], ["brann", "DLG_EJ_BL_2"], ["brann", "DLG_EJ_BL_3"]],
-			"choices": [{"text": "DLG_EJ_BL_C_RECOMPENSA", "next": "end", "action": "turn_in"}]
-		}
-	}
-}

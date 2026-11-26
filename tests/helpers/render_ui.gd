@@ -86,11 +86,6 @@ func _process(_delta: float) -> bool:
 	elif _frames == 405:
 		_save("ui_talents")
 		_main.talents_window.visible = false
-		var c := _main.game.client
-		_main.trainer_menu.show_for(NpcInteraction.trainer_options(c.class_id, c.progress, true, false))
-	elif _frames == 435:
-		_save("ui_trainer")
-		_main.trainer_menu.visible = false
 		_clear()
 		return true
 	return false

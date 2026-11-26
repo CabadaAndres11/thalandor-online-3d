@@ -146,17 +146,11 @@ func test_buy_talent_rejected_keeps_state() -> void:
 	assert_eq(host.world.players[1].progress.talents, [])
 
 
-func test_reset_needs_trainer() -> void:
+func test_no_resets_without_a_trainer() -> void:
 	var a := _guest("Ana", {"level": 5, "attributes": {"strength": 4}})
 	_msgs(a, Protocol.Msg.PROGRESS)
 	_send(a, Protocol.reset("attributes"))
-	assert_eq(host.world.players[1].progress.attributes.strength, 0, "Brann is 2 m away")
-	assert_eq(_msgs(a, Protocol.Msg.PROGRESS).size(), 1)
-	_start([50, 50])
-	var b := _guest("Bea", {"level": 5, "attributes": {"strength": 4}})
-	_msgs(b, Protocol.Msg.PROGRESS)
-	_send(b, Protocol.reset("attributes"))
-	assert_eq(host.world.players[1].progress.attributes.strength, 4, "Brann is far")
+	assert_eq(host.world.players[1].progress.attributes.strength, 4, "Brann no longer trains; resets come with the capital (Plan 8.3b)")
 
 
 func test_level_up_reaches_everyone() -> void:
@@ -241,8 +235,8 @@ func test_guest_cannot_set_arena_level() -> void:
 	assert_eq(_msgs(a, Protocol.Msg.ARENA_LEVEL).size(), 0)
 
 
-func test_arena_level_needs_trainer() -> void:
+func test_arena_level_without_trainer() -> void:
 	_start([50, 50])
 	var a := _guest("Ana")
 	_send(a, Protocol.set_arena_level(12))
-	assert_eq(host.world.arena_level, 1)
+	assert_eq(host.world.arena_level, 12, "the host sets it anywhere now (Plan 8.3a)")

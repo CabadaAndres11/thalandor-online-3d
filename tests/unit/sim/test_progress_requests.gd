@@ -107,15 +107,14 @@ func test_reset_rejections() -> void:
 	assert_eq(p.progress.attributes.strength, 1)
 
 
-func test_reset_upgrade_drops_ring2() -> void:
+func test_clearing_the_upgrade_drops_ring2() -> void:
 	var p := _hero(60)
 	p.progress.upgrade = "berserker"
 	for id: String in ["might_1", "might_2", "might_3", "might_4", "might_key", "might_5", "might_6"]:
 		assert_true(ProgressRequests.buy_talent(f.world, p, id), id)
-	assert_true(ProgressRequests.reset(f.world, p, "upgrade", true))
+	ProgressRequests.clear_upgrade(f.world, p)
 	assert_eq(p.progress.upgrade, "")
 	assert_eq(p.progress.talents, ["might_1", "might_2", "might_3", "might_4", "might_key"])
-	assert_false(ProgressRequests.reset(f.world, p, "upgrade", true), "nothing to reset")
 
 
 # --- Sanitizing -------------------------------------------------------------------------
@@ -196,12 +195,19 @@ func test_sanitize_keeps_masteries_after_choosing_an_upgrade() -> void:
 	assert_eq(pr.masteries, {"might": 1})
 
 
-func test_reset_upgrade_prunes_nodes_left_without_a_path() -> void:
+func test_clearing_the_upgrade_prunes_nodes_left_without_a_path() -> void:
 	var p := _hero(60)
 	p.progress.upgrade = "berserker"
 	for id: String in ["might_1", "might_2", "might_3", "might_4", "might_key", "might_5", "might_celerity_5", "might_celerity_4"]:
 		assert_true(ProgressRequests.buy_talent(f.world, p, id), id)
-	assert_true(ProgressRequests.reset(f.world, p, "upgrade", true))
+	ProgressRequests.clear_upgrade(f.world, p)
 	assert_true(Talents.valid(p.progress, db), "what is left is a legal tree")
 	assert_does_not_have(p.progress.talents, "might_celerity_4")
 	assert_eq(Talents.spent(p.progress), 5)
+
+
+func test_upgrade_is_final() -> void:
+	var p := _hero(60)
+	p.progress.upgrade = "berserker"
+	assert_false(ProgressRequests.reset(f.world, p, "upgrade", true), "the level 50 upgrade cannot be undone (Plan 8.3a)")
+	assert_ne(p.progress.upgrade, "")

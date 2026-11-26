@@ -331,35 +331,6 @@ func test_c_t_and_k_windows_toggle_and_exclude_each_other() -> void:
 	assert_false(main.game.attacks_blocked)
 
 
-func test_brann_offers_a_menu_to_a_class_holder() -> void:
-	main._on_play("Prueba", "mage")
-	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
-	_press("interact")
-	assert_true(main.trainer_menu.visible)
-	assert_eq(main.trainer_menu.option_ids(), ["reset_attributes", "reset_talents", "arena_level"])
-	main._process(0.0)
-	assert_true(main.game.input_blocked, "the menu takes the input")
-	_press("menu")
-	assert_false(main.trainer_menu.visible)
-	assert_false(main.pause_menu.visible)
-
-
-func test_a_reset_asks_first_and_the_host_applies_it() -> void:
-	main._on_play("Prueba", "warrior")
-	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
-	Xp.set_level(main.game.host.world, _host_player(), 5)
-	ProgressRequests.spend_attribute(main.game.host.world, _host_player(), "strength")
-	await wait_physics_frames(3)
-	assert_eq(main.game.client.progress.attributes.strength, 1)
-	_press("interact")
-	main.trainer_menu.press("reset_attributes")
-	assert_true(main.dialog.visible)
-	assert_eq(main.dialog.message(), tr("CONFIRM_RESET_ATTRIBUTES"))
-	main.dialog.yes_button.pressed.emit()
-	await wait_physics_frames(4)
-	assert_eq(main.game.client.progress.attributes.strength, 0)
-
-
 func test_spending_and_buying_from_the_windows() -> void:
 	main._on_play("Prueba", "warrior")
 	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
@@ -401,57 +372,6 @@ func test_boss_death_is_announced_in_chat() -> void:
 	main.game.client.combat_event.emit(["boss_down", "cult_acolyte"])
 	var lines := main.chat.visible_lines()
 	assert_string_contains(lines[lines.size() - 1], tr("CHAT_BOSS_DOWN") % tr("MON_CULT_ACOLYTE"))
-
-
-func test_villager_learns_a_class_from_brann() -> void:
-	main._on_play("Prueba")
-	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
-	assert_eq(main.game.client.class_id, "villager")
-	assert_eq(main.game.npc_count(), 3, "Brann, the merchant and Ilsa stand in the village")
-	_press("interact")
-	assert_true(main.class_choice_window.visible, "E next to Brann opens the class window")
-	assert_true(main.game.input_blocked)
-	main.class_choice_window.select("mage")
-	main.class_choice_window.confirm_button.pressed.emit()
-	await wait_until(func() -> bool: return main.game.client.class_id == "mage", 3.0)
-	assert_eq(main.game.client.class_id, "mage")
-	var first := AbilityDB.load_default().kind_of("mage", "basic") # slot 0 is the basic attack
-	await wait_until(func() -> bool: return main.combat_hud.slot_ability(0) == first, 3.0)
-	assert_eq(main.combat_hud.slot_ability(0), first, "the HUD has the mage bar")
-	# The avatar is rebuilt with the new class and comes back on a following sync.
-	await wait_until(func() -> bool: return main.game.player_avatar(main.game.client.my_id) != null, 3.0)
-	assert_has(main.game.player_avatar(main.game.client.my_id).rig.pieces(), "w_staff_t1", "the avatar is redressed")
-	_press("interact")
-	assert_false(main.class_choice_window.visible, "with a class, Brann only talks")
-
-
-func test_esc_closes_the_class_window() -> void:
-	main._on_play("Prueba")
-	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
-	_press("interact")
-	assert_true(main.class_choice_window.visible)
-	_press("menu")
-	assert_false(main.class_choice_window.visible)
-	assert_false(main.pause_menu.visible)
-
-
-func test_class_window_closes_when_downed() -> void:
-	main._on_play("Prueba")
-	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
-	_press("interact")
-	assert_true(main.class_choice_window.visible)
-	main._on_game_event(["downed", main.game.client.my_id])
-	assert_false(main.class_choice_window.visible, "knocked down: the window closes")
-
-
-func test_confirm_out_of_reach_says_why() -> void:
-	main._on_play("Prueba")
-	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
-	_press("interact")
-	main.game.map.npcs.clear() # as if pushed away from Brann
-	main.class_choice_window.select("mage")
-	main.class_choice_window.confirm_button.pressed.emit()
-	assert_true(main.chat.has_message(tr("CLASS_CHOICE_TOO_FAR")), "the player is told why nothing happened")
 
 
 func test_i_opens_the_inventory_beside_the_character_window() -> void:
@@ -802,18 +722,6 @@ func test_journal_key_and_tracker() -> void:
 	assert_true(main.quest_journal.visible)
 
 
-func test_brann_opens_his_errand_first() -> void:
-	QuestDB._default = null # the real quests, with the example chain
-	main._on_play("Prueba")
-	await wait_until(func() -> bool: return main.game.avatar_count() == 1 and main.game.client.quests.is_active("ej_encargo"), 5.0)
-	assert_eq(main.game.npc_avatar("brann").mark_text(), "?", "Brann has something to say")
-	main.game.client.choose_class("warrior")
-	await wait_until(func() -> bool: return main.game.client.class_id == "warrior", 3.0)
-	_press("interact")
-	assert_true(main.dialogue_window.visible, "his errand, not the menu")
-	assert_eq(main.dialogue_window.speaker_text(), tr("NPC_BRANN"))
-
-
 func test_cutscene_away_builds_its_stage_and_comes_back() -> void:
 	CutsceneData.dir = "res://tests/data/cutscenes/"
 	main._on_play("Prueba")
@@ -829,3 +737,48 @@ func test_cutscene_away_builds_its_stage_and_comes_back() -> void:
 	assert_eq(zone.get_parent(), main.game, "the zone is back")
 	assert_null(main.game.get_node_or_null("Stage"))
 	CutsceneData.dir = CutsceneData.DIR
+
+
+## The awakening (Plan 8.3a): a step with a class objective opens the class window by itself;
+## it cannot be closed until a class is chosen.
+func _awaken() -> void:
+	QuestDB._default = QuestDB.load_dir("res://tests/data/quests/")
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	var w: SimWorld = main.game.host.world_of(main.game.client.my_id)
+	var p := _host_player()
+	QuestRules.force_start(w, p, "q_train")
+	p.quests.active.q_train = {"step": 1, "counts": [0]}
+	p.quests_dirty = true
+	await wait_until(func() -> bool: return main.class_choice_window.visible, 3.0)
+
+
+func test_class_window_opens_for_class_objective() -> void:
+	await _awaken()
+	assert_true(main.class_choice_window.visible, "the story opens it")
+	assert_true(main.class_choice_window.mandatory)
+	_press("menu")
+	assert_true(main.class_choice_window.visible, "Esc does not close it")
+	assert_false(main.pause_menu.visible)
+	main.class_choice_window.select("mage")
+	main.class_choice_window.confirm_button.pressed.emit()
+	await wait_until(func() -> bool: return main.game.client.class_id == "mage", 3.0)
+	assert_eq(main.game.client.class_id, "mage")
+	assert_false(main.class_choice_window.visible)
+	var first := AbilityDB.load_default().kind_of("mage", "basic")
+	await wait_until(func() -> bool: return main.combat_hud.slot_ability(0) == first, 3.0)
+	assert_eq(main.combat_hud.slot_ability(0), first, "the HUD has the mage bar")
+
+
+func test_class_window_reopens_after_rejoin() -> void:
+	await _awaken()
+	main.class_choice_window.visible = false # as if the game had been left and joined again
+	main._on_quests_changed()
+	assert_true(main.class_choice_window.visible)
+
+
+func test_no_class_window_without_the_story() -> void:
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	_press("interact")
+	assert_false(main.class_choice_window.visible, "nobody teaches classes any more")

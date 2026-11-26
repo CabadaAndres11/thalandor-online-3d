@@ -187,7 +187,8 @@ func test_reset_upgrade_removes_wolf() -> void:
 	var p := _hero("hunter")
 	assert_true(Combat.try_cast(f.world, p, "archer_companion", p.position))
 	assert_not_null(_wolf())
-	assert_true(ProgressRequests.reset(f.world, p, "upgrade", true))
+	ProgressRequests.clear_upgrade(f.world, p)
+	Progression.rebuild(p, f.world)
 	assert_null(_wolf())
 
 

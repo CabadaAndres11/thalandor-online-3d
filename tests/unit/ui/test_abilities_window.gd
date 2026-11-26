@@ -88,7 +88,7 @@ func test_description_has_the_computed_details() -> void:
 
 func test_villager_sees_the_strike_and_the_hint() -> void:
 	win.show_for("villager", ["", "", "", "", "", "", "", "", ""], abilities)
-	assert_eq(win.attack_ids(), ["villager_strike"])
+	assert_eq(win.attack_ids(), ["villager_strike", "villager_shove"])
 	assert_eq(win.active_ids(), [])
 	assert_true(win.villager_hint_visible())
 	assert_true(win.panel_rect().size.y <= 720.0 and win.panel_rect().size.x <= 1280.0)

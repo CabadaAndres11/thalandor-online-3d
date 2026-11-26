@@ -49,7 +49,6 @@ var inventory_window: InventoryWindow
 var merchant_window: MerchantWindow
 var _merchant_stock: Array = []
 var talents_window: TalentsWindow
-var trainer_menu: TrainerMenu
 var upgrade_window: UpgradeWindow
 ## At a dungeon's door: choose its level (Plan 8.1).
 var dungeon_window: DungeonWindow
@@ -242,11 +241,6 @@ func _ready() -> void:
 	dungeon_window.visibility_changed.connect(_update_input_block)
 	_ui.add_child(dungeon_window)
 
-	trainer_menu = TrainerMenu.new()
-	trainer_menu.theme = theme
-	trainer_menu.chosen.connect(_on_trainer_choice)
-	trainer_menu.arena_level_confirmed.connect(_on_arena_level_confirmed)
-	_ui.add_child(trainer_menu)
 
 	dialogue_window = DialogueWindow.new()
 	dialogue_window.theme = menu_theme
@@ -408,15 +402,15 @@ func _request_item(action: String, args: Array) -> void:
 
 ## Class choice and Brann's menu take the whole input while they are open.
 func _modal_open() -> bool:
-	return class_choice_window.visible or trainer_menu.visible or upgrade_window.visible or dungeon_window.visible \
+	return class_choice_window.visible or upgrade_window.visible or dungeon_window.visible \
 		or dialogue_window.visible or quest_turn_in.visible
 
 
 ## Esc: closes whatever window is open and says whether there was one.
 func _close_open_window() -> bool:
-	for w: Control in [class_choice_window, trainer_menu, upgrade_window] + _panel_windows() + [merchant_window, inventory_window]:
+	for w: Control in [class_choice_window, upgrade_window] + _panel_windows() + [merchant_window, inventory_window]:
 		if w.visible:
-			if w == upgrade_window and upgrade_window.mandatory:
+			if (w == upgrade_window and upgrade_window.mandatory) or (w == class_choice_window and class_choice_window.mandatory):
 				return true # the choice cannot be skipped
 			w.visible = false
 			return true
@@ -463,37 +457,21 @@ func _on_interact() -> void:
 		game.client.request_quest("interact", [point])
 		return
 	var r := game.interaction()
-	if str(r.action) != NpcInteraction.CHOOSE_CLASS and str(r.npc) != "" and _talk_to(str(r.npc)):
+	if str(r.npc) != "" and _talk_to(str(r.npc)):
 		return
 	match str(r.action):
-		NpcInteraction.CHOOSE_CLASS:
-			class_choice_window.show_for(game.client.appearance)
 		NpcInteraction.TRADE:
 			_request_item("merchant_open", []) # the host answers with the stock
 		NpcInteraction.TALK:
-			_open_trainer_or_greet(str(r.npc))
+			_greet(str(r.npc))
 
 
-## Brann's menu, or an NPC's greeting in the chat when it has nothing else.
-func _open_trainer_or_greet(npc_id: String) -> void:
-	var c := game.client
+## An NPC with nothing for this player greets in the chat (Plan 8.3a: nobody trains any more).
+func _greet(npc_id: String) -> void:
 	var npc := NpcDB.load_default().npc(npc_id)
 	var lines: Dictionary = npc.get("lines", {})
-	if str(npc.get("role", "")) != "class_trainer":
-		if lines.has("greet"):
-			chat.add_message(tr(str(npc.get("name", ""))), tr(str(lines.greet)), false)
-		return
-	var me: Dictionary = c.combat.get(c.my_id, {})
-	var in_combat := false
-	if game.host != null and game.host.world.players.has(c.my_id):
-		in_combat = (game.host.world.players[c.my_id] as PlayerState).in_combat(game.host.world)
-	var options := NpcInteraction.trainer_options(c.class_id, c.progress, game.is_hosting() and c.my_id == 1, in_combat)
-	if options.is_empty() or me.is_empty():
-		chat.add_message(tr(str(npc.get("name", ""))), tr(str(lines.get("has_class", ""))), false)
-	else:
-		for w: Control in _panel_windows():
-			w.visible = false
-		trainer_menu.show_for(options)
+	if lines.has("greet"):
+		chat.add_message(tr(str(npc.get("name", ""))), tr(str(lines.greet)), false)
 
 
 ## Opens what an NPC has for this player (NpcTalk): its dialogue, or the turn-in. False when it
@@ -548,8 +526,6 @@ func _on_dialogue_action(name: String, arg: String) -> void:
 			_open_turn_in(str(_talk.get("quest", "")))
 		"trade":
 			_request_item("merchant_open", [])
-		"train":
-			_open_trainer_or_greet(npc)
 		"scene":
 			_play_scene(arg)
 
@@ -626,31 +602,14 @@ func _on_scene_ended() -> void:
 	for n: CanvasItem in _hud_before:
 		n.visible = _hud_before[n]
 	_hud_before = {}
+	if game != null and game.client != null:
+		_open_class_choice_if_asked.call_deferred()
 	if game != null and game.client != null and _playing_scene != "":
 		game.client.request_quest("scene_done", [_playing_scene])
 	_playing_scene = ""
 
 
-## An option of Brann's menu. Resets ask first; the host answers with PROGRESS.
-func _on_trainer_choice(option: String) -> void:
-	if game == null or game.client == null:
-		return
-	match option:
-		"choose_class":
-			trainer_menu.visible = false
-			class_choice_window.show_for(game.client.appearance)
-		"choose_upgrade":
-			trainer_menu.visible = false
-			_open_upgrade_window()
-		"reset_attributes", "reset_talents", "reset_upgrade":
-			trainer_menu.visible = false
-			_pending = {"action": "reset", "what": option.trim_prefix("reset_")}
-			dialog.ask(tr("CONFIRM_" + option.to_upper()))
-		"arena_level":
-			trainer_menu.show_arena_selector(game.client.arena_level)
-
-
-## Brann's upgrade window for the player's class.
+## The upgrade window for the player's class (level 50; final, Plan 8.3a).
 func _open_upgrade_window() -> void:
 	upgrade_window.show_for(game.client.class_id, abilities, UpgradeDB.load_default())
 
@@ -663,7 +622,6 @@ func _require_upgrade() -> void:
 			or UpgradeDB.load_default().for_class(c.class_id).is_empty() \
 			or Time.get_ticks_msec() - _upgrade_sent_at < 2000:
 		return
-	trainer_menu.visible = false
 	_open_upgrade_window()
 	upgrade_window.mandatory = true
 
@@ -682,11 +640,6 @@ func _on_upgrade_changed(id: int, upgrade: String) -> void:
 		var who: String = game.client.roster[id].name if game.client.roster.has(id) else "?"
 		var name := tr(str(UpgradeDB.load_default().upgrade(upgrade).get("name", upgrade)))
 		chat.add_message("", tr("CHAT_UPGRADE_CHOSEN") % [who, name], true)
-
-
-func _on_arena_level_confirmed(level: int) -> void:
-	if game != null and game.client != null:
-		game.client.set_arena_level(level)
 
 
 func _on_arena_level_changed(level: int) -> void:
@@ -724,10 +677,8 @@ func _on_leveled_up(id: int, level: int) -> void:
 func _on_class_confirmed(class_id: String) -> void:
 	if game == null or game.client == null:
 		return
-	# Checked again: the player may have been pushed away or knocked down meanwhile,
-	# and the host would drop the request without a word.
-	if str(game.interaction().action) != NpcInteraction.CHOOSE_CLASS:
-		chat.add_message("", tr("CLASS_CHOICE_TOO_FAR"), true)
+	# Only when the story asks for it (Plan 8.3a): the host checks it again.
+	if not _story_asks_class():
 		return
 	game.client.choose_class(class_id)
 
@@ -770,11 +721,32 @@ func _on_progress_changed() -> void:
 func _refresh_quest_ui() -> void:
 	if game == null or game.client == null:
 		return
+	_open_class_choice_if_asked()
 	var db := QuestDB.load_default()
 	quest_tracker.refresh(game.client.quests, db, game.client.inventory)
 	if quest_journal.visible:
 		quest_journal.show_for(game.client.quests, db, ItemDB.load_default(), game.client.inventory)
 	game.refresh_quest_marks()
+
+
+## The step being done asks to choose a class (Plan 8.3a: the awakening).
+func _story_asks_class() -> bool:
+	var c := game.client
+	if CharacterCatalog.load_default().is_selectable(c.class_id):
+		return false
+	for id: String in c.quests.active:
+		for o: Dictionary in QuestText.objectives(c.quests, QuestDB.load_default(), id):
+			if str(o.type) == "class":
+				return true
+	return false
+
+
+## The class window opens by itself when the story asks for it, and cannot be closed.
+func _open_class_choice_if_asked() -> void:
+	if class_choice_window.visible or cutscene_overlay.visible or not _story_asks_class():
+		return
+	class_choice_window.mandatory = true
+	class_choice_window.show_for(game.client.appearance)
 
 
 ## Quest notices (Plan 8.2), only for this player (the host sends them to their owner).
@@ -1112,7 +1084,7 @@ func _on_typing_changed(_is_typing: bool) -> void:
 func _update_input_block() -> void:
 	if game != null:
 		game.input_blocked = chat.is_typing() or pause_menu.visible or options_window.visible or dialog.visible or class_choice_window.visible \
-			or trainer_menu.visible or upgrade_window.visible or dialogue_window.visible or cutscene_overlay.visible
+			or upgrade_window.visible or dialogue_window.visible or cutscene_overlay.visible
 		game.attacks_blocked = _panel_open()
 
 
@@ -1296,7 +1268,8 @@ func _on_game_event(ev: Array) -> void:
 		dialogue_window.interrupt() # a blow ends the conversation
 	if ev.size() >= 2 and str(ev[0]) in ["downed", "died"] and game != null and game.client != null \
 			and int(ev[1]) == game.client.my_id:
-		class_choice_window.visible = false # on the ground there is no training
+		if not class_choice_window.mandatory:
+			class_choice_window.visible = false # on the ground there is no training
 	if ev.size() >= 2 and str(ev[0]) == "boss_down":
 		var def := MonsterDB.load_default().get_type(str(ev[1]))
 		chat.add_message("", tr("CHAT_BOSS_DOWN") % tr(str(def.get("name", ""))), true)
@@ -1328,7 +1301,7 @@ func _leave_game() -> void:
 		game = null
 	debug_overlay.client = null
 	_playing = null
-	for w: Control in _panel_windows() + [class_choice_window, trainer_menu, upgrade_window]:
+	for w: Control in _panel_windows() + [class_choice_window, upgrade_window]:
 		w.visible = false
 	combat_hud.unbind()
 	combat_hud.visible = false

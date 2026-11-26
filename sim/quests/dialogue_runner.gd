@@ -4,12 +4,12 @@ extends RefCounted
 ## speaker "player" or an NPC id) followed by choices or by the next node. Linear: choices
 ## only where they matter. A choice may ask for flags (if_flags, not_flags), hide after use
 ## (once: also hidden when its own flags are already set), set flags and run an action
-## (accept, turn_in, trade, train, scene:<id>). "end" (or no next) finishes. Coming back to a
+## (accept, turn_in, trade, scene:<id>). "end" (or no next) finishes. Coming back to a
 ## node already shown skips its lines and shows its choices again.
 ## Pure logic: the client walks it; the host uses offered_flags() to check the flags it sets.
 
 const DIR := "res://data/dialogues/"
-const ACTIONS := ["accept", "turn_in", "trade", "train"]
+const ACTIONS := ["accept", "turn_in", "trade"]
 
 ## Where dialogues are read from (tests point it at their own).
 static var dir: String = DIR

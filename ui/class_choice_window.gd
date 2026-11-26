@@ -2,13 +2,16 @@ class_name ClassChoiceWindow
 extends Control
 ## Brann's training: the villager picks one of the five classes. Each shows its name,
 ## description and resource, and the character as they would look in it. Confirming
-## is final (the window says so). Esc closes it without choosing (handled by Main).
+## is final (the window says so). Esc closes it without choosing (handled by Main), except when
+## the story asks for the choice (mandatory, Plan 8.3a).
 
 signal class_confirmed(class_id: String)
 
 const RESOURCE_KEYS := {"rage": "RES_RAGE", "mana": "RES_MANA", "focus": "RES_FOCUS", "energy": "RES_ENERGY"}
 
 var confirm_button: Button
+## The awakening: no way out without a class.
+var mandatory: bool = false
 var preview: CharacterPreview
 
 var _panel: PanelContainer

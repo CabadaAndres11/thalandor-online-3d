@@ -59,9 +59,7 @@ static func reset(world: SimWorld, p: PlayerState, what: String, near_trainer: b
 				return false
 			Talents.reset(pr)
 		"upgrade":
-			if pr.upgrade == "":
-				return false
-			clear_upgrade(world, p)
+			return false # the level 50 upgrade is final (Plan 8.3a)
 		_:
 			return false
 	return _accept(world, p)

@@ -195,3 +195,14 @@ func test_choose_class_without_trainer_only_with_objective() -> void:
 	host.tick()
 	assert_eq(host.state_of(1).class_id, "mage")
 	assert_eq(int(host.state_of(1).quests.active.q_train.step), 2, "the class objective is done")
+
+
+func test_arena_command() -> void:
+	var c := _guest("Ana")
+	c.send(Transport.HOST_PEER, Protocol.chat(0, "/arena 12"), true)
+	host.tick()
+	assert_eq(host.world.arena_level, 12)
+	var d := _guest("Bea")
+	d.send(Transport.HOST_PEER, Protocol.chat(0, "/arena 30"), true)
+	host.tick()
+	assert_eq(host.world.arena_level, 12, "only the host")
