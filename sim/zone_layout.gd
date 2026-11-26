@@ -27,6 +27,8 @@ const MARGIN_KINDS := {
 }
 ## sim/ does not know the visual Ambience class: the same default id.
 const DEFAULT_AMBIENCE := "exterior_dia"
+## A step higher than this between neighbouring cells is a cliff: both cells are solid (Plan 8.3d).
+const CLIFF_M := 0.6
 
 var id: String = ""
 var name: String = ""
@@ -47,6 +49,9 @@ var quest_points: Dictionary = {}
 var variants: Dictionary = {}
 ## Villagers that walk their routes (Plan 8.3a): [{npc, route: [[x, z], ...], speed, pause_s, loop}].
 var walkers: Array = []
+## The relief (Plan 8.3d): hills, hollows and plateaus that add up to the ground's height.
+var relief: Array = []
+var _corner_cache: Dictionary = {}
 var variant: String = ""
 var _raw: Dictionary = {}
 var _pieces_path: String = PIECES_PATH
@@ -128,6 +133,7 @@ static func from_dict(zone_id: String, d: Dictionary, pieces_path: String = PIEC
 	z._zone_dir = zone_dir
 	z.variants = d.get("variants", {}) if d.get("variants") is Dictionary else {}
 	z.walkers = (d.get("walkers", []) as Array).duplicate(true) if d.get("walkers") is Array else []
+	z.relief = (d.get("relief", []) as Array).duplicate(true) if d.get("relief") is Array else []
 	for qp: Variant in d.get("quest_points", []):
 		if qp is Dictionary and str((qp as Dictionary).get("id", "")) != "":
 			z.quest_points[str(qp.id)] = {"at": _v2i(qp.get("at", [0, 0])), "radius": float(qp.get("radius", 2.0)),
@@ -282,7 +288,59 @@ func collision() -> CollisionMap:
 			for zz in size.y:
 				if in_band(Vector2i(x, zz)):
 					map.set_solid(Vector2i(x, zz), true)
+	if not relief.is_empty():
+		for c: Vector2i in cliff_cells():
+			map.set_solid(c, true)
 	return map
+
+
+## Cells beside a step higher than CLIFF_M to a neighbour (both sides of a cliff).
+func cliff_cells() -> Array:
+	var out := {}
+	for x in size.x:
+		for zz in size.y:
+			var h := height_at(x + 0.5, zz + 0.5)
+			for n: Vector2i in [Vector2i(x + 1, zz), Vector2i(x, zz + 1)]:
+				if n.x < size.x and n.y < size.y and absf(height_at(n.x + 0.5, n.y + 0.5) - h) > CLIFF_M:
+					out[Vector2i(x, zz)] = true
+					out[n] = true
+	return out.keys()
+
+
+## The ground's height in metres at a point (Plan 8.3d): the sum of the relief's shapes.
+## hill / hollow: {at, radius, height} with a cosine fall; plateau: {area, height, slope}
+## flat inside its area and falling linearly over `slope` cells outside it.
+func height_at(x: float, z: float) -> float:
+	var h := 0.0
+	for f: Variant in relief:
+		if not f is Dictionary:
+			continue
+		var s: Dictionary = f
+		match str(s.get("kind", "")):
+			"hill", "hollow":
+				var at: Array = s.get("at", [0, 0])
+				var r := maxf(0.01, float(s.get("radius", 1.0)))
+				var d := Vector2(x - float(at[0]) - 0.5, z - float(at[1]) - 0.5).length()
+				if d < r:
+					h += float(s.get("height", 0.0)) * (1.0 + cos(PI * d / r)) / 2.0
+			"plateau":
+				var a: Array = s.get("area", [0, 0, 0, 0])
+				var dx := maxf(maxf(float(a[0]) - x, 0.0), x - float(a[0]) - float(a[2]))
+				var dz := maxf(maxf(float(a[1]) - z, 0.0), z - float(a[1]) - float(a[3]))
+				var d := Vector2(dx, dz).length()
+				var slope := float(s.get("slope", 0.0))
+				if d <= 0.0:
+					h += float(s.get("height", 0.0))
+				elif slope > 0.0 and d < slope:
+					h += float(s.get("height", 0.0)) * (1.0 - d / slope)
+	return h
+
+
+## The height at a cell's corner (x, z), cached: the ground mesh's vertices.
+func corner_height(c: Vector2i) -> float:
+	if not _corner_cache.has(c):
+		_corner_cache[c] = height_at(float(c.x), float(c.y))
+	return _corner_cache[c]
 
 
 ## How far a cell is from the zone's edge (0 on the edge).
