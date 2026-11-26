@@ -1,0 +1,15 @@
+{
+	"id": "d_test",
+	"nodes": {
+		"start": {
+			"lines": [["brann", "ITEM_Q_PAQUETE"], ["player", "ITEM_Q_COLMILLO"], ["brann", "ITEM_QUEST_TAG"]],
+			"choices": [
+				{"text": "ITEM_Q_COLMILLO", "next": "culto", "once": true, "flags": ["pregunto"]},
+				{"text": "ITEM_Q_PAQUETE", "next": "secreto", "if_flags": ["visto"]},
+				{"text": "ITEM_QUEST_TAG", "next": "end", "action": "accept"}
+			]
+		},
+		"culto": {"lines": [["brann", "ITEM_Q_PAQUETE"]], "flags": ["sabe_culto"], "next": "start"},
+		"secreto": {"lines": [["brann", "ITEM_Q_PAQUETE"]], "choices": [{"text": "ITEM_Q_PAQUETE", "next": "end", "flags": ["secreto_ok"]}]}
+	}
+}

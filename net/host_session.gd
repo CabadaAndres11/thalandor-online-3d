@@ -685,6 +685,9 @@ func _on_quest_action(rec: Dictionary, action: String, args: Array) -> void:
 		"scene_done":
 			p.remove_status("in_scene")
 			QuestRules.report(w, p, "scene", a0)
+		"choose_flag":
+			if a1 in DialogueRunner.offered_flags(a0, p.quests):
+				QuestRules.set_flag(w, p, a1)
 		"turn_in":
 			if args.size() >= 1:
 				QuestRules.turn_in(w, p, a0, a1)

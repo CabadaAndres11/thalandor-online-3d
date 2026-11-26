@@ -166,3 +166,16 @@ func test_client_receives_quests() -> void:
 	client.tick(Vector2.ZERO, Vector3.ZERO)
 	assert_signal_emitted(client, "quests_changed")
 	assert_true(client.quests.has_flag("otra"))
+
+
+func test_choose_flag_only_if_offered() -> void:
+	DialogueRunner.dir = "res://tests/data/dialogues/"
+	var c := _guest("Ana")
+	_act(c, "choose_flag", ["d_test", "pregunto"])
+	_act(c, "choose_flag", ["d_test", "secreto_ok"])
+	_act(c, "choose_flag", ["nope", "x"])
+	DialogueRunner.dir = DialogueRunner.DIR
+	var p := host.state_of(1)
+	assert_true(p.quests.has_flag("pregunto"))
+	assert_false(p.quests.has_flag("secreto_ok"), "needs the flag visto first")
+	assert_false(p.quests.has_flag("x"))

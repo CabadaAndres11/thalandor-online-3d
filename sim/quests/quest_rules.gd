@@ -30,20 +30,27 @@ static func can_start(world: SimWorld, p: PlayerState, id: String) -> bool:
 	var q := _db(world).quest(id)
 	if q.is_empty() or p.quests.is_active(id) or p.quests.is_done(id):
 		return false
+	return requirements_met(q, p.quests, p.progress.level, p.class_id)
+
+
+## A quest's requirements for this log, level and class (clients use it for the NPC marks).
+static func requirements_met(q: Dictionary, log: QuestLog, level: int, class_id: String) -> bool:
+	if q.is_empty():
+		return false
 	var r: Dictionary = q.requires
 	for prev: Variant in r.get("quests", []):
-		if not p.quests.is_done(str(prev)):
+		if not log.is_done(str(prev)):
 			return false
-	if p.progress.level < int(r.get("level", 1)):
+	if level < int(r.get("level", 1)):
 		return false
 	var classes: Array = r.get("classes", [])
-	if not classes.is_empty() and not p.class_id in classes:
+	if not classes.is_empty() and not class_id in classes:
 		return false
 	for fl: Variant in r.get("flags", []):
-		if not p.quests.has_flag(str(fl)):
+		if not log.has_flag(str(fl)):
 			return false
 	for fl: Variant in r.get("not_flags", []):
-		if p.quests.has_flag(str(fl)):
+		if log.has_flag(str(fl)):
 			return false
 	return true
 
