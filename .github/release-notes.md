@@ -16,6 +16,7 @@
 - **Sin Brann**, la clase se elige en la historia, ya **no hay reinicios** (llegarán con un PNJ de la capital) y la **mejora del nivel 50 es definitiva**. El nivel de la arena pasa al comando `/arena <n>` del anfitrión. El mercader se ha ido de la aldea.
 - **Tus personajes de antes no valen:** la historia empieza desde el principio. Se guardan aparte en la carpeta `antiguos` y no se pueden usar ni importar.
 - El juego en grupo se abre al terminar el asalto.
+- **Iconos nuevos** pintados para las habilidades activas, básicas y secundarias de las cinco clases.
 - **Todo el grupo tiene que usar la misma versión.**
 
 ### Novedades de la 0.12.0: misiones, diálogos y escenas
