@@ -2,7 +2,7 @@
 tags: [plan, spec]
 plan: 8.3b
 fecha: 2026-11-26
-estado: borrador
+estado: aprobado
 actualizado: 2026-11-26
 ---
 # Plan 8.3b — Camino y capital: diseño
