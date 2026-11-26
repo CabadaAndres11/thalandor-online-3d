@@ -2,7 +2,7 @@ extends GutTest
 
 
 func test_load_both_ambiences() -> void:
-	assert_eq(Ambience.ids(), PackedStringArray(["alba", "atardecer", "exterior_dia", "mazmorra_noche", "noche_fuego"]))
+	assert_eq(Ambience.ids(), PackedStringArray(["alba", "atardecer", "exterior_dia", "mazmorra_noche", "noche_fuego", "palacio"]))
 	var night := Ambience.load_id("mazmorra_noche")
 	assert_eq(night.id, "mazmorra_noche")
 	assert_eq(night.particles, "embers")
