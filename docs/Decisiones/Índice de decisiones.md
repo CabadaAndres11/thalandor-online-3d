@@ -28,6 +28,7 @@ Cada decisión importante tiene su nota (plantilla **Decisión**). Las pendiente
 - [[D-016 Razas solo de aspecto con cabeza propia]]
 - [[D-017 Mundo por zonas, hordas y demo del prólogo y arco 1]]
 - [[D-018 Misiones en el anfitrión con objetivos fijos y marcas]]
+- [[D-019 Prólogo como tutorial y clase en el asalto]]
 
 ---
 ← [[00 Inicio|Inicio]]
