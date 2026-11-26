@@ -186,8 +186,8 @@ func _build_ground() -> void:
 			st.set_color(base.darkened(0.08 * n) if n < 0.5 else base.lightened(0.05 * n))
 			for k: Vector2i in [Vector2i(0, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 0), Vector2i(1, 1), Vector2i(0, 1)]:
 				var corner := c + k
-				# The relief lifts the ground at each corner (Plan 8.3d); water keeps its level.
-				var v := Vector3(corner.x, y if kind == "water" else y + layout.corner_height(corner), corner.y)
+				# The relief lifts the ground at each corner (Plan 8.3d); water lies in its hollow.
+				var v := Vector3(corner.x, y + layout.corner_height(corner), corner.y)
 				st.set_uv(Vector2(v.x, v.z) * inv)
 				st.add_vertex(v)
 		st.generate_normals()
