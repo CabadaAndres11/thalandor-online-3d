@@ -48,6 +48,24 @@
 					30,
 					8
 				]
+			},
+			{
+				"kind": "water",
+				"area": [
+					20,
+					108,
+					40,
+					9
+				]
+			},
+			{
+				"kind": "dirt",
+				"area": [
+					27,
+					80,
+					9,
+					8
+				]
 			}
 		]
 	},
@@ -127,6 +145,28 @@
 			],
 			"width": 2,
 			"terrain": "dirt"
+		},
+		{
+			"points": [
+				[
+					22,
+					65
+				],
+				[
+					30,
+					80
+				],
+				[
+					36,
+					96
+				],
+				[
+					38,
+					104
+				]
+			],
+			"width": 2,
+			"terrain": "dirt"
 		}
 	],
 	"pieces": [
@@ -175,6 +215,134 @@
 			"at": [
 				74,
 				96
+			],
+			"rot": 0
+		},
+		{
+			"id": "camp_ruined",
+			"at": [
+				29,
+				82
+			],
+			"rot": 0
+		},
+		{
+			"id": "cart_tracks",
+			"at": [
+				33,
+				87
+			],
+			"rot": 0
+		},
+		{
+			"id": "cart_tracks",
+			"at": [
+				34,
+				90
+			],
+			"rot": 0
+		},
+		{
+			"id": "cart_tracks",
+			"at": [
+				35,
+				93
+			],
+			"rot": 0
+		},
+		{
+			"id": "cart_tracks",
+			"at": [
+				35,
+				96
+			],
+			"rot": 0
+		},
+		{
+			"id": "cart_tracks",
+			"at": [
+				36,
+				99
+			],
+			"rot": 0
+		},
+		{
+			"id": "river_bank",
+			"at": [
+				20,
+				105
+			],
+			"rot": 0
+		},
+		{
+			"id": "river_bank",
+			"at": [
+				24,
+				105
+			],
+			"rot": 0
+		},
+		{
+			"id": "river_bank",
+			"at": [
+				28,
+				105
+			],
+			"rot": 0
+		},
+		{
+			"id": "river_bank",
+			"at": [
+				32,
+				105
+			],
+			"rot": 0
+		},
+		{
+			"id": "river_bank",
+			"at": [
+				36,
+				105
+			],
+			"rot": 0
+		},
+		{
+			"id": "river_bank",
+			"at": [
+				40,
+				105
+			],
+			"rot": 0
+		},
+		{
+			"id": "river_bank",
+			"at": [
+				44,
+				105
+			],
+			"rot": 0
+		},
+		{
+			"id": "river_bank",
+			"at": [
+				48,
+				105
+			],
+			"rot": 0
+		},
+		{
+			"id": "river_bank",
+			"at": [
+				52,
+				105
+			],
+			"rot": 0
+		},
+		{
+			"id": "river_bank",
+			"at": [
+				56,
+				105
 			],
 			"rot": 0
 		}
@@ -329,21 +497,39 @@
 	],
 	"quest_points": [
 		{
-			"id": "claro",
+			"id": "campamento",
 			"at": [
-				30,
-				40
+				31,
+				80
 			],
 			"radius": 3,
 			"look": "sparkle"
 		},
 		{
-			"id": "huellas",
+			"id": "mascara",
 			"at": [
 				33,
-				43
+				85
+			],
+			"radius": 1.5,
+			"look": "sparkle"
+		},
+		{
+			"id": "huellas_carro",
+			"at": [
+				36,
+				94
 			],
 			"radius": 2,
+			"look": "sparkle"
+		},
+		{
+			"id": "rio",
+			"at": [
+				38,
+				104
+			],
+			"radius": 3,
 			"look": "sparkle"
 		}
 	]

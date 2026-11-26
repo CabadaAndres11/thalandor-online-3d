@@ -73,6 +73,16 @@ func tick(world: SimWorld) -> void:
 		_horde_due[i] = hkeep
 
 
+## A monster that left without dying (a boss that fled, Plan 8.3a) comes back like a dead
+## one: so a story fight is never lost by fleeing before its step.
+func left(world: SimWorld, m: MonsterState) -> void:
+	if m.horde_index >= 0 and m.horde_index < _horde_due.size():
+		if bool((hordes[m.horde_index] as Dictionary).get("respawn", true)):
+			(_horde_due[m.horde_index] as Array).append(world.tick + world.ticks(float((hordes[m.horde_index] as Dictionary).get("respawn_s", HORDE_RESPAWN_S))))
+	elif m.spawn_index >= 0 and m.spawn_index < _due.size():
+		(_due[m.spawn_index] as Array).append(world.tick + world.ticks(float(points[m.spawn_index].get("respawn_s", 30.0))))
+
+
 func _spawn(world: SimWorld, index: int) -> void:
 	var p: Dictionary = points[index]
 	var at: Array = p.get("at", [0, 0])

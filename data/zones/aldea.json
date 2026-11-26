@@ -95,46 +95,6 @@
 			"rot": 0
 		},
 		{
-			"id": "house_small",
-			"at": [
-				56,
-				30
-			],
-			"rot": 0
-		},
-		{
-			"id": "house_large",
-			"at": [
-				62,
-				60
-			],
-			"rot": 180
-		},
-		{
-			"id": "house_small",
-			"at": [
-				36,
-				64
-			],
-			"rot": 180
-		},
-		{
-			"id": "house_large",
-			"at": [
-				22,
-				48
-			],
-			"rot": 270
-		},
-		{
-			"id": "house_small",
-			"at": [
-				66,
-				38
-			],
-			"rot": 90
-		},
-		{
 			"id": "well",
 			"at": [
 				45,
@@ -317,6 +277,142 @@
 				62
 			],
 			"rot": 0
+		},
+		{
+			"id": "house_burnt_small",
+			"at": [
+				56,
+				30
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_burnt_large",
+			"at": [
+				62,
+				60
+			],
+			"rot": 180
+		},
+		{
+			"id": "house_burnt_small",
+			"at": [
+				36,
+				64
+			],
+			"rot": 180
+		},
+		{
+			"id": "house_burnt_large",
+			"at": [
+				22,
+				48
+			],
+			"rot": 270
+		},
+		{
+			"id": "house_burnt_small",
+			"at": [
+				66,
+				38
+			],
+			"rot": 90
+		},
+		{
+			"id": "rubble",
+			"at": [
+				50,
+				34
+			],
+			"rot": 0
+		},
+		{
+			"id": "rubble",
+			"at": [
+				70,
+				52
+			],
+			"rot": 0
+		},
+		{
+			"id": "rubble",
+			"at": [
+				34,
+				44
+			],
+			"rot": 0
+		},
+		{
+			"id": "fallen_beam",
+			"at": [
+				40,
+				60
+			],
+			"rot": 0
+		},
+		{
+			"id": "fallen_beam",
+			"at": [
+				60,
+				44
+			],
+			"rot": 0
+		},
+		{
+			"id": "grave",
+			"at": [
+				18,
+				22
+			],
+			"rot": 0
+		},
+		{
+			"id": "grave",
+			"at": [
+				20,
+				22
+			],
+			"rot": 0
+		},
+		{
+			"id": "grave",
+			"at": [
+				22,
+				22
+			],
+			"rot": 0
+		},
+		{
+			"id": "grave",
+			"at": [
+				24,
+				22
+			],
+			"rot": 0
+		},
+		{
+			"id": "army_tent",
+			"at": [
+				74,
+				38
+			],
+			"rot": 0
+		},
+		{
+			"id": "army_tent",
+			"at": [
+				79,
+				38
+			],
+			"rot": 0
+		},
+		{
+			"id": "kingdom_banner",
+			"at": [
+				83,
+				43
+			],
+			"rot": 0
 		}
 	],
 	"scatter": [
@@ -368,26 +464,34 @@
 	],
 	"npcs": [
 		{
-			"id": "brann",
+			"id": "verrin",
 			"at": [
-				37,
-				35
-			],
-			"facing": 0
-		},
-		{
-			"id": "merchant",
-			"at": [
-				54,
-				46
+				78,
+				44
 			],
 			"facing": 270
 		},
 		{
+			"id": "anciana_cantora",
+			"at": [
+				42,
+				50
+			],
+			"facing": 90
+		},
+		{
 			"id": "panadero",
 			"at": [
-				44,
-				52
+				58,
+				37
+			],
+			"facing": 0
+		},
+		{
+			"id": "cazador",
+			"at": [
+				31,
+				55
 			],
 			"facing": 90
 		}
@@ -438,6 +542,10 @@
 		[
 			35,
 			39
+		],
+		[
+			77,
+			43
 		]
 	],
 	"hordes": [
@@ -464,8 +572,278 @@
 		}
 	],
 	"variants": {
-		"noche": {
-			"ambience": "noche_fuego",
+		"vispera": {
+			"ambience": "atardecer",
+			"remove_pieces": [
+				{
+					"id": "house_burnt_small",
+					"at": [
+						56,
+						30
+					]
+				},
+				{
+					"id": "house_burnt_large",
+					"at": [
+						62,
+						60
+					]
+				},
+				{
+					"id": "house_burnt_small",
+					"at": [
+						36,
+						64
+					]
+				},
+				{
+					"id": "house_burnt_large",
+					"at": [
+						22,
+						48
+					]
+				},
+				{
+					"id": "house_burnt_small",
+					"at": [
+						66,
+						38
+					]
+				},
+				{
+					"id": "rubble",
+					"at": [
+						50,
+						34
+					]
+				},
+				{
+					"id": "rubble",
+					"at": [
+						70,
+						52
+					]
+				},
+				{
+					"id": "rubble",
+					"at": [
+						34,
+						44
+					]
+				},
+				{
+					"id": "fallen_beam",
+					"at": [
+						40,
+						60
+					]
+				},
+				{
+					"id": "fallen_beam",
+					"at": [
+						60,
+						44
+					]
+				},
+				{
+					"id": "grave",
+					"at": [
+						18,
+						22
+					]
+				},
+				{
+					"id": "grave",
+					"at": [
+						20,
+						22
+					]
+				},
+				{
+					"id": "grave",
+					"at": [
+						22,
+						22
+					]
+				},
+				{
+					"id": "grave",
+					"at": [
+						24,
+						22
+					]
+				},
+				{
+					"id": "army_tent",
+					"at": [
+						74,
+						38
+					]
+				},
+				{
+					"id": "army_tent",
+					"at": [
+						79,
+						38
+					]
+				},
+				{
+					"id": "kingdom_banner",
+					"at": [
+						83,
+						43
+					]
+				}
+			],
+			"add_pieces": [
+				{
+					"id": "house_small",
+					"at": [
+						56,
+						30
+					],
+					"rot": 0
+				},
+				{
+					"id": "house_large",
+					"at": [
+						62,
+						60
+					],
+					"rot": 180
+				},
+				{
+					"id": "house_small",
+					"at": [
+						36,
+						64
+					],
+					"rot": 180
+				},
+				{
+					"id": "house_large",
+					"at": [
+						22,
+						48
+					],
+					"rot": 270
+				},
+				{
+					"id": "house_small",
+					"at": [
+						66,
+						38
+					],
+					"rot": 90
+				},
+				{
+					"id": "garland",
+					"at": [
+						41,
+						43
+					],
+					"rot": 0
+				},
+				{
+					"id": "garland",
+					"at": [
+						50,
+						43
+					],
+					"rot": 0
+				},
+				{
+					"id": "garland",
+					"at": [
+						60,
+						50
+					],
+					"rot": 0
+				},
+				{
+					"id": "lantern_post",
+					"at": [
+						40,
+						50
+					],
+					"rot": 0
+				},
+				{
+					"id": "lantern_post",
+					"at": [
+						56,
+						50
+					],
+					"rot": 0
+				},
+				{
+					"id": "lantern_post",
+					"at": [
+						46,
+						58
+					],
+					"rot": 0
+				},
+				{
+					"id": "feast_table",
+					"at": [
+						42,
+						54
+					],
+					"rot": 0
+				},
+				{
+					"id": "feast_table",
+					"at": [
+						42,
+						57
+					],
+					"rot": 0
+				},
+				{
+					"id": "feast_table",
+					"at": [
+						50,
+						56
+					],
+					"rot": 0
+				},
+				{
+					"id": "bonfire",
+					"at": [
+						52,
+						52
+					],
+					"rot": 0
+				}
+			],
+			"entries": {
+				"default": [
+					31,
+					35
+				],
+				"from_bosque": [
+					83,
+					48
+				]
+			},
+			"respawn": [
+				31,
+				35
+			],
+			"hordes": [],
+			"spawns": [
+				{
+					"type": "training_dummy",
+					"at": [
+						38,
+						30
+					],
+					"count": 1,
+					"radius": 0,
+					"respawn_s": 5
+				}
+			],
 			"npcs": [
 				{
 					"id": "brann",
@@ -474,19 +852,546 @@
 						35
 					],
 					"facing": 0
+				},
+				{
+					"id": "mira",
+					"at": [
+						44,
+						41
+					],
+					"facing": 270
+				},
+				{
+					"id": "panadero",
+					"at": [
+						58,
+						37
+					],
+					"facing": 0
+				},
+				{
+					"id": "cazador",
+					"at": [
+						31,
+						55
+					],
+					"facing": 90
+				},
+				{
+					"id": "anciana_cantora",
+					"at": [
+						42,
+						50
+					],
+					"facing": 90
 				}
 			],
-			"respawn": [
-				37,
-				37
+			"quest_points": [
+				{
+					"id": "mira_casa",
+					"at": [
+						43,
+						41
+					],
+					"radius": 2.5
+				},
+				{
+					"id": "colina",
+					"at": [
+						21,
+						20
+					],
+					"radius": 3,
+					"look": "sparkle"
+				},
+				{
+					"id": "plaza",
+					"at": [
+						48,
+						50
+					],
+					"radius": 4,
+					"look": "sparkle"
+				}
 			],
+			"walkers": [
+				{
+					"npc": "aldeano_anciano_1",
+					"route": [
+						[
+							40,
+							42
+						],
+						[
+							44,
+							42
+						],
+						[
+							44,
+							48
+						],
+						[
+							40,
+							48
+						]
+					],
+					"speed": 0.9,
+					"pause_s": 4,
+					"loop": true
+				},
+				{
+					"npc": "aldeana_anciana_1",
+					"route": [
+						[
+							57,
+							45
+						],
+						[
+							68,
+							45
+						],
+						[
+							68,
+							50
+						]
+					],
+					"speed": 0.8,
+					"pause_s": 5,
+					"loop": false
+				},
+				{
+					"npc": "aldeano_1",
+					"route": [
+						[
+							30,
+							40
+						],
+						[
+							30,
+							47
+						],
+						[
+							34,
+							50
+						]
+					],
+					"speed": 1.3,
+					"pause_s": 2,
+					"loop": false
+				},
+				{
+					"npc": "aldeano_anciano_3",
+					"route": [
+						[
+							46,
+							60
+						],
+						[
+							54,
+							60
+						],
+						[
+							54,
+							58
+						]
+					],
+					"speed": 0.8,
+					"pause_s": 5,
+					"loop": false
+				},
+				{
+					"npc": "aldeano_anciano_4",
+					"route": [
+						[
+							60,
+							46
+						],
+						[
+							60,
+							40
+						],
+						[
+							64,
+							40
+						]
+					],
+					"speed": 0.9,
+					"pause_s": 4,
+					"loop": false
+				},
+				{
+					"npc": "aldeana_anciana_2",
+					"route": [
+						[
+							38,
+							52
+						],
+						[
+							38,
+							58
+						],
+						[
+							41,
+							60
+						]
+					],
+					"speed": 0.7,
+					"pause_s": 6,
+					"loop": false
+				},
+				{
+					"npc": "aldeana_anciana_3",
+					"route": [
+						[
+							58,
+							52
+						],
+						[
+							58,
+							48
+						],
+						[
+							64,
+							48
+						]
+					],
+					"speed": 0.8,
+					"pause_s": 5,
+					"loop": false
+				},
+				{
+					"npc": "aldeano_2",
+					"route": [
+						[
+							48,
+							24
+						],
+						[
+							48,
+							40
+						]
+					],
+					"speed": 1.4,
+					"pause_s": 2,
+					"loop": false
+				}
+			],
+			"torches": [
+				[
+					40,
+					40
+				],
+				[
+					56,
+					40
+				],
+				[
+					40,
+					56
+				],
+				[
+					54,
+					53
+				],
+				[
+					35,
+					39
+				]
+			]
+		},
+		"asalto": {
+			"ambience": "noche_fuego",
+			"remove_pieces": [
+				{
+					"id": "house_burnt_small",
+					"at": [
+						56,
+						30
+					]
+				},
+				{
+					"id": "house_burnt_large",
+					"at": [
+						62,
+						60
+					]
+				},
+				{
+					"id": "house_burnt_small",
+					"at": [
+						36,
+						64
+					]
+				},
+				{
+					"id": "house_burnt_large",
+					"at": [
+						22,
+						48
+					]
+				},
+				{
+					"id": "house_burnt_small",
+					"at": [
+						66,
+						38
+					]
+				},
+				{
+					"id": "rubble",
+					"at": [
+						50,
+						34
+					]
+				},
+				{
+					"id": "rubble",
+					"at": [
+						70,
+						52
+					]
+				},
+				{
+					"id": "rubble",
+					"at": [
+						34,
+						44
+					]
+				},
+				{
+					"id": "fallen_beam",
+					"at": [
+						40,
+						60
+					]
+				},
+				{
+					"id": "fallen_beam",
+					"at": [
+						60,
+						44
+					]
+				},
+				{
+					"id": "grave",
+					"at": [
+						18,
+						22
+					]
+				},
+				{
+					"id": "grave",
+					"at": [
+						20,
+						22
+					]
+				},
+				{
+					"id": "grave",
+					"at": [
+						22,
+						22
+					]
+				},
+				{
+					"id": "grave",
+					"at": [
+						24,
+						22
+					]
+				},
+				{
+					"id": "army_tent",
+					"at": [
+						74,
+						38
+					]
+				},
+				{
+					"id": "army_tent",
+					"at": [
+						79,
+						38
+					]
+				},
+				{
+					"id": "kingdom_banner",
+					"at": [
+						83,
+						43
+					]
+				}
+			],
+			"add_pieces": [
+				{
+					"id": "house_small",
+					"at": [
+						56,
+						30
+					],
+					"rot": 0
+				},
+				{
+					"id": "house_large",
+					"at": [
+						62,
+						60
+					],
+					"rot": 180
+				},
+				{
+					"id": "house_small",
+					"at": [
+						36,
+						64
+					],
+					"rot": 180
+				},
+				{
+					"id": "house_large",
+					"at": [
+						22,
+						48
+					],
+					"rot": 270
+				},
+				{
+					"id": "house_small",
+					"at": [
+						66,
+						38
+					],
+					"rot": 90
+				},
+				{
+					"id": "garland",
+					"at": [
+						41,
+						43
+					],
+					"rot": 0
+				},
+				{
+					"id": "garland",
+					"at": [
+						50,
+						43
+					],
+					"rot": 0
+				},
+				{
+					"id": "garland",
+					"at": [
+						60,
+						50
+					],
+					"rot": 0
+				},
+				{
+					"id": "lantern_post",
+					"at": [
+						40,
+						50
+					],
+					"rot": 0
+				},
+				{
+					"id": "lantern_post",
+					"at": [
+						56,
+						50
+					],
+					"rot": 0
+				},
+				{
+					"id": "lantern_post",
+					"at": [
+						46,
+						58
+					],
+					"rot": 0
+				},
+				{
+					"id": "feast_table",
+					"at": [
+						42,
+						54
+					],
+					"rot": 0
+				},
+				{
+					"id": "feast_table",
+					"at": [
+						42,
+						57
+					],
+					"rot": 0
+				},
+				{
+					"id": "feast_table",
+					"at": [
+						50,
+						56
+					],
+					"rot": 0
+				},
+				{
+					"id": "rubble",
+					"at": [
+						60,
+						44
+					],
+					"rot": 0
+				},
+				{
+					"id": "fallen_beam",
+					"at": [
+						44,
+						36
+					],
+					"rot": 0
+				}
+			],
+			"entries": {
+				"default": [
+					31,
+					35
+				],
+				"from_bosque": [
+					83,
+					48
+				]
+			},
+			"respawn": [
+				31,
+				35
+			],
+			"npcs": [
+				{
+					"id": "anciana_cantora",
+					"at": [
+						42,
+						50
+					],
+					"facing": 90
+				},
+				{
+					"id": "panadero",
+					"at": [
+						58,
+						37
+					],
+					"facing": 0
+				}
+			],
+			"walkers": [],
 			"hordes": [
 				{
 					"area": [
-						42,
-						42,
-						10,
-						10
+						36,
+						52,
+						8,
+						6
 					],
 					"monsters": [
 						[
@@ -495,13 +1400,263 @@
 						]
 					],
 					"levels": [
-						2,
-						3
+						1,
+						2
 					],
 					"count": 4,
-					"respawn": false
+					"respawn": false,
+					"elite_chance": 0
+				},
+				{
+					"area": [
+						55,
+						35,
+						7,
+						4
+					],
+					"monsters": [
+						[
+							"cultist",
+							1
+						]
+					],
+					"levels": [
+						1,
+						2
+					],
+					"count": 4,
+					"respawn": false,
+					"elite_chance": 0
+				},
+				{
+					"area": [
+						42,
+						12,
+						12,
+						5
+					],
+					"monsters": [
+						[
+							"marked_hound",
+							1
+						]
+					],
+					"levels": [
+						1,
+						2
+					],
+					"count": 4,
+					"respawn_s": 20,
+					"elite_chance": 0
 				}
+			],
+			"spawns": [
+				{
+					"type": "heraldo",
+					"at": [
+						48,
+						14
+					],
+					"count": 1,
+					"radius": 0,
+					"respawn_s": 60,
+					"level_offset": -1
+				}
+			],
+			"quest_points": [
+				{
+					"id": "alarma",
+					"at": [
+						43,
+						45
+					],
+					"radius": 3,
+					"look": "sparkle"
+				},
+				{
+					"id": "tras_mira",
+					"at": [
+						48,
+						30
+					],
+					"radius": 3,
+					"look": "sparkle"
+				},
+				{
+					"id": "puerta",
+					"at": [
+						86,
+						48
+					],
+					"radius": 3,
+					"look": "sparkle"
+				}
+			],
+			"torches": [
+				[
+					40,
+					40
+				],
+				[
+					56,
+					40
+				],
+				[
+					40,
+					56
+				],
+				[
+					54,
+					53
+				],
+				[
+					35,
+					39
+				],
+				[
+					48,
+					44
+				],
+				[
+					62,
+					48
+				]
 			]
 		}
-	}
+	},
+	"quest_points": [
+		{
+			"id": "herido_1",
+			"at": [
+				44,
+				40
+			],
+			"radius": 2,
+			"look": "sparkle"
+		},
+		{
+			"id": "herido_2",
+			"at": [
+				36,
+				58
+			],
+			"radius": 2,
+			"look": "sparkle"
+		},
+		{
+			"id": "escombros_1",
+			"at": [
+				52,
+				36
+			],
+			"radius": 2,
+			"look": "sparkle"
+		}
+	],
+	"walkers": [
+		{
+			"npc": "aldeano_anciano_1",
+			"route": [
+				[
+					40,
+					42
+				],
+				[
+					44,
+					42
+				],
+				[
+					44,
+					48
+				],
+				[
+					40,
+					48
+				]
+			],
+			"speed": 0.9,
+			"pause_s": 4,
+			"loop": true
+		},
+		{
+			"npc": "aldeana_anciana_1",
+			"route": [
+				[
+					57,
+					45
+				],
+				[
+					68,
+					45
+				],
+				[
+					68,
+					50
+				]
+			],
+			"speed": 0.8,
+			"pause_s": 5,
+			"loop": false
+		},
+		{
+			"npc": "aldeano_1",
+			"route": [
+				[
+					30,
+					40
+				],
+				[
+					30,
+					47
+				],
+				[
+					34,
+					50
+				]
+			],
+			"speed": 1.3,
+			"pause_s": 2,
+			"loop": false
+		},
+		{
+			"npc": "aldeano_anciano_2",
+			"route": [
+				[
+					18,
+					26
+				],
+				[
+					26,
+					26
+				]
+			],
+			"speed": 0.7,
+			"pause_s": 6,
+			"loop": false
+		},
+		{
+			"npc": "soldado_reino",
+			"route": [
+				[
+					72,
+					44
+				],
+				[
+					72,
+					52
+				],
+				[
+					82,
+					52
+				],
+				[
+					82,
+					46
+				]
+			],
+			"speed": 1.2,
+			"pause_s": 3,
+			"loop": true
+		}
+	]
 }

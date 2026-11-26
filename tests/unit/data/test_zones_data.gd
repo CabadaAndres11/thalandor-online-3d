@@ -83,10 +83,21 @@ func test_the_game_starts_in_the_village() -> void:
 	assert_eq(GameSession.START_ZONE, "aldea")
 
 
-## Plan 8.1.1: the bigger village houses leave Brann, the merchant and every house inside
-## reachable, and no house stands on a road or on another piece.
+## Plan 8.1.1: the bigger village houses leave every NPC and every house inside reachable,
+## and no house stands on a road or on another piece; in the three moments (Plan 8.3a).
+func _village(variant: String) -> ZoneLayout:
+	return ZoneLayout.load_variant("aldea", variant)
+
+
 func test_village_npcs_and_houses_reachable() -> void:
-	var z := ZoneLayout.load_id("aldea")
+	for v: String in ["", "vispera", "asalto"]:
+		_village_reachable(_village(v))
+	var eve := _village("vispera")
+	var brann: Dictionary = eve.npcs.filter(func(n: Dictionary) -> bool: return n.id == "brann")[0]
+	assert_lt(Vector2(float(brann.at[0]), float(brann.at[1])).distance_to(Vector2(eve.entries.default)), 7.0, "Brann by the forge on the eve")
+
+
+func _village_reachable(z: ZoneLayout) -> void:
 	var map := z.collision()
 	var reach := _reach(map, z.entries.default)
 	for n: Dictionary in z.npcs:
@@ -94,8 +105,6 @@ func test_village_npcs_and_houses_reachable() -> void:
 		assert_false(map.is_solid(c), "%s stands free" % n.id)
 		assert_true(reach.has(c), "%s reachable" % n.id)
 	assert_eq(z.houses.size(), 7, "six houses and the forge shed")
-	var brann: Dictionary = z.npcs.filter(func(n: Dictionary) -> bool: return n.id == "brann")[0]
-	assert_lt(Vector2(float(brann.at[0]), float(brann.at[1])).distance_to(Vector2(z.entries.default)), 2.5, "Brann beside the default entry")
 	for h: Dictionary in z.houses:
 		for c: Vector2i in h.cells:
 			if not map.is_solid(c):
@@ -105,7 +114,11 @@ func test_village_npcs_and_houses_reachable() -> void:
 
 
 func test_houses_do_not_overlap_roads_or_pieces() -> void:
-	var z := ZoneLayout.load_id("aldea")
+	for v: String in ["", "vispera", "asalto"]:
+		_no_overlaps(_village(v))
+
+
+func _no_overlaps(z: ZoneLayout) -> void:
 	var road := {}
 	for p: Dictionary in z.paths:
 		for c: Vector2i in ZoneLayout.path_cells(p):
@@ -174,3 +187,93 @@ func test_entries_npcs_and_hordes_off_the_band() -> void:
 			var a: Array = h.area
 			for c: Vector2i in [Vector2i(a[0], a[1]), Vector2i(int(a[0]) + int(a[2]) - 1, int(a[1]) + int(a[3]) - 1)]:
 				assert_true(z.walkable(c), "%s: horde corner %s" % [id, c])
+
+
+# --- Plan 8.3a: the village in three moments and the trail in the forest ---
+
+func _ids_of(z: ZoneLayout) -> Array:
+	return z.pieces.map(func(p: Dictionary) -> String: return str(p.id))
+
+
+func test_village_moments() -> void:
+	var ruins := _village("")
+	assert_has(_ids_of(ruins), "house_burnt_small")
+	assert_has(_ids_of(ruins), "army_tent")
+	assert_does_not_have(_ids_of(ruins), "house_small")
+	var npc_ids := ruins.npcs.map(func(n: Dictionary) -> String: return str(n.id))
+	for id: String in ["verrin", "anciana_cantora", "panadero", "cazador"]:
+		assert_has(npc_ids, id)
+	for id: String in ["brann", "merchant", "mira"]:
+		assert_does_not_have(npc_ids, id)
+	assert_gt(ruins.walkers.size(), 2, "villagers walk the ruins")
+	for v: String in ["vispera", "asalto"]:
+		var z := _village(v)
+		assert_eq(z.errors, [], v)
+		assert_eq(z.variant, v)
+		assert_has(_ids_of(z), "house_small", v)
+		assert_does_not_have(_ids_of(z), "house_burnt_small", v)
+		assert_does_not_have(_ids_of(z), "grave", v)
+		assert_eq(z.entries.default, Vector2i(31, 35), v + " starts in the forge house")
+	var eve := _village("vispera")
+	assert_eq(eve.ambience, "atardecer")
+	for id: String in ["mira_casa", "colina", "plaza"]:
+		assert_true(eve.quest_points.has(id), id)
+	assert_has(_ids_of(eve), "bonfire")
+	assert_eq(eve.spawns.map(func(s: Dictionary) -> String: return str(s.type)), ["training_dummy"])
+	assert_eq(eve.hordes, [], "nothing to fight on the eve")
+	var night := _village("asalto")
+	assert_eq(night.ambience, "noche_fuego")
+	for id: String in ["alarma", "tras_mira", "puerta"]:
+		assert_true(night.quest_points.has(id), id)
+	assert_eq(night.spawns.map(func(s: Dictionary) -> String: return str(s.type)), ["heraldo"])
+	for h: Dictionary in night.hordes:
+		assert_lte(int(h.levels[1]), 2, "assault monsters are level 1-2")
+
+
+## Review point 2: dying in the assault puts you back somewhere safe, far from every horde.
+func test_assault_respawn_is_safe() -> void:
+	var z := _village("asalto")
+	var map := z.collision()
+	assert_false(map.is_solid(z.respawn))
+	var at := Vector2(z.respawn) + Vector2(0.5, 0.5)
+	for h: Dictionary in z.hordes:
+		var a: Array = h.area
+		var r := Rect2(float(a[0]), float(a[1]), float(a[2]), float(a[3]))
+		var nearest := Vector2(clampf(at.x, r.position.x, r.end.x), clampf(at.y, r.position.y, r.end.y))
+		assert_gt(at.distance_to(nearest), 15.0, "respawn far from %s" % [a])
+	for s: Dictionary in z.spawns:
+		assert_gt(at.distance_to(Vector2(float(s.at[0]), float(s.at[1]))), 15.0, "respawn far from %s" % s.type)
+
+
+## Points reached during the assault are out of the monsters' sight, so a scene never waits on a fight.
+func test_assault_scene_points_are_out_of_reach() -> void:
+	var z := _village("asalto")
+	for id: String in ["tras_mira", "puerta"]:
+		var at := Vector2(z.quest_points[id].at)
+		for s: Dictionary in z.spawns:
+			var aggro := float(MonsterDB.load_default().get_type(str(s.type)).get("aggro_range", 8))
+			assert_gt(at.distance_to(Vector2(float(s.at[0]), float(s.at[1]))), aggro + 3.0, "%s far from %s" % [id, s.type])
+
+
+func test_walker_routes_are_valid_in_every_moment() -> void:
+	for v: String in ["", "vispera", "asalto"]:
+		assert_eq(_village(v).errors, [], "walkers of " + v)
+
+
+func test_forest_trail() -> void:
+	var z := ZoneLayout.load_id("bosque")
+	var map := z.collision()
+	var reach := _reach(map, z.entries.default)
+	for id: String in ["campamento", "mascara", "huellas_carro", "rio"]:
+		assert_true(z.quest_points.has(id), id)
+		var c: Vector2i = z.quest_points[id].at
+		assert_true(reach.has(c), id + " reachable")
+		for h: Dictionary in z.hordes:
+			var a: Array = h.area
+			var r := Rect2(float(a[0]), float(a[1]), float(a[2]), float(a[3]))
+			var p := Vector2(c)
+			var nearest := Vector2(clampf(p.x, r.position.x, r.end.x), clampf(p.y, r.position.y, r.end.y))
+			assert_gt(p.distance_to(nearest), 12.0, "%s away from the hunting grounds" % id)
+	assert_false(z.quest_points.has("claro"), "the old clearing is gone")
+	assert_has(_ids_of(z), "camp_ruined")
+	assert_has(_ids_of(z), "river_bank")

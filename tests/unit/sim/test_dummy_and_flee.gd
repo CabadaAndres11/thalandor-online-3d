@@ -103,3 +103,18 @@ func test_heraldo_is_a_lesser_acolyte() -> void:
 	assert_eq(float(h.stats.max_hp), float(a.stats.max_hp) / 4.0)
 	assert_false(h.has("summon"))
 	assert_eq(float(h.flee_at), 0.1)
+
+
+## A boss that fled from its spawn point comes back like a dead one (a story fight is never lost).
+func test_a_fled_boss_comes_back() -> void:
+	var p := _hero()
+	f.world.spawner = Spawner.new([{"type": "heraldo", "at": [20, 20], "count": 1, "radius": 0, "respawn_s": 2}])
+	f.world.step({})
+	var boss: MonsterState = f.world.monsters.values()[0]
+	_hurt(boss, boss.hp, p)
+	assert_true(boss.fled)
+	_step(Combat.FLEE_S + 0.2)
+	assert_false(f.world.monsters.has(boss.id), "gone after fleeing")
+	_step(2.5)
+	var back := f.world.monsters.values().filter(func(m: MonsterState) -> bool: return m.type_id == "heraldo")
+	assert_eq(back.size(), 1, "back at its point")

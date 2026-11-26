@@ -233,14 +233,14 @@ func has_variant(name: String) -> bool:
 
 
 ## A new layout: this zone with a variant applied (null if there is no such variant). A
-## variant replaces the ambience, NPCs, hordes or respawn, adds pieces and quest points, and
+## variant replaces the ambience, NPCs, hordes, respawn or entries, adds pieces and quest points, and
 ## removes pieces by id and cell ("remove_pieces": [{id, at}]).
 func apply_variant(name: String) -> ZoneLayout:
 	if not has_variant(name):
 		return null
 	var v: Dictionary = variants[name]
 	var d := _raw.duplicate(true)
-	for k in ["ambience", "npcs", "hordes", "respawn", "spawns", "torches", "walkers"]:
+	for k in ["ambience", "npcs", "hordes", "respawn", "spawns", "torches", "walkers", "entries"]:
 		if v.has(k):
 			d[k] = v[k]
 	var gone: Array = v.get("remove_pieces", [])

@@ -163,6 +163,8 @@ func _step_dummies_and_fled() -> void:
 			continue
 		if m.fled and tick >= m.fled_until:
 			remove_entity(m.id)
+			if spawner != null:
+				spawner.left(self, m)
 		elif bool(m.def.get("immortal", false)) and m.hp < m.stats.max_hp and tick - m.last_hurt_tick >= ticks(3.0):
 			m.hp = m.stats.max_hp
 

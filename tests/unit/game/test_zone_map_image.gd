@@ -23,9 +23,9 @@ func test_markers() -> void:
 	assert_eq(dungeon[0].label, tr("ZONE_CRIPTA_PRUEBA"))
 	assert_eq(marks.filter(func(m: Dictionary) -> bool: return m.kind == "exit").size(), 1, "to the village")
 	var village := ZoneMapImage.markers(ZoneLayout.load_id("aldea"), null)
-	var brann := village.filter(func(m: Dictionary) -> bool: return m.kind == "npc" and m.label == tr("NPC_BRANN"))
-	assert_eq(brann.size(), 1)
-	assert_eq(Vector2(brann[0].cell), Vector2(37.5, 35.5))
+	var verrin := village.filter(func(m: Dictionary) -> bool: return m.kind == "npc" and m.label == tr("NPC_VERRIN"))
+	assert_eq(verrin.size(), 1)
+	assert_eq(Vector2(verrin[0].cell), Vector2(78.5, 44.5))
 
 
 ## Plan 8.1.2: the edge band is drawn as forest on the map.

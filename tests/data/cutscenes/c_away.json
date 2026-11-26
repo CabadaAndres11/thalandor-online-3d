@@ -1,5 +1,5 @@
 {
-	"id": "c_away", "skippable": true, "stage": {"zone": "aldea", "variant": "noche"},
+	"id": "c_away", "skippable": true, "stage": {"zone": "aldea", "variant": "asalto"},
 	"actors": {"mira": {"look": {"class": "villager", "appearance": {"body": "slim", "hair_style": "hair_braids", "hair_color": "red"}}, "at": [40, 40]}},
 	"tracks": [[{"camera": {"at": [45, 8, 50], "look": [40, 0, 40]}, "time": 0}, {"line": ["player", "ITEM_Q_PAQUETE"], "time": 2}]]
 }

@@ -175,7 +175,7 @@ func test_on_done_effects() -> void:
 	QuestRules.start(f.world, p, "q_effects")
 	QuestRules.report(f.world, p, "scene", "s1")
 	assert_eq(_events("quest_scene")[0], ["quest_scene", 1, "s2"])
-	assert_eq(_events("quest_moment")[0], ["quest_moment", 1, "aldea", "noche"])
+	assert_eq(_events("quest_moment")[0], ["quest_moment", 1, "aldea", "asalto"])
 	QuestRules.report(f.world, p, "scene", "s3")
 	assert_eq(_events("quest_moment")[1], ["quest_moment", 1, "", ""], "moment null: back to the world")
 	assert_true(p.quests.is_done("q_effects"))
