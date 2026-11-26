@@ -1,6 +1,6 @@
 ---
 tags: [gdd]
-actualizado: 2026-11-23
+actualizado: 2026-11-26
 ---
 
 # Registro de cambios del GDD
@@ -60,3 +60,4 @@ Añade una fila por cada cambio de diseño o funcionalidad implementada.
 | 2.43 | 2026-11-23 | **Versión 0.11.2 ([[Plan 8.1.2 — Pantallas de carga y nombres del mundo (spec)|Plan 8.1.2]]), sin publicar:**<br>• **pantallas de carga** con capturas reales de cada zona, un consejo y una barra de carga;<br>• **nombres del mundo:** Velmora, Valdrenn, Sumerhold, **Aelhest** (la aldea), **Bosque de Eldarra** y la Cripta de Sumerhold;<br>• **linde del mapa:** una franja de árboles dentro de cada zona exterior, con las salidas como sendas que cambian de zona antes del borde, y 30 casillas de bosque fuera; la cámara ya no ve el vacío;<br>• la linde y el bosque de fuera no dan sombra;<br>• al volver de tercera persona, la isométrica es siempre la misma vista fija;<br>• las casas cierran sus hastiales bajo el tejado. |
 | 2.44 | 2026-11-23 | **Versión 0.11.3 ([[Plan 8.1.3 — Herrería y suelo (spec)|Plan 8.1.3]]), sin publicar:**<br>• **herrería nueva** de piedra con dos hornos dentro y un **cobertizo** abierto al costado (fragua, yunque, banco), con Brann en él;<br>• **suelo** con textura de píxeles y detalles vóxel: hierba, flores y piedrecitas. |
 | 2.45 | 2026-11-23 | **Versión 0.11.3 publicada** con los Planes 8.1 a 8.1.3. Los lugares se nombran completos en carteles, mapa, pantallas de carga y textos: «Aldea de Aelhest», «Bosque de Eldarra», «Sumerhold, Capital del Reino». |
+| 2.46 | 2026-11-26 | **Versión 0.12.0 ([[Plan 8.2 — Misiones, diálogos y escenas (spec)\|Plan 8.2]]), sin publicar:**<br>• **misiones como datos** con progreso por personaje en el anfitrión, ocho tipos de objetivo, marcas de historia y recompensas por niveles;<br>• **objetos de misión** en la bolsa, bloqueados;<br>• **diálogos** con opciones solo donde importan;<br>• **escenas** con los modelos del juego, barras negras y subtítulos, con el jugador a salvo;<br>• **momentos a solas** en variantes de zona;<br>• **diario (J)**, objetivo seguido, marcas **!** y **?**, avisos y ventana de entrega;<br>• una **cadena de ejemplo** de tres misiones; guardado versión 6, protocolo 9 ([[D-018 Misiones en el anfitrión con objetivos fijos y marcas]]). |

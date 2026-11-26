@@ -7,6 +7,18 @@
 3. **Aviso de Windows (SmartScreen):** el juego no está firmado. Pulsa **Más información → Ejecutar de todas formas**.
 4. Pulsa **Jugar**. Se abre **Tus personajes**: crea uno con **Crear** (nombre, raza y aspecto) o elige uno que ya tengas. Empiezas como **aldeano**: la clase se elige en la partida, hablando con **Brann** (pulsa **E** a su lado).
 
+### Novedades de la 0.12.0: misiones, diálogos y escenas
+- **Misiones:** los PNJ con algo para ti llevan una **!** encima (una **?** si tienes algo que entregarles o decirles). Pulsa **E** a su lado para hablar.
+- **Diario de misiones** con la **J** (o su icono): misiones activas y hechas, objetivos y recompensas. Elige cuál seguir; su objetivo aparece bajo el minimapa y con una estrella en el mapa.
+- **Objetos de misión:** van a la bolsa con borde dorado y no se pueden vender, equipar ni tirar; desaparecen al entregarlos.
+- **Diálogos** en una ventana nueva: **E**, espacio o clic para avanzar, y **1–4** para elegir cuando hay opciones.
+- **Escenas** con los personajes del juego, barras negras y subtítulos. **Mantén Esc** para saltarlas. Mientras ves una, nada te ataca.
+- **Momentos a solas:** algunas misiones te llevan a tu propia copia de una zona, con otra luz (por ejemplo, la aldea de noche).
+- **Para probarlo**, una **cadena de ejemplo** de tres misiones en la aldea y el bosque, empezando por Brann. Es provisional: las misiones de la historia llegan en la próxima versión.
+- Hay una vecina nueva en la plaza, Ilsa.
+- Tus personajes de antes se actualizan solos (sin misiones).
+- **Todo el grupo tiene que usar la misma versión.**
+
 ### Novedades de la 0.11.3: el mundo por zonas
 - **El juego empieza en la Aldea de Aelhest**, junto a la herrería de Brann, y se sale al **Bosque de Eldarra** por la senda del este.
 - **Zonas:**
@@ -109,7 +121,8 @@ Esta versión trae **dos formas de conectarse**. Todos los del grupo tienen que 
 | Habilidades | 1 a 9 |
 | Esquivar | Espacio |
 | Levantar a un aliado derribado | Mantener E a su lado |
-| Hablar con Brann o el mercader | E a su lado |
+| Hablar con un PNJ / examinar un punto de misión | E a su lado |
+| Diario de misiones | J |
 | Pociones de vida / recurso | Q / R |
 | Inventario | I |
 | Ventana de habilidades | K |

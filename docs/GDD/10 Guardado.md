@@ -1,7 +1,7 @@
 ---
 tags: [gdd]
 estado: diseñado
-actualizado: 2026-11-22
+actualizado: 2026-11-26
 ---
 
 # 10. Guardado **[En curso]** (personajes, versiones y exportación hechos en la 0.2.0; falta el autoguardado del progreso)
@@ -19,6 +19,9 @@ Personajes **versión 4**: oro, bolsa y equipo. Los de la versión 3 entran con 
 
 ## Plan 8.1 (0.11.0) **[Implementado]**
 Personajes **versión 5**: `place` (zona y casilla) y `tutorial_done`. Los de la versión 4 aparecen en la aldea, con el tutorial ya hecho. El anfitrión coloca a cada jugador según su `place` si la zona existe, no es una mazmorra y la casilla está libre; si no, en la entrada de la zona o en la aldea. Se guarda al cambiar de zona y cada 30 s.
+
+## Plan 8.2 (0.12.0) **[Implementado]**
+Personajes **versión 6**: `quests` (misiones activas con su paso y contadores, hechas, marcas de historia, marcas del personaje y la misión seguida). Los de la versión 5 entran sin misiones. Al cargar se sanea: las misiones o pasos que ya no existen se quitan y los contadores se recortan. La marca `tutorial_done` de la historia también pone `tutorial_done`.
 
 ---
 ← [[00 Índice del GDD|Índice del GDD]]

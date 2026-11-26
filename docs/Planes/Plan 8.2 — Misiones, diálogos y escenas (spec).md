@@ -2,8 +2,8 @@
 tags: [plan, spec]
 plan: 8.2
 fecha: 2026-11-23
-estado: aprobado
-actualizado: 2026-11-23
+estado: implementado
+actualizado: 2026-11-26
 ---
 # Plan 8.2 — Misiones, diálogos y escenas: diseño
 

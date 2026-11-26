@@ -1,7 +1,7 @@
 ---
 tags: [gdd]
 estado: en curso
-actualizado: 2026-11-22
+actualizado: 2026-11-26
 ---
 
 # 9. Interfaz y flujo
@@ -27,12 +27,21 @@ actualizado: 2026-11-22
 - **Textos nítidos:** los textos sobre el mundo (nombres, botín) se dibujan como interfaz (`Label` en pantalla o `Label3D` con fuente de alta resolución), nunca escalados de forma que se vean borrosos.
 
 ## Barra de iconos, mapa y minimapa (0.11.1) **[Implementado]**
-- **Barra de iconos** arriba a la derecha: Personaje (C), Bolsa (I), Habilidades (K), Talentos (T), Misiones (J, atenuado hasta el Plan 8.2), Mapa (M) y Menú (Esc). Cada icono muestra su tecla, brilla al pasar el ratón y se queda encendido con su ventana abierta.
+- **Barra de iconos** arriba a la derecha: Personaje (C), Bolsa (I), Habilidades (K), Talentos (T), Misiones (J), Mapa (M) y Menú (Esc). Cada icono muestra su tecla, brilla al pasar el ratón y se queda encendido con su ventana abierta.
 - **Mapa (M):** la zona entera sin scroll, dibujada desde sus datos, con marcas para ti (flecha), tu grupo, los PNJ con su nombre, las salidas con su destino y las puertas de mazmorra, y una leyenda.
 - **Minimapa:** cuadrado de 180 px bajo la barra, centrado en el jugador y girado con la cámara, con la N en el borde y el nombre de la zona. Se puede quitar en Ajustes (Minimapa).
 - **Bolsa:** botón **Ordenar** (por hueco, rareza, nivel y nombre; junta las pilas; no toca lo equipado).
 - **Elección de clase:** la vista previa lleva el equipo inicial real de la clase.
 - **Pantalla de carga** **[0.11.2]**: una captura real de la zona de destino a pantalla completa (2 o 3 por zona, al azar; `data/loading.json`, hechas con `tests/helpers/render_loading.gd`), el nombre de la zona en piedra y oro, un consejo al azar y una barra dorada que sigue los pasos reales de la carga.
+
+## Misiones, diálogos y escenas (0.12.0) **[Implementado]**
+- **Diálogo:** panel ancho de piedra abajo, con quién habla y el texto letra a letra (40 por segundo). E, espacio o clic completan o avanzan; 1–4 eligen. La cámara se acerca un poco y el PNJ se gira hacia ti. Un golpe o Esc lo cierran sin contar.
+- **Escena:** barras negras (12 % arriba y abajo), subtítulos con el nombre, la interfaz oculta y *Mantén Esc para saltar* (0,5 s).
+- **Diario (J):** misiones a la izquierda (*Activas* y *Hechas*, las de la historia primero, 8 por página) y a la derecha el detalle (resumen, paso, objetivos con contadores, recompensas), con *Seguir* y *Abandonar* (no las de la historia).
+- **Objetivo seguido** bajo el minimapa: nombre, paso y contadores (*Sabueso marcado 3/5*).
+- **Marcas:** **!** dorado (una misión para ti), **!** gris (a más nivel), **?** (algo que entregar o decir) sobre los PNJ; una estrella en el mapa y el minimapa en el objetivo seguido, o en la salida hacia su zona; un brillo en los puntos de misión que te tocan.
+- **Avisos** arriba en el centro: misión nueva, objetivo cumplido, misión completada y bolsa llena.
+- **Entrega:** ventana con las recompensas y, si hay que elegir, los objetos con su ficha.
 
 ## 9.3 Ventanas **[En curso]** (Habilidades (K) implementada en la 0.4.0; en la 0.4.1 muestra también CI y CD y un detalle calculado de cada habilidad; el resto está diseñado)
 - **Norma:** **ninguna ventana puede necesitar scroll** para verse entera (en una pantalla de 1280×720). Si una ventana se llena, su contenido se reparte en otra ventana con su propia tecla.

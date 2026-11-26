@@ -2,8 +2,8 @@
 tags: [plan]
 plan: 8.2
 fecha: 2026-11-25
-estado: borrador
-actualizado: 2026-11-25
+estado: implementado
+actualizado: 2026-11-26
 ---
 # Plan 8.2 — Misiones, diálogos y escenas: plan de implementación
 
