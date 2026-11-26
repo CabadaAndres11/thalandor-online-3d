@@ -138,9 +138,14 @@ func test_crypt_has_clearing() -> void:
 	var z := ZoneLayout.load_id("palacio") # the crypt is under the palace now (Plan 8.3b)
 	var door: Rect2i = z.exits.filter(func(e: Dictionary) -> bool: return e.to == "cripta_prueba")[0].area
 	var around := door.grow(ZoneLayout.EXIT_CLEAR)
-	for p: Dictionary in z.pieces:
-		if p.id in ["tree_oak", "tree_pine", "bush", "rock_small", "stump"]:
-			assert_false(around.has_point(p.at), "%s at %s hides the crypt" % [p.id, p.at])
+	var hiding := z.pieces.filter(func(p: Dictionary) -> bool:
+		return p.id in ["tree_oak", "tree_pine", "bush", "rock_small", "stump", "palace_column", "brazier"] and around.has_point(p.at))
+	assert_eq(hiding, [], "nothing hides the crypt's gate")
+	var map := z.collision()
+	var free := 0
+	for x in range(door.position.x, door.end.x):
+		free += 0 if map.is_solid(Vector2i(x, door.end.y)) else 1
+	assert_gt(free, 0, "the gate can be walked up to")
 
 
 func test_path_reaches_crypt() -> void:
