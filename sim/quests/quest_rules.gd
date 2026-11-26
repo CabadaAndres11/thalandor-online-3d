@@ -65,6 +65,8 @@ static func start(world: SimWorld, p: PlayerState, id: String) -> bool:
 	p.quests_dirty = true
 	world.emit(["quest_started", p.id, id])
 	_give(world, p, q)
+	if q.get("moment") is Dictionary:
+		world.emit(["quest_moment", p.id, str(q.moment.get("zone", "")), str(q.moment.get("variant", ""))])
 	_refresh(world, p, id)
 	return true
 
@@ -72,9 +74,9 @@ static func start(world: SimWorld, p: PlayerState, id: String) -> bool:
 ## The quest items a quest (when it starts) or a step's on_done hands over ("give": [[base, count], ...]).
 static func _give(world: SimWorld, p: PlayerState, d: Dictionary) -> void:
 	for g: Variant in d.get("give", []):
-		if not g is Array or (g as Array).is_empty() or not world.items.is_quest(str(g[0])):
+		if not g is Array or (g as Array).is_empty() or world.items.base(str(g[0])).is_empty():
 			continue
-		var it := ItemRoll.new_item(str(g[0]), 1)
+		var it := ItemRoll.new_item(str(g[0]), maxi(1, int(world.items.base(str(g[0])).get("min_level", 1))))
 		it.count = maxi(1, int(g[1])) if (g as Array).size() > 1 else 1
 		if p.inventory.add(it, world.items):
 			p.inventory_dirty = true
@@ -145,6 +147,8 @@ static func current_moment(world: SimWorld, p: PlayerState) -> Dictionary:
 	var out := {}
 	for id: String in p.quests.active:
 		var q := _db(world).quest(id)
+		if q.get("moment") is Dictionary:
+			out = q.moment
 		for i in mini(int(p.quests.active[id].step), (q.steps as Array).size()):
 			var od: Dictionary = q.steps[i].on_done
 			if od.has("moment"):
@@ -186,6 +190,9 @@ static func _refresh(world: SimWorld, p: PlayerState, id: String) -> void:
 			match str(o.type):
 				"collect":
 					st.counts[i] = mini(int(o.count), p.inventory.count_of(str(o.item)))
+				"class":
+					if CharacterCatalog.load_default().is_selectable(p.class_id):
+						st.counts[i] = int(o.count)
 				"choice":
 					if (o.get("any_flag", []) as Array).any(func(fl: Variant) -> bool: return p.quests.has_flag(str(fl))):
 						st.counts[i] = int(o.count)
@@ -301,6 +308,66 @@ static func on_monster_died(world: SimWorld, m: MonsterState) -> void:
 			if changed:
 				p.quests_dirty = true
 				_refresh(world, p, id)
+
+
+## A player's blow landed on a monster (Plan 8.3a): "hit" objectives (with: basic, secondary
+## or any) and "hit_secondary". ability_kind is the kind of the ability that dealt it.
+static func on_hit(world: SimWorld, source: CombatEntity, target: CombatEntity, ability_kind: String) -> void:
+	if not source is PlayerState or not target is MonsterState:
+		return
+	var p := source as PlayerState
+	for id: String in p.quests.active.keys():
+		if not p.quests.is_active(id):
+			continue
+		var objs := current_objectives(world, p, id)
+		var st: Dictionary = p.quests.active[id]
+		var changed := false
+		for i in objs.size():
+			var o: Dictionary = objs[i]
+			var t := str(o.type)
+			if not t in ["hit", "hit_secondary"] or str(o.get("monster", "")) != (target as MonsterState).type_id:
+				continue
+			var want := "secondary" if t == "hit_secondary" else str(o.get("with", ""))
+			if want != "" and want != ability_kind:
+				continue
+			if int(st.counts[i]) < int(o.count):
+				st.counts[i] = int(st.counts[i]) + 1
+				changed = true
+		if changed:
+			p.quests_dirty = true
+			_refresh(world, p, id)
+
+
+## A player started a dodge (Plan 8.3a): "dodge" objectives.
+static func on_dodge(world: SimWorld, p: PlayerState) -> void:
+	_bump_type(world, p, "dodge")
+
+
+## The player now has a class: "class" objectives.
+static func on_class_chosen(world: SimWorld, p: PlayerState) -> void:
+	for id: String in p.quests.active.keys():
+		if p.quests.is_active(id):
+			_refresh(world, p, id)
+
+
+## True while the step being done asks to choose a class (then no trainer is needed).
+static func allows_class_choice(world: SimWorld, p: PlayerState) -> bool:
+	for id: String in p.quests.active:
+		for o: Dictionary in current_objectives(world, p, id):
+			if str(o.type) == "class":
+				return true
+	return false
+
+
+static func _bump_type(world: SimWorld, p: PlayerState, type: String) -> void:
+	for id: String in p.quests.active.keys():
+		if not p.quests.is_active(id):
+			continue
+		var objs := current_objectives(world, p, id)
+		for i in objs.size():
+			if str(objs[i].type) == type and int(p.quests.active[id].counts[i]) < int(objs[i].count):
+				_bump(world, p, id, i)
+				break
 
 
 ## Reaching places, every REACH_EVERY_S: whoever stands on the point, and players with the

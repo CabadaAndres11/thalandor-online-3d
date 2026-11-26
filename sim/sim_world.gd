@@ -135,6 +135,7 @@ func step(inputs: Dictionary) -> void:
 			Movement.apply(p, inputs[id], dt(), balance, map, p.move_mult())
 			if p.dodge_started:
 				p.dodge_started = false
+				QuestRules.on_dodge(self, p)
 				p.add_status(StatusEffect.make("invulnerable", tick + ticks(balance.dodge_invuln_s)), 1)
 				if not Passives.has_hook(p, "after_dodge_combo").is_empty():
 					p.bonus_combo_ready = true

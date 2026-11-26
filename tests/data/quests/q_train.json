@@ -1,0 +1,9 @@
+{"id": "q_train", "name": "ITEM_Q_PAQUETE", "summary": "ITEM_Q_PAQUETE", "giver": "", "turn_in": "",
+ "steps": [
+  {"text": "ITEM_Q_PAQUETE", "objectives": [
+   {"type": "hit", "monster": "hunter_wolf", "with": "basic", "count": 2},
+   {"type": "hit_secondary", "monster": "hunter_wolf", "count": 1},
+   {"type": "dodge", "count": 3}]},
+  {"text": "ITEM_Q_PAQUETE", "objectives": [{"type": "class"}]},
+  {"text": "ITEM_Q_PAQUETE", "objectives": [{"type": "scene", "scene": "z"}]}
+ ]}

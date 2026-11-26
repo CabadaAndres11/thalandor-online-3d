@@ -179,3 +179,19 @@ func test_choose_flag_only_if_offered() -> void:
 	assert_true(p.quests.has_flag("pregunto"))
 	assert_false(p.quests.has_flag("secreto_ok"), "needs the flag visto first")
 	assert_false(p.quests.has_flag("x"))
+
+
+func test_choose_class_without_trainer_only_with_objective() -> void:
+	var c := net.connect_client(host_t)
+	c.send(Transport.HOST_PEER, Protocol.hello(VERSION, Protocol.VERSION, "Vil", "villager", {}, [], {"level": 1}, {}, {}, {}), true)
+	host.tick()
+	host.state_of(1).position = Vector3(50.5, 0, 50.5)
+	c.send(Transport.HOST_PEER, Protocol.choose_class("mage"), true)
+	host.tick()
+	assert_eq(host.state_of(1).class_id, "villager", "no trainer and no story step: refused")
+	QuestRules.force_start(host.world_of(1), host.state_of(1), "q_train")
+	host.state_of(1).quests.active.q_train = {"step": 1, "counts": [0]}
+	c.send(Transport.HOST_PEER, Protocol.choose_class("mage"), true)
+	host.tick()
+	assert_eq(host.state_of(1).class_id, "mage")
+	assert_eq(int(host.state_of(1).quests.active.q_train.step), 2, "the class objective is done")

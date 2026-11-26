@@ -205,6 +205,9 @@ static func deal(world: SimWorld, source: CombatEntity, target: CombatEntity, ef
 		world.current_source = source.id
 		Damage.apply(target, r, world)
 		world.emit(["hit", target.id, r.amount, r.crit, source.id])
+		if attacker is PlayerState and target is MonsterState:
+			var kind := str(_ability.get("kind", world.abilities.get_ability(str(_ability.get("id", ""))).get("kind", "")))
+			QuestRules.on_hit(world, attacker, target, kind)
 		world.cast_hits += 1
 		if r.blocked:
 			world.emit(["block", target.id])

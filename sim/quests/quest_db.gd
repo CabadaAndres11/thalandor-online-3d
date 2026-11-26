@@ -5,7 +5,7 @@ extends RefCounted
 ## (count defaults to 1) so the rules never guess. validate() names every broken reference.
 
 const DIR := "res://data/quests/"
-const TYPES := ["talk", "deliver", "kill", "collect", "reach", "interact", "scene", "choice"]
+const TYPES := ["talk", "deliver", "kill", "collect", "reach", "interact", "scene", "choice", "hit", "hit_secondary", "dodge", "class"]
 
 static var _default: QuestDB
 var _by_id: Dictionary = {}
@@ -152,7 +152,7 @@ func validate(npcs: NpcDB, monsters: MonsterDB, items: ItemDB, zones_dir: String
 						err.call("PNJ desconocido '%s'" % o.get("npc", ""))
 				if o.has("dialogue") and not file_ok.call(dialogues_dir, str(o.dialogue)):
 					err.call("diálogo desconocido '%s'" % o.dialogue)
-				if t in ["kill", "collect"]:
+				if t in ["kill", "collect", "hit", "hit_secondary"]:
 					var m := str(o.get("monster", o.get("from", "")))
 					if monsters.get_type(m).is_empty():
 						err.call("monstruo desconocido '%s'" % m)

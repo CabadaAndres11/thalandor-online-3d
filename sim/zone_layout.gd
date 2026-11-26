@@ -45,6 +45,8 @@ var npcs: Array = []
 var quest_points: Dictionary = {}
 ## Variants of this zone for story moments (raw data) and the one applied ("" for the base).
 var variants: Dictionary = {}
+## Villagers that walk their routes (Plan 8.3a): [{npc, route: [[x, z], ...], speed, pause_s, loop}].
+var walkers: Array = []
 var variant: String = ""
 var _raw: Dictionary = {}
 var _pieces_path: String = PIECES_PATH
@@ -125,6 +127,7 @@ static func from_dict(zone_id: String, d: Dictionary, pieces_path: String = PIEC
 	z._pieces_path = pieces_path
 	z._zone_dir = zone_dir
 	z.variants = d.get("variants", {}) if d.get("variants") is Dictionary else {}
+	z.walkers = (d.get("walkers", []) as Array).duplicate(true) if d.get("walkers") is Array else []
 	for qp: Variant in d.get("quest_points", []):
 		if qp is Dictionary and str((qp as Dictionary).get("id", "")) != "":
 			z.quest_points[str(qp.id)] = {"at": _v2i(qp.get("at", [0, 0])), "radius": float(qp.get("radius", 2.0)),
@@ -230,7 +233,7 @@ func apply_variant(name: String) -> ZoneLayout:
 		return null
 	var v: Dictionary = variants[name]
 	var d := _raw.duplicate(true)
-	for k in ["ambience", "npcs", "hordes", "respawn", "spawns", "torches"]:
+	for k in ["ambience", "npcs", "hordes", "respawn", "spawns", "torches", "walkers"]:
 		if v.has(k):
 			d[k] = v[k]
 	var gone: Array = v.get("remove_pieces", [])

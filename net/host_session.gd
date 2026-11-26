@@ -534,8 +534,8 @@ func _on_choose_class(rec: Dictionary, class_id: String) -> void:
 	var p: PlayerState = state_of(rec.id)
 	if p == null or not p.is_alive() or catalog.is_selectable(rec.class_id) or not catalog.is_selectable(class_id):
 		return
-	if NpcDB.load_default().near_with_role(w.map, p.position, "class_trainer") == "":
-		return
+	if not QuestRules.allows_class_choice(w, p) and NpcDB.load_default().near_with_role(w.map, p.position, "class_trainer") == "":
+		return # only next to a trainer, or when the story asks for it (Plan 8.3a)
 	# Same share of health as before: learning a class mid-fight is not a free heal.
 	var ratio := p.hp / maxf(p.stats.max_hp, 1.0)
 	# The villager's gear goes; the class's starter kit is worn (bag and gold stay).
@@ -549,6 +549,7 @@ func _on_choose_class(rec: Dictionary, class_id: String) -> void:
 	rec.bar = w.abilities.default_bar(class_id, p.level, p.progress.upgrade)
 	rec.sent_bar = rec.bar.duplicate()
 	_broadcast(Protocol.player_class(rec.id, class_id, rec.bar), true)
+	QuestRules.on_class_chosen(w, p)
 
 
 ## Spend a point, buy a node or reset: the host checks everything (ProgressRequests).
