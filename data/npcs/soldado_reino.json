@@ -1,0 +1,25 @@
+{
+	"id": "soldado_reino",
+	"name": "NPC_SOLDADO_REINO",
+	"role": "villager",
+	"lines": {
+		"greet": "SOLDADO_REINO_GREET"
+	},
+	"look": {
+		"class": "warrior",
+		"appearance": {
+			"body": "robust",
+			"skin": "skin_2",
+			"eyes": "brown",
+			"hair_style": "short",
+			"hair_color": "brown",
+			"beard": "stubble"
+		},
+		"primary": "#2f4f8f",
+		"secondary": "#8a8a92",
+		"trousers": "#2a2a33",
+		"weapons": [
+			"weapon_sword"
+		]
+	}
+}

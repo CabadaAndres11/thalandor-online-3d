@@ -78,13 +78,13 @@ func test_npc_weapons_follow_the_v2_body() -> void:
 
 
 func test_e_talks_to_any_npc() -> void:
-	map.npcs.append({"id": "vecina", "at": [10, 10], "facing": 0})
-	assert_eq(_decide(Vector3(10.5, 0, 11.5), "mage"), {"action": NpcInteraction.TALK, "npc": "vecina"})
+	map.npcs.append({"id": "panadero", "at": [10, 10], "facing": 0})
+	assert_eq(_decide(Vector3(10.5, 0, 11.5), "mage"), {"action": NpcInteraction.TALK, "npc": "panadero"})
 
 
 func test_npc_faces_a_point() -> void:
 	var a := NpcAvatar.new()
 	add_child_autofree(a)
-	a.setup("vecina", Vector3(10.5, 0, 10.5), 0.0)
+	a.setup("panadero", Vector3(10.5, 0, 10.5), 0.0)
 	a.face(Vector3(12.5, 0, 10.5))
 	assert_almost_eq(a.rotation.y, PI / 2.0, 0.01)

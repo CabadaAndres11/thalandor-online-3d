@@ -1,0 +1,26 @@
+{
+	"id": "verrin",
+	"name": "NPC_VERRIN",
+	"role": "villager",
+	"lines": {
+		"greet": "VERRIN_GREET"
+	},
+	"look": {
+		"class": "warrior",
+		"appearance": {
+			"body": "slim",
+			"skin": "skin_5",
+			"eyes": "grey",
+			"hair_style": "hair_warrior_braid",
+			"hair_color": "black",
+			"beard": "none",
+			"marks": "scar_cheek"
+		},
+		"primary": "#2f4f8f",
+		"secondary": "#d4a62a",
+		"trousers": "#2a2a33",
+		"weapons": [
+			"weapon_sword"
+		]
+	}
+}

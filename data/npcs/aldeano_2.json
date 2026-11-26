@@ -1,0 +1,23 @@
+{
+	"id": "aldeano_2",
+	"name": "NPC_ALDEANO",
+	"role": "villager",
+	"lines": {
+		"greet": "ALDEANO_2_GREET"
+	},
+	"look": {
+		"class": "villager",
+		"appearance": {
+			"body": "slim",
+			"skin": "skin_2",
+			"eyes": "blue",
+			"hair_style": "hair_curls",
+			"hair_color": "blond",
+			"beard": "none"
+		},
+		"primary": "#4a5a6a",
+		"secondary": "#b0a080",
+		"trousers": "#2e2a26",
+		"weapons": []
+	}
+}

@@ -83,6 +83,44 @@ test("the forge shed is an open house with a lit hearth", () => {
   for (const [x, z] of s.door) assert.ok(!fp.has(x + "," + z), "open front");
 });
 
+// Plan 8.3a: the prologue's pieces.
+const PROLOGUE = ["garland", "lantern_post", "feast_table", "bonfire", "house_burnt_small", "house_burnt_large",
+  "rubble", "fallen_beam", "grave", "army_tent", "kingdom_banner", "camp_ruined", "cart_tracks", "river_bank", "training_dummy"];
+
+test("every prologue piece exists and fits a vox model", () => {
+  for (const id of PROLOGUE) {
+    assert.ok(p[id], id);
+    for (const sh of p[id].parts ? Object.values(p[id].parts) : [p[id].shape]) {
+      assert.ok(sh.cells.size > 0, id + " has voxels");
+      for (const d of sh.size()) assert.ok(d <= 126, `${id} size ${d}`);
+    }
+  }
+});
+
+test("burnt houses block the same cells as the healthy ones and have no roof left", () => {
+  for (const [burnt, healthy] of [["house_burnt_small", "house_small"], ["house_burnt_large", "house_large"]]) {
+    assert.deepEqual(p[burnt].footprint, p[healthy].footprint, burnt);
+    assert.deepEqual(p[burnt].door, p[healthy].door, burnt);
+    assert.deepEqual(Object.keys(p[burnt].parts).sort(), ["floor", "roof", "walls", "walls_cut"]);
+    assert.ok(p[burnt].parts.roof.cells.size < p[healthy].parts.roof.cells.size / 3, burnt + " roof burnt away");
+    const top = Math.max(...[...p[burnt].parts.walls.cells.values()].map((v) => v[1]));
+    assert.ok(top < 30, burnt + " walls burnt down");
+  }
+});
+
+test("pieces fit in their footprint", () => {
+  for (const id of PROLOGUE) {
+    if (p[id].parts || p[id].footprint.length === 0) continue;
+    const cells = new Set(p[id].footprint.map(([x, z]) => x + "," + z));
+    for (const c of footprintOf({ shape: p[id].shape })) {
+      const [x, z] = c;
+      const near = [...cells].some((k) => { const [a, b] = k.split(",").map(Number); return Math.abs(a - x) <= 1 && Math.abs(b - z) <= 1; });
+      assert.ok(near, `${id}: base at ${x},${z} is off its footprint`);
+    }
+  }
+  assert.deepEqual(p.cart_tracks.footprint, []);
+});
+
 test("ground details are tiny and block nothing", () => {
   for (const id of DECOR) {
     assert.ok(p[id], id);

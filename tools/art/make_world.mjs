@@ -29,7 +29,10 @@ const PALETTE = {
   [HAY]: "#d1b060", [GLOW]: "#ffb347", [27]: "#8a3b32", [28]: "#6a2b25",
   [29]: "#9a4a32", [30]: "#7a3826", [31]: "#b8644a", [32]: "#4f7fd6", [33]: "#eeeae0", [34]: "#e8c73a",
   [35]: "#5f9a40", [36]: "#477a30", [37]: "#7fb552",
+  [38]: "#3a3530", [39]: "#5b4632", [40]: "#c8bc9a", [41]: "#a89b78", [42]: "#2f4f8f", [43]: "#d4a62a",
 };
+// Plan 8.3a: ash, earth, army canvas (light and dark), the kingdom's blue and gold.
+const ASH = 38, EARTH = 39, CANVAS = 40, CANVAS_D = 41, ROYAL = 42, ROYAL_GOLD = 43;
 
 // Two or three tones of a material mixed in patches of 3 voxels (Plan 8.1.1: less grain,
 // and equal faces side by side merge into far fewer triangles).
@@ -363,6 +366,46 @@ function rock(rx, ry, rz, seed) {
   return s;
 }
 
+// A house after the assault (Plan 8.3a): the same house with the walls burnt down to
+// ragged stumps, the roof gone but for a few charred beams, and ash on the floor. The cells
+// it blocks are the healthy house's, so the ruins stand where the houses stood.
+function burntHouse(h, seed) {
+  const { floor, walls, roof: roofShape } = h.parts;
+  const W = Math.max(...[...floor.cells.values()].map((v) => v[0])) + 1;
+  const D = Math.max(...[...floor.cells.values()].map((v) => v[2])) + 1;
+  for (const v of [...walls.cells.values()]) {
+    const top = 6 + Math.floor(noise3(v[0] >> 2, 0, v[2] >> 2, seed) * 22);
+    if (v[1] > top) { walls.cells.delete(`${v[0]},${v[1]},${v[2]}`); continue; }
+    const n = noise3(v[0] >> 1, v[1] >> 1, v[2] >> 1, seed + 1);
+    v[3] = v[3] === WOOD || v[1] > top - 3 ? COAL : (n < 0.45 ? ASH : n < 0.7 ? STONE_D : v[3]);
+  }
+  const cut = new Shape();
+  for (const v of walls.cells.values()) if (v[1] <= CUT_H) cut.put(v[0], v[1], v[2], v[3]);
+  const beams = new Shape();
+  for (const v of roofShape.cells.values()) if (v[3] === STONE || v[3] === STONE_D || v[3] === STONE_L) beams.put(v[0], Math.min(v[1], 40), v[2], STONE_D);
+  for (const x of [3, W - 6]) beams.box(x, HOUSE_H - 2, 1, x + 2, HOUSE_H, D - 2, COAL); // two beams still across
+  for (let i = 0; i < W - 6; i++) beams.put(4 + i, 2 + Math.floor(i * 0.25), Math.floor(D / 2), COAL).put(4 + i, 2 + Math.floor(i * 0.25), Math.floor(D / 2) + 1, COAL); // one fallen in
+  for (const v of floor.cells.values()) {
+    if (v[1] > 0) { v[3] = noise3(v[0], v[1], v[2], seed + 2) > 0.4 ? COAL : WOOD_D; continue; }
+    const n = noise3(v[0] >> 1, 0, v[2] >> 1, seed + 3);
+    if (n > 0.55) v[3] = ASH; else if (n < 0.15) v[3] = COAL;
+  }
+  for (let i = 0; i < 6; i++) floor.put(5 + Math.floor(noise3(i, 1, seed, 4) * (W - 10)), 1, 5 + Math.floor(noise3(i, 2, seed, 4) * (D - 10)), GLOW); // embers
+  return { ...h, parts: { floor, walls, walls_cut: cut, roof: beams }, lights: [] };
+}
+
+// Charred planks and broken stones, a low heap that blocks its cells.
+function rubbleHeap(seed) {
+  const s = new Shape();
+  for (const [cx, cz, r] of [[12, 14, 10], [26, 22, 9], [18, 28, 7]]) ellipsoid(s, [cx, 0, cz], [r, r * 0.6, r], STONE);
+  carve(s, (t) => roundBox(t, [-20, -20, -20], [60, -1, 60], 0, 1));
+  paint(s, STONE, [STONE, STONE_D, ASH], seed);
+  for (const [x, z, len, dir] of [[4, 8, 26, 0], [10, 30, 22, 1], [20, 6, 18, 0]]) {
+    for (let i = 0; i < len; i++) s.box(dir ? x + 1 : x + i, 5 + (i % 7 === 0 ? 1 : 0), dir ? z - i : z, dir ? x + 2 : x + i, 6, dir ? z - i : z + 1, i % 3 ? COAL : WOOD_D);
+  }
+  return s;
+}
+
 export function worldPieces() {
   const out = {};
   const add = (id, shape, opts = {}) => {
@@ -459,6 +502,122 @@ export function worldPieces() {
   for (const y of [20, 31]) dummy.box(3, y, 4, 16, y, 15, WOOD_D);
   dummy.box(-4, 29, 8, 23, 31, 10, WOOD).box(-5, 27, 8, -3, 31, 10, WOOD_D).box(22, 27, 8, 24, 31, 10, WOOD_D);
   add("training_dummy", paint(dummy, THATCH, [THATCH, THATCH_D, THATCH_L], 41), { footprint: [[0, 0]] });
+
+  // --- The prologue (Plan 8.3a) ---
+  // The festival on the eve: pennants on a rope between two posts, 3 m wide.
+  const garland = new Shape();
+  for (const x of [8, 49]) garland.box(x, 0, 9, x + 1, 56, 10, WOOD);
+  const FLAGS = [CLOTH, FLOWER_Y, FLOWER_B, FLOWER_W];
+  for (let x = 10; x <= 48; x++) {
+    const y = 54 - Math.round(6 * Math.sin(((x - 10) / 38) * Math.PI));
+    garland.put(x, y, 9, WOOD_D);
+    if ((x - 11) % 5 === 0) for (let h = 1; h <= 5; h++) for (let w = -2 + Math.ceil(h / 2); w <= 2 - Math.ceil(h / 2) + 1; w++) garland.put(x + w, y - h, 9, FLAGS[((x - 11) / 5) % 4]);
+  }
+  add("garland", paint(garland, WOOD, [WOOD, WOOD_D], 61), { footprint: [[0, 0], [2, 0]] });
+  // A post with an arm and a lantern hanging from it.
+  const lantern = new Shape();
+  lantern.box(6, 0, 6, 13, 2, 13, STONE).box(8, 3, 8, 11, 52, 11, WOOD).box(8, 50, 8, 22, 52, 11, WOOD);
+  lantern.box(18, 47, 8, 18, 49, 11, IRON).box(15, 38, 7, 21, 46, 12, IRON).box(16, 39, 8, 20, 45, 11, GLOW);
+  lantern.box(15, 46, 7, 21, 46, 12, IRON_L);
+  add("lantern_post", paint(lantern, WOOD, [WOOD, WOOD_D], 63), { footprint: [[0, 0]] });
+  // A long table with benches on both sides and the feast on it: 3 m along x.
+  const feast = new Shape();
+  feast.box(0, 15, 5, 59, 16, 14, PLANK);
+  for (const x of [2, 29, 56]) feast.box(x, 0, 6, x + 1, 14, 13, WOOD);
+  for (const z of [0, 17]) { feast.box(0, 8, z, 59, 9, z + 2, PLANK_D); for (const x of [2, 56]) feast.box(x, 0, z + 1, x + 1, 7, z + 1, WOOD); }
+  feast.box(4, 15, 5, 55, 15, 14, CLOTH_D).box(2, 16, 7, 57, 16, 12, CLOTH); // a cloth
+  for (let x = 6; x < 56; x += 9) {
+    ellipsoid(feast, [x, 18.5, 9.5], [3, 1.6, 2], HAY); // bread
+    feast.box(x + 4, 17, 6, x + 5, 19, 7, IRON_L).box(x + 4, 17, 12, x + 5, 19, 13, IRON_L); // mugs
+  }
+  ellipsoid(feast, [30, 19, 9.5], [5, 2.5, 3], WOOD_L); // a roast
+  add("feast_table", paint(feast, PLANK, [PLANK, PLANK_D], 65));
+  // The bonfire on the green: a ring of stones, logs leaning together, embers and flames.
+  const bonfire = new Shape();
+  for (let a = 0; a < 16; a++) {
+    const x = 19.5 + Math.cos(a / 16 * Math.PI * 2) * 15, z = 19.5 + Math.sin(a / 16 * Math.PI * 2) * 15;
+    ellipsoid(bonfire, [x, 1, z], [2.6, 2.4, 2.6], STONE);
+  }
+  for (let a = 0; a < 6; a++) {
+    const x = 19.5 + Math.cos(a / 6 * Math.PI * 2) * 11, z = 19.5 + Math.sin(a / 6 * Math.PI * 2) * 11;
+    capsule(bonfire, [x, 0, z], [19.5, 24, 19.5], 1.8, 1.2, a % 2 ? WOOD : BARK);
+  }
+  bonfire.box(12, 0, 12, 27, 1, 27, COAL);
+  for (let y = 2; y < 18; y++) for (let x = 13; x <= 26; x++) for (let z = 13; z <= 26; z++) {
+    const r = Math.hypot(x - 19.5, z - 19.5);
+    if (r < 7 * (1 - y / 20) && noise3(x, y, z, 67) > 0.35) bonfire.put(x, y, z, GLOW);
+  }
+  add("bonfire", paint(bonfire, STONE, [STONE, STONE_D], 69));
+
+  // The ruins after the assault, on the healthy houses' cells.
+  addHouse("house_burnt_small", burntHouse(houseParts(6, 6, (f) => { bed(f, 1, 1); table(f, 4, 1); chest(f, 4, 4); }), 71));
+  addHouse("house_burnt_large", burntHouse(houseParts(8, 7, (f) => {
+    bed(f, 1, 1); bed(f, 2, 1); table(f, 4, 3, 2); hearth(f, 6, 1); shelf(f, 6, 5);
+  }), 73));
+  add("rubble", rubbleHeap(75));
+  // A roof beam, charred, fallen across the ground: 3 m along x.
+  const beam = new Shape();
+  for (let x = 0; x < 58; x++) beam.box(x, 0 + Math.floor(x / 20), 8, x, 4 + Math.floor(x / 20), 12, x % 5 === 0 ? COAL : (noise3(x, 0, 0, 77) > 0.5 ? COAL : WOOD_D));
+  beam.box(55, 0, 6, 57, 7, 14, COAL);
+  add("fallen_beam", beam);
+  // A fresh grave: a mound of earth, 1 × 2 m, and a wooden cross at its head.
+  const grave = new Shape();
+  ellipsoid(grave, [9.5, 0, 22], [7, 4, 15], EARTH);
+  carve(grave, (t) => roundBox(t, [-20, -20, -20], [40, -1, 60], 0, 1));
+  paint(grave, EARTH, [EARTH, WOOD_D, STONE_D], 79);
+  grave.box(8, 0, 4, 11, 32, 6, WOOD).box(3, 22, 4, 16, 25, 6, WOOD).box(7, 0, 3, 12, 3, 7, STONE);
+  for (const x of [5, 13]) grave.put(x, 4, 30, FLOWER_W).put(x, 4, 18, FLOWER_Y);
+  add("grave", grave);
+
+  // Verrin's camp: a canvas tent (3 × 3 m, open to the front, +Z) and the kingdom's banner.
+  const tent = new Shape();
+  for (let h = 0; h <= 28; h++) {
+    const half = 29 - h;
+    for (let z = 2; z <= 57; z++) for (const x of [29.5 - half, 29.5 + half]) {
+      tent.put(Math.round(x), h, z, z % 12 < 2 ? CANVAS_D : CANVAS);
+    }
+  }
+  for (let h = 0; h <= 28; h++) for (let x = Math.round(0.5 + h); x <= Math.round(58.5 - h); x++) tent.put(x, h, 2, CANVAS_D); // back wall
+  for (const z of [1, 58]) tent.box(29, 0, z, 30, 32, z, WOOD); // poles
+  tent.box(29, 29, 1, 30, 30, 58, WOOD); // ridge
+  tent.box(18, 0, 58, 41, 0, 59, ASH); // trodden ground at the door
+  for (const [x, z] of [[-3, 6], [62, 6], [-3, 54], [62, 54]]) tent.box(x, 0, z, x + 1, 3, z + 1, WOOD_D); // pegs
+  add("army_tent", tent, { footprint: [[0, 0], [1, 0], [2, 0], [0, 1], [2, 1], [0, 2], [2, 2]] });
+  const banner = new Shape();
+  banner.box(6, 0, 6, 13, 2, 13, STONE).box(8, 3, 8, 11, 78, 11, WOOD).box(8, 74, 8, 30, 75, 11, WOOD);
+  banner.box(12, 40, 9, 29, 73, 10, ROYAL);
+  for (let y = 40; y <= 73; y++) for (const x of [12, 29]) banner.put(x, y, 9, ROYAL_GOLD).put(x, y, 10, ROYAL_GOLD);
+  for (let x = 12; x <= 29; x++) if ((x - 12) % 6 < 3) banner.put(x, 39, 9, ROYAL).put(x, 39, 10, ROYAL);
+  for (const [x, y] of [[20, 62], [21, 62], [19, 58], [22, 58], [20, 54], [21, 54], [18, 60], [23, 60], [20, 50], [21, 50]]) { banner.put(x, y, 9, ROYAL_GOLD).put(x, y, 10, ROYAL_GOLD); } // a gold star
+  banner.box(9, 79, 9, 10, 81, 10, ROYAL_GOLD);
+  add("kingdom_banner", banner, { footprint: [[0, 0]] });
+
+  // The trail in the forest: a ruined camp (a cold fire, a fallen tent, smashed crates),
+  // the ruts of a cart, and a river bank (stones and reeds before the water).
+  const camp = new Shape();
+  for (let a = 0; a < 10; a++) ellipsoid(camp, [30 + Math.cos(a / 10 * Math.PI * 2) * 7, 0.5, 30 + Math.sin(a / 10 * Math.PI * 2) * 7], [1.8, 1.6, 1.8], STONE);
+  camp.box(26, 0, 26, 34, 0, 34, COAL);
+  for (let i = 0; i < 26; i++) camp.box(4 + i, Math.max(0, 8 - Math.floor(i / 3)), 4, 4 + i, Math.max(0, 8 - Math.floor(i / 3)), 22, i % 7 < 2 ? CANVAS_D : CANVAS); // a tent fallen flat
+  camp.box(40, 0, 40, 51, 6, 51, PLANK).remove(42, 2, 40, 50, 6, 50); // a smashed crate
+  for (const [x, z] of [[44, 10], [48, 16], [10, 44], [15, 50]]) camp.box(x, 0, z, x + 8, 1, z + 1, PLANK_D); // boards scattered
+  camp.box(52, 0, 28, 55, 3, 31, IRON_L); // a pot
+  add("camp_ruined", paint(camp, STONE, [STONE, STONE_D], 81));
+  const tracks = new Shape();
+  for (let z = 0; z < 60; z++) for (const x of [4, 14]) {
+    const dx = Math.round(Math.sin(z / 18) * 1.5);
+    tracks.box(x + dx, 0, z, x + dx + 2, 0, z, noise3(x, 0, z >> 1, 83) > 0.3 ? EARTH : WOOD_D);
+  }
+  add("cart_tracks", tracks, { footprint: [] });
+  const bank = new Shape();
+  bank.box(0, 0, 20, 79, 0, 59, WATER);
+  for (let x = 0; x < 80; x++) {
+    const edge = 18 + Math.round(noise3(x >> 2, 0, 0, 85) * 6);
+    bank.box(x, 0, 0, x, 1, edge, EARTH);
+    if (noise3(x, 1, 0, 85) > 0.55) ellipsoid(bank, [x, 1, edge], [2.5, 2, 2], STONE);
+    if (x % 5 === 2) bank.box(x, 2, edge - 3, x, 10 + (x % 4) * 2, edge - 3, GRASS_D); // reeds
+  }
+  paint(bank, EARTH, [EARTH, MOSS, STONE_D], 87);
+  add("river_bank", bank, { footprint: [[0, 1], [1, 1], [2, 1], [3, 1], [0, 2], [1, 2], [2, 2], [3, 2]] });
   return out;
 }
 

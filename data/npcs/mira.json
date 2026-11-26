@@ -1,0 +1,24 @@
+{
+	"id": "mira",
+	"name": "NPC_MIRA",
+	"role": "villager",
+	"lines": {
+		"greet": "MIRA_GREET"
+	},
+	"look": {
+		"class": "villager",
+		"appearance": {
+			"body": "slim",
+			"skin": "skin_3",
+			"eyes": "green",
+			"hair_style": "hair_ponytail",
+			"hair_color": "chestnut",
+			"beard": "none",
+			"marks": "freckles"
+		},
+		"primary": "#7a4e8a",
+		"secondary": "#d8c9a0",
+		"trousers": "#4a3a2a",
+		"weapons": []
+	}
+}
