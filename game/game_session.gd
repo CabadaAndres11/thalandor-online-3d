@@ -4,6 +4,8 @@ extends Node3D
 ## Playing always means hosting (with the local player on a zero-latency loopback)
 ## unless joining a friend, in which case there is no local HostSession.
 
+## A cutscene ended (played to its end or skipped), Plan 8.2.
+signal cutscene_ended()
 signal session_ended(reason: String)
 ## WebRTC opens groups asynchronously: the code arrives from the signaling server.
 signal group_opened(code: String)
@@ -31,6 +33,10 @@ var last_error: String = ""
 var net_mode: String = NET_WEBRTC
 
 var zone_view: ZoneView
+## The cutscene playing now (Plan 8.2), or null; while it plays the camera is its own.
+var cutscene: CutscenePlayer
+var _stage_view: ZoneView
+var _cut_fov: float = 40.0
 ## The zone's picture for the map and the minimap (Plan 8.1.1), made with each zone.
 var map_texture: ImageTexture
 ## True while the zone is still being built, one step per frame (Plan 8.1.1).
@@ -399,7 +405,8 @@ func _process(delta: float) -> void:
 	_sync_monsters(delta)
 	var own := client.render_state(client.my_id)
 	if not own.is_empty():
-		camera.follow(own.position)
+		if cutscene == null:
+			camera.follow(own.position)
 		zone_view.follow(own.position)
 		update_house(own.position)
 		for npc: NpcAvatar in _npc_avatars:
@@ -456,6 +463,79 @@ func _remove_avatar(id: int) -> void:
 	var avatar: Node = _avatars[id]
 	_avatars.erase(id)
 	avatar.queue_free()
+
+
+## Plays a cutscene (Plan 8.2): its actors are built here, its camera is the game's own and
+## its light changes the zone's. A scene away from the player ({zone, variant}) is built
+## as its own stage while the zone waits aside. Returns the player (null if it does not exist).
+func play_cutscene(scene_id: String) -> CutscenePlayer:
+	var data := CutsceneData.load_id(scene_id)
+	if data.is_empty() or cutscene != null:
+		return null
+	var stage: Variant = data.get("stage", "here")
+	var view := zone_view
+	if stage is Dictionary:
+		var layout := ZoneLayout.load_variant(str(stage.get("zone", "")), str(stage.get("variant", "")))
+		if layout != null and zone_view != null:
+			remove_child(zone_view)
+			_stage_view = ZoneView.new()
+			_stage_view.name = "Stage"
+			add_child(_stage_view)
+			move_child(_stage_view, 0)
+			for step: Callable in _stage_view.build_steps(layout, _quality):
+				step.call()
+			view = _stage_view
+			_avatar_root.visible = false
+	_cut_fov = camera.fov
+	var own := player_avatar(client.my_id)
+	if own != null:
+		own.visible = false
+	cutscene = CutscenePlayer.new()
+	cutscene.name = "Cutscene"
+	add_child(cutscene)
+	cutscene.finished.connect(_end_cutscene, CONNECT_ONE_SHOT | CONNECT_DEFERRED)
+	cutscene.play(data, {"camera": camera, "actor_factory": _cutscene_actor,
+		"set_ambience": func(id: String) -> void:
+			if view != null:
+				view.set_ambience(id)})
+	return cutscene
+
+
+func _cutscene_actor(spec: Dictionary) -> Node3D:
+	if spec.has("npc"):
+		var npc := NpcAvatar.new()
+		npc.setup(str(spec.npc), Vector3.ZERO, 0.0)
+		return npc
+	if spec.has("monster"):
+		var m := MonsterAvatar.new()
+		m.setup(MonsterDB.load_default().get_type(str(spec.monster)))
+		return m
+	var holder := CutsceneActor.new()
+	if spec.has("player") or str(spec.get("look", "")) == "player":
+		holder.set_rig(HumanRig.create(client.class_id, client.appearance, null, client.progress.upgrade, client.gear_of(client.my_id)))
+	elif spec.get("look") is Dictionary:
+		holder.set_rig(HumanRig.build(NpcAvatar.look_of(spec.look)))
+	return holder
+
+
+func _end_cutscene() -> void:
+	if cutscene == null:
+		return
+	cutscene.queue_free()
+	cutscene = null
+	if _stage_view != null:
+		_stage_view.queue_free()
+		remove_child(_stage_view)
+		_stage_view = null
+		if zone_view != null and zone_view.get_parent() == null:
+			add_child(zone_view)
+			move_child(zone_view, 0)
+		_avatar_root.visible = true
+	camera.fov = _cut_fov
+	var own := player_avatar(client.my_id) if client != null else null
+	if own != null:
+		own.visible = true
+	cutscene_ended.emit()
 
 
 func npc_avatar(id: String) -> NpcAvatar:

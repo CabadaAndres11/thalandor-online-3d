@@ -106,6 +106,7 @@ func tick() -> void:
 			inputs[id] = (rec.last_input as PlayerInput).held_only()
 	zones.step_occupied(inputs_by_key)
 	_follow_story_moments()
+	_start_pending_scenes()
 	_check_exits()
 	_send_places()
 	if zones.tick % balance.tick_rate == 0:
@@ -297,6 +298,25 @@ func _follow_story_moments() -> void:
 		for ev: Array in zones.world(key).events.duplicate():
 			if ev[0] == "quest_moment" and _players.has(ev[1]):
 				send_to_moment(ev[1], ev[2], ev[3])
+			elif ev[0] == "quest_scene" and _players.has(ev[1]):
+				_players[ev[1]].pending_scene = str(ev[2])
+
+
+## A scene waits for its player to be out of combat; then the player is safe (in_scene)
+## and its client is told to play it (scene_go, only to it).
+func _start_pending_scenes() -> void:
+	for id: int in _players:
+		var rec: Dictionary = _players[id]
+		var scene := str(rec.get("pending_scene", ""))
+		var p := state_of(id)
+		if scene == "" or p == null or not p.is_alive() or _in_combat(id):
+			continue
+		rec.pending_scene = ""
+		var w := world_of(id)
+		p.add_status(StatusEffect.make("in_scene", w.tick + w.ticks(SCENE_MAX_S)))
+		rec.queue.clear()
+		rec.last_input = null
+		_send_to(id, Protocol.events(w.tick, [["scene_go", id, scene]]), true)
 
 
 ## Sends a player into its own copy of a zone variant; zone "" brings it back to the shared
@@ -678,10 +698,8 @@ func _on_quest_action(rec: Dictionary, action: String, args: Array) -> void:
 		"interact":
 			QuestRules.report(w, p, "interact", a0)
 		"scene_start":
-			if p.is_alive() and not _in_combat(rec.id):
-				p.add_status(StatusEffect.make("in_scene", w.tick + w.ticks(SCENE_MAX_S)))
-				rec.queue.clear()
-				rec.last_input = null
+			if a0 != "":
+				rec.pending_scene = a0
 		"scene_done":
 			p.remove_status("in_scene")
 			QuestRules.report(w, p, "scene", a0)

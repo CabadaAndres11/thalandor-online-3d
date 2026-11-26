@@ -110,3 +110,37 @@ func test_objective_survives_disconnect() -> void:
 	assert_true(p.quests.is_active("q_req"))
 	assert_eq(p.quests.active.q_req.counts, [0])
 	assert_false(p.in_scene())
+
+
+func test_scene_waits_for_combat_to_end() -> void:
+	var c := _guest("Ana")
+	var p := host.state_of(1)
+	p.last_hurt_tick = host.world_of(1).tick
+	_act(c, "scene_start", ["s1"])
+	assert_false(p.in_scene(), "not while in combat")
+	for i in host.balance.tick_rate * 6:
+		host.tick()
+	assert_true(p.in_scene(), "it starts once the fight is over")
+	var go := []
+	for pk: Dictionary in c.poll():
+		var m := Protocol.decode(pk.data)
+		if m.get("type") == Protocol.Msg.EVENTS:
+			for ev: Array in m.events:
+				if ev[0] == "scene_go":
+					go.append(ev)
+	assert_eq(go, [["scene_go", 1, "s1"]])
+
+
+func test_quest_scene_becomes_scene_go() -> void:
+	var c := _guest("Ana", {"active": {"q_effects": {"step": 0, "counts": [0]}}})
+	_act(c, "scene_start", ["s1"])
+	_act(c, "scene_done", ["s1"])
+	host.tick()
+	var go := []
+	for pk: Dictionary in c.poll():
+		var m := Protocol.decode(pk.data)
+		if m.get("type") == Protocol.Msg.EVENTS:
+			for ev: Array in m.events:
+				if ev[0] == "scene_go":
+					go.append(ev[2])
+	assert_true("s2" in go, "the step's on_done scene is played")

@@ -54,6 +54,11 @@ var upgrade_window: UpgradeWindow
 ## At a dungeon's door: choose its level (Plan 8.1).
 var dungeon_window: DungeonWindow
 var dialogue_window: DialogueWindow
+var cutscene_overlay: CutsceneOverlay
+## A scene the host said to play while the zone was still loading (Plan 8.2).
+var _pending_scene: String = ""
+var _playing_scene: String = ""
+var _hud_before: Dictionary = {}
 ## The conversation open now: {npc, quest, kind, dialogue} (Plan 8.2).
 var _talk: Dictionary = {}
 var _upgrade_sent_at: int = -10000
@@ -238,6 +243,11 @@ func _ready() -> void:
 	dialogue_window.action.connect(_on_dialogue_action)
 	_ui.add_child(dialogue_window)
 
+	cutscene_overlay = CutsceneOverlay.new()
+	cutscene_overlay.theme = menu_theme
+	cutscene_overlay.skip_requested.connect(_on_scene_skip)
+	_ui.add_child(cutscene_overlay)
+
 	pause_menu = PauseMenu.new()
 	pause_menu.theme = theme
 	pause_menu.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -273,7 +283,7 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if game == null or chat.is_typing() or dialog.visible:
+	if game == null or chat.is_typing() or dialog.visible or cutscene_overlay.visible:
 		return
 	if event.is_action_pressed("menu"):
 		if not _close_open_window():
@@ -534,8 +544,52 @@ func _open_turn_in(quest_id: String) -> void:
 
 
 ## A cutscene asked by a dialogue (Plan 8.2, T11 plays it).
-func _play_scene(_scene_id: String) -> void:
-	pass
+func _play_scene(scene_id: String) -> void:
+	if game != null and game.client != null:
+		game.client.request_quest("scene_start", [scene_id]) # the host answers scene_go
+
+
+## The host says the scene may play (out of combat, the player is safe): after loading.
+func _start_scene(scene_id: String) -> void:
+	if game.client.zone_loading or game.zone_building:
+		_pending_scene = scene_id
+		return
+	var cut := game.play_cutscene(scene_id)
+	if cut == null:
+		game.client.request_quest("scene_done", [scene_id])
+		return
+	_playing_scene = scene_id
+	dialogue_window.interrupt()
+	for w: Control in _panel_windows() + [merchant_window, inventory_window]:
+		w.visible = false
+	_hud_before = {}
+	for n: CanvasItem in [combat_hud, chat, party_frames, icon_bar, minimap]:
+		_hud_before[n] = n.visible
+		n.visible = false
+	cutscene_overlay.open(bool(CutsceneData.load_id(scene_id).get("skippable", true)))
+	cut.line.connect(_on_scene_line)
+	cut.fade.connect(cutscene_overlay.set_fade)
+	game.cutscene_ended.connect(_on_scene_ended, CONNECT_ONE_SHOT)
+
+
+func _on_scene_line(speaker: String, text_key: String) -> void:
+	var who := game.client.player_name if speaker == "player" else tr(str(NpcDB.load_default().npc(speaker).get("name", "")))
+	cutscene_overlay.show_line(who, DialogueRunner.format(text_key, game.client.player_name, _epithet()))
+
+
+func _on_scene_skip() -> void:
+	if game != null and game.cutscene != null:
+		game.cutscene.skip()
+
+
+func _on_scene_ended() -> void:
+	cutscene_overlay.close()
+	for n: CanvasItem in _hud_before:
+		n.visible = _hud_before[n]
+	_hud_before = {}
+	if game != null and game.client != null and _playing_scene != "":
+		game.client.request_quest("scene_done", [_playing_scene])
+	_playing_scene = ""
 
 
 ## An option of Brann's menu. Resets ask first; the host answers with PROGRESS.
@@ -987,12 +1041,16 @@ func _on_typing_changed(_is_typing: bool) -> void:
 func _update_input_block() -> void:
 	if game != null:
 		game.input_blocked = chat.is_typing() or pause_menu.visible or options_window.visible or dialog.visible or class_choice_window.visible \
-			or trainer_menu.visible or upgrade_window.visible or dialogue_window.visible
+			or trainer_menu.visible or upgrade_window.visible or dialogue_window.visible or cutscene_overlay.visible
 		game.attacks_blocked = _panel_open()
 
 
 func _process(_delta: float) -> void:
 	_update_input_block()
+	if _pending_scene != "" and game != null and game.client != null and not game.client.zone_loading and not game.zone_building:
+		var s := _pending_scene
+		_pending_scene = ""
+		_start_scene(s)
 	_update_minimap()
 	_update_icon_bar()
 	# Walking away from the merchant closes the trade.
@@ -1156,6 +1214,8 @@ func _on_bar_changed(bar: Array) -> void:
 
 ## Game-wide announcements in the chat (everyone gets the same events).
 func _on_game_event(ev: Array) -> void:
+	if ev.size() >= 3 and str(ev[0]) == "scene_go" and game != null and game.client != null and int(ev[1]) == game.client.my_id:
+		_start_scene(str(ev[2]))
 	if ev.size() >= 2 and str(ev[0]) == "hit" and game != null and game.client != null \
 			and int(ev[1]) == game.client.my_id and dialogue_window.visible:
 		dialogue_window.interrupt() # a blow ends the conversation

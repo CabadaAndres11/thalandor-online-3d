@@ -1,0 +1,15 @@
+{
+	"id": "c_test", "skippable": true, "stage": "here",
+	"actors": {"brann": {"npc": "brann", "at": [4, 4], "facing": 0}, "lobo": {"monster": "hunter_wolf", "at": [10, 4]}},
+	"tracks": [
+		[{"camera": {"at": [0, 10, 0], "look": [4, 0, 4], "fov": 40}, "time": 0},
+		 {"camera": {"at": [8, 10, 0], "look": [4, 0, 4]}, "time": 4, "ease": "linear"}],
+		[{"line": ["brann", "ITEM_Q_PAQUETE"], "time": 1},
+		 {"line": ["player", "ITEM_Q_COLMILLO"], "time": 1},
+		 {"line": ["brann", "ITEM_QUEST_TAG"], "time": 1},
+		 {"ambience": "alba"}],
+		[{"move": "lobo", "to": [[10, 12]], "speed": 4},
+		 {"pose": ["lobo", "melee"], "time": 0.5},
+		 {"hide": "lobo"}]
+	]
+}

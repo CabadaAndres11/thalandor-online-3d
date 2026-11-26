@@ -762,3 +762,24 @@ func test_pause_join_bad_code_keeps_the_game() -> void:
 	main._on_pause_join("no-es-un-codigo")
 	assert_same(main.game, solo, "still playing")
 	assert_true(main.dialog.visible, "says the code is wrong")
+
+
+func test_cutscene_plays_and_reports() -> void:
+	CutsceneData.dir = "res://tests/data/cutscenes/"
+	main._on_play("Prueba")
+	await wait_physics_frames(5)
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1 and not main.game.zone_building, 5.0)
+	main._play_scene("c_test")
+	await wait_until(func() -> bool: return main.game.cutscene != null, 3.0)
+	assert_true(main.cutscene_overlay.visible)
+	assert_false(main.combat_hud.visible, "the HUD hides during a scene")
+	assert_true(main.game.input_blocked)
+	var p: PlayerState = main.game.host.state_of(main.game.client.my_id)
+	assert_true(p.in_scene())
+	main._on_scene_skip()
+	await wait_until(func() -> bool: return not main.cutscene_overlay.visible, 3.0)
+	await wait_physics_frames(5)
+	assert_null(main.game.cutscene)
+	assert_true(main.combat_hud.visible)
+	assert_false(p.in_scene(), "scene_done reached the host")
+	CutsceneData.dir = CutsceneData.DIR
