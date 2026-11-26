@@ -55,6 +55,8 @@ var camera: IsoCamera
 var _avatars: Dictionary = {} # id -> PlayerAvatar
 var _monster_avatars: Dictionary = {} # id -> MonsterAvatar
 var _npc_avatars: Array = [] # NpcAvatar
+## Villagers walking their routes (Plan 8.3a): [{avatar: NpcAvatar, route, speed, pause_s, loop}].
+var _walkers: Array = []
 ## The loading screen between zones (Plan 8.1).
 var loading: LoadingOverlay
 var _quality: int = GraphicsQuality.MEDIUM
@@ -309,6 +311,7 @@ func _on_zone_changed(zone_id: String, _key: String, _level: int) -> void:
 		npc.queue_free()
 	_npc_avatars.clear()
 	_place_npcs()
+	place_walkers(layout)
 	for id: String in _point_marks.keys():
 		(_point_marks[id] as Node).queue_free()
 	_point_marks.clear()
@@ -409,6 +412,7 @@ func _process(delta: float) -> void:
 		return # the update ended the session (e.g. timeout) and the game left
 	_sync_avatars(delta)
 	_sync_monsters(delta)
+	move_walkers(client.target_render_tick() / float(balance.tick_rate))
 	var own := client.render_state(client.my_id)
 	if not own.is_empty():
 		if cutscene == null:
@@ -588,6 +592,53 @@ func quest_point_near() -> String:
 
 func quest_point_count() -> int:
 	return _point_marks.size()
+
+
+## The villagers that walk this zone's routes (they are not on the map: nothing collides).
+func place_walkers(layout: ZoneLayout) -> void:
+	for w: Dictionary in _walkers:
+		(w.avatar as Node).queue_free()
+	_walkers.clear()
+	for spec: Variant in layout.walkers:
+		if not spec is Dictionary:
+			continue
+		var route: Array = (spec.get("route", []) as Array).map(func(p: Array) -> Vector2: return Vector2(float(p[0]), float(p[1])))
+		if route.is_empty():
+			continue
+		var npc := NpcAvatar.new()
+		npc.name = "Walker_%d" % _walkers.size()
+		_avatar_root.add_child(npc)
+		npc.setup(str(spec.get("npc", "")), Vector3(route[0].x + 0.5, 0, route[0].y + 0.5), 0.0)
+		_walkers.append({"avatar": npc, "route": route, "speed": float(spec.get("speed", 1.2)),
+			"pause_s": float(spec.get("pause_s", 3.0)), "loop": bool(spec.get("loop", true)), "id": str(spec.get("npc", ""))})
+
+
+## Moves every walker to where the host's clock (seconds) puts it.
+func move_walkers(t: float) -> void:
+	for w: Dictionary in _walkers:
+		var s := WalkerPath.at(w.route, w.speed, w.pause_s, w.loop, t)
+		var a: NpcAvatar = w.avatar
+		a.position = s.position
+		a.rotation.y = s.facing
+		if a.rig != null:
+			a.rig.set_moving_speed(w.speed if s.moving else 0.0, 3.0)
+
+
+func walker_count() -> int:
+	return _walkers.size()
+
+
+func walker_avatar(i: int) -> NpcAvatar:
+	return _walkers[i].avatar
+
+
+## The walker in talking reach of a point, or "" (it greets in the chat, Plan 8.3a).
+func walker_near(pos: Vector3) -> String:
+	for w: Dictionary in _walkers:
+		var a: NpcAvatar = w.avatar
+		if Vector2(pos.x - a.position.x, pos.z - a.position.z).length() <= NpcDB.TALK_RANGE:
+			return str(w.id)
+	return ""
 
 
 func npc_avatar(id: String) -> NpcAvatar:

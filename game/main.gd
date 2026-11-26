@@ -457,6 +457,12 @@ func _on_interact() -> void:
 		game.client.request_quest("interact", [point])
 		return
 	var r := game.interaction()
+	if str(r.npc) == "":
+		var me := game.client.render_state(game.client.my_id)
+		var walker := game.walker_near(me.position) if not me.is_empty() else ""
+		if walker != "":
+			_greet(walker)
+			return
 	if str(r.npc) != "" and _talk_to(str(r.npc)):
 		return
 	match str(r.action):

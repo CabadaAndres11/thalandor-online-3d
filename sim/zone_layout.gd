@@ -167,6 +167,13 @@ static func from_dict(zone_id: String, d: Dictionary, pieces_path: String = PIEC
 	for sp: Dictionary in z.spawns:
 		if monsters.get_type(str(sp.get("type", ""))).is_empty():
 			z.errors.append("unknown monster " + str(sp.get("type", "")))
+	if not z.walkers.is_empty():
+		var map := z.collision()
+		for w: Variant in z.walkers:
+			for pt: Variant in (w.get("route", []) if w is Dictionary else []):
+				var c := _v2i(pt)
+				if c.x < 0 or c.y < 0 or c.x >= z.size.x or c.y >= z.size.y or map.is_solid(c):
+					z.errors.append("walker %s: punto (%d, %d) sólido o fuera del mapa" % [w.get("npc", "?"), c.x, c.y])
 	for e: Dictionary in z.exits:
 		if not FileAccess.file_exists(zone_dir + str(e.to) + ".json"):
 			z.warnings.append("exit to unknown zone " + str(e.to))
