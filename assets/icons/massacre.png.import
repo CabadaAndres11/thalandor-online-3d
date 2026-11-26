@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://hylrdvaaglbf"
-path="res://.godot/imported/passive_assassin.png-490d65b1ece968af3638bd2bcdd902d1.ctex"
+uid="uid://ceywfe117t631"
+path="res://.godot/imported/massacre.png-64dfe34b65a902d8fc705011f4427b7b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/icons/passive_assassin.png"
-dest_files=["res://.godot/imported/passive_assassin.png-490d65b1ece968af3638bd2bcdd902d1.ctex"]
+source_file="res://assets/icons/massacre.png"
+dest_files=["res://.godot/imported/massacre.png-64dfe34b65a902d8fc705011f4427b7b.ctex"]
 
 [params]
 

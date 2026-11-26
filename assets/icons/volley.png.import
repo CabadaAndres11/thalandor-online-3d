@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bl5sqb07mxhjk"
-path="res://.godot/imported/passive_cleric.png-9e7e3bc052222697eed1e67eaa4da3d6.ctex"
+uid="uid://c3a04yxu817rg"
+path="res://.godot/imported/volley.png-92a07fc405893674f0654983aef73f52.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/icons/passive_cleric.png"
-dest_files=["res://.godot/imported/passive_cleric.png-9e7e3bc052222697eed1e67eaa4da3d6.ctex"]
+source_file="res://assets/icons/volley.png"
+dest_files=["res://.godot/imported/volley.png-92a07fc405893674f0654983aef73f52.ctex"]
 
 [params]
 
