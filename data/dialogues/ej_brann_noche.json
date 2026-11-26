@@ -1,0 +1,60 @@
+{
+	"id": "ej_brann_noche",
+	"nodes": {
+		"start": {
+			"lines": [
+				[
+					"brann",
+					"DLG_EJ_NO_1"
+				],
+				[
+					"brann",
+					"DLG_EJ_NO_2"
+				]
+			],
+			"choices": [
+				{
+					"text": "DLG_EJ_NO_C_VIGILAR",
+					"next": "vigilar",
+					"flags": [
+						"ej_vigilar"
+					],
+					"action": "accept"
+				},
+				{
+					"text": "DLG_EJ_NO_C_AVISAR",
+					"next": "avisar",
+					"flags": [
+						"ej_avisar"
+					],
+					"action": "accept"
+				},
+				{
+					"text": "DLG_TRAIN",
+					"next": "end",
+					"action": "train"
+				},
+				{
+					"text": "DLG_EJ_NO_C_LUEGO",
+					"next": "end"
+				}
+			]
+		},
+		"vigilar": {
+			"lines": [
+				[
+					"brann",
+					"DLG_EJ_NO_3V"
+				]
+			]
+		},
+		"avisar": {
+			"lines": [
+				[
+					"brann",
+					"DLG_EJ_NO_3A"
+				]
+			]
+		}
+	}
+}

@@ -264,3 +264,39 @@ func test_reach_runs_in_world_step() -> void:
 	for i in f.world.ticks(1.0):
 		f.world.step({})
 	assert_eq(int(p.quests.active.q_reach.step), 1)
+
+
+func test_give_on_start_and_reward_without_turn_in() -> void:
+	var p := _hero(1, Vector3(8.5, 0, 4.5))
+	var gold := p.inventory.gold
+	QuestRules.start(f.world, p, "q_give")
+	assert_eq(p.inventory.count_of("q_paquete"), 1, "the quest hands its parcel over")
+	assert_true(QuestRules.report(f.world, p, "talk", "merchant"))
+	assert_true(p.quests.is_done("q_give"))
+	assert_eq(p.inventory.gold, gold + 25, "rewards come even with nobody to hand it in to")
+	assert_eq(p.inventory.count_of("q_paquete"), 0)
+
+
+func test_step_gives_items() -> void:
+	var q := QuestDB.load_dir(QUESTS)
+	q.add({"id": "q_stepgive", "giver": "brann", "turn_in": "", "steps": [
+		{"objectives": [{"type": "scene", "scene": "a"}], "on_done": {"give": [["q_paquete", 2]]}},
+		{"objectives": [{"type": "scene", "scene": "b"}]}]})
+	f.world.quests = q
+	var p := _hero(1, Vector3(3.5, 0, 4.5))
+	QuestRules.start(f.world, p, "q_stepgive")
+	assert_eq(p.inventory.count_of("q_paquete"), 0)
+	QuestRules.report(f.world, p, "scene", "a")
+	assert_eq(p.inventory.count_of("q_paquete"), 2)
+
+
+func test_kill_and_collect_from_the_same_monster() -> void:
+	var p := _hero(1, Vector3(5.5, 0, 5.5))
+	var q := QuestDB.load_dir(QUESTS)
+	q.add({"id": "q_both", "giver": "brann", "steps": [{"objectives": [
+		{"type": "kill", "monster": "hunter_wolf", "count": 2},
+		{"type": "collect", "item": "q_colmillo", "from": "hunter_wolf", "chance": 1.0, "count": 2}]}]})
+	f.world.quests = q
+	QuestRules.start(f.world, p, "q_both")
+	_kill(_wolf(Vector3(6.5, 0, 5.5)))
+	assert_eq(_counts(p, "q_both"), [1, 1], "one wolf counts for both objectives")

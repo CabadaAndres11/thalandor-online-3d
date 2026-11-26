@@ -8,6 +8,8 @@ var main: Main
 
 
 func before_each() -> void:
+	# These tests check the game without the example quests (Brann would open his errand first).
+	QuestDB._default = QuestDB.new()
 	main = Main.new()
 	main.settings_path = SETTINGS
 	main.characters_dir = CHARS
@@ -16,6 +18,7 @@ func before_each() -> void:
 
 
 func after_each() -> void:
+	QuestDB._default = null
 	Input.action_release("move_up")
 	_clear(CHARS)
 	_clear(EXPORTS)
@@ -404,7 +407,7 @@ func test_villager_learns_a_class_from_brann() -> void:
 	main._on_play("Prueba")
 	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
 	assert_eq(main.game.client.class_id, "villager")
-	assert_eq(main.game.npc_count(), 2, "Brann and the merchant stand in the village")
+	assert_eq(main.game.npc_count(), 3, "Brann, the merchant and Ilsa stand in the village")
 	_press("interact")
 	assert_true(main.class_choice_window.visible, "E next to Brann opens the class window")
 	assert_true(main.game.input_blocked)
@@ -797,3 +800,15 @@ func test_journal_key_and_tracker() -> void:
 	assert_false(main.quest_journal.visible)
 	main._on_icon("quests")
 	assert_true(main.quest_journal.visible)
+
+
+func test_brann_opens_his_errand_first() -> void:
+	QuestDB._default = null # the real quests, with the example chain
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1 and main.game.client.quests.is_active("ej_encargo"), 5.0)
+	assert_eq(main.game.npc_avatar("brann").mark_text(), "?", "Brann has something to say")
+	main.game.client.choose_class("warrior")
+	await wait_until(func() -> bool: return main.game.client.class_id == "warrior", 3.0)
+	_press("interact")
+	assert_true(main.dialogue_window.visible, "his errand, not the menu")
+	assert_eq(main.dialogue_window.speaker_text(), tr("NPC_BRANN"))

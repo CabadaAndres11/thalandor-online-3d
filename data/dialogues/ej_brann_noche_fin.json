@@ -1,0 +1,9 @@
+{
+	"id": "ej_brann_noche_fin",
+	"nodes": {
+		"start": {
+			"lines": [["brann", "DLG_EJ_NF_1"]],
+			"choices": [{"text": "DLG_EJ_NF_C", "next": "end", "action": "turn_in"}]
+		}
+	}
+}

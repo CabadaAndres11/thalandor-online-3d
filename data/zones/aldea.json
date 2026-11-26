@@ -382,6 +382,14 @@
 				46
 			],
 			"facing": 270
+		},
+		{
+			"id": "vecina",
+			"at": [
+				44,
+				52
+			],
+			"facing": 90
 		}
 	],
 	"entries": {
@@ -454,5 +462,46 @@
 			"respawn_s": 10,
 			"elite_chance": 0
 		}
-	]
+	],
+	"variants": {
+		"noche": {
+			"ambience": "noche_fuego",
+			"npcs": [
+				{
+					"id": "brann",
+					"at": [
+						37,
+						35
+					],
+					"facing": 0
+				}
+			],
+			"respawn": [
+				37,
+				37
+			],
+			"hordes": [
+				{
+					"area": [
+						42,
+						42,
+						10,
+						10
+					],
+					"monsters": [
+						[
+							"cultist",
+							1
+						]
+					],
+					"levels": [
+						2,
+						3
+					],
+					"count": 4,
+					"respawn": false
+				}
+			]
+		}
+	}
 }

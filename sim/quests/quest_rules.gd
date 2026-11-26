@@ -64,8 +64,22 @@ static func start(world: SimWorld, p: PlayerState, id: String) -> bool:
 		p.quests.tracked = id
 	p.quests_dirty = true
 	world.emit(["quest_started", p.id, id])
+	_give(world, p, q)
 	_refresh(world, p, id)
 	return true
+
+
+## The quest items a quest (when it starts) or a step's on_done hands over ("give": [[base, count], ...]).
+static func _give(world: SimWorld, p: PlayerState, d: Dictionary) -> void:
+	for g: Variant in d.get("give", []):
+		if not g is Array or (g as Array).is_empty() or not world.items.is_quest(str(g[0])):
+			continue
+		var it := ItemRoll.new_item(str(g[0]), 1)
+		it.count = maxi(1, int(g[1])) if (g as Array).size() > 1 else 1
+		if p.inventory.add(it, world.items):
+			p.inventory_dirty = true
+		else:
+			world.emit(["quest_bag_full", p.id])
 
 
 ## Starts a quest whatever its requirements (the /mision test command).
@@ -78,6 +92,7 @@ static func force_start(world: SimWorld, p: PlayerState, id: String) -> bool:
 	p.quests.tracked = id
 	p.quests_dirty = true
 	world.emit(["quest_started", p.id, id])
+	_give(world, p, q)
 	_refresh(world, p, id)
 	return true
 
@@ -163,7 +178,7 @@ static func _refresh(world: SimWorld, p: PlayerState, id: String) -> void:
 		var step := int(st.step)
 		if step >= (q.steps as Array).size():
 			if str(q.turn_in) == "":
-				_finish(world, p, id)
+				turn_in(world, p, id, "") # nobody to hand it in to: its rewards at once
 			return
 		var objs: Array = q.steps[step].objectives
 		for i in objs.size():
@@ -207,6 +222,7 @@ static func _apply(world: SimWorld, p: PlayerState, od: Dictionary) -> void:
 			world.emit(["quest_moment", p.id, str(m.get("zone", "")), str(m.get("variant", ""))])
 		else:
 			world.emit(["quest_moment", p.id, "", ""])
+	_give(world, p, od)
 	p.quests_dirty = true
 	if str(od.get("next", "")) != "":
 		start(world, p, str(od.next))
@@ -260,26 +276,31 @@ static func on_monster_died(world: SimWorld, m: MonsterState) -> void:
 		for id: String in p.quests.active.keys():
 			if not p.quests.is_active(id):
 				continue
+			# One monster counts for every objective of the step it feeds (kill and collect
+			# alike); the step moves on once, after all of them.
 			var objs := current_objectives(world, p, id)
+			var st: Dictionary = p.quests.active[id]
+			var changed := false
 			for i in objs.size():
 				var o: Dictionary = objs[i]
 				if o.has("zone") and str(o.zone) != world.map.zone_id:
 					continue
-				if str(o.type) == "kill" and str(o.get("monster", "")) == m.type_id:
-					_bump(world, p, id, i)
-					break
-				if str(o.type) == "collect" and str(o.get("from", "")) == m.type_id:
+				if str(o.type) == "kill" and str(o.get("monster", "")) == m.type_id and int(st.counts[i]) < int(o.count):
+					st.counts[i] = int(st.counts[i]) + 1
+					changed = true
+				elif str(o.type) == "collect" and str(o.get("from", "")) == m.type_id:
 					if p.inventory.count_of(str(o.item)) >= int(o.count):
 						continue
 					if world.rng.randf() >= float(o.get("chance", 1.0)):
 						continue
 					if p.inventory.add(ItemRoll.new_item(str(o.item), 1), world.items):
 						p.inventory_dirty = true
-						p.quests_dirty = true
-						_refresh(world, p, id)
+						changed = true
 					else:
 						world.emit(["quest_bag_full", p.id])
-					break
+			if changed:
+				p.quests_dirty = true
+				_refresh(world, p, id)
 
 
 ## Reaching places, every REACH_EVERY_S: whoever stands on the point, and players with the

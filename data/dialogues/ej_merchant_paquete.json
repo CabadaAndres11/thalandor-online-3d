@@ -1,0 +1,6 @@
+{
+	"id": "ej_merchant_paquete",
+	"nodes": {
+		"start": {"lines": [["player", "DLG_EJ_PAQ_1"], ["merchant", "DLG_EJ_PAQ_2"], ["merchant", "DLG_EJ_PAQ_3"]]}
+	}
+}

@@ -326,5 +326,25 @@
 			143,
 			96
 		]
+	],
+	"quest_points": [
+		{
+			"id": "claro",
+			"at": [
+				30,
+				40
+			],
+			"radius": 3,
+			"look": "sparkle"
+		},
+		{
+			"id": "huellas",
+			"at": [
+				33,
+				43
+			],
+			"radius": 2,
+			"look": "sparkle"
+		}
 	]
 }

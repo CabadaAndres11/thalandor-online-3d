@@ -1,0 +1,19 @@
+{
+	"id": "ej_noche",
+	"name": "QUEST_EJ_NOCHE",
+	"summary": "QUEST_EJ_NOCHE_SUM",
+	"story": true,
+	"giver": "brann",
+	"turn_in": "brann",
+	"requires": {"quests": ["ej_lobos"]},
+	"dialogues": {"offer": "ej_brann_noche", "turn_in": "ej_brann_noche_fin"},
+	"steps": [
+		{"text": "QUEST_EJ_NOCHE_S1", "objectives": [{"type": "choice", "any_flag": ["ej_vigilar", "ej_avisar"]}],
+			"on_done": {"moment": {"zone": "aldea", "variant": "noche"}}},
+		{"text": "QUEST_EJ_NOCHE_S2", "objectives": [{"type": "kill", "monster": "cultist", "count": 4, "zone": "aldea"}],
+			"on_done": {"scene": "ej_alba"}},
+		{"text": "QUEST_EJ_NOCHE_S3", "objectives": [{"type": "scene", "scene": "ej_alba"}],
+			"on_done": {"moment": null}}
+	],
+	"rewards": {"gold": 40}
+}

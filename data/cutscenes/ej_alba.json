@@ -1,0 +1,16 @@
+{
+	"id": "ej_alba", "skippable": true, "stage": "here",
+	"actors": {"brann": {"npc": "brann", "at": [44, 46], "facing": 180}, "yo": {"player": true, "at": [46, 48], "facing": 0}},
+	"tracks": [
+		[{"camera": {"at": [52, 7, 56], "look": [45, 0, 47], "fov": 42}, "time": 0},
+		 {"camera": {"at": [48, 4, 53], "look": [45, 1, 47]}, "time": 9, "ease": "in_out"}],
+		[{"fade": "in", "time": 1.0},
+		 {"wait": "", "time": 1.0},
+		 {"ambience": "alba"},
+		 {"line": ["brann", "SCN_EJ_AL_1"], "time": 3},
+		 {"line": ["player", "SCN_EJ_AL_2"], "time": 2.5},
+		 {"pose": ["brann", "pray"], "time": 0.1},
+		 {"line": ["brann", "SCN_EJ_AL_3"], "time": 3},
+		 {"fade": "out", "time": 1.0}]
+	]
+}

@@ -793,10 +793,12 @@ func _quest_notice(ev: Array) -> void:
 
 ## The host changed this character's quests: saved (a story mark may unlock group play).
 func _on_quests_changed() -> void:
-	if _playing == null or game == null or game.client == null:
+	if game == null or game.client == null:
+		return
+	_refresh_quest_ui()
+	if _playing == null:
 		return
 	_playing.quests = game.client.quests.duplicate()
-	_refresh_quest_ui()
 	if "tutorial_done" in _playing.quests.marks and not _playing.tutorial_done:
 		_playing.tutorial_done = true
 		pause_menu.set_group_locked(false)
