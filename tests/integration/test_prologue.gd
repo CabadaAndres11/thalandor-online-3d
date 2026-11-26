@@ -124,10 +124,8 @@ func test_the_prologue() -> void:
 	for i in 10:
 		QuestRules.on_hit(w, _p(), dummy, "basic")
 	for i in 3:
-		QuestRules.on_hit(w, _p(), dummy, "secondary")
-	for i in 3:
 		QuestRules.on_dodge(w, _p())
-	assert_eq(_step("prologo_1"), 8, "the practice is done")
+	assert_eq(_step("prologo_1"), 7, "the practice is done")
 	_reach("colina")
 	_watch("prologo_colina")
 	_reach("plaza")

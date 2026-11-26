@@ -31,6 +31,19 @@ static func drop(world: SimWorld, m: MonsterState) -> void:
 			place(world, p.id, it, _scatter(world, m.position))
 
 
+## How many of a base lie on the ground for this player (Plan 8.3c: quest items).
+static func on_ground(world: SimWorld, owner: int, base_id: String) -> int:
+	var n := 0
+	for d: Dictionary in world.loot.values():
+		if int(d.owner) == owner and (d.item as Item).base_id == base_id:
+			n += (d.item as Item).count
+	return n
+
+
+static func scatter(world: SimWorld, at: Vector3) -> Vector3:
+	return _scatter(world, at)
+
+
 static func _scatter(world: SimWorld, at: Vector3) -> Vector3:
 	var r := float(world.items.loot().get("loot_scatter", 1.5)) * sqrt(world.rng.randf())
 	var a := world.rng.randf() * TAU
@@ -64,6 +77,8 @@ static func step(world: SimWorld) -> void:
 			world.loot.erase(id)
 			p.inventory_dirty = true
 			world.emit(["loot_gone", d.owner, id, true])
+			if world.items.is_quest((d.item as Item).base_id):
+				QuestRules.on_bag_changed(world, p)
 		elif not d.warned:
 			d.warned = true
 			world.emit(["bag_full", d.owner])

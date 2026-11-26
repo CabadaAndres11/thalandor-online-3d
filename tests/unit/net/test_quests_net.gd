@@ -49,6 +49,10 @@ func _kill_wolf(id: int) -> void:
 	w.add_entity(m)
 	m.hp = 0.0
 	w.on_zero_hp(m)
+	for drop: Dictionary in w.loot.values(): # quest items fall to the ground (Plan 8.3c): walk over them
+		if int(drop.owner) == id:
+			host.state_of(id).position = drop.pos
+			Loot.step(w)
 
 
 func test_hello_carries_quests() -> void:
@@ -77,6 +81,7 @@ func test_guest_completes_chain() -> void:
 	_kill_wolf(1)
 	_kill_wolf(1)
 	host.tick()
+	host.state_of(1).position = Vector3(20.5, 0, 21.0) # back to Brann after picking up the teeth
 	_act(c, "turn_in", ["q_collect", ""])
 	var p := host.state_of(1)
 	assert_true(p.quests.is_done("q_collect"))

@@ -342,10 +342,10 @@ DETAIL_STAT_ARMOR_PCT,Armadura: %s
 DETAIL_STAT_DODGE_ADD,Esquiva: %s
 DETAIL_STAT_MAX_RESOURCE_PCT,Recurso máximo: %s
 CLASS_VILLAGER,Aldeano
-CLASS_VILLAGER_DESC,"Aprendiz en la forja de la aldea. Aún no has elegido tu camino: habla con Brann."
+CLASS_VILLAGER_DESC,"Aprendiz en la forja de la aldea. Aún no has elegido tu camino: lo elegirás en la historia."
 AB_VILLAGER_STRIKE,Golpe de madera
 AB_VILLAGER_STRIKE_DESC,Un golpe con la espada de entrenamiento al enemigo que tienes delante.
-ABILITIES_VILLAGER_HINT,Habla con Brann para elegir tu clase.
+ABILITIES_VILLAGER_HINT,"Tu clase llegará con la historia."
 NPC_BRANN,Brann
 BRANN_HAS_CLASS,Ya has elegido tu camino. Ahora recórrelo.
 CLASS_CHOICE_TITLE,Elige tu camino
@@ -486,12 +486,12 @@ UP_SHADOW_DESC,"Sigilo, teletransporte y golpes críticos."
 UP_VENOMANCER,Venenero
 UP_VENOMANCER_DESC,"Veneno que se acumula y se contagia."
 UPGRADE_TITLE,Mejora de clase
-UPGRADE_WARNING,Tu elección es definitiva hasta que Brann la reinicie.
+UPGRADE_WARNING,"Tu elección es definitiva."
 UPGRADE_CONFIRM,Elegir esta mejora
 UPGRADE_ACTIVES,Habilidades
 UPGRADE_PASSIVES,Pasivas
 UPGRADE_EVOLUTION,Evolución
-CHAT_UPGRADE_HINT,Habla con Brann para elegir tu mejora de clase
+CHAT_UPGRADE_HINT,"Has alcanzado el nivel 50: elige tu mejora de clase."
 CHAT_UPGRADE_CHOSEN,%s ha elegido la mejora «%s»
 DETAIL_ST_HASTE,+%s de rapidez de recarga durante %s s
 DETAIL_ST_VULNERABLE,+%s de daño recibido durante %s s
@@ -1012,8 +1012,6 @@ MON_TRAINING_DUMMY,"Muñeco de práctica"
 MON_HERALDO,"El Heraldo"
 UI_OLD_CHARACTERS,"Esta versión empieza la historia desde el principio. Tus personajes anteriores se han guardado aparte y no se pueden usar."
 ERR_OLD_CHARACTER,"Ese personaje es de una versión anterior a la historia y no se puede importar."
-AB_VILLAGER_SHOVE,"Golpe fuerte"
-AB_VILLAGER_SHOVE_DESC,"Un golpe con todo el peso del cuerpo."
 NPC_MIRA,"Mira"
 MIRA_GREET,"¡Venga, que se nos hace tarde!"
 NPC_VERRIN,"Capitana Verrin"
@@ -1292,3 +1290,4 @@ QUEST_P4_S7,"Preséntate ante el rey, en el palacio."
 QUEST_P4_S8,"Entrega la máscara del culto a Oriel."
 QUEST_P4_S9,"Escucha el encargo del rey."
 QUEST_P4_S10,"La cripta bajo el palacio."
+UI_TALK_PROMPT,"[E] Hablar"

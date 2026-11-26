@@ -60,6 +60,9 @@ var quest_notice: QuestNotice
 var quest_turn_in: QuestTurnInWindow
 ## The capital's trainer: resets for gold (Plan 8.3b).
 var reset_window: ResetWindow
+## After a dialogue or a blocking window closes, attacks wait this long (Plan 8.3c).
+const UNBLOCK_GRACE_MS := 250
+var _unblock_at_ms: int = 0
 var _turn_in_quest: String = ""
 ## A scene the host said to play while the zone was still loading (Plan 8.2).
 var _pending_scene: String = ""
@@ -160,7 +163,10 @@ func _ready() -> void:
 	quest_tracker = QuestTracker.new()
 	quest_tracker.theme = theme
 	quest_tracker.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	quest_tracker.position = Vector2(-Minimap.SIZE - MINIMAP_MARGIN.x, MINIMAP_MARGIN.y + Minimap.SIZE + 34)
+	quest_tracker.grow_horizontal = Control.GROW_DIRECTION_BEGIN # flush with the right margin (Plan 8.3c)
+	quest_tracker.offset_right = -MINIMAP_MARGIN.x
+	quest_tracker.offset_left = quest_tracker.offset_right - quest_tracker.custom_minimum_size.x
+	quest_tracker.offset_top = MINIMAP_MARGIN.y + Minimap.SIZE + 34
 	_ui.add_child(quest_tracker)
 	quest_notice = QuestNotice.new()
 	quest_notice.theme = theme
@@ -1114,8 +1120,13 @@ func _on_typing_changed(_is_typing: bool) -> void:
 ## (a click on a menu button must not attack).
 func _update_input_block() -> void:
 	if game != null:
-		game.input_blocked = chat.is_typing() or pause_menu.visible or options_window.visible or dialog.visible or class_choice_window.visible \
-			or upgrade_window.visible or dialogue_window.visible or cutscene_overlay.visible
+		var typing := chat.is_typing()
+		var blocked := pause_menu.visible or options_window.visible or dialog.visible or class_choice_window.visible \
+			or upgrade_window.visible or dialogue_window.visible or cutscene_overlay.visible or reset_window.visible or quest_turn_in.visible
+		# The click or number that closed it must not attack too (Plan 8.3c): a short grace.
+		if blocked:
+			_unblock_at_ms = Time.get_ticks_msec() + UNBLOCK_GRACE_MS
+		game.input_blocked = typing or blocked or Time.get_ticks_msec() < _unblock_at_ms
 		game.attacks_blocked = _panel_open()
 
 

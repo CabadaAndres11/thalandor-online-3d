@@ -112,17 +112,6 @@
 			]
 		},
 		{
-			"text": "QUEST_P1_S7",
-			"objectives": [
-				{
-					"type": "hit_secondary",
-					"monster": "training_dummy",
-					"count": 3,
-					"label": "QUEST_P1_O_HIT2"
-				}
-			]
-		},
-		{
 			"text": "QUEST_P1_S8",
 			"objectives": [
 				{

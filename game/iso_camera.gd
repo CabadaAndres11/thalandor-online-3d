@@ -121,4 +121,4 @@ func _apply() -> void:
 	# Third person looks a little above the feet so the character sits low on screen.
 	var look_at_point := _target + (Vector3(0, 1.2, 0) if mode == Mode.THIRD_PERSON else Vector3.ZERO)
 	transform = Transform3D(Basis.looking_at(look_at_point - eye, Vector3.UP), eye)
-	size = 2.0 * distance * tan(deg_to_rad(fov) / 2.0)
+	size = 2.0 * distance * focus_factor * tan(deg_to_rad(fov) / 2.0) # focus zooms the orthographic view too

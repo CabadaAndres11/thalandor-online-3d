@@ -17,7 +17,7 @@ func test_villager_setup() -> void:
 func test_villager_kit() -> void:
 	var db := AbilityDB.load_default()
 	assert_eq(db.kind_of("villager", "basic"), "villager_strike")
-	assert_eq(db.kind_of("villager", "secondary"), "villager_shove", "a right click for the practice (Plan 8.3a)")
+	assert_eq(db.kind_of("villager", "secondary"), "", "only the left click before a class (Plan 8.3c)")
 	assert_eq(db.actives("villager"), [])
 
 

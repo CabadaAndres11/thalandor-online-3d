@@ -307,18 +307,20 @@ static func on_monster_died(world: SimWorld, m: MonsterState) -> void:
 					st.counts[i] = int(st.counts[i]) + 1
 					changed = true
 				elif str(o.type) == "collect" and str(o.get("from", "")) == m.type_id:
-					if p.inventory.count_of(str(o.item)) >= int(o.count):
+					# It falls by the body for this player (Plan 8.3c), never more than still missing.
+					if p.inventory.count_of(str(o.item)) + Loot.on_ground(world, p.id, str(o.item)) >= int(o.count):
 						continue
 					if world.rng.randf() >= float(o.get("chance", 1.0)):
 						continue
-					if p.inventory.add(ItemRoll.new_item(str(o.item), 1), world.items):
-						p.inventory_dirty = true
-						changed = true
-					else:
-						world.emit(["quest_bag_full", p.id])
+					Loot.place(world, p.id, ItemRoll.new_item(str(o.item), 1), Loot.scatter(world, m.position))
 			if changed:
 				p.quests_dirty = true
 				_refresh(world, p, id)
+
+
+## The bag changed (a quest item picked up from the ground): collect counts follow it.
+static func on_bag_changed(world: SimWorld, p: PlayerState) -> void:
+	_refresh_all(world, p)
 
 
 ## A player's blow landed on a monster (Plan 8.3a): "hit" objectives (with: basic, secondary

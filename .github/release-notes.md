@@ -7,6 +7,17 @@
 3. **Aviso de Windows (SmartScreen):** el juego no está firmado. Pulsa **Más información → Ejecutar de todas formas**.
 4. Pulsa **Jugar**. Se abre **Tus personajes**: crea uno con **Crear** (nombre, raza y aspecto). Empiezas como **aldeano** en el prólogo, que es el tutorial: la clase se elige durante el asalto a la aldea.
 
+### Novedades de la 0.14.1: correcciones
+- Antes de tener clase solo hay **clic izquierdo**; la práctica del muñeco ya no pide el clic derecho.
+- Los PNJ muestran **[E] Hablar** (ya no «Hablar con Brann»).
+- El clic o el número que cierra un diálogo ya **no lanza un ataque ni una habilidad**.
+- **Al hablar, la cámara se acerca** también en la vista isométrica.
+- El recuadro de misiones queda **pegado a la derecha**, bajo el minimapa.
+- En las escenas ya **no sales dos veces**, ni los aldeanos que pasean.
+- Los **objetos de misión caen al suelo** junto al monstruo, como el resto del botín, y se recogen al pasar por encima.
+- Los aldeanos que pasean ya aparecen en la aldea desde el primer momento.
+- **Todo el grupo tiene que usar la misma versión.**
+
 ### Novedades de la 0.14.0: el camino y la capital
 - **Misión 4, «La capital»:** cierra el prólogo. Empieza sola al terminar *Llegan tarde*.
   - Únete a una **caravana** en el nuevo **Camino de Sumerhold** (al este del bosque, nivel 4–8) y defiéndela de una **emboscada de bandidos**.

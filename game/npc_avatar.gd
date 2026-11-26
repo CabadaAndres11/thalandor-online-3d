@@ -25,7 +25,7 @@ func setup(id: String, at: Vector3, facing: float) -> void:
 	add_child(rig)
 	_name = tr(str(data.get("name", id)))
 	_label = _text(_name, NAME_HEIGHT, 40, NAME_COLOR)
-	_prompt = _text(tr("CLASS_CHOICE_TALK"), NAME_HEIGHT + 0.3, 32, Color.WHITE)
+	_prompt = _text(tr("UI_TALK_PROMPT"), NAME_HEIGHT + 0.3, 32, Color.WHITE)
 	_prompt.visible = false
 	_mark = _text("", NAME_HEIGHT + 0.75, 72, Color("#ffcc33"))
 	_mark.outline_size = 14
@@ -68,6 +68,11 @@ func face(at: Vector3) -> void:
 	var d := Vector2(at.x - position.x, at.z - position.z)
 	if d.length() > 0.01:
 		rotation.y = atan2(d.x, d.y)
+
+
+## The prompt over its head (tests).
+func prompt_text() -> String:
+	return _prompt.text
 
 
 func display_name() -> String:

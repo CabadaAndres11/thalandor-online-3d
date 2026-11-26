@@ -799,3 +799,74 @@ func test_class_window_waits_for_the_scene() -> void:
 	p.quests_dirty = true
 	await wait_until(func() -> bool: return main.class_choice_window.visible, 3.0)
 	assert_true(main.class_choice_window.visible, "after it")
+
+
+# --- Plan 8.3c: corrections after the 0.14.0 playtest ---
+
+func test_every_npc_says_talk() -> void:
+	var a := NpcAvatar.new()
+	add_child_autofree(a)
+	a.setup("panadero", Vector3.ZERO, 0.0)
+	assert_eq(a.prompt_text(), tr("UI_TALK_PROMPT"))
+	assert_false(a.prompt_text().contains("Brann"))
+
+
+func test_closing_a_dialogue_does_not_attack() -> void:
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	main.dialogue_window.visible = true
+	main._update_input_block()
+	assert_true(main.game.input_blocked)
+	main.dialogue_window.visible = false
+	main._update_input_block()
+	assert_true(main.game.input_blocked, "the click that closed it is not an attack")
+	main._unblock_at_ms = 0
+	main._update_input_block()
+	assert_false(main.game.input_blocked, "then attacks come back")
+
+
+func test_talking_zooms_in() -> void:
+	var cam := IsoCamera.new()
+	add_child_autofree(cam)
+	cam.follow(Vector3.ZERO)
+	var before := cam.size
+	cam.focus(true)
+	assert_lt(cam.size, before)
+	cam.focus(false)
+	assert_almost_eq(cam.size, before, 0.001)
+
+
+func test_quest_box_is_flush_right() -> void:
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	var vp := main.get_viewport().get_visible_rect().size
+	var box := main.quest_tracker.get_global_rect()
+	var map := main.minimap.get_global_rect()
+	assert_almost_eq(box.end.x, map.end.x, 1.0, "the box ends where the minimap ends")
+	assert_lte(box.end.x, vp.x)
+
+
+func test_scene_hides_you_and_the_walkers_that_play_in_it() -> void:
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1 and main.game.walker_count() > 0, 3.0)
+	var walker: NpcAvatar = null
+	for i in main.game.walker_count():
+		if main.game.walker_avatar(i).npc_id == "aldeano_anciano_1":
+			walker = main.game.walker_avatar(i)
+	var ids: Array = []
+	for i in main.game.walker_count():
+		ids.append(main.game.walker_avatar(i).npc_id)
+	assert_not_null(walker, "walkers: %s" % [ids])
+	if walker == null:
+		return
+	await wait_until(func() -> bool: return not main.game.zone_building and not main.game.client.zone_loading, 5.0)
+	main._start_scene("prologo_nombre")
+	await wait_until(func() -> bool: return main.game.cutscene != null, 3.0)
+	await wait_physics_frames(5)
+	assert_false(main.game.player_avatar(main.game.client.my_id).visible, "you are the scene's actor, not twice")
+	assert_false(walker.visible, "the walker plays in the scene, not twice")
+	main.game.cutscene.skip()
+	await wait_until(func() -> bool: return main.game.cutscene == null, 3.0)
+	await wait_frames(3)
+	assert_true(main.game.player_avatar(main.game.client.my_id).visible)
+	assert_true(walker.visible)

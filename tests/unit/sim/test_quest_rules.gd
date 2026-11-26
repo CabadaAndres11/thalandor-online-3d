@@ -34,6 +34,14 @@ func _kill(m: MonsterState) -> void:
 	f.world.on_zero_hp(m)
 
 
+## Walks over every drop of this player (quest items fall to the ground, Plan 8.3c).
+func _pick(p: PlayerState) -> void:
+	for id: int in f.world.loot.keys():
+		if f.world.loot.has(id) and int(f.world.loot[id].owner) == p.id:
+			p.position = f.world.loot[id].pos
+			Loot.step(f.world)
+
+
 func _counts(p: PlayerState, id: String) -> Array:
 	return p.quests.active[id].counts
 
@@ -106,12 +114,17 @@ func test_collect_rolls_per_player() -> void:
 	QuestRules.start(f.world, a, "q_collect")
 	QuestRules.start(f.world, b, "q_nochance")
 	_kill(_wolf(Vector3(6.5, 0, 5.5)))
+	assert_eq(a.inventory.count_of("q_colmillo"), 0, "it falls to the ground first (Plan 8.3c)")
+	assert_eq(Loot.on_ground(f.world, a.id, "q_colmillo"), 1)
+	_pick(a)
 	assert_eq(a.inventory.count_of("q_colmillo"), 1)
-	assert_eq(_counts(a, "q_collect"), [1])
-	assert_eq(b.inventory.count_of("q_colmillo"), 0, "chance 0")
+	assert_eq(_counts(a, "q_collect"), [1], "picked up, it counts")
+	assert_eq(Loot.on_ground(f.world, b.id, "q_colmillo"), 0, "chance 0")
 	_kill(_wolf(Vector3(6.5, 0, 5.5)))
 	_kill(_wolf(Vector3(6.5, 0, 5.5)))
-	assert_eq(a.inventory.count_of("q_colmillo"), 2, "no more than the objective needs")
+	assert_eq(Loot.on_ground(f.world, a.id, "q_colmillo"), 1, "no more than the objective needs, counting the ground")
+	_pick(a)
+	assert_eq(a.inventory.count_of("q_colmillo"), 2)
 	assert_eq(int(a.quests.active.q_collect.step), 1, "ready to turn in")
 
 
@@ -121,8 +134,9 @@ func test_collect_full_bag() -> void:
 		p.inventory.bag[i] = ItemRoll.new_item("warrior_chest_t1", 1)
 	QuestRules.start(f.world, p, "q_collect")
 	_kill(_wolf(Vector3(6.5, 0, 5.5)))
+	_pick(p)
 	assert_eq(_counts(p, "q_collect"), [0])
-	assert_eq(_events("quest_bag_full").size(), 1)
+	assert_eq(_events("bag_full").size(), 1, "it stays on the ground with the bag full")
 
 
 func test_reach_group() -> void:
@@ -299,4 +313,5 @@ func test_kill_and_collect_from_the_same_monster() -> void:
 	f.world.quests = q
 	QuestRules.start(f.world, p, "q_both")
 	_kill(_wolf(Vector3(6.5, 0, 5.5)))
+	_pick(p)
 	assert_eq(_counts(p, "q_both"), [1, 1], "one wolf counts for both objectives")

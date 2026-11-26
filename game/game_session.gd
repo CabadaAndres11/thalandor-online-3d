@@ -104,6 +104,7 @@ func _init() -> void:
 	_avatar_root.name = "Players"
 	add_child(_avatar_root)
 	_place_npcs()
+	place_walkers(ZoneLayout.load_id(START_ZONE)) # the start zone walks too (Plan 8.3c)
 	camera = IsoCamera.new()
 	camera.name = "Camera"
 	camera.bounds = Rect2(Vector2.ZERO, Vector2(map.size))
@@ -465,7 +466,8 @@ func _sync_avatars(delta: float) -> void:
 			_avatars[id] = avatar
 		var avatar_node := _avatars[id] as PlayerAvatar
 		var state := client.render_state(id)
-		avatar_node.visible = not state.is_empty() # a partner in another zone is not drawn here
+		# A partner in another zone is not drawn here; nor are you while a scene shows your actor (Plan 8.3c).
+		avatar_node.visible = not state.is_empty() and not (cutscene != null and id == client.my_id)
 		avatar_node.apply_state(state, delta)
 		if client.combat.has(id):
 			var c: Dictionary = client.combat[id]
@@ -511,10 +513,14 @@ func play_cutscene(scene_id: String) -> CutscenePlayer:
 	_scene_hidden.clear()
 	for spec: Variant in (data.get("actors", {}) as Dictionary).values():
 		if spec is Dictionary and (spec as Dictionary).has("npc"):
-			var placed := npc_avatar(str(spec.npc))
-			if placed != null and placed.visible:
-				placed.visible = false
-				_scene_hidden.append(placed)
+			var same: Array = [npc_avatar(str(spec.npc))]
+			for w: Dictionary in _walkers:
+				if str(w.id) == str(spec.npc):
+					same.append(w.avatar)
+			for placed: Variant in same:
+				if placed != null and (placed as Node3D).visible:
+					(placed as Node3D).visible = false
+					_scene_hidden.append(placed)
 	_cut_fov = camera.fov
 	var own := player_avatar(client.my_id)
 	if own != null:
