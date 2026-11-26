@@ -23,6 +23,8 @@ func setup(id: String, at: Vector3, facing: float) -> void:
 	rotation.y = facing
 	rig = HumanRig.build(look_of(data.get("look", {})))
 	add_child(rig)
+	if data.has("pose"):
+		rig.set_pose_now(str(data.pose)) # the wounded lie (Plan 8.3d)
 	_name = tr(str(data.get("name", id)))
 	_label = _text(_name, NAME_HEIGHT, 40, NAME_COLOR)
 	_prompt = _text(tr("UI_TALK_PROMPT"), NAME_HEIGHT + 0.3, 32, Color.WHITE)

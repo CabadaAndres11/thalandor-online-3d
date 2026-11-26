@@ -111,3 +111,37 @@ func test_fx_calls_context() -> void:
 func test_new_poses_are_valid() -> void:
 	for pose in ["kneel", "point", "lie"]:
 		assert_true(pose in CutsceneData.POSES, pose)
+
+
+## Plan 8.3d: an actor may start in a pose, already in it (Brann lies at the gate).
+func test_actor_starts_in_pose() -> void:
+	var p := CutscenePlayer.new()
+	add_child_autofree(p)
+	p.play({"actors": {"b": {"look": {"class": "villager"}, "at": [2, 2], "pose": "lie"}}, "tracks": [[{"wait": "", "time": 1.0}]]},
+		{"actor_factory": func(spec: Dictionary) -> Node3D:
+			var h := CutsceneActor.new()
+			h.set_rig(HumanRig.build(NpcAvatar.look_of(spec.look)))
+			return h})
+	var rig: HumanRig = p.actor("b").get("rig")
+	assert_eq(rig.current_action(), "lie")
+	assert_almost_eq(rig.action_progress(), 1.0, 0.001, "already lying")
+
+
+func test_brann_lies_on_his_blood() -> void:
+	var d: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/cutscenes/prologo_brann.json"))
+	assert_eq(str(d.actors.brann.pose), "lie")
+	var fx: Array = []
+	for tr: Array in d.tracks:
+		for st: Dictionary in tr:
+			if st.has("fx"):
+				fx.append(str(st.fx))
+	assert_has(fx, "blood")
+	assert_has(CutsceneData.FX, "blood")
+
+
+func test_wounded_lie() -> void:
+	for id: String in ["herido_1", "herida_2"]:
+		var a := NpcAvatar.new()
+		add_child_autofree(a)
+		a.setup(id, Vector3.ZERO, 0.0)
+		assert_eq(a.rig.current_action(), "lie", id)

@@ -139,11 +139,8 @@ func test_the_prologue() -> void:
 	_reach("alarma")
 	assert_eq(_step("prologo_2"), 1)
 	w = host.world_of(1)
-	for i in 6:
-		_kill("cultist")
-	assert_eq(_step("prologo_2"), 2, "the neighbours are saved")
-	host._follow_story_moments() # kills made outside a host tick: pick up their events
-	_clear_monsters()
+	_ticks(3.0)
+	assert_eq(w.monsters.values().filter(func(m: MonsterState) -> bool: return m.is_alive()).size(), 0, "no foes before the awakening (Plan 8.3d)")
 	_watch("prologo_secuestro")
 	_reach("tras_mira")
 	_watch("prologo_despertar")
@@ -151,7 +148,16 @@ func test_the_prologue() -> void:
 	c.send(Transport.HOST_PEER, Protocol.choose_class("warrior"), true)
 	host.tick()
 	assert_eq(_p().class_id, "warrior")
-	assert_eq(_step("prologo_2"), 4)
+	assert_true(_p().quests.has_flag("despertar"))
+	assert_eq(_step("prologo_2"), 3)
+	_ticks(2.0)
+	assert_gt(w.monsters.values().filter(func(m: MonsterState) -> bool: return m.type_id == "cultist").size(), 0, "now they come")
+	_clear_monsters()
+	for i in 6:
+		_kill("cultist")
+	assert_eq(_step("prologo_2"), 4, "the first fight, with a class")
+	host._follow_story_moments() # kills made outside a host tick: pick up their events
+	_clear_monsters()
 	_watch("prologo_alba")
 	for i in 4:
 		_kill("marked_hound")
@@ -239,7 +245,7 @@ func test_the_prologue_data_is_valid() -> void:
 func test_coming_back_in_the_awakening() -> void:
 	var log := QuestLog.new()
 	log.done.append("prologo_1")
-	log.active["prologo_2"] = {"step": 3, "counts": [0, 0]}
+	log.active["prologo_2"] = {"step": 2, "counts": [0, 0]}
 	var t := net.connect_client(host_t)
 	t.send(Transport.HOST_PEER, Protocol.hello(VERSION, Protocol.VERSION, "Ciro", "villager", {}, [], {"level": 1}, {}, {}, log.to_dict()), true)
 	host.tick()

@@ -543,6 +543,21 @@ func _scene_fx(name: String, at: Vector3) -> void:
 	match name:
 		"flash":
 			scene_flash.emit()
+		"blood":
+			var pool := MeshInstance3D.new()
+			var disc := CylinderMesh.new()
+			disc.top_radius = 0.9
+			disc.bottom_radius = 0.9
+			disc.height = 0.02
+			pool.mesh = disc
+			var red := StandardMaterial3D.new()
+			red.albedo_color = Color(0.32, 0.03, 0.03)
+			red.roughness = 0.2
+			pool.material_override = red
+			pool.position = at + Vector3(0.6, 0.02, 0)
+			pool.scale = Vector3(1.3, 1, 0.8)
+			add_child(pool)
+			_scene_fx_nodes.append(pool)
 		"fire", "embers":
 			var fire := VoxelFx.node(VoxelFx.flame_patch(0.9), true)
 			fire.position = at

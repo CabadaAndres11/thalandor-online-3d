@@ -29,18 +29,6 @@
 					"point": "alarma",
 					"label": "QUEST_P2_O_ALARMA"
 				}
-			]
-		},
-		{
-			"text": "QUEST_P2_S2",
-			"objectives": [
-				{
-					"type": "kill",
-					"monster": "cultist",
-					"count": 6,
-					"zone": "aldea",
-					"label": "QUEST_P2_O_VECINOS"
-				}
 			],
 			"on_done": {
 				"scene": "prologo_secuestro"
@@ -73,6 +61,23 @@
 				},
 				{
 					"type": "class"
+				}
+			],
+			"on_done": {
+				"flags": [
+					"despertar"
+				]
+			}
+		},
+		{
+			"text": "QUEST_P2_S2",
+			"objectives": [
+				{
+					"type": "kill",
+					"monster": "cultist",
+					"count": 6,
+					"zone": "aldea",
+					"label": "QUEST_P2_O_CULTISTAS"
 				}
 			],
 			"on_done": {

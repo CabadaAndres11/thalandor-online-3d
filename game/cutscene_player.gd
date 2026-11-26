@@ -37,6 +37,8 @@ func play(data: Dictionary, ctx: Dictionary) -> void:
 		node.position = _cell(spec.get("at", [0, 0]))
 		node.rotation.y = deg_to_rad(float(spec.get("facing", 0.0)))
 		node.visible = not bool(spec.get("hidden", false))
+		if spec.has("pose") and node.get("rig") is HumanRig:
+			(node.get("rig") as HumanRig).set_pose_now(str(spec.pose)) # already in it (Plan 8.3d)
 		_actors[name] = node
 	_tracks.clear()
 	for t: Variant in data.get("tracks", []):

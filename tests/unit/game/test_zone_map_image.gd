@@ -26,7 +26,7 @@ func test_markers() -> void:
 	var village := ZoneMapImage.markers(ZoneLayout.load_id("aldea"), null)
 	var verrin := village.filter(func(m: Dictionary) -> bool: return m.kind == "npc" and m.label == tr("NPC_VERRIN"))
 	assert_eq(verrin.size(), 1)
-	assert_eq(Vector2(verrin[0].cell), Vector2(78.5, 44.5))
+	assert_eq(Vector2(verrin[0].cell), Vector2(75.5, 57.5))
 
 
 ## Plan 8.1.2: the edge band is drawn as forest on the map.

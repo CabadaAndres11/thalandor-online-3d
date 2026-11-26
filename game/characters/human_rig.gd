@@ -150,6 +150,15 @@ func play_action(kind: String, combo: bool = false) -> float:
 	return ACTIONS[kind]
 
 
+## Puts the rig in a pose at once, already finished (Plan 8.3d: Brann and the wounded lie
+## from the first frame).
+func set_pose_now(kind: String) -> void:
+	play_action(kind)
+	if ACTIONS.has(kind):
+		_action_t = float(ACTIONS[kind])
+		_pose()
+
+
 ## How far the current action has gone (0 to 1; 0 when idle).
 func action_progress() -> float:
 	if _action == "idle":
