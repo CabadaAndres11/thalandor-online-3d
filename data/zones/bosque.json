@@ -534,8 +534,7 @@
 				38,
 				104
 			],
-			"radius": 3,
-			"look": "sparkle"
+			"radius": 3
 		}
 	]
 }

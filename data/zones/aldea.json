@@ -16,19 +16,19 @@
 			{
 				"kind": "dirt",
 				"area": [
-					38,
-					38,
-					20,
-					20
+					40,
+					40,
+					17,
+					15
 				]
 			},
 			{
 				"kind": "water",
 				"area": [
-					6,
-					70,
+					14,
+					66,
 					10,
-					14
+					10
 				]
 			}
 		]
@@ -37,12 +37,12 @@
 		{
 			"points": [
 				[
-					48,
-					48
+					12,
+					47
 				],
 				[
 					95,
-					48
+					47
 				]
 			],
 			"width": 3,
@@ -52,11 +52,11 @@
 			"points": [
 				[
 					48,
-					48
+					46
 				],
 				[
 					48,
-					20
+					14
 				]
 			],
 			"width": 3,
@@ -65,16 +65,58 @@
 		{
 			"points": [
 				[
-					48,
-					48
+					38,
+					45
 				],
 				[
-					24,
-					60
+					38,
+					37
 				]
 			],
-			"width": 3,
-			"terrain": "road"
+			"width": 1,
+			"terrain": "dirt"
+		},
+		{
+			"points": [
+				[
+					23,
+					45
+				],
+				[
+					23,
+					26
+				]
+			],
+			"width": 1,
+			"terrain": "dirt"
+		},
+		{
+			"points": [
+				[
+					65,
+					49
+				],
+				[
+					65,
+					62
+				]
+			],
+			"width": 1,
+			"terrain": "dirt"
+		},
+		{
+			"points": [
+				[
+					25,
+					49
+				],
+				[
+					25,
+					64
+				]
+			],
+			"width": 1,
+			"terrain": "dirt"
 		}
 	],
 	"pieces": [
@@ -97,8 +139,8 @@
 		{
 			"id": "well",
 			"at": [
-				45,
-				44
+				44,
+				42
 			],
 			"rot": 0
 		},
@@ -106,31 +148,23 @@
 			"id": "cart",
 			"at": [
 				52,
-				40
+				57
 			],
 			"rot": 0
 		},
 		{
 			"id": "crates",
 			"at": [
-				36,
-				39
+				34,
+				45
 			],
 			"rot": 0
-		},
-		{
-			"id": "crates",
-			"at": [
-				62,
-				52
-			],
-			"rot": 90
 		},
 		{
 			"id": "stump",
 			"at": [
-				30,
-				52
+				14,
+				60
 			],
 			"rot": 0
 		},
@@ -151,10 +185,146 @@
 			"rot": 0
 		},
 		{
-			"id": "fence",
+			"id": "rock_small",
 			"at": [
-				60,
-				62
+				27,
+				27
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_burnt_small",
+			"at": [
+				16,
+				39
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_burnt_log",
+			"at": [
+				24,
+				40
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_burnt_timber",
+			"at": [
+				31,
+				39
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_burnt_stone",
+			"at": [
+				58,
+				39
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_burnt_timber",
+			"at": [
+				66,
+				39
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_burnt_small",
+			"at": [
+				75,
+				39
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_burnt_large",
+			"at": [
+				23,
+				56
+			],
+			"rot": 180
+		},
+		{
+			"id": "house_burnt_small",
+			"at": [
+				31,
+				55
+			],
+			"rot": 180
+		},
+		{
+			"id": "house_burnt_timber",
+			"at": [
+				39,
+				55
+			],
+			"rot": 180
+		},
+		{
+			"id": "house_burnt_log",
+			"at": [
+				63,
+				54
+			],
+			"rot": 180
+		},
+		{
+			"id": "house_burnt_large",
+			"at": [
+				73,
+				56
+			],
+			"rot": 180
+		},
+		{
+			"id": "house_burnt_stone",
+			"at": [
+				81,
+				55
+			],
+			"rot": 180
+		},
+		{
+			"id": "house_burnt_small",
+			"at": [
+				56,
+				28
+			],
+			"rot": 90
+		},
+		{
+			"id": "house_burnt_timber",
+			"at": [
+				56,
+				20
+			],
+			"rot": 90
+		},
+		{
+			"id": "barn",
+			"at": [
+				66,
+				63
+			],
+			"rot": 0
+		},
+		{
+			"id": "trough",
+			"at": [
+				63,
+				78
+			],
+			"rot": 0
+		},
+		{
+			"id": "trough",
+			"at": [
+				82,
+				74
 			],
 			"rot": 0
 		},
@@ -162,7 +332,15 @@
 			"id": "fence",
 			"at": [
 				62,
-				62
+				72
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				62,
+				82
 			],
 			"rot": 0
 		},
@@ -170,7 +348,15 @@
 			"id": "fence",
 			"at": [
 				64,
-				62
+				72
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				64,
+				82
 			],
 			"rot": 0
 		},
@@ -178,7 +364,15 @@
 			"id": "fence",
 			"at": [
 				66,
-				62
+				72
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				66,
+				82
 			],
 			"rot": 0
 		},
@@ -186,7 +380,15 @@
 			"id": "fence",
 			"at": [
 				68,
-				62
+				72
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				68,
+				82
 			],
 			"rot": 0
 		},
@@ -194,7 +396,7 @@
 			"id": "fence",
 			"at": [
 				70,
-				62
+				82
 			],
 			"rot": 0
 		},
@@ -202,7 +404,15 @@
 			"id": "fence",
 			"at": [
 				72,
-				62
+				72
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				72,
+				82
 			],
 			"rot": 0
 		},
@@ -210,7 +420,15 @@
 			"id": "fence",
 			"at": [
 				74,
-				62
+				72
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				74,
+				82
 			],
 			"rot": 0
 		},
@@ -218,7 +436,15 @@
 			"id": "fence",
 			"at": [
 				76,
-				62
+				72
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				76,
+				82
 			],
 			"rot": 0
 		},
@@ -226,7 +452,15 @@
 			"id": "fence",
 			"at": [
 				78,
-				62
+				72
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				78,
+				82
 			],
 			"rot": 0
 		},
@@ -234,7 +468,15 @@
 			"id": "fence",
 			"at": [
 				80,
-				62
+				72
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				80,
+				82
 			],
 			"rot": 0
 		},
@@ -242,111 +484,111 @@
 			"id": "fence",
 			"at": [
 				82,
-				62
+				72
 			],
 			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				82,
+				82
+			],
+			"rot": 0
+		},
+		{
+			"id": "fence",
+			"at": [
+				62,
+				73
+			],
+			"rot": 90
 		},
 		{
 			"id": "fence",
 			"at": [
 				84,
-				62
+				73
 			],
-			"rot": 0
+			"rot": 90
 		},
 		{
 			"id": "fence",
-			"at": [
-				86,
-				62
-			],
-			"rot": 0
-		},
-		{
-			"id": "fence",
-			"at": [
-				88,
-				62
-			],
-			"rot": 0
-		},
-		{
-			"id": "fence",
-			"at": [
-				90,
-				62
-			],
-			"rot": 0
-		},
-		{
-			"id": "house_burnt_small",
-			"at": [
-				56,
-				30
-			],
-			"rot": 0
-		},
-		{
-			"id": "house_burnt_large",
 			"at": [
 				62,
-				60
+				75
 			],
-			"rot": 180
+			"rot": 90
 		},
 		{
-			"id": "house_burnt_small",
+			"id": "fence",
 			"at": [
-				36,
-				64
+				84,
+				75
 			],
-			"rot": 180
+			"rot": 90
 		},
 		{
-			"id": "house_burnt_large",
+			"id": "fence",
 			"at": [
-				22,
-				48
+				62,
+				77
 			],
-			"rot": 270
+			"rot": 90
 		},
 		{
-			"id": "house_burnt_small",
+			"id": "fence",
 			"at": [
-				66,
-				38
+				84,
+				77
+			],
+			"rot": 90
+		},
+		{
+			"id": "fence",
+			"at": [
+				62,
+				79
+			],
+			"rot": 90
+		},
+		{
+			"id": "fence",
+			"at": [
+				84,
+				79
 			],
 			"rot": 90
 		},
 		{
 			"id": "rubble",
 			"at": [
-				50,
-				34
+				24,
+				60
 			],
 			"rot": 0
 		},
 		{
 			"id": "rubble",
 			"at": [
-				70,
-				52
+				56,
+				60
 			],
 			"rot": 0
 		},
 		{
 			"id": "rubble",
 			"at": [
-				34,
-				44
+				44,
+				36
 			],
 			"rot": 0
 		},
 		{
 			"id": "fallen_beam",
 			"at": [
-				40,
-				60
+				28,
+				62
 			],
 			"rot": 0
 		},
@@ -354,63 +596,63 @@
 			"id": "fallen_beam",
 			"at": [
 				60,
-				44
+				35
 			],
 			"rot": 0
 		},
 		{
 			"id": "grave",
 			"at": [
-				18,
-				22
+				17,
+				20
 			],
 			"rot": 0
 		},
 		{
 			"id": "grave",
 			"at": [
-				20,
-				22
+				19,
+				20
 			],
 			"rot": 0
 		},
 		{
 			"id": "grave",
 			"at": [
-				22,
-				22
+				21,
+				20
 			],
 			"rot": 0
 		},
 		{
 			"id": "grave",
 			"at": [
-				24,
-				22
+				23,
+				20
 			],
 			"rot": 0
 		},
 		{
 			"id": "army_tent",
 			"at": [
-				74,
-				38
+				76,
+				58
 			],
 			"rot": 0
 		},
 		{
 			"id": "army_tent",
 			"at": [
-				79,
-				38
+				80,
+				58
 			],
 			"rot": 0
 		},
 		{
 			"id": "kingdom_banner",
 			"at": [
-				83,
-				43
+				84,
+				57
 			],
 			"rot": 0
 		}
@@ -434,9 +676,9 @@
 		{
 			"area": [
 				0,
-				80,
+				83,
 				96,
-				16
+				13
 			],
 			"pieces": [
 				"tree_oak",
@@ -451,7 +693,7 @@
 				0,
 				16,
 				14,
-				64
+				50
 			],
 			"pieces": [
 				"tree_oak",
@@ -466,34 +708,50 @@
 		{
 			"id": "verrin",
 			"at": [
-				78,
-				44
+				75,
+				57
 			],
 			"facing": 270
 		},
 		{
 			"id": "anciana_cantora",
 			"at": [
-				42,
-				50
+				19,
+				45
 			],
-			"facing": 90
+			"facing": 0
 		},
 		{
 			"id": "panadero",
 			"at": [
-				58,
-				37
+				60,
+				45
 			],
 			"facing": 0
 		},
 		{
 			"id": "cazador",
 			"at": [
-				31,
-				55
+				27,
+				45
+			],
+			"facing": 0
+		},
+		{
+			"id": "herido_1",
+			"at": [
+				35,
+				49
 			],
 			"facing": 90
+		},
+		{
+			"id": "herida_2",
+			"at": [
+				65,
+				45
+			],
+			"facing": 270
 		}
 	],
 	"entries": {
@@ -503,7 +761,7 @@
 		],
 		"from_bosque": [
 			83,
-			48
+			47
 		]
 	},
 	"respawn": [
@@ -514,7 +772,7 @@
 		{
 			"area": [
 				94,
-				46,
+				45,
 				2,
 				5
 			],
@@ -525,36 +783,32 @@
 	"torches": [
 		[
 			40,
-			40
+			45
 		],
 		[
 			56,
-			40
+			45
 		],
 		[
 			40,
-			56
+			49
 		],
 		[
-			54,
-			53
+			56,
+			49
 		],
 		[
-			35,
-			39
-		],
-		[
-			77,
-			43
+			37,
+			38
 		]
 	],
 	"hordes": [
 		{
 			"area": [
-				64,
-				64,
-				22,
-				12
+				70,
+				12,
+				15,
+				18
 			],
 			"monsters": [
 				[
@@ -578,120 +832,183 @@
 				{
 					"id": "house_burnt_small",
 					"at": [
-						56,
-						30
+						16,
+						39
+					]
+				},
+				{
+					"id": "house_burnt_log",
+					"at": [
+						24,
+						40
+					]
+				},
+				{
+					"id": "house_burnt_timber",
+					"at": [
+						31,
+						39
+					]
+				},
+				{
+					"id": "house_burnt_stone",
+					"at": [
+						58,
+						39
+					]
+				},
+				{
+					"id": "house_burnt_timber",
+					"at": [
+						66,
+						39
+					]
+				},
+				{
+					"id": "house_burnt_small",
+					"at": [
+						75,
+						39
 					]
 				},
 				{
 					"id": "house_burnt_large",
 					"at": [
-						62,
+						23,
+						56
+					]
+				},
+				{
+					"id": "house_burnt_small",
+					"at": [
+						31,
+						55
+					]
+				},
+				{
+					"id": "house_burnt_timber",
+					"at": [
+						39,
+						55
+					]
+				},
+				{
+					"id": "house_burnt_log",
+					"at": [
+						63,
+						54
+					]
+				},
+				{
+					"id": "house_burnt_large",
+					"at": [
+						73,
+						56
+					]
+				},
+				{
+					"id": "house_burnt_stone",
+					"at": [
+						81,
+						55
+					]
+				},
+				{
+					"id": "house_burnt_small",
+					"at": [
+						56,
+						28
+					]
+				},
+				{
+					"id": "house_burnt_timber",
+					"at": [
+						56,
+						20
+					]
+				},
+				{
+					"id": "rubble",
+					"at": [
+						24,
 						60
 					]
 				},
 				{
-					"id": "house_burnt_small",
+					"id": "rubble",
 					"at": [
-						36,
-						64
-					]
-				},
-				{
-					"id": "house_burnt_large",
-					"at": [
-						22,
-						48
-					]
-				},
-				{
-					"id": "house_burnt_small",
-					"at": [
-						66,
-						38
+						56,
+						60
 					]
 				},
 				{
 					"id": "rubble",
 					"at": [
-						50,
-						34
-					]
-				},
-				{
-					"id": "rubble",
-					"at": [
-						70,
-						52
-					]
-				},
-				{
-					"id": "rubble",
-					"at": [
-						34,
-						44
+						44,
+						36
 					]
 				},
 				{
 					"id": "fallen_beam",
 					"at": [
-						40,
-						60
+						28,
+						62
 					]
 				},
 				{
 					"id": "fallen_beam",
 					"at": [
 						60,
-						44
+						35
 					]
 				},
 				{
 					"id": "grave",
 					"at": [
-						18,
-						22
+						17,
+						20
 					]
 				},
 				{
 					"id": "grave",
 					"at": [
-						20,
-						22
+						19,
+						20
 					]
 				},
 				{
 					"id": "grave",
 					"at": [
-						22,
-						22
+						21,
+						20
 					]
 				},
 				{
 					"id": "grave",
 					"at": [
-						24,
-						22
+						23,
+						20
 					]
 				},
 				{
 					"id": "army_tent",
 					"at": [
-						74,
-						38
+						76,
+						58
 					]
 				},
 				{
 					"id": "army_tent",
 					"at": [
-						79,
-						38
+						80,
+						58
 					]
 				},
 				{
 					"id": "kingdom_banner",
 					"at": [
-						83,
-						43
+						84,
+						57
 					]
 				}
 			],
@@ -699,40 +1016,112 @@
 				{
 					"id": "house_small",
 					"at": [
-						56,
-						30
+						16,
+						39
+					],
+					"rot": 0
+				},
+				{
+					"id": "house_log",
+					"at": [
+						24,
+						40
+					],
+					"rot": 0
+				},
+				{
+					"id": "house_timber",
+					"at": [
+						31,
+						39
+					],
+					"rot": 0
+				},
+				{
+					"id": "house_stone",
+					"at": [
+						58,
+						39
+					],
+					"rot": 0
+				},
+				{
+					"id": "house_timber",
+					"at": [
+						66,
+						39
+					],
+					"rot": 0
+				},
+				{
+					"id": "house_small",
+					"at": [
+						75,
+						39
 					],
 					"rot": 0
 				},
 				{
 					"id": "house_large",
 					"at": [
-						62,
-						60
+						23,
+						56
 					],
 					"rot": 180
 				},
 				{
 					"id": "house_small",
 					"at": [
-						36,
-						64
+						31,
+						55
+					],
+					"rot": 180
+				},
+				{
+					"id": "house_timber",
+					"at": [
+						39,
+						55
+					],
+					"rot": 180
+				},
+				{
+					"id": "house_log",
+					"at": [
+						63,
+						54
 					],
 					"rot": 180
 				},
 				{
 					"id": "house_large",
 					"at": [
-						22,
-						48
+						73,
+						56
 					],
-					"rot": 270
+					"rot": 180
+				},
+				{
+					"id": "house_stone",
+					"at": [
+						81,
+						55
+					],
+					"rot": 180
 				},
 				{
 					"id": "house_small",
 					"at": [
-						66,
-						38
+						56,
+						28
+					],
+					"rot": 90
+				},
+				{
+					"id": "house_timber",
+					"at": [
+						56,
+						20
 					],
 					"rot": 90
 				},
@@ -740,23 +1129,15 @@
 					"id": "garland",
 					"at": [
 						41,
-						43
+						44
 					],
 					"rot": 0
 				},
 				{
 					"id": "garland",
 					"at": [
-						50,
-						43
-					],
-					"rot": 0
-				},
-				{
-					"id": "garland",
-					"at": [
-						60,
-						50
+						52,
+						44
 					],
 					"rot": 0
 				},
@@ -780,14 +1161,6 @@
 					"id": "lantern_post",
 					"at": [
 						46,
-						58
-					],
-					"rot": 0
-				},
-				{
-					"id": "feast_table",
-					"at": [
-						42,
 						54
 					],
 					"rot": 0
@@ -795,8 +1168,16 @@
 				{
 					"id": "feast_table",
 					"at": [
-						42,
-						57
+						41,
+						51
+					],
+					"rot": 0
+				},
+				{
+					"id": "feast_table",
+					"at": [
+						41,
+						54
 					],
 					"rot": 0
 				},
@@ -804,7 +1185,7 @@
 					"id": "feast_table",
 					"at": [
 						50,
-						56
+						52
 					],
 					"rot": 0
 				},
@@ -812,7 +1193,7 @@
 					"id": "bonfire",
 					"at": [
 						52,
-						52
+						41
 					],
 					"rot": 0
 				}
@@ -824,7 +1205,7 @@
 				],
 				"from_bosque": [
 					83,
-					48
+					47
 				]
 			},
 			"respawn": [
@@ -844,6 +1225,7 @@
 					"respawn_s": 5
 				}
 			],
+			"story_pieces": [],
 			"npcs": [
 				{
 					"id": "brann",
@@ -856,62 +1238,60 @@
 				{
 					"id": "mira",
 					"at": [
-						44,
-						41
+						38,
+						44
 					],
 					"facing": 270
 				},
 				{
 					"id": "panadero",
 					"at": [
-						58,
-						37
+						60,
+						45
 					],
 					"facing": 0
 				},
 				{
 					"id": "cazador",
 					"at": [
-						31,
-						55
+						27,
+						45
 					],
-					"facing": 90
+					"facing": 0
 				},
 				{
 					"id": "anciana_cantora",
 					"at": [
-						42,
-						50
+						19,
+						45
 					],
-					"facing": 90
+					"facing": 0
 				}
 			],
 			"quest_points": [
 				{
 					"id": "mira_casa",
 					"at": [
-						43,
-						41
+						38,
+						43
 					],
 					"radius": 2.5
 				},
 				{
 					"id": "colina",
 					"at": [
-						21,
-						20
+						20,
+						24
 					],
-					"radius": 3,
-					"look": "sparkle"
+					"radius": 3
 				},
 				{
 					"id": "plaza",
 					"at": [
 						48,
-						50
+						48
 					],
-					"radius": 4,
-					"look": "sparkle"
+					"radius": 4
 				}
 			],
 			"walkers": [
@@ -919,40 +1299,28 @@
 					"npc": "aldeano_anciano_1",
 					"route": [
 						[
-							40,
-							42
+							30,
+							47
 						],
 						[
-							44,
-							42
-						],
-						[
-							44,
-							48
-						],
-						[
-							40,
-							48
+							45,
+							47
 						]
 					],
-					"speed": 0.9,
+					"speed": 1,
 					"pause_s": 4,
-					"loop": true
+					"loop": false
 				},
 				{
 					"npc": "aldeana_anciana_1",
 					"route": [
 						[
-							57,
-							45
+							52,
+							47
 						],
 						[
-							68,
-							45
-						],
-						[
-							68,
-							50
+							70,
+							47
 						]
 					],
 					"speed": 0.8,
@@ -963,19 +1331,15 @@
 					"npc": "aldeano_1",
 					"route": [
 						[
-							30,
-							40
+							48,
+							44
 						],
 						[
-							30,
-							47
-						],
-						[
-							34,
-							50
+							48,
+							30
 						]
 					],
-					"speed": 1.3,
+					"speed": 1.2,
 					"pause_s": 2,
 					"loop": false
 				},
@@ -983,16 +1347,12 @@
 					"npc": "aldeano_anciano_3",
 					"route": [
 						[
-							46,
-							60
+							66,
+							47
 						],
 						[
-							54,
-							60
-						],
-						[
-							54,
-							58
+							80,
+							47
 						]
 					],
 					"speed": 0.8,
@@ -1003,16 +1363,12 @@
 					"npc": "aldeano_anciano_4",
 					"route": [
 						[
-							60,
-							46
-						],
-						[
-							60,
+							48,
 							40
 						],
 						[
-							64,
-							40
+							48,
+							26
 						]
 					],
 					"speed": 0.9,
@@ -1023,15 +1379,11 @@
 					"npc": "aldeana_anciana_2",
 					"route": [
 						[
-							38,
-							52
+							25,
+							50
 						],
 						[
-							38,
-							58
-						],
-						[
-							41,
+							25,
 							60
 						]
 					],
@@ -1043,15 +1395,11 @@
 					"npc": "aldeana_anciana_3",
 					"route": [
 						[
-							58,
-							52
-						],
-						[
-							58,
+							42,
 							48
 						],
 						[
-							64,
+							54,
 							48
 						]
 					],
@@ -1063,39 +1411,115 @@
 					"npc": "aldeano_2",
 					"route": [
 						[
-							48,
-							24
+							14,
+							47
 						],
 						[
-							48,
-							40
+							28,
+							47
 						]
 					],
-					"speed": 1.4,
+					"speed": 1.3,
 					"pause_s": 2,
 					"loop": false
+				},
+				{
+					"npc": "",
+					"route": [
+						[
+							66,
+							75
+						],
+						[
+							72,
+							78
+						],
+						[
+							68,
+							80
+						]
+					],
+					"speed": 0.5,
+					"pause_s": 8,
+					"loop": true,
+					"model": "piece:cow"
+				},
+				{
+					"npc": "",
+					"route": [
+						[
+							76,
+							74
+						],
+						[
+							81,
+							76
+						],
+						[
+							79,
+							80
+						]
+					],
+					"speed": 0.4,
+					"pause_s": 10,
+					"loop": true,
+					"model": "piece:cow"
+				},
+				{
+					"npc": "",
+					"route": [
+						[
+							70,
+							77
+						],
+						[
+							74,
+							74
+						]
+					],
+					"speed": 0.5,
+					"pause_s": 9,
+					"loop": false,
+					"model": "piece:cow"
+				},
+				{
+					"npc": "",
+					"route": [
+						[
+							80,
+							75
+						],
+						[
+							76,
+							80
+						]
+					],
+					"speed": 0.4,
+					"pause_s": 12,
+					"loop": false,
+					"model": "piece:cow"
 				}
 			],
 			"torches": [
 				[
 					40,
-					40
+					45
 				],
 				[
 					56,
-					40
+					45
 				],
 				[
 					40,
-					56
+					49
 				],
 				[
-					54,
-					53
+					56,
+					49
 				],
 				[
-					35,
-					39
+					37,
+					38
 				]
 			]
 		},
@@ -1105,120 +1529,183 @@
 				{
 					"id": "house_burnt_small",
 					"at": [
-						56,
-						30
+						16,
+						39
+					]
+				},
+				{
+					"id": "house_burnt_log",
+					"at": [
+						24,
+						40
+					]
+				},
+				{
+					"id": "house_burnt_timber",
+					"at": [
+						31,
+						39
+					]
+				},
+				{
+					"id": "house_burnt_stone",
+					"at": [
+						58,
+						39
+					]
+				},
+				{
+					"id": "house_burnt_timber",
+					"at": [
+						66,
+						39
+					]
+				},
+				{
+					"id": "house_burnt_small",
+					"at": [
+						75,
+						39
 					]
 				},
 				{
 					"id": "house_burnt_large",
 					"at": [
-						62,
+						23,
+						56
+					]
+				},
+				{
+					"id": "house_burnt_small",
+					"at": [
+						31,
+						55
+					]
+				},
+				{
+					"id": "house_burnt_timber",
+					"at": [
+						39,
+						55
+					]
+				},
+				{
+					"id": "house_burnt_log",
+					"at": [
+						63,
+						54
+					]
+				},
+				{
+					"id": "house_burnt_large",
+					"at": [
+						73,
+						56
+					]
+				},
+				{
+					"id": "house_burnt_stone",
+					"at": [
+						81,
+						55
+					]
+				},
+				{
+					"id": "house_burnt_small",
+					"at": [
+						56,
+						28
+					]
+				},
+				{
+					"id": "house_burnt_timber",
+					"at": [
+						56,
+						20
+					]
+				},
+				{
+					"id": "rubble",
+					"at": [
+						24,
 						60
 					]
 				},
 				{
-					"id": "house_burnt_small",
+					"id": "rubble",
 					"at": [
-						36,
-						64
-					]
-				},
-				{
-					"id": "house_burnt_large",
-					"at": [
-						22,
-						48
-					]
-				},
-				{
-					"id": "house_burnt_small",
-					"at": [
-						66,
-						38
+						56,
+						60
 					]
 				},
 				{
 					"id": "rubble",
 					"at": [
-						50,
-						34
-					]
-				},
-				{
-					"id": "rubble",
-					"at": [
-						70,
-						52
-					]
-				},
-				{
-					"id": "rubble",
-					"at": [
-						34,
-						44
+						44,
+						36
 					]
 				},
 				{
 					"id": "fallen_beam",
 					"at": [
-						40,
-						60
+						28,
+						62
 					]
 				},
 				{
 					"id": "fallen_beam",
 					"at": [
 						60,
-						44
+						35
 					]
 				},
 				{
 					"id": "grave",
 					"at": [
-						18,
-						22
+						17,
+						20
 					]
 				},
 				{
 					"id": "grave",
 					"at": [
-						20,
-						22
+						19,
+						20
 					]
 				},
 				{
 					"id": "grave",
 					"at": [
-						22,
-						22
+						21,
+						20
 					]
 				},
 				{
 					"id": "grave",
 					"at": [
-						24,
-						22
+						23,
+						20
 					]
 				},
 				{
 					"id": "army_tent",
 					"at": [
-						74,
-						38
+						76,
+						58
 					]
 				},
 				{
 					"id": "army_tent",
 					"at": [
-						79,
-						38
+						80,
+						58
 					]
 				},
 				{
 					"id": "kingdom_banner",
 					"at": [
-						83,
-						43
+						84,
+						57
 					]
 				}
 			],
@@ -1226,40 +1713,112 @@
 				{
 					"id": "house_small",
 					"at": [
-						56,
-						30
+						16,
+						39
+					],
+					"rot": 0
+				},
+				{
+					"id": "house_log",
+					"at": [
+						24,
+						40
+					],
+					"rot": 0
+				},
+				{
+					"id": "house_timber",
+					"at": [
+						31,
+						39
+					],
+					"rot": 0
+				},
+				{
+					"id": "house_stone",
+					"at": [
+						58,
+						39
+					],
+					"rot": 0
+				},
+				{
+					"id": "house_timber",
+					"at": [
+						66,
+						39
+					],
+					"rot": 0
+				},
+				{
+					"id": "house_small",
+					"at": [
+						75,
+						39
 					],
 					"rot": 0
 				},
 				{
 					"id": "house_large",
 					"at": [
-						62,
-						60
+						23,
+						56
 					],
 					"rot": 180
 				},
 				{
 					"id": "house_small",
 					"at": [
-						36,
-						64
+						31,
+						55
+					],
+					"rot": 180
+				},
+				{
+					"id": "house_timber",
+					"at": [
+						39,
+						55
+					],
+					"rot": 180
+				},
+				{
+					"id": "house_log",
+					"at": [
+						63,
+						54
 					],
 					"rot": 180
 				},
 				{
 					"id": "house_large",
 					"at": [
-						22,
-						48
+						73,
+						56
 					],
-					"rot": 270
+					"rot": 180
+				},
+				{
+					"id": "house_stone",
+					"at": [
+						81,
+						55
+					],
+					"rot": 180
 				},
 				{
 					"id": "house_small",
 					"at": [
-						66,
-						38
+						56,
+						28
+					],
+					"rot": 90
+				},
+				{
+					"id": "house_timber",
+					"at": [
+						56,
+						20
 					],
 					"rot": 90
 				},
@@ -1267,23 +1826,15 @@
 					"id": "garland",
 					"at": [
 						41,
-						43
+						44
 					],
 					"rot": 0
 				},
 				{
 					"id": "garland",
 					"at": [
-						50,
-						43
-					],
-					"rot": 0
-				},
-				{
-					"id": "garland",
-					"at": [
-						60,
-						50
+						52,
+						44
 					],
 					"rot": 0
 				},
@@ -1307,14 +1858,6 @@
 					"id": "lantern_post",
 					"at": [
 						46,
-						58
-					],
-					"rot": 0
-				},
-				{
-					"id": "feast_table",
-					"at": [
-						42,
 						54
 					],
 					"rot": 0
@@ -1322,8 +1865,16 @@
 				{
 					"id": "feast_table",
 					"at": [
-						42,
-						57
+						41,
+						51
+					],
+					"rot": 0
+				},
+				{
+					"id": "feast_table",
+					"at": [
+						41,
+						54
 					],
 					"rot": 0
 				},
@@ -1331,23 +1882,23 @@
 					"id": "feast_table",
 					"at": [
 						50,
-						56
+						52
 					],
 					"rot": 0
 				},
 				{
 					"id": "rubble",
 					"at": [
-						60,
-						44
+						44,
+						36
 					],
 					"rot": 0
 				},
 				{
 					"id": "fallen_beam",
 					"at": [
-						44,
-						36
+						60,
+						35
 					],
 					"rot": 0
 				}
@@ -1359,37 +1910,115 @@
 				],
 				"from_bosque": [
 					83,
-					48
+					47
 				]
 			},
 			"respawn": [
 				31,
 				35
 			],
+			"story_pieces": [],
 			"npcs": [
 				{
 					"id": "anciana_cantora",
 					"at": [
-						42,
-						50
+						19,
+						45
 					],
-					"facing": 90
+					"facing": 0
 				},
 				{
 					"id": "panadero",
 					"at": [
-						58,
-						37
+						60,
+						45
 					],
 					"facing": 0
 				}
 			],
-			"walkers": [],
+			"walkers": [
+				{
+					"npc": "",
+					"route": [
+						[
+							66,
+							75
+						],
+						[
+							72,
+							78
+						],
+						[
+							68,
+							80
+						]
+					],
+					"speed": 0.5,
+					"pause_s": 8,
+					"loop": true,
+					"model": "piece:cow"
+				},
+				{
+					"npc": "",
+					"route": [
+						[
+							76,
+							74
+						],
+						[
+							81,
+							76
+						],
+						[
+							79,
+							80
+						]
+					],
+					"speed": 0.4,
+					"pause_s": 10,
+					"loop": true,
+					"model": "piece:cow"
+				},
+				{
+					"npc": "",
+					"route": [
+						[
+							70,
+							77
+						],
+						[
+							74,
+							74
+						]
+					],
+					"speed": 0.5,
+					"pause_s": 9,
+					"loop": false,
+					"model": "piece:cow"
+				},
+				{
+					"npc": "",
+					"route": [
+						[
+							80,
+							75
+						],
+						[
+							76,
+							80
+						]
+					],
+					"speed": 0.4,
+					"pause_s": 12,
+					"loop": false,
+					"model": "piece:cow"
+				}
+			],
 			"hordes": [
 				{
 					"area": [
-						36,
-						52,
+						40,
+						50,
 						8,
 						6
 					],
@@ -1405,13 +2034,18 @@
 					],
 					"count": 4,
 					"respawn": false,
-					"elite_chance": 0
+					"elite_chance": 0,
+					"requires": {
+						"flags": [
+							"despertar"
+						]
+					}
 				},
 				{
 					"area": [
-						55,
-						35,
-						7,
+						56,
+						44,
+						8,
 						4
 					],
 					"monsters": [
@@ -1426,7 +2060,12 @@
 					],
 					"count": 4,
 					"respawn": false,
-					"elite_chance": 0
+					"elite_chance": 0,
+					"requires": {
+						"flags": [
+							"despertar"
+						]
+					}
 				},
 				{
 					"area": [
@@ -1447,7 +2086,12 @@
 					],
 					"count": 4,
 					"respawn_s": 20,
-					"elite_chance": 0
+					"elite_chance": 0,
+					"requires": {
+						"flags": [
+							"despertar"
+						]
+					}
 				}
 			],
 			"spawns": [
@@ -1460,18 +2104,22 @@
 					"count": 1,
 					"radius": 0,
 					"respawn_s": 60,
-					"level_offset": -1
+					"level_offset": -1,
+					"requires": {
+						"flags": [
+							"despertar"
+						]
+					}
 				}
 			],
 			"quest_points": [
 				{
 					"id": "alarma",
 					"at": [
-						43,
-						45
+						44,
+						46
 					],
-					"radius": 3,
-					"look": "sparkle"
+					"radius": 3
 				},
 				{
 					"id": "tras_mira",
@@ -1479,47 +2127,45 @@
 						48,
 						30
 					],
-					"radius": 3,
-					"look": "sparkle"
+					"radius": 3
 				},
 				{
 					"id": "puerta",
 					"at": [
-						86,
-						48
+						88,
+						47
 					],
-					"radius": 3,
-					"look": "sparkle"
+					"radius": 3
 				}
 			],
 			"torches": [
 				[
 					40,
-					40
+					45
 				],
 				[
 					56,
-					40
+					45
 				],
 				[
 					40,
-					56
+					49
 				],
 				[
-					54,
-					53
+					56,
+					49
 				],
 				[
-					35,
-					39
+					37,
+					38
 				],
 				[
 					48,
-					44
+					40
 				],
 				[
 					62,
-					48
+					47
 				]
 			]
 		}
@@ -1528,8 +2174,8 @@
 		{
 			"id": "herido_1",
 			"at": [
-				44,
-				40
+				36,
+				49
 			],
 			"radius": 2,
 			"look": "sparkle"
@@ -1537,8 +2183,8 @@
 		{
 			"id": "herido_2",
 			"at": [
-				36,
-				58
+				64,
+				45
 			],
 			"radius": 2,
 			"look": "sparkle"
@@ -1546,8 +2192,8 @@
 		{
 			"id": "escombros_1",
 			"at": [
-				52,
-				36
+				44,
+				53
 			],
 			"radius": 2,
 			"look": "sparkle"
@@ -1558,40 +2204,28 @@
 			"npc": "aldeano_anciano_1",
 			"route": [
 				[
-					40,
-					42
+					30,
+					47
 				],
 				[
-					44,
-					42
-				],
-				[
-					44,
-					48
-				],
-				[
-					40,
-					48
+					45,
+					47
 				]
 			],
-			"speed": 0.9,
+			"speed": 1,
 			"pause_s": 4,
-			"loop": true
+			"loop": false
 		},
 		{
 			"npc": "aldeana_anciana_1",
 			"route": [
 				[
-					57,
-					45
+					52,
+					47
 				],
 				[
-					68,
-					45
-				],
-				[
-					68,
-					50
+					70,
+					47
 				]
 			],
 			"speed": 0.8,
@@ -1602,19 +2236,15 @@
 			"npc": "aldeano_1",
 			"route": [
 				[
-					30,
-					40
+					48,
+					44
 				],
 				[
-					30,
-					47
-				],
-				[
-					34,
-					50
+					48,
+					30
 				]
 			],
-			"speed": 1.3,
+			"speed": 1.2,
 			"pause_s": 2,
 			"loop": false
 		},
@@ -1622,12 +2252,12 @@
 			"npc": "aldeano_anciano_2",
 			"route": [
 				[
-					18,
-					26
+					17,
+					24
 				],
 				[
-					26,
-					26
+					23,
+					24
 				]
 			],
 			"speed": 0.7,
@@ -1638,25 +2268,135 @@
 			"npc": "soldado_reino",
 			"route": [
 				[
-					72,
-					44
-				],
-				[
-					72,
-					52
+					73,
+					57
 				],
 				[
 					82,
-					52
-				],
-				[
-					82,
-					46
+					57
 				]
 			],
-			"speed": 1.2,
+			"speed": 1.1,
 			"pause_s": 3,
-			"loop": true
+			"loop": false
+		},
+		{
+			"npc": "",
+			"route": [
+				[
+					66,
+					75
+				],
+				[
+					72,
+					78
+				],
+				[
+					68,
+					80
+				]
+			],
+			"speed": 0.5,
+			"pause_s": 8,
+			"loop": true,
+			"model": "piece:cow"
+		},
+		{
+			"npc": "",
+			"route": [
+				[
+					76,
+					74
+				],
+				[
+					81,
+					76
+				],
+				[
+					79,
+					80
+				]
+			],
+			"speed": 0.4,
+			"pause_s": 10,
+			"loop": true,
+			"model": "piece:cow"
+		},
+		{
+			"npc": "",
+			"route": [
+				[
+					70,
+					77
+				],
+				[
+					74,
+					74
+				]
+			],
+			"speed": 0.5,
+			"pause_s": 9,
+			"loop": false,
+			"model": "piece:cow"
+		},
+		{
+			"npc": "",
+			"route": [
+				[
+					80,
+					75
+				],
+				[
+					76,
+					80
+				]
+			],
+			"speed": 0.4,
+			"pause_s": 12,
+			"loop": false,
+			"model": "piece:cow"
 		}
-	]
+	],
+	"relief": [
+		{
+			"kind": "hill",
+			"at": [
+				20,
+				22
+			],
+			"radius": 10,
+			"height": 2.5
+		},
+		{
+			"kind": "hill",
+			"at": [
+				76,
+				20
+			],
+			"radius": 8,
+			"height": 2
+		},
+		{
+			"kind": "plateau",
+			"area": [
+				14,
+				66,
+				10,
+				10
+			],
+			"height": -1,
+			"slope": 4
+		}
+	],
+	"story_pieces": [
+		{
+			"id": "rubble",
+			"at": [
+				43,
+				53
+			],
+			"point": "escombros_1"
+		}
+	],
+	"spawns": []
 }

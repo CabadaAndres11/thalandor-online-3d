@@ -104,7 +104,7 @@ func _village_reachable(z: ZoneLayout) -> void:
 		var c := Vector2i(int(n.at[0]), int(n.at[1]))
 		assert_false(map.is_solid(c), "%s stands free" % n.id)
 		assert_true(reach.has(c), "%s reachable" % n.id)
-	assert_eq(z.houses.size(), 7, "six houses and the forge shed")
+	assert_gte(z.houses.size(), 17, "14 houses, the forge, its shed and the barn (Plan 8.3d)")
 	for h: Dictionary in z.houses:
 		for c: Vector2i in h.cells:
 			if not map.is_solid(c):
@@ -343,3 +343,54 @@ func test_capital_walkers_valid() -> void:
 	var z := ZoneLayout.load_id("capital")
 	assert_gt(z.walkers.size(), 5, "people walk the capital")
 	assert_eq(z.errors, [])
+
+
+# --- Plan 8.3d: the new village ---
+
+func test_village_houses() -> void:
+	for v: String in ["vispera", "asalto"]:
+		var z := _village(v)
+		var designs := {}
+		var homes := 0
+		for p: Dictionary in z.pieces:
+			if str(p.id) in ["house_small", "house_timber", "house_log", "house_stone", "house_large"]:
+				designs[str(p.id)] = true
+				homes += 1
+		assert_gte(designs.size(), 5, v + ": four designs and the big house")
+		assert_gte(homes, 12, v + ": twelve houses or more")
+		assert_has(_ids_of(z), "barn", v)
+	var ruins := _village("")
+	assert_has(_ids_of(ruins), "house_burnt_timber")
+	var cows := ruins.walkers.filter(func(w: Dictionary) -> bool: return str(w.get("model", "")) == "piece:cow")
+	assert_gte(cows.size(), 3, "cows on the ranch")
+
+
+## Review point 5: the cows stay in their paddock.
+func test_cows_stay_in_the_paddock() -> void:
+	var paddock := Rect2i(63, 73, 21, 9)
+	for v: String in ["", "vispera", "asalto"]:
+		for w: Dictionary in _village(v).walkers:
+			if str(w.get("model", "")) != "piece:cow":
+				continue
+			for pt: Array in w.route:
+				assert_true(paddock.has_point(Vector2i(int(pt[0]), int(pt[1]))), "%s: cow at %s" % [v, pt])
+
+
+func test_scene_points_have_no_glow() -> void:
+	var scene_points := {"aldea": ["colina", "plaza", "alarma", "tras_mira", "puerta"], "bosque": ["rio"], "camino": ["emboscada"],
+		"capital": ["puerta_capital"], "palacio": ["salon_trono"]}
+	for zid: String in scene_points:
+		for v: String in (["", "vispera", "asalto"] if zid == "aldea" else [""]):
+			var z := ZoneLayout.load_variant(zid, v) if v != "" else ZoneLayout.load_id(zid)
+			for id: String in scene_points[zid]:
+				if z.quest_points.has(id):
+					assert_eq(str(z.quest_points[id].look), "", "%s %s: %s has no glow" % [zid, v, id])
+
+
+func test_village_relief() -> void:
+	var z := _village("")
+	assert_gt(z.height_at(20.5, 22.5), 2.0, "the hill")
+	assert_lt(z.height_at(18.5, 70.5), -0.5, "the river's hollow")
+	var map := z.collision()
+	var reach := _reach(map, z.entries.default)
+	assert_true(reach.has(Vector2i(20, 24)), "up the hill to the graves")

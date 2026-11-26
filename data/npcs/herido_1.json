@@ -1,0 +1,24 @@
+{
+	"id": "herido_1",
+	"name": "NPC_HERIDO_1",
+	"role": "villager",
+	"pose": "lie",
+	"lines": {
+		"greet": "NPC_HERIDO_1_GREET"
+	},
+	"look": {
+		"class": "villager",
+		"appearance": {
+			"body": "robust",
+			"skin": "skin_3",
+			"eyes": "brown",
+			"hair_style": "short",
+			"hair_color": "brown",
+			"beard": "short"
+		},
+		"primary": "#8a7a5a",
+		"secondary": "#eeeae0",
+		"trousers": "#4a3a2a",
+		"weapons": []
+	}
+}

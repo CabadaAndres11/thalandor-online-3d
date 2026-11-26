@@ -54,3 +54,18 @@ func test_walkers_drawn() -> void:
 	assert_eq(g.walker_count(), 2)
 	g.move_walkers(3.0)
 	assert_ne(g.walker_avatar(0).position, Vector3(1.5, 0, 1.5), "it moved")
+
+
+## Plan 8.3d: a cow on the ranch is a walking piece, not a person: nothing to say.
+func test_cow_walker_draws_a_piece() -> void:
+	var g := GameSession.new()
+	add_child_autofree(g)
+	var z := ZoneLayout.from_dict("t", {"size": [20, 20], "npcs": [],
+		"walkers": [{"npc": "", "model": "piece:cow", "route": [[3, 3], [8, 3]], "speed": 0.5}]})
+	g.place_walkers(z)
+	assert_eq(g.walker_count(), 1)
+	var cow := g.walker_avatar(0)
+	assert_not_null(cow.get_node_or_null("Piece"), "drawn with its piece")
+	assert_null(cow.rig)
+	g.move_walkers(4.0)
+	assert_eq(g.walker_near(cow.position), "", "a cow does not greet")

@@ -80,11 +80,34 @@ func display_name() -> String:
 
 
 func set_prompt_visible(on: bool) -> void:
-	_prompt.visible = on
+	if _prompt != null:
+		_prompt.visible = on
 
 
 func prompt_visible() -> bool:
-	return _prompt.visible
+	return _prompt != null and _prompt.visible
+
+
+## An animal that walks the village (Plan 8.3d: the ranch's cows): a world piece, no rig,
+## no name and nothing to say.
+func setup_piece(piece_id: String, at: Vector3) -> void:
+	npc_id = ""
+	position = at
+	var pieces: Variant = JSON.parse_string(FileAccess.get_file_as_string(ZoneLayout.PIECES_PATH))
+	var def: Dictionary = (pieces as Dictionary).get(piece_id, {}) if pieces is Dictionary else {}
+	var mesh := VoxMesher.cached(str(def.get("vox", "")), {})
+	if mesh == null:
+		return
+	var mi := MeshInstance3D.new()
+	mi.name = "Piece"
+	mi.mesh = mesh
+	var s := float(def.get("scale", 0.5))
+	var off: Array = def.get("offset", [0, 0, 0])
+	var size := mesh.get_aabb().size * s
+	# Turned so it walks nose first (its length is along x), centred on its spot.
+	mi.transform = Transform3D(Basis(Vector3.UP, -PI / 2.0).scaled(Vector3.ONE * s), Vector3.ZERO) \
+		* Transform3D(Basis.IDENTITY, Vector3(float(off[0]), float(off[1]), float(off[2])) * VoxMesher.VOXEL_SIZE - Vector3(size.x / s / 2.0, 0, size.z / s / 2.0))
+	add_child(mi)
 
 
 func _text(text: String, height: float, font_size: int, color: Color) -> Label3D:

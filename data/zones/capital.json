@@ -1533,8 +1533,7 @@
 				48,
 				63
 			],
-			"radius": 3,
-			"look": "sparkle"
+			"radius": 3
 		}
 	],
 	"torches": []

@@ -678,7 +678,12 @@ func place_walkers(layout: ZoneLayout) -> void:
 		var npc := NpcAvatar.new()
 		npc.name = "Walker_%d" % _walkers.size()
 		_avatar_root.add_child(npc)
-		npc.setup(str(spec.get("npc", "")), Vector3(route[0].x + 0.5, 0, route[0].y + 0.5), 0.0)
+		var start := Vector3(route[0].x + 0.5, 0, route[0].y + 0.5)
+		var model := str(spec.get("model", ""))
+		if model.begins_with("piece:"):
+			npc.setup_piece(model.trim_prefix("piece:"), start) # an animal (Plan 8.3d)
+		else:
+			npc.setup(str(spec.get("npc", "")), start, 0.0)
 		_walkers.append({"avatar": npc, "route": route, "speed": float(spec.get("speed", 1.2)),
 			"pause_s": float(spec.get("pause_s", 3.0)), "loop": bool(spec.get("loop", true)), "id": str(spec.get("npc", ""))})
 
@@ -706,7 +711,7 @@ func walker_avatar(i: int) -> NpcAvatar:
 func walker_near(pos: Vector3) -> String:
 	for w: Dictionary in _walkers:
 		var a: NpcAvatar = w.avatar
-		if Vector2(pos.x - a.position.x, pos.z - a.position.z).length() <= NpcDB.TALK_RANGE:
+		if str(w.id) != "" and Vector2(pos.x - a.position.x, pos.z - a.position.z).length() <= NpcDB.TALK_RANGE:
 			return str(w.id)
 	return ""
 
