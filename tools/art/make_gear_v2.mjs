@@ -7,7 +7,7 @@
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { write } from "./vox.mjs";
-import { armorV2, BODY } from "./gear_armor_v2.mjs";
+import { armorV2, npcOutfitsV2, BODY } from "./gear_armor_v2.mjs";
 import { carve } from "./sculpt.mjs";
 import { gearWeaponsV2 as weapons } from "./gear_weapons_v2.mjs";
 import { jewelryV2 } from "./gear_jewelry_v2.mjs";
@@ -18,7 +18,7 @@ const PART_BODY = { head: "head", torso: "torso", hips: "hips", arm_left: "arm",
 
 
 export function gearV2() {
-  const all = { ...armorV2(), ...weapons() };
+  const all = { ...armorV2(), ...npcOutfitsV2(), ...weapons() };
   for (const p of Object.values(all)) {
     const part = p.body ?? BODY[PART_BODY[p.part]]; // a race variant is carved by its race head
     if (part) carve(p.shape, (c) => { for (const [x, y, z] of part.cells.values()) c.put(x, y, z, 0); });

@@ -9,16 +9,33 @@
 		"class": "villager",
 		"appearance": {
 			"body": "slim",
-			"skin": "skin_3",
-			"eyes": "green",
-			"hair_style": "hair_ponytail",
-			"hair_color": "chestnut",
+			"skin": "skin_1",
+			"eyes": "grey",
+			"hair_style": "hair_warrior_braid",
+			"hair_color": "platinum",
 			"beard": "none",
-			"marks": "freckles"
+			"marks": "none"
 		},
-		"primary": "#7a4e8a",
-		"secondary": "#d8c9a0",
-		"trousers": "#4a3a2a",
-		"weapons": []
+		"primary": "#1c1a1e",
+		"secondary": "#7a1f2b",
+		"trousers": "#2e2420",
+		"pieces": [
+			"mira_cloak",
+			"mira_hood",
+			"mira_chest",
+			"mira_legs_l",
+			"mira_legs_r",
+			"mira_sleeve_l",
+			"mira_sleeve_r",
+			"mira_forearm_l",
+			"mira_forearm_r",
+			"mira_glove_l",
+			"mira_glove_r",
+			"mira_boot_l",
+			"mira_boot_r"
+		],
+		"weapons": [
+			"weapon_sword"
+		]
 	}
 }

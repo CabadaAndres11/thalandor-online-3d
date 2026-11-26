@@ -6,7 +6,7 @@
 import { Shape, SHADE, LIGHT, TEX_D, TEX_L, GLOW } from "./vox.mjs";
 import { ellipsoid, capsule, cylinder, roundBox, carve, tone, shadeByFacing, shellAround, noise3 } from "./sculpt.mjs";
 import { headV2, torsoV2, hipsV2, upperArmV2, forearmV2, handV2, thighV2, shinV2, frontZ } from "./human_v2.mjs";
-import { P, S, C, CLASS_SETS, cmats, tierPalette } from "./gear_style.mjs";
+import { P, S, C, CLASS_SETS, cmats, tierPalette, PALETTE } from "./gear_style.mjs";
 import { headLizardV2 } from "./races_v2.mjs";
 
 export const BODY = {
@@ -591,6 +591,114 @@ export function armorV2() {
         add(`${id("feet")}_${side[0]}`, ARMOR.boot(kind, t, m), `shin_${side}`);
       }
     }
+  }
+  return out;
+}
+
+// --- Story characters' own outfits (Plan 8.3e) -----------------------------------------
+// Mira, after the user's reference: a long black cloak lined in crimson with its hood down,
+// a silver brooch with a red gem, dark leather armour with sleeves, brown belts and tall
+// laced boots. Pieces hang from the body parts like the equipment's.
+const MIRA = { b: C.BLACK_LEATHER, d: C.BLACK_LEATHER_D, l: C.BLACK_LEATHER, trim: C.LEATHER, acc: C.BRONZE, gem: C.GEM, rune: null };
+const CLOAK = 77, CLOAK_D = 78; // black leather tones read as heavy black wool at this size
+
+function miraCloak() {
+  const s = new Shape();
+  const bottom = -44;
+  for (let y = 25; y >= bottom; y--) {
+    const half = 11 + Math.min(6, Math.floor((25 - y) / 9));
+    for (let x = -half - 1; x <= half; x++) {
+      const bz = y >= 0 ? (backZ(BODY.torso, x, Math.min(y, 26)) ?? -7) : -8;
+      const fold = Math.sin((x + 0.5) * 0.8) * 0.9;
+      const z = Math.min(bz, -7) - 1 - (y < 8 ? Math.round(1 + fold) : 0);
+      s.put(x, y, z, fold > 0.35 ? CLOAK_D : CLOAK);
+      s.put(x, y, z + 1, C.RED_D); // the crimson lining, seen from the sides and under the hem
+    }
+    // The open front: the cloak falls forward past the arms, its lining showing.
+    if (y < 22) {
+      for (const side of [-1, 1]) {
+        const x = side > 0 ? half + 1 : -half - 2;
+        for (let z = -9; z <= 2 + Math.min(4, Math.floor((22 - y) / 10)); z++) {
+          s.put(x, y, z, CLOAK);
+          s.put(x - side, y, z, C.RED);
+        }
+      }
+    }
+  }
+  recolor(s, (x, y) => y <= bottom + 1, C.RED_D); // a red hem edge
+  without(s, BODY.torso);
+  for (const v of s.cells.values()) if (v[3] === CLOAK && noise3(v[0], v[1], v[2], 31) < 0.12) v[3] = CLOAK_D;
+  return s;
+}
+
+// The hood down: a heavy fold on the shoulders and the upper back, red inside, with the brooch.
+function miraHood() {
+  const s = new Shape();
+  for (let y = 20; y <= 30; y++) {
+    for (let x = -12; x <= 11; x++) {
+      const bz = backZ(BODY.torso, x, Math.min(y, 26)) ?? -7;
+      const thick = y >= 24 ? 4 : 2;
+      for (let k = 1; k <= thick; k++) s.put(x, y, Math.min(bz, -6) - k, k === 1 ? C.RED_D : CLOAK);
+    }
+  }
+  const collar = shellOn(BODY.torso, 2, CLOAK, (x, y) => y >= 23 && y <= 27);
+  for (const v of collar.cells.values()) s.put(v[0], v[1], v[2], v[2] > 0 && v[1] === 27 ? C.RED : CLOAK);
+  // The brooch: a silver knot with a red gem, at the collar's front.
+  const fz = (frontZ(BODY.torso, -1, 24) ?? 4) + 2;
+  for (const [x, y] of [[-3, 24], [-2, 25], [-1, 25], [0, 25], [1, 24], [-3, 23], [1, 23], [-2, 22], [0, 22], [-1, 22]]) s.put(x, y, fz, C.STEEL_L);
+  s.put(-1, 24, fz, C.GEM).put(-1, 23, fz, C.GEM).put(-1, 24, fz + 1, C.WHITE);
+  return without(s, BODY.torso);
+}
+
+function miraChest() {
+  const s = ARMOR.chest("leather", 2, MIRA);
+  // Belts: two brown belts at the waist with bronze buckles, a pouch on the right hip.
+  for (const y of [1, 2, 4]) recolor(s, (x, yy) => yy === y, C.LEATHER);
+  for (const [x, y] of [[-1, 2], [0, 2], [-1, 4]]) onFront(s, x, y, C.BRONZE);
+  for (let y = 7; y <= 18; y += 3) recolor(s, (x, yy, z) => yy === y && z >= 2 && Math.abs(x + 0.5) < 5, MIRA.d); // quilting
+  return s;
+}
+
+function miraSleeve() {
+  const s = shellOn(BODY.arm, 1, MIRA.b, (x, y) => y >= -18);
+  ellipsoid(s, [-0.5, 1, -0.5], [4.4, 2.4, 4.4], MIRA.b);
+  without(s, BODY.arm);
+  finish(s, MIRA, 301);
+  return s;
+}
+
+function miraForearm() {
+  const s = shellOn(BODY.fore, 1, MIRA.b, (x, y) => y >= -18);
+  without(s, BODY.fore);
+  finish(s, MIRA, 303);
+  for (const y of [-6, -10, -14]) recolor(s, (x, yy) => yy === y, C.LEATHER); // straps
+  return s;
+}
+
+function miraBoot() {
+  const s = shellOn(BODY.shin, 1, C.LEATHER_D, (x, y) => y <= 2 && y >= -26);
+  without(s, BODY.shin);
+  finish(s, { b: C.LEATHER_D, d: C.BLACK_LEATHER, l: C.LEATHER }, 305);
+  recolor(s, (x, y) => y === -26 || y === -27, C.BLACK_LEATHER_D);
+  for (let y = -20; y <= 0; y += 3) recolor(s, (x, yy, z) => yy === y && z >= 2 && Math.abs(x + 0.5) < 1, C.PAPER_D); // laces
+  recolor(s, (x, y) => y === 2, C.LEATHER);
+  return s;
+}
+
+export function npcOutfitsV2() {
+  const palette = PALETTE;
+  const out = {};
+  const add = (name, shape, part) => { out[name] = { shape, part, palette, like: "assassin_chest_t2" }; };
+  add("mira_cloak", miraCloak(), "torso");
+  add("mira_hood", miraHood(), "torso");
+  add("mira_chest", miraChest(), "torso");
+  add("mira_legs_l", ARMOR.leg("leather", 1, MIRA), "leg_left");
+  add("mira_legs_r", ARMOR.leg("leather", 1, MIRA), "leg_right");
+  for (const side of ["left", "right"]) {
+    add(`mira_sleeve_${side[0]}`, miraSleeve(), `arm_${side}`);
+    add(`mira_forearm_${side[0]}`, miraForearm(), `forearm_${side}`);
+    add(`mira_glove_${side[0]}`, ARMOR.glove("leather", 2, MIRA), `hand_${side}`);
+    add(`mira_boot_${side[0]}`, miraBoot(), `shin_${side}`);
   }
   return out;
 }

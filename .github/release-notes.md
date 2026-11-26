@@ -7,6 +7,10 @@
 3. **Aviso de Windows (SmartScreen):** el juego no está firmado. Pulsa **Más información → Ejecutar de todas formas**.
 4. Pulsa **Jugar**. Se abre **Tus personajes**: crea uno con **Crear** (nombre, raza y aspecto). Empiezas como **aldeano** en el prólogo, que es el tutorial: la clase se elige durante el asalto a la aldea.
 
+### Novedades de la 0.15.1: la nueva Mira
+- **Mira** tiene un aspecto nuevo: pelo platino con trenza, capa negra larga con forro carmesí y la capucha bajada, broche de plata, armadura de cuero oscuro con mangas, botas altas con cordones y espada.
+- **Todo el grupo tiene que usar la misma versión.**
+
 ### Novedades de la 0.15.0: relieve, aldea nueva y correcciones
 - **Relieve:** colinas, cuestas, altos y bajos; todo se dibuja a la altura del suelo, y los desniveles bruscos no se cruzan.
 - **La Aldea de Aelhest, rehecha:** calle mayor con casas en hilera a los dos lados, **cuatro diseños de casa** más la casa grande (cabaña, casa de entramado de dos plantas, cabaña de troncos y casa de piedra del panadero), callejones, la colina con las tumbas, el río en su hondonada y un **rancho con vacas**.

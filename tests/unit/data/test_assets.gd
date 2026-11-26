@@ -43,6 +43,9 @@ func test_every_v2_gear_file_exists() -> void:
 	# Race variants (Plan 8.1.1: "<id>_lizard") are v2 only, drawn for one race head.
 	var races := (table as Dictionary).keys().filter(func(id: String) -> bool: return id.ends_with("_lizard"))
 	assert_eq(races.size(), 3, "the assassin head, three tiers")
-	assert_eq((table as Dictionary).size() - jewels.size() - races.size(), (v1 as Dictionary).size(), "one v2 piece per v1 gear piece")
+	# Story characters' own outfits (Plan 8.3e: "mira_*") are v2 only too.
+	var outfits := (table as Dictionary).keys().filter(func(id: String) -> bool: return id.begins_with("mira_"))
+	assert_eq(outfits.size(), 13, "Mira: cloak, hood, chest, legs, sleeves, forearms, gloves and boots")
+	assert_eq((table as Dictionary).size() - jewels.size() - races.size() - outfits.size(), (v1 as Dictionary).size(), "one v2 piece per v1 gear piece")
 	for id: String in table:
 		assert_true(FileAccess.file_exists(str(table[id].file)), id)

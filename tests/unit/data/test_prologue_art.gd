@@ -54,3 +54,16 @@ func test_dummy_model() -> void:
 	add_child_autofree(a)
 	a.setup(MonsterDB.load_default().get_type("training_dummy"))
 	assert_gt(a.find_children("*", "MeshInstance3D", true, false).size(), 0)
+
+
+## Plan 8.3e: Mira wears her own outfit (the user's reference): the black cloak lined in
+## crimson, the hood down, dark leather and tall boots; no villager clothes under it.
+func test_mira_wears_her_outfit() -> void:
+	var look := NpcAvatar.look_of(NpcDB.load_default().npc("mira").look)
+	var ids: Array = (look.pieces as Array).map(func(p: Dictionary) -> String: return str(p.id))
+	for id: String in ["mira_cloak", "mira_hood", "mira_chest", "mira_boot_l", "mira_boot_r"]:
+		assert_has(ids, id)
+	assert_does_not_have(ids, "outfit_villager")
+	for p: Dictionary in look.pieces:
+		if str(p.id).begins_with("mira_"):
+			assert_true(FileAccess.file_exists(str(p.file)), str(p.file))

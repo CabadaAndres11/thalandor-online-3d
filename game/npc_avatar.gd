@@ -34,13 +34,24 @@ func setup(id: String, at: Vector3, facing: float) -> void:
 
 
 ## A HumanRig look from an NPC's data: a class and appearance resolved by the catalog,
-## then its own colors and weapons.
+## then its own colors and weapons; with "gear", dressed in those items.
 static func look_of(look: Dictionary) -> Dictionary:
 	var catalog := CharacterCatalog.load_default()
-	var out := catalog.resolve(str(look.get("class", CharacterCatalog.DEFAULT_CLASS)), look.get("appearance", {}))
+	# "gear": item bases in Inventory.VISIBLE order, worn like a player's (Plan 8.3e: Mira's cloak).
+	var gear: Array = look.get("gear", []) if look.get("gear") is Array else []
+	var out := catalog.resolve(str(look.get("class", CharacterCatalog.DEFAULT_CLASS)), look.get("appearance", {}), "", gear)
 	for key: String in ["primary", "secondary", "trousers"]:
 		if look.has(key):
 			out[key] = Color(str(look[key]))
+	# "pieces": the character's own outfit (Plan 8.3e: Mira), worn instead of its class's clothes.
+	if look.has("pieces"):
+		var own: Array = look.pieces
+		var class_pieces: Array = catalog.class_def(str(look.get("class", CharacterCatalog.DEFAULT_CLASS))).get("pieces", [])
+		var kept: Array = (out.pieces as Array).filter(func(p: Dictionary) -> bool: return not str(p.id) in class_pieces)
+		for id: String in own:
+			if not catalog.piece_v2(id).is_empty():
+				kept.append(catalog.piece_entry(id))
+		out["pieces"] = kept
 	if look.has("weapons"):
 		var pieces: Array = (out.pieces as Array).filter(
 			func(p: Dictionary) -> bool: return str(catalog.piece(p.id).get("tag", "")) != "weapon")

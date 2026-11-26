@@ -2536,6 +2536,149 @@
 		"tag": "gear",
 		"hides": []
 	},
+	"mira_cloak": {
+		"file": "res://assets/items/vox_v2/mira_cloak.vox",
+		"part": "torso",
+		"offset": [
+			-19,
+			-44,
+			-11
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mira_hood": {
+		"file": "res://assets/items/vox_v2/mira_hood.vox",
+		"part": "torso",
+		"offset": [
+			-14,
+			20,
+			-11
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mira_chest": {
+		"file": "res://assets/items/vox_v2/mira_chest.vox",
+		"part": "torso",
+		"offset": [
+			-13,
+			0,
+			-8
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mira_legs_l": {
+		"file": "res://assets/items/vox_v2/mira_legs_l.vox",
+		"part": "leg_left",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mira_legs_r": {
+		"file": "res://assets/items/vox_v2/mira_legs_r.vox",
+		"part": "leg_right",
+		"offset": [
+			-5,
+			-23,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mira_sleeve_l": {
+		"file": "res://assets/items/vox_v2/mira_sleeve_l.vox",
+		"part": "arm_left",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mira_forearm_l": {
+		"file": "res://assets/items/vox_v2/mira_forearm_l.vox",
+		"part": "forearm_left",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mira_glove_l": {
+		"file": "res://assets/items/vox_v2/mira_glove_l.vox",
+		"part": "hand_left",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mira_boot_l": {
+		"file": "res://assets/items/vox_v2/mira_boot_l.vox",
+		"part": "shin_left",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mira_sleeve_r": {
+		"file": "res://assets/items/vox_v2/mira_sleeve_r.vox",
+		"part": "arm_right",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mira_forearm_r": {
+		"file": "res://assets/items/vox_v2/mira_forearm_r.vox",
+		"part": "forearm_right",
+		"offset": [
+			-4,
+			-18,
+			-4
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mira_glove_r": {
+		"file": "res://assets/items/vox_v2/mira_glove_r.vox",
+		"part": "hand_right",
+		"offset": [
+			-4,
+			-9,
+			-3
+		],
+		"tag": "gear",
+		"hides": []
+	},
+	"mira_boot_r": {
+		"file": "res://assets/items/vox_v2/mira_boot_r.vox",
+		"part": "shin_right",
+		"offset": [
+			-5,
+			-26,
+			-5
+		],
+		"tag": "gear",
+		"hides": []
+	},
 	"w_wand_t1": {
 		"file": "res://assets/items/vox_v2/w_wand_t1.vox",
 		"part": "hand_right",
