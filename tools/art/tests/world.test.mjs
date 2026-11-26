@@ -153,6 +153,21 @@ test("the gate leaves its way through free, and both crypt gates share their foo
   assert.equal(low(p.crypt_gate_open.shape), 0, "open: the way is clear");
 });
 
+// Plan 8.3d: the village's houses, barn and cows.
+test("the new village houses are walkable and their ruins keep their footprint", () => {
+  for (const id of ["house_timber", "house_log", "house_stone", "barn"]) {
+    const h = p[id];
+    assert.ok(h && h.parts, id);
+    for (const sh of Object.values(h.parts)) for (const d of sh.size()) assert.ok(d <= 126, `${id} size ${d}`);
+    const fp = new Set(h.footprint.map(([x, z]) => x + "," + z));
+    for (const [x, z] of h.door) assert.ok(!fp.has(x + "," + z), id + " door free");
+    assert.ok(h.interior.filter(([x, z]) => !fp.has(x + "," + z)).length >= 4, id + " walkable inside");
+  }
+  for (const id of ["timber", "log", "stone"]) assert.deepEqual(p["house_burnt_" + id].footprint, p["house_" + id].footprint, id);
+  assert.deepEqual(p.cow.footprint, []);
+  assert.ok(p.trough.footprint.length > 0);
+});
+
 test("ground details are tiny and block nothing", () => {
   for (const id of DECOR) {
     assert.ok(p[id], id);

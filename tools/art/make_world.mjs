@@ -110,6 +110,15 @@ function houseParts(w, d, furnish = () => {}, style = {}) {
   walls.box(0, 1, 0, W - 1, HH, 2, PLASTER).box(0, 1, D - 3, W - 1, HH, D - 1, PLASTER);
   walls.box(0, 1, 0, 2, HH, D - 1, PLASTER).box(W - 3, 1, 0, W - 1, HH, D - 1, PLASTER);
   paint(walls, PLASTER, [PLASTER, PLASTER_D], 5);
+  // Plan 8.3d: the village's other houses. Logs: horizontal trunks; beams: timber framing
+  // over the plaster; barn: vertical boards.
+  if (style.logs) for (const v of walls.cells.values()) v[3] = v[1] % 4 === 0 ? WOOD_D : (v[1] % 4 === 2 ? WOOD_L : WOOD);
+  if (style.barn) for (const v of walls.cells.values()) v[3] = (v[0] + v[2]) % 5 === 0 ? PLANK_D : PLANK;
+  if (style.beams) for (const v of walls.cells.values()) {
+    if (v[3] !== PLASTER && v[3] !== PLASTER_D) continue;
+    const along = (v[2] <= 2 || v[2] >= D - 3) ? v[0] : v[2];
+    if (along % 12 < 2 || v[1] === HOUSE_H || v[1] === HOUSE_H + 1 || (along % 12 - 2) === Math.floor(((v[1] - 1) % HOUSE_H) / 3)) v[3] = WOOD_D;
+  }
   if (style.stone) { // the forge (Plan 8.1.3): rough stone, darker at the foot
     for (const v of walls.cells.values()) v[3] = v[1] < 6 ? STONE_D : STONE;
     paint(walls, STONE, [STONE, STONE_D, STONE_L], 51);
@@ -653,6 +662,33 @@ export function worldPieces() {
   addHouse("house_burnt_large", burntHouse(houseParts(8, 7, (f) => {
     bed(f, 1, 1); bed(f, 2, 1); table(f, 4, 3, 2); hearth(f, 6, 1); shelf(f, 6, 5);
   }), 73));
+  // Plan 8.3d: three more village houses (and their ruins), the ranch's barn, cows and a trough.
+  const timber = () => houseParts(7, 6, (f) => { bed(f, 1, 1); table(f, 4, 1, 2); shelf(f, 5, 3); }, { tall: true, planks: true, beams: true });
+  const logHouse = () => houseParts(6, 5, (f) => { bed(f, 1, 1); chest(f, 4, 1); barrel(f, 4, 3); }, { logs: true, planks: true });
+  const stoneHouse = () => houseParts(6, 6, (f) => { furnace(f, 1, 1, true); table(f, 3, 3, 2); shelf(f, 4, 1); }, { stone: true });
+  addHouse("house_timber", timber());
+  addHouse("house_log", logHouse());
+  addHouse("house_stone", stoneHouse());
+  addHouse("house_burnt_timber", burntHouse(timber(), 107));
+  addHouse("house_burnt_log", burntHouse(logHouse(), 109));
+  addHouse("house_burnt_stone", burntHouse(stoneHouse(), 111));
+  addHouse("barn", houseParts(8, 7, (f) => {
+    for (const [cx, cz] of [[1, 1], [2, 1], [5, 1], [6, 1]]) { f.floor.box(cx * f.C + 1, 1, cz * f.C + 1, cx * f.C + 8, 8, cz * f.C + 8, HAY); f.block(cx, cz); }
+    for (const cx of [1, 5]) { f.floor.box(cx * f.C + 1, 1, 4 * f.C + 2, cx * f.C + 18, 5, 4 * f.C + 7, WOOD); f.floor.box(cx * f.C + 2, 5, 4 * f.C + 3, cx * f.C + 17, 5, 4 * f.C + 6, HAY); f.block(cx, 4); f.block(cx + 1, 4); }
+  }, { barn: true, planks: true }));
+  const cow = new Shape();
+  ellipsoid(cow, [20, 22, 9.5], [15, 8, 7], 33);
+  for (const [x, z] of [[9, 5], [9, 12], [30, 5], [30, 12]]) cow.box(x, 0, z, x + 2, 16, z + 2, 33);
+  capsule(cow, [33, 24, 9.5], [38, 26, 9.5], 4, 3.5, 33);
+  ellipsoid(cow, [41, 25, 9.5], [5, 4, 4], 33);
+  cow.box(44, 22, 7, 46, 25, 12, CLOTH_D).box(39, 30, 5, 40, 32, 6, PLASTER_D).box(39, 30, 13, 40, 32, 14, PLASTER_D);
+  for (const v of cow.cells.values()) if (v[3] === 33 && noise3(v[0] >> 2, v[1] >> 2, v[2] >> 2, 113) > 0.6) v[3] = COAL;
+  for (const [x, z] of [[9, 5], [9, 12], [30, 5], [30, 12]]) cow.box(x, 0, z, x + 2, 1, z + 2, COAL);
+  cow.box(2, 16, 9, 3, 26, 10, COAL);
+  add("cow", cow, { footprint: [] });
+  const trough = new Shape();
+  trough.box(0, 0, 4, 39, 8, 15, WOOD).remove(2, 3, 6, 37, 8, 13).box(2, 3, 6, 37, 5, 13, WATER);
+  add("trough", paint(trough, WOOD, [WOOD, WOOD_D], 115));
   add("rubble", rubbleHeap(75));
   // A roof beam, charred, fallen across the ground: 3 m along x.
   const beam = new Shape();
