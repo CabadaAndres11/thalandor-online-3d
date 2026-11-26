@@ -395,6 +395,17 @@
 		"tag": "tail",
 		"hides": []
 	},
+	"bust_female": {
+		"file": "res://assets/characters/pieces_v2/bust_female.vox",
+		"part": "torso",
+		"offset": [
+			-8,
+			14,
+			6
+		],
+		"tag": "bust",
+		"hides": []
+	},
 	"outfit_warrior": {
 		"file": "res://assets/characters/pieces_v2/outfit_warrior.vox",
 		"part": "torso",

@@ -32,8 +32,8 @@ ERR_BAD_CODE,"El código no es válido. Tiene 8 caracteres, por ejemplo ABCD-EFG
 ERR_PORT,"No se ha podido abrir el grupo: el puerto 24680 está ocupado o bloqueado."
 ERR_NO_NETWORK,No se ha encontrado ninguna red a la que puedan conectarse tus amigos.
 ERR_SIGNALING,"No se ha podido contactar con el servidor de enlace. Revisa tu conexión a Internet e inténtalo de nuevo."
-BODY_SLIM,Esbelto
-BODY_ROBUST,Robusto
+BODY_FEMALE,Mujer
+BODY_MALE,Hombre
 HAIR_SHORT,Corto
 HAIR_BOB,Media melena
 HAIR_SWEPT,Flequillo

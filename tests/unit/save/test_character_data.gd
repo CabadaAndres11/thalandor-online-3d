@@ -206,7 +206,7 @@ func test_v4_without_race_loads_as_human() -> void:
 	assert_eq(c.appearance.race, "human")
 	assert_eq(c.appearance.marks, "none")
 	for kind: String in app:
-		assert_eq(c.appearance[kind], app[kind], kind)
+		assert_eq(c.appearance[kind], "male" if kind == "body" else app[kind], kind) # robust is a man since Plan 8.3e
 
 
 func test_unknown_race_falls_back() -> void:

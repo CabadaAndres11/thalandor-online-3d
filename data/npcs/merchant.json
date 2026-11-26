@@ -1,10 +1,21 @@
 {
-	"id": "merchant", "name": "NPC_MERCHANT", "role": "merchant",
+	"id": "merchant",
+	"name": "NPC_MERCHANT",
+	"role": "merchant",
 	"lines": {},
 	"look": {
 		"class": "villager",
-		"appearance": {"body": "robust", "skin": "skin_2", "eyes": "brown", "hair_style": "short", "hair_color": "brown", "beard": "none"},
-		"primary": "#7a5a2e", "secondary": "#c9a14a", "trousers": "#3d2f22",
+		"appearance": {
+			"body": "male",
+			"skin": "skin_2",
+			"eyes": "brown",
+			"hair_style": "short",
+			"hair_color": "brown",
+			"beard": "none"
+		},
+		"primary": "#7a5a2e",
+		"secondary": "#c9a14a",
+		"trousers": "#3d2f22",
 		"weapons": []
 	}
 }

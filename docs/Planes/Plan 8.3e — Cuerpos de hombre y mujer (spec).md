@@ -2,7 +2,7 @@
 tags: [plan, spec]
 plan: 8.3e
 fecha: 2026-11-27
-estado: borrador
+estado: hecho
 actualizado: 2026-11-27
 ---
 # Plan 8.3e — Cuerpos de hombre y mujer: diseño
@@ -70,10 +70,10 @@ El tipo de cuerpo pasa a ser **Hombre** o **Mujer**, en lugar de *Esbelto* o *Ro
 - Arte (Node): la cabeza de mujer y la pieza de pecho caben y son distintas de las del hombre.
 
 ## Tareas
-- [ ] Cabeza `female` y pieza `bust_female` (arte y datos).
-- [ ] Opciones de cuerpo nuevas, paso de los viejos, `resolve` (cabeza, pecho y ocultarlo) y PNJ.
-- [ ] Creación de personaje y capturas de comprobación.
-- [ ] Suite, versión 0.16.0, notas, GDD (04 Personajes), registro y `Planes.md`.
+- [x] Cabeza `female` y pieza `bust_female` (arte y datos).
+- [x] Opciones de cuerpo nuevas, paso de los viejos, `resolve` (cabeza, pecho y ocultarlo) y PNJ.
+- [x] Creación de personaje y capturas de comprobación.
+- [x] Suite, versión 0.16.0, notas, GDD (04 Personajes), registro y `Planes.md`.
 
 ---
 ← [[Planes]]

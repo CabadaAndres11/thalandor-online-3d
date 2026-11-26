@@ -1,149 +1,762 @@
 {
 	"race": [
-		{"id": "human", "name": "RACE_HUMAN"},
-		{"id": "elf", "name": "RACE_ELF"},
-		{"id": "dwarf", "name": "RACE_DWARF"},
-		{"id": "ogre", "name": "RACE_OGRE"},
-		{"id": "lizard", "name": "RACE_LIZARD"}
+		{
+			"id": "human",
+			"name": "RACE_HUMAN"
+		},
+		{
+			"id": "elf",
+			"name": "RACE_ELF"
+		},
+		{
+			"id": "dwarf",
+			"name": "RACE_DWARF"
+		},
+		{
+			"id": "ogre",
+			"name": "RACE_OGRE"
+		},
+		{
+			"id": "lizard",
+			"name": "RACE_LIZARD"
+		}
 	],
 	"body": [
 		{
-			"id": "slim",
-			"name": "BODY_SLIM",
+			"id": "male",
+			"name": "BODY_MALE",
 			"scale": {
 				"torso": [
-					1,
-					1,
-					1
-				],
-				"arm": [
-					1,
-					1,
-					1
-				],
-				"leg": [
-					1,
-					1,
-					1
-				]
-			}
-		},
-		{
-			"id": "robust",
-			"name": "BODY_ROBUST",
-			"scale": {
-				"torso": [
-					1.15,
-					1,
-					1.12
-				],
-				"arm": [
-					1.12,
-					1,
-					1.12
-				],
-				"leg": [
 					1.08,
 					1,
-					1.08
+					1.06
+				],
+				"arm": [
+					1.06,
+					1,
+					1.06
+				],
+				"leg": [
+					1.04,
+					1,
+					1.04
 				]
-			}
+			},
+			"head": "",
+			"pieces": []
+		},
+		{
+			"id": "female",
+			"name": "BODY_FEMALE",
+			"scale": {
+				"torso": [
+					0.9,
+					1,
+					0.94
+				],
+				"arm": [
+					0.86,
+					1,
+					0.88
+				],
+				"leg": [
+					0.96,
+					1,
+					0.98
+				]
+			},
+			"head": "female",
+			"pieces": [
+				"bust_female"
+			]
 		}
 	],
 	"skin": [
-		{"id": "skin_1", "color": "#f6d9c0", "races": ["human", "elf", "dwarf"]},
-		{"id": "skin_2", "color": "#f1c8a4", "races": ["human", "elf", "dwarf"]},
-		{"id": "skin_3", "color": "#e8b996", "races": ["human", "elf", "dwarf"]},
-		{"id": "skin_4", "color": "#d9a27a", "races": ["human", "elf", "dwarf"]},
-		{"id": "skin_5", "color": "#b97d55", "races": ["human", "elf", "dwarf"]},
-		{"id": "skin_6", "color": "#8d5a3b", "races": ["human", "elf", "dwarf"]},
-		{"id": "skin_7", "color": "#6b4229", "races": ["human", "elf", "dwarf"]},
-		{"id": "skin_8", "color": "#4a2e1e", "races": ["human", "elf", "dwarf"]},
-		{"id": "elf_moon", "color": "#f3eef6", "races": ["elf"]},
-		{"id": "elf_ash", "color": "#b8b4b8", "races": ["elf"]},
-		{"id": "ogre_greygreen", "color": "#7d8c6a", "races": ["ogre"]},
-		{"id": "ogre_olive", "color": "#6f7a45", "races": ["ogre"]},
-		{"id": "ogre_ochre", "color": "#a08445", "races": ["ogre"]},
-		{"id": "ogre_slate", "color": "#5f6b72", "races": ["ogre"]},
-		{"id": "ogre_ashblue", "color": "#6e7f93", "races": ["ogre"]},
-		{"id": "ogre_moss", "color": "#5a5a3c", "races": ["ogre"]},
-		{"id": "lizard_green", "color": "#4f8a3c", "races": ["lizard"]},
-		{"id": "lizard_jade", "color": "#2f8f7a", "races": ["lizard"]},
-		{"id": "lizard_sand", "color": "#c2a36b", "races": ["lizard"]},
-		{"id": "lizard_rust", "color": "#9a4f2c", "races": ["lizard"]},
-		{"id": "lizard_blueblack", "color": "#25303f", "races": ["lizard"]},
-		{"id": "lizard_albino", "color": "#e8e2d0", "races": ["lizard"]}
+		{
+			"id": "skin_1",
+			"color": "#f6d9c0",
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "skin_2",
+			"color": "#f1c8a4",
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "skin_3",
+			"color": "#e8b996",
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "skin_4",
+			"color": "#d9a27a",
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "skin_5",
+			"color": "#b97d55",
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "skin_6",
+			"color": "#8d5a3b",
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "skin_7",
+			"color": "#6b4229",
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "skin_8",
+			"color": "#4a2e1e",
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "elf_moon",
+			"color": "#f3eef6",
+			"races": [
+				"elf"
+			]
+		},
+		{
+			"id": "elf_ash",
+			"color": "#b8b4b8",
+			"races": [
+				"elf"
+			]
+		},
+		{
+			"id": "ogre_greygreen",
+			"color": "#7d8c6a",
+			"races": [
+				"ogre"
+			]
+		},
+		{
+			"id": "ogre_olive",
+			"color": "#6f7a45",
+			"races": [
+				"ogre"
+			]
+		},
+		{
+			"id": "ogre_ochre",
+			"color": "#a08445",
+			"races": [
+				"ogre"
+			]
+		},
+		{
+			"id": "ogre_slate",
+			"color": "#5f6b72",
+			"races": [
+				"ogre"
+			]
+		},
+		{
+			"id": "ogre_ashblue",
+			"color": "#6e7f93",
+			"races": [
+				"ogre"
+			]
+		},
+		{
+			"id": "ogre_moss",
+			"color": "#5a5a3c",
+			"races": [
+				"ogre"
+			]
+		},
+		{
+			"id": "lizard_green",
+			"color": "#4f8a3c",
+			"races": [
+				"lizard"
+			]
+		},
+		{
+			"id": "lizard_jade",
+			"color": "#2f8f7a",
+			"races": [
+				"lizard"
+			]
+		},
+		{
+			"id": "lizard_sand",
+			"color": "#c2a36b",
+			"races": [
+				"lizard"
+			]
+		},
+		{
+			"id": "lizard_rust",
+			"color": "#9a4f2c",
+			"races": [
+				"lizard"
+			]
+		},
+		{
+			"id": "lizard_blueblack",
+			"color": "#25303f",
+			"races": [
+				"lizard"
+			]
+		},
+		{
+			"id": "lizard_albino",
+			"color": "#e8e2d0",
+			"races": [
+				"lizard"
+			]
+		}
 	],
 	"eyes": [
-		{"id": "brown", "color": "#5a3a22"},
-		{"id": "dark", "color": "#2b2420"},
-		{"id": "blue", "color": "#3d7cc9"},
-		{"id": "green", "color": "#3f8f4e"},
-		{"id": "grey", "color": "#7d8a96"},
-		{"id": "amber", "color": "#b07a2a"},
-		{"id": "red", "color": "#c0283a"},
-		{"id": "reptile", "color": "#d6b42a"},
-		{"id": "violet", "color": "#8a4fc0"}
+		{
+			"id": "brown",
+			"color": "#5a3a22"
+		},
+		{
+			"id": "dark",
+			"color": "#2b2420"
+		},
+		{
+			"id": "blue",
+			"color": "#3d7cc9"
+		},
+		{
+			"id": "green",
+			"color": "#3f8f4e"
+		},
+		{
+			"id": "grey",
+			"color": "#7d8a96"
+		},
+		{
+			"id": "amber",
+			"color": "#b07a2a"
+		},
+		{
+			"id": "red",
+			"color": "#c0283a"
+		},
+		{
+			"id": "reptile",
+			"color": "#d6b42a"
+		},
+		{
+			"id": "violet",
+			"color": "#8a4fc0"
+		}
 	],
 	"hair_style": [
-		{"id": "short", "name": "HAIR_SHORT", "pieces": ["hair_short"], "races": ["human", "elf", "dwarf"]},
-		{"id": "bob", "name": "HAIR_BOB", "pieces": ["hair_bob"], "races": ["human", "elf", "dwarf"]},
-		{"id": "swept", "name": "HAIR_SWEPT", "pieces": ["hair_swept"], "races": ["human", "elf", "dwarf"]},
-		{"id": "bald", "name": "HAIR_BALD", "pieces": [], "races": ["human", "elf", "dwarf", "ogre"]},
-		{"id": "hair_long", "name": "HAIR_LONG", "pieces": ["hair_bob", "hair_long"], "races": ["human", "elf", "dwarf"]},
-		{"id": "hair_ponytail", "name": "HAIR_PONYTAIL", "pieces": ["hair_short", "hair_ponytail"], "races": ["human", "elf", "dwarf"]},
-		{"id": "hair_bun", "name": "HAIR_BUN", "pieces": ["hair_swept", "hair_bun"], "races": ["human", "elf", "dwarf", "ogre"]},
-		{"id": "hair_mohawk", "name": "HAIR_MOHAWK", "pieces": ["hair_mohawk"], "races": ["human", "elf", "dwarf", "ogre"]},
-		{"id": "hair_braids", "name": "HAIR_BRAIDS", "pieces": ["hair_braids"], "races": ["human", "elf", "dwarf"]},
-		{"id": "hair_undercut", "name": "HAIR_UNDERCUT", "pieces": ["hair_undercut"], "races": ["human", "elf", "dwarf"]},
-		{"id": "hair_loose", "name": "HAIR_LOOSE", "pieces": ["hair_loose"], "races": ["human", "elf", "dwarf"]},
-		{"id": "hair_high_ponytail", "name": "HAIR_HIGH_PONYTAIL", "pieces": ["hair_high_ponytail"], "races": ["human", "elf", "dwarf"]},
-		{"id": "hair_warrior_braid", "name": "HAIR_WARRIOR_BRAID", "pieces": ["hair_warrior_braid"], "races": ["human", "elf", "dwarf"]},
-		{"id": "hair_curls", "name": "HAIR_CURLS", "pieces": ["hair_curls"], "races": ["human", "elf", "dwarf"]},
-		{"id": "hair_shaggy", "name": "HAIR_SHAGGY", "pieces": ["hair_shaggy"], "races": ["human", "elf", "dwarf", "ogre"]},
-		{"id": "hair_half_up", "name": "HAIR_HALF_UP", "pieces": ["hair_half_up"], "races": ["human", "elf", "dwarf"]},
-		{"id": "crest_fin", "name": "CREST_FIN", "pieces": ["crest_fin"], "races": ["lizard"]},
-		{"id": "crest_spikes", "name": "CREST_SPIKES", "pieces": ["crest_spikes"], "races": ["lizard"]},
-		{"id": "crest_frill", "name": "CREST_FRILL", "pieces": ["crest_frill"], "races": ["lizard"]},
-		{"id": "crest_horns", "name": "CREST_HORNS", "pieces": ["crest_horns"], "races": ["lizard"]},
-		{"id": "crest_none", "name": "CREST_NONE", "pieces": [], "races": ["lizard"]}
+		{
+			"id": "short",
+			"name": "HAIR_SHORT",
+			"pieces": [
+				"hair_short"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "bob",
+			"name": "HAIR_BOB",
+			"pieces": [
+				"hair_bob"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "swept",
+			"name": "HAIR_SWEPT",
+			"pieces": [
+				"hair_swept"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "bald",
+			"name": "HAIR_BALD",
+			"pieces": [],
+			"races": [
+				"human",
+				"elf",
+				"dwarf",
+				"ogre"
+			]
+		},
+		{
+			"id": "hair_long",
+			"name": "HAIR_LONG",
+			"pieces": [
+				"hair_bob",
+				"hair_long"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "hair_ponytail",
+			"name": "HAIR_PONYTAIL",
+			"pieces": [
+				"hair_short",
+				"hair_ponytail"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "hair_bun",
+			"name": "HAIR_BUN",
+			"pieces": [
+				"hair_swept",
+				"hair_bun"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf",
+				"ogre"
+			]
+		},
+		{
+			"id": "hair_mohawk",
+			"name": "HAIR_MOHAWK",
+			"pieces": [
+				"hair_mohawk"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf",
+				"ogre"
+			]
+		},
+		{
+			"id": "hair_braids",
+			"name": "HAIR_BRAIDS",
+			"pieces": [
+				"hair_braids"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "hair_undercut",
+			"name": "HAIR_UNDERCUT",
+			"pieces": [
+				"hair_undercut"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "hair_loose",
+			"name": "HAIR_LOOSE",
+			"pieces": [
+				"hair_loose"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "hair_high_ponytail",
+			"name": "HAIR_HIGH_PONYTAIL",
+			"pieces": [
+				"hair_high_ponytail"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "hair_warrior_braid",
+			"name": "HAIR_WARRIOR_BRAID",
+			"pieces": [
+				"hair_warrior_braid"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "hair_curls",
+			"name": "HAIR_CURLS",
+			"pieces": [
+				"hair_curls"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "hair_shaggy",
+			"name": "HAIR_SHAGGY",
+			"pieces": [
+				"hair_shaggy"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf",
+				"ogre"
+			]
+		},
+		{
+			"id": "hair_half_up",
+			"name": "HAIR_HALF_UP",
+			"pieces": [
+				"hair_half_up"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "crest_fin",
+			"name": "CREST_FIN",
+			"pieces": [
+				"crest_fin"
+			],
+			"races": [
+				"lizard"
+			]
+		},
+		{
+			"id": "crest_spikes",
+			"name": "CREST_SPIKES",
+			"pieces": [
+				"crest_spikes"
+			],
+			"races": [
+				"lizard"
+			]
+		},
+		{
+			"id": "crest_frill",
+			"name": "CREST_FRILL",
+			"pieces": [
+				"crest_frill"
+			],
+			"races": [
+				"lizard"
+			]
+		},
+		{
+			"id": "crest_horns",
+			"name": "CREST_HORNS",
+			"pieces": [
+				"crest_horns"
+			],
+			"races": [
+				"lizard"
+			]
+		},
+		{
+			"id": "crest_none",
+			"name": "CREST_NONE",
+			"pieces": [],
+			"races": [
+				"lizard"
+			]
+		}
 	],
 	"hair_color": [
-		{"id": "black", "color": "#1d1a19"},
-		{"id": "dark_brown", "color": "#3b2a20"},
-		{"id": "brown", "color": "#6b4428"},
-		{"id": "chestnut", "color": "#8a4b2a"},
-		{"id": "red", "color": "#c4542a"},
-		{"id": "blond", "color": "#d9b25e"},
-		{"id": "platinum", "color": "#e8dcb8"},
-		{"id": "grey", "color": "#8c8c8c"},
-		{"id": "white", "color": "#e9e9e9"},
-		{"id": "navy", "color": "#2f3a5a"},
-		{"id": "crimson", "color": "#b3202e"},
-		{"id": "auburn", "color": "#8a3b22"},
-		{"id": "night_blue", "color": "#1e2a4a"},
-		{"id": "moss_green", "color": "#4a6b3a"},
-		{"id": "silver", "color": "#c9ccd2"},
-		{"id": "ash_blond", "color": "#bfae86"}
+		{
+			"id": "black",
+			"color": "#1d1a19"
+		},
+		{
+			"id": "dark_brown",
+			"color": "#3b2a20"
+		},
+		{
+			"id": "brown",
+			"color": "#6b4428"
+		},
+		{
+			"id": "chestnut",
+			"color": "#8a4b2a"
+		},
+		{
+			"id": "red",
+			"color": "#c4542a"
+		},
+		{
+			"id": "blond",
+			"color": "#d9b25e"
+		},
+		{
+			"id": "platinum",
+			"color": "#e8dcb8"
+		},
+		{
+			"id": "grey",
+			"color": "#8c8c8c"
+		},
+		{
+			"id": "white",
+			"color": "#e9e9e9"
+		},
+		{
+			"id": "navy",
+			"color": "#2f3a5a"
+		},
+		{
+			"id": "crimson",
+			"color": "#b3202e"
+		},
+		{
+			"id": "auburn",
+			"color": "#8a3b22"
+		},
+		{
+			"id": "night_blue",
+			"color": "#1e2a4a"
+		},
+		{
+			"id": "moss_green",
+			"color": "#4a6b3a"
+		},
+		{
+			"id": "silver",
+			"color": "#c9ccd2"
+		},
+		{
+			"id": "ash_blond",
+			"color": "#bfae86"
+		}
 	],
 	"beard": [
-		{"id": "none", "name": "BEARD_NONE", "piece": "", "races": ["human", "elf", "dwarf", "ogre", "lizard"]},
-		{"id": "full", "name": "BEARD_FULL", "piece": "beard_full", "races": ["human", "dwarf"]},
-		{"id": "mustache", "name": "BEARD_MUSTACHE", "piece": "beard_mustache", "races": ["human", "dwarf", "ogre"]},
-		{"id": "short", "name": "BEARD_SHORT", "piece": "beard_short", "races": ["human", "dwarf", "ogre"]},
-		{"id": "goatee", "name": "BEARD_GOATEE", "piece": "beard_goatee", "races": ["human", "elf", "dwarf"]},
-		{"id": "dwarf_braided", "name": "BEARD_DWARF_BRAIDED", "piece": "beard_dwarf_braided", "races": ["dwarf"]},
-		{"id": "dwarf_forked", "name": "BEARD_DWARF_FORKED", "piece": "beard_dwarf_forked", "races": ["dwarf"]},
-		{"id": "sideburns", "name": "BEARD_SIDEBURNS", "piece": "beard_sideburns", "races": ["human", "dwarf", "ogre"]},
-		{"id": "chinstrap", "name": "BEARD_CHINSTRAP", "piece": "beard_chinstrap", "races": ["human", "dwarf"]},
-		{"id": "stubble", "name": "BEARD_STUBBLE", "piece": "beard_stubble", "races": ["human", "dwarf", "ogre"]}
+		{
+			"id": "none",
+			"name": "BEARD_NONE",
+			"piece": "",
+			"races": [
+				"human",
+				"elf",
+				"dwarf",
+				"ogre",
+				"lizard"
+			]
+		},
+		{
+			"id": "full",
+			"name": "BEARD_FULL",
+			"piece": "beard_full",
+			"races": [
+				"human",
+				"dwarf"
+			]
+		},
+		{
+			"id": "mustache",
+			"name": "BEARD_MUSTACHE",
+			"piece": "beard_mustache",
+			"races": [
+				"human",
+				"dwarf",
+				"ogre"
+			]
+		},
+		{
+			"id": "short",
+			"name": "BEARD_SHORT",
+			"piece": "beard_short",
+			"races": [
+				"human",
+				"dwarf",
+				"ogre"
+			]
+		},
+		{
+			"id": "goatee",
+			"name": "BEARD_GOATEE",
+			"piece": "beard_goatee",
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "dwarf_braided",
+			"name": "BEARD_DWARF_BRAIDED",
+			"piece": "beard_dwarf_braided",
+			"races": [
+				"dwarf"
+			]
+		},
+		{
+			"id": "dwarf_forked",
+			"name": "BEARD_DWARF_FORKED",
+			"piece": "beard_dwarf_forked",
+			"races": [
+				"dwarf"
+			]
+		},
+		{
+			"id": "sideburns",
+			"name": "BEARD_SIDEBURNS",
+			"piece": "beard_sideburns",
+			"races": [
+				"human",
+				"dwarf",
+				"ogre"
+			]
+		},
+		{
+			"id": "chinstrap",
+			"name": "BEARD_CHINSTRAP",
+			"piece": "beard_chinstrap",
+			"races": [
+				"human",
+				"dwarf"
+			]
+		},
+		{
+			"id": "stubble",
+			"name": "BEARD_STUBBLE",
+			"piece": "beard_stubble",
+			"races": [
+				"human",
+				"dwarf",
+				"ogre"
+			]
+		}
 	],
 	"marks": [
-		{"id": "none", "name": "MARK_NONE", "pieces": []},
-		{"id": "scar_eye", "name": "MARK_SCAR_EYE", "pieces": ["mark_scar_eye"], "races": ["human", "elf", "dwarf"]},
-		{"id": "scar_cheek", "name": "MARK_SCAR_CHEEK", "pieces": ["mark_scar_cheek"], "races": ["human", "elf", "dwarf"]},
-		{"id": "warpaint", "name": "MARK_WARPAINT", "pieces": ["mark_warpaint"], "races": ["human", "elf", "dwarf"]},
-		{"id": "runes", "name": "MARK_RUNES", "pieces": ["mark_runes"], "races": ["human", "elf", "dwarf"]},
-		{"id": "freckles", "name": "MARK_FRECKLES", "pieces": ["mark_freckles"], "races": ["human", "elf", "dwarf"]}
+		{
+			"id": "none",
+			"name": "MARK_NONE",
+			"pieces": []
+		},
+		{
+			"id": "scar_eye",
+			"name": "MARK_SCAR_EYE",
+			"pieces": [
+				"mark_scar_eye"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "scar_cheek",
+			"name": "MARK_SCAR_CHEEK",
+			"pieces": [
+				"mark_scar_cheek"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "warpaint",
+			"name": "MARK_WARPAINT",
+			"pieces": [
+				"mark_warpaint"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "runes",
+			"name": "MARK_RUNES",
+			"pieces": [
+				"mark_runes"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		},
+		{
+			"id": "freckles",
+			"name": "MARK_FRECKLES",
+			"pieces": [
+				"mark_freckles"
+			],
+			"races": [
+				"human",
+				"elf",
+				"dwarf"
+			]
+		}
 	]
 }

@@ -8,7 +8,7 @@
 	"look": {
 		"class": "villager",
 		"appearance": {
-			"body": "slim",
+			"body": "male",
 			"skin": "skin_1",
 			"eyes": "blue",
 			"hair_style": "hair_shaggy",

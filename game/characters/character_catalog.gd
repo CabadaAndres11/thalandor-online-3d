@@ -4,6 +4,8 @@ extends RefCounted
 ## pieces. Sanitizes untrusted appearances (saves, imports, the network) and resolves a
 ## class + appearance into the "look" HumanRig builds.
 
+## The bodies before Plan 8.3e, read as the new ones.
+const BODY_ALIASES := {"slim": "female", "robust": "male"}
 const KINDS := ["race", "body", "skin", "eyes", "hair_style", "hair_color", "beard", "marks"]
 ## Races (Plan 7): only looks. Height, proportions, head and pieces of each one.
 const RACES_PATH := "res://data/characters/races.json"
@@ -125,6 +127,8 @@ func sanitize_appearance(app: Variant) -> Dictionary:
 	for kind: String in KINDS:
 		var valid := options_for(kind, race)
 		var v: Variant = (app as Dictionary).get(kind) if kind != "race" else race
+		if kind == "body" and v is String and BODY_ALIASES.has(v):
+			v = BODY_ALIASES[v] # the old bodies (Plan 8.3e): slim is a woman, robust a man
 		var ids: Array = valid.map(func(o: Dictionary) -> String: return o.id)
 		if v is String and ids.has(v):
 			out[kind] = v
@@ -192,6 +196,8 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 			if Inventory.VISIBLE[i] == "main":
 				grip = str(db.family_of(base_id).get("grip", ""))
 		var chest := str(gear[4]) if gear.size() > 4 else ""
+		if chest != "" and not (db.base(chest).get("look", []) as Array).is_empty():
+			hidden["bust"] = true # chest armour covers the body's own chest (Plan 8.3e)
 		if chest == "" or (db.base(chest).get("look", []) as Array).is_empty():
 			pieces.append(piece_entry(BASE_OUTFIT))
 		for id: String in c.get("fixed_pieces", []):
@@ -205,7 +211,7 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 	var race := race_def(app.race)
 	if hidden.has("hair_cap"):
 		hidden["ears"] = true # what covers the scalp covers the elf ears too
-	for id: String in race.get("pieces", []) + option("marks", app.marks).get("pieces", []):
+	for id: String in race.get("pieces", []) + option("marks", app.marks).get("pieces", []) + option("body", app.body).get("pieces", []):
 		if (not piece(id).is_empty() or not piece_v2(id).is_empty()) and not hidden.has(str(meta(id).get("tag", ""))):
 			pieces.append(piece_entry(id))
 	var swaps: Dictionary = race.get("piece_swap", {}) # pieces drawn again for the race head (Plan 8.1.1)
@@ -217,7 +223,11 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 	for e: Dictionary in pieces:
 		if fits.has(e.id):
 			e["fit"] = fits[e.id] # this piece fitted by hand to the race head
-	var head: Dictionary = HumanRig.rig_heads(BODY).get(str(race.get("head", "")), {})
+	# A race's own head first (ogre, lizard); otherwise the body's (Plan 8.3e: the woman's).
+	var head_id := str(race.get("head", ""))
+	if head_id == "":
+		head_id = str(option("body", app.body).get("head", ""))
+	var head: Dictionary = HumanRig.rig_heads(BODY).get(head_id, {})
 	return {
 		"skin_color": Color(str(option("skin", app.skin).color)),
 		"eyes_color": Color(str(option("eyes", app.eyes).color)),

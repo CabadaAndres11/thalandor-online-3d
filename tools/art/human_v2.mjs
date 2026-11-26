@@ -92,6 +92,40 @@ export function headV2() {
   return h;
 }
 
+// The woman's head (Plan 8.3e): the same skull with a narrower jaw and chin, higher
+// cheekbones, one row of fine brows, lashes over the eyes, fuller lips and a shorter nose.
+export function headFemaleV2() {
+  const h = new Shape();
+  ellipsoid(h, [-0.5, 9, -1.5], [6.3, 7.5, 7.2], SK); // cranium
+  ellipsoid(h, [-0.5, 5, 0.5], [5.0, 4.4, 5.6], SK); // cheeks and a narrower jaw
+  roundBox(h, [-3, 0.5, -1], [2, 3, 5], 1.6, SK); // a small chin
+  carve(h, (t) => roundBox(t, [-9, -2, -10], [8, 16.5 + 3, -7.5], 0, 0));
+  carve(h, (t) => roundBox(t, [-9, 17, -10], [8, 22, 8], 0, 0));
+  finish(h, [SK], 12, [0.7, 0.2, 0.1]);
+  for (const x of [-8, 7]) roundBox(h, [x, 6, -2], [x, 9, 0], 0.6, SK);
+  for (const x of [-8, 7]) h.put(x, 8, -1, SHADE(SK));
+  // Fine brows (hair colour), one row, arched at the outer end.
+  for (let x = 1; x <= 3; x++) face(h, x, 11, HR, 0);
+  face(h, 4, 12, HR, 0);
+  // Eyes with lashes: white, iris and pupil; dark lashes on top and at the outer corner.
+  face(h, 4, 9, WHITE); face(h, 3, 9, EY); face(h, 2, 9, PUPIL); face(h, 1, 9, WHITE);
+  face(h, 4, 8, SHADE(SK)); face(h, 3, 8, EY); face(h, 2, 8, EY); face(h, 1, 8, LIGHT(SK));
+  for (let x = 1; x <= 4; x++) face(h, x, 10, PUPIL); // lashes
+  face(h, 5, 10, PUPIL);
+  // High cheekbones catch the light, a soft blush below.
+  face(h, 4, 7, LIGHT(SK)); face(h, 5, 7, LIGHT(SK)); face(h, 4, 6, LIP);
+  mirrorX(h);
+  // A shorter nose: the ridge from y 6, its tip proud of the face.
+  for (let y = 6; y <= 8; y++) for (const x of [-1, 0]) face(h, x, y, y === 6 ? LIGHT(SK) : SK, 1);
+  for (const x of [-2, 1]) face(h, x, 5, SHADE(SK));
+  for (const x of [-1, 0]) face(h, x, 5, SHADE(SK));
+  // Fuller lips: the upper lip, the mouth line and a full lower lip.
+  for (let x = -2; x <= 1; x++) face(h, x, 4, LIP);
+  for (let x = -3; x <= 2; x++) face(h, x, 3, x === -3 || x === 2 ? SHADE(SK) : MOUTH);
+  for (let x = -2; x <= 1; x++) face(h, x, 2, LIP);
+  return h;
+}
+
 // Torso, pivot at the waist; neck up to the head pivot (local y 28).
 export function torsoV2() {
   const t = new Shape();

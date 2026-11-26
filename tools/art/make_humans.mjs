@@ -11,7 +11,7 @@
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { write, Shape, SHADE, LIGHT, TINT_TROUSERS, TINT_SKIN, TINT_EYES, TINT_HAIR, TINT_PRIMARY } from "./vox.mjs";
-import { humanV2 } from "./human_v2.mjs";
+import { humanV2, headFemaleV2 } from "./human_v2.mjs";
 import { raceHeadsV2 } from "./races_v2.mjs";
 export { humanV2 };
 
@@ -162,5 +162,5 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     process.exit(1);
   }
   writeRig("human", human, outDir, "res://assets/characters/vox");
-  writeRig("human_v2", humanV2, outDirV2, "res://assets/characters/vox_v2", raceHeadsV2());
+  writeRig("human_v2", humanV2, outDirV2, "res://assets/characters/vox_v2", { ...raceHeadsV2(), female: headFemaleV2() });
 }

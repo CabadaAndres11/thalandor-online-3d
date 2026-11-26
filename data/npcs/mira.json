@@ -8,7 +8,7 @@
 	"look": {
 		"class": "villager",
 		"appearance": {
-			"body": "slim",
+			"body": "female",
 			"skin": "skin_1",
 			"eyes": "grey",
 			"hair_style": "hair_warrior_braid",

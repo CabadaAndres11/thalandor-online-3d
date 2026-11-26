@@ -47,7 +47,7 @@ static func look_of(look: Dictionary) -> Dictionary:
 	if look.has("pieces"):
 		var own: Array = look.pieces
 		var class_pieces: Array = catalog.class_def(str(look.get("class", CharacterCatalog.DEFAULT_CLASS))).get("pieces", [])
-		var kept: Array = (out.pieces as Array).filter(func(p: Dictionary) -> bool: return not str(p.id) in class_pieces)
+		var kept: Array = (out.pieces as Array).filter(func(p: Dictionary) -> bool: return not str(p.id) in class_pieces and str(p.id) != "bust_female")
 		for id: String in own:
 			if not catalog.piece_v2(id).is_empty():
 				kept.append(catalog.piece_entry(id))

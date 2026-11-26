@@ -198,6 +198,14 @@
 				-2,
 				-8
 			]
+		},
+		"female": {
+			"file": "res://assets/characters/vox_v2/human_v2_head_female.vox",
+			"offset": [
+				-8,
+				1,
+				-7
+			]
 		}
 	}
 }

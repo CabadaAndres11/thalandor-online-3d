@@ -8,7 +8,7 @@
 	"look": {
 		"class": "villager",
 		"appearance": {
-			"body": "slim",
+			"body": "female",
 			"skin": "skin_3",
 			"eyes": "green",
 			"hair_style": "hair_braids",

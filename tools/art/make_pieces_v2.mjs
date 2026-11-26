@@ -6,9 +6,9 @@
 // and hides as the v1 table (data/characters/pieces.json), which the table copies.
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
-import { write, Shape, TEX_D, TEX_L, TINT_HAIR, TINT_SKIN, SHADE, LIGHT } from "./vox.mjs";
+import { write, Shape, TEX_D, TEX_L, TINT_HAIR, TINT_SKIN, TINT_PRIMARY, SHADE, LIGHT } from "./vox.mjs";
 import { ellipsoid, capsule, roundBox, carve, shadeByFacing, shellAround, noise3 } from "./sculpt.mjs";
-import { headV2, frontZ, PALETTE_V2, FORM, finish, LIP } from "./human_v2.mjs";
+import { headV2, torsoV2, frontZ, PALETTE_V2, FORM, finish, LIP } from "./human_v2.mjs";
 import { headLizardV2 } from "./races_v2.mjs";
 import { clothesV2 } from "./clothes_v2.mjs";
 import { weaponsV2 } from "./weapons_v2.mjs";
@@ -332,6 +332,17 @@ const CRESTS = {
   },
 };
 
+// The woman's chest (Plan 8.3e): two soft volumes in the shirt's colour on the torso's
+// front, hidden under any chest armour (tag "bust").
+function bustFemale() {
+  const s = new Shape();
+  for (const x of [-4.5, 3.5]) ellipsoid(s, [x, 17.0, 6.6], [3.6, 3.2, 3.0], TINT_PRIMARY);
+  const torso = torsoV2();
+  carve(s, (c) => { for (const [x, y, z] of torso.cells.values()) c.put(x, y, z, 0); });
+  for (const v of s.cells.values()) if (v[1] <= 15) v[3] = SHADE(TINT_PRIMARY);
+  return s;
+}
+
 export function plan7PiecesV2() {
   const out = {};
   let seed = 101;
@@ -342,6 +353,7 @@ export function plan7PiecesV2() {
   out.ears_elf = { shape: earsElf(), part: "head", tag: "ears", palette: PALETTE_V2 };
   out.nose_dwarf = { shape: noseDwarf(), part: "head", tag: "face", palette: PALETTE_V2 };
   out.tail_lizard = { shape: tailLizard(), part: "hips", tag: "tail", palette: PALETTE_V2 };
+  out.bust_female = { shape: bustFemale(), part: "torso", tag: "bust", palette: PALETTE_V2 }; // Plan 8.3e
   return out;
 }
 
