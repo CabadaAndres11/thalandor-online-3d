@@ -35,6 +35,9 @@ var minions: Array = []
 var phase_casts: Array = []
 ## Id of the monster or player that called this one (0 = none): it gives no experience.
 var summoned_by: int = 0
+## Fled at its flee_at share of health (Plan 8.3a): out of the fight, gone at fled_until.
+var fled: bool = false
+var fled_until: int = -1
 ## Allied summons: the tick they vanish (0 = never).
 var despawn_tick: int = 0
 

@@ -1407,5 +1407,22 @@
 		],
 		"shadow": "medium",
 		"range": 90
+	},
+	"training_dummy": {
+		"vox": "res://assets/world/training_dummy.vox",
+		"scale": 0.5,
+		"offset": [
+			-5,
+			0,
+			2
+		],
+		"footprint": [
+			[
+				0,
+				0
+			]
+		],
+		"shadow": "medium",
+		"range": 90
 	}
 }

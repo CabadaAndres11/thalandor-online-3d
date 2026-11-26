@@ -149,9 +149,22 @@ func step(inputs: Dictionary) -> void:
 	Loot.step(self)
 	if spawner != null:
 		spawner.tick(self)
+	_step_dummies_and_fled()
 	if tick % maxi(1, ticks(QuestRules.REACH_EVERY_S)) == 0:
 		QuestRules.step_reach(self)
 	tick += 1
+
+
+## The training dummy refills after 3 s without blows; fled bosses leave (Plan 8.3a).
+func _step_dummies_and_fled() -> void:
+	for e: CombatEntity in monsters.values():
+		var m := e as MonsterState
+		if m == null:
+			continue
+		if m.fled and tick >= m.fled_until:
+			remove_entity(m.id)
+		elif bool(m.def.get("immortal", false)) and m.hp < m.stats.max_hp and tick - m.last_hurt_tick >= ticks(3.0):
+			m.hp = m.stats.max_hp
 
 
 func dt() -> float:

@@ -37,6 +37,9 @@ static func tick(world: SimWorld, m: MonsterState) -> void:
 	if m.team == CombatEntity.TEAM_PLAYERS:
 		_tick_ally(world, m)
 		return
+	if m.fled or str(m.def.get("behavior", "")) == "dummy":
+		m.threat.clear()
+		return # a fleeing boss or the training dummy never fights (Plan 8.3a)
 	if m.ai == MonsterState.RETURN:
 		_go_home(world, m)
 		return

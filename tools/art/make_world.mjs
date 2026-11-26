@@ -449,6 +449,16 @@ export function worldPieces() {
   cylinder(pillar, [9.5, 0, 9.5], [9.5, 70, 9.5], 7, STONE);
   pillar.box(1, 0, 1, 18, 4, 18, STONE).box(1, 66, 1, 18, 70, 18, STONE);
   add("crypt_pillar", paint(pillar, STONE, [STONE, STONE_D, STONE_L], 35));
+  // The wooden sparring dummy of the prologue (Plan 8.3a): a cross base, a post, a straw body
+  // tied with rope, a straw head and two wooden arms.
+  const dummy = new Shape();
+  dummy.box(2, 0, 8, 17, 2, 11, WOOD_D).box(8, 0, 2, 11, 2, 17, WOOD_D);
+  dummy.box(8, 2, 8, 11, 40, 11, WOOD);
+  ellipsoid(dummy, [9.5, 26, 9.5], [6, 9, 5], THATCH);
+  ellipsoid(dummy, [9.5, 40, 9.5], [4.5, 4.5, 4.5], THATCH_L);
+  for (const y of [20, 31]) dummy.box(3, y, 4, 16, y, 15, WOOD_D);
+  dummy.box(-4, 29, 8, 23, 31, 10, WOOD).box(-5, 27, 8, -3, 31, 10, WOOD_D).box(22, 27, 8, 24, 31, 10, WOOD_D);
+  add("training_dummy", paint(dummy, THATCH, [THATCH, THATCH_D, THATCH_L], 41), { footprint: [[0, 0]] });
   return out;
 }
 

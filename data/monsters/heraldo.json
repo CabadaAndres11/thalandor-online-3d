@@ -1,0 +1,65 @@
+{
+	"id": "heraldo",
+	"name": "MON_HERALDO",
+	"model": "humanoid:cult_acolyte",
+	"tint": "#1c1b1f",
+	"scale": 1.8,
+	"radius": 0.8,
+	"speed": 3.4,
+	"stats": {
+		"max_hp": 375,
+		"armor": 40,
+		"attack_power": 20,
+		"crit_chance": 0.05
+	},
+	"aggro_range": 10,
+	"leash_range": 28,
+	"attack_range": 2.6,
+	"behavior": "boss",
+	"boss": true,
+	"abilities": [
+		"cult_acolyte_claw"
+	],
+	"jump": {
+		"ability": "cult_acolyte_leap",
+		"min_range": 4,
+		"max_range": 14,
+		"from_phase": 2
+	},
+	"look": {
+		"skin": "#141217",
+		"eyes": "#09080a",
+		"hair": "#09080a",
+		"primary": "#1c1b1f",
+		"secondary": "#b8995a",
+		"trousers": "#121114",
+		"body_scale": {
+			"torso": [
+				1.15,
+				1,
+				1.1
+			],
+			"arm": [
+				1.15,
+				1,
+				1.15
+			],
+			"leg": [
+				1.1,
+				1,
+				1.1
+			]
+		},
+		"pieces": [
+			"acolyte_robe",
+			"acolyte_hood",
+			"acolyte_sleeve_left",
+			"acolyte_sleeve_right",
+			"acolyte_cuff_left",
+			"acolyte_cuff_right",
+			"acolyte_claws_left",
+			"acolyte_claws_right"
+		]
+	},
+	"flee_at": 0.1
+}

@@ -736,6 +736,11 @@ func _on_combat_event(ev: Array) -> void:
 			var fallen := int(ev[1])
 			if _avatars.has(fallen):
 				(_avatars[fallen] as PlayerAvatar).play_action("downed")
+		"fled":
+			# A boss ran away (Plan 8.3a): it leaves the scene, no binary dissolve.
+			var gone := int(ev[1])
+			if _monster_avatars.has(gone):
+				(_monster_avatars[gone] as MonsterAvatar).visible = false
 		"died":
 			var who := int(ev[1])
 			if _monster_avatars.has(who):

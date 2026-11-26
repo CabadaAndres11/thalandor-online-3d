@@ -68,6 +68,22 @@ func setup(type: Dictionary, elite: bool = false, elite_scale: float = 1.3, ally
 			if mesh != null:
 				mesh.visible = false
 		_height = float(type.get("bar_height", 1.9)) * scale_f + _hover
+	elif model.begins_with("piece:"):
+		# A world piece as the whole model (the training dummy, Plan 8.3a).
+		_kind = "piece"
+		body = Node3D.new()
+		var pieces: Variant = JSON.parse_string(FileAccess.get_file_as_string(ZoneLayout.PIECES_PATH))
+		var def: Dictionary = (pieces as Dictionary).get(model.trim_prefix("piece:"), {}) if pieces is Dictionary else {}
+		var mesh := VoxMesher.cached(str(def.get("vox", "")), {})
+		if mesh != null:
+			var mi := MeshInstance3D.new()
+			mi.mesh = mesh
+			var s := float(def.get("scale", 0.5)) * scale_f
+			var off: Array = def.get("offset", [0, 0, 0])
+			mi.transform = Transform3D(Basis.from_scale(Vector3.ONE * s),
+				Vector3(float(off[0]), float(off[1]), float(off[2])) * VoxMesher.VOXEL_SIZE * s - Vector3(0.5, 0, 0.5))
+			body.add_child(mi)
+		_height = float(type.get("bar_height", 2.3)) * scale_f
 	else:
 		_kind = "box"
 		body = MeshInstance3D.new()

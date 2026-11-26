@@ -75,9 +75,26 @@ static func apply(target: CombatEntity, result: Dictionary, world: SimWorld) -> 
 	if target.has_status("stealth"):
 		target.remove_status("stealth")
 		world.emit(["status_end", target.id, "stealth"])
+	if target is MonsterState and (target as MonsterState).fled:
+		return # a fleeing boss is out of the fight
 	target.hp = maxf(target.hp - (amount - absorbed), 0.0)
+	if target is MonsterState and _keeps_standing(target as MonsterState, world):
+		return
 	if target.hp <= 0.0 and target.is_alive() and not _survives(target, world):
 		world.on_zero_hp(target)
+
+
+## The training dummy never falls; a boss with flee_at runs away there instead (Plan 8.3a).
+static func _keeps_standing(m: MonsterState, world: SimWorld) -> bool:
+	if bool(m.def.get("immortal", false)):
+		m.hp = maxf(m.hp, 1.0)
+		return true
+	var share := float(m.def.get("flee_at", 0.0))
+	if share > 0.0 and m.is_alive() and m.hp <= m.stats.max_hp * share:
+		m.hp = maxf(m.hp, 1.0)
+		Combat.flee(world, m)
+		return true
+	return false
 
 
 ## Fénix (cheat_death on the target) or Ángel guardián (an ally with the hook in range)

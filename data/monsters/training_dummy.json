@@ -1,0 +1,7 @@
+{
+	"id": "training_dummy", "name": "MON_TRAINING_DUMMY", "model": "piece:training_dummy", "tint": "#c8a35a", "scale": 1.0,
+	"radius": 0.4, "speed": 0,
+	"stats": {"max_hp": 500, "armor": 0, "attack_power": 0, "crit_chance": 0},
+	"aggro_range": 0, "leash_range": 0, "attack_range": 0,
+	"behavior": "dummy", "immortal": true, "xp": 0, "abilities": []
+}

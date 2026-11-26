@@ -1,7 +1,7 @@
 extends GutTest
 ## The prologue's bestiary (the night the cult attacks the village) as data.
 
-const ROSTER := ["cult_acolyte", "cult_archer", "cult_inquisitor", "cultist", "marked_boar", "marked_hound", "nhazar", "vaelthar"]
+const ROSTER := ["cult_acolyte", "cult_archer", "cult_inquisitor", "cultist", "heraldo", "marked_boar", "marked_hound", "nhazar", "training_dummy", "vaelthar"]
 
 
 func _types() -> Array:
@@ -25,6 +25,9 @@ func test_every_monster_loads() -> void:
 		var model := str(t.model)
 		if model.begins_with("rig:"):
 			assert_true(FileAccess.file_exists("res://assets/monsters/vox/%s.json" % model.trim_prefix("rig:")), t.id)
+		elif model.begins_with("piece:"):
+			var pieces: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(ZoneLayout.PIECES_PATH))
+			assert_true(pieces.has(model.trim_prefix("piece:")), t.id + " piece model")
 		else:
 			assert_true(model.begins_with("humanoid:"), t.id + " model kind")
 			for id: String in t.look.pieces:

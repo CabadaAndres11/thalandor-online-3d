@@ -391,6 +391,25 @@ static func on_zero_hp(world: SimWorld, e: CombatEntity) -> void:
 		MonsterAI.dismiss_minions(world, e as MonsterState)
 
 
+## A boss runs away (Plan 8.3a): out of the fight, defeated for experience and quests, no
+## loot; it is removed FLEE_S later (SimWorld.step).
+const FLEE_S := 3.0
+
+
+static func flee(world: SimWorld, m: MonsterState) -> void:
+	if m.fled:
+		return
+	m.fled = true
+	m.fled_until = world.tick + world.ticks(FLEE_S)
+	m.threat.clear()
+	m.target_id = 0
+	world.emit(["fled", m.id])
+	Xp.share(world, m)
+	QuestRules.on_monster_died(world, m)
+	if bool(m.def.get("boss", false)):
+		MonsterAI.dismiss_minions(world, m)
+
+
 ## Masacre: whoever dealt the killing blow gets a recharge reset and/or a heal.
 static func _on_kill_hooks(world: SimWorld, dead: CombatEntity) -> void:
 	var killer := world.entity(world.current_source)

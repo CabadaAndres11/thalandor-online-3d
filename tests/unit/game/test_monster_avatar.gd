@@ -271,3 +271,11 @@ func test_beasts_are_built_ahead_of_the_fight() -> void:
 	for id: String in ["hunter_wolf", "marked_hound", "marked_boar"]:
 		_avatar(id)
 	assert_lt(Time.get_ticks_msec() - t0, 120, "the beasts' meshes were already built")
+
+
+func test_dummy_is_drawn_from_its_piece() -> void:
+	var a := MonsterAvatar.new()
+	add_child_autofree(a)
+	a.setup(MonsterDB.load_default().get_type("training_dummy"))
+	assert_eq(a.body.find_children("*", "MeshInstance3D", true, false).size(), 1)
+	assert_eq(a.display_name(), "Muñeco de práctica")
