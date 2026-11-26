@@ -60,9 +60,9 @@ func test_character_v6_migration() -> void:
 	var v5 := {"version": 5, "id": "abc", "name": "Aren", "class_id": "warrior", "progress": {"level": 3},
 		"place": {"zone": "aldea", "at": []}, "tutorial_done": false}
 	var c := CharacterData.from_dict(v5, CharacterCatalog.load_default())
-	assert_eq(CharacterData.VERSION, 6)
+	assert_eq(CharacterData.VERSION, 7)
 	assert_true(c.quests.active.is_empty())
-	assert_eq(c.to_dict().version, 6)
+	assert_eq(c.to_dict().version, 7)
 
 
 func test_character_saves_quests() -> void:

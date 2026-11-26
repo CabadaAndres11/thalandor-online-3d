@@ -26,6 +26,8 @@ var volumes: Dictionary = DEFAULT_VOLUMES.duplicate()
 var muted: bool = false
 ## The minimap under the icon bar (Plan 8.1.1; version 4, on in older files).
 var minimap: bool = true
+## The notice that older characters were set aside was shown (Plan 8.3a).
+var old_characters_notice_seen: bool = false
 
 
 static func load_from(path: String = DEFAULT_PATH) -> SettingsStore:
@@ -61,6 +63,8 @@ static func load_from(path: String = DEFAULT_PATH) -> SettingsStore:
 		s.muted = data.muted
 	if data.get("minimap") is bool:
 		s.minimap = data.minimap
+	if data.get("old_characters_notice_seen") is bool:
+		s.old_characters_notice_seen = data.old_characters_notice_seen
 	return s
 
 
@@ -87,7 +91,7 @@ func save_to(path: String = DEFAULT_PATH) -> Error:
 	f.store_string(JSON.stringify({
 		"version": VERSION, "last_code": last_code, "last_character_id": last_character_id,
 		"quality": quality, "render_scale": render_scale, "fullscreen": fullscreen,
-		"vsync": vsync, "max_fps": max_fps, "volumes": volumes, "muted": muted, "minimap": minimap,
+		"vsync": vsync, "max_fps": max_fps, "volumes": volumes, "muted": muted, "minimap": minimap, "old_characters_notice_seen": old_characters_notice_seen,
 	}, "\t"))
 	f.close()
 	return OK

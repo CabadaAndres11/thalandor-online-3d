@@ -851,7 +851,11 @@ func _show_select() -> void:
 	var list := store.load_all()
 	select_screen.set_characters(list, settings.last_character_id)
 	_show_only(select_screen)
-	if not store.skipped_files.is_empty():
+	if CharacterStore.should_notice(store.retired, settings):
+		settings.old_characters_notice_seen = true
+		settings.save_to(settings_path)
+		dialog.show_message(tr("UI_OLD_CHARACTERS"))
+	elif not store.skipped_files.is_empty():
 		dialog.show_message(tr("ERR_CHAR_SKIPPED") % store.skipped_files.size())
 
 

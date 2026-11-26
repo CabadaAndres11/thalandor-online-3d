@@ -5,6 +5,8 @@ extends RefCounted
 
 const MAX_CHARACTERS := 8
 const DEFAULT_DIR := "user://saves/characters"
+## Where characters older than CharacterData.MIN_VERSION are moved (Plan 8.3a).
+const OLD_DIR := "antiguos"
 
 ## Text key of the last failure (ERR_CHAR_FULL, ERR_NAME, ERR_NAME_TAKEN,
 ## ERR_IMPORT_INVALID, ERR_SAVE).
@@ -13,6 +15,8 @@ var last_error: String = ""
 var skipped_files: Array[String] = []
 ## How many times save() wrote a file (lets tests check the coalescing).
 var writes: int = 0
+## How many old characters the last load_all() set aside.
+var retired: int = 0
 
 var _dir: String
 var _catalog: CharacterCatalog
@@ -27,6 +31,7 @@ func _init(dir: String = DEFAULT_DIR, catalog: CharacterCatalog = null) -> void:
 
 func load_all() -> Array[CharacterData]:
 	skipped_files.clear()
+	retired = retire_old()
 	var list: Array[CharacterData] = []
 	var abs_dir := ProjectSettings.globalize_path(_dir)
 	if not DirAccess.dir_exists_absolute(abs_dir):
@@ -110,9 +115,50 @@ func export_to(id: String, path: String) -> Error:
 	return _write(path, c)
 
 
+## Moves the characters older than CharacterData.MIN_VERSION to OLD_DIR (never deletes
+## them) and returns how many. Files that are not characters stay (reported by load_all).
+func retire_old() -> int:
+	var abs_dir := ProjectSettings.globalize_path(_dir)
+	if not DirAccess.dir_exists_absolute(abs_dir):
+		return 0
+	var moved := 0
+	for file in DirAccess.get_files_at(abs_dir):
+		if not file.ends_with(".json"):
+			continue
+		var v := _version_of(_dir.path_join(file))
+		if v < 0 or v >= CharacterData.MIN_VERSION:
+			continue
+		var old_abs := abs_dir.path_join(OLD_DIR)
+		DirAccess.make_dir_recursive_absolute(old_abs)
+		if DirAccess.rename_absolute(abs_dir.path_join(file), old_abs.path_join(file)) == OK:
+			moved += 1
+	return moved
+
+
+## The version in a character file, or -1 when it is not one.
+static func _version_of(path: String) -> int:
+	var json := JSON.new() # quietly: a damaged file is reported by load_all, not logged
+	if json.parse(FileAccess.get_file_as_string(path)) != OK:
+		return -1
+	var d: Variant = json.data
+	if not d is Dictionary or not (d as Dictionary).has("id"):
+		return -1
+	var v: Variant = (d as Dictionary).get("version", 0)
+	return int(v) if (v is int or v is float) else -1
+
+
+## Whether to tell the player their old characters were set aside (once).
+static func should_notice(retired_count: int, settings: SettingsStore) -> bool:
+	return retired_count > 0 and not settings.old_characters_notice_seen
+
+
 ## Imports a character exported from any PC under a new id; `new_name` replaces its
 ## name (for when the original name is already taken).
 func import_from(path: String, new_name: String = "") -> CharacterData:
+	var v := _version_of(path) if FileAccess.file_exists(path) else -1
+	if v >= 0 and v < CharacterData.MIN_VERSION:
+		last_error = "ERR_OLD_CHARACTER"
+		return null
 	var c := _read(path)
 	if c == null:
 		last_error = "ERR_IMPORT_INVALID"
