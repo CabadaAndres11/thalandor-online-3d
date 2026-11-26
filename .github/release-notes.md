@@ -7,6 +7,16 @@
 3. **Aviso de Windows (SmartScreen):** el juego no está firmado. Pulsa **Más información → Ejecutar de todas formas**.
 4. Pulsa **Jugar**. Se abre **Tus personajes**: crea uno con **Crear** (nombre, raza y aspecto). Empiezas como **aldeano** en el prólogo, que es el tutorial: la clase se elige durante el asalto a la aldea.
 
+### Novedades de la 0.14.0: el camino y la capital
+- **Misión 4, «La capital»:** cierra el prólogo. Empieza sola al terminar *Llegan tarde*.
+  - Únete a una **caravana** en el nuevo **Camino de Sumerhold** (al este del bosque, nivel 4–8) y defiéndela de una **emboscada de bandidos**.
+  - Llega a **Sumerhold, Capital del Reino**, donde la multitud ya conoce tu nombre.
+  - La **audiencia** en el palacio con el rey, la archivista Oriel y lord Maren: los sellos y tu deber.
+  - El rey abre la **reja de la cripta bajo el palacio**. La cripta ya no está en el bosque.
+- **Bandidos:** de espada, de arco y su cabecilla, que avisa su mazazo en el suelo.
+- **La capital** es zona segura: vuelve el **mercader** y **maese Corwin** reinicia atributos o talentos a cambio de oro (20 de oro por nivel).
+- **Todo el grupo tiene que usar la misma versión.**
+
 ### Novedades de la 0.13.0: el prólogo
 - **El juego empieza por la historia.** Tres misiones en la Aldea de Aelhest que enseñan a jugar con el recuadro de objetivos bajo el minimapa:
   - **La víspera** (a solas, al atardecer de fiesta): moverse, hablar, los recados de Brann, el **muñeco de práctica** (clic izquierdo, clic derecho y Espacio), la colina con Mira y la fiesta;

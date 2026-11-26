@@ -2,12 +2,12 @@
 tags: [plan]
 plan: 8.3b
 fecha: 2026-11-26
-estado: borrador
+estado: hecho
 actualizado: 2026-11-26
 ---
 # Plan 8.3b — Camino y capital: plan de implementación
 
-> Ejecución nativa en el chat (norma 5). Pasos con casillas `- [ ]`. Cada tarea: test que falla → código → tests en verde → commit.
+> Ejecución nativa en el chat (norma 5). Pasos con casillas `- [x]`. Cada tarea: test que falla → código → tests en verde → commit.
 
 **Objetivo:** la misión 4 («La capital») sobre tres zonas nuevas (Camino de Sumerhold, capital y palacio), con bandidos, el PNJ de reinicios, la vuelta del mercader y la reja de la cripta que abre la historia. Sale como **0.14.0**.
 
@@ -43,12 +43,12 @@ actualizado: 2026-11-26
 - `HostSession._check_exits`: antes de la rama de mazmorras, si `exit_open` es falso, envía `["exit_locked", id]` cada `EXIT_WARN_S` y no mueve al jugador.
 - El cliente (`GameSession`) coloca la pieza `gate.closed` o `gate.open` según `client.quests`, y la cambia al llegar una actualización de misiones. Main escribe `UI_EXIT_LOCKED` (*La reja está cerrada.*) en el chat con `exit_locked`.
 
-- [ ] Tests:
+- [x] Tests:
   - `test_exit_open_needs_flags`: sin la marca es falso; con ella, cierto; sin `requires`, siempre cierto.
   - `test_host_refuses_locked_exit`: en una zona de prueba (`tests/data/zones/zone_gate.json`), el jugador en la salida no cambia de zona y recibe `exit_locked`; con la marca, cambia.
   - `test_guest_without_flag_stays` (punto de revisión 2): dos jugadores, solo uno con la marca; pasa solo ese.
   - `test_gate_piece_follows_flags`: `GameSession` muestra la pieza cerrada y, tras poner la marca, la abierta.
-- [ ] Implementar → verde → suite → commit `feat: exits the story opens`.
+- [x] Implementar → verde → suite → commit `feat: exits the story opens`.
 
 ### T2. Reinicios por oro
 **Archivos:** `data/balance.json` y `sim/balance.gd` (`reset_gold_per_level`), `sim/progression/requests.gd`, `net/host_session.gd` (rol `class_trainer`, ya existe), crear `ui/reset_window.gd`, `game/main.gd` (el PNJ con rol `class_trainer` abre la ventana si no tiene misión que decir); test `tests/unit/sim/test_paid_resets.gd`, `tests/unit/ui/test_reset_window.gd`.
@@ -58,12 +58,12 @@ actualizado: 2026-11-26
 - `ProgressRequests.reset(...)` cobra ese precio de `p.inventory.gold` y marca `inventory_dirty`. Si no llega el oro, devuelve falso sin cambiar nada. La comprobación de "nada que reiniciar" va antes de cobrar.
 - `ResetWindow`: dos botones, *Reiniciar atributos* y *Reiniciar talentos*, con el precio, y apagados con el motivo (`UI_RESET_NO_GOLD`, `UI_RESET_NOTHING`). Señal `reset_requested(what: String)` → `client.request_reset(what)` (el mensaje `RESET` ya existe). Se cierra con Esc.
 
-- [ ] Tests:
+- [x] Tests:
   - `test_reset_cost`: nivel 10 → 200.
   - `test_reset_charges_gold` (punto de revisión 3): con el oro justo reinicia y deja 0; con 1 menos no hace nada; en combate o sin nada que reiniciar, no cobra.
   - `test_reset_needs_trainer`: lejos del PNJ, nada.
   - `test_reset_window_states`: con el oro, los botones activos y el precio en el texto; sin oro, apagados con el motivo; sin puntos repartidos, *Reiniciar atributos* apagado.
-- [ ] Implementar → verde → suite → commit `feat: resets for gold at the capital's trainer`.
+- [x] Implementar → verde → suite → commit `feat: resets for gold at the capital's trainer`.
 
 ### T3. Bandidos
 **Archivos:** `data/monsters/bandit.json`, `bandit_archer.json`, `bandit_chief.json`; habilidades en `data/abilities/` si hacen falta (reusar las del culto donde valgan); textos; test `tests/unit/data/test_monster_data.gd` (`ROSTER`).
@@ -72,10 +72,10 @@ actualizado: 2026-11-26
 - `model: "humanoid:<id>"` con un `look` de ropa del catálogo (cuero y tela en tonos tierra, capuchas; sin máscaras): `bandit` cuerpo a cuerpo con espada, `bandit_archer` a distancia y se aleja (comportamiento del arquero del culto), `bandit_chief` con hacha a dos manos, más vida (×3 del bandido) y un golpe pesado avisado.
 - Nombres `MON_BANDIT` (*Bandido*), `MON_BANDIT_ARCHER` (*Arquero bandido*), `MON_BANDIT_CHIEF` (*Cabecilla bandido*). Botín normal; el cabecilla, como élite.
 
-- [ ] Tests:
+- [x] Tests:
   - `ROSTER` incluye los tres; sus datos validan; el avatar de cada uno se construye.
   - `test_bandits_are_not_cult`: su `look` no lleva piezas de máscara ni marca del culto.
-- [ ] Implementar → verde → suite → commit `content: bandits`.
+- [x] Implementar → verde → suite → commit `content: bandits`.
 
 ### T4. Arte de ciudad, palacio y camino, y PNJ
 **Archivos:** `tools/art/make_world.mjs` y `tools/art/tests/world.test.mjs`, `data/zones/pieces.json`, `assets/world/*.vox`, `data/ambiences/palacio.json`, `data/npcs/` nuevos; test `tests/unit/data/test_capital_art.gd`.
@@ -88,10 +88,10 @@ actualizado: 2026-11-26
 - Ambiente `palacio`: interior cálido con luz de braseros.
 - PNJ con nombre: `rey` (*el rey Aldren*, provisional), `oriel`, `lord_maren`, `caravanero`, `maese_corwin` (rol `class_trainer`), `guardia_palacio`, `guardia_ciudad`. Genéricos: `ciudadano_1…4`, `ciudadana_1…4`. Cada uno con `look` válido y `lines.greet`.
 
-- [ ] Tests:
+- [x] Tests:
   - Node: cada pieza nueva se genera, cabe en 126 vóxeles por lado y en su huella; `house_city` tiene puerta e interior libres; las dos rejas tienen la misma huella menos el paso.
   - GUT: cada pieza está en `pieces.json` y su `.vox` existe; cada PNJ tiene nombre traducido y un aspecto que el catálogo acepta sin cambiarlo; `maese_corwin` tiene rol `class_trainer`; el ambiente `palacio` carga.
-- [ ] Implementar → verde → commit `art: city, palace and road pieces; capital NPCs`.
+- [x] Implementar → verde → commit `art: city, palace and road pieces; capital NPCs`.
 
 ### T5. Tres zonas nuevas y el bosque
 **Archivos:** `data/zones/camino.json`, `capital.json`, `palacio.json`; `data/zones/bosque.json` (salida al este, sin salida a la cripta), `data/zones/cripta_prueba.json` (vuelve al palacio, `from_cripta`); `data/loading.json` y capturas con `tests/helpers/render_loading.gd`; textos `ZONE_CAMINO` (*Camino de Sumerhold*), `ZONE_CAPITAL` (*Sumerhold, Capital del Reino*, si no existe ya), `ZONE_PALACIO` (*Palacio de Sumerhold*); test `tests/unit/data/test_zones_data.gd`.
@@ -112,14 +112,14 @@ actualizado: 2026-11-26
   - Salidas: `capital` (sur) y la reja `cripta_prueba` con `"requires": {"flags": ["cripta_abierta"]}` y su `gate`.
 - **Bosque:** salida al este al final del camino real. Sin la salida a la cripta (el `crypt_arch` queda como ruina). Su camino llega a la nueva salida.
 
-- [ ] Tests:
+- [x] Tests:
   - Las tres zonas cargan sin errores, se alcanzan sus entradas y salidas, y tienen nombre traducido; `capital` y `palacio` son `safe` y sin hordas.
   - `test_road_level_band`: `camino` es de nivel 4–8 y sus hordas también.
   - `test_ambush_is_out_of_reach` (punto de revisión 5): cada punto de aparición de bandidos está a más de `aggro_range` + 3 m de `emboscada`.
   - `test_crypt_leads_to_palace` (punto de revisión 1): la salida de `cripta_prueba` va a `palacio:from_cripta`, y el bosque ya no tiene salida a la cripta.
   - `test_capital_walkers_valid`.
   - Se actualizan los tests del bosque que buscaban la cripta (`test_crypt_has_clearing`, `test_path_reaches_crypt`, `test_zone_map_image.test_markers`): ahora la calzada llega a la salida del este.
-- [ ] Commit `content: the road, the capital and the palace`.
+- [x] Commit `content: the road, the capital and the palace`.
 
 ### T6. La misión 4
 **Archivos:** `data/quests/prologo_4.json`; diálogos `data/dialogues/prologo4_*`; escenas `data/cutscenes/prologo_emboscada`, `prologo_llegada`, `prologo_audiencia`, `prologo_descenso`; textos; test `tests/integration/test_prologue_4.gd`.
@@ -135,20 +135,20 @@ actualizado: 2026-11-26
 - El paso del encargo pone `cripta_abierta` y lanza el descenso, en el que la reja se abre.
 - Al terminar: 1 nivel, oro y la marca `prologo_hecho`. La máscara se entrega a Oriel con `deliver`.
 
-- [ ] Tests:
+- [x] Tests:
   - `test_prologue_4`: de principio a fin en el anfitrión con las peticiones de un cliente; tras la emboscada (los bandidos del punto muertos), la llegada y la audiencia, la máscara ya no está en la bolsa, el jugador tiene `cripta_abierta`, cruza la reja y, al salir de la cripta, vuelve al palacio.
   - `test_prologue_4_starts_for_013_characters` (punto de revisión 4): un log con `prologo_3` hecho empieza `prologo_4` al entrar.
   - Datos válidos: misiones, diálogos y escenas sin errores.
-- [ ] Commit `content: mission 4, the capital`.
+- [x] Commit `content: mission 4, the capital`.
 
 ### T7. Versión, documentación y revisión
 **Archivos:** `project.godot` (`config/version="0.14.0"`), `.github/release-notes.md`, GDD (06 Mundo, 07 Misiones, 04 Personajes y progresión, 09 Interfaz, Registro de cambios), `docs/Planes/Planes.md`, nota de sesión.
 
-- [ ] Suite completa en verde.
-- [ ] Versión 0.14.0 y notas de la versión (camino, capital, palacio, bandidos, reinicios por oro, el mercader en la capital y la cripta bajo el palacio).
-- [ ] GDD y registro; `Planes.md` → *Hecho (0.14.0, sin publicar)*; nota de sesión.
-- [ ] Revisión final del conjunto; decir al usuario qué probar.
-- [ ] Commit `chore: 0.14.0 — road and capital`.
+- [x] Suite completa en verde.
+- [x] Versión 0.14.0 y notas de la versión (camino, capital, palacio, bandidos, reinicios por oro, el mercader en la capital y la cripta bajo el palacio).
+- [x] GDD y registro; `Planes.md` → *Hecho (0.14.0, sin publicar)*; nota de sesión.
+- [x] Revisión final del conjunto; decir al usuario qué probar.
+- [x] Commit `chore: 0.14.0 — road and capital`.
 
 ---
 ← [[Planes]]

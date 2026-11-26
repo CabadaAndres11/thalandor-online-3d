@@ -4,7 +4,7 @@ estado: en curso
 actualizado: 2026-11-26
 ---
 
-# 7. Misiones **[En curso]** (motor implementado en la 0.12.0, [[Plan 8.2 — Misiones, diálogos y escenas (spec)|Plan 8.2]]; prólogo en la 0.13.0, [[Plan 8.3a — Prólogo en la aldea (spec)|Plan 8.3a]]; el resto del arco 1 en la 8.3b–8.5)
+# 7. Misiones **[En curso]** (motor implementado en la 0.12.0, [[Plan 8.2 — Misiones, diálogos y escenas (spec)|Plan 8.2]]; prólogo en la 0.13.0 y la 0.14.0, [[Plan 8.3a — Prólogo en la aldea (spec)|Plan 8.3a]] y [[Plan 8.3b — Camino y capital (spec)|Plan 8.3b]]; el arco 1 en la 8.4–8.5)
 
 - **Tipos:** matar X, recoger objetos que sueltan los monstruos, hablar con alguien o entregarle un objeto, explorar una ubicación, derrotar a un jefe.
 - **Cadenas:** se encadenan mediante requisitos (misión previa completada, nivel mínimo, clase).
@@ -28,6 +28,7 @@ actualizado: 2026-11-26
 - **La víspera** (`prologo_1`, empieza sola al crear el personaje, a solas en `aldea/vispera`): llegar a Mira y hablar con ella, los tres recados de Brann (al panadero, al cazador y a la anciana), el muñeco de práctica (10 golpes, 3 golpes fuertes, 3 esquivas; Brann da 2 pociones), la colina al atardecer y la fiesta con el cuerno.
 - **El asalto** (`prologo_2`, a solas en `aldea/asalto`): seguir a Mira, salvar a los vecinos (6 cultistas de nivel 1–2), la plaza y el secuestro, perseguir a Mira y **elegir la clase** cuando despierta el poder (la ventana sale sola y no se cierra sin elegir), el alba, 4 sabuesos y **el Heraldo**, que huye al 10 %, y Brann caído en la puerta. Al terminar: 2 niveles, la marca `tutorial_done` y la vuelta a la aldea en ruinas.
 - **Llegan tarde** (`prologo_3`, en el mundo compartido): ayudar a los supervivientes, la llegada de Verrin, el rastro en el bosque (campamento, máscara, huellas de carro y el río), la anciana llama al héroe *Thal An Dor* (marca `apodo`) y Verrin habla de la capital. 1 nivel y la marca `prologo_3_hecho`. La **máscara del culto** se queda en la bolsa para la 8.3b.
+- **La capital** (`prologo_4`, 0.14.0, [[Plan 8.3b — Camino y capital (spec)|Plan 8.3b]]): en el mundo compartido, tras *Llegan tarde*. La caravana del Camino de Sumerhold y la emboscada (4 bandidos, 2 arqueros y el cabecilla), la llegada a Sumerhold, la audiencia con el rey, Oriel y lord Maren, la máscara para Oriel y el encargo del rey, que pone la marca `cripta_abierta` y abre la reja de la cripta. 1 nivel, 100 de oro y la marca `prologo_hecho`.
 - Si el Heraldo huye antes de su paso, vuelve a su sitio; los sabuesos del alba reaparecen y la defensa tiene 8 cultistas para los 6 que pide: ninguna misión se queda sin enemigos.
 
 ## Diálogos (0.12.0) **[Implementado]**

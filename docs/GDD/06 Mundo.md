@@ -34,13 +34,15 @@ La demo cubre el **prólogo y el arco 1** (misiones 1–14) y termina hacia el *
 | Zona | Niveles | Contenido |
 |---|---|---|
 | **Aldea** | 1–5 | Tutorial en solitario (misiones 1–2, variantes `vispera` y `asalto`); después, en ruinas, con el campamento de Verrin (0.13.0) |
-| **Bosque**, camino de la capital | 5–20 | Hordas, el rastro del Heraldo y la emboscada de bandidos (misiones 3–4) |
-| **Capital** | — | Zona segura: mercaderes, instructor, alijo y misiones |
+| **Bosque**, camino de la capital | 5–20 | Hordas y el rastro del Heraldo (misión 3); sale al este al Camino de Sumerhold |
+| **Camino de Sumerhold** | 4–8 | La caravana y la emboscada de bandidos (misión 4), hordas suaves y un campamento de bandidos (0.14.0) |
+| **Capital** (Sumerhold) | — | Zona segura amurallada (0.14.0): plaza con fuente y puestos, casas de piedra, el mercader, maese Corwin (reinicios) y ciudadanos que pasean. Al norte, el **palacio**: zona segura con el salón del trono y la reja de la cripta |
 | **Afueras de la capital** | 20–35 | Hordas entre misiones del arco 1 |
 | **Alcantarillas y submundo** | 30–40 | Misión 8 |
 | **Cripta bajo el palacio** | 35–50+ | Mazmorra instanciada y repetible (misiones 5, 11 y 12) |
 
-- **Provisional (0.11.0):** una aldea y un bosque de prueba conectados y una **cripta de prueba** instanciada al fondo del bosque.
+- **Provisional (0.11.0):** una aldea y un bosque de prueba conectados y una **cripta de prueba** instanciada. Desde la 0.14.0 se entra a ella por la reja del palacio ([[Plan 8.3b — Camino y capital (spec)|Plan 8.3b]]), que solo se abre con la marca `cripta_abierta`; el arco del bosque queda como ruina.
+- **Salidas que abre la historia** (0.14.0): una salida puede pedir marcas (`requires`) y llevar una reja que se pinta abierta o cerrada según la historia de cada jugador; el anfitrión no deja pasar a quien no las tiene.
 - **La aldea en tres momentos (0.13.0, [[Plan 8.3a — Prólogo en la aldea (spec)|Plan 8.3a]])** **[Implementado]**:
   - **base (compartida):** en ruinas, con casas quemadas (mismas casillas que las sanas), escombros, vigas, tumbas junto a la colina y el campamento del ejército (tiendas y estandarte). PNJ: Verrin, la anciana Edda, Tobías el panadero y Garet el cazador. Sin Brann ni mercader;
   - **`vispera`:** casas sanas, guirnaldas, farolillos, mesas de fiesta y hoguera, luz de atardecer, muñeco de práctica en el patio de la forja, Brann y Mira. Se empieza dentro de la casa de la forja;

@@ -25,3 +25,4 @@ Una nota por sesión de trabajo con Claude o por partida de prueba con amigos (p
 - [[Sesión 2026-11-23 — Plan 8.1.1 correcciones de la 0.11.0]]
 - [[Sesión 2026-11-26 — Plan 8.2 misiones, diálogos y escenas]]
 - [[Sesión 2026-11-26 — Plan 8.3a prólogo en la aldea]]
+- [[Sesión 2026-11-26 — Plan 8.3b camino y capital]]

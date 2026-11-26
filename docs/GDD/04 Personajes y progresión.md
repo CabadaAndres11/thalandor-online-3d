@@ -7,7 +7,7 @@ actualizado: 2026-11-22
 # 4. Personajes y clases
 
 ## 4.0 Creación y elección de clase **[Implementado]** (0.5.0, [[D-011 La clase se elige dentro de la partida]]; desde la 0.13.0 en el asalto, [[D-019 Prólogo como tutorial y clase en el asalto]])
-- **Desde la 0.13.0** la clase se elige en el prólogo, al despertar el poder durante el asalto: el paso de misión con el objetivo `class` deja elegir en cualquier sitio y la ventana sale sola, sin poder cerrarla. Brann ya no enseña clases ni hay reinicios hasta la 8.3b (un PNJ de la capital). Lo que sigue en esta sección describe la 0.5.0.
+- **Desde la 0.13.0** la clase se elige en el prólogo, al despertar el poder durante el asalto: el paso de misión con el objetivo `class` deja elegir en cualquier sitio y la ventana sale sola, sin poder cerrarla. Brann ya no enseña clases. Desde la 0.14.0 los reinicios los hace **maese Corwin** en la capital: atributos o talentos por **20 de oro × nivel** cada uno ([[Plan 8.3b — Camino y capital (spec)|Plan 8.3b]]). Lo que sigue en esta sección describe la 0.5.0.
 - **Crear personaje:** solo nombre y aspecto. Todo personaje nace **aldeano**:
   - 120 de vida y sin recurso de clase;
   - un golpe con espada de madera como ataque básico;
