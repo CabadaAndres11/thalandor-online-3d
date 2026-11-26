@@ -86,7 +86,8 @@ static func validate_dict(d: Dictionary) -> Array[String]:
 						err.call("pose desconocida '%s'" % step.pose[1])
 				"line":
 					var who := str(step.line[0])
-					if who != "player" and who != "" and not actors.has(who) and NpcDB.load_default().npc(who).is_empty():
+					if who != "player" and who != "" and not actors.has(who) and NpcDB.load_default().npc(who).is_empty() \
+							and MonsterDB.load_default().get_type(who).is_empty(): # a monster speaks by its type
 						err.call("quién habla '%s'" % who)
 					if TranslationServer.translate(str(step.line[1])) == str(step.line[1]):
 						err.call("texto sin traducir '%s'" % step.line[1])

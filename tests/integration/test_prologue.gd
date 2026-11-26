@@ -233,7 +233,7 @@ func test_the_prologue_data_is_valid() -> void:
 	for id: String in CutsceneData.ids():
 		assert_eq(CutsceneData.validate(id), [], id)
 	assert_eq(DialogueRunner.validate_dir(DialogueRunner.DIR), [])
-	assert_eq(QuestDB.load_default().ids(), ["prologo_1", "prologo_2", "prologo_3"])
+	assert_eq(QuestDB.load_default().ids(), ["prologo_1", "prologo_2", "prologo_3", "prologo_4"])
 
 
 ## Review point 1: leaving in the middle of the awakening and coming back puts the player in

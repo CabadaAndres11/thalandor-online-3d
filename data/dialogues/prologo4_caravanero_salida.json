@@ -1,0 +1,25 @@
+{
+	"id": "prologo4_caravanero_salida",
+	"nodes": {
+		"start": {
+			"lines": [
+				[
+					"caravanero",
+					"DLG_P4_CARAVANERO_SALIDA_1"
+				],
+				[
+					"caravanero",
+					"DLG_P4_CARAVANERO_SALIDA_2"
+				],
+				[
+					"player",
+					"DLG_P4_CARAVANERO_SALIDA_3"
+				],
+				[
+					"caravanero",
+					"DLG_P4_CARAVANERO_SALIDA_4"
+				]
+			]
+		}
+	}
+}

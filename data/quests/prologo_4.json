@@ -1,0 +1,169 @@
+{
+	"id": "prologo_4",
+	"name": "QUEST_PROLOGO_4",
+	"summary": "QUEST_PROLOGO_4_SUM",
+	"story": true,
+	"auto": true,
+	"giver": "",
+	"turn_in": "",
+	"requires": {
+		"quests": [
+			"prologo_3"
+		]
+	},
+	"steps": [
+		{
+			"text": "QUEST_P4_S1",
+			"objectives": [
+				{
+					"type": "reach",
+					"zone": "camino",
+					"point": "caravana",
+					"label": "QUEST_P4_O_CARAVANA"
+				}
+			]
+		},
+		{
+			"text": "QUEST_P4_S2",
+			"objectives": [
+				{
+					"type": "talk",
+					"npc": "caravanero",
+					"dialogue": "prologo4_caravanero_salida"
+				}
+			]
+		},
+		{
+			"text": "QUEST_P4_S3",
+			"objectives": [
+				{
+					"type": "reach",
+					"zone": "camino",
+					"point": "emboscada",
+					"label": "QUEST_P4_O_CALZADA"
+				}
+			],
+			"on_done": {
+				"scene": "prologo_emboscada"
+			}
+		},
+		{
+			"text": "QUEST_P4_S4",
+			"objectives": [
+				{
+					"type": "scene",
+					"scene": "prologo_emboscada"
+				},
+				{
+					"type": "kill",
+					"monster": "bandit",
+					"count": 4,
+					"zone": "camino"
+				},
+				{
+					"type": "kill",
+					"monster": "bandit_archer",
+					"count": 2,
+					"zone": "camino"
+				},
+				{
+					"type": "kill",
+					"monster": "bandit_chief",
+					"count": 1,
+					"zone": "camino"
+				}
+			]
+		},
+		{
+			"text": "QUEST_P4_S5",
+			"objectives": [
+				{
+					"type": "talk",
+					"npc": "caravanero",
+					"dialogue": "prologo4_caravanero_despues"
+				}
+			]
+		},
+		{
+			"text": "QUEST_P4_S6",
+			"objectives": [
+				{
+					"type": "reach",
+					"zone": "capital",
+					"point": "puerta_capital",
+					"label": "QUEST_P4_O_PUERTA"
+				}
+			],
+			"on_done": {
+				"scene": "prologo_llegada"
+			}
+		},
+		{
+			"text": "QUEST_P4_S7",
+			"objectives": [
+				{
+					"type": "scene",
+					"scene": "prologo_llegada"
+				},
+				{
+					"type": "reach",
+					"zone": "palacio",
+					"point": "salon_trono",
+					"label": "QUEST_P4_O_TRONO"
+				}
+			],
+			"on_done": {
+				"scene": "prologo_audiencia"
+			}
+		},
+		{
+			"text": "QUEST_P4_S8",
+			"objectives": [
+				{
+					"type": "scene",
+					"scene": "prologo_audiencia"
+				},
+				{
+					"type": "deliver",
+					"npc": "oriel",
+					"item": "q_mascara_culto",
+					"dialogue": "prologo4_oriel_mascara"
+				}
+			]
+		},
+		{
+			"text": "QUEST_P4_S9",
+			"objectives": [
+				{
+					"type": "talk",
+					"npc": "rey",
+					"dialogue": "prologo4_rey_encargo"
+				}
+			],
+			"on_done": {
+				"flags": [
+					"cripta_abierta"
+				],
+				"scene": "prologo_descenso"
+			}
+		},
+		{
+			"text": "QUEST_P4_S10",
+			"objectives": [
+				{
+					"type": "scene",
+					"scene": "prologo_descenso"
+				}
+			]
+		}
+	],
+	"on_done": {
+		"flags": [
+			"prologo_hecho"
+		]
+	},
+	"rewards": {
+		"levels": 1,
+		"gold": 100
+	}
+}

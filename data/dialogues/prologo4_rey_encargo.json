@@ -1,0 +1,25 @@
+{
+	"id": "prologo4_rey_encargo",
+	"nodes": {
+		"start": {
+			"lines": [
+				[
+					"rey",
+					"DLG_P4_REY_ENCARGO_1"
+				],
+				[
+					"rey",
+					"DLG_P4_REY_ENCARGO_2"
+				],
+				[
+					"player",
+					"DLG_P4_REY_ENCARGO_3"
+				],
+				[
+					"rey",
+					"DLG_P4_REY_ENCARGO_4"
+				]
+			]
+		}
+	}
+}

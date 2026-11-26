@@ -1,0 +1,122 @@
+{
+	"id": "prologo_descenso",
+	"skippable": true,
+	"stage": "here",
+	"actors": {
+		"rey": {
+			"npc": "rey",
+			"at": [
+				19,
+				8
+			],
+			"facing": 0
+		},
+		"guardia": {
+			"npc": "guardia_palacio",
+			"at": [
+				12,
+				6
+			],
+			"facing": 0
+		},
+		"yo": {
+			"player": true,
+			"at": [
+				17,
+				10
+			],
+			"facing": 231
+		}
+	},
+	"tracks": [
+		[
+			{
+				"camera": {
+					"at": [
+						16,
+						4,
+						12
+					],
+					"look": [
+						8,
+						1.5,
+						1
+					],
+					"fov": 48
+				},
+				"time": 0
+			},
+			{
+				"camera": {
+					"at": [
+						12,
+						2.6,
+						7
+					],
+					"look": [
+						7,
+						2,
+						0.5
+					]
+				},
+				"time": 12,
+				"ease": "in_out"
+			}
+		],
+		[
+			{
+				"fade": "in",
+				"time": 1
+			},
+			{
+				"line": [
+					"rey",
+					"SCN_P_DESCENSO_1"
+				],
+				"time": 3.4
+			},
+			{
+				"wait": "",
+				"time": 3
+			},
+			{
+				"shake": "",
+				"time": 0.6
+			},
+			{
+				"line": [
+					"",
+					"SCN_P_DESCENSO_2"
+				],
+				"time": 4
+			},
+			{
+				"line": [
+					"player",
+					"SCN_P_DESCENSO_3"
+				],
+				"time": 2.6
+			},
+			{
+				"fade": "out",
+				"time": 1.2
+			}
+		],
+		[
+			{
+				"wait": "",
+				"time": 2
+			},
+			{
+				"move": "guardia",
+				"to": [
+					[
+						9,
+						4
+					]
+				],
+				"speed": 2.5
+			}
+		]
+	]
+}
