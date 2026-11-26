@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cwwx1rrqrnvhb"
-path="res://.godot/imported/passive_mage.png-acf092c6a282bcfc132bc1c88de7f64e.ctex"
+uid="uid://d0ailapmmad6p"
+path="res://.godot/imported/weak_point.png-b6f24bca6bf944a744e873db279c6e52.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/icons/passive_mage.png"
-dest_files=["res://.godot/imported/passive_mage.png-acf092c6a282bcfc132bc1c88de7f64e.ctex"]
+source_file="res://assets/icons/weak_point.png"
+dest_files=["res://.godot/imported/weak_point.png-b6f24bca6bf944a744e873db279c6e52.ctex"]
 
 [params]
 
