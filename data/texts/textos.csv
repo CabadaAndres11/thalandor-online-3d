@@ -975,7 +975,7 @@ TIP_GROUP,"Para jugar con amigos, abre un grupo o únete con un código desde el
 TIP_DUNGEON_LEVEL,"En la puerta de una mazmorra eliges su nivel: cuanto más alto, más experiencia."
 TIP_HORDES,Las hordas de monstruos son la forma más rápida de subir de nivel.
 TIP_COMBAT_EXIT,No puedes cambiar de zona hasta 5 segundos después del último golpe recibido.
-TIP_BRANN,"Brann, el herrero de la Aldea de Aelhest, te enseña tu clase y te ayuda con tus mejoras."
+TIP_RESETS,"Maese Corwin, en la plaza de Sumerhold, reinicia tus atributos y talentos a cambio de oro."
 ITEM_Q_PAQUETE,"Paquete de Brann"
 ITEM_Q_COLMILLO,"Colmillo de lobo"
 ITEM_QUEST_TAG,"Objeto de misión"
@@ -1232,3 +1232,6 @@ NPC_CIUDADANA_3_GREET,"Que los dioses guarden al portador."
 NPC_CIUDADANA_4_GREET,"Mi hermano sirve con la capitana Verrin."
 NPC_CIUDADANO,"Ciudadano"
 NPC_CIUDADANA,"Ciudadana"
+ZONE_CAMINO,"Camino de Sumerhold"
+ZONE_CAPITAL,"Sumerhold, Capital del Reino"
+ZONE_PALACIO,"Palacio de Sumerhold"

@@ -135,7 +135,7 @@ func _no_overlaps(z: ZoneLayout) -> void:
 
 ## Plan 8.1.1: the crypt can be found: a clearing around its door and a road to it.
 func test_crypt_has_clearing() -> void:
-	var z := ZoneLayout.load_id("bosque")
+	var z := ZoneLayout.load_id("palacio") # the crypt is under the palace now (Plan 8.3b)
 	var door: Rect2i = z.exits.filter(func(e: Dictionary) -> bool: return e.to == "cripta_prueba")[0].area
 	var around := door.grow(ZoneLayout.EXIT_CLEAR)
 	for p: Dictionary in z.pieces:
@@ -159,11 +159,11 @@ func test_path_reaches_crypt() -> void:
 			if road.has(c + d) and not seen.has(c + d):
 				seen[c + d] = true
 				queue.append(c + d)
-	var door: Rect2i = z.exits.filter(func(e: Dictionary) -> bool: return e.to == "cripta_prueba")[0].area
+	var door: Rect2i = z.exits.filter(func(e: Dictionary) -> bool: return e.to == "camino")[0].area
 	var near := false
 	for c: Vector2i in seen:
 		near = near or door.grow(2).has_point(c)
-	assert_true(near, "the road leads to the crypt door")
+	assert_true(near, "the road leads to the way east (Plan 8.3b)")
 
 
 ## Plan 8.1.2: the world's names (the user's).
@@ -277,3 +277,64 @@ func test_forest_trail() -> void:
 	assert_false(z.quest_points.has("claro"), "the old clearing is gone")
 	assert_has(_ids_of(z), "camp_ruined")
 	assert_has(_ids_of(z), "river_bank")
+
+
+# --- Plan 8.3b: the road, the capital and the palace ---
+
+func test_new_zones() -> void:
+	for id: String in ["camino", "capital", "palacio"]:
+		var z := ZoneLayout.load_id(id)
+		assert_not_null(z, id)
+		assert_eq(z.errors, [], id)
+	for id: String in ["capital", "palacio"]:
+		var z := ZoneLayout.load_id(id)
+		assert_true(z.safe, id + " is safe")
+		assert_eq(z.hordes, [], id + " has no hordes")
+		assert_eq(z.spawns, [], id + " has no monsters")
+	var npcs := ZoneLayout.load_id("capital").npcs.map(func(n: Dictionary) -> String: return str(n.id))
+	assert_has(npcs, "merchant", "the merchant is back")
+	assert_has(npcs, "maese_corwin")
+	var hall := ZoneLayout.load_id("palacio").npcs.map(func(n: Dictionary) -> String: return str(n.id))
+	for id: String in ["rey", "oriel", "lord_maren"]:
+		assert_has(hall, id)
+	assert_true(ZoneLayout.load_id("camino").quest_points.has("emboscada"))
+	assert_true(ZoneLayout.load_id("capital").quest_points.has("puerta_capital"))
+	assert_true(ZoneLayout.load_id("palacio").quest_points.has("salon_trono"))
+
+
+func test_road_level_band() -> void:
+	var z := ZoneLayout.load_id("camino")
+	assert_eq(z.levels, Vector2i(4, 8))
+	for h: Dictionary in z.hordes:
+		assert_gte(int(h.levels[0]), 4)
+		assert_lte(int(h.levels[1]), 8)
+
+
+## Review point 5: the bandits wait out of sight of the ambush point, so its scene comes first.
+func test_ambush_is_out_of_reach() -> void:
+	var z := ZoneLayout.load_id("camino")
+	var at := Vector2(z.quest_points.emboscada.at)
+	assert_eq(z.spawns.size(), 3)
+	for s: Dictionary in z.spawns:
+		var aggro := float(MonsterDB.load_default().get_type(str(s.type)).get("aggro_range", 8))
+		var d := at.distance_to(Vector2(float(s.at[0]), float(s.at[1]))) - float(s.get("radius", 0.0))
+		assert_gt(d, aggro + 3.0, "%s waits out of reach" % s.type)
+
+
+## Review point 1: the crypt leads back to the palace; the forest has no crypt any more.
+func test_crypt_leads_to_palace() -> void:
+	var crypt := ZoneLayout.load_id("cripta_prueba")
+	assert_eq(str(crypt.exits[0].to), "palacio")
+	assert_eq(str(crypt.exits[0].entry), "from_cripta")
+	assert_true(ZoneLayout.load_id("palacio").entries.has("from_cripta"))
+	var forest := ZoneLayout.load_id("bosque")
+	assert_eq(forest.exits.filter(func(e: Dictionary) -> bool: return e.to == "cripta_prueba").size(), 0)
+	var gate: Dictionary = ZoneLayout.load_id("palacio").exits.filter(func(e: Dictionary) -> bool: return e.to == "cripta_prueba")[0]
+	assert_eq(gate.requires.flags, ["cripta_abierta"])
+	assert_eq(str(gate.gate.closed), "crypt_gate_closed")
+
+
+func test_capital_walkers_valid() -> void:
+	var z := ZoneLayout.load_id("capital")
+	assert_gt(z.walkers.size(), 5, "people walk the capital")
+	assert_eq(z.errors, [])

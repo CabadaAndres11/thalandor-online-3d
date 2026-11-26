@@ -15,13 +15,14 @@ func test_image_size_and_ground_colours() -> void:
 
 
 func test_markers() -> void:
-	var z := ZoneLayout.load_id("bosque")
+	var z := ZoneLayout.load_id("palacio")
 	var marks := ZoneMapImage.markers(z, null)
 	var dungeon := marks.filter(func(m: Dictionary) -> bool: return m.kind == "dungeon")
-	assert_eq(dungeon.size(), 1)
-	assert_eq(Vector2i(dungeon[0].cell), Vector2i(140, 101))
+	assert_eq(dungeon.size(), 1, "the crypt is under the palace (Plan 8.3b)")
 	assert_eq(dungeon[0].label, tr("ZONE_CRIPTA_PRUEBA"))
-	assert_eq(marks.filter(func(m: Dictionary) -> bool: return m.kind == "exit").size(), 1, "to the village")
+	var forest := ZoneMapImage.markers(ZoneLayout.load_id("bosque"), null)
+	assert_eq(forest.filter(func(m: Dictionary) -> bool: return m.kind == "dungeon").size(), 0)
+	assert_eq(forest.filter(func(m: Dictionary) -> bool: return m.kind == "exit").size(), 2, "to the village and the road")
 	var village := ZoneMapImage.markers(ZoneLayout.load_id("aldea"), null)
 	var verrin := village.filter(func(m: Dictionary) -> bool: return m.kind == "npc" and m.label == tr("NPC_VERRIN"))
 	assert_eq(verrin.size(), 1)

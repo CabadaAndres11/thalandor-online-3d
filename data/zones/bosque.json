@@ -167,6 +167,20 @@
 			],
 			"width": 2,
 			"terrain": "dirt"
+		},
+		{
+			"points": [
+				[
+					120,
+					70
+				],
+				[
+					159,
+					70
+				]
+			],
+			"width": 3,
+			"terrain": "road"
 		}
 	],
 	"pieces": [
@@ -376,9 +390,9 @@
 			12,
 			64
 		],
-		"from_cripta": [
-			140,
-			94
+		"from_camino": [
+			147,
+			70
 		]
 	},
 	"respawn": [
@@ -398,13 +412,13 @@
 		},
 		{
 			"area": [
-				139,
-				100,
+				158,
+				68,
 				2,
-				2
+				5
 			],
-			"to": "cripta_prueba",
-			"entry": "default"
+			"to": "camino",
+			"entry": "from_bosque"
 		}
 	],
 	"hordes": [
@@ -485,16 +499,7 @@
 			"elite_chance": 0.15
 		}
 	],
-	"torches": [
-		[
-			136,
-			96
-		],
-		[
-			143,
-			96
-		]
-	],
+	"torches": [],
 	"quest_points": [
 		{
 			"id": "campamento",

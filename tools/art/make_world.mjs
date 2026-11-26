@@ -522,7 +522,7 @@ export function worldPieces() {
   cityGate.box(42, 86, 2, 57, 99, 3, ROYAL).box(48, 90, 1, 51, 95, 1, ROYAL_GOLD);
   add("city_gate", paint(cityGate, CSTONE, [CSTONE, CSTONE_D], 93), { footprint: [[0, 0], [4, 0]] });
   // A two-storey stone house of the capital, walkable like the village's.
-  addHouse("house_city", houseParts(7, 6, (f) => { table(f, 2, 2, 2); shelf(f, 5, 1); chest(f, 5, 3); }, { stone: true, tall: true }));
+  addHouse("house_city", houseParts(7, 6, (f) => { table(f, 2, 2, 2); shelf(f, 5, 1); chest(f, 5, 3); }, { stone: true, tall: true, planks: true }));
   // A market stall: a counter, four posts and a striped awning; goods on the counter.
   const stall = new Shape();
   stall.box(2, 0, 10, 37, 16, 17, PLANK).box(2, 16, 9, 37, 17, 18, PLANK_D);
@@ -542,7 +542,8 @@ export function worldPieces() {
   add("fountain", paint(fountain, CSTONE, [CSTONE, CSTONE_D], 97));
   // A street cityLamp of the city: an iron post and a glowing cage.
   const cityLamp = new Shape();
-  cityLamp.box(7, 0, 7, 12, 2, 12, CSTONE_D).box(9, 3, 9, 10, 54, 10, IRON).box(6, 55, 6, 13, 64, 13, IRON).box(7, 56, 7, 12, 63, 12, GLOW).box(8, 65, 8, 11, 67, 11, IRON_L);
+  cityLamp.box(7, 0, 7, 12, 2, 12, CSTONE_D).box(9, 3, 9, 10, 54, 10, IRON).box(6, 55, 6, 13, 55, 13, IRON).box(6, 64, 6, 13, 64, 13, IRON).box(7, 56, 7, 12, 63, 12, GLOW).box(8, 65, 8, 11, 67, 11, IRON_L);
+  for (const [x, z] of [[6, 6], [13, 6], [6, 13], [13, 13]]) cityLamp.box(x, 56, z, x, 63, z, IRON);
   add("city_lamp", cityLamp, { footprint: [[0, 0]] });
   // The palace: a column 6 m high, a red carpet, the throne on its dais, braziers and the crypt's cityGate.
   const column = new Shape();

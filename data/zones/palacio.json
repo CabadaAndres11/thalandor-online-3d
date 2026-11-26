@@ -1,0 +1,1074 @@
+{
+	"name": "ZONE_PALACIO",
+	"size": [
+		40,
+		56
+	],
+	"ambience": "palacio",
+	"margin": "rock",
+	"safe": true,
+	"levels": [
+		1,
+		1
+	],
+	"terrain": {
+		"base": "crypt",
+		"areas": []
+	},
+	"pieces": [
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				55
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				2,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				2,
+				55
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				4,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				4,
+				55
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				6,
+				55
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				8,
+				55
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				10,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				10,
+				55
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				12,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				12,
+				55
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				14,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				14,
+				55
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				16,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				16,
+				55
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				18,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				20,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				22,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				22,
+				55
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				24,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				24,
+				55
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				26,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				26,
+				55
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				28,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				28,
+				55
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				30,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				30,
+				55
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				32,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				32,
+				55
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				34,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				34,
+				55
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				36,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				36,
+				55
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				38,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				38,
+				55
+			],
+			"rot": 0
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				1
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				1
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				3
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				3
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				5
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				5
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				7
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				7
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				9
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				9
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				11
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				11
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				13
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				13
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				15
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				15
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				17
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				17
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				19
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				19
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				21
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				21
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				23
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				23
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				25
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				25
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				27
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				27
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				29
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				29
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				31
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				31
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				33
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				33
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				35
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				35
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				37
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				37
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				39
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				39
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				41
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				41
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				43
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				43
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				45
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				45
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				47
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				47
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				49
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				49
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				51
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				51
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				0,
+				53
+			],
+			"rot": 90
+		},
+		{
+			"id": "crypt_wall",
+			"at": [
+				39,
+				53
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_column",
+			"at": [
+				13,
+				14
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_column",
+			"at": [
+				26,
+				14
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_column",
+			"at": [
+				13,
+				22
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_column",
+			"at": [
+				26,
+				22
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_column",
+			"at": [
+				13,
+				30
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_column",
+			"at": [
+				26,
+				30
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_column",
+			"at": [
+				13,
+				38
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_column",
+			"at": [
+				26,
+				38
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_column",
+			"at": [
+				13,
+				46
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_column",
+			"at": [
+				26,
+				46
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_carpet",
+			"at": [
+				18,
+				12
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_carpet",
+			"at": [
+				18,
+				16
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_carpet",
+			"at": [
+				18,
+				20
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_carpet",
+			"at": [
+				18,
+				24
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_carpet",
+			"at": [
+				18,
+				28
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_carpet",
+			"at": [
+				18,
+				32
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_carpet",
+			"at": [
+				18,
+				36
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_carpet",
+			"at": [
+				18,
+				40
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_carpet",
+			"at": [
+				18,
+				44
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_carpet",
+			"at": [
+				18,
+				48
+			],
+			"rot": 0
+		},
+		{
+			"id": "throne",
+			"at": [
+				18,
+				5
+			],
+			"rot": 0
+		},
+		{
+			"id": "brazier",
+			"at": [
+				14,
+				7
+			],
+			"rot": 0
+		},
+		{
+			"id": "brazier",
+			"at": [
+				24,
+				7
+			],
+			"rot": 0
+		},
+		{
+			"id": "brazier",
+			"at": [
+				14,
+				30
+			],
+			"rot": 0
+		},
+		{
+			"id": "brazier",
+			"at": [
+				25,
+				30
+			],
+			"rot": 0
+		},
+		{
+			"id": "kingdom_banner",
+			"at": [
+				11,
+				4
+			],
+			"rot": 0
+		},
+		{
+			"id": "kingdom_banner",
+			"at": [
+				28,
+				4
+			],
+			"rot": 0
+		}
+	],
+	"npcs": [
+		{
+			"id": "rey",
+			"at": [
+				19,
+				8
+			],
+			"facing": 0
+		},
+		{
+			"id": "oriel",
+			"at": [
+				16,
+				11
+			],
+			"facing": 90
+		},
+		{
+			"id": "lord_maren",
+			"at": [
+				23,
+				11
+			],
+			"facing": 270
+		},
+		{
+			"id": "guardia_palacio",
+			"at": [
+				17,
+				49
+			],
+			"facing": 0
+		}
+	],
+	"entries": {
+		"default": [
+			19,
+			50
+		],
+		"from_capital": [
+			19,
+			50
+		],
+		"from_cripta": [
+			7,
+			3
+		]
+	},
+	"respawn": [
+		19,
+		49
+	],
+	"exits": [
+		{
+			"area": [
+				18,
+				55,
+				3,
+				1
+			],
+			"to": "capital",
+			"entry": "from_palacio"
+		},
+		{
+			"area": [
+				6,
+				0,
+				3,
+				1
+			],
+			"to": "cripta_prueba",
+			"entry": "default",
+			"requires": {
+				"flags": [
+					"cripta_abierta"
+				]
+			},
+			"gate": {
+				"closed": "crypt_gate_closed",
+				"open": "crypt_gate_open",
+				"at": [
+					6,
+					0
+				],
+				"rot": 0
+			}
+		}
+	],
+	"hordes": [],
+	"quest_points": [
+		{
+			"id": "salon_trono",
+			"at": [
+				19,
+				16
+			],
+			"radius": 4,
+			"look": "sparkle"
+		}
+	],
+	"torches": [
+		[
+			14,
+			7
+		],
+		[
+			24,
+			7
+		],
+		[
+			14,
+			30
+		],
+		[
+			25,
+			30
+		]
+	]
+}

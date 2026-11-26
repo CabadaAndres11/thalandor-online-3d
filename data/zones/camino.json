@@ -1,0 +1,360 @@
+{
+	"name": "ZONE_CAMINO",
+	"size": [
+		160,
+		64
+	],
+	"ambience": "exterior_dia",
+	"margin": "forest",
+	"levels": [
+		4,
+		8
+	],
+	"terrain": {
+		"base": "grass",
+		"areas": [
+			{
+				"kind": "dirt",
+				"area": [
+					74,
+					26,
+					14,
+					14
+				]
+			},
+			{
+				"kind": "dirt",
+				"area": [
+					116,
+					12,
+					14,
+					10
+				]
+			}
+		]
+	},
+	"paths": [
+		{
+			"points": [
+				[
+					0,
+					32
+				],
+				[
+					40,
+					30
+				],
+				[
+					80,
+					34
+				],
+				[
+					120,
+					30
+				],
+				[
+					159,
+					32
+				]
+			],
+			"width": 3,
+			"terrain": "road"
+		},
+		{
+			"points": [
+				[
+					100,
+					31
+				],
+				[
+					118,
+					20
+				]
+			],
+			"width": 2,
+			"terrain": "dirt"
+		}
+	],
+	"pieces": [
+		{
+			"id": "caravan_wagon",
+			"at": [
+				14,
+				25
+			],
+			"rot": 0
+		},
+		{
+			"id": "horse",
+			"at": [
+				20,
+				26
+			],
+			"rot": 0
+		},
+		{
+			"id": "crates",
+			"at": [
+				12,
+				28
+			],
+			"rot": 0
+		},
+		{
+			"id": "cart",
+			"at": [
+				24,
+				25
+			],
+			"rot": 0
+		},
+		{
+			"id": "bandit_palisade",
+			"at": [
+				114,
+				11
+			],
+			"rot": 0
+		},
+		{
+			"id": "bandit_palisade",
+			"at": [
+				120,
+				11
+			],
+			"rot": 0
+		},
+		{
+			"id": "bandit_palisade",
+			"at": [
+				126,
+				11
+			],
+			"rot": 0
+		},
+		{
+			"id": "camp_ruined",
+			"at": [
+				118,
+				15
+			],
+			"rot": 0
+		},
+		{
+			"id": "rock_large",
+			"at": [
+				60,
+				42
+			],
+			"rot": 0
+		},
+		{
+			"id": "rock_large",
+			"at": [
+				96,
+				20
+			],
+			"rot": 0
+		}
+	],
+	"scatter": [
+		{
+			"area": [
+				0,
+				0,
+				160,
+				64
+			],
+			"pieces": [
+				"tree_oak",
+				"tree_pine",
+				"tree_pine",
+				"bush",
+				"rock_small",
+				"stump"
+			],
+			"density": 0.07,
+			"seed": 31
+		}
+	],
+	"npcs": [
+		{
+			"id": "caravanero",
+			"at": [
+				18,
+				30
+			],
+			"facing": 90
+		}
+	],
+	"entries": {
+		"default": [
+			12,
+			32
+		],
+		"from_bosque": [
+			12,
+			32
+		],
+		"from_capital": [
+			147,
+			32
+		]
+	},
+	"respawn": [
+		12,
+		33
+	],
+	"exits": [
+		{
+			"area": [
+				0,
+				30,
+				2,
+				5
+			],
+			"to": "bosque",
+			"entry": "from_camino"
+		},
+		{
+			"area": [
+				158,
+				30,
+				2,
+				5
+			],
+			"to": "capital",
+			"entry": "from_camino"
+		}
+	],
+	"hordes": [
+		{
+			"area": [
+				28,
+				12,
+				22,
+				9
+			],
+			"monsters": [
+				[
+					"marked_hound",
+					2
+				],
+				[
+					"marked_boar",
+					1
+				]
+			],
+			"levels": [
+				4,
+				6
+			],
+			"count": 6,
+			"elite_chance": 0.03
+		},
+		{
+			"area": [
+				100,
+				42,
+				24,
+				10
+			],
+			"monsters": [
+				[
+					"marked_boar",
+					1
+				],
+				[
+					"marked_hound",
+					1
+				]
+			],
+			"levels": [
+				5,
+				8
+			],
+			"count": 6,
+			"elite_chance": 0.05
+		},
+		{
+			"area": [
+				116,
+				14,
+				12,
+				8
+			],
+			"monsters": [
+				[
+					"bandit",
+					2
+				],
+				[
+					"bandit_archer",
+					1
+				]
+			],
+			"levels": [
+				6,
+				8
+			],
+			"count": 5,
+			"elite_chance": 0.05
+		}
+	],
+	"spawns": [
+		{
+			"type": "bandit",
+			"at": [
+				76,
+				20
+			],
+			"count": 4,
+			"radius": 1.5,
+			"respawn_s": 30,
+			"level_offset": 4
+		},
+		{
+			"type": "bandit_archer",
+			"at": [
+				84,
+				17
+			],
+			"count": 2,
+			"radius": 1,
+			"respawn_s": 30,
+			"level_offset": 4
+		},
+		{
+			"type": "bandit_chief",
+			"at": [
+				80,
+				20
+			],
+			"count": 1,
+			"radius": 0,
+			"respawn_s": 45,
+			"level_offset": 3
+		}
+	],
+	"quest_points": [
+		{
+			"id": "caravana",
+			"at": [
+				18,
+				31
+			],
+			"radius": 3,
+			"look": "sparkle"
+		},
+		{
+			"id": "emboscada",
+			"at": [
+				80,
+				33
+			],
+			"radius": 4,
+			"look": "sparkle"
+		}
+	],
+	"torches": []
+}

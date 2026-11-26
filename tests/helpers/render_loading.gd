@@ -13,6 +13,11 @@ const SHOTS := {
 	"bosque_1": ["bosque", Vector3(14.0, 1.8, 63.0), Vector3(36.0, 2.5, 60.5), 60.0],
 	"bosque_2": ["bosque", Vector3(140.5, 2.0, 88.0), Vector3(140.0, 2.2, 99.5), 55.0],
 	"bosque_3": ["bosque", Vector3(72.0, 3.0, 58.0), Vector3(84.0, 1.5, 76.0), 60.0],
+	"camino_1": ["camino", Vector3(10.0, 2.2, 33.0), Vector3(24.0, 1.4, 27.0), 58.0],
+	"camino_2": ["camino", Vector3(70.0, 2.4, 36.0), Vector3(82.0, 1.5, 22.0), 58.0],
+	"capital_1": ["capital", Vector3(48.5, 2.2, 66.0), Vector3(48.5, 2.5, 40.0), 58.0],
+	"capital_2": ["capital", Vector3(40.0, 3.0, 50.0), Vector3(56.0, 1.5, 36.0), 58.0],
+	"palacio_1": ["palacio", Vector3(19.5, 2.2, 50.0), Vector3(19.5, 2.0, 8.0), 55.0],
 	"cripta_prueba_1": ["cripta_prueba", Vector3(24.5, 1.8, 5.0), Vector3(24.5, 1.6, 30.0), 60.0],
 	"cripta_prueba_2": ["cripta_prueba", Vector3(14.0, 2.4, 30.0), Vector3(30.0, 1.0, 46.0), 60.0],
 }
