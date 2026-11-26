@@ -71,10 +71,10 @@ func test_version_rejection_shows_both_versions() -> void:
 	assert_true(main.dialog.message().contains(GameSession.game_version()))
 
 
-func test_code_is_remembered() -> void:
+func test_join_code_starts_empty() -> void:
 	main._on_join("Andrés", "OOOO-0000")
 	var saved := SettingsStore.load_from(SETTINGS)
-	assert_eq(saved.last_code, "OOOO-0000")
+	assert_eq(saved.last_code, "", "the code is not kept (Plan 8.3d)")
 
 
 func test_leave_returns_to_characters() -> void:
@@ -825,7 +825,7 @@ func test_closing_a_dialogue_does_not_attack() -> void:
 	assert_false(main.game.input_blocked, "then attacks come back")
 
 
-func test_talking_zooms_in() -> void:
+func test_iso_focus_shrinks_the_view() -> void:
 	var cam := IsoCamera.new()
 	add_child_autofree(cam)
 	cam.follow(Vector3.ZERO)
@@ -870,3 +870,61 @@ func test_scene_hides_you_and_the_walkers_that_play_in_it() -> void:
 	await wait_frames(3)
 	assert_true(main.game.player_avatar(main.game.client.my_id).visible)
 	assert_true(walker.visible)
+
+
+# --- Plan 8.3d: corrections after the 0.14.1 playtest ---
+
+func test_join_box_is_empty_in_game() -> void:
+	main.settings.last_code = "OOOO-0000"
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	assert_eq(main.pause_menu.join_code_edit.text, "")
+
+
+func test_quit_asks_first() -> void:
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	main.pause_menu.quit_button.pressed.emit()
+	assert_true(main.dialog.visible, "it asks")
+	assert_eq(main._pending.get("action", ""), "quit")
+	main.dialog.no_button.pressed.emit()
+	assert_true(main.in_game(), "no: still playing")
+
+
+func test_no_zoom_when_talking() -> void:
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	var before := main.game.camera.focus_factor
+	main._talk_to("panadero")
+	assert_eq(main.game.camera.focus_factor, before)
+
+
+func test_no_labels_in_scenes() -> void:
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1 and not main.game.zone_building, 5.0)
+	main._start_scene("prologo_nombre")
+	await wait_until(func() -> bool: return main.game.cutscene != null, 3.0)
+	await wait_physics_frames(3)
+	var shown := main.game.find_children("*", "Label3D", true, false).filter(func(n: Node) -> bool: return (n as Label3D).is_visible_in_tree())
+	assert_eq(shown.size(), 0, "no names over anyone")
+	main.game.cutscene.skip()
+	await wait_until(func() -> bool: return main.game.cutscene == null, 3.0)
+	await wait_physics_frames(2)
+	var back := main.game.find_children("*", "Label3D", true, false).filter(func(n: Node) -> bool: return (n as Label3D).is_visible_in_tree())
+	assert_gt(back.size(), 0, "names come back")
+
+
+func test_level_up_notice() -> void:
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1, 3.0)
+	main._on_leveled_up(main.game.client.my_id, 4)
+	assert_true(main.quest_notice.visible)
+	assert_eq(main.quest_notice.get_text(), tr("UI_LEVEL_UP") % "4")
+
+
+func test_tutorial_hint_goes_when_done() -> void:
+	main.pause_menu.set_group_locked(true)
+	assert_ne(main.pause_menu.lock_hint(), "")
+	main.pause_menu.set_group_locked(false)
+	assert_eq(main.pause_menu.lock_hint(), "")
+	assert_false(main.pause_menu._hint.visible, "the hint is gone at once")

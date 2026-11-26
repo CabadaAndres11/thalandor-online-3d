@@ -5,7 +5,7 @@ extends SceneTree
 ## User args: --code=ABCD-EFGH --out=<file name> --name=<player> [--lag=<ms> --loss=<pct>]
 
 const SETTINGS := "user://test_guest_settings.json"
-const JOIN_TIMEOUT_S := 10.0
+const JOIN_TIMEOUT_S := 20.0 # the village takes longer to build since Plan 8.3d (relief, more houses)
 const WALK_S := 2.0
 const CHAT_TEXT := "hola desde el invitado"
 ## Everyone stands still this long before the report, so positions have settled.

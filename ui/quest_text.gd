@@ -64,6 +64,21 @@ static func step_text(log: QuestLog, quests: QuestDB, id: String) -> String:
 	return _tr(str(q.steps[step].get("text", "")))
 
 
+## The monster types the player's current objectives need (kill, hit, collect), Plan 8.3d.
+static func target_monsters(log: QuestLog, quests: QuestDB) -> Array:
+	var out: Array = []
+	for id: String in log.active:
+		var objs := objectives(log, quests, id)
+		for i in objs.size():
+			var o: Dictionary = objs[i]
+			if int(log.active[id].counts[i]) >= int(o.count):
+				continue
+			var t := str(o.get("monster", o.get("from", ""))) if str(o.type) in ["kill", "hit", "hit_secondary", "collect"] else ""
+			if t != "" and not t in out:
+				out.append(t)
+	return out
+
+
 ## True when this player is done with a quest point (Plan 8.3d: the rubble is moved away):
 ## its quest is finished, its step is behind, or its objective there is complete.
 static func point_done(log: QuestLog, quests: QuestDB, point: String) -> bool:

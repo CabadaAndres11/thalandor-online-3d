@@ -47,6 +47,7 @@ var _shadow_proxies: Array[GeometryInstance3D] = []
 var ground_image: Image
 var decor: Array = []
 ## The house open around the own player (-1: none), Plan 8.1.1.
+var _house_cover: Dictionary = {} # cell -> house index (walls and inside)
 var open_index: int = -1
 
 
@@ -529,6 +530,38 @@ func _build_houses() -> void:
 
 ## Opens the house `index` (its roof fades, its walls are cut) and closes the others; -1
 ## closes them all. Only the own player's house opens (Plan 8.1.1).
+## The houses whose walls stand between the camera and `target` (up to 8 m from it).
+func occluders(cam_pos: Vector3, target: Vector3) -> Array:
+	if layout == null or layout.houses.is_empty():
+		return []
+	if _house_cover.is_empty():
+		for h: Dictionary in layout.houses:
+			for c: Vector2i in layout.footprint(h.id, h.at, h.rot) + (h.cells as Array):
+				_house_cover[c] = int(h.index)
+	var out: Array = []
+	var from := Vector2(target.x, target.z)
+	var dir := Vector2(cam_pos.x, cam_pos.z) - from
+	if dir.length() < 0.01:
+		return out
+	dir = dir.normalized()
+	for i in range(1, 17):
+		var p := from + dir * (i * 0.5)
+		var c := Vector2i(floori(p.x), floori(p.y))
+		if _house_cover.has(c) and not int(_house_cover[c]) in out:
+			out.append(int(_house_cover[c]))
+	return out
+
+
+## Opens several houses at once (the one you are in, or those hiding you); closes the rest.
+func open_houses(indices: Array) -> void:
+	open_index = int(indices[0]) if not indices.is_empty() else -1
+	var root := get_node_or_null("Houses")
+	if root == null:
+		return
+	for view: HouseView in root.get_children():
+		view.set_open(indices.any(func(i: int) -> bool: return view.name == "house_%d" % i))
+
+
 func open_house(index: int) -> void:
 	open_index = index
 	var root := get_node_or_null("Houses")

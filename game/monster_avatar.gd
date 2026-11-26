@@ -41,7 +41,13 @@ var _time: float = 0.0
 var _rest: Vector3 = Vector3.ZERO
 
 
+## Its type id (Plan 8.3d: quest foes glow).
+var monster_type: String = ""
+var _quest_glow: MeshInstance3D
+
+
 func setup(type: Dictionary, elite: bool = false, elite_scale: float = 1.3, ally: bool = false) -> void:
+	monster_type = str(type.get("id", ""))
 	var model := str(type.get("model", ""))
 	var tint := Color(str(type.get("tint", "#ffffff")))
 	var scale_f := float(type.get("scale", 1.0)) * (elite_scale if elite else 1.0)
@@ -186,6 +192,29 @@ func apply_state(state: Dictionary, info: Dictionary, delta: float) -> void:
 
 
 ## Meters the body floats above the ground (0 = it stands on it).
+## A soft glow over it while the story needs it (the practice dummy, Plan 8.3d).
+func set_quest_glow(on: bool) -> void:
+	if on and _quest_glow == null:
+		_quest_glow = MeshInstance3D.new()
+		_quest_glow.name = "QuestGlow"
+		var sphere := SphereMesh.new()
+		sphere.radius = 0.22
+		sphere.height = 0.44
+		_quest_glow.mesh = sphere
+		var mat := StandardMaterial3D.new()
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mat.albedo_color = Color(1.0, 0.85, 0.35)
+		_quest_glow.material_override = mat
+		_quest_glow.position = Vector3(0, _height + 0.4, 0)
+		add_child(_quest_glow)
+	if _quest_glow != null:
+		_quest_glow.visible = on
+
+
+func quest_glow_visible() -> bool:
+	return _quest_glow != null and _quest_glow.visible
+
+
 func hover_height() -> float:
 	return _humanoid.position.y * _scale if _humanoid != null else 0.0
 

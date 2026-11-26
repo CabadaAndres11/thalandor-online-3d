@@ -60,6 +60,14 @@ static func markers(layout: ZoneLayout, client: ClientSession) -> Array:
 		var target := quest_target(layout, client.quests, QuestDB.load_default())
 		if not target.is_empty():
 			out.append({"kind": "quest", "cell": target.get("at", target.get("exit", Vector2.ZERO)), "label": "", "yaw": 0.0})
+		var wanted := QuestText.target_monsters(client.quests, QuestDB.load_default())
+		if not wanted.is_empty():
+			for mid: int in client.monsters:
+				if not str(client.monsters[mid].get("type", "")) in wanted or int(client.monsters[mid].get("hp", 0)) <= 0:
+					continue
+				var ms := client.monster_render_state(mid)
+				if not ms.is_empty():
+					out.append({"kind": "foe", "cell": Vector2(ms.position.x, ms.position.z), "label": "", "yaw": 0.0})
 		for id: int in client.roster:
 			var rs := client.render_state(id)
 			if rs.is_empty():

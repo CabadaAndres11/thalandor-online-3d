@@ -40,6 +40,12 @@ var _stage_view: ZoneView
 var _scene_fx_nodes: Array = []
 ## Placed NPCs a cutscene plays as actors: hidden while it lasts, so nobody is there twice.
 var _scene_hidden: Array = []
+## The houses open now (the one you are in, or those hiding you), Plan 8.3d.
+var _open_houses: Array = []
+## Monster types that glow because the story needs them (the practice dummy), Plan 8.3d.
+var _quest_foes: Array = []
+## Names, signs and bars hidden while a scene plays (Plan 8.3d).
+var _scene_labels: Array = []
 ## The white flash of a scene goes to the overlay (Main connects it).
 signal scene_flash()
 ## Glows on the quest points the local player has an objective for (Plan 8.2).
@@ -409,6 +415,8 @@ func _physics_process(delta: float) -> void:
 
 
 func _process(delta: float) -> void:
+	if cutscene != null:
+		_hide_labels()
 	if _drawn_loading:
 		run_build_step()
 	_drawn_loading = true
@@ -436,8 +444,10 @@ func update_house(pos: Vector3) -> void:
 	if zone_view.layout == null:
 		return
 	var index := zone_view.layout.house_at(Vector2i(floori(pos.x), floori(pos.z)))
-	if index != zone_view.open_index:
-		zone_view.open_house(index)
+	var want: Array = [index] if index >= 0 else zone_view.occluders(camera.global_position if camera.is_inside_tree() else camera.position, pos)
+	if want != _open_houses:
+		_open_houses = want
+		zone_view.open_houses(want)
 
 
 func _update_aim() -> void:
@@ -611,6 +621,10 @@ func _end_cutscene() -> void:
 	for n: Node in _scene_fx_nodes:
 		n.queue_free()
 	_scene_fx_nodes.clear()
+	for n: Node in _scene_labels:
+		if is_instance_valid(n):
+			(n as Node3D).visible = true
+	_scene_labels.clear()
 	for n: Node3D in _scene_hidden:
 		if is_instance_valid(n):
 			n.visible = true
@@ -634,6 +648,7 @@ func _end_cutscene() -> void:
 func refresh_quest_marks() -> void:
 	if client == null:
 		return
+	_quest_foes = QuestText.target_monsters(client.quests, QuestDB.load_default()).filter(func(t: String) -> bool: return t == "training_dummy")
 	if zone_view != null and zone_view.layout != null:
 		zone_view.show_gates(client.quests)
 		zone_view.show_story_pieces(client.quests, QuestDB.load_default())
@@ -816,6 +831,7 @@ func _sync_monsters(delta: float) -> void:
 		var ma := _monster_avatars[id] as MonsterAvatar
 		ma.apply_state(client.monster_render_state(id), info, delta)
 		ma.position.y += ground_y(ma.position.x, ma.position.z)
+		ma.set_quest_glow(ma.monster_type in _quest_foes)
 
 
 ## The ability as others see a player cast it: evolved by their upgrade (the templar's smite
@@ -825,6 +841,18 @@ static func seen_ability(ability_id: String, upgrade: String, main_base: String)
 	if main_base != "":
 		ab = WeaponFamily.adjust(ab, ItemDB.load_default().family_of(main_base))
 	return ab
+
+
+## While a scene plays, nothing over anyone's head: names, signs, prompts, bars (Plan 8.3d).
+func _hide_labels() -> void:
+	var marks: Array = find_children("*", "Label3D", true, false)
+	for a: Node in _avatars.values() + _monster_avatars.values():
+		if a.get("bar") is Node3D:
+			marks.append(a.get("bar"))
+	for n: Node in marks:
+		if (n as Node3D).visible:
+			(n as Node3D).visible = false
+			_scene_labels.append(n)
 
 
 ## The ground's height here (Plan 8.3d): 0 on flat zones. The simulation is flat; only the

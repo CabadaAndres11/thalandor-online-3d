@@ -166,6 +166,46 @@ func level_up(id: int, level: int) -> void:
 	var at: Variant = _position_of.call(id)
 	if at != null:
 		_area_flash(at, 1.6)
+		_level_glow(at)
+
+
+## A column of blue light and rising sparks around who levels up (Plan 8.3d), for 1.2 s.
+func _level_glow(at: Vector3) -> void:
+	var col := MeshInstance3D.new()
+	col.name = "LevelGlow"
+	var cyl := CylinderMesh.new()
+	cyl.top_radius = 0.55
+	cyl.bottom_radius = 0.8
+	cyl.height = 4.0
+	col.mesh = cyl
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.albedo_color = Color(0.35, 0.65, 1.0, 0.55)
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	col.material_override = mat
+	col.position = at + Vector3(0, 2.0, 0)
+	add_child(col)
+	var sparks := CPUParticles3D.new()
+	sparks.amount = 40
+	sparks.lifetime = 1.0
+	sparks.one_shot = true
+	sparks.explosiveness = 0.6
+	sparks.direction = Vector3.UP
+	sparks.spread = 25.0
+	sparks.initial_velocity_min = 2.0
+	sparks.initial_velocity_max = 4.0
+	sparks.gravity = Vector3.ZERO
+	sparks.color = Color(0.55, 0.8, 1.0)
+	var dot := SphereMesh.new()
+	dot.radius = 0.05
+	dot.height = 0.1
+	sparks.mesh = dot
+	sparks.emitting = true
+	col.add_child(sparks)
+	var tw := col.create_tween()
+	tw.tween_property(mat, "albedo_color:a", 0.0, 1.2)
+	tw.tween_callback(col.queue_free)
 
 
 func advance(dt: float) -> void:

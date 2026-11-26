@@ -4,6 +4,8 @@ extends Control
 
 signal resume_requested()
 signal leave_requested()
+## Cerrar juego (Plan 8.3d): Main asks first, saves and quits.
+signal quit_requested()
 signal open_group_requested()
 signal options_requested()
 ## Join a friend's group with this code (Plan 8.1.1: no longer from the character list).
@@ -14,6 +16,7 @@ var code_label: Label
 var copy_button: Button
 var options_button: Button
 var join_code_edit: LineEdit
+var quit_button: Button
 var join_button: Button
 var _locked: bool = false
 var _hint: Label
@@ -97,6 +100,10 @@ func _init() -> void:
 	leave.text = tr("MENU_LEAVE")
 	leave.pressed.connect(func() -> void: leave_requested.emit())
 	box.add_child(leave)
+	quit_button = Button.new()
+	quit_button.text = tr("MENU_QUIT")
+	quit_button.pressed.connect(func() -> void: quit_requested.emit())
+	box.add_child(quit_button)
 
 
 ## Until the village tutorial is done (Plan 8.1) the group cannot be opened: the button
@@ -105,10 +112,15 @@ func set_group_locked(locked: bool) -> void:
 	open_group_button.disabled = locked
 	_locked = locked
 	_refresh_join()
+	var was := _lock_hint
 	_lock_hint = tr("GROUP_LOCKED_TUTORIAL") if locked else ""
 	if locked:
 		_hint.text = _lock_hint
 		_hint.visible = true
+	elif was != "" and _hint.text == was:
+		_hint.text = "" # done: the hint goes at once (Plan 8.3d)
+		_hint.visible = false
+	join_button.tooltip_text = _lock_hint
 
 
 func lock_hint() -> String:

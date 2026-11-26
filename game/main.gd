@@ -282,6 +282,7 @@ func _ready() -> void:
 	pause_menu.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	pause_menu.resume_requested.connect(_on_resume)
 	pause_menu.leave_requested.connect(_leave_game)
+	pause_menu.quit_requested.connect(_ask_quit)
 	pause_menu.open_group_requested.connect(_on_open_group)
 	pause_menu.join_requested.connect(_on_pause_join)
 	pause_menu.options_requested.connect(_show_options)
@@ -526,8 +527,6 @@ func _talk_to(npc_id: String) -> bool:
 	var me := c.render_state(c.my_id)
 	if avatar != null and not me.is_empty():
 		avatar.face(me.position)
-	if game.camera != null:
-		game.camera.focus(true)
 	var npc := NpcDB.load_default().npc(npc_id)
 	dialogue_window.show_for(runner, tr(str(npc.get("name", npc_id))), game.client.player_name, _epithet())
 	return true
@@ -697,6 +696,8 @@ func _on_leveled_up(id: int, level: int) -> void:
 		return
 	var who: String = game.client.roster[id].name if game.client.roster.has(id) else "?"
 	chat.add_message("", tr("CHAT_LEVEL_UP") % [who, level], true)
+	if id == game.client.my_id:
+		quest_notice.show_text("UI_LEVEL_UP", str(level)) # big, in the middle (Plan 8.3d)
 	if id == game.client.my_id and level >= ProgressRequests.UPGRADE_LEVEL and game.client.progress.upgrade == "" \
 			and CharacterCatalog.load_default().is_selectable(game.client.class_id) \
 			and not UpgradeDB.load_default().for_class(game.client.class_id).is_empty():
@@ -1017,6 +1018,9 @@ func _import(path: String, new_name: String) -> void:
 func _on_dialog_answered(yes: bool) -> void:
 	var pending := _pending
 	_pending = {}
+	if pending.get("action", "") == "quit" and yes:
+		_quit_game()
+		return
 	if pending.get("action", "") == "sell" and yes:
 		_request_item("sell", [int(pending.index)])
 	if pending.get("action", "") == "reset" and yes and game != null and game.client != null:
@@ -1057,8 +1061,6 @@ func _on_play(player_name: String, class_id: String = CharacterCatalog.DEFAULT_C
 
 func _on_join(player_name: String, code: String, class_id: String = CharacterCatalog.DEFAULT_CLASS,
 		appearance: Dictionary = {}, progress: Dictionary = {}) -> void:
-	settings.last_code = code
-	settings.save_to(settings_path)
 	if GroupCode.decode(code) == "":
 		dialog.show_message(tr("ERR_BAD_CODE"))
 		return
@@ -1189,7 +1191,10 @@ func _update_minimap() -> void:
 		return
 	var pos: Vector3 = own.position
 	var layout := game.zone_view.layout
-	minimap.refresh(game.map_texture, ZoneMapImage.markers(layout, game.client), Vector2(pos.x, pos.z), game.camera.yaw(), layout.name)
+	var marks := ZoneMapImage.markers(layout, game.client)
+	minimap.refresh(game.map_texture, marks, Vector2(pos.x, pos.z), game.camera.yaw(), layout.name)
+	if map_window.visible: # the arrow walks with you while the map is open (Plan 8.3d)
+		map_window.refresh(game.map_texture, marks, layout.name)
 
 
 ## Options window (from the title or the pause menu): changes apply live, saved on close.
@@ -1237,7 +1242,7 @@ func _start_game() -> void:
 		game.character_place = _playing.place.duplicate(true)
 		game.character_place["tutorial_done"] = _playing.tutorial_done
 		game.character_quests = _playing.quests.to_dict()
-	pause_menu.join_code_edit.text = settings.last_code
+	pause_menu.join_code_edit.text = "" # never the last code (Plan 8.3d)
 	game.group_opened.connect(_on_group_opened)
 	game.group_failed.connect(_on_group_failed)
 	_show_only(null)
@@ -1335,6 +1340,19 @@ func _on_session_ended(reason: String) -> void:
 
 
 ## Ends the game (if any) and goes back to the character list.
+## Cerrar juego (Plan 8.3d): asks first; on yes, saves like leaving and quits.
+func _ask_quit() -> void:
+	_pending = {"action": "quit"}
+	dialog.ask(tr("ASK_QUIT"))
+
+
+func _quit_game() -> void:
+	if game != null:
+		_leave_game()
+	store.flush()
+	get_tree().quit()
+
+
 func _leave_game() -> void:
 	store.flush()
 	if game != null:

@@ -10,7 +10,7 @@ const HOST_NAME := "Anfitriona"
 const GUEST_NAME := "Invitado"
 const HOST_CHAT := "hola desde la anfitriona"
 const GUEST_CHAT := "hola desde el invitado"
-const REPORT_TIMEOUT_MS := 30000
+const REPORT_TIMEOUT_MS := 45000
 const LEAVE_TIMEOUT_MS := 8000
 const HOST_WALK_MS := 1500
 ## Max distance between what the guest and the host draw once everyone stands still.

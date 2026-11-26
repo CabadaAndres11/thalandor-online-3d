@@ -4,10 +4,10 @@ extends RefCounted
 
 const COLORS := {
 	"self": Color("#ffd27a"), "partner": Color("#7cc4ff"), "npc": Color("#9be36b"),
-	"exit": Color("#f2ece0"), "dungeon": Color("#d05ad8"), "quest": Color("#ffcc33"),
+	"exit": Color("#f2ece0"), "dungeon": Color("#d05ad8"), "quest": Color("#ffcc33"), "foe": Color("#e8433a"),
 }
 const LEGEND := [["self", "MAP_LEGEND_YOU"], ["partner", "MAP_LEGEND_PARTY"], ["npc", "MAP_LEGEND_NPC"],
-	["exit", "MAP_LEGEND_EXIT"], ["dungeon", "MAP_LEGEND_DUNGEON"], ["quest", "MAP_LEGEND_QUEST"]]
+	["exit", "MAP_LEGEND_EXIT"], ["dungeon", "MAP_LEGEND_DUNGEON"], ["quest", "MAP_LEGEND_QUEST"], ["foe", "MAP_LEGEND_FOE"]]
 
 
 ## Draws one mark at `at` (canvas coordinates); `turn` is the map's rotation on screen.
@@ -30,6 +30,8 @@ static func draw(ci: CanvasItem, m: Dictionary, at: Vector2, radius: float, turn
 				star.append(at + Vector2(0, -rr).rotated(TAU * i / 10.0))
 			ci.draw_colored_polygon(star, col)
 			ci.draw_polyline(star + PackedVector2Array([star[0]]), Color.BLACK, 1.0)
+		"foe":
+			ci.draw_circle(at, radius * 0.8, col)
 		"dungeon":
 			var r := Rect2(at - Vector2.ONE * radius, Vector2.ONE * radius * 2)
 			ci.draw_rect(r, col)
