@@ -2,7 +2,7 @@
 tags: [plan, spec]
 plan: 8.3a
 fecha: 2026-11-26
-estado: borrador
+estado: aprobado
 actualizado: 2026-11-26
 ---
 # Plan 8.3a — Prólogo en la aldea: diseño
