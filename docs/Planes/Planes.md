@@ -36,7 +36,7 @@ Cada plan de la [[14 Hoja de ruta]] tiene aquí su **spec** (diseño acordado) y
 | 8.3a · Prólogo en la aldea | [[Plan 8.3a — Prólogo en la aldea (spec)\|Spec]] | [[Plan 8.3a — Prólogo en la aldea (plan)\|Plan]] | Hecho (0.13.0, publicada) |
 | 8.3b · Camino y capital | [[Plan 8.3b — Camino y capital (spec)\|Spec]] | [[Plan 8.3b — Camino y capital (plan)\|Plan]] | Hecho (0.14.0, sin publicar) |
 | 8.3c · Correcciones de la prueba 0.14.0 | [[Plan 8.3c — Correcciones de la prueba 0.14.0 (spec)\|Spec]] | — (la spec lleva las tareas) | Hecho (0.14.1, sin publicar) |
-| 8.3d · Relieve, aldea nueva y correcciones | [[Plan 8.3d — Relieve, aldea nueva y correcciones (spec)\|Spec]] | — | Spec en revisión |
+| 8.3d · Relieve, aldea nueva y correcciones | [[Plan 8.3d — Relieve, aldea nueva y correcciones (spec)\|Spec]] | [[Plan 8.3d — Relieve, aldea nueva y correcciones (plan)\|Plan]] | Plan en revisión |
 | 9 · Secretos y clases ocultas | — | — | Pendiente |
 | 10 · Oficios | — | — | Pendiente |
 | 11 · Interfaz y audio | — | — | Pendiente |
