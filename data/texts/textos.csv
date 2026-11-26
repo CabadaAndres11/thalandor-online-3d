@@ -979,3 +979,7 @@ TIP_BRANN,"Brann, el herrero de la Aldea de Aelhest, te enseña tu clase y te ay
 ITEM_Q_PAQUETE,"Paquete de Brann"
 ITEM_Q_COLMILLO,"Colmillo de lobo"
 ITEM_QUEST_TAG,"Objeto de misión"
+UI_DIALOGUE_CONTINUE,"[E] Continuar"
+NPC_VECINA,"Ilsa"
+VECINA_GREET,"Buenas. Que el camino te sea leve."
+PLAYER_EPITHET,"Thal An Dor"

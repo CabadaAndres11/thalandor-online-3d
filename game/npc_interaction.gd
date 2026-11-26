@@ -22,7 +22,10 @@ static func decide(map: CollisionMap, pos: Vector3, class_id: String, allies: Ar
 	var npc := NpcDB.load_default().near_with_role(map, pos, "class_trainer")
 	if npc == "":
 		var merchant := NpcDB.load_default().near_with_role(map, pos, "merchant")
-		return {"action": TRADE, "npc": merchant} if merchant != "" else {"action": NONE, "npc": ""}
+		if merchant != "":
+			return {"action": TRADE, "npc": merchant}
+		var other := NpcDB.load_default().near_any(map, pos)
+		return {"action": TALK, "npc": other} if other != "" else {"action": NONE, "npc": ""}
 	var villager := not CharacterCatalog.load_default().is_selectable(class_id)
 	return {"action": CHOOSE_CLASS if villager else TALK, "npc": npc}
 

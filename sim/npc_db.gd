@@ -37,6 +37,18 @@ static func placed(map: CollisionMap) -> Array:
 	return out
 
 
+## The id of the nearest NPC within TALK_RANGE (+ margin) of `pos`, or "".
+func near_any(map: CollisionMap, pos: Vector3, margin: float = 0.0) -> String:
+	var best := ""
+	var best_d := TALK_RANGE + margin
+	for n: Dictionary in placed(map):
+		var d := Vector2(pos.x - n.position.x, pos.z - n.position.z).length()
+		if d <= best_d:
+			best = n.id
+			best_d = d
+	return best
+
+
 ## The id of an NPC with this role within TALK_RANGE (+ margin) of `pos`, or "".
 func near_with_role(map: CollisionMap, pos: Vector3, role: String, margin: float = 0.0) -> String:
 	for n: Dictionary in placed(map):

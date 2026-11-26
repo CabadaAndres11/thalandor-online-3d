@@ -44,6 +44,13 @@ static func look_of(look: Dictionary) -> Dictionary:
 	return out
 
 
+## Turns to look at a point on the ground (talking to the player, Plan 8.2).
+func face(at: Vector3) -> void:
+	var d := Vector2(at.x - position.x, at.z - position.z)
+	if d.length() > 0.01:
+		rotation.y = atan2(d.x, d.y)
+
+
 func display_name() -> String:
 	return _name
 

@@ -27,6 +27,8 @@ var inset: float = BOUNDS_INSET
 var _target: Vector3 = Vector3.ZERO
 var _dragging: bool = false
 var _distances: Dictionary = {Mode.ISOMETRIC: 18.0, Mode.THIRD_PERSON: 9.0}
+## Closer while talking (Plan 8.2): 1 = the normal distance.
+var focus_factor: float = 1.0
 
 
 func _ready() -> void:
@@ -56,6 +58,12 @@ func yaw() -> float:
 func zoom(steps: float) -> void:
 	distance = clampf(distance + steps * zoom_step, min_distance, max_distance)
 	_distances[mode] = distance
+	_apply()
+
+
+## Comes a little closer for a conversation (amount 0..1 of the distance taken off), or back.
+func focus(on: bool, amount: float = 0.3) -> void:
+	focus_factor = 1.0 - amount if on else 1.0
 	_apply()
 
 
@@ -108,7 +116,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _apply() -> void:
 	var pitch := deg_to_rad(pitch_deg)
 	var y := yaw()
-	var offset := Vector3(sin(y) * cos(pitch), sin(pitch), cos(y) * cos(pitch)) * distance
+	var offset := Vector3(sin(y) * cos(pitch), sin(pitch), cos(y) * cos(pitch)) * distance * focus_factor
 	var eye := _target + offset
 	# Third person looks a little above the feet so the character sits low on screen.
 	var look_at_point := _target + (Vector3(0, 1.2, 0) if mode == Mode.THIRD_PERSON else Vector3.ZERO)

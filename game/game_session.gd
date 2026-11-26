@@ -458,6 +458,13 @@ func _remove_avatar(id: int) -> void:
 	avatar.queue_free()
 
 
+func npc_avatar(id: String) -> NpcAvatar:
+	for npc: NpcAvatar in _npc_avatars:
+		if npc.npc_id == id:
+			return npc
+	return null
+
+
 func npc_count() -> int:
 	return _npc_avatars.size()
 

@@ -53,6 +53,9 @@ var trainer_menu: TrainerMenu
 var upgrade_window: UpgradeWindow
 ## At a dungeon's door: choose its level (Plan 8.1).
 var dungeon_window: DungeonWindow
+var dialogue_window: DialogueWindow
+## The conversation open now: {npc, quest, kind, dialogue} (Plan 8.2).
+var _talk: Dictionary = {}
 var _upgrade_sent_at: int = -10000
 var abilities: AbilityDB
 var dialog: MessageDialog
@@ -227,6 +230,14 @@ func _ready() -> void:
 	trainer_menu.arena_level_confirmed.connect(_on_arena_level_confirmed)
 	_ui.add_child(trainer_menu)
 
+	dialogue_window = DialogueWindow.new()
+	dialogue_window.theme = menu_theme
+	dialogue_window.finished.connect(_on_dialogue_finished)
+	dialogue_window.closed.connect(_on_dialogue_closed)
+	dialogue_window.flags_set.connect(_on_dialogue_flags)
+	dialogue_window.action.connect(_on_dialogue_action)
+	_ui.add_child(dialogue_window)
+
 	pause_menu = PauseMenu.new()
 	pause_menu.theme = theme
 	pause_menu.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -361,7 +372,8 @@ func _request_item(action: String, args: Array) -> void:
 
 ## Class choice and Brann's menu take the whole input while they are open.
 func _modal_open() -> bool:
-	return class_choice_window.visible or trainer_menu.visible or upgrade_window.visible or dungeon_window.visible
+	return class_choice_window.visible or trainer_menu.visible or upgrade_window.visible or dungeon_window.visible \
+		or dialogue_window.visible
 
 
 ## Esc: closes whatever window is open and says whether there was one.
@@ -403,30 +415,127 @@ func _show_character() -> void:
 		c.balance, c.appearance, c.inventory)
 
 
-## E next to an NPC: a villager by Brann chooses a class; anyone else gets Brann's menu
-## (or just hears him when there is nothing to offer).
+## E next to an NPC: a villager by Brann chooses a class; otherwise the NPC's dialogue for
+## this player (Plan 8.2), or else its trade, Brann's menu or a greeting.
 func _on_interact() -> void:
+	if dialogue_window.visible:
+		return
 	var r := game.interaction()
+	if str(r.action) != NpcInteraction.CHOOSE_CLASS and str(r.npc) != "" and _talk_to(str(r.npc)):
+		return
 	match str(r.action):
 		NpcInteraction.CHOOSE_CLASS:
 			class_choice_window.show_for(game.client.appearance)
 		NpcInteraction.TRADE:
 			_request_item("merchant_open", []) # the host answers with the stock
 		NpcInteraction.TALK:
-			var c := game.client
-			var me: Dictionary = c.combat.get(c.my_id, {})
-			var in_combat := false
-			if game.host != null and game.host.world.players.has(c.my_id):
-				in_combat = (game.host.world.players[c.my_id] as PlayerState).in_combat(game.host.world)
-			var options := NpcInteraction.trainer_options(c.class_id, c.progress, game.is_hosting() and c.my_id == 1, in_combat)
-			if options.is_empty() or me.is_empty():
-				var npc := NpcDB.load_default().npc(str(r.npc))
-				var line := str((npc.get("lines", {}) as Dictionary).get("has_class", ""))
-				chat.add_message(tr(str(npc.get("name", ""))), tr(line), false)
-			else:
-				for w: Control in _panel_windows():
-					w.visible = false
-				trainer_menu.show_for(options)
+			_open_trainer_or_greet(str(r.npc))
+
+
+## Brann's menu, or an NPC's greeting in the chat when it has nothing else.
+func _open_trainer_or_greet(npc_id: String) -> void:
+	var c := game.client
+	var npc := NpcDB.load_default().npc(npc_id)
+	var lines: Dictionary = npc.get("lines", {})
+	if str(npc.get("role", "")) != "class_trainer":
+		if lines.has("greet"):
+			chat.add_message(tr(str(npc.get("name", ""))), tr(str(lines.greet)), false)
+		return
+	var me: Dictionary = c.combat.get(c.my_id, {})
+	var in_combat := false
+	if game.host != null and game.host.world.players.has(c.my_id):
+		in_combat = (game.host.world.players[c.my_id] as PlayerState).in_combat(game.host.world)
+	var options := NpcInteraction.trainer_options(c.class_id, c.progress, game.is_hosting() and c.my_id == 1, in_combat)
+	if options.is_empty() or me.is_empty():
+		chat.add_message(tr(str(npc.get("name", ""))), tr(str(lines.get("has_class", ""))), false)
+	else:
+		for w: Control in _panel_windows():
+			w.visible = false
+		trainer_menu.show_for(options)
+
+
+## Opens what an NPC has for this player (NpcTalk): its dialogue, or the turn-in. False when it
+## has nothing of its own (then E does what it always did: trade, train, greet).
+func _talk_to(npc_id: String) -> bool:
+	var c := game.client
+	var pick := NpcTalk.pick(npc_id, c.quests, c.progress.level, c.class_id, QuestDB.load_default())
+	var dialogue := str(pick.dialogue)
+	if dialogue == "":
+		if str(pick.kind) == "turn_in":
+			_open_turn_in(str(pick.quest))
+			return true
+		if str(pick.kind) == "offer":
+			c.request_quest("accept", [str(pick.quest)])
+			return true
+		return false
+	var runner := DialogueRunner.load_id(dialogue)
+	if runner == null:
+		push_warning("Main: no dialogue " + dialogue)
+		return false
+	runner.start(c.quests)
+	_talk = {"npc": npc_id, "quest": str(pick.quest), "kind": str(pick.kind), "dialogue": dialogue}
+	for w: Control in _panel_windows():
+		w.visible = false
+	var avatar := game.npc_avatar(npc_id)
+	var me := c.render_state(c.my_id)
+	if avatar != null and not me.is_empty():
+		avatar.face(me.position)
+	if game.camera != null:
+		game.camera.focus(true)
+	var npc := NpcDB.load_default().npc(npc_id)
+	dialogue_window.show_for(runner, tr(str(npc.get("name", npc_id))), game.client.player_name, _epithet())
+	return true
+
+
+## The player's epithet once the story gives it (the flag "apodo"): Thal An Dor.
+func _epithet() -> String:
+	return tr("PLAYER_EPITHET") if game != null and game.client.quests.has_flag("apodo") else ""
+
+
+func _on_dialogue_flags(flags: Array) -> void:
+	for f: String in flags:
+		game.client.request_quest("choose_flag", [str(_talk.get("dialogue", "")), f])
+
+
+func _on_dialogue_action(name: String, arg: String) -> void:
+	var npc := str(_talk.get("npc", ""))
+	match name:
+		"accept":
+			game.client.request_quest("accept", [str(_talk.get("quest", ""))])
+		"turn_in":
+			_open_turn_in(str(_talk.get("quest", "")))
+		"trade":
+			_request_item("merchant_open", [])
+		"train":
+			_open_trainer_or_greet(npc)
+		"scene":
+			_play_scene(arg)
+
+
+func _on_dialogue_finished(dialogue_id: String) -> void:
+	if game != null and game.client != null:
+		game.client.request_quest("talk_done", [str(_talk.get("npc", "")), dialogue_id])
+	_end_talk()
+
+
+func _on_dialogue_closed() -> void:
+	_end_talk()
+
+
+func _end_talk() -> void:
+	_talk = {}
+	if game != null and game.camera != null:
+		game.camera.focus(false)
+
+
+## The rewards of a finished quest (Plan 8.2); without choices it is handed in at once.
+func _open_turn_in(quest_id: String) -> void:
+	game.client.request_quest("turn_in", [quest_id, ""])
+
+
+## A cutscene asked by a dialogue (Plan 8.2, T11 plays it).
+func _play_scene(_scene_id: String) -> void:
+	pass
 
 
 ## An option of Brann's menu. Resets ask first; the host answers with PROGRESS.
@@ -878,7 +987,7 @@ func _on_typing_changed(_is_typing: bool) -> void:
 func _update_input_block() -> void:
 	if game != null:
 		game.input_blocked = chat.is_typing() or pause_menu.visible or options_window.visible or dialog.visible or class_choice_window.visible \
-			or trainer_menu.visible or upgrade_window.visible
+			or trainer_menu.visible or upgrade_window.visible or dialogue_window.visible
 		game.attacks_blocked = _panel_open()
 
 
@@ -1047,6 +1156,9 @@ func _on_bar_changed(bar: Array) -> void:
 
 ## Game-wide announcements in the chat (everyone gets the same events).
 func _on_game_event(ev: Array) -> void:
+	if ev.size() >= 2 and str(ev[0]) == "hit" and game != null and game.client != null \
+			and int(ev[1]) == game.client.my_id and dialogue_window.visible:
+		dialogue_window.interrupt() # a blow ends the conversation
 	if ev.size() >= 2 and str(ev[0]) in ["downed", "died"] and game != null and game.client != null \
 			and int(ev[1]) == game.client.my_id:
 		class_choice_window.visible = false # on the ground there is no training
