@@ -621,6 +621,7 @@ func refresh_quest_marks() -> void:
 		return
 	if zone_view != null and zone_view.layout != null:
 		zone_view.show_gates(client.quests)
+		zone_view.show_story_pieces(client.quests, QuestDB.load_default())
 	var db := QuestDB.load_default()
 	for npc: NpcAvatar in _npc_avatars:
 		npc.set_mark(NpcTalk.mark(npc.npc_id, client.quests, client.progress.level, client.class_id, db))

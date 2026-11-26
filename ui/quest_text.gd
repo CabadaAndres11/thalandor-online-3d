@@ -64,6 +64,26 @@ static func step_text(log: QuestLog, quests: QuestDB, id: String) -> String:
 	return _tr(str(q.steps[step].get("text", "")))
 
 
+## True when this player is done with a quest point (Plan 8.3d: the rubble is moved away):
+## its quest is finished, its step is behind, or its objective there is complete.
+static func point_done(log: QuestLog, quests: QuestDB, point: String) -> bool:
+	for id: String in quests.ids():
+		var q := quests.quest(id)
+		for s in (q.steps as Array).size():
+			var objs: Array = q.steps[s].objectives
+			for i in objs.size():
+				var o: Dictionary = objs[i]
+				if str(o.get("point", "")) != point or not str(o.type) in ["reach", "interact"]:
+					continue
+				if log.is_done(id):
+					return true
+				if log.is_active(id):
+					var step := int(log.active[id].step)
+					if step > s or (step == s and int(log.active[id].counts[i]) >= int(o.count)):
+						return true
+	return false
+
+
 ## The quest points of a zone the local player has an objective for right now.
 static func visible_points(points: Dictionary, log: QuestLog, quests: QuestDB, zone_id: String) -> Array:
 	var out: Array = []

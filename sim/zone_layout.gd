@@ -51,6 +51,8 @@ var variants: Dictionary = {}
 var walkers: Array = []
 ## The relief (Plan 8.3d): hills, hollows and plateaus that add up to the ground's height.
 var relief: Array = []
+## Pieces shown until their quest point is done (Plan 8.3d): [{id, at, rot, point}]; drawn only.
+var story_pieces: Array = []
 var _corner_cache: Dictionary = {}
 var variant: String = ""
 var _raw: Dictionary = {}
@@ -134,6 +136,9 @@ static func from_dict(zone_id: String, d: Dictionary, pieces_path: String = PIEC
 	z.variants = d.get("variants", {}) if d.get("variants") is Dictionary else {}
 	z.walkers = (d.get("walkers", []) as Array).duplicate(true) if d.get("walkers") is Array else []
 	z.relief = (d.get("relief", []) as Array).duplicate(true) if d.get("relief") is Array else []
+	for sp: Variant in d.get("story_pieces", []):
+		if sp is Dictionary:
+			z.story_pieces.append({"id": str(sp.get("id", "")), "at": _v2i(sp.get("at", [0, 0])), "rot": int(sp.get("rot", 0)), "point": str(sp.get("point", ""))})
 	for qp: Variant in d.get("quest_points", []):
 		if qp is Dictionary and str((qp as Dictionary).get("id", "")) != "":
 			z.quest_points[str(qp.id)] = {"at": _v2i(qp.get("at", [0, 0])), "radius": float(qp.get("radius", 2.0)),
@@ -248,7 +253,7 @@ func apply_variant(name: String) -> ZoneLayout:
 		return null
 	var v: Dictionary = variants[name]
 	var d := _raw.duplicate(true)
-	for k in ["ambience", "npcs", "hordes", "respawn", "spawns", "torches", "walkers", "entries"]:
+	for k in ["ambience", "npcs", "hordes", "respawn", "spawns", "torches", "walkers", "entries", "story_pieces"]:
 		if v.has(k):
 			d[k] = v[k]
 	var gone: Array = v.get("remove_pieces", [])

@@ -431,6 +431,31 @@ func show_gates(log: QuestLog) -> void:
 		add_child(mi)
 
 
+## Pieces that stay until the player is done with their quest point (Plan 8.3d): drawn only.
+func show_story_pieces(log: QuestLog, quests: QuestDB) -> void:
+	for i in layout.story_pieces.size():
+		var sp: Dictionary = layout.story_pieces[i]
+		var node_name := "Story_%d" % i
+		var want := not QuestText.point_done(log, quests, str(sp.point))
+		var old := get_node_or_null(node_name)
+		if want and old == null:
+			var mesh := VoxMesher.cached(str(layout.piece_def(str(sp.id)).get("vox", "")), {})
+			if mesh == null:
+				continue
+			var mi := MeshInstance3D.new()
+			mi.name = node_name
+			mi.mesh = mesh
+			mi.transform = piece_transform(sp)
+			add_child(mi)
+		elif not want and old != null:
+			remove_child(old)
+			old.queue_free()
+
+
+func story_piece_shown(index: int) -> bool:
+	return get_node_or_null("Story_%d" % index) != null
+
+
 ## The piece a gate shows now ("" if none).
 func gate_piece(index: int) -> String:
 	var n := get_node_or_null("Gate_%d" % index)

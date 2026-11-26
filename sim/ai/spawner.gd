@@ -54,6 +54,8 @@ func tick(world: SimWorld) -> void:
 					respawn = world.balance.boss_respawn_s
 				(_due[m.spawn_index] as Array).append(m.died_tick + world.ticks(respawn))
 	for i in points.size():
+		if not _story_open(world, points[i]):
+			continue # waits for the story (Plan 8.3d: the assault's foes come after the awakening)
 		var due: Array = _due[i]
 		var keep: Array = []
 		for t: int in due:
@@ -63,6 +65,8 @@ func tick(world: SimWorld) -> void:
 				keep.append(t)
 		_due[i] = keep
 	for i in hordes.size():
+		if not _story_open(world, hordes[i]):
+			continue
 		var hdue: Array = _horde_due[i]
 		var hkeep: Array = []
 		for t: int in hdue:
@@ -71,6 +75,17 @@ func tick(world: SimWorld) -> void:
 			else:
 				hkeep.append(t)
 		_horde_due[i] = hkeep
+
+
+## True when a horde or spawn point has no "requires", or some player here has all its flags.
+static func _story_open(world: SimWorld, d: Dictionary) -> bool:
+	var flags: Array = (d.get("requires", {}) as Dictionary).get("flags", []) if d.get("requires") is Dictionary else []
+	if flags.is_empty():
+		return true
+	for p: PlayerState in world.players.values():
+		if flags.all(func(fl: Variant) -> bool: return p.quests.has_flag(str(fl))):
+			return true
+	return false
 
 
 ## A monster that left without dying (a boss that fled, Plan 8.3a) comes back like a dead
