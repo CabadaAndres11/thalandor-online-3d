@@ -41,6 +41,15 @@ static func objective_lines(log: QuestLog, quests: QuestDB, id: String, bag: Inv
 				line = _tr("UI_QUEST_TALK" if str(o.type) == "talk" else "UI_QUEST_DELIVER") % _tr(str(npc.get("name", o.npc)))
 			"reach", "interact":
 				line = _tr(str(o.get("label", "UI_QUEST_REACH" if str(o.type) == "reach" else "UI_QUEST_EXAMINE")))
+			"hit", "hit_secondary":
+				line = "%s %d/%d" % [_tr("UI_QUEST_HIT_SECONDARY" if str(o.type) == "hit_secondary" else "UI_QUEST_HIT") % _tr(str(MonsterDB.load_default().get_type(str(o.monster)).get("name", o.monster))), have, need]
+			"dodge":
+				line = "%s %d/%d" % [_tr("UI_QUEST_DODGE"), have, need]
+			"class":
+				line = _tr("UI_QUEST_CLASS")
+		# The tutorial says it its own way (Plan 8.3a): a label with the count when there is one.
+		if o.has("label") and not str(o.type) in ["reach", "interact"]:
+			line = _tr(str(o.label)) + (" %d/%d" % [have, need] if need > 1 else "")
 		if line != "":
 			out.append(("✓ " if have >= need else "") + line)
 	return out

@@ -7,6 +7,8 @@ extends RefCounted
 const DIR := "res://data/quests/"
 const TYPES := ["talk", "deliver", "kill", "collect", "reach", "interact", "scene", "choice", "hit", "hit_secondary", "dodge", "class"]
 
+## Where load_default() reads (the test suite points it at an empty folder).
+static var dir: String = DIR
 static var _default: QuestDB
 var _by_id: Dictionary = {}
 var _order: Array = []
@@ -14,7 +16,7 @@ var _order: Array = []
 
 static func load_default() -> QuestDB:
 	if _default == null:
-		_default = load_dir(DIR)
+		_default = load_dir(dir)
 	return _default
 
 

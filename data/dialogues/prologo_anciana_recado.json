@@ -1,0 +1,29 @@
+{
+	"id": "prologo_anciana_recado",
+	"nodes": {
+		"start": {
+			"lines": [
+				[
+					"anciana_cantora",
+					"DLG_P_ANCIANA_RECADO_1"
+				],
+				[
+					"anciana_cantora",
+					"DLG_P_ANCIANA_RECADO_2"
+				],
+				[
+					"anciana_cantora",
+					"DLG_P_ANCIANA_RECADO_3"
+				],
+				[
+					"player",
+					"DLG_P_ANCIANA_RECADO_4"
+				],
+				[
+					"anciana_cantora",
+					"DLG_P_ANCIANA_RECADO_5"
+				]
+			]
+		}
+	}
+}

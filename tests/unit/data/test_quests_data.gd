@@ -12,7 +12,7 @@ func _validate(db: QuestDB, zones := "res://data/zones/") -> Array[String]:
 
 
 func test_every_quest_is_valid() -> void:
-	var errors := _validate(QuestDB.load_default())
+	var errors := _validate(QuestDB.load_dir(QuestDB.DIR))
 	assert_eq(errors, [] as Array[String], "\n".join(errors))
 
 

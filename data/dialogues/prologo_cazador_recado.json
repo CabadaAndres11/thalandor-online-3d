@@ -1,0 +1,25 @@
+{
+	"id": "prologo_cazador_recado",
+	"nodes": {
+		"start": {
+			"lines": [
+				[
+					"cazador",
+					"DLG_P_CAZADOR_RECADO_1"
+				],
+				[
+					"cazador",
+					"DLG_P_CAZADOR_RECADO_2"
+				],
+				[
+					"player",
+					"DLG_P_CAZADOR_RECADO_3"
+				],
+				[
+					"cazador",
+					"DLG_P_CAZADOR_RECADO_4"
+				]
+			]
+		}
+	}
+}

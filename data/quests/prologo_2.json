@@ -1,0 +1,143 @@
+{
+	"id": "prologo_2",
+	"name": "QUEST_PROLOGO_2",
+	"summary": "QUEST_PROLOGO_2_SUM",
+	"story": true,
+	"auto": true,
+	"giver": "",
+	"turn_in": "",
+	"requires": {
+		"quests": [
+			"prologo_1"
+		]
+	},
+	"moment": {
+		"zone": "aldea",
+		"variant": "asalto"
+	},
+	"steps": [
+		{
+			"text": "QUEST_P2_S1",
+			"objectives": [
+				{
+					"type": "scene",
+					"scene": "prologo_alarma"
+				},
+				{
+					"type": "reach",
+					"zone": "aldea",
+					"point": "alarma",
+					"label": "QUEST_P2_O_ALARMA"
+				}
+			]
+		},
+		{
+			"text": "QUEST_P2_S2",
+			"objectives": [
+				{
+					"type": "kill",
+					"monster": "cultist",
+					"count": 6,
+					"zone": "aldea",
+					"label": "QUEST_P2_O_VECINOS"
+				}
+			],
+			"on_done": {
+				"scene": "prologo_secuestro"
+			}
+		},
+		{
+			"text": "QUEST_P2_S3",
+			"objectives": [
+				{
+					"type": "scene",
+					"scene": "prologo_secuestro"
+				},
+				{
+					"type": "reach",
+					"zone": "aldea",
+					"point": "tras_mira",
+					"label": "QUEST_P2_O_TRAS"
+				}
+			],
+			"on_done": {
+				"scene": "prologo_despertar"
+			}
+		},
+		{
+			"text": "QUEST_P2_S4",
+			"objectives": [
+				{
+					"type": "scene",
+					"scene": "prologo_despertar"
+				},
+				{
+					"type": "class"
+				}
+			],
+			"on_done": {
+				"scene": "prologo_alba"
+			}
+		},
+		{
+			"text": "QUEST_P2_S5",
+			"objectives": [
+				{
+					"type": "scene",
+					"scene": "prologo_alba"
+				},
+				{
+					"type": "kill",
+					"monster": "marked_hound",
+					"count": 4,
+					"zone": "aldea"
+				},
+				{
+					"type": "kill",
+					"monster": "heraldo",
+					"count": 1,
+					"zone": "aldea"
+				}
+			],
+			"on_done": {
+				"scene": "prologo_huida"
+			}
+		},
+		{
+			"text": "QUEST_P2_S6",
+			"objectives": [
+				{
+					"type": "scene",
+					"scene": "prologo_huida"
+				},
+				{
+					"type": "reach",
+					"zone": "aldea",
+					"point": "puerta",
+					"label": "QUEST_P2_O_PUERTA"
+				}
+			],
+			"on_done": {
+				"scene": "prologo_brann"
+			}
+		},
+		{
+			"text": "QUEST_P2_S7",
+			"objectives": [
+				{
+					"type": "scene",
+					"scene": "prologo_brann"
+				}
+			]
+		}
+	],
+	"on_done": {
+		"marks": [
+			"tutorial_done"
+		],
+		"moment": null
+	},
+	"rewards": {
+		"levels": 2
+	}
+}

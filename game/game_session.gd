@@ -38,6 +38,8 @@ var cutscene: CutscenePlayer
 var _stage_view: ZoneView
 ## Fire and smoke a cutscene lit (Plan 8.3a); they go with the scene.
 var _scene_fx_nodes: Array = []
+## Placed NPCs a cutscene plays as actors: hidden while it lasts, so nobody is there twice.
+var _scene_hidden: Array = []
 ## The white flash of a scene goes to the overlay (Main connects it).
 signal scene_flash()
 ## Glows on the quest points the local player has an objective for (Plan 8.2).
@@ -500,6 +502,19 @@ func play_cutscene(scene_id: String) -> CutscenePlayer:
 				step.call()
 			view = _stage_view
 			_avatar_root.visible = false
+	# "stage": "player" (Plan 8.3a): the scene's cells count from where the player stands.
+	var origin := Vector3.ZERO
+	if str(stage) == "player":
+		var me := client.render_state(client.my_id)
+		if not me.is_empty():
+			origin = Vector3(floorf(me.position.x), 0, floorf(me.position.z))
+	_scene_hidden.clear()
+	for spec: Variant in (data.get("actors", {}) as Dictionary).values():
+		if spec is Dictionary and (spec as Dictionary).has("npc"):
+			var placed := npc_avatar(str(spec.npc))
+			if placed != null and placed.visible:
+				placed.visible = false
+				_scene_hidden.append(placed)
 	_cut_fov = camera.fov
 	var own := player_avatar(client.my_id)
 	if own != null:
@@ -508,7 +523,7 @@ func play_cutscene(scene_id: String) -> CutscenePlayer:
 	cutscene.name = "Cutscene"
 	add_child(cutscene)
 	cutscene.finished.connect(_end_cutscene, CONNECT_ONE_SHOT | CONNECT_DEFERRED)
-	cutscene.play(data, {"camera": camera, "actor_factory": _cutscene_actor, "fx": _scene_fx,
+	cutscene.play(data, {"camera": camera, "actor_factory": _cutscene_actor, "fx": _scene_fx, "origin": origin,
 		"set_ambience": func(id: String) -> void:
 			if view != null:
 				view.set_ambience(id)})
@@ -574,6 +589,10 @@ func _end_cutscene() -> void:
 	for n: Node in _scene_fx_nodes:
 		n.queue_free()
 	_scene_fx_nodes.clear()
+	for n: Node3D in _scene_hidden:
+		if is_instance_valid(n):
+			n.visible = true
+	_scene_hidden.clear()
 	if _stage_view != null:
 		_stage_view.queue_free()
 		remove_child(_stage_view)

@@ -1,0 +1,192 @@
+{
+	"id": "prologo_despertar",
+	"skippable": true,
+	"stage": "player",
+	"actors": {
+		"yo": {
+			"player": true,
+			"at": [
+				0,
+				0
+			],
+			"facing": 180
+		},
+		"bruto": {
+			"monster": "cultist",
+			"at": [
+				0,
+				-3
+			],
+			"facing": 0
+		},
+		"mira": {
+			"npc": "mira",
+			"at": [
+				0,
+				-12
+			],
+			"facing": 0
+		}
+	},
+	"tracks": [
+		[
+			{
+				"camera": {
+					"at": [
+						4,
+						3,
+						4
+					],
+					"look": [
+						0,
+						1.2,
+						-3
+					],
+					"fov": 46
+				},
+				"time": 0
+			},
+			{
+				"camera": {
+					"at": [
+						3,
+						2,
+						2.5
+					],
+					"look": [
+						0,
+						1.4,
+						-2
+					]
+				},
+				"time": 10,
+				"ease": "in_out"
+			},
+			{
+				"camera": {
+					"at": [
+						2.5,
+						1.6,
+						1.5
+					],
+					"look": [
+						0,
+						1.3,
+						0
+					]
+				},
+				"time": 6,
+				"ease": "in_out"
+			}
+		],
+		[
+			{
+				"fade": "in",
+				"time": 0.6
+			},
+			{
+				"line": [
+					"mira",
+					"SCN_P_DESPERTAR_1"
+				],
+				"time": 2.4
+			},
+			{
+				"line": [
+					"player",
+					"SCN_P_DESPERTAR_2"
+				],
+				"time": 2.8
+			},
+			{
+				"pose": [
+					"bruto",
+					"heavy"
+				],
+				"time": 0.6
+			},
+			{
+				"pose": [
+					"yo",
+					"kneel"
+				],
+				"time": 1.4
+			},
+			{
+				"wait": "",
+				"time": 0.8
+			},
+			{
+				"pose": [
+					"yo",
+					"cast_long"
+				],
+				"time": 0.2
+			},
+			{
+				"fx": "flash",
+				"at": [
+					0,
+					0
+				]
+			},
+			{
+				"shake": "",
+				"time": 0.8
+			},
+			{
+				"line": [
+					"",
+					"SCN_P_DESPERTAR_3"
+				],
+				"time": 3.6
+			},
+			{
+				"line": [
+					"player",
+					"SCN_P_DESPERTAR_4"
+				],
+				"time": 2.4
+			},
+			{
+				"line": [
+					"",
+					"SCN_P_DESPERTAR_5"
+				],
+				"time": 2.4
+			},
+			{
+				"fade": "out",
+				"time": 0.6
+			}
+		],
+		[
+			{
+				"wait": "",
+				"time": 2
+			},
+			{
+				"move": "mira",
+				"to": [
+					[
+						0,
+						-20
+					]
+				],
+				"speed": 3
+			},
+			{
+				"hide": "mira"
+			}
+		],
+		[
+			{
+				"wait": "",
+				"time": 8.4
+			},
+			{
+				"hide": "bruto"
+			}
+		]
+	]
+}

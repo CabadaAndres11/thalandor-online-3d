@@ -1,0 +1,148 @@
+{
+	"id": "prologo_colina",
+	"skippable": true,
+	"stage": "here",
+	"actors": {
+		"mira": {
+			"npc": "mira",
+			"at": [
+				20,
+				19
+			],
+			"facing": 270
+		},
+		"yo": {
+			"player": true,
+			"at": [
+				22,
+				19
+			],
+			"facing": 270
+		}
+	},
+	"tracks": [
+		[
+			{
+				"camera": {
+					"at": [
+						25,
+						3.2,
+						23
+					],
+					"look": [
+						17,
+						1.2,
+						18
+					],
+					"fov": 42
+				},
+				"time": 0
+			},
+			{
+				"camera": {
+					"at": [
+						24,
+						2.6,
+						21.5
+					],
+					"look": [
+						18,
+						1.4,
+						19
+					]
+				},
+				"time": 14,
+				"ease": "in_out"
+			}
+		],
+		[
+			{
+				"fade": "in",
+				"time": 1
+			},
+			{
+				"line": [
+					"mira",
+					"SCN_P_COLINA_1"
+				],
+				"time": 3.2
+			},
+			{
+				"line": [
+					"player",
+					"SCN_P_COLINA_2"
+				],
+				"time": 2.4
+			},
+			{
+				"line": [
+					"mira",
+					"SCN_P_COLINA_3"
+				],
+				"time": 3.2
+			},
+			{
+				"line": [
+					"player",
+					"SCN_P_COLINA_4"
+				],
+				"time": 2.6
+			},
+			{
+				"line": [
+					"mira",
+					"SCN_P_COLINA_5"
+				],
+				"time": 3.2
+			},
+			{
+				"pose": [
+					"mira",
+					"point"
+				],
+				"time": 0.1
+			},
+			{
+				"line": [
+					"mira",
+					"SCN_P_COLINA_6"
+				],
+				"time": 2.6
+			},
+			{
+				"line": [
+					"player",
+					"SCN_P_COLINA_7"
+				],
+				"time": 2
+			},
+			{
+				"line": [
+					"mira",
+					"SCN_P_COLINA_8"
+				],
+				"time": 2.8
+			},
+			{
+				"fade": "out",
+				"time": 1
+			}
+		],
+		[
+			{
+				"wait": "",
+				"time": 24
+			},
+			{
+				"move": "mira",
+				"to": [
+					[
+						30,
+						30
+					]
+				],
+				"speed": 4.5
+			}
+		]
+	]
+}

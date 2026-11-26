@@ -1,0 +1,25 @@
+{
+	"id": "prologo_brann_recados",
+	"nodes": {
+		"start": {
+			"lines": [
+				[
+					"brann",
+					"DLG_P_BRANN_RECADOS_1"
+				],
+				[
+					"brann",
+					"DLG_P_BRANN_RECADOS_2"
+				],
+				[
+					"player",
+					"DLG_P_BRANN_RECADOS_3"
+				],
+				[
+					"brann",
+					"DLG_P_BRANN_RECADOS_4"
+				]
+			]
+		}
+	}
+}

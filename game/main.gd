@@ -597,6 +597,8 @@ func _start_scene(scene_id: String) -> void:
 
 func _on_scene_line(speaker: String, text_key: String) -> void:
 	var who := game.client.player_name if speaker == "player" else tr(str(NpcDB.load_default().npc(speaker).get("name", "")))
+	if speaker != "player" and speaker != "" and who == "":
+		who = tr(str(MonsterDB.load_default().get_type(speaker).get("name", ""))) # the Heraldo speaks too
 	cutscene_overlay.show_line(who, DialogueRunner.format(text_key, game.client.player_name, _epithet()))
 
 

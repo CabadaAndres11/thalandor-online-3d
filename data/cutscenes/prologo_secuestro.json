@@ -1,0 +1,254 @@
+{
+	"id": "prologo_secuestro",
+	"skippable": true,
+	"stage": "here",
+	"actors": {
+		"heraldo": {
+			"monster": "heraldo",
+			"at": [
+				48,
+				44
+			],
+			"facing": 0
+		},
+		"mira": {
+			"npc": "mira",
+			"at": [
+				47,
+				47
+			],
+			"facing": 180
+		},
+		"c1": {
+			"monster": "cultist",
+			"at": [
+				46,
+				47
+			],
+			"facing": 90
+		},
+		"c2": {
+			"monster": "cultist",
+			"at": [
+				49,
+				47
+			],
+			"facing": 270
+		},
+		"yo": {
+			"player": true,
+			"at": [
+				44,
+				51
+			],
+			"facing": 143
+		}
+	},
+	"tracks": [
+		[
+			{
+				"camera": {
+					"at": [
+						40,
+						5,
+						56
+					],
+					"look": [
+						47,
+						1,
+						46
+					],
+					"fov": 44
+				},
+				"time": 0
+			},
+			{
+				"camera": {
+					"at": [
+						43,
+						3.2,
+						53
+					],
+					"look": [
+						47.5,
+						1.6,
+						45.5
+					]
+				},
+				"time": 12,
+				"ease": "in_out"
+			},
+			{
+				"camera": {
+					"at": [
+						47,
+						7,
+						52
+					],
+					"look": [
+						48,
+						1,
+						30
+					]
+				},
+				"time": 8,
+				"ease": "in_out"
+			}
+		],
+		[
+			{
+				"fade": "in",
+				"time": 0.8
+			},
+			{
+				"fx": "fire",
+				"at": [
+					44,
+					40
+				]
+			},
+			{
+				"fx": "smoke",
+				"at": [
+					52,
+					38
+				]
+			},
+			{
+				"line": [
+					"heraldo",
+					"SCN_P_SECUESTRO_1"
+				],
+				"time": 4
+			},
+			{
+				"line": [
+					"heraldo",
+					"SCN_P_SECUESTRO_2"
+				],
+				"time": 3
+			},
+			{
+				"line": [
+					"mira",
+					"SCN_P_SECUESTRO_3"
+				],
+				"time": 1.8
+			},
+			{
+				"line": [
+					"player",
+					"SCN_P_SECUESTRO_4"
+				],
+				"time": 1.6
+			},
+			{
+				"wait": "",
+				"time": 3
+			},
+			{
+				"line": [
+					"player",
+					"SCN_P_SECUESTRO_5"
+				],
+				"time": 2
+			},
+			{
+				"fade": "out",
+				"time": 0.8
+			}
+		],
+		[
+			{
+				"wait": "",
+				"time": 10.8
+			},
+			{
+				"move": "mira",
+				"to": [
+					[
+						48,
+						38
+					],
+					[
+						48,
+						24
+					]
+				],
+				"speed": 3.2
+			},
+			{
+				"hide": "mira"
+			}
+		],
+		[
+			{
+				"wait": "",
+				"time": 10.8
+			},
+			{
+				"move": "c1",
+				"to": [
+					[
+						47,
+						38
+					],
+					[
+						47,
+						24
+					]
+				],
+				"speed": 3.2
+			},
+			{
+				"hide": "c1"
+			}
+		],
+		[
+			{
+				"wait": "",
+				"time": 10.8
+			},
+			{
+				"move": "c2",
+				"to": [
+					[
+						49,
+						38
+					],
+					[
+						49,
+						24
+					]
+				],
+				"speed": 3.2
+			},
+			{
+				"hide": "c2"
+			}
+		],
+		[
+			{
+				"wait": "",
+				"time": 8
+			},
+			{
+				"move": "heraldo",
+				"to": [
+					[
+						48,
+						36
+					],
+					[
+						48,
+						20
+					]
+				],
+				"speed": 3.6
+			},
+			{
+				"hide": "heraldo"
+			}
+		]
+	]
+}

@@ -1,0 +1,150 @@
+{
+	"id": "prologo_nombre",
+	"skippable": true,
+	"stage": "here",
+	"actors": {
+		"anciana": {
+			"npc": "anciana_cantora",
+			"at": [
+				42,
+				50
+			],
+			"facing": 90
+		},
+		"yo": {
+			"player": true,
+			"at": [
+				44,
+				50
+			],
+			"facing": 270
+		},
+		"v1": {
+			"npc": "aldeano_anciano_1",
+			"at": [
+				43,
+				52
+			],
+			"facing": 0
+		},
+		"v2": {
+			"npc": "aldeana_anciana_1",
+			"at": [
+				45,
+				52
+			],
+			"facing": 0
+		},
+		"v3": {
+			"npc": "panadero",
+			"at": [
+				41,
+				52
+			],
+			"facing": 0
+		},
+		"v4": {
+			"npc": "cazador",
+			"at": [
+				46,
+				48
+			],
+			"facing": 270
+		}
+	},
+	"tracks": [
+		[
+			{
+				"camera": {
+					"at": [
+						43,
+						4,
+						57
+					],
+					"look": [
+						43,
+						1.2,
+						50
+					],
+					"fov": 46
+				},
+				"time": 0
+			},
+			{
+				"camera": {
+					"at": [
+						43,
+						2.6,
+						54
+					],
+					"look": [
+						43,
+						1.5,
+						50
+					]
+				},
+				"time": 16,
+				"ease": "in_out"
+			}
+		],
+		[
+			{
+				"fade": "in",
+				"time": 1
+			},
+			{
+				"line": [
+					"anciana_cantora",
+					"SCN_P_NOMBRE_1"
+				],
+				"time": 3.4
+			},
+			{
+				"line": [
+					"player",
+					"SCN_P_NOMBRE_2"
+				],
+				"time": 3.2
+			},
+			{
+				"line": [
+					"anciana_cantora",
+					"SCN_P_NOMBRE_3"
+				],
+				"time": 4.6
+			},
+			{
+				"line": [
+					"anciana_cantora",
+					"SCN_P_NOMBRE_4"
+				],
+				"time": 3
+			},
+			{
+				"line": [
+					"aldeano_anciano_1",
+					"SCN_P_NOMBRE_5"
+				],
+				"time": 1.8
+			},
+			{
+				"line": [
+					"aldeana_anciana_1",
+					"SCN_P_NOMBRE_6"
+				],
+				"time": 1.8
+			},
+			{
+				"line": [
+					"panadero",
+					"SCN_P_NOMBRE_7"
+				],
+				"time": 1.8
+			},
+			{
+				"fade": "out",
+				"time": 1.2
+			}
+		]
+	]
+}

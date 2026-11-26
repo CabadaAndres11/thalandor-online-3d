@@ -1,0 +1,138 @@
+{
+	"id": "prologo_alarma",
+	"skippable": true,
+	"stage": "here",
+	"actors": {
+		"mira": {
+			"npc": "mira",
+			"at": [
+				32,
+				37
+			],
+			"facing": 180
+		},
+		"yo": {
+			"player": true,
+			"at": [
+				31,
+				35
+			],
+			"facing": 0
+		}
+	},
+	"tracks": [
+		[
+			{
+				"camera": {
+					"at": [
+						36,
+						4.5,
+						44
+					],
+					"look": [
+						32,
+						1,
+						37
+					],
+					"fov": 46
+				},
+				"time": 0
+			},
+			{
+				"camera": {
+					"at": [
+						38,
+						5,
+						46
+					],
+					"look": [
+						40,
+						1,
+						42
+					]
+				},
+				"time": 10,
+				"ease": "in_out"
+			}
+		],
+		[
+			{
+				"fade": "in",
+				"time": 0.8
+			},
+			{
+				"fx": "fire",
+				"at": [
+					57,
+					31
+				]
+			},
+			{
+				"fx": "smoke",
+				"at": [
+					58,
+					33
+				]
+			},
+			{
+				"fx": "fire",
+				"at": [
+					38,
+					65
+				]
+			},
+			{
+				"line": [
+					"mira",
+					"SCN_P_ALARMA_1"
+				],
+				"time": 2.8
+			},
+			{
+				"line": [
+					"player",
+					"SCN_P_ALARMA_2"
+				],
+				"time": 2
+			},
+			{
+				"line": [
+					"mira",
+					"SCN_P_ALARMA_3"
+				],
+				"time": 3.4
+			},
+			{
+				"wait": "",
+				"time": 2.6
+			},
+			{
+				"fade": "out",
+				"time": 0.8
+			}
+		],
+		[
+			{
+				"wait": "",
+				"time": 8.4
+			},
+			{
+				"move": "mira",
+				"to": [
+					[
+						33,
+						40
+					],
+					[
+						42,
+						45
+					]
+				],
+				"speed": 5.5
+			},
+			{
+				"hide": "mira"
+			}
+		]
+	]
+}

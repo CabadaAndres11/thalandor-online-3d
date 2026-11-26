@@ -1,0 +1,21 @@
+{
+	"id": "prologo_anciana_nombre",
+	"nodes": {
+		"start": {
+			"lines": [
+				[
+					"anciana_cantora",
+					"DLG_P_ANCIANA_NOMBRE_1"
+				],
+				[
+					"player",
+					"DLG_P_ANCIANA_NOMBRE_2"
+				],
+				[
+					"anciana_cantora",
+					"DLG_P_ANCIANA_NOMBRE_3"
+				]
+			]
+		}
+	}
+}

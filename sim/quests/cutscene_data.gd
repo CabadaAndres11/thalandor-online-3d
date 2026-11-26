@@ -3,7 +3,8 @@ extends RefCounted
 ## Cutscenes as data (Plan 8.2): data/cutscenes/<id>.json. Actors (an NPC by id, a monster
 ## by type, the player, or a loose look), and tracks of steps that run side by side:
 ## camera, move, pose, line, wait, fade, ambience, show, hide, shake, fx. "stage" is "here"
-## (where the player stands) or {zone, variant} for scenes away from the player ([ANIMACIÓN]).
+## (where the player stands), "player" (cells counted from the player, Plan 8.3a) or {zone,
+## variant} for scenes away from the player ([ANIMACIÓN]). A line spoken by "" is narration.
 
 const DIR := "res://data/cutscenes/"
 const STEP_KEYS := ["camera", "move", "pose", "line", "wait", "fade", "ambience", "show", "hide", "shake", "fx"]
@@ -85,7 +86,7 @@ static func validate_dict(d: Dictionary) -> Array[String]:
 						err.call("pose desconocida '%s'" % step.pose[1])
 				"line":
 					var who := str(step.line[0])
-					if who != "player" and not actors.has(who) and NpcDB.load_default().npc(who).is_empty():
+					if who != "player" and who != "" and not actors.has(who) and NpcDB.load_default().npc(who).is_empty():
 						err.call("quién habla '%s'" % who)
 					if TranslationServer.translate(str(step.line[1])) == str(step.line[1]):
 						err.call("texto sin traducir '%s'" % step.line[1])

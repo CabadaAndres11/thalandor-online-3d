@@ -1160,7 +1160,9 @@
 			"tier": 1,
 			"template": "neck",
 			"look": [],
-			"model": ["jewel_neck_t1"],
+			"model": [
+				"jewel_neck_t1"
+			],
 			"name": "ITEM_NECK_T1"
 		},
 		"ring_t1": {
@@ -1169,7 +1171,9 @@
 			"tier": 1,
 			"template": "ring",
 			"look": [],
-			"model": ["jewel_ring_t1"],
+			"model": [
+				"jewel_ring_t1"
+			],
 			"name": "ITEM_RING_T1"
 		},
 		"wood_sword": {
@@ -1781,7 +1785,9 @@
 			"tier": 2,
 			"template": "neck",
 			"look": [],
-			"model": ["jewel_neck_t2"],
+			"model": [
+				"jewel_neck_t2"
+			],
 			"name": "ITEM_NECK_T2"
 		},
 		"ring_t2": {
@@ -1790,7 +1796,9 @@
 			"tier": 2,
 			"template": "ring",
 			"look": [],
-			"model": ["jewel_ring_t2"],
+			"model": [
+				"jewel_ring_t2"
+			],
 			"name": "ITEM_RING_T2"
 		},
 		"warrior_head_t3": {
@@ -2361,7 +2369,9 @@
 			"tier": 3,
 			"template": "neck",
 			"look": [],
-			"model": ["jewel_neck_t3"],
+			"model": [
+				"jewel_neck_t3"
+			],
 			"name": "ITEM_NECK_T3"
 		},
 		"ring_t3": {
@@ -2370,7 +2380,9 @@
 			"tier": 3,
 			"template": "ring",
 			"look": [],
-			"model": ["jewel_ring_t3"],
+			"model": [
+				"jewel_ring_t3"
+			],
 			"name": "ITEM_RING_T3"
 		},
 		"unique_acolyte": {
@@ -2456,6 +2468,46 @@
 				"w_unique_nhazar"
 			],
 			"name": "ITEM_UNIQUE_NHAZAR"
+		},
+		"q_pala_horno": {
+			"slot": "quest",
+			"kind": "quest",
+			"tier": 0,
+			"min_level": 1,
+			"max_level": 9999,
+			"template": "potion",
+			"look": [],
+			"name": "ITEM_Q_PALA_HORNO"
+		},
+		"q_puntas_flecha": {
+			"slot": "quest",
+			"kind": "quest",
+			"tier": 0,
+			"min_level": 1,
+			"max_level": 9999,
+			"template": "potion",
+			"look": [],
+			"name": "ITEM_Q_PUNTAS_FLECHA"
+		},
+		"q_candil": {
+			"slot": "quest",
+			"kind": "quest",
+			"tier": 0,
+			"min_level": 1,
+			"max_level": 9999,
+			"template": "potion",
+			"look": [],
+			"name": "ITEM_Q_CANDIL"
+		},
+		"q_mascara_culto": {
+			"slot": "quest",
+			"kind": "quest",
+			"tier": 0,
+			"min_level": 1,
+			"max_level": 9999,
+			"template": "potion",
+			"look": [],
+			"name": "ITEM_Q_MASCARA_CULTO"
 		}
 	}
 }

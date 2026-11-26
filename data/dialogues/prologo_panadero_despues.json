@@ -1,0 +1,17 @@
+{
+	"id": "prologo_panadero_despues",
+	"nodes": {
+		"start": {
+			"lines": [
+				[
+					"panadero",
+					"DLG_P_PANADERO_DESPUES_1"
+				],
+				[
+					"panadero",
+					"DLG_P_PANADERO_DESPUES_2"
+				]
+			]
+		}
+	}
+}

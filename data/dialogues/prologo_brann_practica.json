@@ -1,0 +1,21 @@
+{
+	"id": "prologo_brann_practica",
+	"nodes": {
+		"start": {
+			"lines": [
+				[
+					"brann",
+					"DLG_P_BRANN_PRACTICA_1"
+				],
+				[
+					"brann",
+					"DLG_P_BRANN_PRACTICA_2"
+				],
+				[
+					"brann",
+					"DLG_P_BRANN_PRACTICA_3"
+				]
+			]
+		}
+	}
+}

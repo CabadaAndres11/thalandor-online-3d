@@ -1,0 +1,181 @@
+{
+	"id": "prologo_1",
+	"name": "QUEST_PROLOGO_1",
+	"summary": "QUEST_PROLOGO_1_SUM",
+	"story": true,
+	"auto": true,
+	"giver": "",
+	"turn_in": "",
+	"moment": {
+		"zone": "aldea",
+		"variant": "vispera"
+	},
+	"steps": [
+		{
+			"text": "QUEST_P1_S1",
+			"objectives": [
+				{
+					"type": "reach",
+					"zone": "aldea",
+					"point": "mira_casa",
+					"label": "QUEST_P1_O_MIRA"
+				}
+			]
+		},
+		{
+			"text": "QUEST_P1_S2",
+			"objectives": [
+				{
+					"type": "talk",
+					"npc": "mira",
+					"dialogue": "prologo_mira_despierta"
+				}
+			]
+		},
+		{
+			"text": "QUEST_P1_S3",
+			"objectives": [
+				{
+					"type": "talk",
+					"npc": "brann",
+					"dialogue": "prologo_brann_recados"
+				}
+			],
+			"on_done": {
+				"give": [
+					[
+						"q_pala_horno",
+						1
+					],
+					[
+						"q_puntas_flecha",
+						1
+					],
+					[
+						"q_candil",
+						1
+					]
+				]
+			}
+		},
+		{
+			"text": "QUEST_P1_S4",
+			"objectives": [
+				{
+					"type": "deliver",
+					"npc": "panadero",
+					"item": "q_pala_horno",
+					"dialogue": "prologo_panadero_recado"
+				},
+				{
+					"type": "deliver",
+					"npc": "cazador",
+					"item": "q_puntas_flecha",
+					"dialogue": "prologo_cazador_recado"
+				},
+				{
+					"type": "deliver",
+					"npc": "anciana_cantora",
+					"item": "q_candil",
+					"dialogue": "prologo_anciana_recado"
+				}
+			]
+		},
+		{
+			"text": "QUEST_P1_S5",
+			"objectives": [
+				{
+					"type": "talk",
+					"npc": "brann",
+					"dialogue": "prologo_brann_practica"
+				}
+			],
+			"on_done": {
+				"give": [
+					[
+						"potion_health",
+						2
+					]
+				]
+			}
+		},
+		{
+			"text": "QUEST_P1_S6",
+			"objectives": [
+				{
+					"type": "hit",
+					"monster": "training_dummy",
+					"with": "basic",
+					"count": 10,
+					"label": "QUEST_P1_O_HIT"
+				}
+			]
+		},
+		{
+			"text": "QUEST_P1_S7",
+			"objectives": [
+				{
+					"type": "hit_secondary",
+					"monster": "training_dummy",
+					"count": 3,
+					"label": "QUEST_P1_O_HIT2"
+				}
+			]
+		},
+		{
+			"text": "QUEST_P1_S8",
+			"objectives": [
+				{
+					"type": "dodge",
+					"count": 3,
+					"label": "QUEST_P1_O_DODGE"
+				}
+			]
+		},
+		{
+			"text": "QUEST_P1_S9",
+			"objectives": [
+				{
+					"type": "reach",
+					"zone": "aldea",
+					"point": "colina",
+					"label": "QUEST_P1_O_COLINA"
+				}
+			],
+			"on_done": {
+				"scene": "prologo_colina"
+			}
+		},
+		{
+			"text": "QUEST_P1_S10",
+			"objectives": [
+				{
+					"type": "scene",
+					"scene": "prologo_colina"
+				},
+				{
+					"type": "reach",
+					"zone": "aldea",
+					"point": "plaza",
+					"label": "QUEST_P1_O_PLAZA"
+				}
+			],
+			"on_done": {
+				"scene": "prologo_fiesta"
+			}
+		},
+		{
+			"text": "QUEST_P1_S11",
+			"objectives": [
+				{
+					"type": "scene",
+					"scene": "prologo_fiesta"
+				}
+			]
+		}
+	],
+	"on_done": {
+		"scene": "prologo_alarma"
+	},
+	"rewards": {}
+}
