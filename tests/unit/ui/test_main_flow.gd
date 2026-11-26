@@ -812,3 +812,20 @@ func test_brann_opens_his_errand_first() -> void:
 	_press("interact")
 	assert_true(main.dialogue_window.visible, "his errand, not the menu")
 	assert_eq(main.dialogue_window.speaker_text(), tr("NPC_BRANN"))
+
+
+func test_cutscene_away_builds_its_stage_and_comes_back() -> void:
+	CutsceneData.dir = "res://tests/data/cutscenes/"
+	main._on_play("Prueba")
+	await wait_until(func() -> bool: return main.game.avatar_count() == 1 and not main.game.zone_building, 5.0)
+	var zone := main.game.zone_view
+	main._play_scene("c_away")
+	await wait_until(func() -> bool: return main.game.cutscene != null, 5.0)
+	assert_null(zone.get_parent(), "the zone waits aside")
+	assert_not_null(main.game.cutscene.actor("mira"))
+	main._on_scene_skip()
+	await wait_until(func() -> bool: return main.game.cutscene == null, 3.0)
+	await wait_physics_frames(3)
+	assert_eq(zone.get_parent(), main.game, "the zone is back")
+	assert_null(main.game.get_node_or_null("Stage"))
+	CutsceneData.dir = CutsceneData.DIR
