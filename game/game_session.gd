@@ -383,7 +383,7 @@ func _place_npcs() -> void:
 		var npc := NpcAvatar.new()
 		npc.name = "Npc_" + str(n.id)
 		_avatar_root.add_child(npc)
-		npc.setup(n.id, n.position, n.facing)
+		npc.setup(n.id, n.position + Vector3(0, ground_y(n.position.x, n.position.z), 0), n.facing)
 		_npc_avatars.append(npc)
 
 
@@ -469,6 +469,7 @@ func _sync_avatars(delta: float) -> void:
 		# A partner in another zone is not drawn here; nor are you while a scene shows your actor (Plan 8.3c).
 		avatar_node.visible = not state.is_empty() and not (cutscene != null and id == client.my_id)
 		avatar_node.apply_state(state, delta)
+		avatar_node.position.y += ground_y(avatar_node.position.x, avatar_node.position.z)
 		if client.combat.has(id):
 			var c: Dictionary = client.combat[id]
 			avatar_node.set_health(float(c.hp), float(c.max_hp), int(c.life) == CombatEntity.ALIVE)
@@ -529,7 +530,7 @@ func play_cutscene(scene_id: String) -> CutscenePlayer:
 	cutscene.name = "Cutscene"
 	add_child(cutscene)
 	cutscene.finished.connect(_end_cutscene, CONNECT_ONE_SHOT | CONNECT_DEFERRED)
-	cutscene.play(data, {"camera": camera, "actor_factory": _cutscene_actor, "fx": _scene_fx, "origin": origin,
+	cutscene.play(data, {"camera": camera, "actor_factory": _cutscene_actor, "fx": _scene_fx, "origin": origin, "ground": ground_y,
 		"set_ambience": func(id: String) -> void:
 			if view != null:
 				view.set_ambience(id)})
@@ -644,7 +645,7 @@ func refresh_quest_marks() -> void:
 		mat.emission_enabled = true
 		mat.emission = Color(1.0, 0.8, 0.3)
 		glow.material_override = mat
-		glow.position = Vector3(at.x + 0.5, 1.2, at.y + 0.5)
+		glow.position = Vector3(at.x + 0.5, 1.2 + ground_y(at.x + 0.5, at.y + 0.5), at.y + 0.5)
 		glow.name = "QuestPoint_" + id
 		_avatar_root.add_child(glow)
 		_point_marks[id] = glow
@@ -686,7 +687,7 @@ func move_walkers(t: float) -> void:
 	for w: Dictionary in _walkers:
 		var s := WalkerPath.at(w.route, w.speed, w.pause_s, w.loop, t)
 		var a: NpcAvatar = w.avatar
-		a.position = s.position
+		a.position = s.position + Vector3(0, ground_y(s.position.x, s.position.z), 0)
 		a.rotation.y = s.facing
 		if a.rig != null:
 			a.rig.set_moving_speed(w.speed if s.moving else 0.0, 3.0)
@@ -791,7 +792,9 @@ func _sync_monsters(delta: float) -> void:
 			_avatar_root.add_child(avatar)
 			avatar.setup(MonsterDB.load_default().get_type(str(info.type)), bool(info.get("elite", false)), client.balance.elite_scale, bool(info.get("ally", false)))
 			_monster_avatars[id] = avatar
-		(_monster_avatars[id] as MonsterAvatar).apply_state(client.monster_render_state(id), info, delta)
+		var ma := _monster_avatars[id] as MonsterAvatar
+		ma.apply_state(client.monster_render_state(id), info, delta)
+		ma.position.y += ground_y(ma.position.x, ma.position.z)
 
 
 ## The ability as others see a player cast it: evolved by their upgrade (the templar's smite
@@ -803,10 +806,31 @@ static func seen_ability(ability_id: String, upgrade: String, main_base: String)
 	return ab
 
 
-func _on_combat_event(ev: Array) -> void:
-	fx.handle(ev)
+## The ground's height here (Plan 8.3d): 0 on flat zones. The simulation is flat; only the
+## drawing stands on the relief.
+func ground_y(x: float, z: float) -> float:
+	var view := _stage_view if _stage_view != null else zone_view
+	if view == null or view.layout == null or view.layout.relief.is_empty():
+		return 0.0
+	return view.layout.height_at(x, z)
+
+
+## An event with its positions on the ground: effects and loot are drawn on the relief.
+func lifted(ev: Array) -> Array:
+	var out := ev.duplicate()
+	for i in out.size():
+		if out[i] is Vector3:
+			var v: Vector3 = out[i]
+			out[i] = v + Vector3(0, ground_y(v.x, v.z), 0)
+	return out
+
+
+func _on_combat_event(raw: Array) -> void:
+	var ev := raw
+	var drawn := lifted(raw)
+	fx.handle(drawn)
 	loot_view.my_id = client.my_id
-	loot_view.handle(ev)
+	loot_view.handle(drawn)
 	if str(ev[0]) == "bag_full" and ev.size() > 1 and int(ev[1]) == client.my_id:
 		client.chat_received.emit("", tr("ITEM_BAG_FULL"), true)
 	if str(ev[0]) == "exit_locked" and ev.size() > 1 and int(ev[1]) == client.my_id:

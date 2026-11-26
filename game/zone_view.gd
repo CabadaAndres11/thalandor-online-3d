@@ -184,11 +184,13 @@ func _build_ground() -> void:
 		for c: Vector2i in by_kind[key]:
 			var n := (hash(c) % 1000) / 1000.0
 			st.set_color(base.darkened(0.08 * n) if n < 0.5 else base.lightened(0.05 * n))
-			st.set_normal(Vector3.UP)
-			var p0 := Vector3(c.x, y, c.y)
-			for v: Vector3 in [p0, p0 + Vector3(1, 0, 0), p0 + Vector3(1, 0, 1), p0, p0 + Vector3(1, 0, 1), p0 + Vector3(0, 0, 1)]:
+			for k: Vector2i in [Vector2i(0, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 0), Vector2i(1, 1), Vector2i(0, 1)]:
+				var corner := c + k
+				# The relief lifts the ground at each corner (Plan 8.3d); water keeps its level.
+				var v := Vector3(corner.x, y if kind == "water" else y + layout.corner_height(corner), corner.y)
 				st.set_uv(Vector2(v.x, v.z) * inv)
 				st.add_vertex(v)
+		st.generate_normals()
 		var mat := ground_mat
 		if kind == "water":
 			mat = StandardMaterial3D.new()
@@ -379,9 +381,19 @@ func piece_transform(p: Dictionary) -> Transform3D:
 	var scale_f := float(def.get("scale", 0.5))
 	var local := Transform3D(Basis.from_scale(Vector3.ONE * scale_f),
 		Vector3(float(off[0]), float(off[1]), float(off[2])) * VoxMesher.VOXEL_SIZE * scale_f)
+	var lift := Transform3D.IDENTITY.translated(Vector3(0, ground_at(p), 0)) # on the relief (Plan 8.3d)
 	if p.has("off"): # ground details sit anywhere in their cell
-		return Transform3D.IDENTITY.translated(p.off) * placement(p) * local
-	return placement(p) * local
+		return lift * Transform3D.IDENTITY.translated(p.off) * placement(p) * local
+	return lift * placement(p) * local
+
+
+## The ground's height under a placed piece (its cell's centre, or its detail's spot).
+func ground_at(p: Dictionary) -> float:
+	if layout == null or layout.relief.is_empty():
+		return 0.0
+	var at: Vector2i = p.at
+	var off: Vector3 = p.get("off", Vector3.ZERO)
+	return layout.height_at(at.x + 0.5 + off.x, at.y + 0.5 + off.z)
 
 
 ## The cell (0, 0) corner of a placed piece, turned like its footprint.
@@ -440,7 +452,7 @@ func _build_exit_marks() -> void:
 		label.modulate = Color("#ffe2a8")
 		label.visibility_range_end = SIGN_READ_RANGE
 		var at: Vector2i = m.at
-		label.position = Vector3(at.x + 0.5, 2.8, at.y + 0.5)
+		label.position = Vector3(at.x + 0.5, 2.8 + layout.height_at(at.x + 0.5, at.y + 0.5), at.y + 0.5)
 		root.add_child(label)
 	for i in layout.exits.size():
 		var r: Rect2i = layout.exits[i].area
@@ -484,7 +496,7 @@ func _build_houses() -> void:
 		var view := HouseView.new()
 		view.name = "house_%d" % h.index
 		root.add_child(view)
-		view.setup(layout.piece_def(str(h.id)), placement(h))
+		view.setup(layout.piece_def(str(h.id)), Transform3D.IDENTITY.translated(Vector3(0, ground_at(h), 0)) * placement(h))
 		view.set_quality(quality)
 	if open_index >= 0:
 		open_house(open_index) # the player was already inside when the zone loaded
@@ -538,7 +550,7 @@ func _add_torches(cells: Array) -> void:
 		if not (cell is Array and cell.size() >= 2):
 			continue
 		var torch := Torch.new()
-		torch.position = Vector3(float(cell[0]) + 0.5, 0.0, float(cell[1]) + 0.5)
+		torch.position = Vector3(float(cell[0]) + 0.5, layout.height_at(float(cell[0]) + 0.5, float(cell[1]) + 0.5), float(cell[1]) + 0.5)
 		root.add_child(torch)
 		torches.append(torch)
 

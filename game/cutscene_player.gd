@@ -58,12 +58,20 @@ func is_finished() -> bool:
 
 func _cell(at: Variant) -> Vector3:
 	var a: Array = at if at is Array and (at as Array).size() >= 2 else [0, 0]
-	return _origin + Vector3(float(a[0]) + 0.5, 0, float(a[1]) + 0.5)
+	var p := _origin + Vector3(float(a[0]) + 0.5, 0, float(a[1]) + 0.5)
+	var ground: Callable = _ctx.get("ground", Callable()) # actors stand on the relief (Plan 8.3d)
+	if ground.is_valid():
+		p.y = float(ground.call(p.x, p.z))
+	return p
 
 
 func _point(v: Variant) -> Vector3:
 	var a: Array = v if v is Array and (v as Array).size() >= 3 else [0, 0, 0]
-	return _origin + Vector3(float(a[0]), float(a[1]), float(a[2]))
+	var p := _origin + Vector3(float(a[0]), float(a[1]), float(a[2]))
+	var ground: Callable = _ctx.get("ground", Callable()) # heights count from the ground (Plan 8.3d)
+	if ground.is_valid():
+		p.y += float(ground.call(p.x, p.z))
+	return p
 
 
 func _process(delta: float) -> void:
