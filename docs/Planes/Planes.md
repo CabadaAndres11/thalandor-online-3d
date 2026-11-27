@@ -9,7 +9,7 @@ Cada plan de la [[14 Hoja de ruta]] tiene su **spec** (diseño acordado) y su **
 
 | Plan | Spec | Plan | Estado |
 |---|---|---|---|
-| 1 · Fundaciones y red | [[Plan 1 — Fundaciones y red (spec)\|Spec]] | [[Plan 1 — Fundaciones y red (plan)\|Plan]] | Hecho (0.1.2). La [[Plan 1 — Prueba entre casas\|prueba entre casas]] queda aplazada hasta tener más contenido |
+| 1 · Fundaciones y red | [[Plan 1 — Fundaciones y red (spec)\|Spec]] | [[Plan 1 — Fundaciones y red (plan)\|Plan]] | Hecho (0.1.2). La [[Plan 1 — Prueba entre casas\|prueba entre casas]] funcionó con WebRTC ([[D-020 WebRTC como red definitiva]]) |
 | 2 · Personajes vóxel | [[Plan 2 — Personajes vóxel (spec)\|Spec]] | [[Plan 2 — Personajes vóxel (plan)\|Plan]] | Hecho (0.2.0) |
 | 3 · Combate y clases | [[Plan 3 — Combate y clases (spec)\|Spec]] | [[Plan 3 — Combate y clases (plan)\|Plan]] | Hecho (0.4.0; la primera parte salió en la 0.3.0) |
 | 3.1 · Ajustes tras la 0.4.0 | [[Plan 3.1 — Ajustes tras la 0.4.0 (spec)\|Spec]] | [[Plan 3.1 — Ajustes tras la 0.4.0 (plan)\|Plan]] | Hecho (0.4.1) |

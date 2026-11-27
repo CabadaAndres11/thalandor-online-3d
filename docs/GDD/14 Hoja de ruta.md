@@ -1,7 +1,7 @@
 ---
 tags: [gdd]
 estado: diseñado
-actualizado: 2026-11-22
+actualizado: 2026-11-27
 ---
 
 # 14. Hoja de ruta **[En curso]** (revisada el 2026-11-19, tras la 0.7.0)
@@ -35,7 +35,7 @@ El orden pone primero lo que cambia la base de todo lo demás: la renovación gr
 Notas:
 - El **bestiario** crece en dos momentos: los enemigos de las primeras zonas en el Plan 8 y el resto en el Plan 12.
 - Las **clases ocultas** se diseñan en el Plan 9 de forma genérica (condiciones y recompensas como datos); su contenido concreto se reparte por las zonas del Plan 12.
-- La prueba de red entre casas sigue aplazada hasta tener más contenido.
+- La prueba de red entre casas se superó con WebRTC ([[D-020 WebRTC como red definitiva]]).
 
 ---
 ← [[00 Índice del GDD|Índice del GDD]]

@@ -1,10 +1,12 @@
 ---
 tags: [plan, prueba]
-estado: pendiente
-actualizado: 2026-11-14
+estado: hecho
+actualizado: 2026-11-27
 ---
 
 # Plan 1 — Prueba entre casas (versión 0.1.2)
+
+> **Resultado (2026-11-27):** WebRTC conectó entre casas. Es la red definitiva: [[D-020 WebRTC como red definitiva]].
 
 Qué se prueba: si **WebRTC** (no hay que instalar nada) conecta entre casas distintas igual de bien que **ENet + Tailscale**. Regla de decisión en [[Plan 1 — Fundaciones y red (spec)#10. Prueba entre casas (fase 7)|spec §10]]: si WebRTC conecta en todas las casas probadas, se elige WebRTC; si no, ENet + VPN.
 

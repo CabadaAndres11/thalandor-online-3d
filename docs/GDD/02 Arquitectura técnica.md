@@ -1,7 +1,7 @@
 ---
 tags: [gdd]
 estado: en curso
-actualizado: 2026-11-14
+actualizado: 2026-11-27
 ---
 
 # 2. Arquitectura técnica
@@ -59,7 +59,7 @@ Separar `sim/` de las escenas permite probar las reglas sin abrir el juego y cam
 - **Control de versiones:** si el host y el invitado tienen versiones distintas del juego, se rechaza la conexión con un aviso para actualizar. **[Implementado]**
 - **Implementado en el Plan 1 (0.1.0):** transporte intercambiable (`Transport`) con mensajes propios ([[D-008 Red con mensajes propios]]); ENet con código de 8 caracteres que lleva la IP del host (Tailscale o red local) y puerto fijo **24680**; hasta 4 jugadores; predicción, reconciliación suavizada e interpolación a 100 ms; chat de grupo.
 - **Implementado en la 0.1.1:** WebRTC (`webrtc-native` 1.2.2) en estrella, con un servidor de enlace en Cloudflare Workers (`tools/signaling/`, plan gratuito) y el mismo formato de código. WebRTC es la red por defecto, y `Jugar con ENet y Tailscale.bat` abre el juego con ENet.
-- **Prueba entre casas aplazada** (2026-11-14) hasta que el juego tenga más contenido. Mientras tanto se mantienen las dos redes.
+- **Prueba entre casas superada con WebRTC** (confirmada el 2026-11-27): WebRTC es la red definitiva y ENet queda para pruebas locales y como alternativa ([[D-020 WebRTC como red definitiva]]).
 
 ## 2.6 Rendimiento y escalabilidad del contenido **[Diseñado]**
 - **Carga por zona:** cada zona es una escena; solo se carga la zona actual y la anterior se libera.

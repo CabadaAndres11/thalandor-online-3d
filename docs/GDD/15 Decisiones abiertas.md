@@ -1,7 +1,7 @@
 ---
 tags: [gdd]
 estado: diseñado
-actualizado: 2026-11-22
+actualizado: 2026-11-27
 ---
 
 # 15. Decisiones abiertas **[Abierto]**
@@ -9,7 +9,6 @@ actualizado: 2026-11-22
 - Requisitos exactos del **cambio de clase** ([[04 Personajes y progresión|§4.9]]).
 - **Ritmo de la curva** a partir del nivel 50 (horas por nivel).
 - Mejoras de clase del **segundo rango** (nivel 100) en adelante.
-- Opción de red definitiva (WebRTC o ENet + VPN): la prueba entre casas está **aplazada** hasta tener más contenido; hasta entonces conviven las dos ([[02 Arquitectura técnica|§2.5]]).
 - **Sabuesos y jabalíes al vóxel fino:** siguen con el vóxel grueso de `BeastRig` mientras los humanoides usan el fino ([[11 Arte y audio]]).
 - **Textos provisionales del prólogo:** la frase de Brann (*Ya has elegido tu camino. Ahora recórrelo.*), la ventana *Elige tu camino* y la máscara del culto (sol negro partido en cinco) quedan por fijar en el guion.
 - **Renovación gráfica** (Plan 6): proporciones del humanoide nuevo (6.2) y presupuesto de rendimiento. Tamaño del vóxel decidido: [[D-015 Vóxel 2× y renovación gráfica en cuatro partes]].

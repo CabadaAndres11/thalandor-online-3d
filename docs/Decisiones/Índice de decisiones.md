@@ -1,6 +1,6 @@
 ---
 tags: [decision, indice]
-actualizado: 2026-11-16
+actualizado: 2026-11-27
 ---
 
 # Índice de decisiones
@@ -29,6 +29,7 @@ Cada decisión importante tiene su nota (plantilla **Decisión**). Las pendiente
 - [[D-017 Mundo por zonas, hordas y demo del prólogo y arco 1]]
 - [[D-018 Misiones en el anfitrión con objetivos fijos y marcas]]
 - [[D-019 Prólogo como tutorial y clase en el asalto]]
+- [[D-020 WebRTC como red definitiva]]
 
 ---
 ← [[00 Inicio|Inicio]]
