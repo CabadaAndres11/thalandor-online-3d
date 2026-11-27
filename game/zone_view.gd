@@ -160,7 +160,11 @@ func _build_ground() -> void:
 	outer_mat.roughness = 1.0
 	plane.material = outer_mat
 	outer.mesh = plane
-	outer.position = Vector3(layout.size.x / 2.0, -0.3, layout.size.y / 2.0)
+	var floor_y := -0.3 # below the deepest hollow too (a stairwell), or it would hide it
+	for r: Variant in layout.relief:
+		if r is Dictionary and float((r as Dictionary).get("height", 0.0)) < 0.0:
+			floor_y = minf(floor_y, float((r as Dictionary).height) - 0.3)
+	outer.position = Vector3(layout.size.x / 2.0, floor_y, layout.size.y / 2.0)
 	add_child(outer)
 	var by_kind := {} # "kind#cx,cz" -> cells (one mesh per kind and chunk, Plan 8.1.1)
 	var cells := ground_cells()

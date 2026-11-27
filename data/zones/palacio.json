@@ -644,22 +644,6 @@
 			"id": "palace_wall",
 			"at": [
 				0,
-				43
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				43
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
 				45
 			],
 			"rot": 90
@@ -951,6 +935,190 @@
 				4
 			],
 			"rot": 0
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				6,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				8,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				1,
+				36
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				3,
+				36
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				5,
+				36
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				7,
+				36
+			],
+			"rot": 0
+		},
+		{
+			"id": "statue",
+			"at": [
+				3,
+				16
+			],
+			"rot": 90
+		},
+		{
+			"id": "statue",
+			"at": [
+				3,
+				24
+			],
+			"rot": 90
+		},
+		{
+			"id": "statue",
+			"at": [
+				3,
+				31
+			],
+			"rot": 90
+		},
+		{
+			"id": "statue",
+			"at": [
+				36,
+				16
+			],
+			"rot": 270
+		},
+		{
+			"id": "statue",
+			"at": [
+				36,
+				24
+			],
+			"rot": 270
+		},
+		{
+			"id": "statue",
+			"at": [
+				36,
+				31
+			],
+			"rot": 270
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				36
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				38
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				40
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				42
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				44
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				46
+			],
+			"rot": 90
+		},
+		{
+			"id": "reading_desk",
+			"at": [
+				31,
+				39
+			],
+			"rot": 0
+		},
+		{
+			"id": "reading_desk",
+			"at": [
+				31,
+				44
+			],
+			"rot": 0
+		},
+		{
+			"id": "dungeon_gate_closed",
+			"at": [
+				2,
+				38
+			],
+			"rot": 90
+		},
+		{
+			"id": "brazier",
+			"at": [
+				9,
+				36
+			],
+			"rot": 0
+		},
+		{
+			"id": "brazier",
+			"at": [
+				9,
+				43
+			],
+			"rot": 0
 		}
 	],
 	"npcs": [
@@ -985,6 +1153,78 @@
 				49
 			],
 			"facing": 0
+		},
+		{
+			"id": "noble_1",
+			"at": [
+				9,
+				16
+			],
+			"facing": 90
+		},
+		{
+			"id": "noble_2",
+			"at": [
+				9,
+				21
+			],
+			"facing": 90
+		},
+		{
+			"id": "noble_3",
+			"at": [
+				9,
+				27
+			],
+			"facing": 90
+		},
+		{
+			"id": "noble_4",
+			"at": [
+				30,
+				16
+			],
+			"facing": 270
+		},
+		{
+			"id": "noble_5",
+			"at": [
+				30,
+				21
+			],
+			"facing": 270
+		},
+		{
+			"id": "noble_6",
+			"at": [
+				30,
+				27
+			],
+			"facing": 270
+		},
+		{
+			"id": "archivista",
+			"at": [
+				34,
+				41
+			],
+			"facing": 270
+		},
+		{
+			"id": "guardia_cripta_1",
+			"at": [
+				6,
+				38
+			],
+			"facing": 270
+		},
+		{
+			"id": "guardia_cripta_2",
+			"at": [
+				6,
+				42
+			],
+			"facing": 270
 		}
 	],
 	"entries": {
@@ -997,8 +1237,8 @@
 			50
 		],
 		"from_cripta": [
-			7,
-			3
+			5,
+			40
 		]
 	},
 	"respawn": [
@@ -1018,10 +1258,10 @@
 		},
 		{
 			"area": [
-				6,
-				0,
-				3,
-				1
+				1,
+				39,
+				1,
+				2
 			],
 			"to": "cripta_prueba",
 			"entry": "default",
@@ -1031,13 +1271,13 @@
 				]
 			},
 			"gate": {
-				"closed": "crypt_gate_closed",
-				"open": "crypt_gate_open",
+				"closed": "dungeon_gate_closed",
+				"open": "dungeon_gate_open",
 				"at": [
-					6,
-					0
+					2,
+					38
 				],
-				"rot": 0
+				"rot": 90
 			}
 		}
 	],
@@ -1068,6 +1308,27 @@
 		[
 			25,
 			30
+		],
+		[
+			9,
+			36
+		],
+		[
+			9,
+			43
 		]
+	],
+	"relief": [
+		{
+			"kind": "plateau",
+			"area": [
+				1,
+				37,
+				3,
+				6
+			],
+			"height": -2,
+			"slope": 4
+		}
 	]
 }

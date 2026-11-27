@@ -54,3 +54,42 @@ func test_dungeon_boss_uses_the_instance_level() -> void:
 	w.instance_level = 12
 	assert_eq(w.monster_level({}, {"boss": true}), 12 + int(w.balance.monster_scaling.get("boss_level_bonus", 2)))
 	assert_eq(w.monster_level({}, {}), 12)
+
+
+func test_ogres_have_no_beard_options() -> void:
+	var app: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/characters/appearance.json"))
+	for o: Dictionary in app.beard:
+		if o.id != "none":
+			assert_false("ogre" in o.get("races", ["ogre"]), "beard %s is not for ogres" % o.id)
+
+
+func test_forest_has_no_old_crypt_entrance() -> void:
+	var z := ZoneLayout.load_id("bosque")
+	for p: Dictionary in z.pieces:
+		assert_ne(str(p.id), "crypt_arch")
+
+
+func test_capital_fountain_is_centred_on_the_crossing() -> void:
+	var z := ZoneLayout.load_id("capital")
+	for p: Dictionary in z.pieces:
+		if p.id == "fountain":
+			# 3×3 cells whose centre is the middle of the road cells (48, 40) are 47..49 and 39..41.
+			assert_eq(p.at, Vector2i(47, 39))
+
+
+func test_palace_dungeon_entrance_has_no_sign_and_guards() -> void:
+	var z := ZoneLayout.load_id("palacio")
+	for m: Dictionary in z.exit_markers:
+		assert_ne(str(m.to), "cripta_prueba", "no sign at the dungeon gate")
+	var guards := z.npcs.filter(func(n: Dictionary) -> bool: return str(n.id).begins_with("guardia_cripta_"))
+	assert_eq(guards.size(), 2)
+	assert_lt(z.height_at(2.5, 40.5), -1.0, "the stairs go down to the gate")
+
+
+func test_palace_has_nobles_and_an_archive() -> void:
+	var z := ZoneLayout.load_id("palacio")
+	var nobles := z.npcs.filter(func(n: Dictionary) -> bool: return str(n.id).begins_with("noble_"))
+	assert_eq(nobles.size(), 6)
+	var kinds := z.pieces.map(func(p: Dictionary) -> String: return str(p.id))
+	assert_true("statue" in kinds and "bookshelf" in kinds)
+	assert_true(z.npcs.any(func(n: Dictionary) -> bool: return n.id == "archivista"))

@@ -1,0 +1,23 @@
+{
+	"id": "noble_2",
+	"name": "NPC_NOBLE_2",
+	"role": "villager",
+	"lines": {
+		"greet": "NPC_NOBLE_2_GREET"
+	},
+	"look": {
+		"class": "villager",
+		"appearance": {
+			"body": "female",
+			"skin": "skin_2",
+			"eyes": "green",
+			"hair_style": "hair_bun",
+			"hair_color": "chestnut",
+			"beard": "none"
+		},
+		"primary": "#6a2a3a",
+		"secondary": "#d8c070",
+		"trousers": "#1e1a1e",
+		"weapons": []
+	}
+}

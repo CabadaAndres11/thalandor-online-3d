@@ -320,7 +320,14 @@ func _on_zone_changed(zone_id: String, _key: String, _level: int) -> void:
 	var layout := ZoneLayout.load_variant(zone_id, client.zone_variant)
 	if layout == null:
 		return
-	build_zone(layout, ["build", "ready"])
+	# The loading screen first and two frames on screen, then the heavy work (freeing the old
+	# zone, collision, NPCs): otherwise the game freezes before the screen shows.
+	loading.show_zone(layout.name, ["build", "ready"], layout.id)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	if client == null:
+		return
+	build_zone(layout, ["build", "ready"], false)
 	for npc: Node in _npc_avatars:
 		npc.queue_free()
 	_npc_avatars.clear()
@@ -338,8 +345,9 @@ func _on_zone_changed(zone_id: String, _key: String, _level: int) -> void:
 
 ## Starts drawing a zone behind the loading screen: its collision at once, its view one
 ## step per frame (Plan 8.1.1). A zone still building is dropped for the new one.
-func build_zone(layout: ZoneLayout, waits: Array = ["build", "ready"]) -> void:
-	loading.show_zone(layout.name, waits, layout.id)
+func build_zone(layout: ZoneLayout, waits: Array = ["build", "ready"], show_loading := true) -> void:
+	if show_loading:
+		loading.show_zone(layout.name, waits, layout.id)
 	if zone_view != null:
 		remove_child(zone_view)
 		zone_view.free()

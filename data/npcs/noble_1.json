@@ -1,0 +1,23 @@
+{
+	"id": "noble_1",
+	"name": "NPC_NOBLE_1",
+	"role": "villager",
+	"lines": {
+		"greet": "NPC_NOBLE_1_GREET"
+	},
+	"look": {
+		"class": "villager",
+		"appearance": {
+			"body": "male",
+			"skin": "skin_1",
+			"eyes": "blue",
+			"hair_style": "hair_ponytail",
+			"hair_color": "grey",
+			"beard": "goatee"
+		},
+		"primary": "#3a2a5a",
+		"secondary": "#c9a64a",
+		"trousers": "#1e1a1e",
+		"weapons": []
+	}
+}

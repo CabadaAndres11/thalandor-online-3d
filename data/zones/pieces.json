@@ -2448,6 +2448,107 @@
 		"shadow": "medium",
 		"range": 90
 	},
+	"statue": {
+		"vox": "res://assets/world/statue.vox",
+		"scale": 0.5,
+		"offset": [
+			1,
+			0,
+			1
+		],
+		"footprint": [
+			[
+				0,
+				0
+			]
+		],
+		"shadow": "medium",
+		"range": 90
+	},
+	"bookshelf": {
+		"vox": "res://assets/world/bookshelf.vox",
+		"scale": 0.5,
+		"offset": [
+			0,
+			0,
+			0
+		],
+		"footprint": [
+			[
+				0,
+				0
+			],
+			[
+				1,
+				0
+			]
+		],
+		"shadow": "medium",
+		"range": 90
+	},
+	"reading_desk": {
+		"vox": "res://assets/world/reading_desk.vox",
+		"scale": 0.5,
+		"offset": [
+			2,
+			0,
+			2
+		],
+		"footprint": [
+			[
+				0,
+				0
+			],
+			[
+				1,
+				0
+			]
+		],
+		"shadow": "medium",
+		"range": 90
+	},
+	"dungeon_gate_closed": {
+		"vox": "res://assets/world/dungeon_gate_closed.vox",
+		"scale": 0.5,
+		"offset": [
+			-1,
+			0,
+			2
+		],
+		"footprint": [
+			[
+				0,
+				0
+			],
+			[
+				3,
+				0
+			]
+		],
+		"shadow": "medium",
+		"range": 90
+	},
+	"dungeon_gate_open": {
+		"vox": "res://assets/world/dungeon_gate_open.vox",
+		"scale": 0.5,
+		"offset": [
+			-1,
+			0,
+			2
+		],
+		"footprint": [
+			[
+				0,
+				0
+			],
+			[
+				3,
+				0
+			]
+		],
+		"shadow": "medium",
+		"range": 90
+	},
 	"palace_wall": {
 		"vox": "res://assets/world/palace_wall.vox",
 		"scale": 0.5,

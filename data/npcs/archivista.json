@@ -1,0 +1,23 @@
+{
+	"id": "archivista",
+	"name": "NPC_ARCHIVISTA",
+	"role": "villager",
+	"lines": {
+		"greet": "NPC_ARCHIVISTA_GREET"
+	},
+	"look": {
+		"class": "villager",
+		"appearance": {
+			"body": "male",
+			"skin": "skin_2",
+			"eyes": "grey",
+			"hair_style": "bald",
+			"hair_color": "white",
+			"beard": "dwarf_braided"
+		},
+		"primary": "#3a3a5a",
+		"secondary": "#b0a070",
+		"trousers": "#1e1a1e",
+		"weapons": []
+	}
+}

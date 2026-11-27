@@ -336,7 +336,7 @@ func test_crypt_leads_to_palace() -> void:
 	assert_eq(forest.exits.filter(func(e: Dictionary) -> bool: return e.to == "cripta_prueba").size(), 0)
 	var gate: Dictionary = ZoneLayout.load_id("palacio").exits.filter(func(e: Dictionary) -> bool: return e.to == "cripta_prueba")[0]
 	assert_eq(gate.requires.flags, ["cripta_abierta"])
-	assert_eq(str(gate.gate.closed), "crypt_gate_closed")
+	assert_eq(str(gate.gate.closed), "dungeon_gate_closed")
 
 
 func test_capital_walkers_valid() -> void:

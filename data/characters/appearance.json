@@ -622,8 +622,7 @@
 			"piece": "beard_mustache",
 			"races": [
 				"human",
-				"dwarf",
-				"ogre"
+				"dwarf"
 			]
 		},
 		{
@@ -632,8 +631,7 @@
 			"piece": "beard_short",
 			"races": [
 				"human",
-				"dwarf",
-				"ogre"
+				"dwarf"
 			]
 		},
 		{
@@ -668,8 +666,7 @@
 			"piece": "beard_sideburns",
 			"races": [
 				"human",
-				"dwarf",
-				"ogre"
+				"dwarf"
 			]
 		},
 		{
@@ -687,8 +684,7 @@
 			"piece": "beard_stubble",
 			"races": [
 				"human",
-				"dwarf",
-				"ogre"
+				"dwarf"
 			]
 		}
 	],

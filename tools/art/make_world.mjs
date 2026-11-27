@@ -595,6 +595,49 @@ export function worldPieces() {
   gatePosts(raised);
   for (let x = 21; x < 40; x += 4) raised.box(x, 70, 9, x + 1, 79, 10, IRON);
   add("crypt_gate_open", paint(raised, STONE_D, [STONE_D, STONE], 99), { footprint: [[0, 0], [2, 0]] });
+  // Palace redesign: a marble statue of a knight, bookshelves, a reading desk and the giant dungeon gate.
+  const statue = new Shape();
+  statue.box(2, 0, 2, 17, 13, 17, MARBLE_D).box(1, 13, 1, 18, 15, 18, MARBLE_L);
+  statue.box(6, 16, 7, 8, 34, 11, MARBLE).box(11, 16, 7, 13, 34, 11, MARBLE); // legs
+  statue.box(5, 35, 6, 14, 55, 12, MARBLE).box(5, 50, 5, 14, 55, 13, MARBLE_L); // torso and shoulders
+  statue.box(3, 38, 7, 4, 53, 11, MARBLE).box(15, 38, 7, 16, 53, 11, MARBLE); // arms
+  statue.box(7, 56, 6, 12, 66, 12, MARBLE_L).box(6, 62, 5, 13, 68, 13, MARBLE); // head and helm
+  statue.box(9, 68, 7, 10, 72, 11, ROYAL_GOLD); // crest
+  statue.box(9, 30, 13, 10, 74, 14, MARBLE_L).box(7, 44, 13, 12, 45, 14, ROYAL_GOLD); // a raised sword
+  add("statue", paint(statue, MARBLE, [MARBLE, MARBLE_D, MARBLE_L], 121), { footprint: [[0, 0]] });
+  const shelf2 = new Shape();
+  shelf2.box(0, 0, 0, 39, 79, 0, WOOD_D).box(0, 0, 0, 1, 79, 8, WOOD_D).box(38, 0, 0, 39, 79, 8, WOOD_D).box(0, 77, 0, 39, 79, 8, WOOD_D);
+  for (let y = 0; y < 80; y += 16) shelf2.box(0, y, 0, 39, y + 1, 8, PLANK_D);
+  const BOOKS = [RED, ROYAL, HEDGE, ROYAL_GOLD, RED_D, PLASTER, ROYAL_D];
+  for (let y = 2; y < 76; y += 16) {
+    let x = 2;
+    while (x < 37) {
+      const w = 1 + Math.floor(noise3(x, y, 0, 123) * 3), h = 9 + Math.floor(noise3(x, y, 1, 125) * 5);
+      shelf2.box(x, y, 1, x + w - 1, y + h, 7, BOOKS[Math.floor(noise3(x, y, 2, 127) * BOOKS.length)]);
+      x += w + (noise3(x, y, 3, 129) > 0.8 ? 3 : 0);
+    }
+  }
+  add("bookshelf", shelf2, { footprint: [[0, 0], [1, 0]] });
+  const desk = new Shape();
+  desk.box(2, 18, 2, 37, 21, 17, PLANK).box(2, 0, 2, 4, 17, 4, WOOD_D).box(35, 0, 2, 37, 17, 4, WOOD_D).box(2, 0, 15, 4, 17, 17, WOOD_D).box(35, 0, 15, 37, 17, 17, WOOD_D);
+  desk.box(8, 22, 6, 18, 23, 13, PLASTER).box(13, 22, 6, 13, 24, 13, WOOD_D); // an open book
+  desk.box(24, 22, 6, 29, 25, 11, RED).box(24, 25, 6, 29, 26, 11, ROYAL_GOLD); // a closed one
+  desk.box(31, 22, 9, 32, 27, 10, PLASTER).box(31, 28, 9, 32, 29, 10, GLOW); // a candle
+  add("reading_desk", desk, { footprint: [[0, 0], [1, 0]] });
+  const dgate = (open) => {
+    const g = new Shape();
+    for (const x0 of [0, 60]) g.box(x0, 0, 4, x0 + 19, 140, 15, STONE_D).box(x0 - 1, 0, 2, x0 + 20, 6, 17, STONE);
+    g.box(20, 110, 4, 59, 140, 15, STONE_D).box(18, 106, 2, 61, 110, 17, ROYAL_GOLD);
+    g.box(0, 140, 2, 79, 146, 17, STONE).box(0, 147, 2, 79, 148, 17, ROYAL_GOLD);
+    const top = open ? 100 : 0;
+    for (let x = 22; x < 60; x += 4) g.box(x, top, 9, x + 1, 105, 10, IRON);
+    if (!open) for (let y = 12; y < 106; y += 24) g.box(20, y, 9, 59, y + 2, 10, IRON_L);
+    else g.box(20, 96, 9, 59, 98, 10, IRON_L);
+    for (const x0 of [8, 68]) for (let y = 12; y < 130; y += 24) g.box(x0, y, 15, x0 + 3, y + 3, 16, ROYAL_GOLD); // studs
+    return paint(g, STONE_D, [STONE_D, STONE], 131);
+  };
+  add("dungeon_gate_closed", dgate(false), { footprint: [[0, 0], [3, 0]] });
+  add("dungeon_gate_open", dgate(true), { footprint: [[0, 0], [3, 0]] });
   // Plan 8.3f: the palace in marble and gardens: a wall block, a hedge and the palace seen from the city.
   const pwall = new Shape();
   pwall.box(0, 0, 0, 39, 64, 19, MARBLE).box(0, 60, 0, 39, 63, 19, MARBLE_L).box(0, 64, 0, 39, 66, 19, ROYAL_GOLD);
@@ -799,7 +842,6 @@ export function worldPieces() {
   }
   add("cart_tracks", tracks, { footprint: [] });
   const bank = new Shape();
-  bank.box(0, 0, 20, 79, 0, 59, WATER);
   for (let x = 0; x < 80; x++) {
     const edge = 18 + Math.round(noise3(x >> 2, 0, 0, 85) * 6);
     bank.box(x, 0, 0, x, 1, edge, EARTH);

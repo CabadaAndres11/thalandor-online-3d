@@ -30,3 +30,6 @@ Lista de fallos del usuario: mazmorra (misión, cierre, reaparición), sala del 
 
 ## Segunda tanda
 Jefe de cripta con nivel de instancia, mármol, mercado y casas de la capital, carteles, agua y puente del bosque, cámara con el relieve y capturas de carga. Suite GUT: 1829 pruebas, todas pasan.
+
+## Tercera tanda
+Casco del ogro, sin barbas para ogros, bosque (sin cripta antigua ni franja de agua), fuente y Corwin en la capital, palacio rediseñado (nobles, estatuas, archivo, escalera y portón de la cripta con guardias, sin cartel), capturas de carga y carga sin congelación previa. Suite GUT: 1835 pruebas, todas pasan.

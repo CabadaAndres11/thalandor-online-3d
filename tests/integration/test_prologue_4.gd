@@ -140,7 +140,7 @@ func test_prologue_4() -> void:
 	# Through the gate, into the crypt, and back up to the palace.
 	var gate: Dictionary = host.zones.layout(host._players[1].zone_key).exits.filter(func(e: Dictionary) -> bool: return e.to == "cripta_prueba")[0]
 	var r: Rect2i = gate.area
-	_p().position = Vector3(r.position.x + 1.5, 0, r.position.y + 0.5)
+	_p().position = Vector3(r.position.x + r.size.x / 2.0, 0, r.position.y + r.size.y / 2.0)
 	host.tick()
 	c.send(Transport.HOST_PEER, Protocol.enter_dungeon("cripta_prueba", 5), true)
 	host.tick()

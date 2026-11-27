@@ -7,11 +7,11 @@ const OUT := "res://assets/ui/loading/"
 const SIZE := Vector2i(1600, 900)
 ## name -> [zone, camera position, look-at point, fov]
 const SHOTS := {
-	"aldea_1": ["aldea", Vector3(30.0, 2.6, 47.5), Vector3(60.0, 2.0, 47.0), 58.0],
+	"aldea_1": ["aldea", Vector3(50.0, 3.4, 49.0), Vector3(66.0, 2.2, 40.0), 58.0],
 	"aldea_2": ["aldea", Vector3(26.0, 4.2, 30.0), Vector3(18.0, 2.5, 20.0), 58.0],
-	"aldea_3": ["aldea", Vector3(60.0, 5.0, 66.0), Vector3(74.0, 0.5, 77.0), 58.0],
+	"aldea_3": ["aldea", Vector3(52.0, 3.6, 46.0), Vector3(72.0, 2.4, 55.0), 58.0],
 	"bosque_1": ["bosque", Vector3(14.0, 1.8, 63.0), Vector3(36.0, 2.5, 60.5), 60.0],
-	"bosque_2": ["bosque", Vector3(140.5, 2.0, 88.0), Vector3(140.0, 2.2, 99.5), 55.0],
+	"bosque_2": ["bosque", Vector3(99.0, 2.8, 91.0), Vector3(111.0, 0.8, 101.5), 58.0],
 	"bosque_3": ["bosque", Vector3(72.0, 3.0, 58.0), Vector3(84.0, 1.5, 76.0), 60.0],
 	"camino_1": ["camino", Vector3(10.0, 2.2, 33.0), Vector3(24.0, 1.4, 27.0), 58.0],
 	"camino_2": ["camino", Vector3(70.0, 2.4, 36.0), Vector3(82.0, 1.5, 22.0), 58.0],
