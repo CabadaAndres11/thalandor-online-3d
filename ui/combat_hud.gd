@@ -43,9 +43,15 @@ var status_tiles: StatusTiles
 var _statuses: Dictionary = {} # kind -> end tick, from the host's status events
 var _buffs: Dictionary = {} # conditional passive buffs on now (Passives.CONDITIONAL keys), from "buff" events
 var _cast: ProgressBar # cast time and channels of this player
+## The gold of a cast time before a channel.
+const CAST_PREP_COLOR := Color("#ffd36b")
 var _cast_label: Label
 var _cast_start: float = 0.0
 var _cast_total: float = 0.0
+## Seconds of cast time before a channel (the bar fills gold, then drains in the element's colour).
+var _cast_prep: float = 0.0
+var _cast_color: Color = Color.WHITE
+var _cast_phase: String = ""
 var _hp: ProgressBar
 var _hp_label: Label
 var _res: ProgressBar
@@ -366,7 +372,9 @@ func _on_combat_event(ev: Array) -> void:
 			_cast_total = maxf(float(ev[3]) if ev.size() > 3 else 0.0, 0.01)
 			_cast_label.text = tr(str(_abilities.get_ability(cid).get("name", cid))) if _abilities.has(cid) else "" # the channel carries the variant's own id
 			var col := CombatFX.ELEMENT_COLORS.get(CombatFX.element_of(_abilities.get_ability(cid).get("effects", [])), Color("#c07bff")) as Color
-			_cast.add_theme_stylebox_override("fill", _fill(col))
+			_cast_color = col
+			_cast_prep = float(ev[4]) if ev.size() > 4 else 0.0
+			_cast_phase = ""
 			_cast.visible = true
 			_update_cast()
 		"channel_end":
@@ -408,12 +416,21 @@ func _update_statuses() -> void:
 func _update_cast() -> void:
 	if not _cast.visible:
 		return
-	var k := (_clock - _cast_start) / _cast_total
-	if k >= 1.0:
+	var t := _clock - _cast_start
+	if t >= _cast_total:
 		_cast.visible = false
 		return
 	_cast.max_value = 1.0
-	_cast.value = k
+	var phase := "channel" if _cast_prep > 0.0 and t >= _cast_prep else "cast"
+	if phase != _cast_phase:
+		_cast_phase = phase
+		_cast.add_theme_stylebox_override("fill", _fill(CAST_PREP_COLOR if _cast_prep > 0.0 and phase == "cast" else _cast_color))
+	if _cast_prep <= 0.0:
+		_cast.value = t / _cast_total
+	elif phase == "cast":
+		_cast.value = t / _cast_prep # gold, filling up while casting
+	else:
+		_cast.value = 1.0 - (t - _cast_prep) / maxf(_cast_total - _cast_prep, 0.01) # the beam: it drains
 
 
 # --- Readable state (tests and tooltips) ---
@@ -424,6 +441,10 @@ func cast_visible() -> bool:
 
 func cast_text() -> String:
 	return _cast_label.text
+
+
+func cast_phase() -> String:
+	return _cast_phase
 
 
 func cast_fraction() -> float:

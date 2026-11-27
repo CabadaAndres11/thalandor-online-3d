@@ -759,7 +759,7 @@
 		"cooldown_s": 25,
 		"gcd": true,
 		"range": 22,
-		"anim": "cast",
+		"anim": "ground_slam",
 		"fx_flight": "ground",
 		"effects": [
 			{

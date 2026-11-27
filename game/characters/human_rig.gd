@@ -26,7 +26,7 @@ const SCALE_GROUP := {
 	"leg_left": "leg", "leg_right": "leg", "shin_left": "leg", "shin_right": "leg",
 }
 ## Seconds each action lasts; downed and die then stay.
-const ACTIONS := {"melee": 0.45, "shoot": 0.65, "cast": 0.6, "dash": 0.35, "downed": 0.5, "die": 0.7, "cast_long": 1.0,
+const ACTIONS := {"melee": 0.45, "shoot": 0.65, "cast": 0.6, "ground_slam": 0.6, "dash": 0.35, "downed": 0.5, "die": 0.7, "cast_long": 1.0,
 	"stab_right": 0.32, "stab_left": 0.32, "overhead": 0.6, "spin": 0.6, "flurry": 0.7,
 	"heavy": 0.55, "thrust": 0.45, "stab": 0.32, "pray": 4.0, "kneel": 0.6, "point": 1.2, "lie": 0.1}
 ## kneel, point and lie are for cutscenes (Plan 8.3a).
@@ -534,6 +534,7 @@ func _pose() -> void:
 				_: _stab(k, true)
 		"shoot": _shoot(k)
 		"cast": _cast(k)
+		"ground_slam": _ground_slam(k)
 		"cast_long": _cast_long()
 		"pray": _pray()
 		"stab_right": _stab(k, true)
@@ -912,6 +913,36 @@ func _cast(k: float) -> void:
 	_rot("hand_right", -arms)
 	(_parts["hand_right"] as Node3D).rotation.z = 0.0
 	(_parts["head"] as Node3D).rotation.x = -0.15 * sin(k * PI)
+
+
+## Striking the ground (Descarga arcana): the right arm rises, then the mage drops into a
+## crouch and slams the hand on the floor ahead, and stands up again.
+func _ground_slam(k: float) -> void:
+	var arm := 0.0
+	var dip := 0.0
+	if k < 0.3:
+		arm = lerpf(0.0, -2.9, _ease(k / 0.3))
+	elif k < 0.5:
+		var t := _ease((k - 0.3) / 0.2)
+		arm = lerpf(-2.9, -0.7, t)
+		dip = t
+	elif k < 0.7:
+		arm = -0.7
+		dip = 1.0
+	else:
+		var t := _ease((k - 0.7) / 0.3)
+		arm = lerpf(-0.7, 0.0, t)
+		dip = 1.0 - t
+	_rot("arm_right", arm)
+	_rot("arm_left", -0.5 * dip)
+	_rot("forearm_left", 0.0)
+	_rot("forearm_right", 0.0)
+	_rot("hand_right", -arm)
+	_rot("hand_left", 0.0)
+	(_parts["hand_right"] as Node3D).rotation.z = 0.0
+	(_parts["torso"] as Node3D).rotation.x = 0.45 * dip # leaning over the strike
+	(_parts["head"] as Node3D).rotation.x = 0.2 * dip
+	_body.position.y = -0.12 * dip
 
 
 ## A long cast: both arms up gathering power, the staff spinning over the head, a slow sway.

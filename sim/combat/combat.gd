@@ -96,7 +96,10 @@ static func _start_repeat(world: SimWorld, caster: CombatEntity, ab: Dictionary,
 	world.pending_casts.append(pc)
 	if pc.channel:
 		var total := float(r.get("delay_s", 0.0)) + float(r.get("interval_s", 0.0)) * float(pc.left - 1)
-		world.emit(["channel", caster.id, str(ab.get("id", "")), total])
+		# A cast time before a long channel (Láser arcano): its seconds go last, so the HUD can
+		# fill the bar while casting and then drain it while channelling.
+		var prep := float(r.get("delay_s", 0.0)) if pc.cast_time and pc.left > 1 else 0.0
+		world.emit(["channel", caster.id, str(ab.get("id", "")), total, prep])
 		pc.channel_status = str(r.get("channel_status", ""))
 		if pc.channel_status != "": # kept while singing; the end of the channel takes it away
 			var st := StatusEffect.make(pc.channel_status, world.tick + world.ticks(total + 1.0))

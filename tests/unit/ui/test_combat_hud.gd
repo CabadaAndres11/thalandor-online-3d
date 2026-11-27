@@ -332,3 +332,15 @@ func test_slots_show_the_upgrades_variants() -> void:
 	var hud := _hud(c)
 	assert_eq(hud.slot_ability(0), "mage_missile", "the slot keeps the base id")
 	assert_true(hud.slot_icon(0).ends_with("fire_bolt.png"), hud.slot_icon(0))
+
+
+func test_laser_cast_fills_then_its_beam_drains() -> void:
+	var c := _client("mage")
+	var hud := _hud(c)
+	c.combat_event.emit(["channel", 1, "mage_arcane_laser", 4.75, 1.0])
+	hud.advance(0.5)
+	assert_eq(hud.cast_phase(), "cast")
+	assert_almost_eq(hud.cast_fraction(), 0.5, 0.01, "casting: it fills")
+	hud.advance(1.0)
+	assert_eq(hud.cast_phase(), "channel")
+	assert_almost_eq(hud.cast_fraction(), 1.0 - 0.5 / 3.75, 0.01, "the beam: it drains")

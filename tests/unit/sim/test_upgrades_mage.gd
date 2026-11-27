@@ -117,7 +117,7 @@ func test_fireball_evolution_leaves_flames() -> void:
 	var ph := p.stats.spell_power
 	assert_almost_eq(_lost(foe), (30.0 + 1.3 * ph) + (15.0 + 0.6 * ph) + 4.0 * (4.0 + 0.25 * ph), 0.05, "hit, blast and 4 pulses of flames")
 	f.world.players.clear()
-	var plain := _hero("cryomancer")
+	var plain := _hero("") # no upgrade: the plain fireball
 	plain.position = Vector3(30, 0, 10)
 	var foe2 := _foe(2001, Vector3(30, 0, 20))
 	assert_true(Combat.try_cast(f.world, plain, "mage_fireball", foe2.position))
