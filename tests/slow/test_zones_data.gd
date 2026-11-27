@@ -143,8 +143,8 @@ func test_crypt_has_clearing() -> void:
 	assert_eq(hiding, [], "nothing hides the crypt's gate")
 	var map := z.collision()
 	var free := 0
-	for x in range(door.position.x, door.end.x):
-		free += 0 if map.is_solid(Vector2i(x, door.end.y)) else 1
+	for x in range(door.position.x, door.end.x): # the stairs are entered from the north (round 6)
+		free += 0 if map.is_solid(Vector2i(x, door.position.y - 1)) else 1
 	assert_gt(free, 0, "the gate can be walked up to")
 
 
