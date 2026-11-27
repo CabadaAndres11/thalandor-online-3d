@@ -1,4 +1,6 @@
-// Generates data/talents.json (the circular talent tree, Anexo C) from the table below.
+// Generates data/talents.json (Plan 8.3g): the talent tree in seven closed rings around a
+// common start, every ring linked to the next, the five directions mixing at their borders,
+// values growing outward, and a recommended route per class.
 // Run: node tools/data/make_talents.mjs
 import { writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -7,121 +9,89 @@ import { formatJson } from '../json_format.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
-const DIRECTIONS = ['might', 'celerity', 'vitality', 'bastion', 'arcane'];
+export const DIRECTIONS = ['might', 'celerity', 'vitality', 'bastion', 'arcane'];
+export const RINGS = 7;
+const BLEND_AT = 0.4; // |offset from a direction's centre| / 36° from which a node mixes two directions
 
-const m = (stat, value) => ({ type: 'stat', stat, value });
-
-// Steps 1, 2, 3 (notable), 4 and the keystone of each pure spoke. The first modifier of
-// a step is its "main bonus" (what hybrids copy at 60 %).
-const TABLE = {
-  might: [
-    [m('attack_power_pct', 0.03)],
-    [m('crit_add', 0.01)],
-    [m('attack_power_pct', 0.04), m('crit_damage_add', 0.05)],
-    [m('damage_done_pct', 0.02)],
-    [m('attack_power_pct', 0.08), m('crit_damage_add', 0.10)],
-  ],
-  celerity: [
-    [m('move_speed_pct', 0.03)],
-    [m('dodge_add', 0.01)],
-    [m('cooldown_reduction_add', 0.03), m('move_speed_pct', 0.03)],
-    [m('cooldown_reduction_add', 0.02)],
-    [m('cooldown_reduction_add', 0.08)],
-  ],
-  vitality: [
-    [m('hp_regen_add', 1)],
-    [m('healing_done_pct', 0.03)],
-    [m('lifesteal_add', 0.01), m('healing_received_pct', 0.04)],
-    [m('healing_received_pct', 0.03)],
-    [m('healing_received_pct', 0.08), m('lifesteal_add', 0.02)],
-  ],
-  bastion: [
-    [m('armor_pct', 0.04)],
-    [m('max_hp_pct', 0.03)],
-    [m('block_add', 0.02), m('damage_taken_pct', -0.02)],
-    [m('armor_add', 15)],
-    [m('max_hp_pct', 0.08), m('damage_taken_pct', -0.03)],
-  ],
-  arcane: [
-    [m('spell_power_pct', 0.03)],
-    [m('max_resource_pct', 0.04)],
-    [m('crit_damage_add', 0.05), m('spell_power_pct', 0.04)],
-    [m('resource_regen_pct', 0.05)],
-    [m('spell_power_pct', 0.08)],
-  ],
+// The stats of each direction, in the order the nodes cycle through them.
+export const POOLS = {
+  might: ['attack_power_pct', 'crit_add', 'crit_damage_add', 'damage_done_pct'],
+  celerity: ['move_speed_pct', 'dodge_add', 'cooldown_reduction_add'],
+  vitality: ['hp_regen_add', 'lifesteal_add', 'healing_done_pct', 'healing_received_pct'],
+  bastion: ['armor_pct', 'max_hp_pct', 'block_add', 'armor_add', 'damage_taken_pct', 'threat_pct'],
+  arcane: ['spell_power_pct', 'max_resource_pct', 'resource_regen_pct'],
+};
+// What a small node gives on ring 1 (the old tree's small nodes); outer rings give more.
+export const BASE = {
+  attack_power_pct: 0.03, crit_add: 0.01, crit_damage_add: 0.05, damage_done_pct: 0.02,
+  move_speed_pct: 0.03, dodge_add: 0.01, cooldown_reduction_add: 0.02,
+  hp_regen_add: 1, lifesteal_add: 0.01, healing_done_pct: 0.03, healing_received_pct: 0.03,
+  armor_pct: 0.04, armor_add: 15, max_hp_pct: 0.03, block_add: 0.02, damage_taken_pct: -0.02, threat_pct: 0.1,
+  spell_power_pct: 0.03, max_resource_pct: 0.04, resource_regen_pct: 0.05,
+};
+// The icon (assets/icons/talents/<name>.png) of each stat.
+export const STAT_ICON = {
+  attack_power_pct: 'attack_power', spell_power_pct: 'spell_power', crit_add: 'crit', crit_damage_add: 'crit_damage',
+  damage_done_pct: 'damage_done', damage_taken_pct: 'damage_taken', move_speed_pct: 'move_speed', dodge_add: 'dodge',
+  block_add: 'block', armor_add: 'armor', armor_pct: 'armor', max_hp_pct: 'max_hp', hp_regen_add: 'hp_regen',
+  lifesteal_add: 'lifesteal', healing_done_pct: 'healing_done', healing_received_pct: 'healing_received',
+  max_resource_pct: 'max_resource', resource_regen_pct: 'resource_regen', cooldown_reduction_add: 'cooldown', threat_pct: 'threat',
 };
 
 const round = (v) => Math.round(v * 100000) / 100000;
-const scale = (mods, k) => mods.map((x) => ({ ...x, value: round(x.value * k) }));
+const ringMult = (r) => 1 + (r - 1) / 6;
+const mod = (stat, k) => ({ type: 'stat', stat, value: round(BASE[stat] * k) });
+export const count = (r) => 10 * r;
 
-// Radios in order around the circle: pure, hybrid, pure, hybrid...
-const SPOKES = [];
-DIRECTIONS.forEach((d, i) => {
-  SPOKES.push({ id: d, dir: d, pure: true });
-  SPOKES.push({ id: `${d}_${DIRECTIONS[(i + 1) % 5]}`, dir: `${d}_${DIRECTIONS[(i + 1) % 5]}`, a: d, b: DIRECTIONS[(i + 1) % 5], pure: false });
-});
-
-const nodes = {};
-const link = (a, b) => {
-  if (!nodes[a].links.includes(b)) nodes[a].links.push(b);
-  if (!nodes[b].links.includes(a)) nodes[b].links.push(a);
-};
-const add = (id, kind, dir, ring, angle, radius, mods) => {
-  nodes[id] = {
-    kind, dir, ring,
-    x: round(Math.sin(angle) * radius),
-    y: round(-Math.cos(angle) * radius),
-    mods, links: [],
+export function buildTree() {
+  const nodes = {};
+  const link = (a, b) => {
+    if (!nodes[a].links.includes(b)) nodes[a].links.push(b);
+    if (!nodes[b].links.includes(a)) nodes[b].links.push(a);
   };
-};
-
-add('start', 'start', '', 1, 0, 0, []);
-
-const RADII = [0.17, 0.29, 0.41, 0.53, 0.65, 0.77, 0.89]; // steps 1..4, key, 5, 6
-
-SPOKES.forEach((s, i) => {
-  const angle = (i * 2 * Math.PI) / SPOKES.length;
-  const steps = []; // mods for steps 1..4 (and key for pure)
-  for (let k = 0; k < 4; k++) {
-    steps.push(s.pure ? TABLE[s.dir][k] : [
-      ...scale([TABLE[s.a][k][0]], k === 2 ? 1 : 0.6),
-      ...scale([TABLE[s.b][k][0]], k === 2 ? 1 : 0.6),
-    ]);
+  nodes.start = { kind: 'start', dir: '', mix: '', ring: 0, x: 0, y: 0, icon: '', mods: [], links: [] };
+  for (let r = 1; r <= RINGS; r++) {
+    const n = count(r);
+    for (let i = 0; i < n; i++) {
+      const deg = (360 * i) / n;
+      const d = Math.round(deg / 72) % 5;
+      const t = (deg - Math.round(deg / 72) * 72) / 36; // -1..1 from the centre of `d`
+      const dir = DIRECTIONS[d];
+      const mix = Math.abs(t) >= BLEND_AT ? DIRECTIONS[(d + (t > 0 ? 1 : 4)) % 5] : '';
+      const keystone = (r === 4 || r === RINGS) && Math.abs(t) < 1e-9;
+      const kind = keystone ? 'keystone' : r >= 2 && i % 5 === 2 ? 'notable' : 'minor';
+      const k = ringMult(r);
+      const pool = POOLS[dir];
+      const p = (r + i) % pool.length;
+      let mods;
+      if (kind === 'keystone') mods = [mod(pool[0], 2.5 * k), mod(pool[1], 2.5 * k)];
+      else if (kind === 'notable') {
+        mods = [mod(pool[p], k), mod(pool[(p + 1) % pool.length], k)];
+        if (mix) mods.push(mod(POOLS[mix][(r + i) % POOLS[mix].length], 0.5 * k));
+      } else if (mix) mods = [mod(pool[p], 0.6 * k), mod(POOLS[mix][(r + i) % POOLS[mix].length], 0.6 * k)];
+      else mods = [mod(pool[p], k)];
+      const a = (2 * Math.PI * i) / n;
+      nodes[`r${r}_${i}`] = {
+        kind, dir, mix, ring: r,
+        x: round(Math.sin(a) * 0.13 * r), y: round(-Math.cos(a) * 0.13 * r),
+        icon: STAT_ICON[mods[0].stat], mods, links: [],
+      };
+    }
   }
-  const ids = [];
-  for (let k = 0; k < 4; k++) {
-    const id = `${s.id}_${k + 1}`;
-    add(id, k === 2 ? 'notable' : 'minor', s.dir, 1, angle, RADII[k], steps[k]);
-    ids.push(id);
+  for (let r = 1; r <= RINGS; r++) {
+    const n = count(r);
+    for (let i = 0; i < n; i++) {
+      link(`r${r}_${i}`, `r${r}_${(i + 1) % n}`); // the ring is closed
+      if (r === 1) link(`r1_${i}`, 'start');
+      else if (i % 2 === 0) link(`r${r}_${i}`, `r${r - 1}_${Math.round((i * count(r - 1)) / n) % count(r - 1)}`);
+    }
   }
-  link('start', ids[0]);
-  for (let k = 0; k < 3; k++) link(ids[k], ids[k + 1]);
-  let last = ids[3];
-  let capMods = steps[2]; // ring 2 step 6 copies the notable (hybrids) or the keystone (pure)
-  if (s.pure) {
-    const key = `${s.id}_key`;
-    add(key, 'keystone', s.dir, 1, angle, RADII[4], TABLE[s.dir][4]);
-    link(ids[3], key);
-    last = key;
-    capMods = TABLE[s.dir][4];
-  }
-  const five = `${s.id}_5`;
-  const six = `${s.id}_6`;
-  add(five, 'minor', s.dir, 2, angle, RADII[5], scale(steps[0], 1.5));
-  add(six, s.pure ? 'keystone' : 'notable', s.dir, 2, angle, RADII[6], scale(capMods, 1.5));
-  link(last, five);
-  link(five, six);
-});
+  return { start: 'start', directions: DIRECTIONS, nodes };
+}
 
-// Rings between neighbouring spokes: steps 1 and 3 (ring 1) and step 5 (ring 2).
-SPOKES.forEach((s, i) => {
-  const n = SPOKES[(i + 1) % SPOKES.length];
-  link(`${s.id}_1`, `${n.id}_1`);
-  link(`${s.id}_3`, `${n.id}_3`);
-  link(`${s.id}_5`, `${n.id}_5`);
-});
-
-const out = { start: 'start', directions: DIRECTIONS, nodes };
-writeFileSync(join(ROOT, 'data', 'talents.json'), formatJson(out));
-const ring = (r) => Object.values(nodes).filter((n) => n.ring === r).length;
-console.log(`talents.json: ${Object.keys(nodes).length} nodes (ring 1: ${ring(1)}, ring 2: ${ring(2)})`);
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  const tree = buildTree();
+  const out = { ...tree, routes: typeof buildRoutes === 'function' ? buildRoutes(tree) : {} };
+  writeFileSync(join(ROOT, 'data', 'talents.json'), formatJson(out));
+  console.log(`talents.json: ${Object.keys(tree.nodes).length} nodes in ${RINGS} rings`);
+}

@@ -5,616 +5,3265 @@
 		"start": {
 			"kind": "start",
 			"dir": "",
-			"ring": 1,
+			"mix": "",
+			"ring": 0,
 			"x": 0,
 			"y": 0,
+			"icon": "",
 			"mods": [],
-			"links": [
-				"might_1",
-				"might_celerity_1",
-				"celerity_1",
-				"celerity_vitality_1",
-				"vitality_1",
-				"vitality_bastion_1",
-				"bastion_1",
-				"bastion_arcane_1",
-				"arcane_1",
-				"arcane_might_1"
-			]
+			"links": ["r1_0", "r1_1", "r1_2", "r1_3", "r1_4", "r1_5", "r1_6", "r1_7", "r1_8", "r1_9"]
 		},
-		"might_1": {
+		"r1_0": {
 			"kind": "minor",
 			"dir": "might",
+			"mix": "",
 			"ring": 1,
 			"x": 0,
-			"y": -0.17,
-			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.03}],
-			"links": ["start", "might_2", "might_celerity_1", "arcane_might_1"]
-		},
-		"might_2": {
-			"kind": "minor",
-			"dir": "might",
-			"ring": 1,
-			"x": 0,
-			"y": -0.29,
+			"y": -0.13,
+			"icon": "crit",
 			"mods": [{"type": "stat", "stat": "crit_add", "value": 0.01}],
-			"links": ["might_1", "might_3"]
+			"links": ["r1_1", "start", "r1_9", "r2_0"]
 		},
-		"might_3": {
+		"r1_1": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 1,
+			"x": 0.07641,
+			"y": -0.10517,
+			"icon": "cooldown",
+			"mods": [{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.012}, {"type": "stat", "stat": "crit_damage_add", "value": 0.03}],
+			"links": ["r1_0", "r1_2", "start", "r2_2"]
+		},
+		"r1_2": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "",
+			"ring": 1,
+			"x": 0.12364,
+			"y": -0.04017,
+			"icon": "move_speed",
+			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.03}],
+			"links": ["r1_1", "r1_3", "start", "r2_4"]
+		},
+		"r1_3": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 1,
+			"x": 0.12364,
+			"y": 0.04017,
+			"icon": "hp_regen",
+			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 0.6}, {"type": "stat", "stat": "dodge_add", "value": 0.006}],
+			"links": ["r1_2", "r1_4", "start", "r2_6"]
+		},
+		"r1_4": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "",
+			"ring": 1,
+			"x": 0.07641,
+			"y": 0.10517,
+			"icon": "lifesteal",
+			"mods": [{"type": "stat", "stat": "lifesteal_add", "value": 0.01}],
+			"links": ["r1_3", "r1_5", "start", "r2_8"]
+		},
+		"r1_5": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "vitality",
+			"ring": 1,
+			"x": 0,
+			"y": 0.13,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_pct", "value": 0.024}, {"type": "stat", "stat": "healing_done_pct", "value": 0.018}],
+			"links": ["r1_4", "r1_6", "start", "r2_10"]
+		},
+		"r1_6": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "",
+			"ring": 1,
+			"x": -0.07641,
+			"y": 0.10517,
+			"icon": "max_hp",
+			"mods": [{"type": "stat", "stat": "max_hp_pct", "value": 0.03}],
+			"links": ["r1_5", "r1_7", "start", "r2_12"]
+		},
+		"r1_7": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "bastion",
+			"ring": 1,
+			"x": -0.12364,
+			"y": 0.04017,
+			"icon": "resource_regen",
+			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.03}, {"type": "stat", "stat": "block_add", "value": 0.012}],
+			"links": ["r1_6", "r1_8", "start", "r2_14"]
+		},
+		"r1_8": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "",
+			"ring": 1,
+			"x": -0.12364,
+			"y": -0.04017,
+			"icon": "spell_power",
+			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.03}],
+			"links": ["r1_7", "r1_9", "start", "r2_16"]
+		},
+		"r1_9": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "arcane",
+			"ring": 1,
+			"x": -0.07641,
+			"y": -0.10517,
+			"icon": "crit_damage",
+			"mods": [{"type": "stat", "stat": "crit_damage_add", "value": 0.03}, {"type": "stat", "stat": "max_resource_pct", "value": 0.024}],
+			"links": ["r1_8", "r1_0", "start", "r2_18"]
+		},
+		"r2_0": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "",
+			"ring": 2,
+			"x": 0,
+			"y": -0.26,
+			"icon": "crit_damage",
+			"mods": [{"type": "stat", "stat": "crit_damage_add", "value": 0.05833}],
+			"links": ["r2_1", "r1_0", "r2_19", "r3_0"]
+		},
+		"r2_1": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "celerity",
+			"ring": 2,
+			"x": 0.08034,
+			"y": -0.24727,
+			"icon": "damage_done",
+			"mods": [{"type": "stat", "stat": "damage_done_pct", "value": 0.014}, {"type": "stat", "stat": "move_speed_pct", "value": 0.021}],
+			"links": ["r2_0", "r2_2", "r3_2"]
+		},
+		"r2_2": {
+			"kind": "notable",
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 2,
+			"x": 0.15282,
+			"y": -0.21034,
+			"icon": "dodge",
+			"mods": [
+				{"type": "stat", "stat": "dodge_add", "value": 0.01167},
+				{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.02333},
+				{"type": "stat", "stat": "attack_power_pct", "value": 0.0175}
+			],
+			"links": ["r2_1", "r2_3", "r1_1"]
+		},
+		"r2_3": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 2,
+			"x": 0.21034,
+			"y": -0.15282,
+			"icon": "cooldown",
+			"mods": [{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.014}, {"type": "stat", "stat": "crit_add", "value": 0.007}],
+			"links": ["r2_2", "r2_4", "r3_4"]
+		},
+		"r2_4": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "",
+			"ring": 2,
+			"x": 0.24727,
+			"y": -0.08034,
+			"icon": "move_speed",
+			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.035}],
+			"links": ["r2_3", "r2_5", "r1_2", "r3_6"]
+		},
+		"r2_5": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "vitality",
+			"ring": 2,
+			"x": 0.26,
+			"y": 0,
+			"icon": "dodge",
+			"mods": [{"type": "stat", "stat": "dodge_add", "value": 0.007}, {"type": "stat", "stat": "healing_received_pct", "value": 0.021}],
+			"links": ["r2_4", "r2_6", "r3_8"]
+		},
+		"r2_6": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 2,
+			"x": 0.24727,
+			"y": 0.08034,
+			"icon": "hp_regen",
+			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 0.7}, {"type": "stat", "stat": "cooldown_reduction_add", "value": 0.014}],
+			"links": ["r2_5", "r2_7", "r1_3"]
+		},
+		"r2_7": {
+			"kind": "notable",
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 2,
+			"x": 0.21034,
+			"y": 0.15282,
+			"icon": "lifesteal",
+			"mods": [
+				{"type": "stat", "stat": "lifesteal_add", "value": 0.01167},
+				{"type": "stat", "stat": "healing_done_pct", "value": 0.035},
+				{"type": "stat", "stat": "move_speed_pct", "value": 0.0175}
+			],
+			"links": ["r2_6", "r2_8", "r3_10"]
+		},
+		"r2_8": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "",
+			"ring": 2,
+			"x": 0.15282,
+			"y": 0.21034,
+			"icon": "healing_done",
+			"mods": [{"type": "stat", "stat": "healing_done_pct", "value": 0.035}],
+			"links": ["r2_7", "r2_9", "r1_4", "r3_12"]
+		},
+		"r2_9": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "bastion",
+			"ring": 2,
+			"x": 0.08034,
+			"y": 0.24727,
+			"icon": "healing_received",
+			"mods": [{"type": "stat", "stat": "healing_received_pct", "value": 0.021}, {"type": "stat", "stat": "threat_pct", "value": 0.07}],
+			"links": ["r2_8", "r2_10", "r3_14"]
+		},
+		"r2_10": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "vitality",
+			"ring": 2,
+			"x": 0,
+			"y": 0.26,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_pct", "value": 0.028}, {"type": "stat", "stat": "hp_regen_add", "value": 0.7}],
+			"links": ["r2_9", "r2_11", "r1_5"]
+		},
+		"r2_11": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "vitality",
+			"ring": 2,
+			"x": -0.08034,
+			"y": 0.24727,
+			"icon": "max_hp",
+			"mods": [{"type": "stat", "stat": "max_hp_pct", "value": 0.021}, {"type": "stat", "stat": "lifesteal_add", "value": 0.007}],
+			"links": ["r2_10", "r2_12", "r3_16"]
+		},
+		"r2_12": {
+			"kind": "notable",
+			"dir": "bastion",
+			"mix": "",
+			"ring": 2,
+			"x": -0.15282,
+			"y": 0.21034,
+			"icon": "block",
+			"mods": [{"type": "stat", "stat": "block_add", "value": 0.02333}, {"type": "stat", "stat": "armor_add", "value": 17.5}],
+			"links": ["r2_11", "r2_13", "r1_6", "r3_18"]
+		},
+		"r2_13": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "arcane",
+			"ring": 2,
+			"x": -0.21034,
+			"y": 0.15282,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_add", "value": 10.5}, {"type": "stat", "stat": "spell_power_pct", "value": 0.021}],
+			"links": ["r2_12", "r2_14", "r3_20"]
+		},
+		"r2_14": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "bastion",
+			"ring": 2,
+			"x": -0.24727,
+			"y": 0.08034,
+			"icon": "max_resource",
+			"mods": [{"type": "stat", "stat": "max_resource_pct", "value": 0.028}, {"type": "stat", "stat": "damage_taken_pct", "value": -0.014}],
+			"links": ["r2_13", "r2_15", "r1_7"]
+		},
+		"r2_15": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "bastion",
+			"ring": 2,
+			"x": -0.26,
+			"y": 0,
+			"icon": "resource_regen",
+			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.035}, {"type": "stat", "stat": "threat_pct", "value": 0.07}],
+			"links": ["r2_14", "r2_16", "r3_22"]
+		},
+		"r2_16": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "",
+			"ring": 2,
+			"x": -0.24727,
+			"y": -0.08034,
+			"icon": "spell_power",
+			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.035}],
+			"links": ["r2_15", "r2_17", "r1_8", "r3_24"]
+		},
+		"r2_17": {
+			"kind": "notable",
+			"dir": "arcane",
+			"mix": "might",
+			"ring": 2,
+			"x": -0.21034,
+			"y": -0.15282,
+			"icon": "max_resource",
+			"mods": [
+				{"type": "stat", "stat": "max_resource_pct", "value": 0.04667},
+				{"type": "stat", "stat": "resource_regen_pct", "value": 0.05833},
+				{"type": "stat", "stat": "damage_done_pct", "value": 0.01167}
+			],
+			"links": ["r2_16", "r2_18", "r3_26"]
+		},
+		"r2_18": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "arcane",
+			"ring": 2,
+			"x": -0.15282,
+			"y": -0.21034,
+			"icon": "attack_power",
+			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.021}, {"type": "stat", "stat": "resource_regen_pct", "value": 0.035}],
+			"links": ["r2_17", "r2_19", "r1_9"]
+		},
+		"r2_19": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "arcane",
+			"ring": 2,
+			"x": -0.08034,
+			"y": -0.24727,
+			"icon": "crit",
+			"mods": [{"type": "stat", "stat": "crit_add", "value": 0.007}, {"type": "stat", "stat": "spell_power_pct", "value": 0.021}],
+			"links": ["r2_18", "r2_0", "r3_28"]
+		},
+		"r3_0": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "",
+			"ring": 3,
+			"x": 0,
+			"y": -0.39,
+			"icon": "damage_done",
+			"mods": [{"type": "stat", "stat": "damage_done_pct", "value": 0.02667}],
+			"links": ["r3_1", "r2_0", "r3_29", "r4_0"]
+		},
+		"r3_1": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "",
+			"ring": 3,
+			"x": 0.08109,
+			"y": -0.38148,
+			"icon": "attack_power",
+			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.04}],
+			"links": ["r3_0", "r3_2"]
+		},
+		"r3_2": {
 			"kind": "notable",
 			"dir": "might",
-			"ring": 1,
-			"x": 0,
-			"y": -0.41,
-			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.04}, {"type": "stat", "stat": "crit_damage_add", "value": 0.05}],
-			"links": ["might_2", "might_4", "might_celerity_3", "arcane_might_3"]
+			"mix": "celerity",
+			"ring": 3,
+			"x": 0.15863,
+			"y": -0.35628,
+			"icon": "crit",
+			"mods": [
+				{"type": "stat", "stat": "crit_add", "value": 0.01333},
+				{"type": "stat", "stat": "crit_damage_add", "value": 0.06667},
+				{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.01333}
+			],
+			"links": ["r3_1", "r3_3", "r2_1", "r4_2"]
 		},
-		"might_4": {
+		"r3_3": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 3,
+			"x": 0.22924,
+			"y": -0.31552,
+			"icon": "move_speed",
+			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.024}, {"type": "stat", "stat": "crit_damage_add", "value": 0.04}],
+			"links": ["r3_2", "r3_4", "r4_4"]
+		},
+		"r3_4": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 3,
+			"x": 0.28983,
+			"y": -0.26096,
+			"icon": "dodge",
+			"mods": [{"type": "stat", "stat": "dodge_add", "value": 0.008}, {"type": "stat", "stat": "damage_done_pct", "value": 0.016}],
+			"links": ["r3_3", "r3_5", "r2_3"]
+		},
+		"r3_5": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "",
+			"ring": 3,
+			"x": 0.33775,
+			"y": -0.195,
+			"icon": "cooldown",
+			"mods": [{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.02667}],
+			"links": ["r3_4", "r3_6", "r4_6"]
+		},
+		"r3_6": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "",
+			"ring": 3,
+			"x": 0.37091,
+			"y": -0.12052,
+			"icon": "move_speed",
+			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.04}],
+			"links": ["r3_5", "r3_7", "r2_4", "r4_8"]
+		},
+		"r3_7": {
+			"kind": "notable",
+			"dir": "celerity",
+			"mix": "",
+			"ring": 3,
+			"x": 0.38786,
+			"y": -0.04077,
+			"icon": "dodge",
+			"mods": [{"type": "stat", "stat": "dodge_add", "value": 0.01333}, {"type": "stat", "stat": "cooldown_reduction_add", "value": 0.02667}],
+			"links": ["r3_6", "r3_8"]
+		},
+		"r3_8": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "vitality",
+			"ring": 3,
+			"x": 0.38786,
+			"y": 0.04077,
+			"icon": "cooldown",
+			"mods": [
+				{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.016},
+				{"type": "stat", "stat": "healing_received_pct", "value": 0.024}
+			],
+			"links": ["r3_7", "r3_9", "r2_5", "r4_10"]
+		},
+		"r3_9": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 3,
+			"x": 0.37091,
+			"y": 0.12052,
+			"icon": "hp_regen",
+			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 0.8}, {"type": "stat", "stat": "move_speed_pct", "value": 0.024}],
+			"links": ["r3_8", "r3_10", "r4_12"]
+		},
+		"r3_10": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 3,
+			"x": 0.33775,
+			"y": 0.195,
+			"icon": "lifesteal",
+			"mods": [{"type": "stat", "stat": "lifesteal_add", "value": 0.008}, {"type": "stat", "stat": "dodge_add", "value": 0.008}],
+			"links": ["r3_9", "r3_11", "r2_7"]
+		},
+		"r3_11": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "",
+			"ring": 3,
+			"x": 0.28983,
+			"y": 0.26096,
+			"icon": "healing_done",
+			"mods": [{"type": "stat", "stat": "healing_done_pct", "value": 0.04}],
+			"links": ["r3_10", "r3_12", "r4_14"]
+		},
+		"r3_12": {
+			"kind": "notable",
+			"dir": "vitality",
+			"mix": "",
+			"ring": 3,
+			"x": 0.22924,
+			"y": 0.31552,
+			"icon": "healing_received",
+			"mods": [{"type": "stat", "stat": "healing_received_pct", "value": 0.04}, {"type": "stat", "stat": "hp_regen_add", "value": 1.33333}],
+			"links": ["r3_11", "r3_13", "r2_8", "r4_16"]
+		},
+		"r3_13": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "",
+			"ring": 3,
+			"x": 0.15863,
+			"y": 0.35628,
+			"icon": "hp_regen",
+			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 1.33333}],
+			"links": ["r3_12", "r3_14"]
+		},
+		"r3_14": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "bastion",
+			"ring": 3,
+			"x": 0.08109,
+			"y": 0.38148,
+			"icon": "lifesteal",
+			"mods": [{"type": "stat", "stat": "lifesteal_add", "value": 0.008}, {"type": "stat", "stat": "threat_pct", "value": 0.08}],
+			"links": ["r3_13", "r3_15", "r2_9", "r4_18"]
+		},
+		"r3_15": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "vitality",
+			"ring": 3,
+			"x": 0,
+			"y": 0.39,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_pct", "value": 0.032}, {"type": "stat", "stat": "healing_done_pct", "value": 0.024}],
+			"links": ["r3_14", "r3_16", "r4_20"]
+		},
+		"r3_16": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "vitality",
+			"ring": 3,
+			"x": -0.08109,
+			"y": 0.38148,
+			"icon": "max_hp",
+			"mods": [{"type": "stat", "stat": "max_hp_pct", "value": 0.024}, {"type": "stat", "stat": "healing_received_pct", "value": 0.024}],
+			"links": ["r3_15", "r3_17", "r2_11"]
+		},
+		"r3_17": {
+			"kind": "notable",
+			"dir": "bastion",
+			"mix": "",
+			"ring": 3,
+			"x": -0.15863,
+			"y": 0.35628,
+			"icon": "block",
+			"mods": [{"type": "stat", "stat": "block_add", "value": 0.02667}, {"type": "stat", "stat": "armor_add", "value": 20}],
+			"links": ["r3_16", "r3_18", "r4_22"]
+		},
+		"r3_18": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "",
+			"ring": 3,
+			"x": -0.22924,
+			"y": 0.31552,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_add", "value": 20}],
+			"links": ["r3_17", "r3_19", "r2_12", "r4_24"]
+		},
+		"r3_19": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "",
+			"ring": 3,
+			"x": -0.28983,
+			"y": 0.26096,
+			"icon": "damage_taken",
+			"mods": [{"type": "stat", "stat": "damage_taken_pct", "value": -0.02667}],
+			"links": ["r3_18", "r3_20"]
+		},
+		"r3_20": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "arcane",
+			"ring": 3,
+			"x": -0.33775,
+			"y": 0.195,
+			"icon": "threat",
+			"mods": [{"type": "stat", "stat": "threat_pct", "value": 0.08}, {"type": "stat", "stat": "resource_regen_pct", "value": 0.04}],
+			"links": ["r3_19", "r3_21", "r2_13", "r4_26"]
+		},
+		"r3_21": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "bastion",
+			"ring": 3,
+			"x": -0.37091,
+			"y": 0.12052,
+			"icon": "spell_power",
+			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.024}, {"type": "stat", "stat": "armor_pct", "value": 0.032}],
+			"links": ["r3_20", "r3_22", "r4_28"]
+		},
+		"r3_22": {
+			"kind": "notable",
+			"dir": "arcane",
+			"mix": "bastion",
+			"ring": 3,
+			"x": -0.38786,
+			"y": 0.04077,
+			"icon": "max_resource",
+			"mods": [
+				{"type": "stat", "stat": "max_resource_pct", "value": 0.05333},
+				{"type": "stat", "stat": "resource_regen_pct", "value": 0.06667},
+				{"type": "stat", "stat": "max_hp_pct", "value": 0.02}
+			],
+			"links": ["r3_21", "r3_23", "r2_15"]
+		},
+		"r3_23": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "",
+			"ring": 3,
+			"x": -0.38786,
+			"y": -0.04077,
+			"icon": "resource_regen",
+			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.06667}],
+			"links": ["r3_22", "r3_24", "r4_30"]
+		},
+		"r3_24": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "",
+			"ring": 3,
+			"x": -0.37091,
+			"y": -0.12052,
+			"icon": "spell_power",
+			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.04}],
+			"links": ["r3_23", "r3_25", "r2_16", "r4_32"]
+		},
+		"r3_25": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "",
+			"ring": 3,
+			"x": -0.33775,
+			"y": -0.195,
+			"icon": "max_resource",
+			"mods": [{"type": "stat", "stat": "max_resource_pct", "value": 0.05333}],
+			"links": ["r3_24", "r3_26"]
+		},
+		"r3_26": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "might",
+			"ring": 3,
+			"x": -0.28983,
+			"y": -0.26096,
+			"icon": "resource_regen",
+			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.04}, {"type": "stat", "stat": "crit_add", "value": 0.008}],
+			"links": ["r3_25", "r3_27", "r2_17", "r4_34"]
+		},
+		"r3_27": {
+			"kind": "notable",
+			"dir": "might",
+			"mix": "arcane",
+			"ring": 3,
+			"x": -0.22924,
+			"y": -0.31552,
+			"icon": "crit_damage",
+			"mods": [
+				{"type": "stat", "stat": "crit_damage_add", "value": 0.06667},
+				{"type": "stat", "stat": "damage_done_pct", "value": 0.02667},
+				{"type": "stat", "stat": "spell_power_pct", "value": 0.02}
+			],
+			"links": ["r3_26", "r3_28", "r4_36"]
+		},
+		"r3_28": {
 			"kind": "minor",
 			"dir": "might",
-			"ring": 1,
-			"x": 0,
-			"y": -0.53,
-			"mods": [{"type": "stat", "stat": "damage_done_pct", "value": 0.02}],
-			"links": ["might_3", "might_key"]
+			"mix": "arcane",
+			"ring": 3,
+			"x": -0.15863,
+			"y": -0.35628,
+			"icon": "damage_done",
+			"mods": [{"type": "stat", "stat": "damage_done_pct", "value": 0.016}, {"type": "stat", "stat": "max_resource_pct", "value": 0.032}],
+			"links": ["r3_27", "r3_29", "r2_19"]
 		},
-		"might_key": {
+		"r3_29": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "",
+			"ring": 3,
+			"x": -0.08109,
+			"y": -0.38148,
+			"icon": "attack_power",
+			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.04}],
+			"links": ["r3_28", "r3_0", "r4_38"]
+		},
+		"r4_0": {
 			"kind": "keystone",
 			"dir": "might",
-			"ring": 1,
+			"mix": "",
+			"ring": 4,
+			"x": 0,
+			"y": -0.52,
+			"icon": "attack_power",
+			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.1125}, {"type": "stat", "stat": "crit_add", "value": 0.0375}],
+			"links": ["r4_1", "r3_0", "r4_39", "r5_0"]
+		},
+		"r4_1": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "",
+			"ring": 4,
+			"x": 0.08135,
+			"y": -0.5136,
+			"icon": "crit",
+			"mods": [{"type": "stat", "stat": "crit_add", "value": 0.015}],
+			"links": ["r4_0", "r4_2"]
+		},
+		"r4_2": {
+			"kind": "notable",
+			"dir": "might",
+			"mix": "celerity",
+			"ring": 4,
+			"x": 0.16069,
+			"y": -0.49455,
+			"icon": "crit_damage",
+			"mods": [
+				{"type": "stat", "stat": "crit_damage_add", "value": 0.075},
+				{"type": "stat", "stat": "damage_done_pct", "value": 0.03},
+				{"type": "stat", "stat": "move_speed_pct", "value": 0.0225}
+			],
+			"links": ["r4_1", "r4_3", "r3_2", "r5_2"]
+		},
+		"r4_3": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "celerity",
+			"ring": 4,
+			"x": 0.23608,
+			"y": -0.46332,
+			"icon": "damage_done",
+			"mods": [{"type": "stat", "stat": "damage_done_pct", "value": 0.018}, {"type": "stat", "stat": "dodge_add", "value": 0.009}],
+			"links": ["r4_2", "r4_4", "r5_4"]
+		},
+		"r4_4": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 4,
+			"x": 0.30565,
+			"y": -0.42069,
+			"icon": "cooldown",
+			"mods": [
+				{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.018},
+				{"type": "stat", "stat": "attack_power_pct", "value": 0.027}
+			],
+			"links": ["r4_3", "r4_5", "r3_3"]
+		},
+		"r4_5": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 4,
+			"x": 0.3677,
+			"y": -0.3677,
+			"icon": "move_speed",
+			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.027}, {"type": "stat", "stat": "crit_add", "value": 0.009}],
+			"links": ["r4_4", "r4_6", "r5_6"]
+		},
+		"r4_6": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 4,
+			"x": 0.42069,
+			"y": -0.30565,
+			"icon": "dodge",
+			"mods": [{"type": "stat", "stat": "dodge_add", "value": 0.009}, {"type": "stat", "stat": "crit_damage_add", "value": 0.045}],
+			"links": ["r4_5", "r4_7", "r3_5", "r5_8"]
+		},
+		"r4_7": {
+			"kind": "notable",
+			"dir": "celerity",
+			"mix": "",
+			"ring": 4,
+			"x": 0.46332,
+			"y": -0.23608,
+			"icon": "cooldown",
+			"mods": [{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.03}, {"type": "stat", "stat": "move_speed_pct", "value": 0.045}],
+			"links": ["r4_6", "r4_8"]
+		},
+		"r4_8": {
+			"kind": "keystone",
+			"dir": "celerity",
+			"mix": "",
+			"ring": 4,
+			"x": 0.49455,
+			"y": -0.16069,
+			"icon": "move_speed",
+			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.1125}, {"type": "stat", "stat": "dodge_add", "value": 0.0375}],
+			"links": ["r4_7", "r4_9", "r3_6", "r5_10"]
+		},
+		"r4_9": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "",
+			"ring": 4,
+			"x": 0.5136,
+			"y": -0.08135,
+			"icon": "dodge",
+			"mods": [{"type": "stat", "stat": "dodge_add", "value": 0.015}],
+			"links": ["r4_8", "r4_10"]
+		},
+		"r4_10": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "vitality",
+			"ring": 4,
+			"x": 0.52,
+			"y": 0,
+			"icon": "cooldown",
+			"mods": [
+				{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.018},
+				{"type": "stat", "stat": "healing_done_pct", "value": 0.027}
+			],
+			"links": ["r4_9", "r4_11", "r3_8", "r5_12"]
+		},
+		"r4_11": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "vitality",
+			"ring": 4,
+			"x": 0.5136,
+			"y": 0.08135,
+			"icon": "move_speed",
+			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.027}, {"type": "stat", "stat": "healing_received_pct", "value": 0.027}],
+			"links": ["r4_10", "r4_12", "r5_14"]
+		},
+		"r4_12": {
+			"kind": "notable",
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 4,
+			"x": 0.49455,
+			"y": 0.16069,
+			"icon": "hp_regen",
+			"mods": [
+				{"type": "stat", "stat": "hp_regen_add", "value": 1.5},
+				{"type": "stat", "stat": "lifesteal_add", "value": 0.015},
+				{"type": "stat", "stat": "dodge_add", "value": 0.0075}
+			],
+			"links": ["r4_11", "r4_13", "r3_9"]
+		},
+		"r4_13": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 4,
+			"x": 0.46332,
+			"y": 0.23608,
+			"icon": "lifesteal",
+			"mods": [{"type": "stat", "stat": "lifesteal_add", "value": 0.009}, {"type": "stat", "stat": "cooldown_reduction_add", "value": 0.018}],
+			"links": ["r4_12", "r4_14", "r5_16"]
+		},
+		"r4_14": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 4,
+			"x": 0.42069,
+			"y": 0.30565,
+			"icon": "healing_done",
+			"mods": [{"type": "stat", "stat": "healing_done_pct", "value": 0.027}, {"type": "stat", "stat": "move_speed_pct", "value": 0.027}],
+			"links": ["r4_13", "r4_15", "r3_11", "r5_18"]
+		},
+		"r4_15": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "",
+			"ring": 4,
+			"x": 0.3677,
+			"y": 0.3677,
+			"icon": "healing_received",
+			"mods": [{"type": "stat", "stat": "healing_received_pct", "value": 0.045}],
+			"links": ["r4_14", "r4_16"]
+		},
+		"r4_16": {
+			"kind": "keystone",
+			"dir": "vitality",
+			"mix": "",
+			"ring": 4,
+			"x": 0.30565,
+			"y": 0.42069,
+			"icon": "hp_regen",
+			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 3.75}, {"type": "stat", "stat": "lifesteal_add", "value": 0.0375}],
+			"links": ["r4_15", "r4_17", "r3_12", "r5_20"]
+		},
+		"r4_17": {
+			"kind": "notable",
+			"dir": "vitality",
+			"mix": "",
+			"ring": 4,
+			"x": 0.23608,
+			"y": 0.46332,
+			"icon": "lifesteal",
+			"mods": [{"type": "stat", "stat": "lifesteal_add", "value": 0.015}, {"type": "stat", "stat": "healing_done_pct", "value": 0.045}],
+			"links": ["r4_16", "r4_18"]
+		},
+		"r4_18": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "bastion",
+			"ring": 4,
+			"x": 0.16069,
+			"y": 0.49455,
+			"icon": "healing_done",
+			"mods": [{"type": "stat", "stat": "healing_done_pct", "value": 0.027}, {"type": "stat", "stat": "damage_taken_pct", "value": -0.018}],
+			"links": ["r4_17", "r4_19", "r3_14", "r5_22"]
+		},
+		"r4_19": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "bastion",
+			"ring": 4,
+			"x": 0.08135,
+			"y": 0.5136,
+			"icon": "healing_received",
+			"mods": [{"type": "stat", "stat": "healing_received_pct", "value": 0.027}, {"type": "stat", "stat": "threat_pct", "value": 0.09}],
+			"links": ["r4_18", "r4_20", "r5_24"]
+		},
+		"r4_20": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "vitality",
+			"ring": 4,
+			"x": 0,
+			"y": 0.52,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_pct", "value": 0.036}, {"type": "stat", "stat": "hp_regen_add", "value": 0.9}],
+			"links": ["r4_19", "r4_21", "r3_15"]
+		},
+		"r4_21": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "vitality",
+			"ring": 4,
+			"x": -0.08135,
+			"y": 0.5136,
+			"icon": "max_hp",
+			"mods": [{"type": "stat", "stat": "max_hp_pct", "value": 0.027}, {"type": "stat", "stat": "lifesteal_add", "value": 0.009}],
+			"links": ["r4_20", "r4_22", "r5_26"]
+		},
+		"r4_22": {
+			"kind": "notable",
+			"dir": "bastion",
+			"mix": "vitality",
+			"ring": 4,
+			"x": -0.16069,
+			"y": 0.49455,
+			"icon": "block",
+			"mods": [
+				{"type": "stat", "stat": "block_add", "value": 0.03},
+				{"type": "stat", "stat": "armor_add", "value": 22.5},
+				{"type": "stat", "stat": "healing_done_pct", "value": 0.0225}
+			],
+			"links": ["r4_21", "r4_23", "r3_17", "r5_28"]
+		},
+		"r4_23": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "",
+			"ring": 4,
+			"x": -0.23608,
+			"y": 0.46332,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_add", "value": 22.5}],
+			"links": ["r4_22", "r4_24"]
+		},
+		"r4_24": {
+			"kind": "keystone",
+			"dir": "bastion",
+			"mix": "",
+			"ring": 4,
+			"x": -0.30565,
+			"y": 0.42069,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_pct", "value": 0.15}, {"type": "stat", "stat": "max_hp_pct", "value": 0.1125}],
+			"links": ["r4_23", "r4_25", "r3_18", "r5_30"]
+		},
+		"r4_25": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "",
+			"ring": 4,
+			"x": -0.3677,
+			"y": 0.3677,
+			"icon": "threat",
+			"mods": [{"type": "stat", "stat": "threat_pct", "value": 0.15}],
+			"links": ["r4_24", "r4_26"]
+		},
+		"r4_26": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "arcane",
+			"ring": 4,
+			"x": -0.42069,
+			"y": 0.30565,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_pct", "value": 0.036}, {"type": "stat", "stat": "spell_power_pct", "value": 0.027}],
+			"links": ["r4_25", "r4_27", "r3_20", "r5_32"]
+		},
+		"r4_27": {
+			"kind": "notable",
+			"dir": "bastion",
+			"mix": "arcane",
+			"ring": 4,
+			"x": -0.46332,
+			"y": 0.23608,
+			"icon": "max_hp",
+			"mods": [
+				{"type": "stat", "stat": "max_hp_pct", "value": 0.045},
+				{"type": "stat", "stat": "block_add", "value": 0.03},
+				{"type": "stat", "stat": "max_resource_pct", "value": 0.03}
+			],
+			"links": ["r4_26", "r4_28", "r5_34"]
+		},
+		"r4_28": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "bastion",
+			"ring": 4,
+			"x": -0.49455,
+			"y": 0.16069,
+			"icon": "resource_regen",
+			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.045}, {"type": "stat", "stat": "block_add", "value": 0.018}],
+			"links": ["r4_27", "r4_29", "r3_21"]
+		},
+		"r4_29": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "bastion",
+			"ring": 4,
+			"x": -0.5136,
+			"y": 0.08135,
+			"icon": "spell_power",
+			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.027}, {"type": "stat", "stat": "armor_add", "value": 13.5}],
+			"links": ["r4_28", "r4_30", "r5_36"]
+		},
+		"r4_30": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "bastion",
+			"ring": 4,
+			"x": -0.52,
+			"y": 0,
+			"icon": "max_resource",
+			"mods": [{"type": "stat", "stat": "max_resource_pct", "value": 0.036}, {"type": "stat", "stat": "damage_taken_pct", "value": -0.018}],
+			"links": ["r4_29", "r4_31", "r3_23", "r5_38"]
+		},
+		"r4_31": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "",
+			"ring": 4,
+			"x": -0.5136,
+			"y": -0.08135,
+			"icon": "resource_regen",
+			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.075}],
+			"links": ["r4_30", "r4_32"]
+		},
+		"r4_32": {
+			"kind": "keystone",
+			"dir": "arcane",
+			"mix": "",
+			"ring": 4,
+			"x": -0.49455,
+			"y": -0.16069,
+			"icon": "spell_power",
+			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.1125}, {"type": "stat", "stat": "max_resource_pct", "value": 0.15}],
+			"links": ["r4_31", "r4_33", "r3_24", "r5_40"]
+		},
+		"r4_33": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "",
+			"ring": 4,
+			"x": -0.46332,
+			"y": -0.23608,
+			"icon": "max_resource",
+			"mods": [{"type": "stat", "stat": "max_resource_pct", "value": 0.06}],
+			"links": ["r4_32", "r4_34"]
+		},
+		"r4_34": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "might",
+			"ring": 4,
+			"x": -0.42069,
+			"y": -0.30565,
+			"icon": "resource_regen",
+			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.045}, {"type": "stat", "stat": "crit_damage_add", "value": 0.045}],
+			"links": ["r4_33", "r4_35", "r3_26", "r5_42"]
+		},
+		"r4_35": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "might",
+			"ring": 4,
+			"x": -0.3677,
+			"y": -0.3677,
+			"icon": "spell_power",
+			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.027}, {"type": "stat", "stat": "damage_done_pct", "value": 0.018}],
+			"links": ["r4_34", "r4_36", "r5_44"]
+		},
+		"r4_36": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "arcane",
+			"ring": 4,
+			"x": -0.30565,
+			"y": -0.42069,
+			"icon": "attack_power",
+			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.027}, {"type": "stat", "stat": "max_resource_pct", "value": 0.036}],
+			"links": ["r4_35", "r4_37", "r3_27"]
+		},
+		"r4_37": {
+			"kind": "notable",
+			"dir": "might",
+			"mix": "arcane",
+			"ring": 4,
+			"x": -0.23608,
+			"y": -0.46332,
+			"icon": "crit",
+			"mods": [
+				{"type": "stat", "stat": "crit_add", "value": 0.015},
+				{"type": "stat", "stat": "crit_damage_add", "value": 0.075},
+				{"type": "stat", "stat": "resource_regen_pct", "value": 0.0375}
+			],
+			"links": ["r4_36", "r4_38", "r5_46"]
+		},
+		"r4_38": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "arcane",
+			"ring": 4,
+			"x": -0.16069,
+			"y": -0.49455,
+			"icon": "crit_damage",
+			"mods": [{"type": "stat", "stat": "crit_damage_add", "value": 0.045}, {"type": "stat", "stat": "spell_power_pct", "value": 0.027}],
+			"links": ["r4_37", "r4_39", "r3_29", "r5_48"]
+		},
+		"r4_39": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "",
+			"ring": 4,
+			"x": -0.08135,
+			"y": -0.5136,
+			"icon": "damage_done",
+			"mods": [{"type": "stat", "stat": "damage_done_pct", "value": 0.03}],
+			"links": ["r4_38", "r4_0"]
+		},
+		"r5_0": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "",
+			"ring": 5,
 			"x": 0,
 			"y": -0.65,
-			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.08}, {"type": "stat", "stat": "crit_damage_add", "value": 0.1}],
-			"links": ["might_4", "might_5"]
+			"icon": "crit",
+			"mods": [{"type": "stat", "stat": "crit_add", "value": 0.01667}],
+			"links": ["r5_1", "r4_0", "r5_49", "r6_0"]
 		},
-		"might_5": {
+		"r5_1": {
 			"kind": "minor",
 			"dir": "might",
-			"ring": 2,
-			"x": 0,
-			"y": -0.77,
-			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.045}],
-			"links": ["might_key", "might_6", "might_celerity_5", "arcane_might_5"]
+			"mix": "",
+			"ring": 5,
+			"x": 0.08147,
+			"y": -0.64487,
+			"icon": "crit_damage",
+			"mods": [{"type": "stat", "stat": "crit_damage_add", "value": 0.08333}],
+			"links": ["r5_0", "r5_2"]
 		},
-		"might_6": {
-			"kind": "keystone",
+		"r5_2": {
+			"kind": "notable",
 			"dir": "might",
-			"ring": 2,
-			"x": 0,
-			"y": -0.89,
-			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.12}, {"type": "stat", "stat": "crit_damage_add", "value": 0.15}],
-			"links": ["might_5"]
-		},
-		"might_celerity_1": {
-			"kind": "minor",
-			"dir": "might_celerity",
-			"ring": 1,
-			"x": 0.09992,
-			"y": -0.13753,
-			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.018}, {"type": "stat", "stat": "move_speed_pct", "value": 0.018}],
-			"links": ["start", "might_celerity_2", "might_1", "celerity_1"]
-		},
-		"might_celerity_2": {
-			"kind": "minor",
-			"dir": "might_celerity",
-			"ring": 1,
-			"x": 0.17046,
-			"y": -0.23461,
-			"mods": [{"type": "stat", "stat": "crit_add", "value": 0.006}, {"type": "stat", "stat": "dodge_add", "value": 0.006}],
-			"links": ["might_celerity_1", "might_celerity_3"]
-		},
-		"might_celerity_3": {
-			"kind": "notable",
-			"dir": "might_celerity",
-			"ring": 1,
-			"x": 0.24099,
-			"y": -0.3317,
-			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.04}, {"type": "stat", "stat": "cooldown_reduction_add", "value": 0.03}],
-			"links": ["might_celerity_2", "might_celerity_4", "might_3", "celerity_3"]
-		},
-		"might_celerity_4": {
-			"kind": "minor",
-			"dir": "might_celerity",
-			"ring": 1,
-			"x": 0.31153,
-			"y": -0.42878,
+			"mix": "celerity",
+			"ring": 5,
+			"x": 0.16165,
+			"y": -0.62958,
+			"icon": "damage_done",
 			"mods": [
-				{"type": "stat", "stat": "damage_done_pct", "value": 0.012},
-				{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.012}
+				{"type": "stat", "stat": "damage_done_pct", "value": 0.03333},
+				{"type": "stat", "stat": "attack_power_pct", "value": 0.05},
+				{"type": "stat", "stat": "dodge_add", "value": 0.00833}
 			],
-			"links": ["might_celerity_3", "might_celerity_5"]
+			"links": ["r5_1", "r5_3", "r4_2", "r6_2"]
 		},
-		"might_celerity_5": {
+		"r5_3": {
 			"kind": "minor",
-			"dir": "might_celerity",
-			"ring": 2,
-			"x": 0.45259,
-			"y": -0.62294,
-			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.027}, {"type": "stat", "stat": "move_speed_pct", "value": 0.027}],
-			"links": ["might_celerity_4", "might_celerity_6", "might_5", "celerity_5"]
+			"dir": "might",
+			"mix": "celerity",
+			"ring": 5,
+			"x": 0.23928,
+			"y": -0.60435,
+			"icon": "attack_power",
+			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.03}, {"type": "stat", "stat": "cooldown_reduction_add", "value": 0.02}],
+			"links": ["r5_2", "r5_4", "r6_4"]
 		},
-		"might_celerity_6": {
+		"r5_4": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "celerity",
+			"ring": 5,
+			"x": 0.31314,
+			"y": -0.5696,
+			"icon": "crit",
+			"mods": [{"type": "stat", "stat": "crit_add", "value": 0.01}, {"type": "stat", "stat": "move_speed_pct", "value": 0.03}],
+			"links": ["r5_3", "r5_5", "r4_3"]
+		},
+		"r5_5": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 5,
+			"x": 0.38206,
+			"y": -0.52586,
+			"icon": "dodge",
+			"mods": [{"type": "stat", "stat": "dodge_add", "value": 0.01}, {"type": "stat", "stat": "crit_damage_add", "value": 0.05}],
+			"links": ["r5_4", "r5_6", "r6_6"]
+		},
+		"r5_6": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 5,
+			"x": 0.44496,
+			"y": -0.47383,
+			"icon": "cooldown",
+			"mods": [{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.02}, {"type": "stat", "stat": "damage_done_pct", "value": 0.02}],
+			"links": ["r5_5", "r5_7", "r4_5"]
+		},
+		"r5_7": {
 			"kind": "notable",
-			"dir": "might_celerity",
-			"ring": 2,
-			"x": 0.52313,
-			"y": -0.72003,
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 5,
+			"x": 0.50083,
+			"y": -0.41433,
+			"icon": "move_speed",
 			"mods": [
-				{"type": "stat", "stat": "attack_power_pct", "value": 0.06},
-				{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.045}
+				{"type": "stat", "stat": "move_speed_pct", "value": 0.05},
+				{"type": "stat", "stat": "dodge_add", "value": 0.01667},
+				{"type": "stat", "stat": "attack_power_pct", "value": 0.025}
 			],
-			"links": ["might_celerity_5"]
+			"links": ["r5_6", "r5_8", "r6_8"]
 		},
-		"celerity_1": {
+		"r5_8": {
 			"kind": "minor",
 			"dir": "celerity",
-			"ring": 1,
-			"x": 0.16168,
-			"y": -0.05253,
-			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.03}],
-			"links": ["start", "celerity_2", "might_celerity_1", "celerity_vitality_1"]
+			"mix": "",
+			"ring": 5,
+			"x": 0.54881,
+			"y": -0.34829,
+			"icon": "dodge",
+			"mods": [{"type": "stat", "stat": "dodge_add", "value": 0.01667}],
+			"links": ["r5_7", "r5_9", "r4_6", "r6_10"]
 		},
-		"celerity_2": {
+		"r5_9": {
 			"kind": "minor",
 			"dir": "celerity",
-			"ring": 1,
-			"x": 0.27581,
-			"y": -0.08961,
-			"mods": [{"type": "stat", "stat": "dodge_add", "value": 0.01}],
-			"links": ["celerity_1", "celerity_3"]
+			"mix": "",
+			"ring": 5,
+			"x": 0.58814,
+			"y": -0.27676,
+			"icon": "cooldown",
+			"mods": [{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.03333}],
+			"links": ["r5_8", "r5_10"]
 		},
-		"celerity_3": {
-			"kind": "notable",
-			"dir": "celerity",
-			"ring": 1,
-			"x": 0.38993,
-			"y": -0.1267,
-			"mods": [{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.03}, {"type": "stat", "stat": "move_speed_pct", "value": 0.03}],
-			"links": ["celerity_2", "celerity_4", "might_celerity_3", "celerity_vitality_3"]
-		},
-		"celerity_4": {
+		"r5_10": {
 			"kind": "minor",
 			"dir": "celerity",
-			"ring": 1,
-			"x": 0.50406,
-			"y": -0.16378,
-			"mods": [{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.02}],
-			"links": ["celerity_3", "celerity_key"]
-		},
-		"celerity_key": {
-			"kind": "keystone",
-			"dir": "celerity",
-			"ring": 1,
+			"mix": "",
+			"ring": 5,
 			"x": 0.61819,
 			"y": -0.20086,
-			"mods": [{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.08}],
-			"links": ["celerity_4", "celerity_5"]
+			"icon": "move_speed",
+			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.05}],
+			"links": ["r5_9", "r5_11", "r4_8", "r6_12"]
 		},
-		"celerity_5": {
+		"r5_11": {
 			"kind": "minor",
 			"dir": "celerity",
-			"ring": 2,
-			"x": 0.73231,
-			"y": -0.23794,
-			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.045}],
-			"links": ["celerity_key", "celerity_6", "might_celerity_5", "celerity_vitality_5"]
+			"mix": "",
+			"ring": 5,
+			"x": 0.63849,
+			"y": -0.1218,
+			"icon": "dodge",
+			"mods": [{"type": "stat", "stat": "dodge_add", "value": 0.01667}],
+			"links": ["r5_10", "r5_12"]
 		},
-		"celerity_6": {
-			"kind": "keystone",
-			"dir": "celerity",
-			"ring": 2,
-			"x": 0.84644,
-			"y": -0.27503,
-			"mods": [{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.12}],
-			"links": ["celerity_5"]
-		},
-		"celerity_vitality_1": {
-			"kind": "minor",
-			"dir": "celerity_vitality",
-			"ring": 1,
-			"x": 0.16168,
-			"y": 0.05253,
-			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.018}, {"type": "stat", "stat": "hp_regen_add", "value": 0.6}],
-			"links": ["start", "celerity_vitality_2", "celerity_1", "vitality_1"]
-		},
-		"celerity_vitality_2": {
-			"kind": "minor",
-			"dir": "celerity_vitality",
-			"ring": 1,
-			"x": 0.27581,
-			"y": 0.08961,
-			"mods": [{"type": "stat", "stat": "dodge_add", "value": 0.006}, {"type": "stat", "stat": "healing_done_pct", "value": 0.018}],
-			"links": ["celerity_vitality_1", "celerity_vitality_3"]
-		},
-		"celerity_vitality_3": {
+		"r5_12": {
 			"kind": "notable",
-			"dir": "celerity_vitality",
-			"ring": 1,
-			"x": 0.38993,
-			"y": 0.1267,
-			"mods": [{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.03}, {"type": "stat", "stat": "lifesteal_add", "value": 0.01}],
-			"links": ["celerity_vitality_2", "celerity_vitality_4", "celerity_3", "vitality_3"]
-		},
-		"celerity_vitality_4": {
-			"kind": "minor",
-			"dir": "celerity_vitality",
-			"ring": 1,
-			"x": 0.50406,
-			"y": 0.16378,
+			"dir": "celerity",
+			"mix": "vitality",
+			"ring": 5,
+			"x": 0.64872,
+			"y": -0.04081,
+			"icon": "cooldown",
 			"mods": [
-				{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.012},
-				{"type": "stat", "stat": "healing_received_pct", "value": 0.018}
+				{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.03333},
+				{"type": "stat", "stat": "move_speed_pct", "value": 0.05},
+				{"type": "stat", "stat": "lifesteal_add", "value": 0.00833}
 			],
-			"links": ["celerity_vitality_3", "celerity_vitality_5"]
+			"links": ["r5_11", "r5_13", "r4_10", "r6_14"]
 		},
-		"celerity_vitality_5": {
+		"r5_13": {
 			"kind": "minor",
-			"dir": "celerity_vitality",
-			"ring": 2,
-			"x": 0.73231,
-			"y": 0.23794,
-			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.027}, {"type": "stat", "stat": "hp_regen_add", "value": 0.9}],
-			"links": ["celerity_vitality_4", "celerity_vitality_6", "celerity_5", "vitality_5"]
+			"dir": "celerity",
+			"mix": "vitality",
+			"ring": 5,
+			"x": 0.64872,
+			"y": 0.04081,
+			"icon": "move_speed",
+			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.03}, {"type": "stat", "stat": "healing_done_pct", "value": 0.03}],
+			"links": ["r5_12", "r5_14", "r6_16"]
 		},
-		"celerity_vitality_6": {
+		"r5_14": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "vitality",
+			"ring": 5,
+			"x": 0.63849,
+			"y": 0.1218,
+			"icon": "dodge",
+			"mods": [{"type": "stat", "stat": "dodge_add", "value": 0.01}, {"type": "stat", "stat": "healing_received_pct", "value": 0.03}],
+			"links": ["r5_13", "r5_15", "r4_11"]
+		},
+		"r5_15": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 5,
+			"x": 0.61819,
+			"y": 0.20086,
+			"icon": "hp_regen",
+			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 1}, {"type": "stat", "stat": "cooldown_reduction_add", "value": 0.02}],
+			"links": ["r5_14", "r5_16", "r6_18"]
+		},
+		"r5_16": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 5,
+			"x": 0.58814,
+			"y": 0.27676,
+			"icon": "lifesteal",
+			"mods": [{"type": "stat", "stat": "lifesteal_add", "value": 0.01}, {"type": "stat", "stat": "move_speed_pct", "value": 0.03}],
+			"links": ["r5_15", "r5_17", "r4_13"]
+		},
+		"r5_17": {
 			"kind": "notable",
-			"dir": "celerity_vitality",
-			"ring": 2,
-			"x": 0.84644,
-			"y": 0.27503,
-			"mods": [{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.045}, {"type": "stat", "stat": "lifesteal_add", "value": 0.015}],
-			"links": ["celerity_vitality_5"]
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 5,
+			"x": 0.54881,
+			"y": 0.34829,
+			"icon": "healing_done",
+			"mods": [
+				{"type": "stat", "stat": "healing_done_pct", "value": 0.05},
+				{"type": "stat", "stat": "healing_received_pct", "value": 0.05},
+				{"type": "stat", "stat": "dodge_add", "value": 0.00833}
+			],
+			"links": ["r5_16", "r5_18", "r6_20"]
 		},
-		"vitality_1": {
+		"r5_18": {
 			"kind": "minor",
 			"dir": "vitality",
-			"ring": 1,
-			"x": 0.09992,
-			"y": 0.13753,
-			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 1}],
-			"links": ["start", "vitality_2", "celerity_vitality_1", "vitality_bastion_1"]
+			"mix": "celerity",
+			"ring": 5,
+			"x": 0.50083,
+			"y": 0.41433,
+			"icon": "healing_received",
+			"mods": [
+				{"type": "stat", "stat": "healing_received_pct", "value": 0.03},
+				{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.02}
+			],
+			"links": ["r5_17", "r5_19", "r4_14", "r6_22"]
 		},
-		"vitality_2": {
+		"r5_19": {
 			"kind": "minor",
 			"dir": "vitality",
-			"ring": 1,
-			"x": 0.17046,
-			"y": 0.23461,
-			"mods": [{"type": "stat", "stat": "healing_done_pct", "value": 0.03}],
-			"links": ["vitality_1", "vitality_3"]
+			"mix": "",
+			"ring": 5,
+			"x": 0.44496,
+			"y": 0.47383,
+			"icon": "hp_regen",
+			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 1.66667}],
+			"links": ["r5_18", "r5_20"]
 		},
-		"vitality_3": {
-			"kind": "notable",
-			"dir": "vitality",
-			"ring": 1,
-			"x": 0.24099,
-			"y": 0.3317,
-			"mods": [{"type": "stat", "stat": "lifesteal_add", "value": 0.01}, {"type": "stat", "stat": "healing_received_pct", "value": 0.04}],
-			"links": ["vitality_2", "vitality_4", "celerity_vitality_3", "vitality_bastion_3"]
-		},
-		"vitality_4": {
+		"r5_20": {
 			"kind": "minor",
 			"dir": "vitality",
-			"ring": 1,
-			"x": 0.31153,
-			"y": 0.42878,
-			"mods": [{"type": "stat", "stat": "healing_received_pct", "value": 0.03}],
-			"links": ["vitality_3", "vitality_key"]
-		},
-		"vitality_key": {
-			"kind": "keystone",
-			"dir": "vitality",
-			"ring": 1,
+			"mix": "",
+			"ring": 5,
 			"x": 0.38206,
 			"y": 0.52586,
-			"mods": [{"type": "stat", "stat": "healing_received_pct", "value": 0.08}, {"type": "stat", "stat": "lifesteal_add", "value": 0.02}],
-			"links": ["vitality_4", "vitality_5"]
+			"icon": "lifesteal",
+			"mods": [{"type": "stat", "stat": "lifesteal_add", "value": 0.01667}],
+			"links": ["r5_19", "r5_21", "r4_16", "r6_24"]
 		},
-		"vitality_5": {
+		"r5_21": {
 			"kind": "minor",
 			"dir": "vitality",
-			"ring": 2,
-			"x": 0.45259,
-			"y": 0.62294,
-			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 1.5}],
-			"links": ["vitality_key", "vitality_6", "celerity_vitality_5", "vitality_bastion_5"]
+			"mix": "",
+			"ring": 5,
+			"x": 0.31314,
+			"y": 0.5696,
+			"icon": "healing_done",
+			"mods": [{"type": "stat", "stat": "healing_done_pct", "value": 0.05}],
+			"links": ["r5_20", "r5_22"]
 		},
-		"vitality_6": {
-			"kind": "keystone",
+		"r5_22": {
+			"kind": "notable",
 			"dir": "vitality",
-			"ring": 2,
-			"x": 0.52313,
-			"y": 0.72003,
-			"mods": [{"type": "stat", "stat": "healing_received_pct", "value": 0.12}, {"type": "stat", "stat": "lifesteal_add", "value": 0.03}],
-			"links": ["vitality_5"]
+			"mix": "bastion",
+			"ring": 5,
+			"x": 0.23928,
+			"y": 0.60435,
+			"icon": "healing_received",
+			"mods": [
+				{"type": "stat", "stat": "healing_received_pct", "value": 0.05},
+				{"type": "stat", "stat": "hp_regen_add", "value": 1.66667},
+				{"type": "stat", "stat": "armor_add", "value": 12.5}
+			],
+			"links": ["r5_21", "r5_23", "r4_18", "r6_26"]
 		},
-		"vitality_bastion_1": {
+		"r5_23": {
 			"kind": "minor",
-			"dir": "vitality_bastion",
-			"ring": 1,
-			"x": 0,
-			"y": 0.17,
-			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 0.6}, {"type": "stat", "stat": "armor_pct", "value": 0.024}],
-			"links": ["start", "vitality_bastion_2", "vitality_1", "bastion_1"]
+			"dir": "vitality",
+			"mix": "bastion",
+			"ring": 5,
+			"x": 0.16165,
+			"y": 0.62958,
+			"icon": "hp_regen",
+			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 1}, {"type": "stat", "stat": "damage_taken_pct", "value": -0.02}],
+			"links": ["r5_22", "r5_24", "r6_28"]
 		},
-		"vitality_bastion_2": {
+		"r5_24": {
 			"kind": "minor",
-			"dir": "vitality_bastion",
-			"ring": 1,
-			"x": 0,
-			"y": 0.29,
-			"mods": [{"type": "stat", "stat": "healing_done_pct", "value": 0.018}, {"type": "stat", "stat": "max_hp_pct", "value": 0.018}],
-			"links": ["vitality_bastion_1", "vitality_bastion_3"]
+			"dir": "vitality",
+			"mix": "bastion",
+			"ring": 5,
+			"x": 0.08147,
+			"y": 0.64487,
+			"icon": "lifesteal",
+			"mods": [{"type": "stat", "stat": "lifesteal_add", "value": 0.01}, {"type": "stat", "stat": "threat_pct", "value": 0.1}],
+			"links": ["r5_23", "r5_25", "r4_19"]
 		},
-		"vitality_bastion_3": {
-			"kind": "notable",
-			"dir": "vitality_bastion",
-			"ring": 1,
-			"x": 0,
-			"y": 0.41,
-			"mods": [{"type": "stat", "stat": "lifesteal_add", "value": 0.01}, {"type": "stat", "stat": "block_add", "value": 0.02}],
-			"links": ["vitality_bastion_2", "vitality_bastion_4", "vitality_3", "bastion_3"]
-		},
-		"vitality_bastion_4": {
-			"kind": "minor",
-			"dir": "vitality_bastion",
-			"ring": 1,
-			"x": 0,
-			"y": 0.53,
-			"mods": [{"type": "stat", "stat": "healing_received_pct", "value": 0.018}, {"type": "stat", "stat": "armor_add", "value": 9}],
-			"links": ["vitality_bastion_3", "vitality_bastion_5"]
-		},
-		"vitality_bastion_5": {
-			"kind": "minor",
-			"dir": "vitality_bastion",
-			"ring": 2,
-			"x": 0,
-			"y": 0.77,
-			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 0.9}, {"type": "stat", "stat": "armor_pct", "value": 0.036}],
-			"links": ["vitality_bastion_4", "vitality_bastion_6", "vitality_5", "bastion_5"]
-		},
-		"vitality_bastion_6": {
-			"kind": "notable",
-			"dir": "vitality_bastion",
-			"ring": 2,
-			"x": 0,
-			"y": 0.89,
-			"mods": [{"type": "stat", "stat": "lifesteal_add", "value": 0.015}, {"type": "stat", "stat": "block_add", "value": 0.03}],
-			"links": ["vitality_bastion_5"]
-		},
-		"bastion_1": {
+		"r5_25": {
 			"kind": "minor",
 			"dir": "bastion",
-			"ring": 1,
-			"x": -0.09992,
-			"y": 0.13753,
-			"mods": [{"type": "stat", "stat": "armor_pct", "value": 0.04}],
-			"links": ["start", "bastion_2", "vitality_bastion_1", "bastion_arcane_1"]
+			"mix": "vitality",
+			"ring": 5,
+			"x": 0,
+			"y": 0.65,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_pct", "value": 0.04}, {"type": "stat", "stat": "healing_done_pct", "value": 0.03}],
+			"links": ["r5_24", "r5_26", "r6_30"]
 		},
-		"bastion_2": {
+		"r5_26": {
 			"kind": "minor",
 			"dir": "bastion",
-			"ring": 1,
-			"x": -0.17046,
-			"y": 0.23461,
-			"mods": [{"type": "stat", "stat": "max_hp_pct", "value": 0.03}],
-			"links": ["bastion_1", "bastion_3"]
+			"mix": "vitality",
+			"ring": 5,
+			"x": -0.08147,
+			"y": 0.64487,
+			"icon": "max_hp",
+			"mods": [{"type": "stat", "stat": "max_hp_pct", "value": 0.03}, {"type": "stat", "stat": "healing_received_pct", "value": 0.03}],
+			"links": ["r5_25", "r5_27", "r4_21"]
 		},
-		"bastion_3": {
+		"r5_27": {
 			"kind": "notable",
 			"dir": "bastion",
-			"ring": 1,
-			"x": -0.24099,
-			"y": 0.3317,
-			"mods": [{"type": "stat", "stat": "block_add", "value": 0.02}, {"type": "stat", "stat": "damage_taken_pct", "value": -0.02}],
-			"links": ["bastion_2", "bastion_4", "vitality_bastion_3", "bastion_arcane_3"]
+			"mix": "vitality",
+			"ring": 5,
+			"x": -0.16165,
+			"y": 0.62958,
+			"icon": "block",
+			"mods": [
+				{"type": "stat", "stat": "block_add", "value": 0.03333},
+				{"type": "stat", "stat": "armor_add", "value": 25},
+				{"type": "stat", "stat": "hp_regen_add", "value": 0.83333}
+			],
+			"links": ["r5_26", "r5_28", "r6_32"]
 		},
-		"bastion_4": {
+		"r5_28": {
 			"kind": "minor",
 			"dir": "bastion",
-			"ring": 1,
-			"x": -0.31153,
-			"y": 0.42878,
-			"mods": [{"type": "stat", "stat": "armor_add", "value": 15}],
-			"links": ["bastion_3", "bastion_key"]
+			"mix": "vitality",
+			"ring": 5,
+			"x": -0.23928,
+			"y": 0.60435,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_add", "value": 15}, {"type": "stat", "stat": "lifesteal_add", "value": 0.01}],
+			"links": ["r5_27", "r5_29", "r4_22", "r6_34"]
 		},
-		"bastion_key": {
-			"kind": "keystone",
+		"r5_29": {
+			"kind": "minor",
 			"dir": "bastion",
-			"ring": 1,
+			"mix": "",
+			"ring": 5,
+			"x": -0.31314,
+			"y": 0.5696,
+			"icon": "damage_taken",
+			"mods": [{"type": "stat", "stat": "damage_taken_pct", "value": -0.03333}],
+			"links": ["r5_28", "r5_30"]
+		},
+		"r5_30": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "",
+			"ring": 5,
 			"x": -0.38206,
 			"y": 0.52586,
-			"mods": [{"type": "stat", "stat": "max_hp_pct", "value": 0.08}, {"type": "stat", "stat": "damage_taken_pct", "value": -0.03}],
-			"links": ["bastion_4", "bastion_5"]
+			"icon": "threat",
+			"mods": [{"type": "stat", "stat": "threat_pct", "value": 0.16667}],
+			"links": ["r5_29", "r5_31", "r4_24", "r6_36"]
 		},
-		"bastion_5": {
+		"r5_31": {
 			"kind": "minor",
 			"dir": "bastion",
-			"ring": 2,
-			"x": -0.45259,
-			"y": 0.62294,
-			"mods": [{"type": "stat", "stat": "armor_pct", "value": 0.06}],
-			"links": ["bastion_key", "bastion_6", "vitality_bastion_5", "bastion_arcane_5"]
+			"mix": "",
+			"ring": 5,
+			"x": -0.44496,
+			"y": 0.47383,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_pct", "value": 0.06667}],
+			"links": ["r5_30", "r5_32"]
 		},
-		"bastion_6": {
-			"kind": "keystone",
+		"r5_32": {
+			"kind": "notable",
 			"dir": "bastion",
-			"ring": 2,
-			"x": -0.52313,
-			"y": 0.72003,
-			"mods": [{"type": "stat", "stat": "max_hp_pct", "value": 0.12}, {"type": "stat", "stat": "damage_taken_pct", "value": -0.045}],
-			"links": ["bastion_5"]
+			"mix": "arcane",
+			"ring": 5,
+			"x": -0.50083,
+			"y": 0.41433,
+			"icon": "max_hp",
+			"mods": [
+				{"type": "stat", "stat": "max_hp_pct", "value": 0.05},
+				{"type": "stat", "stat": "block_add", "value": 0.03333},
+				{"type": "stat", "stat": "max_resource_pct", "value": 0.03333}
+			],
+			"links": ["r5_31", "r5_33", "r4_26", "r6_38"]
 		},
-		"bastion_arcane_1": {
+		"r5_33": {
 			"kind": "minor",
-			"dir": "bastion_arcane",
-			"ring": 1,
-			"x": -0.16168,
-			"y": 0.05253,
-			"mods": [{"type": "stat", "stat": "armor_pct", "value": 0.024}, {"type": "stat", "stat": "spell_power_pct", "value": 0.018}],
-			"links": ["start", "bastion_arcane_2", "bastion_1", "arcane_1"]
+			"dir": "bastion",
+			"mix": "arcane",
+			"ring": 5,
+			"x": -0.54881,
+			"y": 0.34829,
+			"icon": "block",
+			"mods": [{"type": "stat", "stat": "block_add", "value": 0.02}, {"type": "stat", "stat": "resource_regen_pct", "value": 0.05}],
+			"links": ["r5_32", "r5_34", "r6_40"]
 		},
-		"bastion_arcane_2": {
+		"r5_34": {
 			"kind": "minor",
-			"dir": "bastion_arcane",
-			"ring": 1,
-			"x": -0.27581,
-			"y": 0.08961,
-			"mods": [{"type": "stat", "stat": "max_hp_pct", "value": 0.018}, {"type": "stat", "stat": "max_resource_pct", "value": 0.024}],
-			"links": ["bastion_arcane_1", "bastion_arcane_3"]
+			"dir": "bastion",
+			"mix": "arcane",
+			"ring": 5,
+			"x": -0.58814,
+			"y": 0.27676,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_add", "value": 15}, {"type": "stat", "stat": "spell_power_pct", "value": 0.03}],
+			"links": ["r5_33", "r5_35", "r4_27"]
 		},
-		"bastion_arcane_3": {
-			"kind": "notable",
-			"dir": "bastion_arcane",
-			"ring": 1,
-			"x": -0.38993,
-			"y": 0.1267,
-			"mods": [{"type": "stat", "stat": "block_add", "value": 0.02}, {"type": "stat", "stat": "crit_damage_add", "value": 0.05}],
-			"links": ["bastion_arcane_2", "bastion_arcane_4", "bastion_3", "arcane_3"]
-		},
-		"bastion_arcane_4": {
-			"kind": "minor",
-			"dir": "bastion_arcane",
-			"ring": 1,
-			"x": -0.50406,
-			"y": 0.16378,
-			"mods": [{"type": "stat", "stat": "armor_add", "value": 9}, {"type": "stat", "stat": "resource_regen_pct", "value": 0.03}],
-			"links": ["bastion_arcane_3", "bastion_arcane_5"]
-		},
-		"bastion_arcane_5": {
-			"kind": "minor",
-			"dir": "bastion_arcane",
-			"ring": 2,
-			"x": -0.73231,
-			"y": 0.23794,
-			"mods": [{"type": "stat", "stat": "armor_pct", "value": 0.036}, {"type": "stat", "stat": "spell_power_pct", "value": 0.027}],
-			"links": ["bastion_arcane_4", "bastion_arcane_6", "bastion_5", "arcane_5"]
-		},
-		"bastion_arcane_6": {
-			"kind": "notable",
-			"dir": "bastion_arcane",
-			"ring": 2,
-			"x": -0.84644,
-			"y": 0.27503,
-			"mods": [{"type": "stat", "stat": "block_add", "value": 0.03}, {"type": "stat", "stat": "crit_damage_add", "value": 0.075}],
-			"links": ["bastion_arcane_5"]
-		},
-		"arcane_1": {
+		"r5_35": {
 			"kind": "minor",
 			"dir": "arcane",
-			"ring": 1,
-			"x": -0.16168,
-			"y": -0.05253,
-			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.03}],
-			"links": ["start", "arcane_2", "bastion_arcane_1", "arcane_might_1"]
+			"mix": "bastion",
+			"ring": 5,
+			"x": -0.61819,
+			"y": 0.20086,
+			"icon": "max_resource",
+			"mods": [{"type": "stat", "stat": "max_resource_pct", "value": 0.04}, {"type": "stat", "stat": "damage_taken_pct", "value": -0.02}],
+			"links": ["r5_34", "r5_36", "r6_42"]
 		},
-		"arcane_2": {
+		"r5_36": {
 			"kind": "minor",
 			"dir": "arcane",
-			"ring": 1,
-			"x": -0.27581,
-			"y": -0.08961,
-			"mods": [{"type": "stat", "stat": "max_resource_pct", "value": 0.04}],
-			"links": ["arcane_1", "arcane_3"]
+			"mix": "bastion",
+			"ring": 5,
+			"x": -0.63849,
+			"y": 0.1218,
+			"icon": "resource_regen",
+			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.05}, {"type": "stat", "stat": "threat_pct", "value": 0.1}],
+			"links": ["r5_35", "r5_37", "r4_29"]
 		},
-		"arcane_3": {
+		"r5_37": {
 			"kind": "notable",
 			"dir": "arcane",
-			"ring": 1,
-			"x": -0.38993,
-			"y": -0.1267,
-			"mods": [{"type": "stat", "stat": "crit_damage_add", "value": 0.05}, {"type": "stat", "stat": "spell_power_pct", "value": 0.04}],
-			"links": ["arcane_2", "arcane_4", "bastion_arcane_3", "arcane_might_3"]
+			"mix": "bastion",
+			"ring": 5,
+			"x": -0.64872,
+			"y": 0.04081,
+			"icon": "spell_power",
+			"mods": [
+				{"type": "stat", "stat": "spell_power_pct", "value": 0.05},
+				{"type": "stat", "stat": "max_resource_pct", "value": 0.06667},
+				{"type": "stat", "stat": "armor_pct", "value": 0.03333}
+			],
+			"links": ["r5_36", "r5_38", "r6_44"]
 		},
-		"arcane_4": {
+		"r5_38": {
 			"kind": "minor",
 			"dir": "arcane",
-			"ring": 1,
-			"x": -0.50406,
-			"y": -0.16378,
-			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.05}],
-			"links": ["arcane_3", "arcane_key"]
+			"mix": "",
+			"ring": 5,
+			"x": -0.64872,
+			"y": -0.04081,
+			"icon": "max_resource",
+			"mods": [{"type": "stat", "stat": "max_resource_pct", "value": 0.06667}],
+			"links": ["r5_37", "r5_39", "r4_30", "r6_46"]
 		},
-		"arcane_key": {
-			"kind": "keystone",
+		"r5_39": {
+			"kind": "minor",
 			"dir": "arcane",
-			"ring": 1,
+			"mix": "",
+			"ring": 5,
+			"x": -0.63849,
+			"y": -0.1218,
+			"icon": "resource_regen",
+			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.08333}],
+			"links": ["r5_38", "r5_40"]
+		},
+		"r5_40": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "",
+			"ring": 5,
 			"x": -0.61819,
 			"y": -0.20086,
-			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.08}],
-			"links": ["arcane_4", "arcane_5"]
+			"icon": "spell_power",
+			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.05}],
+			"links": ["r5_39", "r5_41", "r4_32", "r6_48"]
 		},
-		"arcane_5": {
+		"r5_41": {
 			"kind": "minor",
 			"dir": "arcane",
-			"ring": 2,
-			"x": -0.73231,
-			"y": -0.23794,
-			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.045}],
-			"links": ["arcane_key", "arcane_6", "bastion_arcane_5", "arcane_might_5"]
+			"mix": "",
+			"ring": 5,
+			"x": -0.58814,
+			"y": -0.27676,
+			"icon": "max_resource",
+			"mods": [{"type": "stat", "stat": "max_resource_pct", "value": 0.06667}],
+			"links": ["r5_40", "r5_42"]
 		},
-		"arcane_6": {
+		"r5_42": {
+			"kind": "notable",
+			"dir": "arcane",
+			"mix": "",
+			"ring": 5,
+			"x": -0.54881,
+			"y": -0.34829,
+			"icon": "resource_regen",
+			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.08333}, {"type": "stat", "stat": "spell_power_pct", "value": 0.05}],
+			"links": ["r5_41", "r5_43", "r4_34", "r6_50"]
+		},
+		"r5_43": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "might",
+			"ring": 5,
+			"x": -0.50083,
+			"y": -0.41433,
+			"icon": "spell_power",
+			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.03}, {"type": "stat", "stat": "attack_power_pct", "value": 0.03}],
+			"links": ["r5_42", "r5_44", "r6_52"]
+		},
+		"r5_44": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "might",
+			"ring": 5,
+			"x": -0.44496,
+			"y": -0.47383,
+			"icon": "max_resource",
+			"mods": [{"type": "stat", "stat": "max_resource_pct", "value": 0.04}, {"type": "stat", "stat": "crit_add", "value": 0.01}],
+			"links": ["r5_43", "r5_45", "r4_35"]
+		},
+		"r5_45": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "arcane",
+			"ring": 5,
+			"x": -0.38206,
+			"y": -0.52586,
+			"icon": "crit_damage",
+			"mods": [{"type": "stat", "stat": "crit_damage_add", "value": 0.05}, {"type": "stat", "stat": "resource_regen_pct", "value": 0.05}],
+			"links": ["r5_44", "r5_46", "r6_54"]
+		},
+		"r5_46": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "arcane",
+			"ring": 5,
+			"x": -0.31314,
+			"y": -0.5696,
+			"icon": "damage_done",
+			"mods": [{"type": "stat", "stat": "damage_done_pct", "value": 0.02}, {"type": "stat", "stat": "spell_power_pct", "value": 0.03}],
+			"links": ["r5_45", "r5_47", "r4_37"]
+		},
+		"r5_47": {
+			"kind": "notable",
+			"dir": "might",
+			"mix": "arcane",
+			"ring": 5,
+			"x": -0.23928,
+			"y": -0.60435,
+			"icon": "attack_power",
+			"mods": [
+				{"type": "stat", "stat": "attack_power_pct", "value": 0.05},
+				{"type": "stat", "stat": "crit_add", "value": 0.01667},
+				{"type": "stat", "stat": "max_resource_pct", "value": 0.03333}
+			],
+			"links": ["r5_46", "r5_48", "r6_56"]
+		},
+		"r5_48": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "",
+			"ring": 5,
+			"x": -0.16165,
+			"y": -0.62958,
+			"icon": "crit",
+			"mods": [{"type": "stat", "stat": "crit_add", "value": 0.01667}],
+			"links": ["r5_47", "r5_49", "r4_38", "r6_58"]
+		},
+		"r5_49": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "",
+			"ring": 5,
+			"x": -0.08147,
+			"y": -0.64487,
+			"icon": "crit_damage",
+			"mods": [{"type": "stat", "stat": "crit_damage_add", "value": 0.08333}],
+			"links": ["r5_48", "r5_0"]
+		},
+		"r6_0": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "",
+			"ring": 6,
+			"x": 0,
+			"y": -0.78,
+			"icon": "crit_damage",
+			"mods": [{"type": "stat", "stat": "crit_damage_add", "value": 0.09167}],
+			"links": ["r6_1", "r5_0", "r6_59", "r7_0"]
+		},
+		"r6_1": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "",
+			"ring": 6,
+			"x": 0.08153,
+			"y": -0.77573,
+			"icon": "damage_done",
+			"mods": [{"type": "stat", "stat": "damage_done_pct", "value": 0.03667}],
+			"links": ["r6_0", "r6_2"]
+		},
+		"r6_2": {
+			"kind": "notable",
+			"dir": "might",
+			"mix": "",
+			"ring": 6,
+			"x": 0.16217,
+			"y": -0.76296,
+			"icon": "attack_power",
+			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.055}, {"type": "stat", "stat": "crit_add", "value": 0.01833}],
+			"links": ["r6_1", "r6_3", "r5_2", "r7_2"]
+		},
+		"r6_3": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "celerity",
+			"ring": 6,
+			"x": 0.24103,
+			"y": -0.74182,
+			"icon": "crit",
+			"mods": [{"type": "stat", "stat": "crit_add", "value": 0.011}, {"type": "stat", "stat": "move_speed_pct", "value": 0.033}],
+			"links": ["r6_2", "r6_4", "r7_4"]
+		},
+		"r6_4": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "celerity",
+			"ring": 6,
+			"x": 0.31725,
+			"y": -0.71257,
+			"icon": "crit_damage",
+			"mods": [{"type": "stat", "stat": "crit_damage_add", "value": 0.055}, {"type": "stat", "stat": "dodge_add", "value": 0.011}],
+			"links": ["r6_3", "r6_5", "r5_3"]
+		},
+		"r6_5": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "celerity",
+			"ring": 6,
+			"x": 0.39,
+			"y": -0.6755,
+			"icon": "damage_done",
+			"mods": [
+				{"type": "stat", "stat": "damage_done_pct", "value": 0.022},
+				{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.022}
+			],
+			"links": ["r6_4", "r6_6", "r7_6"]
+		},
+		"r6_6": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 6,
+			"x": 0.45847,
+			"y": -0.63103,
+			"icon": "move_speed",
+			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.033}, {"type": "stat", "stat": "attack_power_pct", "value": 0.033}],
+			"links": ["r6_5", "r6_7", "r5_5"]
+		},
+		"r6_7": {
+			"kind": "notable",
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 6,
+			"x": 0.52192,
+			"y": -0.57965,
+			"icon": "dodge",
+			"mods": [
+				{"type": "stat", "stat": "dodge_add", "value": 0.01833},
+				{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.03667},
+				{"type": "stat", "stat": "crit_add", "value": 0.00917}
+			],
+			"links": ["r6_6", "r6_8", "r7_8"]
+		},
+		"r6_8": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 6,
+			"x": 0.57965,
+			"y": -0.52192,
+			"icon": "cooldown",
+			"mods": [
+				{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.022},
+				{"type": "stat", "stat": "crit_damage_add", "value": 0.055}
+			],
+			"links": ["r6_7", "r6_9", "r5_7"]
+		},
+		"r6_9": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 6,
+			"x": 0.63103,
+			"y": -0.45847,
+			"icon": "move_speed",
+			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.033}, {"type": "stat", "stat": "damage_done_pct", "value": 0.022}],
+			"links": ["r6_8", "r6_10", "r7_10"]
+		},
+		"r6_10": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "",
+			"ring": 6,
+			"x": 0.6755,
+			"y": -0.39,
+			"icon": "dodge",
+			"mods": [{"type": "stat", "stat": "dodge_add", "value": 0.01833}],
+			"links": ["r6_9", "r6_11", "r5_8", "r7_12"]
+		},
+		"r6_11": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "",
+			"ring": 6,
+			"x": 0.71257,
+			"y": -0.31725,
+			"icon": "cooldown",
+			"mods": [{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.03667}],
+			"links": ["r6_10", "r6_12"]
+		},
+		"r6_12": {
+			"kind": "notable",
+			"dir": "celerity",
+			"mix": "",
+			"ring": 6,
+			"x": 0.74182,
+			"y": -0.24103,
+			"icon": "move_speed",
+			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.055}, {"type": "stat", "stat": "dodge_add", "value": 0.01833}],
+			"links": ["r6_11", "r6_13", "r5_10", "r7_14"]
+		},
+		"r6_13": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "",
+			"ring": 6,
+			"x": 0.76296,
+			"y": -0.16217,
+			"icon": "dodge",
+			"mods": [{"type": "stat", "stat": "dodge_add", "value": 0.01833}],
+			"links": ["r6_12", "r6_14"]
+		},
+		"r6_14": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "",
+			"ring": 6,
+			"x": 0.77573,
+			"y": -0.08153,
+			"icon": "cooldown",
+			"mods": [{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.03667}],
+			"links": ["r6_13", "r6_15", "r5_12", "r7_16"]
+		},
+		"r6_15": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "vitality",
+			"ring": 6,
+			"x": 0.78,
+			"y": 0,
+			"icon": "move_speed",
+			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.033}, {"type": "stat", "stat": "lifesteal_add", "value": 0.011}],
+			"links": ["r6_14", "r6_16", "r7_18"]
+		},
+		"r6_16": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "vitality",
+			"ring": 6,
+			"x": 0.77573,
+			"y": 0.08153,
+			"icon": "dodge",
+			"mods": [{"type": "stat", "stat": "dodge_add", "value": 0.011}, {"type": "stat", "stat": "healing_done_pct", "value": 0.033}],
+			"links": ["r6_15", "r6_17", "r5_13"]
+		},
+		"r6_17": {
+			"kind": "notable",
+			"dir": "celerity",
+			"mix": "vitality",
+			"ring": 6,
+			"x": 0.76296,
+			"y": 0.16217,
+			"icon": "cooldown",
+			"mods": [
+				{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.03667},
+				{"type": "stat", "stat": "move_speed_pct", "value": 0.055},
+				{"type": "stat", "stat": "healing_received_pct", "value": 0.0275}
+			],
+			"links": ["r6_16", "r6_18", "r7_20"]
+		},
+		"r6_18": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 6,
+			"x": 0.74182,
+			"y": 0.24103,
+			"icon": "hp_regen",
+			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 1.1}, {"type": "stat", "stat": "move_speed_pct", "value": 0.033}],
+			"links": ["r6_17", "r6_19", "r5_15"]
+		},
+		"r6_19": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 6,
+			"x": 0.71257,
+			"y": 0.31725,
+			"icon": "lifesteal",
+			"mods": [{"type": "stat", "stat": "lifesteal_add", "value": 0.011}, {"type": "stat", "stat": "dodge_add", "value": 0.011}],
+			"links": ["r6_18", "r6_20", "r7_22"]
+		},
+		"r6_20": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 6,
+			"x": 0.6755,
+			"y": 0.39,
+			"icon": "healing_done",
+			"mods": [
+				{"type": "stat", "stat": "healing_done_pct", "value": 0.033},
+				{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.022}
+			],
+			"links": ["r6_19", "r6_21", "r5_17"]
+		},
+		"r6_21": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 6,
+			"x": 0.63103,
+			"y": 0.45847,
+			"icon": "healing_received",
+			"mods": [{"type": "stat", "stat": "healing_received_pct", "value": 0.033}, {"type": "stat", "stat": "move_speed_pct", "value": 0.033}],
+			"links": ["r6_20", "r6_22", "r7_24"]
+		},
+		"r6_22": {
+			"kind": "notable",
+			"dir": "vitality",
+			"mix": "",
+			"ring": 6,
+			"x": 0.57965,
+			"y": 0.52192,
+			"icon": "hp_regen",
+			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 1.83333}, {"type": "stat", "stat": "lifesteal_add", "value": 0.01833}],
+			"links": ["r6_21", "r6_23", "r5_18", "r7_26"]
+		},
+		"r6_23": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "",
+			"ring": 6,
+			"x": 0.52192,
+			"y": 0.57965,
+			"icon": "lifesteal",
+			"mods": [{"type": "stat", "stat": "lifesteal_add", "value": 0.01833}],
+			"links": ["r6_22", "r6_24"]
+		},
+		"r6_24": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "",
+			"ring": 6,
+			"x": 0.45847,
+			"y": 0.63103,
+			"icon": "healing_done",
+			"mods": [{"type": "stat", "stat": "healing_done_pct", "value": 0.055}],
+			"links": ["r6_23", "r6_25", "r5_20", "r7_28"]
+		},
+		"r6_25": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "",
+			"ring": 6,
+			"x": 0.39,
+			"y": 0.6755,
+			"icon": "healing_received",
+			"mods": [{"type": "stat", "stat": "healing_received_pct", "value": 0.055}],
+			"links": ["r6_24", "r6_26"]
+		},
+		"r6_26": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "",
+			"ring": 6,
+			"x": 0.31725,
+			"y": 0.71257,
+			"icon": "hp_regen",
+			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 1.83333}],
+			"links": ["r6_25", "r6_27", "r5_22", "r7_30"]
+		},
+		"r6_27": {
+			"kind": "notable",
+			"dir": "vitality",
+			"mix": "bastion",
+			"ring": 6,
+			"x": 0.24103,
+			"y": 0.74182,
+			"icon": "lifesteal",
+			"mods": [
+				{"type": "stat", "stat": "lifesteal_add", "value": 0.01833},
+				{"type": "stat", "stat": "healing_done_pct", "value": 0.055},
+				{"type": "stat", "stat": "armor_add", "value": 13.75}
+			],
+			"links": ["r6_26", "r6_28", "r7_32"]
+		},
+		"r6_28": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "bastion",
+			"ring": 6,
+			"x": 0.16217,
+			"y": 0.76296,
+			"icon": "healing_done",
+			"mods": [{"type": "stat", "stat": "healing_done_pct", "value": 0.033}, {"type": "stat", "stat": "damage_taken_pct", "value": -0.022}],
+			"links": ["r6_27", "r6_29", "r5_23"]
+		},
+		"r6_29": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "bastion",
+			"ring": 6,
+			"x": 0.08153,
+			"y": 0.77573,
+			"icon": "healing_received",
+			"mods": [{"type": "stat", "stat": "healing_received_pct", "value": 0.033}, {"type": "stat", "stat": "threat_pct", "value": 0.11}],
+			"links": ["r6_28", "r6_30", "r7_34"]
+		},
+		"r6_30": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "vitality",
+			"ring": 6,
+			"x": 0,
+			"y": 0.78,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_pct", "value": 0.044}, {"type": "stat", "stat": "hp_regen_add", "value": 1.1}],
+			"links": ["r6_29", "r6_31", "r5_25"]
+		},
+		"r6_31": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "vitality",
+			"ring": 6,
+			"x": -0.08153,
+			"y": 0.77573,
+			"icon": "max_hp",
+			"mods": [{"type": "stat", "stat": "max_hp_pct", "value": 0.033}, {"type": "stat", "stat": "lifesteal_add", "value": 0.011}],
+			"links": ["r6_30", "r6_32", "r7_36"]
+		},
+		"r6_32": {
+			"kind": "notable",
+			"dir": "bastion",
+			"mix": "vitality",
+			"ring": 6,
+			"x": -0.16217,
+			"y": 0.76296,
+			"icon": "block",
+			"mods": [
+				{"type": "stat", "stat": "block_add", "value": 0.03667},
+				{"type": "stat", "stat": "armor_add", "value": 27.5},
+				{"type": "stat", "stat": "healing_done_pct", "value": 0.0275}
+			],
+			"links": ["r6_31", "r6_33", "r5_27"]
+		},
+		"r6_33": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "vitality",
+			"ring": 6,
+			"x": -0.24103,
+			"y": 0.74182,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_add", "value": 16.5}, {"type": "stat", "stat": "healing_received_pct", "value": 0.033}],
+			"links": ["r6_32", "r6_34", "r7_38"]
+		},
+		"r6_34": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "",
+			"ring": 6,
+			"x": -0.31725,
+			"y": 0.71257,
+			"icon": "damage_taken",
+			"mods": [{"type": "stat", "stat": "damage_taken_pct", "value": -0.03667}],
+			"links": ["r6_33", "r6_35", "r5_28", "r7_40"]
+		},
+		"r6_35": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "",
+			"ring": 6,
+			"x": -0.39,
+			"y": 0.6755,
+			"icon": "threat",
+			"mods": [{"type": "stat", "stat": "threat_pct", "value": 0.18333}],
+			"links": ["r6_34", "r6_36"]
+		},
+		"r6_36": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "",
+			"ring": 6,
+			"x": -0.45847,
+			"y": 0.63103,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_pct", "value": 0.07333}],
+			"links": ["r6_35", "r6_37", "r5_30", "r7_42"]
+		},
+		"r6_37": {
+			"kind": "notable",
+			"dir": "bastion",
+			"mix": "",
+			"ring": 6,
+			"x": -0.52192,
+			"y": 0.57965,
+			"icon": "max_hp",
+			"mods": [{"type": "stat", "stat": "max_hp_pct", "value": 0.055}, {"type": "stat", "stat": "block_add", "value": 0.03667}],
+			"links": ["r6_36", "r6_38"]
+		},
+		"r6_38": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "",
+			"ring": 6,
+			"x": -0.57965,
+			"y": 0.52192,
+			"icon": "block",
+			"mods": [{"type": "stat", "stat": "block_add", "value": 0.03667}],
+			"links": ["r6_37", "r6_39", "r5_32", "r7_44"]
+		},
+		"r6_39": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "arcane",
+			"ring": 6,
+			"x": -0.63103,
+			"y": 0.45847,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_add", "value": 16.5}, {"type": "stat", "stat": "spell_power_pct", "value": 0.033}],
+			"links": ["r6_38", "r6_40", "r7_46"]
+		},
+		"r6_40": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "arcane",
+			"ring": 6,
+			"x": -0.6755,
+			"y": 0.39,
+			"icon": "damage_taken",
+			"mods": [{"type": "stat", "stat": "damage_taken_pct", "value": -0.022}, {"type": "stat", "stat": "max_resource_pct", "value": 0.044}],
+			"links": ["r6_39", "r6_41", "r5_33"]
+		},
+		"r6_41": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "arcane",
+			"ring": 6,
+			"x": -0.71257,
+			"y": 0.31725,
+			"icon": "threat",
+			"mods": [{"type": "stat", "stat": "threat_pct", "value": 0.11}, {"type": "stat", "stat": "resource_regen_pct", "value": 0.055}],
+			"links": ["r6_40", "r6_42", "r7_48"]
+		},
+		"r6_42": {
+			"kind": "notable",
+			"dir": "arcane",
+			"mix": "bastion",
+			"ring": 6,
+			"x": -0.74182,
+			"y": 0.24103,
+			"icon": "spell_power",
+			"mods": [
+				{"type": "stat", "stat": "spell_power_pct", "value": 0.055},
+				{"type": "stat", "stat": "max_resource_pct", "value": 0.07333},
+				{"type": "stat", "stat": "armor_pct", "value": 0.03667}
+			],
+			"links": ["r6_41", "r6_43", "r5_35"]
+		},
+		"r6_43": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "bastion",
+			"ring": 6,
+			"x": -0.76296,
+			"y": 0.16217,
+			"icon": "max_resource",
+			"mods": [{"type": "stat", "stat": "max_resource_pct", "value": 0.044}, {"type": "stat", "stat": "max_hp_pct", "value": 0.033}],
+			"links": ["r6_42", "r6_44", "r7_50"]
+		},
+		"r6_44": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "bastion",
+			"ring": 6,
+			"x": -0.77573,
+			"y": 0.08153,
+			"icon": "resource_regen",
+			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.055}, {"type": "stat", "stat": "block_add", "value": 0.022}],
+			"links": ["r6_43", "r6_45", "r5_37"]
+		},
+		"r6_45": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "bastion",
+			"ring": 6,
+			"x": -0.78,
+			"y": 0,
+			"icon": "spell_power",
+			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.033}, {"type": "stat", "stat": "armor_add", "value": 16.5}],
+			"links": ["r6_44", "r6_46", "r7_52"]
+		},
+		"r6_46": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "",
+			"ring": 6,
+			"x": -0.77573,
+			"y": -0.08153,
+			"icon": "max_resource",
+			"mods": [{"type": "stat", "stat": "max_resource_pct", "value": 0.07333}],
+			"links": ["r6_45", "r6_47", "r5_38", "r7_54"]
+		},
+		"r6_47": {
+			"kind": "notable",
+			"dir": "arcane",
+			"mix": "",
+			"ring": 6,
+			"x": -0.76296,
+			"y": -0.16217,
+			"icon": "resource_regen",
+			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.09167}, {"type": "stat", "stat": "spell_power_pct", "value": 0.055}],
+			"links": ["r6_46", "r6_48"]
+		},
+		"r6_48": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "",
+			"ring": 6,
+			"x": -0.74182,
+			"y": -0.24103,
+			"icon": "spell_power",
+			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.055}],
+			"links": ["r6_47", "r6_49", "r5_40", "r7_56"]
+		},
+		"r6_49": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "",
+			"ring": 6,
+			"x": -0.71257,
+			"y": -0.31725,
+			"icon": "max_resource",
+			"mods": [{"type": "stat", "stat": "max_resource_pct", "value": 0.07333}],
+			"links": ["r6_48", "r6_50"]
+		},
+		"r6_50": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "",
+			"ring": 6,
+			"x": -0.6755,
+			"y": -0.39,
+			"icon": "resource_regen",
+			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.09167}],
+			"links": ["r6_49", "r6_51", "r5_42", "r7_58"]
+		},
+		"r6_51": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "might",
+			"ring": 6,
+			"x": -0.63103,
+			"y": -0.45847,
+			"icon": "spell_power",
+			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.033}, {"type": "stat", "stat": "crit_add", "value": 0.011}],
+			"links": ["r6_50", "r6_52", "r7_60"]
+		},
+		"r6_52": {
+			"kind": "notable",
+			"dir": "arcane",
+			"mix": "might",
+			"ring": 6,
+			"x": -0.57965,
+			"y": -0.52192,
+			"icon": "max_resource",
+			"mods": [
+				{"type": "stat", "stat": "max_resource_pct", "value": 0.07333},
+				{"type": "stat", "stat": "resource_regen_pct", "value": 0.09167},
+				{"type": "stat", "stat": "crit_damage_add", "value": 0.04583}
+			],
+			"links": ["r6_51", "r6_53", "r5_43"]
+		},
+		"r6_53": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "might",
+			"ring": 6,
+			"x": -0.52192,
+			"y": -0.57965,
+			"icon": "resource_regen",
+			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.055}, {"type": "stat", "stat": "damage_done_pct", "value": 0.022}],
+			"links": ["r6_52", "r6_54", "r7_62"]
+		},
+		"r6_54": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "arcane",
+			"ring": 6,
+			"x": -0.45847,
+			"y": -0.63103,
+			"icon": "attack_power",
+			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.033}, {"type": "stat", "stat": "spell_power_pct", "value": 0.033}],
+			"links": ["r6_53", "r6_55", "r5_45"]
+		},
+		"r6_55": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "arcane",
+			"ring": 6,
+			"x": -0.39,
+			"y": -0.6755,
+			"icon": "crit",
+			"mods": [{"type": "stat", "stat": "crit_add", "value": 0.011}, {"type": "stat", "stat": "max_resource_pct", "value": 0.044}],
+			"links": ["r6_54", "r6_56", "r7_64"]
+		},
+		"r6_56": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "arcane",
+			"ring": 6,
+			"x": -0.31725,
+			"y": -0.71257,
+			"icon": "crit_damage",
+			"mods": [{"type": "stat", "stat": "crit_damage_add", "value": 0.055}, {"type": "stat", "stat": "resource_regen_pct", "value": 0.055}],
+			"links": ["r6_55", "r6_57", "r5_47"]
+		},
+		"r6_57": {
+			"kind": "notable",
+			"dir": "might",
+			"mix": "arcane",
+			"ring": 6,
+			"x": -0.24103,
+			"y": -0.74182,
+			"icon": "damage_done",
+			"mods": [
+				{"type": "stat", "stat": "damage_done_pct", "value": 0.03667},
+				{"type": "stat", "stat": "attack_power_pct", "value": 0.055},
+				{"type": "stat", "stat": "spell_power_pct", "value": 0.0275}
+			],
+			"links": ["r6_56", "r6_58", "r7_66"]
+		},
+		"r6_58": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "",
+			"ring": 6,
+			"x": -0.16217,
+			"y": -0.76296,
+			"icon": "attack_power",
+			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.055}],
+			"links": ["r6_57", "r6_59", "r5_48", "r7_68"]
+		},
+		"r6_59": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "",
+			"ring": 6,
+			"x": -0.08153,
+			"y": -0.77573,
+			"icon": "crit",
+			"mods": [{"type": "stat", "stat": "crit_add", "value": 0.01833}],
+			"links": ["r6_58", "r6_0"]
+		},
+		"r7_0": {
+			"kind": "keystone",
+			"dir": "might",
+			"mix": "",
+			"ring": 7,
+			"x": 0,
+			"y": -0.91,
+			"icon": "attack_power",
+			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.15}, {"type": "stat", "stat": "crit_add", "value": 0.05}],
+			"links": ["r7_1", "r6_0", "r7_69"]
+		},
+		"r7_1": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "",
+			"ring": 7,
+			"x": 0.08157,
+			"y": -0.90634,
+			"icon": "attack_power",
+			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.06}],
+			"links": ["r7_0", "r7_2"]
+		},
+		"r7_2": {
+			"kind": "notable",
+			"dir": "might",
+			"mix": "",
+			"ring": 7,
+			"x": 0.16249,
+			"y": -0.89538,
+			"icon": "crit",
+			"mods": [{"type": "stat", "stat": "crit_add", "value": 0.02}, {"type": "stat", "stat": "crit_damage_add", "value": 0.1}],
+			"links": ["r7_1", "r7_3", "r6_2"]
+		},
+		"r7_3": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "celerity",
+			"ring": 7,
+			"x": 0.24209,
+			"y": -0.87721,
+			"icon": "crit_damage",
+			"mods": [{"type": "stat", "stat": "crit_damage_add", "value": 0.06}, {"type": "stat", "stat": "dodge_add", "value": 0.012}],
+			"links": ["r7_2", "r7_4"]
+		},
+		"r7_4": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "celerity",
+			"ring": 7,
+			"x": 0.31975,
+			"y": -0.85197,
+			"icon": "damage_done",
+			"mods": [
+				{"type": "stat", "stat": "damage_done_pct", "value": 0.024},
+				{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.024}
+			],
+			"links": ["r7_3", "r7_5", "r6_3"]
+		},
+		"r7_5": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "celerity",
+			"ring": 7,
+			"x": 0.39483,
+			"y": -0.81988,
+			"icon": "attack_power",
+			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.036}, {"type": "stat", "stat": "move_speed_pct", "value": 0.036}],
+			"links": ["r7_4", "r7_6"]
+		},
+		"r7_6": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "celerity",
+			"ring": 7,
+			"x": 0.46674,
+			"y": -0.78119,
+			"icon": "crit",
+			"mods": [{"type": "stat", "stat": "crit_add", "value": 0.012}, {"type": "stat", "stat": "dodge_add", "value": 0.012}],
+			"links": ["r7_5", "r7_7", "r6_5"]
+		},
+		"r7_7": {
+			"kind": "notable",
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 7,
+			"x": 0.53488,
+			"y": -0.73621,
+			"icon": "cooldown",
+			"mods": [
+				{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.04},
+				{"type": "stat", "stat": "move_speed_pct", "value": 0.06},
+				{"type": "stat", "stat": "crit_damage_add", "value": 0.05}
+			],
+			"links": ["r7_6", "r7_8"]
+		},
+		"r7_8": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 7,
+			"x": 0.59872,
+			"y": -0.6853,
+			"icon": "move_speed",
+			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.036}, {"type": "stat", "stat": "damage_done_pct", "value": 0.024}],
+			"links": ["r7_7", "r7_9", "r6_7"]
+		},
+		"r7_9": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 7,
+			"x": 0.65774,
+			"y": -0.62887,
+			"icon": "dodge",
+			"mods": [{"type": "stat", "stat": "dodge_add", "value": 0.012}, {"type": "stat", "stat": "attack_power_pct", "value": 0.036}],
+			"links": ["r7_8", "r7_10"]
+		},
+		"r7_10": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 7,
+			"x": 0.71147,
+			"y": -0.56738,
+			"icon": "cooldown",
+			"mods": [{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.024}, {"type": "stat", "stat": "crit_add", "value": 0.012}],
+			"links": ["r7_9", "r7_11", "r6_9"]
+		},
+		"r7_11": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "might",
+			"ring": 7,
+			"x": 0.75946,
+			"y": -0.50132,
+			"icon": "move_speed",
+			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.036}, {"type": "stat", "stat": "crit_damage_add", "value": 0.06}],
+			"links": ["r7_10", "r7_12"]
+		},
+		"r7_12": {
+			"kind": "notable",
+			"dir": "celerity",
+			"mix": "",
+			"ring": 7,
+			"x": 0.80134,
+			"y": -0.43122,
+			"icon": "dodge",
+			"mods": [{"type": "stat", "stat": "dodge_add", "value": 0.02}, {"type": "stat", "stat": "cooldown_reduction_add", "value": 0.04}],
+			"links": ["r7_11", "r7_13", "r6_10"]
+		},
+		"r7_13": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "",
+			"ring": 7,
+			"x": 0.83677,
+			"y": -0.35765,
+			"icon": "cooldown",
+			"mods": [{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.04}],
+			"links": ["r7_12", "r7_14"]
+		},
+		"r7_14": {
+			"kind": "keystone",
+			"dir": "celerity",
+			"mix": "",
+			"ring": 7,
+			"x": 0.86546,
+			"y": -0.28121,
+			"icon": "move_speed",
+			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.15}, {"type": "stat", "stat": "dodge_add", "value": 0.05}],
+			"links": ["r7_13", "r7_15", "r6_12"]
+		},
+		"r7_15": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "",
+			"ring": 7,
+			"x": 0.88718,
+			"y": -0.20249,
+			"icon": "dodge",
+			"mods": [{"type": "stat", "stat": "dodge_add", "value": 0.02}],
+			"links": ["r7_14", "r7_16"]
+		},
+		"r7_16": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "",
+			"ring": 7,
+			"x": 0.90176,
+			"y": -0.12215,
+			"icon": "cooldown",
+			"mods": [{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.04}],
+			"links": ["r7_15", "r7_17", "r6_14"]
+		},
+		"r7_17": {
+			"kind": "notable",
+			"dir": "celerity",
+			"mix": "vitality",
+			"ring": 7,
+			"x": 0.90908,
+			"y": -0.04083,
+			"icon": "move_speed",
+			"mods": [
+				{"type": "stat", "stat": "move_speed_pct", "value": 0.06},
+				{"type": "stat", "stat": "dodge_add", "value": 0.02},
+				{"type": "stat", "stat": "hp_regen_add", "value": 1}
+			],
+			"links": ["r7_16", "r7_18"]
+		},
+		"r7_18": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "vitality",
+			"ring": 7,
+			"x": 0.90908,
+			"y": 0.04083,
+			"icon": "dodge",
+			"mods": [{"type": "stat", "stat": "dodge_add", "value": 0.012}, {"type": "stat", "stat": "lifesteal_add", "value": 0.012}],
+			"links": ["r7_17", "r7_19", "r6_15"]
+		},
+		"r7_19": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "vitality",
+			"ring": 7,
+			"x": 0.90176,
+			"y": 0.12215,
+			"icon": "cooldown",
+			"mods": [
+				{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.024},
+				{"type": "stat", "stat": "healing_done_pct", "value": 0.036}
+			],
+			"links": ["r7_18", "r7_20"]
+		},
+		"r7_20": {
+			"kind": "minor",
+			"dir": "celerity",
+			"mix": "vitality",
+			"ring": 7,
+			"x": 0.88718,
+			"y": 0.20249,
+			"icon": "move_speed",
+			"mods": [{"type": "stat", "stat": "move_speed_pct", "value": 0.036}, {"type": "stat", "stat": "healing_received_pct", "value": 0.036}],
+			"links": ["r7_19", "r7_21", "r6_17"]
+		},
+		"r7_21": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 7,
+			"x": 0.86546,
+			"y": 0.28121,
+			"icon": "hp_regen",
+			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 1.2}, {"type": "stat", "stat": "dodge_add", "value": 0.012}],
+			"links": ["r7_20", "r7_22"]
+		},
+		"r7_22": {
+			"kind": "notable",
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 7,
+			"x": 0.83677,
+			"y": 0.35765,
+			"icon": "lifesteal",
+			"mods": [
+				{"type": "stat", "stat": "lifesteal_add", "value": 0.02},
+				{"type": "stat", "stat": "healing_done_pct", "value": 0.06},
+				{"type": "stat", "stat": "cooldown_reduction_add", "value": 0.02}
+			],
+			"links": ["r7_21", "r7_23", "r6_19"]
+		},
+		"r7_23": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 7,
+			"x": 0.80134,
+			"y": 0.43122,
+			"icon": "healing_done",
+			"mods": [{"type": "stat", "stat": "healing_done_pct", "value": 0.036}, {"type": "stat", "stat": "move_speed_pct", "value": 0.036}],
+			"links": ["r7_22", "r7_24"]
+		},
+		"r7_24": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 7,
+			"x": 0.75946,
+			"y": 0.50132,
+			"icon": "healing_received",
+			"mods": [{"type": "stat", "stat": "healing_received_pct", "value": 0.036}, {"type": "stat", "stat": "dodge_add", "value": 0.012}],
+			"links": ["r7_23", "r7_25", "r6_21"]
+		},
+		"r7_25": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "celerity",
+			"ring": 7,
+			"x": 0.71147,
+			"y": 0.56738,
+			"icon": "hp_regen",
+			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 1.2}, {"type": "stat", "stat": "cooldown_reduction_add", "value": 0.024}],
+			"links": ["r7_24", "r7_26"]
+		},
+		"r7_26": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "",
+			"ring": 7,
+			"x": 0.65774,
+			"y": 0.62887,
+			"icon": "lifesteal",
+			"mods": [{"type": "stat", "stat": "lifesteal_add", "value": 0.02}],
+			"links": ["r7_25", "r7_27", "r6_22"]
+		},
+		"r7_27": {
+			"kind": "notable",
+			"dir": "vitality",
+			"mix": "",
+			"ring": 7,
+			"x": 0.59872,
+			"y": 0.6853,
+			"icon": "healing_done",
+			"mods": [{"type": "stat", "stat": "healing_done_pct", "value": 0.06}, {"type": "stat", "stat": "healing_received_pct", "value": 0.06}],
+			"links": ["r7_26", "r7_28"]
+		},
+		"r7_28": {
+			"kind": "keystone",
+			"dir": "vitality",
+			"mix": "",
+			"ring": 7,
+			"x": 0.53488,
+			"y": 0.73621,
+			"icon": "hp_regen",
+			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 5}, {"type": "stat", "stat": "lifesteal_add", "value": 0.05}],
+			"links": ["r7_27", "r7_29", "r6_24"]
+		},
+		"r7_29": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "",
+			"ring": 7,
+			"x": 0.46674,
+			"y": 0.78119,
+			"icon": "hp_regen",
+			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 2}],
+			"links": ["r7_28", "r7_30"]
+		},
+		"r7_30": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "",
+			"ring": 7,
+			"x": 0.39483,
+			"y": 0.81988,
+			"icon": "lifesteal",
+			"mods": [{"type": "stat", "stat": "lifesteal_add", "value": 0.02}],
+			"links": ["r7_29", "r7_31", "r6_26"]
+		},
+		"r7_31": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "bastion",
+			"ring": 7,
+			"x": 0.31975,
+			"y": 0.85197,
+			"icon": "healing_done",
+			"mods": [{"type": "stat", "stat": "healing_done_pct", "value": 0.036}, {"type": "stat", "stat": "block_add", "value": 0.024}],
+			"links": ["r7_30", "r7_32"]
+		},
+		"r7_32": {
+			"kind": "notable",
+			"dir": "vitality",
+			"mix": "bastion",
+			"ring": 7,
+			"x": 0.24209,
+			"y": 0.87721,
+			"icon": "healing_received",
+			"mods": [
+				{"type": "stat", "stat": "healing_received_pct", "value": 0.06},
+				{"type": "stat", "stat": "hp_regen_add", "value": 2},
+				{"type": "stat", "stat": "armor_add", "value": 15}
+			],
+			"links": ["r7_31", "r7_33", "r6_27"]
+		},
+		"r7_33": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "bastion",
+			"ring": 7,
+			"x": 0.16249,
+			"y": 0.89538,
+			"icon": "hp_regen",
+			"mods": [{"type": "stat", "stat": "hp_regen_add", "value": 1.2}, {"type": "stat", "stat": "damage_taken_pct", "value": -0.024}],
+			"links": ["r7_32", "r7_34"]
+		},
+		"r7_34": {
+			"kind": "minor",
+			"dir": "vitality",
+			"mix": "bastion",
+			"ring": 7,
+			"x": 0.08157,
+			"y": 0.90634,
+			"icon": "lifesteal",
+			"mods": [{"type": "stat", "stat": "lifesteal_add", "value": 0.012}, {"type": "stat", "stat": "threat_pct", "value": 0.12}],
+			"links": ["r7_33", "r7_35", "r6_29"]
+		},
+		"r7_35": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "vitality",
+			"ring": 7,
+			"x": 0,
+			"y": 0.91,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_pct", "value": 0.048}, {"type": "stat", "stat": "healing_done_pct", "value": 0.036}],
+			"links": ["r7_34", "r7_36"]
+		},
+		"r7_36": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "vitality",
+			"ring": 7,
+			"x": -0.08157,
+			"y": 0.90634,
+			"icon": "max_hp",
+			"mods": [{"type": "stat", "stat": "max_hp_pct", "value": 0.036}, {"type": "stat", "stat": "healing_received_pct", "value": 0.036}],
+			"links": ["r7_35", "r7_37", "r6_31"]
+		},
+		"r7_37": {
+			"kind": "notable",
+			"dir": "bastion",
+			"mix": "vitality",
+			"ring": 7,
+			"x": -0.16249,
+			"y": 0.89538,
+			"icon": "block",
+			"mods": [
+				{"type": "stat", "stat": "block_add", "value": 0.04},
+				{"type": "stat", "stat": "armor_add", "value": 30},
+				{"type": "stat", "stat": "hp_regen_add", "value": 1}
+			],
+			"links": ["r7_36", "r7_38"]
+		},
+		"r7_38": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "vitality",
+			"ring": 7,
+			"x": -0.24209,
+			"y": 0.87721,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_add", "value": 18}, {"type": "stat", "stat": "lifesteal_add", "value": 0.012}],
+			"links": ["r7_37", "r7_39", "r6_33"]
+		},
+		"r7_39": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "vitality",
+			"ring": 7,
+			"x": -0.31975,
+			"y": 0.85197,
+			"icon": "damage_taken",
+			"mods": [{"type": "stat", "stat": "damage_taken_pct", "value": -0.024}, {"type": "stat", "stat": "healing_done_pct", "value": 0.036}],
+			"links": ["r7_38", "r7_40"]
+		},
+		"r7_40": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "",
+			"ring": 7,
+			"x": -0.39483,
+			"y": 0.81988,
+			"icon": "threat",
+			"mods": [{"type": "stat", "stat": "threat_pct", "value": 0.2}],
+			"links": ["r7_39", "r7_41", "r6_34"]
+		},
+		"r7_41": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "",
+			"ring": 7,
+			"x": -0.46674,
+			"y": 0.78119,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_pct", "value": 0.08}],
+			"links": ["r7_40", "r7_42"]
+		},
+		"r7_42": {
+			"kind": "keystone",
+			"dir": "bastion",
+			"mix": "",
+			"ring": 7,
+			"x": -0.53488,
+			"y": 0.73621,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_pct", "value": 0.2}, {"type": "stat", "stat": "max_hp_pct", "value": 0.15}],
+			"links": ["r7_41", "r7_43", "r6_36"]
+		},
+		"r7_43": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "",
+			"ring": 7,
+			"x": -0.59872,
+			"y": 0.6853,
+			"icon": "block",
+			"mods": [{"type": "stat", "stat": "block_add", "value": 0.04}],
+			"links": ["r7_42", "r7_44"]
+		},
+		"r7_44": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "",
+			"ring": 7,
+			"x": -0.65774,
+			"y": 0.62887,
+			"icon": "armor",
+			"mods": [{"type": "stat", "stat": "armor_add", "value": 30}],
+			"links": ["r7_43", "r7_45", "r6_38"]
+		},
+		"r7_45": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "arcane",
+			"ring": 7,
+			"x": -0.71147,
+			"y": 0.56738,
+			"icon": "damage_taken",
+			"mods": [{"type": "stat", "stat": "damage_taken_pct", "value": -0.024}, {"type": "stat", "stat": "max_resource_pct", "value": 0.048}],
+			"links": ["r7_44", "r7_46"]
+		},
+		"r7_46": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "arcane",
+			"ring": 7,
+			"x": -0.75946,
+			"y": 0.50132,
+			"icon": "threat",
+			"mods": [{"type": "stat", "stat": "threat_pct", "value": 0.12}, {"type": "stat", "stat": "resource_regen_pct", "value": 0.06}],
+			"links": ["r7_45", "r7_47", "r6_39"]
+		},
+		"r7_47": {
+			"kind": "notable",
+			"dir": "bastion",
+			"mix": "arcane",
+			"ring": 7,
+			"x": -0.80134,
+			"y": 0.43122,
+			"icon": "armor",
+			"mods": [
+				{"type": "stat", "stat": "armor_pct", "value": 0.08},
+				{"type": "stat", "stat": "max_hp_pct", "value": 0.06},
+				{"type": "stat", "stat": "spell_power_pct", "value": 0.03}
+			],
+			"links": ["r7_46", "r7_48"]
+		},
+		"r7_48": {
+			"kind": "minor",
+			"dir": "bastion",
+			"mix": "arcane",
+			"ring": 7,
+			"x": -0.83677,
+			"y": 0.35765,
+			"icon": "max_hp",
+			"mods": [{"type": "stat", "stat": "max_hp_pct", "value": 0.036}, {"type": "stat", "stat": "max_resource_pct", "value": 0.048}],
+			"links": ["r7_47", "r7_49", "r6_41"]
+		},
+		"r7_49": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "bastion",
+			"ring": 7,
+			"x": -0.86546,
+			"y": 0.28121,
+			"icon": "resource_regen",
+			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.06}, {"type": "stat", "stat": "block_add", "value": 0.024}],
+			"links": ["r7_48", "r7_50"]
+		},
+		"r7_50": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "bastion",
+			"ring": 7,
+			"x": -0.88718,
+			"y": 0.20249,
+			"icon": "spell_power",
+			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.036}, {"type": "stat", "stat": "armor_add", "value": 18}],
+			"links": ["r7_49", "r7_51", "r6_43"]
+		},
+		"r7_51": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "bastion",
+			"ring": 7,
+			"x": -0.90176,
+			"y": 0.12215,
+			"icon": "max_resource",
+			"mods": [{"type": "stat", "stat": "max_resource_pct", "value": 0.048}, {"type": "stat", "stat": "damage_taken_pct", "value": -0.024}],
+			"links": ["r7_50", "r7_52"]
+		},
+		"r7_52": {
+			"kind": "notable",
+			"dir": "arcane",
+			"mix": "bastion",
+			"ring": 7,
+			"x": -0.90908,
+			"y": 0.04083,
+			"icon": "resource_regen",
+			"mods": [
+				{"type": "stat", "stat": "resource_regen_pct", "value": 0.1},
+				{"type": "stat", "stat": "spell_power_pct", "value": 0.06},
+				{"type": "stat", "stat": "threat_pct", "value": 0.1}
+			],
+			"links": ["r7_51", "r7_53", "r6_45"]
+		},
+		"r7_53": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "bastion",
+			"ring": 7,
+			"x": -0.90908,
+			"y": -0.04083,
+			"icon": "spell_power",
+			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.036}, {"type": "stat", "stat": "armor_pct", "value": 0.048}],
+			"links": ["r7_52", "r7_54"]
+		},
+		"r7_54": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "",
+			"ring": 7,
+			"x": -0.90176,
+			"y": -0.12215,
+			"icon": "max_resource",
+			"mods": [{"type": "stat", "stat": "max_resource_pct", "value": 0.08}],
+			"links": ["r7_53", "r7_55", "r6_46"]
+		},
+		"r7_55": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "",
+			"ring": 7,
+			"x": -0.88718,
+			"y": -0.20249,
+			"icon": "resource_regen",
+			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.1}],
+			"links": ["r7_54", "r7_56"]
+		},
+		"r7_56": {
 			"kind": "keystone",
 			"dir": "arcane",
-			"ring": 2,
-			"x": -0.84644,
-			"y": -0.27503,
-			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.12}],
-			"links": ["arcane_5"]
+			"mix": "",
+			"ring": 7,
+			"x": -0.86546,
+			"y": -0.28121,
+			"icon": "spell_power",
+			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.15}, {"type": "stat", "stat": "max_resource_pct", "value": 0.2}],
+			"links": ["r7_55", "r7_57", "r6_48"]
 		},
-		"arcane_might_1": {
-			"kind": "minor",
-			"dir": "arcane_might",
-			"ring": 1,
-			"x": -0.09992,
-			"y": -0.13753,
-			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.018}, {"type": "stat", "stat": "attack_power_pct", "value": 0.018}],
-			"links": ["start", "arcane_might_2", "arcane_1", "might_1"]
-		},
-		"arcane_might_2": {
-			"kind": "minor",
-			"dir": "arcane_might",
-			"ring": 1,
-			"x": -0.17046,
-			"y": -0.23461,
-			"mods": [{"type": "stat", "stat": "max_resource_pct", "value": 0.024}, {"type": "stat", "stat": "crit_add", "value": 0.006}],
-			"links": ["arcane_might_1", "arcane_might_3"]
-		},
-		"arcane_might_3": {
+		"r7_57": {
 			"kind": "notable",
-			"dir": "arcane_might",
-			"ring": 1,
-			"x": -0.24099,
-			"y": -0.3317,
-			"mods": [{"type": "stat", "stat": "crit_damage_add", "value": 0.05}, {"type": "stat", "stat": "attack_power_pct", "value": 0.04}],
-			"links": ["arcane_might_2", "arcane_might_4", "arcane_3", "might_3"]
+			"dir": "arcane",
+			"mix": "",
+			"ring": 7,
+			"x": -0.83677,
+			"y": -0.35765,
+			"icon": "max_resource",
+			"mods": [{"type": "stat", "stat": "max_resource_pct", "value": 0.08}, {"type": "stat", "stat": "resource_regen_pct", "value": 0.1}],
+			"links": ["r7_56", "r7_58"]
 		},
-		"arcane_might_4": {
+		"r7_58": {
 			"kind": "minor",
-			"dir": "arcane_might",
-			"ring": 1,
-			"x": -0.31153,
-			"y": -0.42878,
-			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.03}, {"type": "stat", "stat": "damage_done_pct", "value": 0.012}],
-			"links": ["arcane_might_3", "arcane_might_5"]
+			"dir": "arcane",
+			"mix": "",
+			"ring": 7,
+			"x": -0.80134,
+			"y": -0.43122,
+			"icon": "resource_regen",
+			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.1}],
+			"links": ["r7_57", "r7_59", "r6_50"]
 		},
-		"arcane_might_5": {
+		"r7_59": {
 			"kind": "minor",
-			"dir": "arcane_might",
-			"ring": 2,
-			"x": -0.45259,
-			"y": -0.62294,
-			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.027}, {"type": "stat", "stat": "attack_power_pct", "value": 0.027}],
-			"links": ["arcane_might_4", "arcane_might_6", "arcane_5", "might_5"]
+			"dir": "arcane",
+			"mix": "might",
+			"ring": 7,
+			"x": -0.75946,
+			"y": -0.50132,
+			"icon": "spell_power",
+			"mods": [{"type": "stat", "stat": "spell_power_pct", "value": 0.036}, {"type": "stat", "stat": "crit_damage_add", "value": 0.06}],
+			"links": ["r7_58", "r7_60"]
 		},
-		"arcane_might_6": {
+		"r7_60": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "might",
+			"ring": 7,
+			"x": -0.71147,
+			"y": -0.56738,
+			"icon": "max_resource",
+			"mods": [{"type": "stat", "stat": "max_resource_pct", "value": 0.048}, {"type": "stat", "stat": "damage_done_pct", "value": 0.024}],
+			"links": ["r7_59", "r7_61", "r6_51"]
+		},
+		"r7_61": {
+			"kind": "minor",
+			"dir": "arcane",
+			"mix": "might",
+			"ring": 7,
+			"x": -0.65774,
+			"y": -0.62887,
+			"icon": "resource_regen",
+			"mods": [{"type": "stat", "stat": "resource_regen_pct", "value": 0.06}, {"type": "stat", "stat": "attack_power_pct", "value": 0.036}],
+			"links": ["r7_60", "r7_62"]
+		},
+		"r7_62": {
 			"kind": "notable",
-			"dir": "arcane_might",
-			"ring": 2,
-			"x": -0.52313,
-			"y": -0.72003,
-			"mods": [{"type": "stat", "stat": "crit_damage_add", "value": 0.075}, {"type": "stat", "stat": "attack_power_pct", "value": 0.06}],
-			"links": ["arcane_might_5"]
+			"dir": "arcane",
+			"mix": "might",
+			"ring": 7,
+			"x": -0.59872,
+			"y": -0.6853,
+			"icon": "spell_power",
+			"mods": [
+				{"type": "stat", "stat": "spell_power_pct", "value": 0.06},
+				{"type": "stat", "stat": "max_resource_pct", "value": 0.08},
+				{"type": "stat", "stat": "crit_add", "value": 0.01}
+			],
+			"links": ["r7_61", "r7_63", "r6_53"]
+		},
+		"r7_63": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "arcane",
+			"ring": 7,
+			"x": -0.53488,
+			"y": -0.73621,
+			"icon": "crit_damage",
+			"mods": [{"type": "stat", "stat": "crit_damage_add", "value": 0.06}, {"type": "stat", "stat": "max_resource_pct", "value": 0.048}],
+			"links": ["r7_62", "r7_64"]
+		},
+		"r7_64": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "arcane",
+			"ring": 7,
+			"x": -0.46674,
+			"y": -0.78119,
+			"icon": "damage_done",
+			"mods": [{"type": "stat", "stat": "damage_done_pct", "value": 0.024}, {"type": "stat", "stat": "resource_regen_pct", "value": 0.06}],
+			"links": ["r7_63", "r7_65", "r6_55"]
+		},
+		"r7_65": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "arcane",
+			"ring": 7,
+			"x": -0.39483,
+			"y": -0.81988,
+			"icon": "attack_power",
+			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.036}, {"type": "stat", "stat": "spell_power_pct", "value": 0.036}],
+			"links": ["r7_64", "r7_66"]
+		},
+		"r7_66": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "arcane",
+			"ring": 7,
+			"x": -0.31975,
+			"y": -0.85197,
+			"icon": "crit",
+			"mods": [{"type": "stat", "stat": "crit_add", "value": 0.012}, {"type": "stat", "stat": "max_resource_pct", "value": 0.048}],
+			"links": ["r7_65", "r7_67", "r6_57"]
+		},
+		"r7_67": {
+			"kind": "notable",
+			"dir": "might",
+			"mix": "arcane",
+			"ring": 7,
+			"x": -0.24209,
+			"y": -0.87721,
+			"icon": "crit_damage",
+			"mods": [
+				{"type": "stat", "stat": "crit_damage_add", "value": 0.1},
+				{"type": "stat", "stat": "damage_done_pct", "value": 0.04},
+				{"type": "stat", "stat": "resource_regen_pct", "value": 0.05}
+			],
+			"links": ["r7_66", "r7_68"]
+		},
+		"r7_68": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "",
+			"ring": 7,
+			"x": -0.16249,
+			"y": -0.89538,
+			"icon": "damage_done",
+			"mods": [{"type": "stat", "stat": "damage_done_pct", "value": 0.04}],
+			"links": ["r7_67", "r7_69", "r6_58"]
+		},
+		"r7_69": {
+			"kind": "minor",
+			"dir": "might",
+			"mix": "",
+			"ring": 7,
+			"x": -0.08157,
+			"y": -0.90634,
+			"icon": "attack_power",
+			"mods": [{"type": "stat", "stat": "attack_power_pct", "value": 0.06}],
+			"links": ["r7_68", "r7_0"]
 		}
-	}
+	},
+	"routes": {}
 }
