@@ -10,7 +10,7 @@
 ### Novedades de la 0.16.0: hombre y mujer
 - El tipo de cuerpo es ahora **Hombre** o **Mujer** (antes Esbelto y Robusto). La mujer tiene **cara propia** (rasgos más finos, pestañas y labios), hombros y brazos más finos y su pecho; bajo una armadura de pecho manda la armadura.
 - Tus personajes guardados pasan solos: los esbeltos son mujeres y los robustos, hombres.
-- **Mira** lleva su aspecto nuevo: pelo platino con trenza, capa negra larga con forro carmesí y la capucha bajada, broche de plata, cuero oscuro y botas altas.
+- **Mira** lleva su aspecto nuevo: pelo platino con trenza, capa negra larga con forro carmesí y la capucha bajada, broche de plata, cuero oscuro y botas altas, sin armas.
 - Los PNJ también son hombres y mujeres.
 - **Todo el grupo tiene que usar la misma versión.**
 

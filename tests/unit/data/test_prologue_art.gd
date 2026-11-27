@@ -67,3 +67,9 @@ func test_mira_wears_her_outfit() -> void:
 	for p: Dictionary in look.pieces:
 		if str(p.id).begins_with("mira_"):
 			assert_true(FileAccess.file_exists(str(p.file)), str(p.file))
+
+
+func test_mira_carries_no_weapon() -> void:
+	var look := NpcAvatar.look_of(NpcDB.load_default().npc("mira").look)
+	var weapons := (look.pieces as Array).filter(func(p: Dictionary) -> bool: return str(p.id).begins_with("weapon_"))
+	assert_eq(weapons, [])

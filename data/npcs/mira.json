@@ -34,8 +34,6 @@
 			"mira_boot_l",
 			"mira_boot_r"
 		],
-		"weapons": [
-			"weapon_sword"
-		]
+		"weapons": []
 	}
 }
