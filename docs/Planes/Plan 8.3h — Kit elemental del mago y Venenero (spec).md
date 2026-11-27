@@ -25,7 +25,7 @@ Lleva al juego [[D-021 Kit elemental del mago y Detonar toxinas del Venenero|D-0
   - **Ignición** ya afecta a todo hechizo de fuego, así que con el kit del Piromante vale para todos (sin cambiar la pasiva).
   - **Frío penetrante** cuenta enemigos **ardiendo** con el Piromante e **inmovilizados** con el Arcano (con el Criomante, congelados o ralentizados, como ahora).
   - La evolución de cada mejora (Bola de fuego, Nova de escarcha, Explosión arcana) no choca con ninguna traducción y sigue igual.
-  - La barra no cambia de huecos: el hueco de «Proyectil arcano» lanza «Saeta de fuego» si eres Piromante. Al reiniciar la mejora con maese Corwin vuelve la base.
+  - La barra no cambia de huecos: el hueco de «Proyectil arcano» lanza «Saeta de fuego» si eres Piromante. Sin mejora vuelve la base (para probar, el anfitrión puede cambiarla con `/mejora <id|ninguna>`).
 
 ## Cómo se hace
 - **Variantes como datos:** una habilidad con `"upgrade": "<mejora>"` y `"replaces": "<id base>"` sustituye a la base para quien tiene esa mejora. Va en `data/abilities/mage.json` (activas y la pasiva Frío penetrante) y vale para cualquier clase.

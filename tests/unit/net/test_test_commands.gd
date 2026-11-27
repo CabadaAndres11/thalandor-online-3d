@@ -183,3 +183,12 @@ func test_guest_refused() -> void:
 	_say(b, "/oro 100")
 	assert_eq(_p(2).inventory.gold, 0)
 	assert_has(_chats(b), "CMD_HOST_ONLY")
+
+
+func test_mejora_swaps_the_upgrade() -> void:
+	var a := _guest("Ana", {"level": 50, "upgrade": "berserker"})
+	var p := _p(1)
+	_say(a, "/mejora protector")
+	assert_eq(p.progress.upgrade, "protector")
+	_say(a, "/mejora ninguna")
+	assert_eq(p.progress.upgrade, "")

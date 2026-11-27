@@ -617,7 +617,7 @@ func _on_set_arena_level(rec: Dictionary, level: int) -> void:
 
 
 ## Test commands (host player only): /xp <n> [name], /nivel <n> [name], /oro <n> [name] and
-## /objeto <base> [level] [rarity] [name]. They are not chat. Anything else starting with
+## /objeto <base> [level] [rarity] [name], /mejora <id|ninguna>. They are not chat. Anything else starting with
 ## "/" is refused with a system message to the author.
 func _on_command(rec: Dictionary, text: String) -> void:
 	var w := world_of(rec.id)
@@ -636,6 +636,14 @@ func _on_command(rec: Dictionary, text: String) -> void:
 		return
 	if parts.size() >= 2 and parts[0].to_lower() in ["mision", "misión", "marca"]:
 		_quest_command(rec, parts)
+		return
+	if parts.size() >= 2 and parts[0].to_lower() == "mejora":
+		# /mejora <id|ninguna>: swaps the level 50 upgrade without Brann (tests only; it is final in play).
+		var p := state_of(rec.id)
+		if p != null:
+			ProgressRequests.clear_upgrade(w, p)
+			if parts[1].to_lower() == "ninguna" or not ProgressRequests.choose_upgrade(w, p, parts[1].to_lower()):
+				ProgressRequests._accept(w, p)
 		return
 	if parts.size() >= 2 and parts[0].to_lower() == "objeto":
 		_item_command(rec, parts)
