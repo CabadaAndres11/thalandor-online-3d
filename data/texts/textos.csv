@@ -1356,4 +1356,4 @@ NPC_VECINA_3_GREET,"Ya no salgo mucho. Las rodillas, ¿sabes?"
 UI_TALENTS_POINTS,"Puntos libres: %d · Comprados: %d / %d"
 UI_TALENTS_ROUTE,Ruta recomendada
 UI_TALENTS_RESET,"Reinicio con Maese Corwin: %d de oro"
-UI_TALENTS_ROUTE_STEP,Paso %d de la ruta
+UI_TALENTS_ON_ROUTE,Parte de la ruta recomendada

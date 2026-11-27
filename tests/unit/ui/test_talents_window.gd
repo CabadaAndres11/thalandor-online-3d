@@ -111,7 +111,7 @@ func test_detail_shows_the_node() -> void:
 	win.hover_at(win.node_screen_position(first))
 	var text := win.description_text()
 	assert_string_contains(text, StatText.describe_all(db.node(first).mods))
-	assert_string_contains(text, tr("UI_TALENTS_ROUTE_STEP") % 1)
+	assert_string_contains(text, tr("UI_TALENTS_ON_ROUTE"))
 
 
 func test_missing_icon_falls_back() -> void:
@@ -171,3 +171,26 @@ func test_release_after_a_drag_does_not_buy() -> void:
 	win.drag_to(p)
 	win.release_at(p)
 	assert_signal_not_emitted(win, "talent_bought")
+
+
+## The detail only shows while the mouse is over a node, even after clicking one.
+func test_detail_only_while_hovering() -> void:
+	_show(5)
+	await wait_frames(2)
+	var p := win.node_screen_position("r1_0")
+	win.click_at(p)
+	win.hover_at(p)
+	assert_true(win.detail_visible())
+	win.hover_at(win.canvas_rect().position + Vector2(5, 5))
+	assert_false(win.detail_visible(), "it goes away with the mouse")
+
+
+## No two nodes overlap at zoom 1 (frames and halos included).
+func test_nodes_do_not_overlap() -> void:
+	_show(5)
+	await wait_frames(2)
+	for id: String in db.ids():
+		for other: String in db.node(id).links:
+			if other > id:
+				var d := win.node_screen_position(id).distance_to(win.node_screen_position(other))
+				assert_gt(d, win.node_extent(id) + win.node_extent(other), "%s and %s overlap" % [id, other])

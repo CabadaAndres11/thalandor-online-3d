@@ -2,8 +2,8 @@ class_name TalentsWindow
 extends Control
 ## Talent window (T, Plan 8.3g): full screen and holographic. The ring tree is drawn on a
 ## canvas you zoom (wheel) and drag; each node is its stat's icon in a frame that says what
-## kind it is; the class's recommended route is marked in gold; the node under the mouse
-## shows its detail. A click on a node you can buy buys it, any other click selects it.
+## kind it is; the class's recommended route is a gold path with gold borders on its nodes;
+## the node under the mouse shows its detail. A click on a node you can buy buys it, any other click selects it.
 ## It only reports `talent_bought` and `mastery_bought`; the host validates.
 
 signal talent_bought(id: String)
@@ -17,7 +17,10 @@ const ZOOM_MAX := 2.5
 ## A press and release closer than this is a click; farther, a drag.
 const CLICK_SLOP := 4.0
 const ICON_DIR := "res://assets/icons/talents/"
-const NODE_RADIUS := {"start": 12.0, "minor": 11.0, "notable": 16.0, "keystone": 22.0}
+## Sizes at zoom 1, small enough that neighbours on a ring (23 px apart) never touch.
+const NODE_RADIUS := {"start": 10.0, "minor": 7.0, "notable": 8.5, "keystone": 10.0}
+## What a frame adds round a node: a notable's ticks, a keystone's halo.
+const NODE_EXTRA := {"start": 1.0, "minor": 1.0, "notable": 2.5, "keystone": 2.0}
 const DIR_COLORS := {"might": Color("#e0564f"), "celerity": Color("#e8c547"), "vitality": Color("#4fc46a"),
 	"bastion": Color("#5f8fe0"), "arcane": Color("#b46ae0")}
 const DIR_KEYS := {"might": "TALENT_DIR_MIGHT", "celerity": "TALENT_DIR_CELERITY", "vitality": "TALENT_DIR_VITALITY",
@@ -189,7 +192,7 @@ func refresh() -> void:
 		(_mastery_rows[dir].rank as Label).text = "%s %d" % [tr(DIR_KEYS[dir]), int(_progress.masteries.get(dir, 0))]
 		(_mastery_rows[dir].button as Button).disabled = not Talents.can_buy_mastery(_progress, dir, _db)
 	_mastery_box.visible = masteries_visible()
-	_show_detail(_hover if _hover != "" else _selected)
+	_show_detail(_hover)
 	_canvas.queue_redraw()
 
 
@@ -197,7 +200,6 @@ func select(id: String) -> void:
 	if _db == null or not _db.has(id):
 		return
 	_selected = id
-	_show_detail(id)
 	_canvas.queue_redraw()
 
 
@@ -257,6 +259,16 @@ func panel_rect() -> Rect2:
 
 func canvas_rect() -> Rect2:
 	return _canvas.get_global_rect()
+
+
+func detail_visible() -> bool:
+	return _detail.visible
+
+
+## How far a node reaches from its centre on screen (its frame, ticks or halo included).
+func node_extent(id: String) -> float:
+	var kind := str(_db.node(id).get("kind", "minor"))
+	return (float(NODE_RADIUS.get(kind, 7.0)) + float(NODE_EXTRA.get(kind, 1.0))) * _zoom
 
 
 func detail_rect() -> Rect2:
@@ -349,7 +361,7 @@ func hover_at(global_point: Vector2) -> void:
 	var id := _canvas.pick(global_point - _canvas.get_global_rect().position)
 	if id != _hover:
 		_hover = id
-		_show_detail(id if id != "" else _selected)
+		_show_detail(id) # only while the mouse is over a node
 		_canvas.queue_redraw()
 
 
@@ -367,7 +379,7 @@ func _show_detail(id: String) -> void:
 	if id != _db.start_id():
 		lines.append(tr("TALENT_STATE_" + node_state(id).to_upper()))
 	if route_step(id) > 0 and route_visible():
-		lines.append(tr("UI_TALENTS_ROUTE_STEP") % route_step(id))
+		lines.append(tr("UI_TALENTS_ON_ROUTE"))
 	_desc.text = "\n".join(lines)
 	_detail.visible = true
 	_detail.reset_size()
@@ -469,16 +481,15 @@ class TalentCanvas extends Control:
 			for i in window._route.size():
 				var id: String = window._route[i]
 				var linked := (db.node(id).get("links", []) as Array).has(prev)
-				if linked:
-					draw_dashed_line(node_position(prev), node_position(id), ROUTE_COLOR, 2.0, 5.0)
+				if linked: # a solid gold path
+					draw_line(node_position(prev), node_position(id), ROUTE_COLOR, 3.0)
 				prev = id
-		var font := get_theme_default_font()
 		for id: String in db.ids():
-			_draw_node(id, font)
-		window._place_detail(window._hover if window._hover != "" else window._selected)
+			_draw_node(id)
+		window._place_detail(window._hover)
 
 
-	func _draw_node(id: String, font: Font) -> void:
+	func _draw_node(id: String) -> void:
 		var n := window._db.node(id)
 		var p := node_position(id)
 		var r := radius_of(id)
@@ -487,7 +498,7 @@ class TalentCanvas extends Control:
 		var state := "owned" if id == window._db.start_id() else window.node_state(id)
 		var tint := Color.WHITE if state != "locked" else Color(0.4, 0.4, 0.45)
 		if kind == "keystone":
-			draw_circle(p, r + 6.0 * window._zoom, Color(dir_color, 0.25)) # the halo
+			draw_circle(p, r + float(NODE_EXTRA.keystone) * window._zoom, Color(dir_color, 0.45)) # the halo
 		var tex := window.icon_texture(str(n.get("icon", "")))
 		if tex != null:
 			var pts := PackedVector2Array()
@@ -499,15 +510,15 @@ class TalentCanvas extends Control:
 			draw_polygon(pts, PackedColorArray([tint]), uvs, tex)
 		else:
 			draw_circle(p, r, Color(dir_color, 0.9) * tint) # no icon: the direction's colour
-		var frame := OWNED_COLOR if state == "owned" else (Color(1, 1, 1, 0.9) if state == "available" else Color(0.45, 0.5, 0.6, 0.8))
-		var width := {"minor": 2.0, "notable": 3.0, "keystone": 4.0, "start": 3.0}.get(kind, 2.0) as float
+		var on_route := window.route_visible() and window.route_step(id) > 0
+		var frame := OWNED_COLOR if state == "owned" else (ROUTE_COLOR if on_route else (Color(1, 1, 1, 0.9) if state == "available" else Color(0.45, 0.5, 0.6, 0.8)))
+		var width := {"minor": 1.5, "notable": 2.0, "keystone": 2.5, "start": 2.0}.get(kind, 1.5) as float
+		if on_route:
+			width += 1.0 # the recommended nodes: a thicker gold border
 		draw_arc(p, r, 0.0, TAU, 32, frame, width)
 		if kind == "notable":
 			for k in 4: # four ticks round a notable's frame
 				var a := TAU * k / 4.0 + PI / 4.0
-				draw_line(p + Vector2(cos(a), sin(a)) * r, p + Vector2(cos(a), sin(a)) * (r + 5.0 * window._zoom), frame, 2.0)
-		if id == window._selected or id == window._hover:
-			draw_arc(p, r + 4.0, 0.0, TAU, 32, Color.WHITE, 2.0)
-		var step := window.route_step(id)
-		if window.route_visible() and step > 0 and (step == 1 or step % 5 == 0):
-			draw_string(font, p + Vector2(r + 2.0, -r), str(step), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, ROUTE_COLOR)
+				draw_line(p + Vector2(cos(a), sin(a)) * r, p + Vector2(cos(a), sin(a)) * (r + float(NODE_EXTRA.notable) * window._zoom), frame, 1.5)
+		if id == window._hover:
+			draw_arc(p, r + 1.0, 0.0, TAU, 32, Color.WHITE, 1.5)
