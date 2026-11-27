@@ -192,3 +192,17 @@ func test_mejora_swaps_the_upgrade() -> void:
 	assert_eq(p.progress.upgrade, "protector")
 	_say(a, "/mejora ninguna")
 	assert_eq(p.progress.upgrade, "")
+
+
+
+func test_escena_plays_a_cutscene_for_the_host() -> void:
+	var a := _guest("Ana")
+	_drain(a)
+	_say(a, "/escena prologo_despertar")
+	host.tick()
+	var seen := false
+	for m: Dictionary in _msgs(a, Protocol.Msg.EVENTS):
+		for ev: Array in m.events:
+			if ev[0] == "quest_scene" and str(ev[2]) == "prologo_despertar":
+				seen = true
+	assert_true(seen, "the scene reaches the host's client")

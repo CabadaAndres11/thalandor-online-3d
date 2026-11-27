@@ -617,7 +617,7 @@ func _on_set_arena_level(rec: Dictionary, level: int) -> void:
 
 
 ## Test commands (host player only): /xp <n> [name], /nivel <n> [name], /oro <n> [name] and
-## /objeto <base> [level] [rarity] [name], /mejora <id|ninguna>. They are not chat. Anything else starting with
+## /objeto <base> [level] [rarity] [name], /mejora <id|ninguna>, /escena <id>, /escenas. They are not chat. Anything else starting with
 ## "/" is refused with a system message to the author.
 func _on_command(rec: Dictionary, text: String) -> void:
 	var w := world_of(rec.id)
@@ -636,6 +636,18 @@ func _on_command(rec: Dictionary, text: String) -> void:
 		return
 	if parts.size() >= 2 and parts[0].to_lower() in ["mision", "misión", "marca"]:
 		_quest_command(rec, parts)
+		return
+	if parts.size() >= 1 and parts[0].to_lower() == "escenas":
+		_send_to(rec.id, Protocol.chat(0, ", ".join(_scene_ids())), true)
+		return
+	if parts.size() >= 2 and parts[0].to_lower() == "escena":
+		# /escena <id>: plays a cutscene for the host where it stands (tests; it counts for no quest
+		# unless one is waiting for it). Scenes staged in the village look right in its variant.
+		var sid := str(parts[1]).to_lower()
+		if sid in _scene_ids():
+			w.emit(["quest_scene", rec.id, sid])
+		else:
+			_send_to(rec.id, Protocol.chat(0, "CMD_BAD"), true)
 		return
 	if parts.size() >= 2 and parts[0].to_lower() == "mejora":
 		# /mejora <id|ninguna>: swaps the level 50 upgrade without Brann (tests only; it is final in play).
@@ -673,6 +685,16 @@ func _on_command(rec: Dictionary, text: String) -> void:
 		Xp.award(tw, target, clampi(n, 1, Xp.MAX_AMOUNT))
 	elif n > target.progress.level:
 		Xp.set_level(tw, target, mini(n, PlayerProgress.MAX_LEVEL))
+
+
+## The cutscene ids (data/cutscenes) for /escena.
+func _scene_ids() -> Array:
+	var out: Array = []
+	for f: String in DirAccess.get_files_at("res://data/cutscenes"):
+		if f.ends_with(".json"):
+			out.append(f.get_basename())
+	out.sort()
+	return out
 
 
 ## The zones a test command can go to, with their variants and entries.
