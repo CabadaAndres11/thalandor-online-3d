@@ -459,7 +459,10 @@ func update_house(pos: Vector3) -> void:
 	if zone_view.layout == null:
 		return
 	var index := zone_view.layout.house_at(Vector2i(floori(pos.x), floori(pos.z)))
-	var want: Array = [index] if index >= 0 else zone_view.occluders(camera.global_position if camera.is_inside_tree() else camera.position, pos)
+	var want: Array = zone_view.occluders(camera.global_position if camera.is_inside_tree() else camera.position, pos)
+	if index >= 0: # its own house first, and those a scene camera looks through (the assault wake-up)
+		want.erase(index)
+		want.push_front(index)
 	if want != _open_houses:
 		_open_houses = want
 		zone_view.open_houses(want)
@@ -623,14 +626,15 @@ func _end_cutscene() -> void:
 		return
 	cutscene.queue_free()
 	cutscene = null
-	for n: Node in _scene_fx_nodes:
-		n.queue_free()
+	for n: Variant in _scene_fx_nodes: # some may be gone already (a zone change freed them)
+		if is_instance_valid(n):
+			(n as Node).queue_free()
 	_scene_fx_nodes.clear()
-	for n: Node in _scene_labels:
+	for n: Variant in _scene_labels:
 		if is_instance_valid(n):
 			(n as Node3D).visible = true
 	_scene_labels.clear()
-	for n: Node3D in _scene_hidden:
+	for n: Variant in _scene_hidden:
 		if is_instance_valid(n):
 			n.visible = true
 	_scene_hidden.clear()
