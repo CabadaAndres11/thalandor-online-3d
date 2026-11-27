@@ -16,6 +16,8 @@ var gold: int = 0
 var bag: Array = []
 ## slot -> Item.
 var equipment: Dictionary = {}
+## Potions are not in the bag (2026-11-27): they wait on their button, base id -> count, no limit.
+var potions: Dictionary = {}
 
 
 func _init() -> void:
@@ -28,6 +30,9 @@ func free_slots() -> int:
 
 ## Stacks consumables of the same base, then takes the first free slot. False if it does not fit.
 func add(item: Item, db: ItemDB) -> bool:
+	if is_potion(item.base_id, db):
+		potions[item.base_id] = int(potions.get(item.base_id, 0)) + item.count
+		return true
 	if db.is_consumable(item.base_id) or db.is_quest(item.base_id):
 		var stack := _stack_of(item.base_id, db)
 		var left := item.count
@@ -61,9 +66,18 @@ func _stack_of(base_id: String, db: ItemDB) -> int:
 	return int((db.loot().get("potion", {}) as Dictionary).get("stack", 20))
 
 
-## How many items of this base the bag holds (stacks added up).
+static func is_potion(base_id: String, db: ItemDB) -> bool:
+	return str(db.base(base_id).get("potion", "")) != ""
+
+
+## The potions of a kind carried ("health" or "resource").
+func potion_count(kind: String) -> int:
+	return int(potions.get("potion_" + kind, 0))
+
+
+## How many items of this base the bag holds (stacks added up), potions included.
 func count_of(base_id: String) -> int:
-	var n := 0
+	var n := int(potions.get(base_id, 0))
 	for it: Variant in bag:
 		if it != null and it.base_id == base_id:
 			n += int(it.count)
@@ -72,7 +86,9 @@ func count_of(base_id: String) -> int:
 
 ## Takes up to `n` items of this base out of the bag; returns how many it took.
 func remove_count(base_id: String, n: int) -> int:
-	var taken := 0
+	var taken := mini(int(potions.get(base_id, 0)), n)
+	if taken > 0:
+		potions[base_id] = int(potions[base_id]) - taken
 	for i in bag.size():
 		var it: Variant = bag[i]
 		if taken >= n or it == null or it.base_id != base_id:
@@ -232,15 +248,16 @@ func to_dict() -> Dictionary:
 	var eq := {}
 	for s: String in equipment:
 		eq[s] = equipment[s].to_dict()
-	return {"gold": gold, "bag": bag.map(func(it: Variant) -> Variant: return it.to_dict() if it != null else null), "equipment": eq}
+	return {"gold": gold, "bag": bag.map(func(it: Variant) -> Variant: return it.to_dict() if it != null else null), "equipment": eq,
+		"potions": potions.duplicate()}
 
 
-## Compact form for the network: {g: gold, b: [item wire or null], e: {slot: item wire}}.
+## Compact form for the network: {g: gold, b: [item wire or null], e: {slot: item wire}, p: {potion base: count}}.
 func to_wire() -> Dictionary:
 	var eq := {}
 	for s: String in equipment:
 		eq[s] = equipment[s].to_wire()
-	return {"g": gold, "b": bag.map(func(it: Variant) -> Variant: return it.to_wire() if it != null else null), "e": eq}
+	return {"g": gold, "b": bag.map(func(it: Variant) -> Variant: return it.to_wire() if it != null else null), "e": eq, "p": potions.duplicate()}
 
 
 ## Reads a wire inventory with the same sanitizing as from_dict.
@@ -255,7 +272,7 @@ static func from_wire(v: Variant, class_id: String, level: int, db: ItemDB) -> I
 			eq[s] = Item.wire_to_dict((raw_eq as Dictionary)[s])
 	var raw_bag: Variant = d.get("b", [])
 	var bag_dicts: Array = (raw_bag as Array).map(func(x: Variant) -> Variant: return Item.wire_to_dict(x)) if raw_bag is Array else []
-	return from_dict({"gold": d.get("g", 0), "bag": bag_dicts, "equipment": eq}, class_id, level, db)
+	return from_dict({"gold": d.get("g", 0), "bag": bag_dicts, "equipment": eq, "potions": d.get("p", {})}, class_id, level, db)
 
 
 ## The host's inventory exactly as sent (for its owner's client): every item in its slot and
@@ -279,7 +296,18 @@ static func from_wire_exact(v: Variant, db: ItemDB) -> Inventory:
 			var it := Item.from_dict(Item.wire_to_dict((raw_eq as Dictionary)[s]), db)
 			if it != null and str(s) in SLOTS:
 				inv.equipment[str(s)] = it
+	inv._read_potions(d.get("p", {}), db)
 	return inv
+
+
+## Potion counts from saved data: known potion bases, whole counts above zero.
+func _read_potions(raw: Variant, db: ItemDB) -> void:
+	if not raw is Dictionary:
+		return
+	for base_id: Variant in raw:
+		var n: Variant = (raw as Dictionary)[base_id]
+		if is_potion(str(base_id), db) and (n is int or n is float) and int(n) > 0:
+			potions[str(base_id)] = int(potions.get(str(base_id), 0)) + int(n)
 
 
 ## Never null. Unknown items are dropped; anything valid that cannot be worn (other class,
@@ -294,6 +322,7 @@ static func from_dict(v: Variant, class_id: String, level: int, db: ItemDB) -> I
 	inv.gold = clampi(int(g), 0, MAX_GOLD) if g is int or g is float else 0
 	var uids := {}
 	var loose: Array = []
+	inv._read_potions(d.get("potions", {}), db)
 	var raw_bag: Variant = d.get("bag", [])
 	if raw_bag is Array:
 		# Every item keeps its slot: the client and the host must agree on the indexes the
@@ -301,7 +330,9 @@ static func from_dict(v: Variant, class_id: String, level: int, db: ItemDB) -> I
 		inv.bag.resize(maxi(SIZE, (raw_bag as Array).size()))
 		for i in (raw_bag as Array).size():
 			var it := _unique(Item.from_dict((raw_bag as Array)[i], db), uids)
-			if it != null:
+			if it != null and is_potion(it.base_id, db):
+				inv.add(it, db) # characters saved before 2026-11-27 had their potions in the bag
+			elif it != null:
 				inv.bag[i] = it
 	var raw_eq: Variant = d.get("equipment", {})
 	if raw_eq is Dictionary:

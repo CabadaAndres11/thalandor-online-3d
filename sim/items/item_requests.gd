@@ -28,16 +28,23 @@ static func unequip(world: SimWorld, p: PlayerState, slot: String) -> bool:
 	return _changed(world, p, true)
 
 
-## Drinks the potion at `index`: health or resource, potion.heal_pct / resource_pct of the
-## maximum, one shared cooldown. Rage cannot be filled; nothing is drunk when already full.
+## Uses the bag item at `index`. Potions are no longer in the bag (they are drunk with
+## use_potion), so nothing in it can be used for now.
 static func use(world: SimWorld, p: PlayerState, index: int) -> bool:
 	var inv := p.inventory
-	if p.life != CombatEntity.ALIVE or index < 0 or index >= inv.bag.size() or inv.bag[index] == null:
+	if index < 0 or index >= inv.bag.size() or inv.bag[index] == null:
 		return false
-	var it: Item = inv.bag[index]
+	var kind := str(_db(world).base((inv.bag[index] as Item).base_id).get("potion", ""))
+	return kind != "" and use_potion(world, p, kind)
+
+
+## Q and R: drinks a potion of that kind ("health" or "resource"): potion.heal_pct /
+## resource_pct of the maximum, one shared cooldown. Rage cannot be filled; nothing is drunk
+## when already full or when none is left.
+static func use_potion(world: SimWorld, p: PlayerState, kind: String) -> bool:
+	var inv := p.inventory
 	var db := _db(world)
-	var kind := str(db.base(it.base_id).get("potion", ""))
-	if kind == "" or world.tick < p.potion_ready_tick:
+	if p.life != CombatEntity.ALIVE or inv.potion_count(kind) <= 0 or world.tick < p.potion_ready_tick:
 		return false
 	var cfg: Dictionary = db.loot().get("potion", {})
 	if kind == "health":
@@ -49,21 +56,9 @@ static func use(world: SimWorld, p: PlayerState, index: int) -> bool:
 			return false
 		p.resource = minf(p.stats.max_resource, p.resource + p.stats.max_resource * float(cfg.get("resource_pct", 0.35)))
 	p.potion_ready_tick = world.tick + world.ticks(float(cfg.get("cooldown_s", 30.0)))
-	it.count -= 1
-	if it.count <= 0:
-		inv.bag[index] = null
+	inv.remove_count("potion_" + kind, 1)
 	world.emit(["potion", p.id, kind])
 	return _changed(world, p, false)
-
-
-## Q and R: the first stack of that kind ("health" or "resource").
-static func use_potion(world: SimWorld, p: PlayerState, kind: String) -> bool:
-	var db := _db(world)
-	for i in p.inventory.bag.size():
-		var it: Variant = p.inventory.bag[i]
-		if it != null and str(db.base(it.base_id).get("potion", "")) == kind:
-			return use(world, p, i)
-	return false
 
 
 ## Dying (not being downed) wears every worn item by durability_loss_on_death.

@@ -157,6 +157,7 @@ func test_potion_action() -> void:
 	var inv := _msgs(a, Protocol.Msg.INVENTORY)
 	assert_eq(inv.size(), 1)
 	assert_almost_eq(float(inv[0].potion_cd_s), 30.0, 0.1)
+	assert_eq(Inventory.from_wire_exact(inv[0].inventory, db).potion_count("health"), 2, "the client sees the count left")
 
 
 func test_merchant_open_and_buy() -> void:
@@ -170,7 +171,7 @@ func test_merchant_open_and_buy() -> void:
 	assert_eq(stock.size(), 1)
 	assert_eq((stock[0].items as Array).size(), 4)
 	_send(a, Protocol.item_action("buy", [-1]))
-	assert_eq(p.inventory.bag[0].base_id, "potion_health")
+	assert_eq(p.inventory.potion_count("health"), 1)
 	_send(a, Protocol.item_action("buy", [0]))
 	var after := _msgs(a, Protocol.Msg.MERCHANT_STOCK)
 	assert_eq((after[-1].items as Array).size(), 3)

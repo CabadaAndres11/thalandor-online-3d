@@ -19,9 +19,9 @@ func _inv() -> Inventory:
 	var inv := Inventory.new()
 	inv.gold = 1234
 	inv.add(ItemRoll.new_item("sword_t1", 1, "rare"), db)
-	var pot := ItemRoll.new_item("potion_health", 1)
-	pot.count = 5
-	inv.add(pot, db)
+	var quest := ItemRoll.new_item("q_paquete", 1)
+	quest.count = 5
+	inv.add(quest, db)
 	return inv
 
 
@@ -38,9 +38,8 @@ func test_right_click_equips() -> void:
 	inv_win.right_click(0)
 	assert_signal_emitted_with_parameters(inv_win, "item_action", ["equip", [0]])
 	inv_win.right_click(1)
-	assert_signal_emitted_with_parameters(inv_win, "item_action", ["use", [1]])
 	inv_win.right_click(5)
-	assert_signal_emit_count(inv_win, "item_action", 2, "an empty slot does nothing")
+	assert_signal_emit_count(inv_win, "item_action", 1, "a quest item and an empty slot do nothing")
 
 
 func test_sell_mode() -> void:

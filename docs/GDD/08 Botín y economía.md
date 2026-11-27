@@ -1,7 +1,7 @@
 ---
 tags: [gdd]
 estado: implementado
-actualizado: 2026-11-19
+actualizado: 2026-11-27
 ---
 
 # 8. Botín, objetos y economía **[Implementado]** (0.7.0, [[Plan 5 — Objetos (spec)|Plan 5]]; alijo e intercambio pendientes)
@@ -29,7 +29,7 @@ actualizado: 2026-11-19
 - **Oro:** se obtiene de monstruos, misiones y ventas. Se gasta en el mercader (pociones, objetos y reparaciones), reinicio de talentos, cambio de mejora y cambio de clase.
 - **Mercaderes:** en la capital. Venden pociones y objetos comunes, compran al 25 % del valor y reparan.
 - **Durabilidad:** cada pieza equipada pierde un 10 % al morir (no al quedar derribado). A 0 no da estadísticas.
-- **Pociones:** vida (Q) y recurso (R), con el 35 % y una recarga compartida de 30 s, en pilas de 20.
+- **Pociones:** vida (Q) y recurso (R), con el 35 % y una recarga compartida de 30 s. Desde el 2026-11-27 no ocupan hueco en la bolsa: se guardan en su botón, que muestra cuántas quedan, sin límite. Los personajes antiguos las pasan de la bolsa al botón al cargarse. Iconos pintados en `assets/icons/items/`.
 - **Alijo:** almacén compartido entre los personajes del mismo jugador, en la capital.
 - **Intercambio entre jugadores:** fuera de la demo.
 

@@ -306,14 +306,7 @@ func _update_items() -> void:
 
 
 func potion_count(kind: String) -> int:
-	if _client == null:
-		return 0
-	var db := ItemDB.load_default()
-	var n := 0
-	for it: Variant in _client.inventory.bag:
-		if it != null and str(db.base(it.base_id).get("potion", "")) == kind:
-			n += int(it.count)
-	return n
+	return _client.inventory.potion_count(kind) if _client != null else 0 # kept on the button, not in the bag
 
 
 ## 1 just after drinking, 0 when a potion can be drunk again.

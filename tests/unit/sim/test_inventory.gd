@@ -24,15 +24,44 @@ func test_new_bag_has_30_slots() -> void:
 	assert_eq(inv.free_slots(), 30)
 
 
-func test_stack_potions() -> void:
+func test_potions_wait_on_their_button_not_in_the_bag() -> void:
 	var p := _it("potion_health")
 	p.count = 15
 	assert_true(inv.add(p, db))
 	var q := _it("potion_health")
-	q.count = 10
-	assert_true(inv.add(q, db))
-	assert_eq(inv.bag[0].count, 20)
-	assert_eq(inv.bag[1].count, 5)
+	q.count = 30
+	assert_true(inv.add(q, db), "no limit")
+	inv.add(_it("potion_resource"), db)
+	assert_eq(inv.free_slots(), 30, "the bag stays empty")
+	assert_eq([inv.potion_count("health"), inv.potion_count("resource")], [45, 1])
+	assert_eq(inv.count_of("potion_health"), 45)
+	assert_eq(inv.remove_count("potion_health", 5), 5)
+	assert_eq(inv.potion_count("health"), 40)
+
+
+func test_potions_go_to_their_button_even_with_a_full_bag() -> void:
+	_fill_bag()
+	assert_true(inv.add(_it("potion_health"), db))
+	assert_eq(inv.potion_count("health"), 1)
+
+
+func test_potions_survive_save_and_wire() -> void:
+	var p := _it("potion_health")
+	p.count = 7
+	inv.add(p, db)
+	var back := Inventory.from_dict(inv.to_dict(), "mage", 1, db)
+	assert_eq(back.potion_count("health"), 7)
+	assert_eq(Inventory.from_wire(inv.to_wire(), "mage", 1, db).potion_count("health"), 7)
+	assert_eq(Inventory.from_wire_exact(inv.to_wire(), db).potion_count("health"), 7)
+
+
+func test_old_saves_move_bag_potions_to_their_button() -> void:
+	var old := {"gold": 3, "bag": [_it("potion_resource").to_dict(), _it("sword_t1").to_dict()], "equipment": {}}
+	old.bag[0].count = 4
+	var back := Inventory.from_dict(old, "warrior", 1, db)
+	assert_eq(back.potion_count("resource"), 4)
+	assert_null(back.bag[0], "no potion left in the bag")
+	assert_eq(back.bag[1].base_id, "sword_t1", "the rest keeps its slot")
 
 
 func test_full_bag() -> void:
@@ -108,8 +137,8 @@ func test_rings() -> void:
 	assert_eq(inv.bag[2].base_id, "ring_t1", "the old ring_2 went back")
 
 
-func test_potion_cannot_be_equipped() -> void:
-	inv.add(_it("potion_health"), db)
+func test_quest_item_cannot_be_equipped() -> void:
+	inv.add(_it("q_paquete"), db)
 	assert_false(inv.equip(0, "mage", 1, db))
 
 
@@ -224,7 +253,7 @@ func _put(i: int, base_id: String, level := 1, rarity := "common", count := 1) -
 
 
 func test_sort_order() -> void:
-	_put(0, "potion_health", 1, "common", 5)
+	_put(0, "q_paquete", 1, "common", 5)
 	_put(3, "warrior_chest_t1", 3, "common")
 	_put(5, "sword_t1", 2, "common")
 	_put(7, "warrior_chest_t1", 5, "rare")
@@ -236,19 +265,18 @@ func test_sort_order() -> void:
 		if it != null:
 			got.append("%s/%s/%d" % [(it as Item).base_id, (it as Item).rarity, (it as Item).level])
 	assert_eq(got, ["sword_t1/common/4", "sword_t1/common/2", "warrior_head_t1/uncommon/1",
-		"warrior_chest_t1/rare/5", "warrior_chest_t1/common/3", "potion_health/common/1"])
+		"warrior_chest_t1/rare/5", "warrior_chest_t1/common/3", "q_paquete/common/1"])
 	assert_eq(inv.bag.size(), 30, "same size")
 	assert_null(inv.bag[6], "empty slots at the end")
 
 
 func test_sort_merges_stacks_without_loss() -> void:
 	for i: int in [2, 8, 20]:
-		_put(i, "potion_health", 1, "common", 15)
+		_put(i, "q_paquete", 1, "common", 50)
 	inv.sort_bag(db)
-	assert_eq(inv.bag[0].count, 20)
-	assert_eq(inv.bag[1].count, 20)
-	assert_eq(inv.bag[2].count, 5)
-	assert_null(inv.bag[3])
+	assert_eq(inv.bag[0].count, Inventory.QUEST_STACK)
+	assert_eq(inv.bag[1].count, 150 - Inventory.QUEST_STACK)
+	assert_null(inv.bag[2])
 
 
 func test_sort_keeps_equipment() -> void:

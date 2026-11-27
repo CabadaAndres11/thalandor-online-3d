@@ -62,7 +62,7 @@ func test_quest_item_locked() -> void:
 func test_sort_puts_quest_last() -> void:
 	var inv := Inventory.new()
 	inv.add(_quest_item(1), db)
-	inv.add(ItemRoll.new_item("potion_health", 1), db)
+	inv.add(ItemRoll.new_item("ring_t1", 1), db)
 	inv.add(ItemRoll.new_item("warrior_chest_t1", 1), db)
 	inv.sort_bag(db)
 	assert_eq(inv.bag[2].base_id, "q_colmillo")

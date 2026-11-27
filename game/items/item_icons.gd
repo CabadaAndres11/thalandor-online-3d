@@ -6,6 +6,8 @@ extends Node
 ## tree (the game adds one); without it (tests, headless) the placeholder stays.
 
 const SIZE := 64
+## Drawn icons of items, <base id>.png; an item without one gets the render of its model.
+const PAINTED_DIR := "res://assets/icons/items/"
 ## Tints of tintable voxels in icons (the wearer's colors are unknown).
 const ICON_TINTS := {
 	VoxMesher.TINT_PRIMARY: Color("#8d96a1"), VoxMesher.TINT_SECONDARY: Color("#b8933a"),
@@ -25,6 +27,10 @@ var _waiting: String = ""
 
 static func icon(base_id: String) -> Texture2D:
 	if _cache.has(base_id):
+		return _cache[base_id]
+	var painted := PAINTED_DIR + base_id + ".png" # a drawn icon (the potions, 2026-11-27) wins over a render
+	if ResourceLoader.exists(painted):
+		_cache[base_id] = load(painted)
 		return _cache[base_id]
 	var tex := ImageTexture.create_from_image(_placeholder(base_id))
 	_cache[base_id] = tex

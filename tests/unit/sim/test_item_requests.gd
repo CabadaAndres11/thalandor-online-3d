@@ -56,18 +56,20 @@ func test_dead_cannot_equip() -> void:
 func test_potion_heals_35() -> void:
 	var p := _hero("mage")
 	p.hp = 1.0
-	var i := _give(p, "potion_health", 3)
-	assert_true(ItemRequests.use(f.world, p, i))
+	_give(p, "potion_health", 3)
+	assert_true(ItemRequests.use_potion(f.world, p, "health"))
 	assert_almost_eq(p.hp, 1.0 + p.stats.max_hp * 0.35, 0.01)
-	assert_eq(p.inventory.bag[i].count, 2)
+	assert_eq(p.inventory.potion_count("health"), 2)
 
 
-func test_last_potion_leaves_the_bag() -> void:
+func test_last_potion_empties_its_button() -> void:
 	var p := _hero("mage")
 	p.hp = 1.0
-	var i := _give(p, "potion_health", 1)
-	assert_true(ItemRequests.use(f.world, p, i))
-	assert_null(p.inventory.bag[i])
+	_give(p, "potion_health", 1)
+	assert_true(ItemRequests.use_potion(f.world, p, "health"))
+	assert_eq(p.inventory.potion_count("health"), 0)
+	f.world.tick += f.world.ticks(30.0)
+	assert_false(ItemRequests.use_potion(f.world, p, "health"), "none left")
 
 
 func test_potion_shared_cooldown() -> void:

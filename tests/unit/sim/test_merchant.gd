@@ -43,7 +43,8 @@ func test_buy_potion() -> void:
 	p.inventory.gold = 100
 	assert_true(Merchant.buy(f.world, p, Merchant.BUY_HEALTH))
 	assert_eq(p.inventory.gold, 100 - (5 + 2 * 10))
-	assert_eq(p.inventory.bag[0].base_id, "potion_health")
+	assert_eq(p.inventory.potion_count("health"), 1, "on its button")
+	assert_eq(p.inventory.free_slots(), Inventory.SIZE, "not in the bag")
 	assert_true(p.inventory_dirty)
 
 
@@ -78,7 +79,7 @@ func test_sell_25pct() -> void:
 
 
 func test_sell_worthless_refused() -> void:
-	p.inventory.add(ItemRoll.new_item("potion_health", 1), db)
+	p.inventory.bag[0] = ItemRoll.new_item("potion_health", 1) # only an old bag could hold one
 	assert_false(Merchant.sell(f.world, p, 0))
 
 
@@ -137,7 +138,7 @@ func test_refused_trade_tells_the_player() -> void:
 
 
 func test_selling_a_potion_says_why_not() -> void:
-	p.inventory.add(ItemRoll.new_item("potion_health", 1), db)
+	p.inventory.bag[0] = ItemRoll.new_item("potion_health", 1) # only an old bag could hold one
 	assert_false(Merchant.sell(f.world, p, 0))
 	assert_has(f.world.events, ["trade_refused", 1, "worthless"])
 

@@ -1,6 +1,6 @@
 extends GutTest
-## Item icons: each base gets one texture (a render of its model, a drawn flask for
-## potions), made once and cached.
+## Item icons: each base gets one texture (a render of its model, or its painted icon in
+## assets/icons/items, as the potions), made once and cached.
 
 
 func test_icon_cached() -> void:
@@ -9,13 +9,15 @@ func test_icon_cached() -> void:
 	assert_same(ItemIcons.icon("sword_t1"), a)
 
 
-func test_potions_drawn() -> void:
+func test_potions_use_their_painted_icons() -> void:
 	var h := ItemIcons.icon("potion_health")
 	var r := ItemIcons.icon("potion_resource")
-	assert_eq(h.get_width(), ItemIcons.SIZE)
-	assert_ne(h, r)
-	var img := h.get_image()
-	assert_gt(img.get_pixel(ItemIcons.SIZE / 2, ItemIcons.SIZE * 2 / 3).r, 0.5, "a red flask")
+	assert_eq(h.resource_path, ItemIcons.PAINTED_DIR + "potion_health.png")
+	assert_eq(r.resource_path, ItemIcons.PAINTED_DIR + "potion_resource.png")
+	var red := h.get_image().get_pixel(64, 80)
+	var blue := r.get_image().get_pixel(64, 80)
+	assert_gt(red.r, red.b, "a red potion")
+	assert_gt(blue.b, blue.r, "a blue potion")
 
 
 func test_unknown_base_has_a_fallback() -> void:
