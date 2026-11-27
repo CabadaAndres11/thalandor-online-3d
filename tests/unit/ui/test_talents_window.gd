@@ -159,3 +159,15 @@ func test_masteries_appear_when_a_direction_is_complete() -> void:
 func test_points_text() -> void:
 	_show(10, ["r1_0", "r2_0"])
 	assert_eq(win.points_text(), tr("UI_TALENTS_POINTS") % [7, 2, db.ids().size() - 1])
+
+
+## A real drag sends motion between press and release: letting go after dragging is not a click.
+func test_release_after_a_drag_does_not_buy() -> void:
+	_show(5)
+	await wait_frames(2)
+	watch_signals(win)
+	var p := win.node_screen_position("r1_0")
+	win.press_at(p + Vector2(-40, 0))
+	win.drag_to(p)
+	win.release_at(p)
+	assert_signal_not_emitted(win, "talent_bought")

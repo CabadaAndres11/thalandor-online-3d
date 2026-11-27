@@ -49,6 +49,7 @@ var _icons: Dictionary = {} # icon name -> Texture2D or null
 var _zoom := 1.0
 var _pan := Vector2.ZERO
 var _press: Variant = null # where the left button went down (Vector2) or null
+var _dragging := false # the press became a drag: its release is not a click
 
 
 func _init() -> void:
@@ -317,12 +318,27 @@ func press_at(global_point: Vector2) -> void:
 	_press = global_point
 
 
+## The mouse moved with the left button down: once past CLICK_SLOP it is a drag that pans.
+func drag_to(global_point: Vector2) -> void:
+	if _press == null:
+		return
+	var from: Vector2 = _press
+	if _dragging or from.distance_to(global_point) > CLICK_SLOP:
+		_dragging = true
+		pan_by(global_point - from)
+		_press = global_point
+
+
 func release_at(global_point: Vector2) -> void:
 	if _press == null:
 		return
 	var from: Vector2 = _press
+	var dragged := _dragging
 	_press = null
-	if from.distance_to(global_point) <= CLICK_SLOP:
+	_dragging = false
+	if dragged:
+		pan_by(global_point - from) # the rest of the drag
+	elif from.distance_to(global_point) <= CLICK_SLOP:
 		click_at(global_point)
 	else:
 		pan_by(global_point - from)
@@ -431,11 +447,8 @@ class TalentCanvas extends Control:
 				window.zoom_to(window._zoom / 1.12)
 		elif event is InputEventMouseMotion:
 			var mm := event as InputEventMouseMotion
-			if window._press != null and (mm.button_mask & MOUSE_BUTTON_MASK_LEFT) != 0:
-				var from: Vector2 = window._press
-				if from.distance_to(origin + mm.position) > CLICK_SLOP:
-					window.pan_by(origin + mm.position - from)
-					window._press = origin + mm.position
+			if (mm.button_mask & MOUSE_BUTTON_MASK_LEFT) != 0:
+				window.drag_to(origin + mm.position)
 			window.hover_at(origin + mm.position)
 
 
