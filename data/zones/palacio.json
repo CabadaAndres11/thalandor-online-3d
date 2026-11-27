@@ -68,7 +68,23 @@
 			"id": "palace_wall",
 			"at": [
 				6,
+				0
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				6,
 				55
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				8,
+				0
 			],
 			"rot": 0
 		},
@@ -595,24 +611,8 @@
 		{
 			"id": "palace_wall",
 			"at": [
-				0,
-				37
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
 				39,
 				37
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				39
 			],
 			"rot": 90
 		},
@@ -627,7 +627,7 @@
 		{
 			"id": "palace_wall",
 			"at": [
-				0,
+				39,
 				41
 			],
 			"rot": 90
@@ -635,8 +635,16 @@
 		{
 			"id": "palace_wall",
 			"at": [
+				0,
+				43
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
 				39,
-				41
+				43
 			],
 			"rot": 90
 		},
@@ -721,6 +729,470 @@
 			"rot": 90
 		},
 		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				1
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				3
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				5
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				7
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				11
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				13
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				15
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				17
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				19
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				21
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				23
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				25
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				27
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				31
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				33
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				35
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				37
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				39
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				41
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				43
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				45
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				47
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				49
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				51
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				9,
+				53
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				1
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				3
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				5
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				7
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				11
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				13
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				15
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				17
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				19
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				21
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				23
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				25
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				27
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				31
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				33
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				35
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				37
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				39
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				41
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				43
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				45
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				47
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				49
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				51
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				30,
+				53
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				1,
+				21
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				3,
+				21
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				5,
+				21
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				7,
+				21
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				31,
+				21
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				33,
+				21
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				35,
+				21
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				37,
+				21
+			],
+			"rot": 0
+		},
+		{
 			"id": "palace_column",
 			"at": [
 				13,
@@ -797,118 +1269,134 @@
 			"at": [
 				26,
 				46
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				18,
-				12
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				18,
-				16
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				18,
-				20
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				18,
-				24
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				18,
-				28
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				18,
-				32
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				18,
-				36
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				18,
-				40
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				18,
-				44
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				18,
-				48
 			],
 			"rot": 0
 		},
 		{
 			"id": "throne",
 			"at": [
-				18,
-				5
+				19,
+				1
 			],
 			"rot": 0
 		},
 		{
-			"id": "brazier",
+			"id": "palace_carpet",
 			"at": [
-				14,
-				7
+				19,
+				3
 			],
 			"rot": 0
 		},
 		{
-			"id": "brazier",
+			"id": "palace_carpet",
 			"at": [
-				24,
-				7
+				19,
+				10
 			],
 			"rot": 0
 		},
 		{
-			"id": "brazier",
+			"id": "palace_carpet",
 			"at": [
-				14,
+				19,
+				14
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_carpet",
+			"at": [
+				19,
+				18
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_carpet",
+			"at": [
+				19,
+				22
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_carpet",
+			"at": [
+				19,
+				26
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_carpet",
+			"at": [
+				19,
 				30
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_carpet",
+			"at": [
+				19,
+				34
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_carpet",
+			"at": [
+				19,
+				38
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_carpet",
+			"at": [
+				19,
+				42
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_carpet",
+			"at": [
+				19,
+				46
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_carpet",
+			"at": [
+				19,
+				50
+			],
+			"rot": 0
+		},
+		{
+			"id": "brazier",
+			"at": [
+				16,
+				2
+			],
+			"rot": 0
+		},
+		{
+			"id": "brazier",
+			"at": [
+				23,
+				2
+			],
+			"rot": 0
+		},
+		{
+			"id": "brazier",
+			"at": [
+				14,
+				26
 			],
 			"rot": 0
 		},
@@ -916,7 +1404,23 @@
 			"id": "brazier",
 			"at": [
 				25,
-				30
+				26
+			],
+			"rot": 0
+		},
+		{
+			"id": "brazier",
+			"at": [
+				14,
+				50
+			],
+			"rot": 0
+		},
+		{
+			"id": "brazier",
+			"at": [
+				25,
+				50
 			],
 			"rot": 0
 		},
@@ -937,153 +1441,673 @@
 			"rot": 0
 		},
 		{
-			"id": "palace_wall",
+			"id": "statue_warrior_a",
 			"at": [
-				6,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				8,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				1,
-				36
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				3,
-				36
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				5,
-				36
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				7,
-				36
-			],
-			"rot": 0
-		},
-		{
-			"id": "statue",
-			"at": [
-				3,
-				16
-			],
-			"rot": 90
-		},
-		{
-			"id": "statue",
-			"at": [
-				3,
-				24
-			],
-			"rot": 90
-		},
-		{
-			"id": "statue",
-			"at": [
-				3,
-				31
-			],
-			"rot": 90
-		},
-		{
-			"id": "statue",
-			"at": [
-				36,
-				16
+				11,
+				18
 			],
 			"rot": 270
 		},
 		{
-			"id": "statue",
+			"id": "statue_warrior_b",
 			"at": [
-				36,
-				24
+				28,
+				17
+			],
+			"rot": 90
+		},
+		{
+			"id": "statue_warrior_b",
+			"at": [
+				11,
+				26
 			],
 			"rot": 270
 		},
 		{
-			"id": "statue",
+			"id": "statue_warrior_a",
 			"at": [
-				36,
-				31
+				28,
+				25
+			],
+			"rot": 90
+		},
+		{
+			"id": "statue_warrior_a",
+			"at": [
+				11,
+				34
 			],
 			"rot": 270
 		},
 		{
-			"id": "bookshelf",
+			"id": "statue_warrior_b",
 			"at": [
-				38,
-				36
+				28,
+				33
 			],
 			"rot": 90
 		},
 		{
-			"id": "bookshelf",
+			"id": "statue_warrior_b",
 			"at": [
-				38,
-				38
-			],
-			"rot": 90
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				38,
-				40
-			],
-			"rot": 90
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				38,
+				11,
 				42
 			],
-			"rot": 90
+			"rot": 270
 		},
 		{
-			"id": "bookshelf",
+			"id": "statue_warrior_a",
 			"at": [
-				38,
-				44
+				28,
+				41
 			],
 			"rot": 90
 		},
 		{
-			"id": "bookshelf",
+			"id": "weapon_rack",
 			"at": [
-				38,
-				46
+				1,
+				1
+			],
+			"rot": 0
+		},
+		{
+			"id": "weapon_rack",
+			"at": [
+				3,
+				1
+			],
+			"rot": 0
+		},
+		{
+			"id": "weapon_rack",
+			"at": [
+				5,
+				1
+			],
+			"rot": 0
+		},
+		{
+			"id": "weapon_rack",
+			"at": [
+				7,
+				1
+			],
+			"rot": 0
+		},
+		{
+			"id": "weapon_rack",
+			"at": [
+				2,
+				19
+			],
+			"rot": 180
+		},
+		{
+			"id": "weapon_rack",
+			"at": [
+				4,
+				19
+			],
+			"rot": 180
+		},
+		{
+			"id": "weapon_rack",
+			"at": [
+				6,
+				19
+			],
+			"rot": 180
+		},
+		{
+			"id": "weapon_rack",
+			"at": [
+				8,
+				19
+			],
+			"rot": 180
+		},
+		{
+			"id": "armor_stand",
+			"at": [
+				1,
+				5
+			],
+			"rot": 270
+		},
+		{
+			"id": "armor_stand",
+			"at": [
+				1,
+				8
+			],
+			"rot": 270
+		},
+		{
+			"id": "armor_stand",
+			"at": [
+				1,
+				11
+			],
+			"rot": 270
+		},
+		{
+			"id": "armor_stand",
+			"at": [
+				1,
+				14
+			],
+			"rot": 270
+		},
+		{
+			"id": "armor_stand",
+			"at": [
+				5,
+				6
+			],
+			"rot": 0
+		},
+		{
+			"id": "armor_stand",
+			"at": [
+				5,
+				12
+			],
+			"rot": 0
+		},
+		{
+			"id": "crates",
+			"at": [
+				6,
+				15
+			],
+			"rot": 0
+		},
+		{
+			"id": "brazier",
+			"at": [
+				7,
+				28
+			],
+			"rot": 0
+		},
+		{
+			"id": "brazier",
+			"at": [
+				7,
+				51
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_block",
+			"at": [
+				3,
+				22
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				3,
+				23
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				3,
+				25
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				3,
+				27
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				3,
+				29
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				3,
+				31
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				3,
+				33
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				3,
+				35
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				3,
+				43
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				3,
+				45
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				3,
+				47
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				3,
+				49
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				3,
+				51
+			],
+			"rot": 90
+		},
+		{
+			"id": "palace_wall",
+			"at": [
+				3,
+				53
 			],
 			"rot": 90
 		},
 		{
 			"id": "reading_desk",
 			"at": [
+				32,
+				10
+			],
+			"rot": 0
+		},
+		{
+			"id": "reading_desk",
+			"at": [
+				34,
+				10
+			],
+			"rot": 0
+		},
+		{
+			"id": "reading_desk",
+			"at": [
+				36,
+				10
+			],
+			"rot": 0
+		},
+		{
+			"id": "chair",
+			"at": [
+				32,
+				9
+			],
+			"rot": 0
+		},
+		{
+			"id": "chair",
+			"at": [
+				32,
+				11
+			],
+			"rot": 180
+		},
+		{
+			"id": "chair",
+			"at": [
+				33,
+				9
+			],
+			"rot": 0
+		},
+		{
+			"id": "chair",
+			"at": [
+				33,
+				11
+			],
+			"rot": 180
+		},
+		{
+			"id": "chair",
+			"at": [
+				34,
+				9
+			],
+			"rot": 0
+		},
+		{
+			"id": "chair",
+			"at": [
+				34,
+				11
+			],
+			"rot": 180
+		},
+		{
+			"id": "chair",
+			"at": [
+				35,
+				9
+			],
+			"rot": 0
+		},
+		{
+			"id": "chair",
+			"at": [
+				35,
+				11
+			],
+			"rot": 180
+		},
+		{
+			"id": "chair",
+			"at": [
+				36,
+				9
+			],
+			"rot": 0
+		},
+		{
+			"id": "chair",
+			"at": [
+				36,
+				11
+			],
+			"rot": 180
+		},
+		{
+			"id": "chair",
+			"at": [
+				37,
+				9
+			],
+			"rot": 0
+		},
+		{
+			"id": "chair",
+			"at": [
+				37,
+				11
+			],
+			"rot": 180
+		},
+		{
+			"id": "kingdom_banner",
+			"at": [
+				34,
+				1
+			],
+			"rot": 0
+		},
+		{
+			"id": "bookshelf",
+			"at": [
 				31,
+				1
+			],
+			"rot": 0
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				36,
+				1
+			],
+			"rot": 0
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				23
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				25
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				27
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				29
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				31
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				33
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				35
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				37
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				39
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				41
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				43
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				45
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				47
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				49
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				51
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf",
+			"at": [
+				38,
+				53
+			],
+			"rot": 90
+		},
+		{
+			"id": "bookshelf_double",
+			"at": [
+				32,
+				25
+			],
+			"rot": 0
+		},
+		{
+			"id": "bookshelf_double",
+			"at": [
+				34,
+				25
+			],
+			"rot": 0
+		},
+		{
+			"id": "bookshelf_double",
+			"at": [
+				32,
+				28
+			],
+			"rot": 0
+		},
+		{
+			"id": "bookshelf_double",
+			"at": [
+				34,
+				28
+			],
+			"rot": 0
+		},
+		{
+			"id": "bookshelf_double",
+			"at": [
+				32,
+				31
+			],
+			"rot": 0
+		},
+		{
+			"id": "bookshelf_double",
+			"at": [
+				34,
+				31
+			],
+			"rot": 0
+		},
+		{
+			"id": "bookshelf_double",
+			"at": [
+				32,
+				34
+			],
+			"rot": 0
+		},
+		{
+			"id": "bookshelf_double",
+			"at": [
+				34,
+				34
+			],
+			"rot": 0
+		},
+		{
+			"id": "reading_desk",
+			"at": [
+				32,
+				40
+			],
+			"rot": 0
+		},
+		{
+			"id": "chair",
+			"at": [
+				32,
+				41
+			],
+			"rot": 180
+		},
+		{
+			"id": "chair",
+			"at": [
+				33,
 				39
 			],
 			"rot": 0
@@ -1091,32 +2115,136 @@
 		{
 			"id": "reading_desk",
 			"at": [
+				32,
+				46
+			],
+			"rot": 0
+		},
+		{
+			"id": "chair",
+			"at": [
+				32,
+				47
+			],
+			"rot": 180
+		},
+		{
+			"id": "chair",
+			"at": [
+				33,
+				45
+			],
+			"rot": 0
+		},
+		{
+			"id": "reading_desk",
+			"at": [
+				35,
+				43
+			],
+			"rot": 0
+		},
+		{
+			"id": "chair",
+			"at": [
+				35,
+				44
+			],
+			"rot": 180
+		},
+		{
+			"id": "chair",
+			"at": [
+				36,
+				42
+			],
+			"rot": 0
+		},
+		{
+			"id": "reading_desk",
+			"at": [
+				35,
+				49
+			],
+			"rot": 0
+		},
+		{
+			"id": "chair",
+			"at": [
+				35,
+				50
+			],
+			"rot": 180
+		},
+		{
+			"id": "chair",
+			"at": [
+				36,
+				48
+			],
+			"rot": 0
+		},
+		{
+			"id": "books_floor",
+			"at": [
+				31,
+				26
+			],
+			"rot": 0
+		},
+		{
+			"id": "books_floor",
+			"at": [
+				36,
+				29
+			],
+			"rot": 0
+		},
+		{
+			"id": "books_floor",
+			"at": [
+				31,
+				33
+			],
+			"rot": 0
+		},
+		{
+			"id": "books_floor",
+			"at": [
+				33,
+				37
+			],
+			"rot": 0
+		},
+		{
+			"id": "books_floor",
+			"at": [
+				36,
+				38
+			],
+			"rot": 0
+		},
+		{
+			"id": "books_floor",
+			"at": [
 				31,
 				44
 			],
 			"rot": 0
 		},
 		{
-			"id": "dungeon_gate_closed",
+			"id": "books_floor",
 			"at": [
-				2,
-				38
-			],
-			"rot": 90
-		},
-		{
-			"id": "brazier",
-			"at": [
-				9,
-				36
+				34,
+				52
 			],
 			"rot": 0
 		},
 		{
-			"id": "brazier",
+			"id": "books_floor",
 			"at": [
-				9,
-				43
+				37,
+				46
 			],
 			"rot": 0
 		}
@@ -1126,23 +2254,15 @@
 			"id": "rey",
 			"at": [
 				19,
-				8
+				3
 			],
 			"facing": 0
-		},
-		{
-			"id": "oriel",
-			"at": [
-				16,
-				11
-			],
-			"facing": 90
 		},
 		{
 			"id": "lord_maren",
 			"at": [
 				23,
-				11
+				8
 			],
 			"facing": 270
 		},
@@ -1150,81 +2270,33 @@
 			"id": "guardia_palacio",
 			"at": [
 				17,
-				49
+				52
 			],
 			"facing": 0
 		},
 		{
-			"id": "noble_1",
+			"id": "oriel",
 			"at": [
-				9,
-				16
+				33,
+				51
 			],
-			"facing": 90
-		},
-		{
-			"id": "noble_2",
-			"at": [
-				9,
-				21
-			],
-			"facing": 90
-		},
-		{
-			"id": "noble_3",
-			"at": [
-				9,
-				27
-			],
-			"facing": 90
-		},
-		{
-			"id": "noble_4",
-			"at": [
-				30,
-				16
-			],
-			"facing": 270
-		},
-		{
-			"id": "noble_5",
-			"at": [
-				30,
-				21
-			],
-			"facing": 270
-		},
-		{
-			"id": "noble_6",
-			"at": [
-				30,
-				27
-			],
-			"facing": 270
-		},
-		{
-			"id": "archivista",
-			"at": [
-				34,
-				41
-			],
-			"facing": 270
+			"facing": 180
 		},
 		{
 			"id": "guardia_cripta_1",
 			"at": [
-				6,
-				38
+				5,
+				36
 			],
-			"facing": 270
+			"facing": 90
 		},
 		{
 			"id": "guardia_cripta_2",
 			"at": [
-				6,
-				42
+				5,
+				43
 			],
-			"facing": 270
+			"facing": 90
 		}
 	],
 	"entries": {
@@ -1237,7 +2309,7 @@
 			50
 		],
 		"from_cripta": [
-			5,
+			6,
 			40
 		]
 	},
@@ -1258,10 +2330,10 @@
 		},
 		{
 			"area": [
+				4,
+				38,
 				1,
-				39,
-				1,
-				2
+				4
 			],
 			"to": "cripta_prueba",
 			"entry": "default",
@@ -1274,8 +2346,8 @@
 				"closed": "dungeon_gate_closed",
 				"open": "dungeon_gate_open",
 				"at": [
-					2,
-					38
+					3,
+					37
 				],
 				"rot": 90
 			}
@@ -1294,41 +2366,174 @@
 	],
 	"torches": [
 		[
-			14,
-			7
+			16,
+			2
 		],
 		[
-			24,
-			7
+			23,
+			2
 		],
 		[
 			14,
-			30
+			26
 		],
 		[
 			25,
-			30
+			26
 		],
 		[
-			9,
-			36
+			14,
+			50
 		],
 		[
-			9,
-			43
+			25,
+			50
+		],
+		[
+			7,
+			28
+		],
+		[
+			7,
+			51
+		],
+		[
+			4,
+			10
+		],
+		[
+			34,
+			14
+		],
+		[
+			34,
+			38
+		],
+		[
+			34,
+			50
 		]
 	],
 	"relief": [
 		{
 			"kind": "plateau",
 			"area": [
+				15,
 				1,
-				37,
-				3,
+				10,
 				6
 			],
-			"height": -2,
-			"slope": 4
+			"height": 1.5,
+			"slope": 3.2
+		},
+		{
+			"kind": "plateau",
+			"area": [
+				1,
+				38,
+				2,
+				4
+			],
+			"height": -2.5,
+			"slope": 0
+		}
+	],
+	"walkers": [
+		{
+			"npc": "noble_1",
+			"route": [
+				[
+					15,
+					48
+				],
+				[
+					15,
+					12
+				]
+			],
+			"speed": 0.9,
+			"pause_s": 6,
+			"loop": false
+		},
+		{
+			"npc": "noble_2",
+			"route": [
+				[
+					16,
+					48
+				],
+				[
+					16,
+					12
+				]
+			],
+			"speed": 0.9,
+			"pause_s": 6,
+			"loop": false
+		},
+		{
+			"npc": "noble_3",
+			"route": [
+				[
+					24,
+					12
+				],
+				[
+					24,
+					48
+				]
+			],
+			"speed": 0.8,
+			"pause_s": 8,
+			"loop": false
+		},
+		{
+			"npc": "noble_4",
+			"route": [
+				[
+					23,
+					12
+				],
+				[
+					23,
+					48
+				]
+			],
+			"speed": 0.8,
+			"pause_s": 8,
+			"loop": false
+		},
+		{
+			"npc": "noble_5",
+			"route": [
+				[
+					32,
+					5
+				],
+				[
+					37,
+					5
+				]
+			],
+			"speed": 0.7,
+			"pause_s": 10,
+			"loop": false
+		},
+		{
+			"npc": "noble_6",
+			"route": [
+				[
+					32,
+					6
+				],
+				[
+					37,
+					6
+				]
+			],
+			"speed": 0.7,
+			"pause_s": 10,
+			"loop": false
 		}
 	]
 }

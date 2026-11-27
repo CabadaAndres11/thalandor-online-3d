@@ -1,7 +1,7 @@
 ---
 tags: [gdd]
 estado: diseñado
-actualizado: 2026-11-22
+actualizado: 2026-11-27
 ---
 
 # 4. Personajes y clases
@@ -144,6 +144,7 @@ final = (base de clase + atributos + suma de bonos planos) × (1 + suma de bonos
 - **Ropa inicial:** la decide la clase. Después cambia con el equipo ([[08 Botín y economía|§8]]).
 - **Nombres:** de 2 a 16 caracteres (letras con tildes, números, espacios, `-` y `'`), sin repetir entre los personajes del mismo jugador.
 - **Implementado (0.2.0):** modelo base de **Kenney Blocky Characters** (CC0, 27 vóxeles de alto, animado por piezas rígidas). Apariencia con **2 cuerpos** (esbelto y robusto, por proporciones), **8 tonos de piel**, **7 colores de ojos** (incluido rojo), **8 peinados** (corto, media melena, flequillo, calvo, y melena, coleta, moño y cresta en vóxel), **11 colores de pelo** (incluido rojo intenso) y **5 barbas**. La ropa inicial de cada clase es una capa de textura más piezas vóxel: hombreras del Guerrero, capucha baja del Clérigo, sombrero del Mago, capucha del Arquero y pañuelo del Asesino. Opciones en `data/characters/`.
+- **Capuchas (2026-11-27):** las del Clérigo, el Arquero y el Asesino siguen la referencia del usuario: amplias y altas, abertura en arco con forro oscuro y la cara en sombra bajo el ala, mechones a los lados y faldones escalonados sobre hombros, pecho y espalda (`tools/art/hood_v2.mjs`). Cada clase conserva sus colores y adornos (diadema y mitra, punta y pluma, máscara y cuernos).
 - **Razas [Implementado 0.10.0]** ([[D-016 Razas solo de aspecto con cabeza propia]]): **humano, elfo, enano, ogro y hombre lagarto**, solo de aspecto. Comparten el cuerpo v2 con proporciones propias:
   - el enano, más bajo (0,8) y ancho;
   - el elfo, alto y esbelto, con orejas largas;

@@ -288,6 +288,11 @@ func collision() -> CollisionMap:
 	for p: Dictionary in pieces:
 		for c: Vector2i in footprint(p.id, p.at, p.rot):
 			map.set_solid(c, true)
+	for e: Dictionary in exits: # a gate the story opens is only drawn, but its walls stand either way
+		var gate: Dictionary = e.get("gate", {})
+		if not gate.is_empty():
+			for c: Vector2i in footprint(str(gate.get("closed", "")), _v2i(gate.get("at", [0, 0])), int(gate.get("rot", 0))):
+				map.set_solid(c, true)
 	for a: Dictionary in terrain.get("areas", []):
 		if str(a.get("kind", "")) == "water":
 			var r: Array = a.get("area", [0, 0, 0, 0])

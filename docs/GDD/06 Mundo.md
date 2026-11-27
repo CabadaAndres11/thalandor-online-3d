@@ -1,7 +1,7 @@
 ---
 tags: [gdd]
 estado: en curso
-actualizado: 2026-11-22
+actualizado: 2026-11-27
 ---
 
 # 6. Mundo
@@ -36,7 +36,7 @@ La demo cubre el **prólogo y el arco 1** (misiones 1–14) y termina hacia el *
 | **Aldea** | 1–5 | Tutorial en solitario (misiones 1–2, variantes `vispera` y `asalto`); después, en ruinas, con el campamento de Verrin (0.13.0) |
 | **Bosque**, camino de la capital | 5–20 | Hordas y el rastro del Heraldo (misión 3); sale al este al Camino de Sumerhold |
 | **Camino de Sumerhold** | 4–8 | La caravana y la emboscada de bandidos (misión 4), hordas suaves y un campamento de bandidos (0.14.0) |
-| **Capital** (Sumerhold) | — | Zona segura amurallada (0.14.0): plaza con fuente y puestos, casas de piedra, el mercader, maese Corwin (reinicios) y ciudadanos que pasean. Al norte, el **palacio**: zona segura con el salón del trono y la reja de la cripta |
+| **Capital** (Sumerhold) | — | Zona segura amurallada (0.14.0): plaza con fuente y puestos, casas de piedra, el mercader, maese Corwin (reinicios) y ciudadanos que pasean. Al norte, el **palacio**: zona segura con el salón del trono (trono sobre un estrado de tres escalones, alfombra centrada, ocho estatuas gigantes de guerreros de granito gris mirando a la alfombra), la armería y la sala del consejo al norte, la galería de la cripta (reja de 6 m en el muro, a la altura de las paredes, con la escalera que baja detrás) y el archivo de Oriel (estanterías con pasillos, mesas, sillas y libros por el suelo). Los nobles pasean en parejas sin pisar la alfombra |
 | **Afueras de la capital** | 20–35 | Hordas entre misiones del arco 1 |
 | **Alcantarillas y submundo** | 30–40 | Misión 8 |
 | **Cripta bajo el palacio** | 35–50+ | Mazmorra instanciada y repetible (misiones 5, 11 y 12) |
@@ -50,7 +50,7 @@ La demo cubre el **prólogo y el arco 1** (misiones 1–14) y termina hacia el *
   - Las variantes pueden cambiar también `entries` y `walkers`.
 - **Relieve** (0.15.0, [[Plan 8.3d — Relieve, aldea nueva y correcciones (spec)|Plan 8.3d]]): `relief` en la zona (`hill`, `hollow`, `plateau` con `slope`); `ZoneLayout.height_at` da la altura y un desnivel de más de 0,6 m entre casillas es un acantilado. La simulación sigue en plano; cada cliente dibuja suelo, piezas, personajes, efectos y escenas a esa altura. El agua se queda en su hondonada.
 - **La aldea desde la 0.15.0:** calle mayor de oeste a este con 14 casas en hilera (cabaña, entramado de dos plantas, troncos, piedra y casa grande), plaza en el cruce con el camino del norte, callejones a la herrería, la colina (tumbas) y el río; **rancho** con establo, cercado, comederos y vacas que pasean. Los jabalíes, en el prado del noreste.
-- **Aldeanos que pasean** (0.13.0): ancianos sobre todo, por rutas (`walkers`). Se mueven en cada cliente con el reloj del anfitrión, no chocan con nadie y saludan con **E**.
+- **Aldeanos que pasean** (0.13.0): ancianos sobre todo, por rutas (`walkers`). Se mueven en cada cliente con el reloj del anfitrión, no chocan con nadie y saludan con **E**. Desde la 0.16.x todos los saludos de PNJ se leen en la ventana de diálogo, no en el chat.
 - **Rastro del culto en el Bosque de Eldarra** (0.13.0): al sur del camino, lejos de las hordas, un campamento abandonado, huellas de carro y la orilla de un río donde el rastro se pierde.
 - **Crecimiento:** el mundo crece por **arcos** del guion (un sello por arco).
 

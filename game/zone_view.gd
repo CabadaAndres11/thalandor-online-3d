@@ -418,6 +418,8 @@ func piece_transform(p: Dictionary) -> Transform3D:
 func ground_at(p: Dictionary) -> float:
 	if layout == null or layout.relief.is_empty():
 		return 0.0
+	if bool(layout.piece_def(str(p.get("id", ""))).get("flat", false)):
+		return 0.0 # walls and columns stand on the floor even beside a dais (palace, 2026-11-27)
 	var at: Vector2i = p.at
 	var off: Vector3 = p.get("off", Vector3.ZERO)
 	return layout.height_at(at.x + 0.5 + off.x, at.y + 0.5 + off.z)

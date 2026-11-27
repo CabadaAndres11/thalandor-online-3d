@@ -4,13 +4,16 @@
 import { Shape, TEX_D, TEX_L, SHADE, LIGHT, TINT_PRIMARY, TINT_SECONDARY } from "./vox.mjs";
 import { ellipsoid, capsule, cylinder, roundBox, carve, tone, shadeByFacing, shellAround, noise3 } from "./sculpt.mjs";
 import { headV2, torsoV2, upperArmV2, frontZ, PALETTE_V2 } from "./human_v2.mjs";
+import { deepHood } from "./hood_v2.mjs";
 
 const P = TINT_PRIMARY, S = TINT_SECONDARY;
 // Fixed materials (indices after human_v2's 40..53): base, dark, light.
 const STEEL = 60, STEEL_D = 61, STEEL_L = 62, GOLD = 63, GOLD_D = 64, GOLD_L = 65,
   LEATHER = 66, LEATHER_D = 67, LEATHER_L = 68, CLOTH = 69, CLOTH_D = 70, CLOTH_L = 71,
-  CHAIN = 72, CHAIN_D = 73, CHAIN_L = 74, WOOD = 75, WOOD_D = 76, WOOD_L = 77, STRING = 78, GEM = 79, GEM_L = 80;
+  CHAIN = 72, CHAIN_D = 73, CHAIN_L = 74, WOOD = 75, WOOD_D = 76, WOOD_L = 77, STRING = 78, GEM = 79, GEM_L = 80,
+  HOOD_IN = 81; // the dark inside of a deep hood
 export const KIT_V2 = {
+  [HOOD_IN]: "#18151a",
   ...PALETTE_V2,
   [STEEL]: "#aeb7c1", [STEEL_D]: "#6d7682", [STEEL_L]: "#e3e9ef",
   [GOLD]: "#d2a845", [GOLD_D]: "#94712a", [GOLD_L]: "#f1d886",
@@ -183,14 +186,11 @@ function hatMage() {
   return s;
 }
 
+// The deep hood of the reference (hood_v2.mjs) with the ranger's point at the back.
 function hoodArcher() {
-  const s = shellAround(HEAD, 2, P, (x, y, z) => !nearFace(x, y, z) && y >= -1);
-  ellipsoid(s, [-0.5, 14, -9], [2.5, 3, 2.5], P); // the point at the back
-  const cape = shellAround(TORSO, 2, P, (x, y, z) => y >= 20 && y <= 27);
-  // The cape is drawn in the head frame: torso y + 53 - 81.
-  for (const [x, y, z, i] of cape.cells.values()) s.put(x, y - 28, z, i);
+  const s = deepHood(HEAD, TORSO, P, HOOD_IN, { seed: 31 });
+  for (let k = 0; k < 5; k++) ellipsoid(s, [-0.5, 16 - k, -10 - k * 0.8], [2.6 - k * 0.12, 2.2, 1.8], P); // the point
   paint(without(s, HEAD), [P], 31);
-  recolor(s, (x, y, z) => z >= 3 && z <= 6 && y >= 12 && y <= 14, SHADE(P)); // brim shadow
   return s;
 }
 

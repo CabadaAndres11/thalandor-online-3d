@@ -512,8 +512,8 @@
 		"part": "head",
 		"offset": [
 			-14,
-			-8,
-			-11
+			-24,
+			-14
 		],
 		"tag": "headgear",
 		"hides": [

@@ -43,6 +43,15 @@ static func load_id(dialogue_id: String) -> DialogueRunner:
 	return r
 
 
+## A conversation of plain lines with no file (2026-11-27: an NPC's greeting is shown in the
+## dialogue window, not in the chat). lines: [[speaker, text key], ...].
+static func from_lines(dialogue_id: String, lines: Array) -> DialogueRunner:
+	var r := DialogueRunner.new()
+	r.id = dialogue_id
+	r._nodes = {"start": {"lines": lines.duplicate(true)}}
+	return r
+
+
 func start(log: QuestLog) -> void:
 	_flags = log.flags.duplicate()
 	_set.clear()

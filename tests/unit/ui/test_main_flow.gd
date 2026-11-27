@@ -928,3 +928,16 @@ func test_tutorial_hint_goes_when_done() -> void:
 	main.pause_menu.set_group_locked(false)
 	assert_eq(main.pause_menu.lock_hint(), "")
 	assert_false(main.pause_menu._hint.visible, "the hint is gone at once")
+
+
+func test_a_greeting_opens_the_dialogue_window_not_the_chat() -> void:
+	main._on_play("Prueba")
+	await wait_physics_frames(3)
+	var before := main.chat.visible_lines().size()
+	main._greet("noble_1")
+	assert_true(main.dialogue_window.visible, "the greeting shows in the dialogue window")
+	assert_eq(main.dialogue_window.speaker_text(), tr("NPC_NOBLE_1"))
+	main.dialogue_window.advance_time(30.0) # the line is typed out
+	assert_eq(main.dialogue_window.shown_text(), tr("NPC_NOBLE_1_GREET"))
+	assert_eq(main.chat.visible_lines().size(), before, "nothing is written in the chat")
+	assert_eq(str(main._talk.kind), "greet")

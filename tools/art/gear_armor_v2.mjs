@@ -8,6 +8,7 @@ import { ellipsoid, capsule, cylinder, roundBox, carve, tone, shadeByFacing, she
 import { headV2, torsoV2, hipsV2, upperArmV2, forearmV2, handV2, thighV2, shinV2, frontZ } from "./human_v2.mjs";
 import { P, S, C, CLASS_SETS, cmats, tierPalette, PALETTE } from "./gear_style.mjs";
 import { headLizardV2 } from "./races_v2.mjs";
+import { deepHood, onBrimTop } from "./hood_v2.mjs";
 
 export const BODY = {
   head: headV2(), torso: torsoV2(), hips: hipsV2(), arm: upperArmV2(), fore: forearmV2(),
@@ -67,24 +68,24 @@ const onFace = (x, y, z) => z >= 1 && y <= 13 && y >= -1 && x >= -6 && x <= 5;
 
 // --- Class headgear --------------------------------------------------------------------
 const HEADS = {
-  // A hood under a gold circlet with a sun on the brow; tier 3 a tall mitre.
+  // A deep hood under a gold circlet with a sun on the brow; tier 3 a tall mitre.
   cleric(t, m) {
-    const s = merge(shellOn(BODY.head, 2, m.b, (x, y, z) => !onFace(x, y, z) && y >= 0), mantle(m));
+    const s = deepHood(BODY.head, BODY.torso, m.b, C.EBONY_D, { seed: 101 + t });
     finish(s, m, 101 + t);
-    recolor(s, (x, y, z) => y === 13 && z >= 0, m.acc); // circlet
-    gem(s, -1, 14, (frontZ(s, -1, 14) ?? 8) + 1, m);
-    if (t >= 2) recolor(s, (x, y, z) => z >= 2 && (x === -7 || x === 6 || x === -8 || x === 7) && y >= 1 && y <= 12, m.trim);
+    recolor(s, (x, y, z, i) => onBrimTop(x, y, z) && i !== C.EBONY_D, m.acc); // circlet
+    gem(s, -1, 15, (frontZ(s, -1, 15) ?? 9) + 1, m);
+    if (t >= 2) recolor(s, (x, y, z, i) => z >= 6 && (x === -9 || x === 8) && y >= 0 && y <= 13 && i !== C.EBONY_D, m.trim);
     if (t >= 3) {
       const mitre = new Shape();
       for (let k = 0; k <= 13; k++) {
         const r = 6.4 - k * 0.32;
-        cylinder(mitre, [-0.5, 16 + k, -1.5], [-0.5, 16 + k, -1.5], r, k % 4 === 3 ? m.l : m.b);
+        cylinder(mitre, [-0.5, 19 + k, -1.5], [-0.5, 19 + k, -1.5], r, k % 4 === 3 ? m.l : m.b);
       }
       without(mitre, BODY.head);
       finish(mitre, m, 107);
-      for (let y = 18; y <= 27; y++) onFront(mitre, -1, y, m.acc, 0), onFront(mitre, 0, y, m.acc, 0); // a gold cross
-      for (const x of [-3, -2, 1, 2]) onFront(mitre, x, 24, m.acc, 0);
-      onFront(mitre, -1, 21, m.rune), onFront(mitre, 0, 21, m.rune);
+      for (let y = 21; y <= 30; y++) onFront(mitre, -1, y, m.acc, 0), onFront(mitre, 0, y, m.acc, 0); // a gold cross
+      for (const x of [-3, -2, 1, 2]) onFront(mitre, x, 27, m.acc, 0);
+      onFront(mitre, -1, 24, m.rune), onFront(mitre, 0, 24, m.rune);
       for (const [x, y, z, i] of mitre.cells.values()) s.put(x, y, z, i);
     }
     return { s, hides: ["hair", "hair_cap"] };
@@ -112,34 +113,32 @@ const HEADS = {
     }
     return { s, hides: ["hair"] };
   },
-  // A ranger's hood with a long point; tier 2 a leather brow band, tier 3 a feather and glow.
+  // A ranger's deep hood with a long point; tier 2 a leather brow band, tier 3 a feather and glow.
   archer(t, m) {
     const hood = m.hood ?? P;
     const hm = { ...m, b: hood, d: SHADE(hood) === SHADE(P) && hood === P ? SHADE(P) : m.d, l: hood === P ? LIGHT(P) : m.l };
-    const s = merge(shellOn(BODY.head, 2, hood, (x, y, z) => !onFace(x, y, z) && y >= 0), mantle({ ...hm, b: hood }));
-    for (let k = 0; k < 4 + 2 * t; k++) ellipsoid(s, [-0.5, 13 - k, -9 - k * 0.8], [2.4 - k * 0.12, 2, 1.6], hood); // the point
+    const s = deepHood(BODY.head, BODY.torso, hood, C.EBONY_D, { seed: 121 + t });
+    for (let k = 0; k < 4 + 2 * t; k++) ellipsoid(s, [-0.5, 16 - k, -10 - k * 0.8], [2.6 - k * 0.12, 2.2, 1.8], hood); // the point
     without(s, BODY.head);
     finish(s, hm, 121 + t);
-    recolor(s, (x, y, z) => y === -2 + TORSO_TO_HEAD + 28 - 2 && z < -6, m.b); // mail edge under the cape
-    if (t >= 2) { recolor(s, (x, y, z) => y === 12 && z >= 1, C.LEATHER); onFront(s, -1, 12, m.acc), onFront(s, 0, 12, m.acc); }
+    if (t >= 2) { recolor(s, (x, y, z, i) => y === 14 && z >= 6 && i !== C.EBONY_D, C.LEATHER); onFront(s, -1, 14, m.acc), onFront(s, 0, 14, m.acc); }
     if (t >= 3) {
-      for (let k = 0; k < 12; k++) s.put(8 + (k > 8 ? 1 : 0), 11 + k, -2 - (k >> 2), k > 8 ? C.WHITE : S); // a feather
-      onFront(s, 4, 12, m.rune), onFront(s, -5, 12, m.rune);
+      for (let k = 0; k < 12; k++) s.put(10 + (k > 8 ? 1 : 0), 13 + k, -2 - (k >> 2), k > 8 ? C.WHITE : S); // a feather
+      onFront(s, 4, 15, m.rune), onFront(s, -5, 15, m.rune);
     }
     return { s, hides: ["hair", "hair_cap"] };
   },
-  // A hood and a mask over the lower face; tier 2 a band, tier 3 small horns and glowing trim.
+  // A deep hood and a mask over the lower face; tier 2 a band, tier 3 small horns and glowing trim.
   assassin(t, m) {
-    const hood = shellOn(BODY.head, 2, m.b, (x, y, z) => !onFace(x, y, z) && y >= 0);
+    const hood = deepHood(BODY.head, BODY.torso, m.b, C.EBONY_D, { seed: 131 + t });
     const mask = shellOn(BODY.head, 1, m.d, (x, y, z) => y >= -1 && y <= 6 && z >= -2);
-    const s = merge(mantle(m), hood, mask);
+    const s = merge(hood, mask);
     finish(s, m, 131 + t);
-    recolor(s, (x, y, z) => y === 13 && z >= 1, m.l); // brow
     recolor(s, (x, y, z, i) => y === 6 && z >= 1 && i === m.d, m.trim); // mask edge
-    if (t >= 2) recolor(s, (x, y, z) => y === 12 && z >= 1, m.trim);
+    if (t >= 2) recolor(s, (x, y, z, i) => y === 15 && z >= 6 && i !== C.EBONY_D, m.trim);
     if (t >= 3) {
-      for (const dir of [-1, 1]) capsule(s, [dir > 0 ? 4 : -5, 15, -2], [dir > 0 ? 8 : -9, 21, -4], 1.3, 0.5, m.acc); // horns
-      for (const x of [-6, 5]) onFront(s, x, 9, m.rune);
+      for (const dir of [-1, 1]) capsule(s, [dir > 0 ? 5 : -6, 18, -2], [dir > 0 ? 9 : -10, 24, -4], 1.3, 0.5, m.acc); // horns
+      for (const x of [-9, 8]) onFront(s, x, 9, m.rune);
       without(s, BODY.head);
     }
     return { s, hides: ["hair", "hair_cap"] };

@@ -33,3 +33,6 @@ Jefe de cripta con nivel de instancia, mármol, mercado y casas de la capital, c
 
 ## Tercera tanda
 Casco del ogro, sin barbas para ogros, bosque (sin cripta antigua ni franja de agua), fuente y Corwin en la capital, palacio rediseñado (nobles, estatuas, archivo, escalera y portón de la cripta con guardias, sin cartel), capturas de carga y carga sin congelación previa. Suite GUT: 1835 pruebas, todas pasan.
+
+## Cuarta tanda
+Capuchas según la referencia (`hood_v2.mjs`), casco del ogro más pequeño, palacio rehecho (estrado con escalones, estatuas gigantes de granito, reja enrasada con escalera detrás, archivo, armería, sala del consejo, nobles en parejas), Oriel en el archivo y sin Archivista real, saludos de PNJ en la ventana de diálogo, escenas de audiencia y descenso reajustadas. Se trabajó en el worktree `acolito-cultista-enemy-3966a7` (el de la rama original no se podía escribir desde la sesión).

@@ -70,6 +70,8 @@ var _playing_scene: String = ""
 var _hud_before: Dictionary = {}
 ## The conversation open now: {npc, quest, kind, dialogue} (Plan 8.2).
 var _talk: Dictionary = {}
+## The id of an NPC's greeting shown in the dialogue window: this prefix and the NPC's id.
+const GREET_DIALOGUE := "greet:"
 var _upgrade_sent_at: int = -10000
 var abilities: AbilityDB
 var dialog: MessageDialog
@@ -493,12 +495,14 @@ func _open_resets() -> void:
 	reset_window.show_for(game.client.progress, game.client.inventory.gold, game.client.balance)
 
 
-## An NPC with nothing for this player greets in the chat (Plan 8.3a: nobody trains any more).
+## An NPC with nothing for this player greets in the dialogue window (2026-11-27: no longer in
+## the chat). A greeting is not a story conversation: the host is not told when it ends.
 func _greet(npc_id: String) -> void:
-	var npc := NpcDB.load_default().npc(npc_id)
-	var lines: Dictionary = npc.get("lines", {})
-	if lines.has("greet"):
-		chat.add_message(tr(str(npc.get("name", ""))), tr(str(lines.greet)), false)
+	var lines: Dictionary = NpcDB.load_default().npc(npc_id).get("lines", {})
+	if not lines.has("greet"):
+		return
+	var runner := DialogueRunner.from_lines(GREET_DIALOGUE + npc_id, [[npc_id, str(lines.greet)]])
+	_open_talk(npc_id, runner, {"npc": npc_id, "quest": "", "kind": "greet", "dialogue": runner.id})
 
 
 ## Opens what an NPC has for this player (NpcTalk): its dialogue, or the turn-in. False when it
@@ -519,8 +523,15 @@ func _talk_to(npc_id: String) -> bool:
 	if runner == null:
 		push_warning("Main: no dialogue " + dialogue)
 		return false
+	_open_talk(npc_id, runner, {"npc": npc_id, "quest": str(pick.quest), "kind": str(pick.kind), "dialogue": dialogue})
+	return true
+
+
+## Shows a conversation with an NPC: the panels close and the NPC turns to the player.
+func _open_talk(npc_id: String, runner: DialogueRunner, talk: Dictionary) -> void:
+	var c := game.client
 	runner.start(c.quests)
-	_talk = {"npc": npc_id, "quest": str(pick.quest), "kind": str(pick.kind), "dialogue": dialogue}
+	_talk = talk
 	for w: Control in _panel_windows():
 		w.visible = false
 	var avatar := game.npc_avatar(npc_id)
@@ -528,8 +539,7 @@ func _talk_to(npc_id: String) -> bool:
 	if avatar != null and not me.is_empty():
 		avatar.face(me.position)
 	var npc := NpcDB.load_default().npc(npc_id)
-	dialogue_window.show_for(runner, tr(str(npc.get("name", npc_id))), game.client.player_name, _epithet())
-	return true
+	dialogue_window.show_for(runner, tr(str(npc.get("name", npc_id))), c.player_name, _epithet())
 
 
 ## The player's epithet once the story gives it (the flag "apodo"): Thal An Dor.
@@ -556,7 +566,7 @@ func _on_dialogue_action(name: String, arg: String) -> void:
 
 
 func _on_dialogue_finished(dialogue_id: String) -> void:
-	if game != null and game.client != null:
+	if game != null and game.client != null and str(_talk.get("kind", "")) != "greet":
 		game.client.request_quest("talk_done", [str(_talk.get("npc", "")), dialogue_id])
 	_end_talk()
 

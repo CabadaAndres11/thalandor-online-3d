@@ -2345,6 +2345,7 @@
 				0
 			]
 		],
+		"flat": true,
 		"shadow": "medium",
 		"range": 90
 	},
@@ -2448,18 +2449,59 @@
 		"shadow": "medium",
 		"range": 90
 	},
-	"statue": {
-		"vox": "res://assets/world/statue.vox",
+	"statue_warrior_a": {
+		"vox": "res://assets/world/statue_warrior_a.vox",
 		"scale": 0.5,
 		"offset": [
-			1,
 			0,
-			1
+			0,
+			0
 		],
 		"footprint": [
 			[
 				0,
 				0
+			],
+			[
+				1,
+				0
+			],
+			[
+				0,
+				1
+			],
+			[
+				1,
+				1
+			]
+		],
+		"shadow": "medium",
+		"range": 90
+	},
+	"statue_warrior_b": {
+		"vox": "res://assets/world/statue_warrior_b.vox",
+		"scale": 0.5,
+		"offset": [
+			0,
+			0,
+			0
+		],
+		"footprint": [
+			[
+				0,
+				0
+			],
+			[
+				1,
+				0
+			],
+			[
+				0,
+				1
+			],
+			[
+				1,
+				1
 			]
 		],
 		"shadow": "medium",
@@ -2511,9 +2553,9 @@
 		"vox": "res://assets/world/dungeon_gate_closed.vox",
 		"scale": 0.5,
 		"offset": [
-			-1,
 			0,
-			2
+			-52,
+			0
 		],
 		"footprint": [
 			[
@@ -2521,8 +2563,80 @@
 				0
 			],
 			[
+				0,
+				1
+			],
+			[
+				0,
+				2
+			],
+			[
+				0,
+				3
+			],
+			[
+				1,
+				1
+			],
+			[
+				1,
+				2
+			],
+			[
+				1,
+				3
+			],
+			[
+				2,
+				1
+			],
+			[
+				2,
+				2
+			],
+			[
+				2,
+				3
+			],
+			[
 				3,
+				1
+			],
+			[
+				3,
+				2
+			],
+			[
+				3,
+				3
+			],
+			[
+				4,
+				1
+			],
+			[
+				4,
+				2
+			],
+			[
+				4,
+				3
+			],
+			[
+				5,
 				0
+			],
+			[
+				5,
+				1
+			],
+			[
+				5,
+				2
+			],
+			[
+				5,
+				3
 			]
 		],
 		"shadow": "medium",
@@ -2532,7 +2646,145 @@
 		"vox": "res://assets/world/dungeon_gate_open.vox",
 		"scale": 0.5,
 		"offset": [
-			-1,
+			0,
+			-52,
+			0
+		],
+		"footprint": [
+			[
+				0,
+				0
+			],
+			[
+				0,
+				1
+			],
+			[
+				0,
+				2
+			],
+			[
+				0,
+				3
+			],
+			[
+				1,
+				1
+			],
+			[
+				1,
+				2
+			],
+			[
+				1,
+				3
+			],
+			[
+				2,
+				1
+			],
+			[
+				2,
+				2
+			],
+			[
+				2,
+				3
+			],
+			[
+				3,
+				1
+			],
+			[
+				3,
+				2
+			],
+			[
+				3,
+				3
+			],
+			[
+				4,
+				1
+			],
+			[
+				4,
+				2
+			],
+			[
+				4,
+				3
+			],
+			[
+				5,
+				0
+			],
+			[
+				5,
+				1
+			],
+			[
+				5,
+				2
+			],
+			[
+				5,
+				3
+			]
+		],
+		"shadow": "medium",
+		"range": 90
+	},
+	"bookshelf_double": {
+		"vox": "res://assets/world/bookshelf_double.vox",
+		"scale": 0.5,
+		"offset": [
+			0,
+			0,
+			1
+		],
+		"footprint": [
+			[
+				0,
+				0
+			],
+			[
+				1,
+				0
+			]
+		],
+		"shadow": "medium",
+		"range": 90
+	},
+	"chair": {
+		"vox": "res://assets/world/chair.vox",
+		"scale": 0.5,
+		"offset": [
+			4,
+			0,
+			3
+		],
+		"footprint": [],
+		"shadow": "medium",
+		"range": 90
+	},
+	"books_floor": {
+		"vox": "res://assets/world/books_floor.vox",
+		"scale": 0.5,
+		"offset": [
+			2,
+			0,
+			3
+		],
+		"footprint": [],
+		"shadow": "medium",
+		"range": 90
+	},
+	"weapon_rack": {
+		"vox": "res://assets/world/weapon_rack.vox",
+		"scale": 0.5,
+		"offset": [
+			0,
 			0,
 			2
 		],
@@ -2542,7 +2794,24 @@
 				0
 			],
 			[
-				3,
+				1,
+				0
+			]
+		],
+		"shadow": "medium",
+		"range": 90
+	},
+	"armor_stand": {
+		"vox": "res://assets/world/armor_stand.vox",
+		"scale": 0.5,
+		"offset": [
+			1,
+			0,
+			4
+		],
+		"footprint": [
+			[
+				0,
 				0
 			]
 		],
@@ -2567,6 +2836,7 @@
 				0
 			]
 		],
+		"flat": true,
 		"shadow": "medium",
 		"range": 90
 	},

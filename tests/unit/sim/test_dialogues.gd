@@ -134,3 +134,15 @@ func test_all_dialogues_valid() -> void:
 	var errors := DialogueRunner.validate_dir(DialogueRunner.DIR)
 	assert_eq(errors, [] as Array[String], "\n".join(errors))
 	assert_eq(DialogueRunner.validate_dir(DIALOGUES), [] as Array[String])
+
+
+func test_from_lines_runs_plain_lines_then_ends() -> void:
+	var r := DialogueRunner.from_lines("greet:noble_1", [["noble_1", "NPC_NOBLE_1_GREET"], ["noble_1", "B"]])
+	r.start(_log())
+	assert_eq(r.id, "greet:noble_1")
+	assert_eq(r.current_line(), ["noble_1", "NPC_NOBLE_1_GREET"])
+	assert_true(r.advance())
+	assert_eq(r.current_line(), ["noble_1", "B"])
+	assert_false(r.advance())
+	assert_true(r.finished())
+	assert_true(r.choices().is_empty())

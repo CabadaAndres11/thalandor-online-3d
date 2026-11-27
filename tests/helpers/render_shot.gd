@@ -38,6 +38,7 @@ func _initialize() -> void:
 	root.add_child(cam)
 	cam.look_at_from_position(at, look)
 	view.follow(look)
+	view.show_gates(QuestLog.new()) # gates as a new story sees them (closed)
 
 
 func _process(_delta: float) -> bool:

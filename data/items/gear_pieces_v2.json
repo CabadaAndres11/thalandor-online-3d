@@ -150,8 +150,8 @@
 		"part": "head",
 		"offset": [
 			-14,
-			-8,
-			-9
+			-24,
+			-10
 		],
 		"tag": "gear",
 		"hides": [
@@ -485,8 +485,8 @@
 		"part": "head",
 		"offset": [
 			-14,
-			-8,
-			-14
+			-24,
+			-15
 		],
 		"tag": "gear",
 		"hides": [
@@ -631,8 +631,8 @@
 		"part": "head",
 		"offset": [
 			-14,
-			-8,
-			-9
+			-24,
+			-10
 		],
 		"tag": "gear",
 		"hides": [
@@ -948,8 +948,8 @@
 		"part": "head",
 		"offset": [
 			-14,
-			-8,
-			-9
+			-24,
+			-10
 		],
 		"tag": "gear",
 		"hides": [
@@ -1305,8 +1305,8 @@
 		"part": "head",
 		"offset": [
 			-14,
-			-8,
-			-16
+			-24,
+			-17
 		],
 		"tag": "gear",
 		"hides": [
@@ -1451,8 +1451,8 @@
 		"part": "head",
 		"offset": [
 			-14,
-			-8,
-			-9
+			-24,
+			-10
 		],
 		"tag": "gear",
 		"hides": [
@@ -1779,8 +1779,8 @@
 		"part": "head",
 		"offset": [
 			-14,
-			-8,
-			-9
+			-24,
+			-10
 		],
 		"tag": "gear",
 		"hides": [
@@ -2202,8 +2202,8 @@
 		"part": "head",
 		"offset": [
 			-14,
-			-8,
-			-17
+			-24,
+			-18
 		],
 		"tag": "gear",
 		"hides": [
@@ -2370,8 +2370,8 @@
 		"part": "head",
 		"offset": [
 			-14,
-			-8,
-			-9
+			-24,
+			-10
 		],
 		"tag": "gear",
 		"hides": [

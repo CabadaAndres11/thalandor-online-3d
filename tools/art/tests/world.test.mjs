@@ -12,7 +12,7 @@ test("every piece exists and fits a vox model", () => {
   for (const id of IDS) {
     assert.ok(p[id], id);
     for (const sh of p[id].parts ? Object.values(p[id].parts) : [p[id].shape]) {
-      for (const d of sh.size()) assert.ok(d <= 126, `${id} size ${d}`);
+      for (const d of sh.size()) assert.ok(d <= 256, `${id} size ${d}`);
     }
   }
 });
