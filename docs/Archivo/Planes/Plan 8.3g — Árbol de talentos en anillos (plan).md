@@ -2,7 +2,7 @@
 tags: [plan]
 plan: 8.3g
 fecha: 2026-11-27
-estado: borrador
+estado: implementado
 actualizado: 2026-11-27
 ---
 # Árbol de talentos en anillos — Implementation Plan

@@ -92,17 +92,18 @@ Cada nivel sube **+2 a cada uno de los cinco atributos** automáticamente y otor
 
 **Sin nivel máximo:** para que los números no se disparen, cada punto de atributo da siempre lo mismo y se nota (1 fuerza = +1 de ataque, 1 aguante = +10 de vida…, en `data/balance.json`); lo que está acotado son la probabilidad de crítico, esquiva y bloqueo y la velocidad extra.
 
-## 4.6 Árbol de talentos **[Implementado]** (0.6.0) (diseño probado en el prototipo 2D)
+## 4.6 Árbol de talentos **[Implementado]** (Plan 8.3g, rehecho en anillos)
 - **Puntos:** 1 por nivel a partir del 2.
 - **Árbol común a todas las clases.** Los nodos solo dan estadísticas: no modifican habilidades.
-- **Estructura circular:** se empieza en el centro y se avanza en cualquier dirección comprando nodos conectados a los que ya tienes (1 punto por nodo). Cada dirección está orientada a unas estadísticas.
-  - **5 direcciones** en orden circular: Poderío (daño físico), Celeridad (velocidad y recargas), Vitalidad (sostenimiento), Bastión (defensa) y Arcano (daño mágico).
-  - **Radios híbridos** entre direcciones vecinas que mezclan las dos.
-  - **Notables** (valen el doble) y **culminantes** al final de cada dirección.
-- **Crece con el personaje:** cada rango de clase (nivel 50, 100…) desbloquea un **anillo exterior** nuevo con más nodos y culminantes más potentes.
-- **Puntos sobrantes (maestría):** cuando un jugador ha comprado todo lo disponible, los puntos nuevos van a **maestrías**: bonos pequeños e ilimitados (por ejemplo +0,1 % de vida por rango) con rendimiento decreciente.
-- **Reinicio:** completo, cuesta oro y se hace con el instructor de la capital, fuera de combate.
-- **Nodos:** ver [[Anexo C — Árbol de talentos]] (círculo inicial de 46 nodos).
+- **Siete anillos cerrados** alrededor de un centro común (281 nodos con el centro). Cada anillo se une al siguiente por muchos puntos; se compra cualquier nodo conectado al centro o a uno ya comprado. **Todo está disponible desde el principio**: ni el nivel ni la mejora de clase bloquean anillos.
+- **5 direcciones** en sectores: Poderío (daño físico), Celeridad (velocidad y recargas), Vitalidad (sostenimiento), Bastión (defensa y amenaza) y Arcano (daño mágico). En las fronteras los nodos **mezclan** las estadísticas de las dos direcciones.
+- **Tipos:** nodo (1 estadística, 2 en las fronteras), **notable** (2–3) y **culminante** (2 grandes, en los anillos 4 y 7 de cada dirección). Los valores crecen hacia fuera (×1 en el anillo 1, ×2 en el 7). El árbol entero se completa hacia el nivel 280.
+- **Ruta recomendada por clase:** 100 nodos marcados en dorado y numerados en la ventana; se puede ocultar. Es solo una guía.
+- **Maestrías:** cuando todos los nodos de una dirección están comprados, cada punto extra mejora su maestría (rendimiento decreciente).
+- **Reinicio:** completo, cuesta oro y se hace con Maese Corwin en la capital, fuera de combate.
+- **Ventana (T):** holograma azul a pantalla completa; rueda para el zoom, arrastrar para moverse, clic para comprar. Cada nodo es el icono de su estadística (`assets/icons/talents/`) en un marco según su tipo.
+- **Personajes anteriores** (versión 7): al cargarse pierden sus talentos y maestrías y recuperan todos los puntos.
+- **Nodos:** ver [[Anexo C — Árbol de talentos]].
 
 ## 4.7 Cálculo de estadísticas **[Implementado]** (0.6.0)
 ```
@@ -120,7 +121,7 @@ final = (base de clase + atributos + suma de bonos planos) × (1 + suma de bonos
 - **Experiencia por monstruo:** `8 × nivel^1,2`, ×4 si es élite. Baja si el monstruo está más de 2 niveles por debajo (mínimo 10 %).
 - **Reparto en grupo:** entre los jugadores cercanos, con un bonus de `1 + 0,1 × (miembros − 1)`.
 - **Al subir de nivel:** vida y recurso al máximo, efecto visual y aviso en el chat para todos.
-- **Cada 50 niveles:** rango de clase (mejora a elegir, [[04 Personajes y progresión|§4.4]]) y anillo nuevo del árbol de talentos ([[04 Personajes y progresión|§4.6]]).
+- **Cada 50 niveles:** rango de clase (mejora a elegir, [[04 Personajes y progresión|§4.4]]).
 - **Muerte:** no hace perder experiencia.
 - **De dónde sale la experiencia** ([[D-017 Mundo por zonas, hordas y demo del prólogo y arco 1]]): sobre todo de **matar hordas y de las mazmorras**. Completar una misión da 1 o 2 niveles, más la experiencia de sus enemigos.
 

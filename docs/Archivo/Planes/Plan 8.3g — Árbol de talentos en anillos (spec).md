@@ -2,7 +2,7 @@
 tags: [plan, spec]
 plan: 8.3g
 fecha: 2026-11-27
-estado: borrador
+estado: implementado
 actualizado: 2026-11-27
 ---
 # Plan 8.3g — Árbol de talentos en anillos: diseño

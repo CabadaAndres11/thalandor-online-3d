@@ -1,35 +1,32 @@
 ---
 tags: [gdd, talentos]
 estado: implementado
-actualizado: 2026-11-16
+actualizado: 2026-11-27
 ---
 
 # Anexo C — Árbol de talentos
 
-**Forma:** 46 nodos.
-- **Inicio:** un nodo central, gratis.
-- **10 radios de 4 nodos:** 5 direcciones puras y 5 híbridas entre direcciones vecinas. Los nodos híbridos dan el bonus principal de sus dos direcciones al 60 % (al 100 % en el notable).
-- **Anillos:** el 1.er y el 3.er paso de cada radio se conectan con los de los radios vecinos.
-- **Culminantes:** al final de cada radio puro, a 5 puntos del centro.
-- **Anillos exteriores:** se añaden con cada rango de clase ([[04 Personajes y progresión|§4.6]]).
+Generado por `tools/data/make_talents.mjs` (Plan 8.3g) en `data/talents.json`.
 
-| Dirección | Paso 1 | Paso 2 | Paso 3 (notable) | Paso 4 | Culminante |
-|---|---|---|---|---|---|
-| Poderío | +3 % poder de ataque | +1 % crítico | +4 % poder de ataque, +5 % daño crítico | +2 % daño realizado | +8 % poder de ataque, +10 % daño crítico |
-| Celeridad | +3 % velocidad | +1 % esquiva | −3 % recargas, +3 % velocidad | −2 % recargas | −8 % recargas |
-| Vitalidad | +1 vida/s | +3 % curación realizada | +1 % robo de vida, +4 % curación recibida | +3 % curación recibida | +8 % curación recibida, +2 % robo de vida |
-| Bastión | +4 % armadura | +3 % vida | +2 % bloqueo, −2 % daño recibido | +15 armadura | +8 % vida, −3 % daño recibido |
-| Arcano | +3 % poder de hechizos | +4 % recurso máximo | +5 % daño crítico, +4 % poder de hechizos | +5 % regeneración de maná | +8 % poder de hechizos |
+**Forma:** un centro y **7 anillos cerrados** de 10, 20, 30… 70 nodos (281 en total). El nodo *i* del anillo *r* está a `360·i/(10·r)` grados desde arriba. Cada anillo es un círculo (cada nodo enlaza con sus dos vecinos), el anillo 1 entero enlaza con el centro y, en los demás, uno de cada dos nodos enlaza con el más cercano del anillo interior.
 
+**Direcciones** (centradas a 0°, 72°, 144°, 216° y 288°) y sus estadísticas:
 
-## Anillo exterior (con mejora de clase)
+| Dirección | Estadísticas |
+|---|---|
+| Poderío | poder de ataque, crítico, daño crítico, daño realizado |
+| Celeridad | velocidad de movimiento, esquiva, recargas |
+| Vitalidad | vida por segundo, robo de vida, curación realizada, curación recibida |
+| Bastión | armadura (%), vida máxima, bloqueo, armadura plana, daño recibido, amenaza |
+| Arcano | poder de hechizos, recurso máximo, regeneración de recurso |
 
-20 nodos más, dos por radio (`<radio>_5`, `<radio>_6`); solo se pueden comprar con una mejora del nivel 50 elegida.
-- **Paso 5:** el bonus del paso 1 del radio × 1,5. Los pasos 5 de radios vecinos se enlazan en anillo.
-- **Paso 6:** el bonus del notable (radios híbridos) o del culminante (radios puros) × 1,5. En los puros es un segundo culminante.
-- Se llega a él desde el final del radio (paso 4 o culminante). Al reiniciar la mejora se pierden estos nodos y se devuelven sus puntos.
-- **Maestrías:** cuando todos los nodos disponibles de una dirección están comprados, cada punto extra sube su maestría (rendimientos decrecientes: el rango r vale `valor × r × 100 / (r + 100)`).
-- Datos: `data/talents.json`, generado con `tools/data/make_talents.mjs`.
+- **Mezcla:** a partir del 40 % del camino hacia la dirección vecina, un nodo da una estadística de cada una al 60 %.
+- **Valores:** el del nodo pequeño de antes (por ejemplo +3 % ataque, +1 % crítico, +15 armadura) × `1 + (anillo − 1)/6` (×1 a ×2).
+- **Notables:** uno de cada cinco nodos desde el anillo 2: dos estadísticas de su dirección al 100 % (y una de la vecina al 50 % en las fronteras).
+- **Culminantes:** en el centro de cada dirección en los anillos 4 y 7: sus dos primeras estadísticas × 2,5.
+- **Iconos:** cada nodo usa el de su primera estadística.
+- **Rutas:** por clase, 100 nodos elegidos uno a uno entre los comprables según las prioridades de la clase (con un paso de anticipación).
+- **Maestrías:** cuando todos los nodos de una dirección están comprados, cada punto extra sube su maestría (rendimientos decrecientes: el rango r vale `valor × r × 100 / (r + 100)`).
 
 ---
 ← [[00 Índice del GDD|Índice del GDD]]
