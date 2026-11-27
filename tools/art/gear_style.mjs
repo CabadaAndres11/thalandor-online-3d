@@ -14,6 +14,8 @@ export const C = {
   WHITE: 93, CRYSTAL: 94, CRYSTAL_D: 95,
   // A class's own colors at tiers 2 and 3 (set per piece, see TIER_COLORS).
   X_B: 100, X_D: 101, X_L: 102, X_T: 103, X_T2: 104, X_T2_D: 105,
+  // Story characters' own clothes (2026-11-27): Verrin's green cloak, the king's purple and fur.
+  GREEN: 106, GREEN_D: 107, PURPLE: 108, PURPLE_D: 109, PURPLE_L: 110, FUR: 111, FUR_D: 112, FUR_L: 113,
 };
 export const PALETTE = {
   [C.IRON]: "#8a8f96", [C.IRON_D]: "#5c6168", [C.IRON_L]: "#b3b8be",
@@ -28,6 +30,8 @@ export const PALETTE = {
   [C.RED]: "#a8262a", [C.RED_D]: "#6e1418", [C.BLUE]: "#3c63c8", [C.GEM]: "#d33a4a",
   [C.PAPER]: "#e9dcb8", [C.PAPER_D]: "#b9a67a", [C.STRING]: "#e6dfcc", [C.WHITE]: "#f2efe6",
   [C.CRYSTAL]: "#8fd8ff", [C.CRYSTAL_D]: "#4f9ccf", [GLOW]: "#9fe0ff",
+  [C.GREEN]: "#2f5233", [C.GREEN_D]: "#1e3822", [C.PURPLE]: "#4b2a5e", [C.PURPLE_D]: "#2f1a3d", [C.PURPLE_L]: "#6c4686",
+  [C.FUR]: "#3a3532", [C.FUR_D]: "#221f1d", [C.FUR_L]: "#57504a",
 };
 
 // Body part boxes, in voxels from each part's pivot (see make_humans.mjs).

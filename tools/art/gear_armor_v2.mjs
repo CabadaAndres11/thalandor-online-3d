@@ -771,6 +771,166 @@ function nobleBoot() {
   return s;
 }
 
+// --- Captain Verrin (2026-11-27, after the user's reference) -----------------------------
+// Dark grey plate trimmed in bronze over chain mail, crossed leather straps and a belt with
+// pouches, a war hammer at the hip, armoured legs and a long tattered green cloak with its
+// hood down and a bronze brooch.
+const VERRIN = { b: C.IRON_D, d: C.DARK, l: C.IRON, trim: C.BRONZE, acc: C.GOLD, gem: C.GEM, rune: null };
+const VERRIN_MAIL = { b: C.CHAIN, d: C.CHAIN_D, l: C.CHAIN_L, trim: C.BRONZE, acc: C.BRONZE, gem: C.GEM, rune: null };
+const VERRIN_LEATHER = { b: C.LEATHER_D, d: C.BLACK_LEATHER, l: C.LEATHER, trim: C.BRONZE, acc: C.BRONZE, gem: C.GEM, rune: null };
+
+function verrinChest() {
+  const s = ARMOR.chest("plate", 2, VERRIN);
+  const bust = new Shape();
+  for (const x of [-4.5, 3.5]) ellipsoid(bust, [x, 17.0, 7.6], [3.8, 3.3, 3.0], VERRIN.b);
+  for (const v of bust.cells.values()) s.put(v[0], v[1], v[2], v[1] <= 15 ? VERRIN.d : VERRIN.b);
+  // Two leather straps crossing the chest, a broad belt with a bronze buckle and pouches.
+  for (const v of s.cells.values()) {
+    const [x, y, z] = v;
+    if (z >= 2 && y >= 6 && y <= 22 && (Math.abs((x + 0.5) - (y - 14) * 0.9) <= 1 || Math.abs((x + 0.5) + (y - 14) * 0.9) <= 1)) v[3] = C.LEATHER;
+    if (y >= 1 && y <= 3) v[3] = C.LEATHER_D;
+  }
+  for (const [x, y] of [[-1, 2], [0, 2], [-1, 3], [0, 3]]) onFront(s, x, y, C.BRONZE);
+  for (const x of [-9, 6]) s.box(x, -2, 5, x + 3, 2, 8, C.LEATHER).box(x, 2, 5, x + 3, 2, 8, C.LEATHER_D); // pouches
+  return s;
+}
+
+// The cloak: long, dark green, its hem cut into uneven tatters; hood down with a bronze brooch.
+function verrinCloak() {
+  const s = new Shape();
+  const bottom = -44;
+  for (let y = 26; y >= bottom; y--) {
+    const half = 11 + Math.min(5, Math.floor((26 - y) / 10));
+    for (let x = -half - 1; x <= half; x++) {
+      const tear = bottom + Math.floor(noise3(x >> 1, 0, 0, 331) * 12); // ragged strips at the hem
+      if (y < tear) continue;
+      const bz = y >= 0 ? (backZ(BODY.torso, x, Math.min(y, 26)) ?? -7) : -8;
+      const fold = Math.sin((x + 0.5) * 0.9) * 0.9;
+      const z = Math.min(bz, -7) - 1 - (y < 8 ? Math.round(1 + fold) : 0);
+      s.put(x, y, z, fold > 0.35 ? C.GREEN_D : C.GREEN).put(x, y, z + 1, C.GREEN_D);
+    }
+  }
+  const hood = shellOn(BODY.torso, 2, C.GREEN, (x, y) => y >= 23 && y <= 27); // the hood down, a collar
+  for (const v of hood.cells.values()) s.put(v[0], v[1], v[2], v[1] === 27 ? C.GREEN_D : C.GREEN);
+  for (let y = 26; y <= 31; y++) for (let x = -7; x <= 6; x++) s.put(x, y, -9 - (y - 26 > 3 ? 1 : 0), C.GREEN); // folded on the back
+  const fz = (frontZ(BODY.torso, -7, 23) ?? 4) + 2; // the round brooch, high on the left
+  for (let dx = -2; dx <= 2; dx++) for (let dy = -2; dy <= 2; dy++) if (dx * dx + dy * dy <= 5) s.put(-7 + dx, 23 + dy, fz, dx * dx + dy * dy <= 1 ? C.GOLD : C.BRONZE);
+  return without(s, BODY.torso);
+}
+
+// A war hammer hanging at the right hip, head down (hips frame).
+function verrinHammer() {
+  const s = new Shape();
+  cylinder(s, [-11.5, 4, 2], [-11.5, -22, 2], 1.0, C.WOOD);
+  roundBox(s, [-14, -27, -1], [-9, -22, 5], 0.8, C.IRON);
+  s.box(-12, -21, 1, -11, -20, 3, C.LEATHER).box(-12, 2, 1, -11, 4, 3, C.LEATHER);
+  return s;
+}
+
+// --- The king (2026-11-27, after the user's reference) -----------------------------------
+// A long purple coat embroidered in gold with a gold chain of medallions, silver pauldrons,
+// a deep red cape with a thick dark fur collar, gold bracers, a belt with a pouch and a
+// sword, dark boots, a gold crown with red gems and a sceptre.
+const KING = { b: C.PURPLE, d: C.PURPLE_D, l: C.PURPLE_L, trim: C.GOLD, acc: C.GOLD_L, gem: C.GEM, rune: null };
+const KING_SILVER = { b: C.STEEL, d: C.STEEL_D, l: C.STEEL_L, trim: C.GOLD, acc: C.GOLD_L, gem: C.GEM, rune: null };
+
+function kingCoat() {
+  const s = ARMOR.chest("cloth", 2, KING);
+  for (const v of s.cells.values()) { // gold embroidery: borders down the front and at the hem, a pattern between
+    const [x, y, z] = v;
+    if (z >= 2 && (Math.abs(x + 0.5) <= 1.5 || y <= 1 || (y >= 8 && y <= 20 && (x + y) % 6 === 0 && Math.abs(x + 0.5) <= 7))) v[3] = C.GOLD;
+    if (y >= 1 && y <= 2) v[3] = C.LEATHER_D; // the belt
+  }
+  // A gold chain of round medallions across the chest.
+  for (let k = -7; k <= 6; k++) {
+    const y = 20 - Math.round(Math.cos(((k + 0.5) / 7) * (Math.PI / 2)) * 4);
+    onFront(s, k, y, k % 3 === 0 ? C.GOLD_L : C.GOLD);
+  }
+  for (const [x, y] of [[-1, 15], [0, 15], [-1, 14], [0, 14]]) onFront(s, x, y, C.GEM); // the great medallion
+  s.box(5, -2, 5, 8, 2, 8, C.LEATHER); // a pouch
+  return s;
+}
+
+function kingSkirt() {
+  const s = new Shape(); // the coat's long skirt, open at the front, to the knees
+  const top = 6, bottom = -26;
+  for (let y = top; y >= bottom; y--) {
+    const k = (top - y) / (top - bottom);
+    const rx = 11 + k * 3, rz = 8 + k * 2.5;
+    for (let x = -15; x <= 14; x++) for (let z = -12; z <= 12; z++) {
+      const d = ((x + 0.5) / rx) ** 2 + ((z + 0.5) / rz) ** 2;
+      if (d <= 1 && d >= ((rx - 1.6) / rx) ** 2 && !(z > 4 && Math.abs(x + 0.5) < 2 + k * 2)) s.put(x, y, z, KING.b);
+    }
+  }
+  without(s, BODY.hips);
+  finish(s, KING, 341);
+  recolor(s, (x, y) => y <= bottom + 2, C.GOLD); // the embroidered hem
+  recolor(s, (x, y, z) => z > 3 && Math.abs(x + 0.5) < 5 + ((6 - y) / 32) * 2 && Math.abs(x + 0.5) >= 2 + ((6 - y) / 32) * 2, C.GOLD); // the front borders
+  return s;
+}
+
+function kingCape() {
+  const s = new Shape();
+  const bottom = -60; // to the floor
+  for (let y = 25; y >= bottom; y--) {
+    const half = 12 + Math.min(7, Math.floor((25 - y) / 11));
+    for (let x = -half - 1; x <= half; x++) {
+      const bz = y >= 0 ? (backZ(BODY.torso, x, Math.min(y, 26)) ?? -7) : -8;
+      const fold = Math.sin((x + 0.5) * 0.7) * 1.1;
+      const z = Math.min(bz, -7) - 1 - (y < 8 ? Math.round(1 + fold) : 0);
+      s.put(x, y, z, y <= bottom + 2 ? C.FUR : fold > 0.4 ? C.RED_D : C.RED).put(x, y, z + 1, C.RED_D); // fur at the hem
+    }
+  }
+  // The thick fur collar over the shoulders.
+  const collar = shellOn(BODY.torso, 3, C.FUR, (x, y, z) => y >= 20 && y <= 29 && !(z > 1 && Math.abs(x + 0.5) < 5));
+  for (const v of collar.cells.values()) s.put(v[0], v[1], v[2], noise3(v[0], v[1], v[2], 343) < 0.3 ? C.FUR_D : noise3(v[0], v[1], v[2], 345) > 0.8 ? C.FUR_L : C.FUR);
+  return without(s, BODY.torso);
+}
+
+function kingCrown() {
+  const s = new Shape();
+  for (let y = 13; y <= 16; y++) for (let a = 0; a < 48; a++) { // the band round the head
+    const t = (a / 48) * Math.PI * 2;
+    s.put(Math.round(-0.5 + Math.cos(t) * 8.2), y, Math.round(0.5 + Math.sin(t) * 8.2), y === 13 ? C.GOLD_D : C.GOLD);
+  }
+  for (let k = 0; k < 8; k++) { // points, the front one tallest, gems at their feet
+    const t = (k / 8) * Math.PI * 2 + Math.PI / 2;
+    const x = Math.round(-0.5 + Math.cos(t) * 8.2), z = Math.round(0.5 + Math.sin(t) * 8.2);
+    const h = k === 0 ? 7 : k % 2 ? 4 : 5;
+    for (let y = 17; y <= 16 + h; y++) s.put(x, y, z, y === 16 + h ? C.GOLD_L : C.GOLD);
+    s.put(x, 15, z + (z > 0 ? 1 : z < 0 ? -1 : 0), k % 2 ? C.GEM : C.BLUE);
+  }
+  return without(s, BODY.head);
+}
+
+// A gold sceptre in the right fist (hand frame: the grip runs along +Z), a red orb on top.
+function kingSceptre() {
+  const s = new Shape();
+  cylinder(s, [-0.5, -4.5, -6], [-0.5, -4.5, 26], 1.0, C.GOLD);
+  for (const z of [-6, 4, 14]) cylinder(s, [-0.5, -4.5, z], [-0.5, -4.5, z + 1], 1.6, C.GOLD_L);
+  ellipsoid(s, [-0.5, -4.5, 30], [2.6, 2.6, 2.6], C.GEM);
+  for (const [dx, dy] of [[2, 0], [-2, 0], [0, 2], [0, -2]]) capsule(s, [-0.5 + dx, -4.5 + dy, 26], [-0.5 + dx * 0.6, -4.5 + dy * 0.6, 32], 0.6, 0.4, C.GOLD);
+  s.put(-1, -3, 31, C.WHITE);
+  return without(s, BODY.hand);
+}
+
+// A sheathed sword at the left hip, hilt up (hips frame).
+function kingSword() {
+  const s = new Shape();
+  s.box(9, -26, 1, 10, 2, 3, C.LEATHER_D).box(9, -27, 1, 10, -26, 3, C.GOLD); // the scabbard and its chape
+  s.box(8, 3, 0, 11, 3, 4, C.GOLD).box(9, 4, 1, 10, 8, 3, C.LEATHER).box(9, 9, 1, 10, 10, 3, C.GOLD); // guard, grip, pommel
+  return s;
+}
+
+// A plain cloth sleeve over the upper arm or the forearm, in a material's colours.
+function clothSleeve(part, m, seed) {
+  const s = shellOn(part, 1, m.b, (x, y) => y >= -20);
+  without(s, part);
+  finish(s, m, seed);
+  return s;
+}
+const VERRIN_CLOTH = { b: C.GREEN_D, d: C.FUR_D, l: C.GREEN, trim: C.BRONZE, acc: C.BRONZE, gem: C.GEM, rune: null };
+
 export function npcOutfitsV2() {
   const palette = PALETTE;
   const out = {};
@@ -783,6 +943,31 @@ export function npcOutfitsV2() {
     add(`noble_sleeve_${side[0]}`, nobleSleeve(), `arm_${side}`);
     add(`noble_cuff_${side[0]}`, nobleCuff(), `forearm_${side}`);
     add(`noble_boot_${side[0]}`, nobleBoot(), `shin_${side}`);
+  }
+  add("verrin_chest", verrinChest(), "torso");
+  add("verrin_cloak", verrinCloak(), "torso");
+  add("verrin_skirt", ARMOR.skirt("mail", 2, VERRIN_MAIL), "hips");
+  add("verrin_hammer", verrinHammer(), "hips");
+  add("king_coat", kingCoat(), "torso");
+  add("king_skirt", kingSkirt(), "hips");
+  add("king_cape", kingCape(), "torso");
+  add("king_crown", kingCrown(), "head");
+  add("king_sword", kingSword(), "hips");
+  add("king_sceptre", kingSceptre(), "hand_right");
+  for (const side of ["left", "right"]) {
+    const o = side === "left" ? 1 : -1;
+    add(`verrin_shoulder_${side[0]}`, ARMOR.shoulder("plate", 2, VERRIN, o), `arm_${side}`);
+    add(`verrin_sleeve_${side[0]}`, clothSleeve(BODY.arm, VERRIN_CLOTH, 351), `arm_${side}`);
+    add(`verrin_forearm_${side[0]}`, clothSleeve(BODY.fore, VERRIN_CLOTH, 353), `forearm_${side}`);
+    add(`king_sleeve_${side[0]}`, clothSleeve(BODY.arm, KING, 355), `arm_${side}`);
+    add(`king_forearm_${side[0]}`, clothSleeve(BODY.fore, KING, 357), `forearm_${side}`);
+    add(`verrin_cuff_${side[0]}`, ARMOR.cuff("plate", 2, VERRIN), `forearm_${side}`);
+    add(`verrin_glove_${side[0]}`, ARMOR.glove("leather", 2, VERRIN_LEATHER), `hand_${side}`);
+    add(`verrin_leg_${side[0]}`, ARMOR.leg("plate", 2, VERRIN), `leg_${side}`);
+    add(`verrin_boot_${side[0]}`, ARMOR.boot("plate", 2, VERRIN), `shin_${side}`);
+    add(`king_pauldron_${side[0]}`, ARMOR.shoulder("plate", 2, KING_SILVER, o), `arm_${side}`);
+    add(`king_bracer_${side[0]}`, ARMOR.cuff("plate", 2, { ...KING_SILVER, b: C.GOLD, d: C.GOLD_D, l: C.GOLD_L }), `forearm_${side}`);
+    add(`king_boot_${side[0]}`, ARMOR.boot("leather", 2, { ...VERRIN_LEATHER, trim: C.STEEL }), `shin_${side}`);
   }
   add("mira_cloak", miraCloak(), "torso");
   add("mira_hood", miraHood(), "torso");

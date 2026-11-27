@@ -49,6 +49,10 @@ func test_every_v2_gear_file_exists() -> void:
 	# The nobles' court clothes (2026-11-27) and the spear (no item yet) are v2 only.
 	var court := (table as Dictionary).keys().filter(func(id: String) -> bool: return id.begins_with("noble_") or id.begins_with("w_spear_"))
 	assert_eq(court.size(), 13, "gown, skirt, doublet, cape, sleeves, cuffs, boots and three spears")
+	# Verrin's and the king's own outfits (2026-11-27).
+	var story := (table as Dictionary).keys().filter(func(id: String) -> bool: return id.begins_with("verrin_") or id.begins_with("king_"))
+	assert_eq(story.size(), 34)
+	court.append_array(story)
 	assert_eq((table as Dictionary).size() - jewels.size() - races.size() - outfits.size() - court.size(), (v1 as Dictionary).size(), "one v2 piece per v1 gear piece")
 	for id: String in table:
 		assert_true(FileAccess.file_exists(str(table[id].file)), id)

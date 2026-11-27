@@ -45,3 +45,6 @@ Pociones en su botón con iconos nuevos; mercader con varias rarezas; palacio (a
 
 ## Plan 8.3g — Árbol de talentos en anillos
 Spec y plan acordados con el usuario (anillos conectados, todo disponible, ruta marcada, holograma con iconos de estadística). 19 iconos pintados por el usuario con IA. Implementado: generador con rutas, reglas sin anillos, guardado v8 y ventana con zoom y arrastre.
+
+## Sexta tanda
+Capuchas sin frontal ni sombra en la cara, escalera de la cripta entrando desde el norte y sin parpadeo, nuevos aspectos de Verrin y del rey (piezas `verrin_*` y `king_*` en `gear_armor_v2.mjs`).

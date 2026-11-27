@@ -7,16 +7,36 @@
 		"class": "warrior",
 		"appearance": {
 			"body": "female",
-			"skin": "skin_5",
-			"eyes": "grey",
-			"hair_style": "hair_warrior_braid",
-			"hair_color": "black",
+			"skin": "skin_1",
+			"eyes": "green",
+			"hair_style": "hair_shaggy",
+			"hair_color": "red",
 			"beard": "none",
 			"marks": "scar_cheek"
 		},
-		"primary": "#2f4f8f",
-		"secondary": "#d4a62a",
-		"trousers": "#2a2a33",
-		"weapons": ["weapon_sword"]
+		"primary": "#2f5233",
+		"secondary": "#b07a3e",
+		"trousers": "#2a2622",
+		"weapons": [],
+		"pieces": [
+			"verrin_chest",
+			"verrin_cloak",
+			"verrin_skirt",
+			"verrin_hammer",
+			"verrin_shoulder_l",
+			"verrin_cuff_l",
+			"verrin_glove_l",
+			"verrin_leg_l",
+			"verrin_boot_l",
+			"verrin_shoulder_r",
+			"verrin_cuff_r",
+			"verrin_glove_r",
+			"verrin_leg_r",
+			"verrin_boot_r",
+			"verrin_sleeve_l",
+			"verrin_forearm_l",
+			"verrin_sleeve_r",
+			"verrin_forearm_r"
+		]
 	}
 }

@@ -5,10 +5,28 @@
 	"lines": {"greet": "NPC_REY_GREET"},
 	"look": {
 		"class": "villager",
-		"appearance": {"body": "male", "skin": "skin_2", "eyes": "grey", "hair_style": "swept", "hair_color": "silver", "beard": "full"},
-		"primary": "#2f4f8f",
-		"secondary": "#d4a62a",
-		"trousers": "#22202a",
-		"weapons": []
+		"appearance": {"body": "male", "skin": "skin_2", "eyes": "grey", "hair_style": "hair_long", "hair_color": "white", "beard": "full"},
+		"primary": "#4b2a5e",
+		"secondary": "#d6ae4c",
+		"trousers": "#2a2622",
+		"weapons": [],
+		"pieces": [
+			"king_coat",
+			"king_skirt",
+			"king_cape",
+			"king_crown",
+			"king_sword",
+			"king_sceptre",
+			"king_pauldron_l",
+			"king_bracer_l",
+			"king_boot_l",
+			"king_pauldron_r",
+			"king_bracer_r",
+			"king_boot_r",
+			"king_sleeve_l",
+			"king_forearm_l",
+			"king_sleeve_r",
+			"king_forearm_r"
+		]
 	}
 }
