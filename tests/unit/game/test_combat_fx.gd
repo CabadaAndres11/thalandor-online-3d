@@ -618,3 +618,9 @@ func test_meteor_is_as_big_as_its_area() -> void:
 	fx.handle(["telegraph", 86, Vector3(8, 0, 8), 5.0, 100000, "mage_meteor"])
 	var rocks := fx.find_children("*", "MeshInstance3D", true, false).filter(func(n: Node) -> bool: return (n as Node3D).scale.x > 5.0)
 	assert_eq(rocks.size(), 1)
+
+
+func test_fire_lance_is_long() -> void:
+	fx.handle(["projectile", 87, 1, "mage_fire_lance", Vector3(2, 0, 2), Vector2(1, 0), 34.0, 22.0])
+	var n := fx.projectile_node(87)
+	assert_gt(n.scale.z, n.scale.x * 2.0)

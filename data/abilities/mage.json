@@ -738,14 +738,15 @@
 		"effects": [
 			{
 				"type": "projectile",
-				"speed": 20,
+				"speed": 34,
 				"radius": 0.3,
 				"range": 22,
 				"pierce": false,
 				"damage": {"base": 35, "coef": 1.4, "kind": "magic", "element": "fire", "school": "fire"},
 				"statuses": [{"kind": "burn", "duration_s": 4, "magnitude": 6, "every_s": 1}]
 			}
-		]
+		],
+		"fx_stretch": 3
 	},
 	{
 		"id": "mage_arcane_bolt",

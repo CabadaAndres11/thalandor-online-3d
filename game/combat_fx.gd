@@ -474,6 +474,8 @@ func _add_projectile(ev: Array) -> void:
 	var size := float(ab.get("fx_scale", 2.6 if flight == "sky" else 1.0))
 	if not is_equal_approx(size, 1.0):
 		node.scale = Vector3.ONE * size
+	if ab.has("fx_stretch"): # a long lance along its flight (its forward is +Z)
+		node.scale.z *= float(ab.fx_stretch)
 	add_child(node)
 	if dir2.length() > 0.001:
 		node.rotation.y = atan2(dir2.x, dir2.y)
