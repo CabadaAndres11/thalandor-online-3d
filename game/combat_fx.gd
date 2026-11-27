@@ -61,6 +61,10 @@ var _marks: Dictionary = {} # area id -> decor entry of its ground mark
 var _mesh_cache: Dictionary = {}
 ## id -> bool: casters whose swing is drawn by a SlashFx (set by the game session).
 var slash_owners: Callable
+## The own player's id and cursor (ground point): their beam follows the cursor every frame,
+## not only on each pulse from the host.
+var local_id: int = -1
+var local_aim: Callable
 var _beams: Dictionary = {} # caster id -> {node, t}
 var _snow_last: Dictionary = {} # entity key -> msec of its last snow burst
 var _shell_last: Dictionary = {} # entity id -> msec of its last ice shell
@@ -1263,7 +1267,16 @@ func _place_beam(b: Dictionary, id: int, dt: float) -> void:
 	var at: Variant = _position_of.call(id)
 	if at != null:
 		b.from = (at as Vector3) + Vector3(0, 1.2, 0)
-	b.end = (b.end as Vector3).lerp(b.end_target, clampf(dt * 14.0, 0.0, 1.0))
+	if id == local_id and local_aim.is_valid():
+		var aim: Variant = local_aim.call()
+		if aim is Vector3:
+			var reach := Vector2(b.end_target.x - b.from.x, b.end_target.z - b.from.z).length()
+			var to := Vector2((aim as Vector3).x - b.from.x, (aim as Vector3).z - b.from.z)
+			if to.length() > 0.05 and reach > 0.05:
+				to = to.normalized() * reach
+				b.end = Vector3(b.from.x + to.x, b.end_target.y, b.from.z + to.y)
+	else: # others: it glides steadily toward the latest pulse instead of jumping and waiting
+		b.end = (b.end as Vector3).lerp(b.end_target, clampf(dt * 5.0, 0.0, 1.0))
 	var from: Vector3 = b.from
 	var end: Vector3 = b.end
 	var length := maxf(from.distance_to(end), 0.05)
@@ -1286,6 +1299,10 @@ func _free_beam(bm: Dictionary) -> void:
 	(bm.node as Node).queue_free()
 	for ball: Node in bm.ends:
 		ball.queue_free()
+
+
+func beam_end(id: int) -> Vector3:
+	return _beams[id].end if _beams.has(id) else Vector3.ZERO
 
 
 func beam_count() -> int:

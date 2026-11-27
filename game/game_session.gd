@@ -34,6 +34,8 @@ var net_mode: String = NET_WEBRTC
 
 var zone_view: ZoneView
 ## The cutscene playing now (Plan 8.2), or null; while it plays the camera is its own.
+## The move a channelled cast ends with, by caster (its ability's anim).
+var _release_anims: Dictionary = {}
 var cutscene: CutscenePlayer
 var _stage_view: ZoneView
 ## Fire and smoke a cutscene lit (Plan 8.3a); they go with the scene.
@@ -123,6 +125,7 @@ func _init() -> void:
 	add_child(fx)
 	fx.setup(_entity_position, _latest_tick, AbilityDB.load_default(), balance.tick_rate)
 	fx.slash_owners = func(id: int) -> bool: return _avatars.has(id)
+	fx.local_aim = func() -> Variant: return _aim
 	loot_view = LootView.new()
 	loot_view.name = "Loot"
 	add_child(loot_view)
@@ -909,6 +912,7 @@ func _on_combat_event(raw: Array) -> void:
 	var drawn := lifted(raw)
 	fx.handle(drawn)
 	loot_view.my_id = client.my_id
+	fx.local_id = client.my_id
 	loot_view.handle(drawn)
 	if str(ev[0]) == "bag_full" and ev.size() > 1 and int(ev[1]) == client.my_id:
 		client.chat_received.emit("", tr("ITEM_BAG_FULL"), true)
@@ -947,10 +951,17 @@ func _on_combat_event(raw: Array) -> void:
 		"channel":
 			if _avatars.has(int(ev[1])):
 				var sung := AbilityDB.load_default().get_ability(str(ev[2]))
+				_release_anims[int(ev[1])] = str(sung.get("anim", "")) if HumanRig.ACTIONS.has(str(sung.get("anim", ""))) else ""
 				(_avatars[int(ev[1])] as PlayerAvatar).play_long_cast(float(ev[3]), bool(sung.get("levitate", false)))
 		"channel_end":
 			if _avatars.has(int(ev[1])):
-				(_avatars[int(ev[1])] as PlayerAvatar).stop_long_cast()
+				var caster := _avatars[int(ev[1])] as PlayerAvatar
+				caster.stop_long_cast()
+				# A cast that lets go with its own move (Descarga arcana strikes the ground).
+				var release := str(_release_anims.get(int(ev[1]), ""))
+				_release_anims.erase(int(ev[1]))
+				if release != "" and release != "cast":
+					caster.play_action(release)
 		"hit":
 			if _monster_avatars.has(int(ev[1])):
 				(_monster_avatars[int(ev[1])] as MonsterAvatar).react_to_hit(_entity_position(int(ev[4])) if ev.size() > 4 else null)

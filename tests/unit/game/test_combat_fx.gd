@@ -622,3 +622,15 @@ func test_fire_lance_is_long() -> void:
 	fx.handle(["projectile", 87, 1, "mage_fire_lance", Vector3(2, 0, 2), Vector2(1, 0), 34.0, 22.0])
 	var n := fx.projectile_node(87)
 	assert_gt(n.scale.z, n.scale.x * 2.0)
+
+
+func test_own_laser_follows_the_cursor_between_pulses() -> void:
+	fx.local_id = 1
+	var aim := [Vector3(5, 0, 15)] # lambdas capture by value: a box
+	fx.local_aim = func() -> Variant: return aim[0]
+	fx.handle(["beam", 1, Vector3(5, 0, 5), Vector3(5, 0, 15), 1.2])
+	fx.advance(0.05)
+	aim[0] = Vector3(15, 0, 5) # the mouse moved to the side, no new pulse yet
+	fx.advance(0.05)
+	var far := fx.beam_end(1)
+	assert_gt(far.x, 12.0, "the beam is already there")
