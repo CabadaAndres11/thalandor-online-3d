@@ -626,14 +626,10 @@ func _on_command(rec: Dictionary, text: String) -> void:
 		return
 	var parts := text.substr(1).split(" ", false)
 	if parts.size() >= 1 and parts[0].to_lower() == "zonas":
-		_send_to(rec.id, Protocol.chat(0, "ZONES: " + ", ".join(zones.keys())), true)
+		_send_to(rec.id, Protocol.chat(0, _zone_list()), true)
 		return
 	if parts.size() >= 2 and parts[0].to_lower() == "zona":
-		var zkey := zones.open(parts[1])
-		if zkey == "":
-			_send_to(rec.id, Protocol.chat(0, "CMD_BAD"), true)
-		else:
-			send_to_zone(rec.id, zkey, zones.layout(zkey).entry("default"))
+		_zone_command(rec, parts)
 		return
 	if parts.size() >= 2 and parts[0].to_lower() == "arena" and parts[1].is_valid_int():
 		_on_set_arena_level(rec, parts[1].to_int()) # Brann's menu is gone (Plan 8.3a)
@@ -669,6 +665,63 @@ func _on_command(rec: Dictionary, text: String) -> void:
 		Xp.award(tw, target, clampi(n, 1, Xp.MAX_AMOUNT))
 	elif n > target.progress.level:
 		Xp.set_level(tw, target, mini(n, PlayerProgress.MAX_LEVEL))
+
+
+## The zones a test command can go to, with their variants and entries.
+func _zone_list() -> String:
+	var out: Array = []
+	var dir := DirAccess.open(zones.zone_dir)
+	var names: Array = []
+	if dir != null:
+		for f: String in dir.get_files():
+			if f.ends_with(".json") and f != "pieces.json":
+				names.append(f.get_basename())
+	names.sort()
+	for n: String in names:
+		var d: Variant = JSON.parse_string(FileAccess.get_file_as_string(zones.zone_dir + n + ".json"))
+		var item := n
+		if d is Dictionary:
+			var extra: Array = []
+			for v: String in (d.get("variants", {}) as Dictionary):
+				extra.append("~" + v)
+			for k: String in (d.get("entries", {}) as Dictionary):
+				if k != "default":
+					extra.append(k)
+			if not extra.is_empty():
+				item += " (" + " ".join(extra) + ")"
+		out.append(item)
+	return "/zona <zona>[~variante] [entrada | x z]: " + ", ".join(out)
+
+
+## /zona <zona>[~variante] [entrada | x z] (host player only): goes to a zone to review it.
+## A dungeon opens an instance at the player's level; a variant is the player's own copy.
+func _zone_command(rec: Dictionary, parts: PackedStringArray) -> void:
+	var spec := parts[1].split("~")
+	var zone_id := spec[0]
+	var variant := spec[1] if spec.size() > 1 else ""
+	var base := zones.peek(zone_id)
+	var p: PlayerState = state_of(rec.id)
+	if base == null or p == null:
+		_send_to(rec.id, Protocol.chat(0, "CMD_BAD"), true)
+		return
+	var key := ""
+	if variant != "":
+		key = zones.open_personal(zone_id, variant, rec.id)
+	elif base.instanced:
+		var r := dungeon_range(p.progress.level)
+		key = zones.open(zone_id, "group", clampi(p.progress.level, r.x, r.y))
+	else:
+		key = zones.open(zone_id)
+	if key == "":
+		_send_to(rec.id, Protocol.chat(0, "CMD_BAD"), true)
+		return
+	var layout := zones.layout(key)
+	var at := layout.entry("default")
+	if parts.size() >= 4 and parts[2].is_valid_int() and parts[3].is_valid_int():
+		at = Vector3(parts[2].to_int() + 0.5, 0.0, parts[3].to_int() + 0.5)
+	elif parts.size() >= 3:
+		at = layout.entry(parts[2])
+	send_to_zone(rec.id, key, at)
 
 
 ## Sends each owner their changed progress (and the bar). Level-ups also place the newly

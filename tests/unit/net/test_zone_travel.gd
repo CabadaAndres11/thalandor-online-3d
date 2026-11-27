@@ -130,6 +130,15 @@ func test_zone_command_moves_and_lists() -> void:
 	assert_true(chats.any(func(m: Dictionary) -> bool: return str(m.text).contains("zone_b")))
 
 
+func test_zone_command_goes_to_a_cell() -> void:
+	var c := _guest("Ana")
+	host.tick()
+	c.send(Transport.HOST_PEER, Protocol.chat(0, "/zona zone_b 7 6"), true)
+	host.tick()
+	assert_eq(host.world_of(1), host.zones.world("zone_b"))
+	assert_almost_eq(host.state_of(1).position.x, 7.5, 0.01)
+
+
 func test_party_rows_for_other_zones() -> void:
 	var a := _in_a("Ana", Vector2(10, 5))
 	var b := _guest("Bea")
