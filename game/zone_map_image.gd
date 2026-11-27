@@ -60,8 +60,7 @@ static func markers(layout: ZoneLayout, client: ClientSession) -> Array:
 		out.append({"kind": "dungeon" if _is_instanced(to) else "exit", "cell": Vector2(r.position) + Vector2(r.size) / 2.0,
 			"label": tr_key("ZONE_" + to.to_upper()), "yaw": 0.0})
 	if client != null:
-		var target := quest_target(layout, client.quests, QuestDB.load_default())
-		if not target.is_empty():
+		for target: Dictionary in quest_targets(layout, client.quests, QuestDB.load_default()):
 			out.append({"kind": "quest", "cell": target.get("at", target.get("exit", Vector2.ZERO)), "label": "", "yaw": 0.0})
 		var wanted := QuestText.target_monsters(client.quests, QuestDB.load_default())
 		if not wanted.is_empty():
@@ -84,9 +83,17 @@ static func markers(layout: ZoneLayout, client: ClientSession) -> Array:
 ## Where the tracked objective is on this zone's map (Plan 8.2): {at} (a cell centre) when it
 ## is here, {exit} (the way out toward its zone) when it is elsewhere, {} when unknown.
 static func quest_target(layout: ZoneLayout, log: QuestLog, quests: QuestDB) -> Dictionary:
+	var all := quest_targets(layout, log, quests)
+	return all[0] if not all.is_empty() else {}
+
+
+## Every unfinished objective of the tracked quest on this map, at once (several places to
+## reach show together); the same exit only once.
+static func quest_targets(layout: ZoneLayout, log: QuestLog, quests: QuestDB) -> Array:
+	var out: Array = []
 	var id := log.tracked
 	if layout == null or id == "" or not log.is_active(id):
-		return {}
+		return out
 	var objs := QuestText.objectives(log, quests, id)
 	var q := quests.quest(id)
 	var targets: Array = []
@@ -106,16 +113,20 @@ static func quest_target(layout: ZoneLayout, log: QuestLog, quests: QuestDB) -> 
 			for e: Dictionary in layout.exits:
 				if str(e.to) == toward:
 					var r: Rect2i = e.area
-					return {"exit": Vector2(r.position) + Vector2(r.size) / 2.0}
+					var spot := {"exit": Vector2(r.position) + Vector2(r.size) / 2.0}
+					if not spot in out:
+						out.append(spot)
 			continue
 		if str(o.type) in ["reach", "interact"] and layout.quest_points.has(str(o.get("point", ""))):
 			var at: Vector2i = layout.quest_points[str(o.point)].at
-			return {"at": Vector2(at.x + 0.5, at.y + 0.5)}
+			out.append({"at": Vector2(at.x + 0.5, at.y + 0.5)})
+			continue
 		if o.has("npc"):
 			for n: Dictionary in layout.npcs:
 				if str(n.id) == str(o.npc):
-					return {"at": Vector2(float(n.at[0]) + 0.5, float(n.at[1]) + 0.5)}
-	return {}
+					out.append({"at": Vector2(float(n.at[0]) + 0.5, float(n.at[1]) + 0.5)})
+					break
+	return out
 
 
 static func _npc_here(layout: ZoneLayout, npc: String) -> bool:

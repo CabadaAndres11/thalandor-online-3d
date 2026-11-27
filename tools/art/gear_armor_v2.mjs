@@ -663,19 +663,23 @@ function miraChest() {
   return s;
 }
 
+// The sleeves are brown leather, not black: the arms must read apart from the black
+// cuirass and cloak (playtest, Plan 8.3h).
+const MIRA_ARM = { b: C.LEATHER_D, d: C.BLACK_LEATHER, l: C.LEATHER, trim: C.LEATHER, acc: C.BRONZE, gem: C.GEM, rune: null };
+
 function miraSleeve() {
-  const s = shellOn(BODY.arm, 1, MIRA.b, (x, y) => y >= -18);
-  ellipsoid(s, [-0.5, 1, -0.5], [4.4, 2.4, 4.4], MIRA.b);
+  const s = shellOn(BODY.arm, 1, MIRA_ARM.b, (x, y) => y >= -18);
+  ellipsoid(s, [-0.5, 1, -0.5], [4.4, 2.4, 4.4], MIRA.b); // a black leather pauldron on the shoulder
   without(s, BODY.arm);
-  finish(s, MIRA, 301);
+  finish(s, MIRA_ARM, 301);
   return s;
 }
 
 function miraForearm() {
-  const s = shellOn(BODY.fore, 1, MIRA.b, (x, y) => y >= -18);
+  const s = shellOn(BODY.fore, 1, MIRA_ARM.b, (x, y) => y >= -18);
   without(s, BODY.fore);
-  finish(s, MIRA, 303);
-  for (const y of [-6, -10, -14]) recolor(s, (x, yy) => yy === y, C.LEATHER); // straps
+  finish(s, MIRA_ARM, 303);
+  for (const y of [-6, -10, -14]) recolor(s, (x, yy) => yy === y, C.BLACK_LEATHER); // straps
   return s;
 }
 

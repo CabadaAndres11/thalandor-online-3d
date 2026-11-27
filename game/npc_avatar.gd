@@ -19,6 +19,10 @@ var _mark_kind: String = ""
 var _name: String = ""
 
 
+## Lying on the ground (the wounded): it does not turn to face the player.
+var lying: bool = false
+
+
 func setup(id: String, at: Vector3, facing: float) -> void:
 	npc_id = id
 	var data := NpcDB.load_default().npc(id)
@@ -28,6 +32,7 @@ func setup(id: String, at: Vector3, facing: float) -> void:
 	add_child(rig)
 	if data.has("pose"):
 		rig.set_pose_now(str(data.pose)) # the wounded lie (Plan 8.3d)
+		lying = str(data.pose) == "lie"
 	_name = tr(str(data.get("name", id)))
 	_label = _text(_name, NAME_HEIGHT, 40, NAME_COLOR)
 	_label.visible = not bool(data.get("minor", false)) # townsfolk and vendors go nameless (2026-11-27)
@@ -87,6 +92,8 @@ func mark_text() -> String:
 
 ## Turns to look at a point on the ground (talking to the player, Plan 8.2).
 func face(at: Vector3) -> void:
+	if lying:
+		return # the wounded on the ground do not spin round to look at you
 	var d := Vector2(at.x - position.x, at.z - position.z)
 	if d.length() > 0.01:
 		rotation.y = atan2(d.x, d.y)

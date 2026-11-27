@@ -5,9 +5,9 @@
 	"actors": {
 		"anciana": {"npc": "anciana_cantora", "at": [19, 45], "facing": 90},
 		"yo": {"player": true, "at": [21, 45], "facing": 270},
-		"v1": {"npc": "aldeano_anciano_1", "at": [20, 47], "facing": 0},
-		"v2": {"npc": "aldeana_anciana_1", "at": [22, 47], "facing": 0},
-		"v3": {"npc": "panadero", "at": [18, 47], "facing": 0},
+		"v1": {"npc": "aldeano_anciano_1", "at": [17, 44], "facing": 90},
+		"v2": {"npc": "aldeana_anciana_1", "at": [23, 46], "facing": 270},
+		"v3": {"npc": "panadero", "at": [17, 46], "facing": 90},
 		"v4": {"npc": "cazador", "at": [23, 43], "facing": 270}
 	},
 	"tracks": [

@@ -10,8 +10,8 @@
 	},
 	"tracks": [
 		[
-			{"camera": {"at": [58, 4, 53], "look": [76, 1, 48], "fov": 46}, "time": 0},
-			{"camera": {"at": [62, 3, 49.5], "look": [71, 1.4, 48]}, "time": 14, "ease": "in_out"}
+			{"camera": {"at": [56, 4.5, 47.5], "look": [76, 1, 48], "fov": 46}, "time": 0},
+			{"camera": {"at": [62, 3, 48], "look": [71, 1.4, 48]}, "time": 14, "ease": "in_out"}
 		],
 		[
 			{"fade": "in", "time": 1},

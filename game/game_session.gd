@@ -576,7 +576,8 @@ func _scene_fx(name: String, at: Vector3) -> void:
 			scene_flash.emit()
 		"blood":
 			var pool := VoxelFx.node(VoxelFx.blood_pool(1.0), false, 1.0, 0.1)
-			pool.position = at + Vector3(0.6, 0.05, 0)
+			pool.position = at + Vector3(0.6, 0, 0)
+			pool.position.y = ground_y(pool.position.x, pool.position.z) + 0.07 # on the relief, clear of the ground (it flickered)
 			add_child(pool)
 			_scene_fx_nodes.append(pool)
 		"fire", "embers":
@@ -763,11 +764,12 @@ func walker_avatar(i: int) -> NpcAvatar:
 ## "[E] Hablar" over every NPC in talking reach of the local player, walkers that talk
 ## included (2026-11-27: the palace's nobles).
 func update_talk_prompts(pos: Vector3) -> void:
+	var scene := cutscene != null # no "E Hablar" while a scene plays
 	for npc: NpcAvatar in _npc_avatars:
-		npc.set_prompt_visible(Vector2(pos.x - npc.position.x, pos.z - npc.position.z).length() <= NpcDB.TALK_RANGE)
+		npc.set_prompt_visible(not scene and Vector2(pos.x - npc.position.x, pos.z - npc.position.z).length() <= NpcDB.TALK_RANGE)
 	for w: Dictionary in _walkers:
 		var a: NpcAvatar = w.avatar
-		a.set_prompt_visible(str(w.id) != "" and Vector2(pos.x - a.position.x, pos.z - a.position.z).length() <= NpcDB.TALK_RANGE)
+		a.set_prompt_visible(not scene and str(w.id) != "" and Vector2(pos.x - a.position.x, pos.z - a.position.z).length() <= NpcDB.TALK_RANGE)
 
 
 ## The walker in talking reach of a point, or "" (it greets in the chat, Plan 8.3a).

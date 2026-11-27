@@ -141,3 +141,14 @@ func test_notice() -> void:
 	assert_string_contains(n.text(), "Lobos")
 	n.advance(3.1)
 	assert_false(n.visible)
+
+
+func test_every_objective_is_marked_at_once() -> void:
+	quests.add({"id": "q_two", "name": "ITEM_Q_PAQUETE", "summary": "ITEM_Q_PAQUETE", "steps": [{"text": "ITEM_Q_PAQUETE", "objectives": [
+		{"type": "reach", "point": "a", "count": 1}, {"type": "reach", "point": "b", "count": 1}, {"type": "reach", "point": "c", "count": 1}]}]})
+	var log := QuestLog.new()
+	log.active = {"q_two": {"step": 0, "counts": [0, 1, 0]}}
+	log.tracked = "q_two"
+	var z := ZoneLayout.from_dict("bosque", {"size": [40, 40], "quest_points": [
+		{"id": "a", "at": [2, 2], "radius": 2}, {"id": "b", "at": [5, 5], "radius": 2}, {"id": "c", "at": [9, 9], "radius": 2}]})
+	assert_eq(ZoneMapImage.quest_targets(z, log, quests), [{"at": Vector2(2.5, 2.5)}, {"at": Vector2(9.5, 9.5)}], "both left, the done one not")
