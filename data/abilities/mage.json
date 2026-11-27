@@ -673,20 +673,16 @@
 		"gcd": true,
 		"range": 22,
 		"anim": "cast",
-		"fx_flight": "sky",
+		"fx_style": "ice_comet",
 		"effects": [
 			{
-				"type": "projectile",
-				"speed": 16,
-				"radius": 0.3,
-				"range": 22,
-				"pierce": false,
+				"type": "area",
+				"at": "cursor",
+				"radius": 2.5,
+				"delay_s": 0.9,
+				"telegraph": true,
 				"damage": {"base": 30, "coef": 1.3, "kind": "magic", "element": "frost", "school": "frost"},
-				"explode": {
-					"radius": 2.5,
-					"damage": {"base": 15, "coef": 0.6, "kind": "magic", "element": "frost", "school": "frost"},
-					"statuses": [{"kind": "slow", "duration_s": 3, "magnitude": 0.3}]
-				}
+				"statuses": [{"kind": "slow", "duration_s": 3, "magnitude": 0.3}]
 			}
 		]
 	},

@@ -605,13 +605,11 @@ func test_ice_shard_flies_and_arcane_bolt_skims_the_ground() -> void:
 	assert_lt(fx.projectile_node(84).position.y, 0.5, "along the floor")
 
 
-func test_ice_comet_falls_from_the_sky() -> void:
-	fx.handle(["projectile", 85, 1, "mage_ice_comet", Vector3(2, 0, 2), Vector2(1, 0), 16.0, 22.0])
-	fx.advance(0.05)
-	var high := fx.projectile_node(85).position.y
-	fx.advance(0.6)
-	assert_gt(high, 5.0, "it starts high")
-	assert_lt(fx.projectile_node(85).position.y, high, "and comes down")
+func test_ice_comet_falls_from_the_sky_onto_the_cursor() -> void:
+	fx.handle(["telegraph", 85, Vector3(8, 0, 8), 2.5, 100000, "mage_ice_comet"])
+	assert_eq(fx.decor_count(), 1, "the falling comet")
+	fx.handle(["area", 85, Vector3(8, 0, 8), 2.5, "mage_ice_comet", 0, 0.0, []])
+	assert_gt(fx.decor_count(), 3, "it shatters into stakes")
 
 
 func test_meteor_is_as_big_as_its_area() -> void:

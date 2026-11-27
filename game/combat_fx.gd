@@ -126,8 +126,9 @@ func handle(ev: Array) -> void:
 			_remove_telegraph(int(ev[1]))
 		"telegraph":
 			_add_telegraph(ev)
-			if ev.size() > 5 and _fx_style(str(ev[5])) == "meteor":
-				_meteor_fall(ev[2], maxf(float(int(ev[4]) - int(_tick_now.call())) / float(_tick_rate), 0.1), float(ev[3]))
+			if ev.size() > 5 and _fx_style(str(ev[5])) in ["meteor", "ice_comet"]:
+				_meteor_fall(ev[2], maxf(float(int(ev[4]) - int(_tick_now.call())) / float(_tick_rate), 0.1), float(ev[3]),
+					_fx_style(str(ev[5])) == "ice_comet")
 		"level_up":
 			level_up(int(ev[1]), int(ev[2]))
 		"area":
@@ -597,6 +598,8 @@ func _area_flash(pos: Vector3, radius: float, ability_id: String = "", area_id: 
 		if _fx_style(ability_id) == "meteor":
 			_explosion(pos, color, "fire", radius / 2.0)
 			_shockwave(pos, radius)
+		elif _fx_style(ability_id) == "ice_comet":
+			_ice_finale(pos)
 
 
 ## A burst of glowing motes rising from an area that went off.
@@ -979,8 +982,8 @@ func _explosion(pos: Vector3, color: Color, element: String, scale_k: float = 1.
 
 
 ## A meteor that falls out of the sky onto `pos` and arrives when the area goes off.
-func _meteor_fall(pos: Vector3, seconds: float, radius: float = 0.0) -> void:
-	var rock := _voxel("meteor", func() -> Dictionary: return VoxelFx.meteor(), false, 1.0, 0.16)
+func _meteor_fall(pos: Vector3, seconds: float, radius: float = 0.0, ice: bool = false) -> void:
+	var rock := _voxel("ice_comet", func() -> Dictionary: return VoxelFx.ice_crystal(), false, 1.0, 0.16) if ice 		else _voxel("meteor", func() -> Dictionary: return VoxelFx.meteor(), false, 1.0, 0.16)
 	var from := pos + Vector3(7, 22, 7) * maxf(1.0, radius / 3.0)
 	rock.position = from
 	rock.basis = Basis.looking_at(-(pos - from).normalized(), Vector3.UP) # its tail trails behind
@@ -989,10 +992,12 @@ func _meteor_fall(pos: Vector3, seconds: float, radius: float = 0.0) -> void:
 	var d := _add_decor(rock, seconds, 0.0, Vector3.ONE, 0.0)
 	d.fall = {"from": from, "to": pos + Vector3(0, 0.5, 0)}
 	var light := OmniLight3D.new()
-	light.light_color = Color(1.0, 0.55, 0.2)
+	light.light_color = ELEMENT_COLORS.frost if ice else Color(1.0, 0.55, 0.2)
 	light.light_energy = 2.0
 	light.omni_range = 8.0
 	rock.add_child(light)
+	if ice:
+		rock.add_child(_trail(ELEMENT_COLORS.frost, true))
 
 
 ## A ring that expands across the ground from an impact.

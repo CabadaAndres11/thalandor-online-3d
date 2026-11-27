@@ -1383,7 +1383,7 @@ AB_MAGE_FLAME_SHIELD_DESC,"Un escudo que absorbe daño durante 8 s; quien te gol
 AB_MAGE_ICE_ARMOR,Armadura de hielo
 AB_MAGE_ICE_ARMOR_DESC,"Un escudo que absorbe daño durante 8 s; quien te golpea cuerpo a cuerpo se ralentiza un 30 %."
 AB_MAGE_ICE_COMET,Cometa de hielo
-AB_MAGE_ICE_COMET_DESC,"Un cometa de hielo que explota al impactar, daña a todos a 2,5 m y los ralentiza un 30 %."
+AB_MAGE_ICE_COMET_DESC,"Un cometa de hielo cae del cielo en el cursor: daña a todos a 2,5 m y los ralentiza un 30 %."
 AB_MAGE_ARCANE_ORB,Orbe arcano
 AB_MAGE_ARCANE_ORB_DESC,"Un orbe arcano que explota al impactar y daña a todos a 2,5 m."
 AB_MAGE_FIRE_LANCE,Lanza de fuego

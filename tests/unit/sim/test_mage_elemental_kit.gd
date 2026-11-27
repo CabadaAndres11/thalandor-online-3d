@@ -51,7 +51,7 @@ func test_each_upgrade_resolves_its_variants() -> void:
 	assert_eq(str(db.resolved("mage_missile", "").id), "mage_missile", "no upgrade: the base")
 
 
-func test_variants_keep_the_base_numbers_and_change_the_element() -> void:
+func test_variants_keep_the_base_numbers_and_change_the_element() -> void: # the ice comet falls on the cursor instead
 	for pair: Array in [["mage_missile", "pyromancer", "fire"], ["mage_missile", "cryomancer", "frost"],
 			["mage_blast", "pyromancer", "fire"], ["mage_frostbolt", "pyromancer", "fire"], ["mage_fireball", "cryomancer", "frost"]]:
 		var base := db.get_ability(pair[0])
@@ -121,7 +121,7 @@ func test_ice_armor_slows_melee_attackers() -> void:
 
 func test_ice_comet_slows_on_explosion() -> void:
 	var v := db.variant_for("mage_fireball", "cryomancer")
-	assert_eq(str(v.effects[0].explode.statuses[0].kind), "slow")
+	assert_eq([str(v.effects[0].type), str(v.effects[0].at), str(v.effects[0].statuses[0].kind)], ["area", "cursor", "slow"], "it falls on the cursor and slows")
 
 
 func test_piercing_cold_counts_the_upgrades_control() -> void:
