@@ -27,3 +27,6 @@ Lista de fallos del usuario: mazmorra (misión, cierre, reaparición), sala del 
 
 ---
 ← [[Sesiones]]
+
+## Segunda tanda
+Jefe de cripta con nivel de instancia, mármol, mercado y casas de la capital, carteles, agua y puente del bosque, cámara con el relieve y capturas de carga. Suite GUT: 1829 pruebas, todas pasan.

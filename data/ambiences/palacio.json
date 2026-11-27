@@ -1,7 +1,7 @@
 {
 	"sun": {
 		"color": "#fff0d0",
-		"energy": 1.2,
+		"energy": 0.8,
 		"elevation": 58,
 		"azimuth": 20,
 		"shadows": true
@@ -13,23 +13,23 @@
 	},
 	"ambient": {
 		"color": "#f4e8d0",
-		"energy": 0.85
+		"energy": 0.45
 	},
 	"fog": {
-		"color": "#f3ead8",
-		"density": 0.0015,
+		"color": "#e3d6bd",
+		"density": 0.0008,
 		"height": 0,
 		"height_density": 0,
-		"volumetric_density": 0.002,
+		"volumetric_density": 0.0006,
 		"volumetric_albedo": "#fff2d8"
 	},
 	"tonemap": {
 		"mode": "aces",
-		"exposure": 1.1
+		"exposure": 0.85
 	},
 	"glow": {
-		"intensity": 0.4,
-		"threshold": 1,
+		"intensity": 0.1,
+		"threshold": 1.4,
 		"bloom": 0.02
 	},
 	"ssao": {
@@ -37,7 +37,7 @@
 		"intensity": 1.4
 	},
 	"color": {
-		"brightness": 1.04,
+		"brightness": 1,
 		"contrast": 1.05,
 		"saturation": 1.05
 	},

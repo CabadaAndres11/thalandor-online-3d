@@ -79,7 +79,8 @@ func set_arena_level(level: int) -> void:
 ## Level of a monster spawned from `spawn` (map spawn point) of type `def`.
 func monster_level(spawn: Dictionary, def: Dictionary) -> int:
 	var bonus := int(balance.monster_scaling.get("boss_level_bonus", 2)) if bool(def.get("boss", false)) else 0
-	return arena_level + int(spawn.get("level_offset", 0)) + bonus
+	var base := instance_level if instance_level > 0 else arena_level # a dungeon uses its own level
+	return base + int(spawn.get("level_offset", 0)) + bonus
 
 
 func add_entity(e: CombatEntity) -> void:

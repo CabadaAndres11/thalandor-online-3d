@@ -89,6 +89,8 @@ var band: int = 0
 var _paths_out: Array = [] # Rect2i
 ## A signpost and two torches at each way out on the zone's edge: {at, to, rot, exit}.
 var exit_markers: Array = []
+var _sign_clear: Array = [] # Rect2i kept free of trees and rocks round each signpost and its torches
+const OBSTRUCTIONS := ["tree_oak", "tree_pine", "bush", "stump", "rock_small", "rock_large"]
 
 static var _pieces_cache: Dictionary = {}
 var _piece_defs: Dictionary = {}
@@ -292,6 +294,9 @@ func collision() -> CollisionMap:
 			for x in range(int(r[0]), int(r[0]) + int(r[2])):
 				for z in range(int(r[1]), int(r[1]) + int(r[3])):
 					map.set_solid(Vector2i(x, z), true)
+	for p: Dictionary in pieces: # a bridge's deck is walkable even over water
+		for c: Vector2i in cells_of(str(p.id), "deck", p.at, p.rot):
+			map.set_solid(c, false)
 	for b: Array in blocks:
 		map.set_solid(Vector2i(int(b[0]), int(b[1])), true)
 	if band > 0:
@@ -427,6 +432,9 @@ func _scatter(s: Dictionary) -> void:
 	for p: Dictionary in pieces:
 		for c: Vector2i in footprint(p.id, p.at, p.rot):
 			taken[c] = true
+	for p: Dictionary in pieces:
+		for c: Vector2i in cells_of(str(p.id), "deck", p.at, p.rot):
+			taken[c] = true
 	for h: Dictionary in houses: # the inside, the door and the cell in front of it stay free
 		for c: Vector2i in h.cells + h.door:
 			taken[c] = true
@@ -441,7 +449,7 @@ func _scatter(s: Dictionary) -> void:
 			var roll := rng.randf()
 			var kind := str(kinds[rng.randi_range(0, kinds.size() - 1)])
 			var rot := rng.randi_range(0, 3) * 90
-			if roll >= density or _road.has(c) or taken.has(c) or _near_any(c, keep_clear) or _near_exit(c) or in_band(c):
+			if roll >= density or _road.has(c) or taken.has(c) or _near_any(c, keep_clear) or _near_exit(c) or in_band(c) or _in_sign_clear(c) or _in_water(c):
 				continue
 			if not _piece_defs.has(kind):
 				errors.append("unknown piece " + kind)
@@ -514,9 +522,49 @@ func _add_exit_markers() -> void:
 		torches.append([a.x, a.y])
 		torches.append([b.x, b.y])
 		var sign := a + inward + (a - b).sign()
+		# The board points out of the zone (its arrow is -x at rot 0; turn() turns it like a footprint).
+		var rot := 0
+		if inward.x < 0:
+			rot = 180
+		elif inward.y > 0:
+			rot = 90
+		elif inward.y < 0:
+			rot = 270
+		# Nothing tall stands round the sign and the torches (their text is read from the iso camera).
+		var lo := Vector2i(mini(mini(a.x, b.x), sign.x), mini(mini(a.y, b.y), sign.y)) - Vector2i(2, 2)
+		var hi := Vector2i(maxi(maxi(a.x, b.x), sign.x), maxi(maxi(a.y, b.y), sign.y)) + Vector2i(3, 3)
+		_sign_clear.append(Rect2i(lo, hi - lo))
 		if _piece_defs.has("signpost"): # (test piece tables have none)
-			_place("signpost", sign, 0)
-		exit_markers.append({"at": sign, "to": str(exits[i].to), "rot": 0, "exit": i})
+			_place("signpost", sign, rot)
+		exit_markers.append({"at": sign, "to": str(exits[i].to), "rot": rot, "exit": i})
+	var kept: Array = []
+	for p: Dictionary in pieces:
+		var hidden := false
+		if str(p.id) in OBSTRUCTIONS:
+			for c: Vector2i in footprint(str(p.id), p.at, p.rot):
+				if _in_sign_clear(c):
+					hidden = true
+					break
+		if not hidden:
+			kept.append(p)
+	pieces = kept
+
+
+## True when `c` lies in a water area (nothing is planted there).
+func _in_water(c: Vector2i) -> bool:
+	for a: Dictionary in terrain.get("areas", []):
+		if str(a.get("kind", "")) == "water":
+			var r: Array = a.get("area", [0, 0, 0, 0])
+			if c.x >= int(r[0]) and c.y >= int(r[1]) and c.x < int(r[0]) + int(r[2]) and c.y < int(r[1]) + int(r[3]):
+				return true
+	return false
+
+
+func _in_sign_clear(c: Vector2i) -> bool:
+	for r: Rect2i in _sign_clear:
+		if r.has_point(c):
+			return true
+	return false
 
 
 ## A thick band of trees (or rock) around the map, denser near the edge, leaving the
@@ -540,7 +588,7 @@ func _add_margin(kind: String) -> void:
 				continue
 			var ring := maxi(maxi(-x, x - size.x + 1), maxi(-zz, zz - size.y + 1))
 			var density := 0.85 if inside else (0.9 if ring <= 4 else (0.6 if ring <= 12 else 0.4))
-			if _margin_skipped(c):
+			if _margin_skipped(c) or _in_sign_clear(c) or _in_water(c):
 				continue
 			var roll := rng.randf()
 			var piece := str(kinds[rng.randi_range(0, kinds.size() - 1)])

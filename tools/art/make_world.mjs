@@ -479,10 +479,11 @@ export function worldPieces() {
   stump.box(5, 8, 5, 14, 8, 14, WOOD_L);
   add("stump", paint(stump, BARK, [BARK, BARK_D], 30));
   const bridge = new Shape();
-  for (let x = 0; x < 80; x++) bridge.box(x, 4, 2, x, 5, 37, x % 4 === 0 ? PLANK_D : PLANK);
-  for (const z of [1, 38]) { bridge.box(0, 6, z, 79, 18, z, 0); bridge.box(0, 17, z, 79, 18, z, WOOD); for (let x = 0; x < 80; x += 10) bridge.box(x, 0, z, x + 1, 18, z, WOOD); }
+  for (let x = 0; x < 160; x++) bridge.box(x, 4, 2, x, 5, 37, x % 4 === 0 ? PLANK_D : PLANK);
+  for (const z of [1, 38]) { bridge.box(0, 6, z, 159, 18, z, 0); bridge.box(0, 17, z, 159, 18, z, WOOD); for (let x = 0; x < 160; x += 10) bridge.box(x, 0, z, x + 1, 18, z, WOOD); }
   for (const v of [...bridge.cells.values()]) if (v[3] === 0) bridge.cells.delete(`${v[0]},${v[1]},${v[2]}`);
-  add("bridge", bridge, { footprint: [] });
+  // The deck (8 m x 2 m) is walkable even over water (the zone clears those cells).
+  add("bridge", bridge, { footprint: [], deck: Array.from({ length: 16 }, (_, i) => [i >> 1, i & 1]) });
   // A signpost at each way out of a zone (Plan 8.1.1): a post and a board.
   const sign = new Shape();
   sign.box(8, 0, 8, 11, 44, 11, WOOD);
@@ -535,6 +536,9 @@ export function worldPieces() {
   add("city_gate", paint(cityGate, CSTONE, [CSTONE, CSTONE_D], 93), { footprint: [[0, 0], [4, 0]] });
   // A two-storey stone house of the capital, walkable like the village's.
   addHouse("house_city", houseParts(7, 6, (f) => { table(f, 2, 2, 2); shelf(f, 5, 1); chest(f, 5, 3); }, { stone: true, tall: true, planks: true }));
+  // Two more interiors so the capital's houses differ: a home with a hearth, and a bedroom.
+  addHouse("house_city_b", houseParts(7, 6, (f) => { hearth(f, 3, 1); bed(f, 1, 1); shelf(f, 5, 1); chest(f, 5, 3); }, { stone: true, tall: true, planks: true }));
+  addHouse("house_city_c", houseParts(7, 6, (f) => { bed(f, 1, 1); bed(f, 5, 1); table(f, 2, 2, 2); chest(f, 1, 4); }, { stone: true, tall: true, planks: true }));
   // A market stall: a counter, four posts and a striped awning; goods on the counter.
   const stall = new Shape();
   stall.box(2, 0, 10, 37, 16, 17, PLANK).box(2, 16, 9, 37, 17, 18, PLANK_D);
@@ -838,7 +842,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     }
     write(`${outDir}/${id}.vox`, p.shape.size(), p.shape.voxels(), PALETTE);
     const small = SMALL_PIECES.includes(id) || DECOR.includes(id);
-    table[id] = { vox: `res://assets/world/${id}.vox`, scale: p.scale ?? 0.5, offset: p.shape.min(), footprint: p.footprint,
+    table[id] = { vox: `res://assets/world/${id}.vox`, scale: p.scale ?? 0.5, offset: p.shape.min(), footprint: p.footprint, ...(p.deck ? { deck: p.deck } : {}),
       shadow: small ? "never" : "medium", range: DECOR.includes(id) ? 30 : (small ? 55 : 90) };
   }
   fs.writeFileSync(jsonPath, JSON.stringify(table, null, "\t") + "\n");

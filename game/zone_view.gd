@@ -12,7 +12,7 @@ const BLOCK_COLORS := {ITEM_BLOCK_A: Color("#9c8b74"), ITEM_BLOCK_B: Color("#7d8
 const GROUND := {
 	"grass": Color("#5f8a49"), "dirt": Color("#7a6446"), "road": Color("#8c7a5a"), "stone": Color("#6f6c66"),
 	"sand": Color("#c2ad7c"), "water": Color("#3d6f8f"), "crypt": Color("#3d3a36"),
-	"marble": Color("#e3ddd0"), "cobble": Color("#8c867b"), # the palace floor and the capital's streets (Plan 8.3f)
+	"marble": Color("#a39a8a"), "cobble": Color("#8c867b"), # the palace floor and the capital's streets (Plan 8.3f)
 	"forest": Color("#3f5530"), # the floor under the edge band (Plan 8.1.2)
 }
 const WATER_DEPTH := 0.12
@@ -160,7 +160,7 @@ func _build_ground() -> void:
 	outer_mat.roughness = 1.0
 	plane.material = outer_mat
 	outer.mesh = plane
-	outer.position = Vector3(layout.size.x / 2.0, -0.03, layout.size.y / 2.0)
+	outer.position = Vector3(layout.size.x / 2.0, -0.3, layout.size.y / 2.0)
 	add_child(outer)
 	var by_kind := {} # "kind#cx,cz" -> cells (one mesh per kind and chunk, Plan 8.1.1)
 	var cells := ground_cells()
@@ -194,10 +194,9 @@ func _build_ground() -> void:
 				var v := Vector3(c.x + k.x, top, c.y + k.y)
 				st.set_uv(Vector2(v.x, v.z) * inv)
 				st.add_vertex(v)
-			if layout.relief.is_empty():
-				continue
 			for side: Vector2i in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
-				var low := y + layout.height_at(c.x + side.x + 0.5, c.y + side.y + 0.5)
+				var ny := -WATER_DEPTH if cells.get(c + side, "") == "water" else 0.0
+				var low := ny + layout.height_at(c.x + side.x + 0.5, c.y + side.y + 0.5)
 				if low >= top - 0.001:
 					continue
 				var a := Vector3(c.x + (1 if side.x > 0 else 0), 0, c.y + (1 if side.y > 0 else 0))

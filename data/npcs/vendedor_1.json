@@ -1,0 +1,23 @@
+{
+	"id": "vendedor_1",
+	"name": "NPC_VENDEDOR",
+	"role": "villager",
+	"lines": {
+		"greet": "NPC_VENDEDOR_GREET"
+	},
+	"look": {
+		"class": "villager",
+		"appearance": {
+			"body": "male",
+			"skin": "skin_2",
+			"eyes": "blue",
+			"hair_style": "bob",
+			"hair_color": "red",
+			"beard": "none"
+		},
+		"primary": "#2e5a8a",
+		"secondary": "#d8c9a0",
+		"trousers": "#3a2f24",
+		"weapons": []
+	}
+}

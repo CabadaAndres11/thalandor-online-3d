@@ -45,6 +45,7 @@ var _open_houses: Array = []
 ## Monster types that glow because the story needs them (the practice dummy), Plan 8.3d.
 var _quest_foes: Array = []
 ## Names, signs and bars hidden while a scene plays (Plan 8.3d).
+var _cam_y: float = -1000.0 # the camera's smoothed ground height
 var _scene_labels: Array = []
 ## The white flash of a scene goes to the overlay (Main connects it).
 signal scene_flash()
@@ -431,7 +432,10 @@ func _process(delta: float) -> void:
 	var own := client.render_state(client.my_id)
 	if not own.is_empty():
 		if cutscene == null:
-			camera.follow(own.position)
+			# The camera rises with the relief (smoothed over the voxel steps), so a hill does not bring the character closer.
+			var gy := ground_y(own.position.x, own.position.z)
+			_cam_y = gy if is_equal_approx(_cam_y, -1000.0) else lerpf(_cam_y, gy, minf(1.0, delta * 6.0))
+			camera.follow(own.position + Vector3(0, _cam_y, 0))
 		zone_view.follow(own.position)
 		update_house(own.position)
 		for npc: NpcAvatar in _npc_avatars:

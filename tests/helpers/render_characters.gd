@@ -109,11 +109,13 @@ func _looks(set_name: String) -> Array:
 				["villager", {"race": "ogre", "hair_style": "hair_mohawk", "hair_color": "black", "skin": "ogre_greygreen"}, rot],
 				["villager", {"race": "lizard", "hair_style": "crest_fin", "hair_color": "crimson", "skin": "lizard_green", "eyes": "reptile"}, rot],
 			])
-		"beards_ogre", "beards_ogre_side", "beards_human":
+		"beards_ogre", "beards_ogre_side", "beards_human", "beards_ogre_b", "beards_ogre_b_side":
 			var race := "human" if set_name == "beards_human" else "ogre"
-			var rot2 := 90.0 if set_name == "beards_ogre_side" else 20.0
+			var rot2 := 90.0 if set_name.ends_with("_side") else 20.0
 			var outb := []
 			for b: Dictionary in CharacterCatalog.load_default().options_for("beard", race):
+				if set_name.begins_with("beards_ogre_b") and not str(b.piece) in ["beard_mustache", "beard_stubble", "beard_short", "beard_goatee", "beard_chinstrap"]:
+					continue
 				outb.append(_resolved([["villager", {"race": race, "hair_style": "short", "hair_color": "black", "beard": str(b.id), "skin": "ogre_greygreen" if race == "ogre" else "skin_2"}, rot2]])[0])
 			return outb
 		"hair_new":
