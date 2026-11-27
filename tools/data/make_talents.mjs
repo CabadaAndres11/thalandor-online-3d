@@ -89,9 +89,45 @@ export function buildTree() {
   return { start: 'start', directions: DIRECTIONS, nodes };
 }
 
+// How much each class wants of each stat (its recommended route follows them).
+export const PRIORITIES = {
+  warrior: { armor_pct: 3, max_hp_pct: 3, attack_power_pct: 3, block_add: 2, damage_taken_pct: 2, armor_add: 2, threat_pct: 1, crit_add: 1, hp_regen_add: 1 },
+  cleric: { healing_done_pct: 3, spell_power_pct: 3, max_resource_pct: 2, resource_regen_pct: 2, max_hp_pct: 1, armor_pct: 1, cooldown_reduction_add: 1 },
+  mage: { spell_power_pct: 3, crit_add: 2, crit_damage_add: 2, max_resource_pct: 2, resource_regen_pct: 2, cooldown_reduction_add: 2 },
+  archer: { attack_power_pct: 3, crit_add: 3, crit_damage_add: 2, move_speed_pct: 2, dodge_add: 2, damage_done_pct: 2 },
+  assassin: { attack_power_pct: 3, crit_damage_add: 3, crit_add: 2, dodge_add: 2, damage_done_pct: 2, lifesteal_add: 2, move_speed_pct: 1 },
+};
+export const ROUTE_LENGTH = 100;
+
+// The recommended route of each class: 100 nodes, each bought next to the start or to an
+// earlier one, choosing the most valuable for the class with a one-step look ahead.
+export function buildRoutes(tree) {
+  const nodes = tree.nodes;
+  const order = (id) => { const [r, i] = id.slice(1).split('_').map(Number); return r * 1000 + i; };
+  const routes = {};
+  for (const [cls, want] of Object.entries(PRIORITIES)) {
+    const score = (id) => nodes[id].mods.reduce((s, m) => s + (want[m.stat] ?? 0) * Math.abs(m.value) / Math.abs(BASE[m.stat]), 0);
+    const owned = new Set([tree.start]);
+    const route = [];
+    while (route.length < ROUTE_LENGTH) {
+      let best = null, bestValue = -1;
+      for (const id of Object.keys(nodes)) {
+        if (owned.has(id) || !nodes[id].links.some((n) => owned.has(n))) continue;
+        const ahead = Math.max(0, ...nodes[id].links.filter((n) => !owned.has(n)).map(score));
+        const value = score(id) + 0.5 * ahead;
+        if (value > bestValue || (value === bestValue && order(id) < order(best))) { best = id; bestValue = value; }
+      }
+      owned.add(best);
+      route.push(best);
+    }
+    routes[cls] = route;
+  }
+  return routes;
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const tree = buildTree();
-  const out = { ...tree, routes: typeof buildRoutes === 'function' ? buildRoutes(tree) : {} };
+  const out = { ...tree, routes: buildRoutes(tree) };
   writeFileSync(join(ROOT, 'data', 'talents.json'), formatJson(out));
   console.log(`talents.json: ${Object.keys(tree.nodes).length} nodes in ${RINGS} rings`);
 }

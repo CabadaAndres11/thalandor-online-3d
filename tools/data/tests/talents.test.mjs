@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import { buildTree } from "../make_talents.mjs";
+import { buildTree, buildRoutes } from "../make_talents.mjs";
 
 const STATS = ["attack_power_pct", "spell_power_pct", "crit_add", "crit_damage_add", "damage_done_pct", "damage_taken_pct",
   "move_speed_pct", "dodge_add", "block_add", "armor_add", "armor_pct", "max_hp_pct", "hp_regen_add", "lifesteal_add",
@@ -63,4 +63,26 @@ test("every node has an icon file", () => {
     if (id === "start") continue;
     assert.ok(fs.existsSync(`assets/icons/talents/${nodes[id].icon}.png`), `${id}: ${nodes[id].icon}`);
   }
+});
+
+const routes = buildRoutes(tree);
+const CLASSES = ["warrior", "cleric", "mage", "archer", "assassin"];
+
+test("each class route has 100 distinct nodes, each linked to the start or an earlier node", () => {
+  for (const c of CLASSES) {
+    const route = routes[c];
+    assert.equal(route.length, 100, c);
+    assert.equal(new Set(route).size, 100, c + " repeats a node");
+    const have = new Set(["start"]);
+    for (const id of route) {
+      assert.ok(nodes[id].links.some((n) => have.has(n)), `${c}: ${id} is not reachable yet`);
+      have.add(id);
+    }
+  }
+});
+
+test("routes follow the class", () => {
+  const share = (c, dirs) => routes[c].slice(0, 30).filter((id) => dirs.includes(nodes[id].dir)).length / 30;
+  assert.ok(share("warrior", ["bastion", "might"]) >= 0.6, "warrior");
+  assert.ok(share("mage", ["arcane"]) >= 0.6, "mage");
 });
