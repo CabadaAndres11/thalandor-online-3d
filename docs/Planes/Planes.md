@@ -27,7 +27,7 @@ Cada plan de la [[14 Hoja de ruta]] tiene su **spec** (diseño acordado) y su **
 | 6.4.3 · Ropa que sigue al cuerpo | Hecho (0.9.6, publicada en la 0.9.7) |
 | 6.4.4 · Correcciones de la prueba 0.9.6 | Hecho (0.9.7, publicada en la 0.9.7) |
 | 7 · Identidad y creación de personaje | Hecho (0.10.0, publicada) |
-| 8 · Mundo y misiones (prólogo y arco 1) | En curso, en cinco partes |
+| 8 · Mundo y misiones (prólogo) | Hecho (0.11.0–0.17.0) |
 | 8.1 · Zonas y mundo | Hecho (0.11.0, publicada en la 0.11.3) |
 | 8.1.1 · Correcciones de la prueba 0.11.0 | Hecho (0.11.1, publicada en la 0.11.3) |
 | 8.1.2 · Pantallas de carga y nombres del mundo | Hecho (0.11.2, publicada en la 0.11.3) |
@@ -39,9 +39,14 @@ Cada plan de la [[14 Hoja de ruta]] tiene su **spec** (diseño acordado) y su **
 | 8.3d · Relieve, aldea nueva y correcciones | Hecho (0.15.0, sin publicar) |
 | 8.3e · Cuerpos de hombre y mujer | Publicado (0.17.0) |
 | 8.3g · Árbol de talentos en anillos | Publicado (0.17.0) |
-| 9 · Secretos y clases ocultas | Pendiente |
-| 10 · Oficios | Pendiente |
-| 11 · Interfaz y audio | Pendiente |
-| 12 · Contenido de la demo | Pendiente |
+| 9 · Misiones secundarias y bestiario ampliado | Pendiente |
+| 10 · Secretos: clases, habilidades ocultas y títulos | Pendiente |
+| 11 · Oficios y materiales | Pendiente |
+| 12 · Sistema de objetos nuevo | Pendiente |
+| 13 · Mazmorra rehecha y cofres | Pendiente |
+| 14 · Arco 1, primera mitad | Pendiente |
+| 15 · Arco 1, final | Pendiente |
+| 16 · Interfaz y audio | Pendiente |
+| 17 · Contenido y equilibrio de la demo | Pendiente |
 ---
 ← [[00 Inicio|Inicio]]

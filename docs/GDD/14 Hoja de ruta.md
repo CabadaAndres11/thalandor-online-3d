@@ -4,7 +4,7 @@ estado: diseñado
 actualizado: 2026-11-27
 ---
 
-# 14. Hoja de ruta **[En curso]** (revisada el 2026-11-19, tras la 0.7.0)
+# 14. Hoja de ruta **[En curso]** (revisada el 2026-11-27, tras la 0.17.0)
 
 Cada plan se diseña (spec), se planifica, se implementa con tests, se prueba y se publica antes de pasar al siguiente.
 
@@ -18,23 +18,25 @@ Cada plan se diseña (spec), se planifica, se implementa con tests, se prueba y 
 | 5 | **Objetos:** botín, inventario, equipo visible por clase y tramo, mercader, durabilidad, pociones | 0.7.0 |
 | 6 | **Renovación gráfica:** vóxel 2×, iluminación, ambientes, equipo, monstruos y ropa que sigue al cuerpo | 0.8.0–0.9.7 |
 | 7 | **Identidad y creación de personaje:** cinco razas, apariencia ampliada, pantalla de inicio con el altar del Sol Negro y menús de piedra y oro | 0.10.0 |
+| 8 (prólogo) | **Mundo y misiones, el prólogo:** zonas como datos, misiones, diálogos y escenas, el prólogo como tutorial, camino y capital, relieve, cuerpos de hombre y mujer, árbol de talentos en anillos y la primera bajada a la cripta | 0.11.x–0.17.0 |
 
-## Pendientes (nuevo orden)
-El orden pone primero lo que cambia la base de todo lo demás: la renovación gráfica antes de crear más modelos, y el mundo antes de esconder secretos en él.
+## Pendientes
+La demo es el **prólogo y el arco 1** completos, con las zonas que hagan falta, y acaba **hacia el nivel 60** ([[D-017 Mundo por zonas, hordas y demo del prólogo y arco 1|D-017]]). El orden define primero **qué hay en el mundo** (enemigos, misiones, secretos, oficios) y después **los objetos**, que se diseñan sabiendo para qué clases son, de dónde salen y con qué materiales se hacen.
 
 | Plan | Contenido | Por qué en este orden |
 |---|---|---|
-| 6 | **Renovación gráfica:** vóxel más fino en todos los modelos (humanoide, piezas, equipo, monstruos, PNJ) para ganar detalle y dejar atrás el aspecto infantil; proporciones más realistas, materiales e iluminación, sombras y postprocesado; las capas, túnicas y auras siguen al cuerpo **Vóxel 2× y cuatro partes** ([[D-015 Vóxel 2× y renovación gráfica en cuatro partes]]): 6.1 iluminación, ambientes y opciones; 6.2 humanoide y piezas; 6.3 equipo; 6.4 monstruos, PNJ y ropa que sigue al cuerpo | Todo el arte que venga después (razas, bestiario, sets ocultos) se hará ya en el estilo nuevo, sin rehacerlo dos veces |
-| 7 | **Identidad y creación de personaje:** logo, menú de inicio, pantallas de selección y creación con estilo propio; **razas** seleccionables; muchos más peinados, colores, rasgos y elementos de apariencia | Se apoya en el modelo nuevo del Plan 6 |
-| 8 | **Mundo y misiones** ([[D-017 Mundo por zonas, hordas y demo del prólogo y arco 1]]): el **prólogo y el arco 1** del guion, en cinco partes: 8.1 zonas y mundo (**0.11.0**), 8.2 misiones, diálogos y escenas (**0.12.0**), 8.3 prólogo, 8.4 arco 1 (primera mitad) y 8.5 arco 1 (final) | Da el espacio donde ocurre todo lo demás |
-| 9 | **Secretos y clases ocultas:** condiciones ocultas que desbloquean **clases nuevas con sets propios** y **habilidades nuevas para cualquier clase**; registro de descubrimientos | Necesita mundo, misiones y PNJ donde esconder las pistas |
-| 10 | **Oficios:** herrero, peletero y demás; recolección de materiales, recetas y fabricación de objetos | Se apoya en objetos (Plan 5) y en el mundo (Plan 8) |
-| 11 | **Interfaz y audio:** minimapa, marcos de grupo, opciones, música y efectos | Pulido general con todos los sistemas ya presentes |
-| 12 | **Contenido de la demo:** las 4 zonas completas hasta el nivel 60, **bestiario ampliado**, historia principal, legendarios y cambio de clase; equilibrio | Llena todo lo anterior de contenido |
+| 9 | **Misiones secundarias y bestiario ampliado:** misiones secundarias en las zonas que ya existen; el resto de enemigos y monstruos del prólogo y el arco 1 | Saber qué enemigos hay dice qué objetos y materiales pueden soltar |
+| 10 | **Secretos:** clases ocultas con sus condiciones; **habilidades ocultas** que se desbloquean con condiciones ocultas o misiones y que la mayoría de clases pueden equiparse; **ventana de títulos**, que se ganan con misiones e hitos y dan estadísticas o efectos únicos | Usan el mismo motor de condiciones e hitos; fija cuántas clases hay antes de diseñar objetos |
+| 11 | **Oficios:** herrero, peletero y demás; los enemigos sueltan **materiales**; recolección, recetas y fabricación | Fija los materiales disponibles antes de definir los objetos |
+| 12 | **Sistema de objetos nuevo:** sin sets ni tiers; muchos objetos independientes, cada uno con sus estadísticas y, a partir de cierto nivel, **pasivas o habilidades propias**; **objetos únicos** con dónde y cómo conseguirlos; objetos fabricables; objetos como recompensa de misión | El núcleo del juego tras los oficios: conseguir los mejores objetos. Se diseña con enemigos, clases y materiales ya conocidos |
+| 13 | **Mazmorra rehecha** (aspecto y funcionamiento) y **cofres con recompensas** | Reparte el botín nuevo |
+| 14 | **Arco 1, primera mitad** (misiones 6–10): afueras de la capital y sus zonas | Con todos los sistemas listos |
+| 15 | **Arco 1, final** (misiones 11–14): alcantarillas y submundo, las bajadas a la cripta y la salida rumbo al volcán | Cierra la historia de la demo |
+| 16 | **Interfaz y audio:** marcos de grupo, música y efectos | Pulido con todos los sistemas presentes |
+| 17 | **Contenido y equilibrio de la demo:** colocar los objetos únicos y secretos, ajustar la progresión hasta el nivel 60 | Llena y equilibra todo lo anterior |
 
 Notas:
-- El **bestiario** crece en dos momentos: los enemigos de las primeras zonas en el Plan 8 y el resto en el Plan 12.
-- Las **clases ocultas** se diseñan en el Plan 9 de forma genérica (condiciones y recompensas como datos); su contenido concreto se reparte por las zonas del Plan 12.
+- Los ajustes de los sets del mago y del asesino están pendientes de concretar ([[15 Decisiones abiertas]]).
 - La prueba de red entre casas se superó con WebRTC ([[D-020 WebRTC como red definitiva]]).
 
 ---
