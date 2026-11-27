@@ -92,7 +92,7 @@ export function buildTree() {
 // How much each class wants of each stat (its recommended route follows them).
 export const PRIORITIES = {
   warrior: { armor_pct: 3, max_hp_pct: 3, attack_power_pct: 3, block_add: 2, damage_taken_pct: 2, armor_add: 2, threat_pct: 1, crit_add: 1, hp_regen_add: 1 },
-  cleric: { healing_done_pct: 3, spell_power_pct: 3, max_resource_pct: 2, resource_regen_pct: 2, max_hp_pct: 1, armor_pct: 1, cooldown_reduction_add: 1 },
+  cleric: { healing_done_pct: 4, healing_received_pct: 2, hp_regen_add: 2, lifesteal_add: 1, spell_power_pct: 1, max_resource_pct: 2, resource_regen_pct: 2, max_hp_pct: 1, armor_pct: 1, cooldown_reduction_add: 1 },
   mage: { spell_power_pct: 3, crit_add: 2, crit_damage_add: 2, max_resource_pct: 2, resource_regen_pct: 2, cooldown_reduction_add: 2 },
   archer: { attack_power_pct: 3, crit_add: 3, crit_damage_add: 2, move_speed_pct: 2, dodge_add: 2, damage_done_pct: 2 },
   assassin: { attack_power_pct: 3, crit_damage_add: 3, crit_add: 2, dodge_add: 2, damage_done_pct: 2, lifesteal_add: 2, move_speed_pct: 1 },
