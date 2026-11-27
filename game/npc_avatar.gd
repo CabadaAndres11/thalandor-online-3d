@@ -27,7 +27,7 @@ func setup(id: String, at: Vector3, facing: float) -> void:
 		rig.set_pose_now(str(data.pose)) # the wounded lie (Plan 8.3d)
 	_name = tr(str(data.get("name", id)))
 	_label = _text(_name, NAME_HEIGHT, 40, NAME_COLOR)
-	_prompt = _text(tr("UI_TALK_PROMPT"), NAME_HEIGHT + 0.3, 32, Color.WHITE)
+	_prompt = _text(tr("UI_HELP_PROMPT" if str(data.get("pose", "")) == "lie" else "UI_TALK_PROMPT"), NAME_HEIGHT + 0.3, 32, Color.WHITE)
 	_prompt.visible = false
 	_mark = _text("", NAME_HEIGHT + 0.75, 72, Color("#ffcc33"))
 	_mark.outline_size = 14

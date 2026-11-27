@@ -41,6 +41,9 @@ func tick(world: SimWorld) -> void:
 			continue
 		if m.died_tick < 0:
 			m.died_tick = world.tick
+			if bool(m.def.get("boss", false)) and world.instance_level > 0 and world.cleared_tick < 0:
+				world.cleared_tick = world.tick # the dungeon's boss fell: the host sends everyone out
+				world.emit(["dungeon_cleared"])
 		elif world.tick - m.died_tick >= world.ticks(CORPSE_S):
 			world.remove_entity(m.id)
 			if m.horde_index >= 0 and m.horde_index < _horde_due.size():
@@ -49,6 +52,8 @@ func tick(world: SimWorld) -> void:
 				var hr := float((hordes[m.horde_index] as Dictionary).get("respawn_s", HORDE_RESPAWN_S))
 				(_horde_due[m.horde_index] as Array).append(m.died_tick + world.ticks(hr))
 			elif m.spawn_index >= 0 and m.spawn_index < _due.size():
+				if not bool((points[m.spawn_index] as Dictionary).get("respawn", true)):
+					continue # a dungeon's monster stays dead until the dungeon is over
 				var respawn := float(points[m.spawn_index].get("respawn_s", 30.0))
 				if bool(m.def.get("boss", false)):
 					respawn = world.balance.boss_respawn_s

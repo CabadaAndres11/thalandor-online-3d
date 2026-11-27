@@ -437,6 +437,11 @@ func _process(delta: float) -> void:
 		for npc: NpcAvatar in _npc_avatars:
 			var d := Vector2(own.position.x - npc.position.x, own.position.z - npc.position.z).length()
 			npc.set_prompt_visible(d <= NpcDB.TALK_RANGE)
+		var examine := quest_point_near()
+		for pid: String in _point_marks:
+			var tag := (_point_marks[pid] as Node).get_node_or_null("Prompt") as Label3D
+			if tag != null:
+				tag.visible = pid == examine and cutscene == null
 
 
 ## Opens the house the own player stands in (and only that one), Plan 8.1.1.
@@ -554,18 +559,8 @@ func _scene_fx(name: String, at: Vector3) -> void:
 		"flash":
 			scene_flash.emit()
 		"blood":
-			var pool := MeshInstance3D.new()
-			var disc := CylinderMesh.new()
-			disc.top_radius = 0.9
-			disc.bottom_radius = 0.9
-			disc.height = 0.02
-			pool.mesh = disc
-			var red := StandardMaterial3D.new()
-			red.albedo_color = Color(0.32, 0.03, 0.03)
-			red.roughness = 0.2
-			pool.material_override = red
-			pool.position = at + Vector3(0.6, 0.02, 0)
-			pool.scale = Vector3(1.3, 1, 0.8)
+			var pool := VoxelFx.node(VoxelFx.blood_pool(1.0), false, 1.0, 0.1)
+			pool.position = at + Vector3(0.6, 0.05, 0)
 			add_child(pool)
 			_scene_fx_nodes.append(pool)
 		"fire", "embers":
@@ -678,6 +673,17 @@ func refresh_quest_marks() -> void:
 		glow.material_override = mat
 		glow.position = Vector3(at.x + 0.5, 1.2 + ground_y(at.x + 0.5, at.y + 0.5), at.y + 0.5)
 		glow.name = "QuestPoint_" + id
+		var tag := Label3D.new() # "[E] Investigar", shown while the player stands at the point
+		tag.text = tr("UI_QUEST_EXAMINE_PROMPT")
+		tag.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		tag.no_depth_test = true
+		tag.font_size = 32
+		tag.pixel_size = 0.01
+		tag.outline_size = 10
+		tag.position = Vector3(0, 0.7, 0)
+		tag.visible = false
+		tag.name = "Prompt"
+		glow.add_child(tag)
 		_avatar_root.add_child(glow)
 		_point_marks[id] = glow
 
@@ -884,6 +890,8 @@ func _on_combat_event(raw: Array) -> void:
 		client.chat_received.emit("", tr("ITEM_BAG_FULL"), true)
 	if str(ev[0]) == "exit_locked" and ev.size() > 1 and int(ev[1]) == client.my_id:
 		client.chat_received.emit("", tr("UI_EXIT_LOCKED"), true)
+	if str(ev[0]) == "dungeon_cleared":
+		client.chat_received.emit("", tr("UI_DUNGEON_CLEARED"), true)
 	if str(ev[0]) == "trade_refused" and ev.size() > 2 and int(ev[1]) == client.my_id:
 		client.chat_received.emit("", tr("TRADE_REFUSED_" + str(ev[2]).to_upper()), true)
 	match str(ev[0]):

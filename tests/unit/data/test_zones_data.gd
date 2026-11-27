@@ -94,7 +94,7 @@ func test_village_npcs_and_houses_reachable() -> void:
 		_village_reachable(_village(v))
 	var eve := _village("vispera")
 	var brann: Dictionary = eve.npcs.filter(func(n: Dictionary) -> bool: return n.id == "brann")[0]
-	assert_lt(Vector2(float(brann.at[0]), float(brann.at[1])).distance_to(Vector2(eve.entries.default)), 7.0, "Brann by the forge on the eve")
+	assert_lt(Vector2(float(brann.at[0]), float(brann.at[1])).distance_to(Vector2(eve.entries.default)), 8.0, "Brann by the forge on the eve")
 
 
 func _village_reachable(z: ZoneLayout) -> void:

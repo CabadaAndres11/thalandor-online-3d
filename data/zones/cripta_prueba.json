@@ -725,7 +725,8 @@
 				10,
 				12
 			],
-			"count": 8
+			"count": 8,
+			"respawn": false
 		},
 		{
 			"area": [
@@ -749,7 +750,8 @@
 				12
 			],
 			"count": 8,
-			"elite_chance": 0.15
+			"elite_chance": 0.15,
+			"respawn": false
 		}
 	],
 	"spawns": [
@@ -762,7 +764,8 @@
 			"count": 1,
 			"radius": 0,
 			"respawn_s": 300,
-			"elite_chance": 0
+			"elite_chance": 0,
+			"respawn": false
 		}
 	],
 	"torches": [

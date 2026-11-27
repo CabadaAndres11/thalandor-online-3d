@@ -1,0 +1,48 @@
+{
+	"id": "cripta_1",
+	"name": "QUEST_CRIPTA_1",
+	"summary": "QUEST_CRIPTA_1_SUM",
+	"story": true,
+	"auto": true,
+	"giver": "",
+	"turn_in": "",
+	"requires": {
+		"quests": [
+			"prologo_4"
+		]
+	},
+	"steps": [
+		{
+			"text": "QUEST_CR1_S1",
+			"objectives": [
+				{
+					"type": "kill",
+					"monster": "cultist",
+					"count": 8,
+					"zone": "cripta_prueba"
+				},
+				{
+					"type": "kill",
+					"monster": "cult_inquisitor",
+					"count": 2,
+					"zone": "cripta_prueba"
+				}
+			]
+		},
+		{
+			"text": "QUEST_CR1_S2",
+			"objectives": [
+				{
+					"type": "kill",
+					"monster": "cult_acolyte",
+					"count": 1,
+					"zone": "cripta_prueba"
+				}
+			]
+		}
+	],
+	"rewards": {
+		"levels": 1,
+		"gold": 200
+	}
+}

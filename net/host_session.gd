@@ -15,6 +15,8 @@ const OWNER_EVENTS := ["gold", "loot", "loot_gone", "bag_full", "trade_refused",
 const EXIT_COMBAT_S := 5.0
 ## How often a player blocked at an exit is told why.
 const EXIT_WARN_S := 3.0
+## Seconds after a dungeon's boss falls until everyone is sent out and the instance closes.
+const CLEARED_EXIT_S := 12.0
 
 ## The world of the zone the host started in (its map). Each player lives in the world of
 ## its own zone: world_of(id).
@@ -108,6 +110,7 @@ func tick() -> void:
 	_follow_story_moments()
 	_start_pending_scenes()
 	_check_exits()
+	_close_cleared_dungeons()
 	_send_places()
 	if zones.tick % balance.tick_rate == 0:
 		_send_party()
@@ -218,6 +221,29 @@ func _check_exits() -> void:
 				push_warning("HostSession: an exit of %s leads to an unknown zone %s" % [layout.id, ex.to])
 			continue
 		send_to_zone(id, key, zones.layout(key).entry(str(ex.entry)))
+
+
+## A dungeon whose boss died CLEARED_EXIT_S ago closes: everyone inside goes out through its
+## way out and the instance is dropped, so the next visit is a fresh one.
+func _close_cleared_dungeons() -> void:
+	for key: String in zones.keys():
+		var w := zones.world(key)
+		if w.cleared_tick < 0 or w.tick - w.cleared_tick < w.ticks(CLEARED_EXIT_S):
+			continue
+		var layout := zones.layout(key)
+		var out_exit := {}
+		for e: Dictionary in layout.exits:
+			if zones.peek(str(e.to)) != null and not zones.peek(str(e.to)).instanced:
+				out_exit = e
+				break
+		if out_exit.is_empty():
+			continue
+		var dest := zones.open(str(out_exit.to))
+		if dest == "":
+			continue
+		for id: int in zones.occupants(key).duplicate():
+			send_to_zone(id, dest, zones.layout(dest).entry(str(out_exit.entry)))
+		zones.discard(key)
 
 
 ## The levels a player may choose for a dungeon: -5 to +10 of its own, within the balance.

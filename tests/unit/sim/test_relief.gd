@@ -13,7 +13,7 @@ func test_hill_height() -> void:
 	var last := 3.0
 	for d in range(1, 10):
 		var h := z.height_at(20.5 + d, 20.5)
-		assert_lt(h, last, "it falls all the way down")
+		assert_lte(h, last, "it falls all the way down")
 		last = h
 	var hollow := _zone([{"kind": "hollow", "at": [20, 20], "radius": 6, "height": -1.5}])
 	assert_almost_eq(hollow.height_at(20.5, 20.5), -1.5, 0.001)

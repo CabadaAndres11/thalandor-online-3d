@@ -1,0 +1,23 @@
+{
+	"id": "ciudadano_7",
+	"name": "NPC_CIUDADANO",
+	"role": "villager",
+	"lines": {
+		"greet": "NPC_CIUDADANO_4_GREET"
+	},
+	"look": {
+		"class": "villager",
+		"appearance": {
+			"body": "male",
+			"skin": "skin_1",
+			"eyes": "brown",
+			"hair_style": "hair_curls",
+			"hair_color": "black",
+			"beard": "none"
+		},
+		"primary": "#8a7a3a",
+		"secondary": "#d8c9a0",
+		"trousers": "#3a2e24",
+		"weapons": []
+	}
+}

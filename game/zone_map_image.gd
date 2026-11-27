@@ -13,6 +13,7 @@ const ROCK := Color("#77736b")
 const TREES := ["tree_oak", "tree_pine", "bush", "stump"]
 const ROCKS := ["rock_small", "rock_large", "crypt_wall", "crypt_pillar", "crypt_arch"]
 
+static var _zone_graph: Dictionary = {}
 static var _instanced: Dictionary = {} # zone id -> instanced (exits that lead to dungeons)
 
 
@@ -96,9 +97,12 @@ static func quest_target(layout: ZoneLayout, log: QuestLog, quests: QuestDB) -> 
 		targets.append({"type": "talk", "npc": str(q.turn_in)})
 	for o: Dictionary in targets:
 		var zone := str(o.get("zone", ""))
+		if zone == "" and o.has("npc") and not _npc_here(layout, str(o.npc)):
+			zone = _zone_of_npc(str(o.npc)) # a talk objective in another zone
 		if zone != "" and zone != layout.id:
+			var toward := _exit_toward(layout.id, zone)
 			for e: Dictionary in layout.exits:
-				if str(e.to) == zone:
+				if str(e.to) == toward:
 					var r: Rect2i = e.area
 					return {"exit": Vector2(r.position) + Vector2(r.size) / 2.0}
 			continue
@@ -110,6 +114,63 @@ static func quest_target(layout: ZoneLayout, log: QuestLog, quests: QuestDB) -> 
 				if str(n.id) == str(o.npc):
 					return {"at": Vector2(float(n.at[0]) + 0.5, float(n.at[1]) + 0.5)}
 	return {}
+
+
+static func _npc_here(layout: ZoneLayout, npc: String) -> bool:
+	for n: Dictionary in layout.npcs:
+		if str(n.id) == npc:
+			return true
+	return false
+
+
+## Zone ids -> {exits: [zone ids], npcs: [npc ids]}, read once from data/zones (not instanced ones).
+static func _graph() -> Dictionary:
+	if _zone_graph.is_empty():
+		var dir := DirAccess.open(ZoneLayout.DIR)
+		if dir != null:
+			for f: String in dir.get_files():
+				if not f.ends_with(".json") or f == "pieces.json":
+					continue
+				var d: Variant = JSON.parse_string(FileAccess.get_file_as_string(ZoneLayout.DIR + f))
+				if not d is Dictionary:
+					continue
+				var zid := f.get_basename()
+				var ex := []
+				for e: Dictionary in d.get("exits", []):
+					ex.append(str(e.to))
+				var np := []
+				for n: Dictionary in d.get("npcs", []):
+					np.append(str(n.id))
+				_zone_graph[zid] = {"exits": ex, "npcs": np}
+	return _zone_graph
+
+
+static func _zone_of_npc(npc: String) -> String:
+	var g := _graph()
+	for zid: String in g:
+		if npc in g[zid].npcs:
+			return zid
+	return ""
+
+
+## The neighbour of `from` on the shortest way to `to` ("" when there is none).
+static func _exit_toward(from: String, to: String) -> String:
+	var g := _graph()
+	var first := {} # zone -> the neighbour of from it was reached through
+	var queue := [from]
+	first[from] = ""
+	while not queue.is_empty():
+		var z: String = queue.pop_front()
+		if not g.has(z):
+			continue
+		for nx: String in g[z].exits:
+			if first.has(nx):
+				continue
+			first[nx] = nx if z == from else first[z]
+			if nx == to:
+				return first[nx]
+			queue.append(nx)
+	return ""
 
 
 static func tr_key(key: String) -> String:

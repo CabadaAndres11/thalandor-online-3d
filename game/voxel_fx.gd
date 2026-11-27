@@ -243,6 +243,37 @@ static func flame_patch(radius_m: float, cube: float = 0.18, seed_value: int = 3
 	return flame_field(spots, 6, seed_value)
 
 
+## A pool of blood on the ground (a cutscene): an uneven blob of dark red cubes one or two
+## high, the middle darker and thicker, a few wet highlights and drops thrown around it.
+static func blood_pool(radius_m: float, cube: float = 0.1, seed_value: int = 5) -> Dictionary:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed_value
+	var cells := {}
+	var r := radius_m / cube
+	var lobes := []
+	for i in 7: # the edge wobbles: a radius per direction
+		lobes.append(rng.randf_range(0.65, 1.15))
+	for x in range(-int(r * 1.3), int(r * 1.3) + 1):
+		for z in range(-int(r * 1.3), int(r * 1.3) + 1):
+			var d := Vector2(x, z).length()
+			var a := fposmod(atan2(z, x), TAU) / TAU * 7.0
+			var edge := lerpf(float(lobes[int(a) % 7]), float(lobes[(int(a) + 1) % 7]), a - floorf(a)) * r
+			if d > edge:
+				continue
+			var depth := d / maxf(edge, 0.1)
+			var col := Color(0.30, 0.02, 0.03) if depth < 0.55 else Color(0.42, 0.04, 0.05)
+			if rng.randf() < 0.12:
+				col = Color(0.55, 0.07, 0.08) # a wet highlight
+			cells[Vector3i(x, 0, z)] = col
+			if depth < 0.4 and rng.randf() < 0.7:
+				cells[Vector3i(x, 1, z)] = col.darkened(0.1)
+	for i in 9: # drops outside it
+		var ang := rng.randf() * TAU
+		var dist := rng.randf_range(1.05, 1.5) * r
+		cells[Vector3i(roundi(cos(ang) * dist), 0, roundi(sin(ang) * dist))] = Color(0.38, 0.03, 0.04)
+	return cells
+
+
 ## A wall of flames along the X axis (length and width in metres, centred).
 static func flame_wall(length_m: float, cube: float = 0.18, seed_value: int = 4) -> Dictionary:
 	var rng := RandomNumberGenerator.new()

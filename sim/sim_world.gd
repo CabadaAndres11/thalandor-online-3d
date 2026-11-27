@@ -57,6 +57,8 @@ var arena_level: int = 1
 ## The level of a dungeon instance (Plan 8.1): its hordes use it instead of their band.
 ## 0 in the open world.
 var instance_level: int = 0
+## The tick the boss of this dungeon instance died (-1 while it lives): the instance then closes.
+var cleared_tick: int = -1
 
 
 ## Changes the arena level; idle monsters (no target, no threat) are rebuilt at the new

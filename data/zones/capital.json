@@ -5,17 +5,17 @@
 		80
 	],
 	"ambience": "exterior_dia",
-	"margin": "forest",
+	"margin": "city",
 	"safe": true,
 	"levels": [
 		1,
 		1
 	],
 	"terrain": {
-		"base": "grass",
+		"base": "cobble",
 		"areas": [
 			{
-				"kind": "dirt",
+				"kind": "stone",
 				"area": [
 					28,
 					28,
@@ -38,21 +38,21 @@
 				]
 			],
 			"width": 3,
-			"terrain": "road"
+			"terrain": "cobble"
 		},
 		{
 			"points": [
 				[
-					33,
+					12,
 					40
 				],
 				[
-					66,
+					84,
 					40
 				]
 			],
 			"width": 3,
-			"terrain": "road"
+			"terrain": "cobble"
 		}
 	],
 	"pieces": [
@@ -1081,106 +1081,10 @@
 			"rot": 0
 		},
 		{
-			"id": "house_city",
-			"at": [
-				16,
-				20
-			],
-			"rot": 0
-		},
-		{
-			"id": "house_city",
-			"at": [
-				70,
-				20
-			],
-			"rot": 0
-		},
-		{
-			"id": "house_city",
-			"at": [
-				16,
-				32
-			],
-			"rot": 0
-		},
-		{
-			"id": "house_city",
-			"at": [
-				70,
-				32
-			],
-			"rot": 0
-		},
-		{
-			"id": "house_city",
-			"at": [
-				16,
-				44
-			],
-			"rot": 0
-		},
-		{
-			"id": "house_city",
-			"at": [
-				70,
-				44
-			],
-			"rot": 0
-		},
-		{
-			"id": "house_city",
-			"at": [
-				16,
-				56
-			],
-			"rot": 0
-		},
-		{
-			"id": "house_city",
-			"at": [
-				70,
-				56
-			],
-			"rot": 0
-		},
-		{
 			"id": "fountain",
 			"at": [
 				54,
 				37
-			],
-			"rot": 0
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				38,
-				34
-			],
-			"rot": 0
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				38,
-				40
-			],
-			"rot": 0
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				60,
-				46
-			],
-			"rot": 0
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				60,
-				28
 			],
 			"rot": 0
 		},
@@ -1277,6 +1181,350 @@
 			"at": [
 				30,
 				40
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				12,
+				12
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				21,
+				12
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				30,
+				12
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				54,
+				12
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				62,
+				12
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				77,
+				12
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				12,
+				20
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				21,
+				20
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				30,
+				20
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				54,
+				20
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				62,
+				20
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				77,
+				20
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				12,
+				28
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				77,
+				28
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				12,
+				52
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				77,
+				52
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				12,
+				60
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				21,
+				60
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				30,
+				60
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				54,
+				60
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				62,
+				60
+			],
+			"rot": 0
+		},
+		{
+			"id": "house_city",
+			"at": [
+				77,
+				60
+			],
+			"rot": 0
+		},
+		{
+			"id": "market_stall",
+			"at": [
+				31,
+				30
+			],
+			"rot": 0
+		},
+		{
+			"id": "market_stall",
+			"at": [
+				34,
+				30
+			],
+			"rot": 0
+		},
+		{
+			"id": "market_stall",
+			"at": [
+				55,
+				30
+			],
+			"rot": 0
+		},
+		{
+			"id": "market_stall",
+			"at": [
+				58,
+				30
+			],
+			"rot": 0
+		},
+		{
+			"id": "market_stall",
+			"at": [
+				64,
+				30
+			],
+			"rot": 0
+		},
+		{
+			"id": "market_stall",
+			"at": [
+				31,
+				49
+			],
+			"rot": 0
+		},
+		{
+			"id": "market_stall",
+			"at": [
+				34,
+				49
+			],
+			"rot": 0
+		},
+		{
+			"id": "market_stall",
+			"at": [
+				56,
+				49
+			],
+			"rot": 0
+		},
+		{
+			"id": "market_stall",
+			"at": [
+				60,
+				49
+			],
+			"rot": 0
+		},
+		{
+			"id": "market_stall",
+			"at": [
+				64,
+				49
+			],
+			"rot": 0
+		},
+		{
+			"id": "market_stall",
+			"at": [
+				30,
+				34
+			],
+			"rot": 0
+		},
+		{
+			"id": "market_stall",
+			"at": [
+				30,
+				44
+			],
+			"rot": 0
+		},
+		{
+			"id": "market_stall",
+			"at": [
+				64,
+				34
+			],
+			"rot": 0
+		},
+		{
+			"id": "market_stall",
+			"at": [
+				64,
+				44
+			],
+			"rot": 0
+		},
+		{
+			"id": "market_stall",
+			"at": [
+				38,
+				29
+			],
+			"rot": 0
+		},
+		{
+			"id": "market_stall",
+			"at": [
+				42,
+				49
+			],
+			"rot": 0
+		},
+		{
+			"id": "city_lamp",
+			"at": [
+				22,
+				38
+			],
+			"rot": 0
+		},
+		{
+			"id": "city_lamp",
+			"at": [
+				34,
+				38
+			],
+			"rot": 0
+		},
+		{
+			"id": "city_lamp",
+			"at": [
+				62,
+				38
+			],
+			"rot": 0
+		},
+		{
+			"id": "city_lamp",
+			"at": [
+				74,
+				38
+			],
+			"rot": 0
+		},
+		{
+			"id": "palace_facade",
+			"at": [
+				38,
+				2
 			],
 			"rot": 0
 		}
@@ -1483,6 +1731,206 @@
 			"speed": 1.2,
 			"pause_s": 4,
 			"loop": true
+		},
+		{
+			"npc": "ciudadano_5",
+			"route": [
+				[
+					14,
+					40
+				],
+				[
+					27,
+					40
+				]
+			],
+			"speed": 1,
+			"pause_s": 5,
+			"loop": true
+		},
+		{
+			"npc": "ciudadana_5",
+			"route": [
+				[
+					34,
+					41
+				],
+				[
+					44,
+					41
+				]
+			],
+			"speed": 0.9,
+			"pause_s": 3,
+			"loop": true
+		},
+		{
+			"npc": "ciudadano_6",
+			"route": [
+				[
+					52,
+					40
+				],
+				[
+					66,
+					40
+				]
+			],
+			"speed": 1.1,
+			"pause_s": 5,
+			"loop": true
+		},
+		{
+			"npc": "ciudadana_6",
+			"route": [
+				[
+					70,
+					41
+				],
+				[
+					82,
+					41
+				]
+			],
+			"speed": 0.8,
+			"pause_s": 4,
+			"loop": true
+		},
+		{
+			"npc": "ciudadano_7",
+			"route": [
+				[
+					48,
+					14
+				],
+				[
+					48,
+					34
+				]
+			],
+			"speed": 1,
+			"pause_s": 5,
+			"loop": true
+		},
+		{
+			"npc": "ciudadana_7",
+			"route": [
+				[
+					49,
+					44
+				],
+				[
+					49,
+					64
+				]
+			],
+			"speed": 0.9,
+			"pause_s": 4,
+			"loop": true
+		},
+		{
+			"npc": "ciudadano_8",
+			"route": [
+				[
+					40,
+					36
+				],
+				[
+					46,
+					33
+				],
+				[
+					46,
+					44
+				]
+			],
+			"speed": 1,
+			"pause_s": 4,
+			"loop": true
+		},
+		{
+			"npc": "ciudadana_8",
+			"route": [
+				[
+					56,
+					44
+				],
+				[
+					66,
+					44
+				],
+				[
+					66,
+					36
+				]
+			],
+			"speed": 0.8,
+			"pause_s": 4,
+			"loop": true
+		},
+		{
+			"npc": "ciudadano_9",
+			"route": [
+				[
+					34,
+					32
+				],
+				[
+					44,
+					32
+				]
+			],
+			"speed": 0.9,
+			"pause_s": 4,
+			"loop": true
+		},
+		{
+			"npc": "ciudadana_9",
+			"route": [
+				[
+					58,
+					32
+				],
+				[
+					66,
+					32
+				]
+			],
+			"speed": 0.7,
+			"pause_s": 6,
+			"loop": true
+		},
+		{
+			"npc": "ciudadano_10",
+			"route": [
+				[
+					16,
+					41
+				],
+				[
+					26,
+					41
+				]
+			],
+			"speed": 1.1,
+			"pause_s": 4,
+			"loop": true
+		},
+		{
+			"npc": "ciudadana_10",
+			"route": [
+				[
+					72,
+					39
+				],
+				[
+					80,
+					39
+				]
+			],
+			"speed": 1,
+			"pause_s": 3,
+			"loop": true
 		}
 	],
 	"entries": {
@@ -1536,5 +1984,13 @@
 			"radius": 3
 		}
 	],
-	"torches": []
+	"torches": [],
+	"margin_skip": [
+		[
+			34,
+			0,
+			28,
+			10
+		]
+	]
 }

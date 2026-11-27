@@ -12,6 +12,7 @@ const BLOCK_COLORS := {ITEM_BLOCK_A: Color("#9c8b74"), ITEM_BLOCK_B: Color("#7d8
 const GROUND := {
 	"grass": Color("#5f8a49"), "dirt": Color("#7a6446"), "road": Color("#8c7a5a"), "stone": Color("#6f6c66"),
 	"sand": Color("#c2ad7c"), "water": Color("#3d6f8f"), "crypt": Color("#3d3a36"),
+	"marble": Color("#e3ddd0"), "cobble": Color("#8c867b"), # the palace floor and the capital's streets (Plan 8.3f)
 	"forest": Color("#3f5530"), # the floor under the edge band (Plan 8.1.2)
 }
 const WATER_DEPTH := 0.12
@@ -175,6 +176,7 @@ func _build_ground() -> void:
 	ground_mat.albedo_texture = ImageTexture.create_from_image(ground_image)
 	ground_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 	ground_mat.roughness = 0.95
+	ground_mat.cull_mode = BaseMaterial3D.CULL_DISABLED # the terrace walls are seen from either side
 	var inv := Vector2(1.0 / layout.size.x, 1.0 / layout.size.y)
 	for key: String in by_kind:
 		var kind := key.get_slice("#", 0)
@@ -185,18 +187,39 @@ func _build_ground() -> void:
 		for c: Vector2i in by_kind[key]:
 			var n := (hash(c) % 1000) / 1000.0
 			st.set_color(base.darkened(0.08 * n) if n < 0.5 else base.lightened(0.05 * n))
+			# The relief is voxel terraces: a flat top per cell at its height, and a wall down to
+			# each lower neighbour (water lies in its hollow).
+			var top := y + layout.height_at(c.x + 0.5, c.y + 0.5)
 			for k: Vector2i in [Vector2i(0, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 0), Vector2i(1, 1), Vector2i(0, 1)]:
-				var corner := c + k
-				# The relief lifts the ground at each corner (Plan 8.3d); water lies in its hollow.
-				var v := Vector3(corner.x, y + layout.corner_height(corner), corner.y)
+				var v := Vector3(c.x + k.x, top, c.y + k.y)
 				st.set_uv(Vector2(v.x, v.z) * inv)
 				st.add_vertex(v)
+			if layout.relief.is_empty():
+				continue
+			for side: Vector2i in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
+				var low := y + layout.height_at(c.x + side.x + 0.5, c.y + side.y + 0.5)
+				if low >= top - 0.001:
+					continue
+				var a := Vector3(c.x + (1 if side.x > 0 else 0), 0, c.y + (1 if side.y > 0 else 0))
+				var b := a
+				if side.x != 0:
+					b += Vector3(0, 0, 1)
+				else:
+					b += Vector3(1, 0, 0)
+				var quad := [Vector3(a.x, top, a.z), Vector3(b.x, top, b.z), Vector3(b.x, low, b.z), Vector3(a.x, top, a.z), Vector3(b.x, low, b.z), Vector3(a.x, low, a.z)]
+				if side.x < 0 or side.y > 0:
+					quad.reverse()
+				st.set_color(base.darkened(0.25))
+				for v: Vector3 in quad:
+					st.set_uv(Vector2(v.x, v.z) * inv)
+					st.add_vertex(v)
 		st.generate_normals()
 		var mat := ground_mat
 		if kind == "water":
-			mat = StandardMaterial3D.new()
-			mat.vertex_color_use_as_albedo = true
-			mat.roughness = 0.2
+			# The same pixel texture as the ground (patches of three blues), a little glossy.
+			var wm := ground_mat.duplicate() as StandardMaterial3D
+			wm.roughness = 0.25
+			mat = wm
 		var mi := MeshInstance3D.new()
 		mi.name = "Ground_" + key
 		mi.mesh = st.commit()

@@ -109,6 +109,13 @@ func _looks(set_name: String) -> Array:
 				["villager", {"race": "ogre", "hair_style": "hair_mohawk", "hair_color": "black", "skin": "ogre_greygreen"}, rot],
 				["villager", {"race": "lizard", "hair_style": "crest_fin", "hair_color": "crimson", "skin": "lizard_green", "eyes": "reptile"}, rot],
 			])
+		"beards_ogre", "beards_ogre_side", "beards_human":
+			var race := "human" if set_name == "beards_human" else "ogre"
+			var rot2 := 90.0 if set_name == "beards_ogre_side" else 20.0
+			var outb := []
+			for b: Dictionary in CharacterCatalog.load_default().options_for("beard", race):
+				outb.append(_resolved([["villager", {"race": race, "hair_style": "short", "hair_color": "black", "beard": str(b.id), "skin": "ogre_greygreen" if race == "ogre" else "skin_2"}, rot2]])[0])
+			return outb
 		"hair_new":
 			var out := []
 			for h: String in ["hair_braids", "hair_undercut", "hair_loose", "hair_high_ponytail", "hair_warrior_braid", "hair_curls", "hair_shaggy", "hair_half_up"]:

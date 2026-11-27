@@ -31,10 +31,13 @@ const PALETTE = {
   [35]: "#5f9a40", [36]: "#477a30", [37]: "#7fb552",
   [38]: "#3a3530", [39]: "#5b4632", [40]: "#c8bc9a", [41]: "#a89b78", [42]: "#2f4f8f", [43]: "#d4a62a",
   [44]: "#b9b2a4", [45]: "#9b9486", [46]: "#8a2a2a", [47]: "#6a1e1e", [48]: "#7a5232",
+  [49]: "#e6e0d0", [50]: "#c9c1ac", [51]: "#f4efe2", [52]: "#3c7a38", [53]: "#2c5e2a", [54]: "#5d86bd", [55]: "#e29ac0", [56]: "#2e4f8f",
 };
 // Plan 8.3b: city stone (light and dark), the palace red (light and dark) and a horse's coat.
 const CSTONE = 44, CSTONE_D = 45, RED = 46, RED_D = 47, HORSE = 48;
 // Plan 8.3a: ash, earth, army canvas (light and dark), the kingdom's blue and gold.
+// Plan 8.3f: marble (base, dark, light), garden greens, a pink flower, window glass, a darker blue.
+const MARBLE = 49, MARBLE_D = 50, MARBLE_L = 51, HEDGE = 52, HEDGE_D = 53, GLASS = 54, FLOWER_P = 55, ROYAL_D = 56;
 const ASH = 38, EARTH = 39, CANVAS = 40, CANVAS_D = 41, ROYAL = 42, ROYAL_GOLD = 43;
 
 // Two or three tones of a material mixed in patches of 3 voxels (Plan 8.1.1: less grain,
@@ -588,6 +591,54 @@ export function worldPieces() {
   gatePosts(raised);
   for (let x = 21; x < 40; x += 4) raised.box(x, 70, 9, x + 1, 79, 10, IRON);
   add("crypt_gate_open", paint(raised, STONE_D, [STONE_D, STONE], 99), { footprint: [[0, 0], [2, 0]] });
+  // Plan 8.3f: the palace in marble and gardens: a wall block, a hedge and the palace seen from the city.
+  const pwall = new Shape();
+  pwall.box(0, 0, 0, 39, 64, 19, MARBLE).box(0, 60, 0, 39, 63, 19, MARBLE_L).box(0, 64, 0, 39, 66, 19, ROYAL_GOLD);
+  for (let y = 8; y < 60; y += 10) pwall.box(0, y, 0, 39, y, 0, MARBLE_D);
+  add("palace_wall", paint(pwall, MARBLE, [MARBLE, MARBLE_D, MARBLE_L], 111));
+  const pblock = new Shape();
+  pblock.box(0, 0, 0, 19, 70, 19, MARBLE).box(-1, 66, -1, 20, 70, 20, MARBLE_L).box(0, 71, 0, 19, 72, 19, ROYAL_GOLD);
+  for (let y = 8; y < 64; y += 10) pblock.box(0, y, 0, 19, y, 0, MARBLE_D);
+  add("palace_block", paint(pblock, MARBLE, [MARBLE, MARBLE_D, MARBLE_L], 113), { footprint: [[0, 0]] });
+  const hedge = new Shape();
+  roundBox(hedge, [0, 0, 0], [19, 44, 19], 3, HEDGE);
+  for (const v of hedge.cells.values()) {
+    const n = noise3(v[0], v[1], v[2], 115);
+    v[3] = n < 0.12 ? FLOWER_P : n < 0.5 ? HEDGE_D : HEDGE;
+  }
+  add("hedge", hedge, { footprint: [[0, 0]] });
+  // The palace seen from the city (10 voxels a metre): a marble front with a colonnade, a door
+  // between two towers with blue roofs and a dome.
+  const pal = new Shape();
+  const PW = 200, PD = 56;
+  pal.box(0, 0, 0, PW - 1, 3, PD - 1, MARBLE_D); // plinth
+  pal.box(0, 4, 40, PW - 1, 89, 44, MARBLE).box(0, 4, 0, PW - 1, 89, 4, MARBLE); // front and back
+  pal.box(0, 4, 0, 4, 89, 44, MARBLE).box(PW - 5, 4, 0, PW - 1, 89, 44, MARBLE); // sides
+  pal.box(0, 86, 0, PW - 1, 92, 47, MARBLE_L).box(0, 93, 0, PW - 1, 94, 47, ROYAL_GOLD); // cornice
+  for (let x = 10; x < PW - 10; x += 20) { // the colonnade on the porch
+    cylinder(pal, [x, 4, 50], [x, 86, 50], 4, MARBLE_L);
+    pal.box(x - 5, 4, 45, x + 5, 6, 55, MARBLE_D).box(x - 5, 85, 45, x + 5, 88, 55, MARBLE_D);
+  }
+  pal.box(0, 86, 45, PW - 1, 89, 55, MARBLE_L); // porch roof
+  for (let x = 20; x < PW - 20; x += 20) if (x < 85 || x > 115) pal.box(x - 4, 30, 44, x + 4, 70, 44, GLASS).box(x - 5, 28, 44, x + 5, 29, 45, ROYAL_GOLD);
+  pal.box(88, 4, 40, 111, 55, 44, WOOD_D).box(88, 56, 40, 111, 58, 45, ROYAL_GOLD).box(99, 4, 44, 100, 55, 45, ROYAL_GOLD);
+  for (const cx of [15, PW - 16]) { // towers
+    pal.box(cx - 15, 4, 0, cx + 15, 135, 4, MARBLE).box(cx - 15, 4, 40, cx + 15, 135, 44, MARBLE);
+    pal.box(cx - 15, 4, 0, cx - 11, 135, 44, MARBLE).box(cx + 11, 4, 0, cx + 15, 135, 44, MARBLE);
+    pal.box(cx - 17, 130, -2, cx + 17, 136, 46, MARBLE_L).box(cx - 17, 137, -2, cx + 17, 138, 46, ROYAL_GOLD);
+    pal.box(cx - 4, 85, 44, cx + 4, 118, 44, GLASS);
+    for (let y = 139; y < 200; y++) {
+      const r = Math.round(19 * (1 - (y - 139) / 61));
+      cylinder(pal, [cx, y, 22], [cx, y, 22], r, y % 6 < 3 ? ROYAL : ROYAL_D);
+    }
+    pal.box(cx, 200, 22, cx, 212, 22, ROYAL_GOLD).box(cx - 2, 206, 22, cx + 2, 207, 22, ROYAL_GOLD);
+  }
+  ellipsoid(pal, [PW / 2, 94, 22], [34, 40, 22], ROYAL); // the dome
+  for (const v of [...pal.cells.values()]) if (v[3] === ROYAL && v[1] < 94) pal.cells.delete(`${v[0]},${v[1]},${v[2]}`);
+  pal.box(PW / 2 - 1, 130, 22, PW / 2, 150, 22, ROYAL_GOLD);
+  const palFoot = [];
+  for (let x = 0; x < PW / 10; x++) for (let z = 0; z < 6; z++) palFoot.push([x, z]);
+  out["palace_facade"] = { shape: paint(pal, MARBLE, [MARBLE, MARBLE_D, MARBLE_L], 117), scale: 1, footprint: palFoot };
   // The road: the caravan's wagon with its canvas, a horse standing still, the bandits' palisade.
   const wagon = new Shape();
   wagon.box(4, 12, 6, 70, 14, 33, PLANK).box(4, 15, 6, 70, 22, 7, PLANK).box(4, 15, 32, 70, 22, 33, PLANK);
@@ -787,7 +838,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     }
     write(`${outDir}/${id}.vox`, p.shape.size(), p.shape.voxels(), PALETTE);
     const small = SMALL_PIECES.includes(id) || DECOR.includes(id);
-    table[id] = { vox: `res://assets/world/${id}.vox`, scale: 0.5, offset: p.shape.min(), footprint: p.footprint,
+    table[id] = { vox: `res://assets/world/${id}.vox`, scale: p.scale ?? 0.5, offset: p.shape.min(), footprint: p.footprint,
       shadow: small ? "never" : "medium", range: DECOR.includes(id) ? 30 : (small ? 55 : 90) };
   }
   fs.writeFileSync(jsonPath, JSON.stringify(table, null, "\t") + "\n");

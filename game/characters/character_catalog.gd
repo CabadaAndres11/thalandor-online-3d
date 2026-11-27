@@ -206,7 +206,9 @@ func resolve(class_id: Variant, appearance: Variant, upgrade: String = "", gear:
 		if not hidden.has(str(meta(id).get("tag", ""))):
 			pieces.append(piece_entry(id))
 	var beard := str(option("beard", app.beard).get("piece", ""))
-	if beard != "":
+	# A hood or helm that covers the scalp and ears closes over the jaw too: its voxels and the
+	# beard's would share cells and flicker, so the beard is not drawn under it (Plan 8.3f).
+	if beard != "" and not hidden.has("hair_cap"):
 		pieces.append(piece_entry(beard))
 	var race := race_def(app.race)
 	if hidden.has("hair_cap"):

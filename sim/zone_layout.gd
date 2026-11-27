@@ -24,11 +24,17 @@ const EXIT_DEPTH := 5
 const MARGIN_KINDS := {
 	"forest": ["tree_oak", "tree_pine", "tree_pine", "tree_oak", "rock_large"],
 	"rock": ["crypt_wall", "crypt_wall", "rock_large"],
+	# The capital: only small trees and bushes behind its wall (a rock would cut through it).
+	"city": ["tree_oak", "tree_pine", "bush"],
+	# The palace grounds (Plan 8.3f): a marble wall, then clipped gardens, all closed (no gaps).
+	"palace": ["palace_block", "hedge"],
 }
 ## sim/ does not know the visual Ambience class: the same default id.
 const DEFAULT_AMBIENCE := "exterior_dia"
 ## A step higher than this between neighbouring cells is a cliff: both cells are solid (Plan 8.3d).
 const CLIFF_M := 0.6
+## The height step of the ground: one voxel (hills rise in terraces of this size).
+const VOXEL_M := 0.5
 
 var id: String = ""
 var name: String = ""
@@ -316,6 +322,12 @@ func cliff_cells() -> Array:
 ## hill / hollow: {at, radius, height} with a cosine fall; plateau: {area, height, slope}
 ## flat inside its area and falling linearly over `slope` cells outside it.
 func height_at(x: float, z: float) -> float:
+	# Voxel ground: one height per cell, in steps of a voxel (hills are terraces).
+	return snappedf(smooth_height_at(floorf(x) + 0.5, floorf(z) + 0.5), VOXEL_M)
+
+
+## The relief before it is cut into voxel steps.
+func smooth_height_at(x: float, z: float) -> float:
 	var h := 0.0
 	for f: Variant in relief:
 		if not f is Dictionary:
@@ -344,7 +356,7 @@ func height_at(x: float, z: float) -> float:
 ## The height at a cell's corner (x, z), cached: the ground mesh's vertices.
 func corner_height(c: Vector2i) -> float:
 	if not _corner_cache.has(c):
-		_corner_cache[c] = height_at(float(c.x), float(c.y))
+		_corner_cache[c] = smooth_height_at(float(c.x), float(c.y))
 	return _corner_cache[c]
 
 
@@ -528,12 +540,27 @@ func _add_margin(kind: String) -> void:
 				continue
 			var ring := maxi(maxi(-x, x - size.x + 1), maxi(-zz, zz - size.y + 1))
 			var density := 0.85 if inside else (0.9 if ring <= 4 else (0.6 if ring <= 12 else 0.4))
+			if _margin_skipped(c):
+				continue
 			var roll := rng.randf()
 			var piece := str(kinds[rng.randi_range(0, kinds.size() - 1)])
 			var rot := rng.randi_range(0, 3) * 90
+			if kind == "palace":
+				piece = str(kinds[0] if ring <= 2 else kinds[1])
+				rot = 0
+				density = 1.0 if ring <= 8 else 0.8
 			if roll >= density or (not inside and _in_way_out(c, open)):
 				continue
 			margin_pieces.append({"id": piece, "at": c, "rot": rot})
+
+
+## Cells the zone keeps free of margin ("margin_skip": [[x, z, w, d], ...]): a building stands there.
+func _margin_skipped(c: Vector2i) -> bool:
+	for r: Variant in _raw.get("margin_skip", []):
+		var a: Array = r
+		if c.x >= int(a[0]) and c.y >= int(a[1]) and c.x < int(a[0]) + int(a[2]) and c.y < int(a[1]) + int(a[3]):
+			return true
+	return false
 
 
 ## Outside the map in line with an exit (its rows or columns, one more on each side).

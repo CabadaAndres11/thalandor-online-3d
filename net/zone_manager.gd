@@ -183,6 +183,16 @@ func close_idle(now_s: float) -> void:
 			_empty_since.erase(key)
 
 
+## Drops an empty instance at once (a cleared dungeon: the next visit starts a new one).
+func discard(key: String) -> void:
+	if not (_occupants.get(key, []) as Array).is_empty():
+		return
+	_worlds.erase(key)
+	_layouts.erase(key)
+	_occupants.erase(key)
+	_empty_since.erase(key)
+
+
 func _leave(id: int, key: String) -> void:
 	var occ: Array = _occupants.get(key, [])
 	occ.erase(id)
