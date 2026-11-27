@@ -1,0 +1,15 @@
+{
+	"id": "vecino_2",
+	"name": "NPC_VECINO",
+	"role": "villager",
+	"minor": true,
+	"lines": {"greet": "NPC_VECINO_2_GREET"},
+	"look": {
+		"class": "villager",
+		"appearance": {"race": "dwarf", "body": "male", "skin": "skin_7", "eyes": "dark", "hair_style": "short", "hair_color": "grey", "beard": "full"},
+		"primary": "#4a3a2a",
+		"secondary": "#b09060",
+		"trousers": "#3a2e24",
+		"weapons": []
+	}
+}

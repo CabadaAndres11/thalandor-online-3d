@@ -1,0 +1,23 @@
+{
+	"id": "elfa_1",
+	"name": "NPC_ELFA",
+	"role": "villager",
+	"minor": true,
+	"lines": {"greet": "NPC_ELFA_1_GREET"},
+	"look": {
+		"class": "villager",
+		"appearance": {
+			"race": "elf",
+			"body": "female",
+			"skin": "skin_1",
+			"eyes": "blue",
+			"hair_style": "hair_half_up",
+			"hair_color": "ash_blond",
+			"beard": "none"
+		},
+		"primary": "#4a3a6a",
+		"secondary": "#d8c8a0",
+		"trousers": "#3a2e24",
+		"weapons": []
+	}
+}

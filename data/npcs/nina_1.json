@@ -1,0 +1,24 @@
+{
+	"id": "nina_1",
+	"name": "NPC_NINA",
+	"role": "villager",
+	"minor": true,
+	"lines": {"greet": "NPC_NINA_1_GREET"},
+	"look": {
+		"class": "villager",
+		"appearance": {
+			"race": "human",
+			"body": "female",
+			"skin": "skin_4",
+			"eyes": "green",
+			"hair_style": "hair_ponytail",
+			"hair_color": "red",
+			"beard": "none"
+		},
+		"primary": "#8a3a4a",
+		"secondary": "#e0d0b0",
+		"trousers": "#3a2e24",
+		"weapons": [],
+		"child": true
+	}
+}

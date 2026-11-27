@@ -524,8 +524,9 @@ func _add_exit_markers() -> void:
 				zz = band if inward.y > 0 else size.y - 1 - band
 			a = Vector2i(r.position.x - 1, zz)
 			b = Vector2i(r.end.x, zz)
-		torches.append([a.x, a.y])
-		torches.append([b.x, b.y])
+		if bool(_raw.get("exit_torches", true)): # indoors (the palace) the walls carry their own
+			torches.append([a.x, a.y])
+			torches.append([b.x, b.y])
 		var sign := a + inward + (a - b).sign()
 		# The board points out of the zone (its arrow is -x at rot 0; turn() turns it like a footprint).
 		var rot := 0

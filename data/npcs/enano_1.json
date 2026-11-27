@@ -1,0 +1,23 @@
+{
+	"id": "enano_1",
+	"name": "NPC_ENANO",
+	"role": "villager",
+	"minor": true,
+	"lines": {"greet": "NPC_ENANO_1_GREET"},
+	"look": {
+		"class": "villager",
+		"appearance": {
+			"race": "dwarf",
+			"body": "male",
+			"skin": "skin_3",
+			"eyes": "grey",
+			"hair_style": "bald",
+			"hair_color": "auburn",
+			"beard": "dwarf_braided"
+		},
+		"primary": "#6a3a2a",
+		"secondary": "#b08a3a",
+		"trousers": "#3a2e24",
+		"weapons": []
+	}
+}

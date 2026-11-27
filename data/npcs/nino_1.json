@@ -1,0 +1,16 @@
+{
+	"id": "nino_1",
+	"name": "NPC_NINO",
+	"role": "villager",
+	"minor": true,
+	"lines": {"greet": "NPC_NINO_1_GREET"},
+	"look": {
+		"class": "villager",
+		"appearance": {"race": "human", "body": "male", "skin": "skin_2", "eyes": "brown", "hair_style": "short", "hair_color": "brown", "beard": "none"},
+		"primary": "#5a6a3a",
+		"secondary": "#c0b090",
+		"trousers": "#3a2e24",
+		"weapons": [],
+		"child": true
+	}
+}

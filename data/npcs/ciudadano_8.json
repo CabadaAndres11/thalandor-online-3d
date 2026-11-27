@@ -2,6 +2,7 @@
 	"id": "ciudadano_8",
 	"name": "NPC_CIUDADANO",
 	"role": "villager",
+	"minor": true,
 	"lines": {"greet": "NPC_CIUDADANO_1_GREET"},
 	"look": {
 		"class": "villager",

@@ -83,7 +83,7 @@ func test_palace_dungeon_entrance_has_no_sign_and_guards() -> void:
 		assert_ne(str(m.to), "cripta_prueba", "no sign at the dungeon gate")
 	var guards := z.npcs.filter(func(n: Dictionary) -> bool: return str(n.id).begins_with("guardia_cripta_"))
 	assert_eq(guards.size(), 2)
-	assert_lt(z.height_at(2.5, 40.5), -1.0, "the stairs go down to the gate")
+	assert_lt(z.height_at(4.5, 38.5), -1.0, "the stairs go down")
 
 
 ## The centre of a placed piece's footprint, in cell coordinates (cell x spans x..x+1).
@@ -127,7 +127,7 @@ func test_palace_archive_has_oriel_and_no_royal_archivist() -> void:
 	assert_eq(oriel.size(), 1)
 	assert_true(oriel[0].at[0] >= 31 and oriel[0].at[1] >= 22, "Oriel is in the archive (south-east)")
 	var kinds := z.pieces.map(func(p: Dictionary) -> String: return str(p.id))
-	for k in ["bookshelf", "bookshelf_double", "reading_desk", "chair", "books_floor", "weapon_rack", "armor_stand"]:
+	for k in ["bookshelf", "bookshelf_double", "reading_desk", "chair", "books_floor", "weapon_rack_a", "weapon_rack_b", "armor_stand_warrior_t1", "armor_stand_mage_t2"]:
 		assert_true(k in kinds, k)
 
 
@@ -159,19 +159,44 @@ func test_palace_statues_are_giant_and_face_the_carpet() -> void:
 	assert_eq(n, 8)
 
 
-func test_palace_dungeon_gate_stands_in_a_wall() -> void:
+func test_palace_crypt_is_reached_down_stairs_without_walls() -> void:
 	var z := ZoneLayout.load_id("palacio")
 	var e: Dictionary = z.exits.filter(func(x: Dictionary) -> bool: return x.to == "cripta_prueba")[0]
-	var gate_cells: Array = z.footprint("dungeon_gate_closed", ZoneLayout._v2i(e.gate.at), int(e.gate.rot))
-	# Six cells wide in the gallery's west wall (x = 3), reaching back to the outer wall at x = 0.
-	var xs := gate_cells.map(func(c: Vector2i) -> int: return c.x)
-	var zs := gate_cells.map(func(c: Vector2i) -> int: return c.y)
-	assert_eq([xs.min(), xs.max(), zs.min(), zs.max()], [0, 3, 37, 42])
+	assert_eq([e.gate.closed, e.gate.open], ["stairs_down_closed", "stairs_down"])
+	# The stairs' pit goes down 2.5 m; the floor round it stays level.
+	assert_eq(z.height_at(4.5, 38.5), -2.5)
+	assert_eq([z.height_at(4.5, 42.5), z.height_at(1.5, 38.5), z.height_at(8.5, 38.5)], [0.0, 0.0, 0.0])
 	var map := z.collision()
-	for c: Vector2i in [Vector2i(4, 38), Vector2i(4, 41), Vector2i(6, 40)]:
-		assert_false(map.is_solid(c), "the way to the gate is free at %s" % c)
-	for c: Vector2i in [Vector2i(3, 37), Vector2i(2, 39), Vector2i(3, 30)]:
-		assert_true(map.is_solid(c), "the gate, its stairwell and the wall beside it block %s" % c)
-	# The walls round it are not sunk: only the stairwell's pit is.
-	assert_eq(z.height_at(5.5, 36.5), 0.0)
-	assert_eq(z.height_at(4.5, 40.5), 0.0)
+	for x in range(3, 7):
+		assert_false(map.is_solid(Vector2i(x, 42)), "the way down is free at x %d" % x)
+	# No wall left in the crypt room besides the outer ones and the hall's.
+	for p: Dictionary in z.pieces:
+		if p.id == "palace_wall" and p.rot == 90:
+			assert_true(p.at.x in [0, 9, 30, 39], "a wall at %s" % p.at)
+	assert_false(z.pieces.any(func(p: Dictionary) -> bool: return p.id in ["brazier", "palace_block"]), "no braziers nor stray blocks")
+
+
+func test_palace_torches_hang_on_walls() -> void:
+	var z := ZoneLayout.load_id("palacio")
+	assert_gt(z.torches.size(), 10)
+	for t: Variant in z.torches:
+		assert_true(t is Dictionary and (t as Dictionary).has("wall"), "every torch is on a wall: %s" % [t])
+	var view := ZoneView.new()
+	add_child_autofree(view)
+	view.layout = z
+	view._add_torches([{"at": [15, 1], "wall": 0}])
+	var torch: Torch = view.torches[0]
+	assert_false(torch.model.visible, "no standing torch")
+	assert_almost_eq(torch.position.z, 1.25, 0.01, "the flame burns just off the north wall")
+
+
+func test_palace_king_and_council_table() -> void:
+	var z := ZoneLayout.load_id("palacio")
+	var rey: Dictionary = z.npcs.filter(func(n: Dictionary) -> bool: return n.id == "rey")[0]
+	assert_eq(float(rey.at[0]) + 0.5, 20.0, "the king stands on the hall's axis")
+	var map := z.collision()
+	for c: Vector2i in [Vector2i(31, 9), Vector2i(31, 10), Vector2i(32, 9), Vector2i(32, 10)]:
+		assert_false(map.is_solid(c), "the council room's door is clear at %s" % c)
+	for w: Dictionary in z.walkers:
+		for pt: Array in w.route:
+			assert_false(pt[0] >= 31, "%s walks in a side room" % w.npc)

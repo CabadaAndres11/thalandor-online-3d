@@ -1,0 +1,23 @@
+{
+	"id": "ogra_1",
+	"name": "NPC_OGRA",
+	"role": "villager",
+	"minor": true,
+	"lines": {"greet": "NPC_OGRA_1_GREET"},
+	"look": {
+		"class": "villager",
+		"appearance": {
+			"race": "ogre",
+			"body": "female",
+			"skin": "ogre_slate",
+			"eyes": "amber",
+			"hair_style": "hair_bun",
+			"hair_color": "dark_brown",
+			"beard": "none"
+		},
+		"primary": "#6a3a4a",
+		"secondary": "#a08a6a",
+		"trousers": "#3a2e24",
+		"weapons": []
+	}
+}

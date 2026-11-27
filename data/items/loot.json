@@ -27,6 +27,6 @@
 	"pickup_radius": 1,
 	"loot_ttl_s": 120,
 	"loot_scatter": 1.5,
-	"merchant": {"stock_commons": 4, "restock_s": 600},
+	"merchant": {"stock": ["common", "common", "common", "uncommon", "uncommon", "rare"], "epic_chance": 0.15, "restock_s": 600},
 	"two_hand_mult": 1.8
 }

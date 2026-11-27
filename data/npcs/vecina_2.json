@@ -1,0 +1,23 @@
+{
+	"id": "vecina_2",
+	"name": "NPC_VECINA",
+	"role": "villager",
+	"minor": true,
+	"lines": {"greet": "NPC_VECINA_2_GREET"},
+	"look": {
+		"class": "villager",
+		"appearance": {
+			"race": "human",
+			"body": "female",
+			"skin": "skin_5",
+			"eyes": "dark",
+			"hair_style": "hair_curls",
+			"hair_color": "black",
+			"beard": "none"
+		},
+		"primary": "#8a4a2a",
+		"secondary": "#e0c8a0",
+		"trousers": "#3a2e24",
+		"weapons": []
+	}
+}

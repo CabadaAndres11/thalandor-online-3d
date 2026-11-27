@@ -50,6 +50,8 @@ static func markers(layout: ZoneLayout, client: ClientSession) -> Array:
 	var out := []
 	var npcs := NpcDB.load_default()
 	for n: Dictionary in layout.npcs:
+		if bool(npcs.npc(str(n.id)).get("minor", false)):
+			continue # townsfolk and vendors are not marked (2026-11-27)
 		out.append({"kind": "npc", "cell": Vector2(float(n.at[0]) + 0.5, float(n.at[1]) + 0.5),
 			"label": tr_key(str(npcs.npc(str(n.id)).get("name", n.id))), "yaw": 0.0})
 	for e: Dictionary in layout.exits:

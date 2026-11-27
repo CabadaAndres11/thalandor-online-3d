@@ -1,7 +1,8 @@
 class_name Merchant
 extends RefCounted
 ## The merchant (an NPC with role "merchant"; provisionally next to Brann): sells potions
-## and a few common items of the player's level, buys at sell_factor of the value and
+## and six items of the player's level (three common, two uncommon and a rare that may be
+## epic), buys at sell_factor of the value and
 ## repairs worn gear. Every trade needs the player alive, out of combat and next to them.
 
 const BUY_HEALTH := -1
@@ -62,10 +63,14 @@ static func stock(world: SimWorld, p: PlayerState) -> Array:
 		p.merchant_tick = world.tick
 		p.merchant_stock = []
 		var pool := db.bases_for(p.level, p.class_id)
-		for i in int(cfg.get("stock_commons", 4)):
+		# One item per entry of merchant.stock, of that rarity; a rare may come up epic (2026-11-27).
+		for rarity: Variant in cfg.get("stock", ["common", "common", "common", "common"]):
 			if pool.is_empty():
 				break
-			p.merchant_stock.append(ItemRoll.roll_gear(pool[world.rng.randi_range(0, pool.size() - 1)], p.level, "common", world.rng, db))
+			var r := str(rarity)
+			if r == "rare" and world.rng.randf() < float(cfg.get("epic_chance", 0.0)):
+				r = "epic"
+			p.merchant_stock.append(ItemRoll.roll_gear(pool[world.rng.randi_range(0, pool.size() - 1)], p.level, r, world.rng, db))
 	return p.merchant_stock
 
 

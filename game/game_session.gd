@@ -446,9 +446,7 @@ func _process(delta: float) -> void:
 			camera.follow(own.position + Vector3(0, _cam_y, 0))
 		zone_view.follow(own.position)
 		update_house(own.position)
-		for npc: NpcAvatar in _npc_avatars:
-			var d := Vector2(own.position.x - npc.position.x, own.position.z - npc.position.z).length()
-			npc.set_prompt_visible(d <= NpcDB.TALK_RANGE)
+		update_talk_prompts(own.position)
 		var examine := quest_point_near()
 		for pid: String in _point_marks:
 			var tag := (_point_marks[pid] as Node).get_node_or_null("Prompt") as Label3D
@@ -753,6 +751,16 @@ func walker_count() -> int:
 
 func walker_avatar(i: int) -> NpcAvatar:
 	return _walkers[i].avatar
+
+
+## "[E] Hablar" over every NPC in talking reach of the local player, walkers that talk
+## included (2026-11-27: the palace's nobles).
+func update_talk_prompts(pos: Vector3) -> void:
+	for npc: NpcAvatar in _npc_avatars:
+		npc.set_prompt_visible(Vector2(pos.x - npc.position.x, pos.z - npc.position.z).length() <= NpcDB.TALK_RANGE)
+	for w: Dictionary in _walkers:
+		var a: NpcAvatar = w.avatar
+		a.set_prompt_visible(str(w.id) != "" and Vector2(pos.x - a.position.x, pos.z - a.position.z).length() <= NpcDB.TALK_RANGE)
 
 
 ## The walker in talking reach of a point, or "" (it greets in the chat, Plan 8.3a).

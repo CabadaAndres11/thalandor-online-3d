@@ -88,7 +88,7 @@ func _process(_delta: float) -> bool:
 	_frames += 1
 	if _frames == 30:
 		DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("user://render"))
-		var path := "user://render/%s.png" % _name
+		var path := "user://render/%s.png" % _name.replace(":", "_").replace(",", "_")
 		if _name.trim_suffix("_close") in ["gear", "weapons"]:
 			path = "user://render/%s%s_t%d_%s.png" % [_name, ("_" + _race) if _race != "" else "", _tier, str(int(_rot)) if _name == "gear" else str(_page)]
 		root.get_texture().get_image().save_png(path)
@@ -98,6 +98,8 @@ func _process(_delta: float) -> bool:
 
 
 func _looks(set_name: String) -> Array:
+	if set_name.begins_with("npcs:"): # --set=npcs:noble_1,noble_2 the NPCs as dressed in data/npcs
+		return Array(set_name.trim_prefix("npcs:").split(",")).map(func(id: String) -> Dictionary: return NpcAvatar.look_of(NpcDB.load_default().npc(id).get("look", {})))
 	match set_name:
 		"races", "races_back", "races_side":
 			# Plan 7: the five races side by side, the same hair and clothes where they can.

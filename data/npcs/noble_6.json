@@ -9,6 +9,7 @@
 		"primary": "#2a5a4a",
 		"secondary": "#d8c070",
 		"trousers": "#1e1a1e",
-		"weapons": []
+		"weapons": [],
+		"pieces": ["noble_gown", "noble_gown_skirt", "noble_sleeve_l", "noble_sleeve_r", "noble_cuff_l", "noble_cuff_r"]
 	}
 }

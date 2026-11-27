@@ -79,13 +79,13 @@ func _init() -> void:
 	right.custom_minimum_size = Vector2(DETAIL_W, 0)
 	cols.add_child(right)
 	_title = Label.new()
-	_title.add_theme_font_size_override("font_size", 22)
+	_title.add_theme_font_size_override("font_size", 25)
 	_title.add_theme_color_override("font_color", Color("#ffd27a"))
 	right.add_child(_title)
 	_detail = Label.new()
 	_detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_detail.custom_minimum_size = Vector2(DETAIL_W, 300)
-	_detail.add_theme_font_size_override("font_size", 17)
+	_detail.add_theme_font_size_override("font_size", 19)
 	right.add_child(_detail)
 	var buttons := HBoxContainer.new()
 	right.add_child(buttons)
@@ -176,6 +176,7 @@ func _rebuild() -> void:
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		b.clip_text = true
 		b.custom_minimum_size = Vector2(LIST_W, 34)
+		b.add_theme_font_size_override("font_size", 18)
 		b.toggle_mode = true
 		b.button_pressed = id == _selected
 		b.pressed.connect(select.bind(id))

@@ -20,15 +20,15 @@ func _init() -> void:
 	add_child(box)
 	_name = Label.new()
 	_name.add_theme_color_override("font_color", Color("#ffd27a"))
-	_name.add_theme_font_size_override("font_size", 16)
+	_name.add_theme_font_size_override("font_size", 19)
 	box.add_child(_name)
 	_step = Label.new()
 	_step.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_step.custom_minimum_size = Vector2(224, 0)
-	_step.add_theme_font_size_override("font_size", 13)
+	_step.add_theme_font_size_override("font_size", 16)
 	box.add_child(_step)
 	_lines = Label.new()
-	_lines.add_theme_font_size_override("font_size", 14)
+	_lines.add_theme_font_size_override("font_size", 16)
 	box.add_child(_lines)
 
 

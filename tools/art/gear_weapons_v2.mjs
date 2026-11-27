@@ -39,6 +39,24 @@ function hilt(s, m, back = 3, pommel = m.gold) {
 // A shaft (haft) from z0 to z1 along +Z.
 const haft = (s, z0, z1, m, r = 1.3) => cylinder(s, [CX, CY, z0], [CX, CY, z1], r, m.wood);
 const WEAPON = {
+  // A spear (2026-11-27; no item uses it yet): a long haft through the fist, wrapped where it
+  // is held, a leaf-shaped head with two lugs below it; a gold collar at tier 2, a rune at 3.
+  spear(s, m, t) {
+    const top = 56 + 4 * t;
+    haft(s, -26, top, m, 1.2);
+    cylinder(s, [CX, CY, -4], [CX, CY, 4], 1.5, m.grip);
+    const len = 14 + 2 * t;
+    for (let k = 0; k <= len; k++) {
+      const w = Math.sin((Math.PI * (k + 1)) / (len + 2)) * (2.6 + 0.4 * t);
+      for (let x = Math.floor(CX - w); x <= Math.ceil(CX + w); x++) {
+        const edge = Math.abs(x - CX) > w - 1;
+        s.put(x, -5, top + k, edge ? m.edge : m.blade).put(x, -4, top + k, edge ? m.edge : m.blade);
+      }
+    }
+    s.box(-4, -5, top - 2, 3, -4, top - 1, m.guard); // the lugs
+    if (t >= 2) cylinder(s, [CX, CY, top - 5], [CX, CY, top - 3], 1.8, m.gold);
+    if (t >= 3) s.put(-1, -6, top + 6, GLOW).put(0, -6, top + 6, GLOW);
+  },
   wand(s, m, t) {
     cylinder(s, [CX, CY, -3], [CX, CY, 2 * (7 + t) + 6], 1.1, m.wood);
     cylinder(s, [CX, CY, -3], [CX, CY, 3], 1.4, m.grip);

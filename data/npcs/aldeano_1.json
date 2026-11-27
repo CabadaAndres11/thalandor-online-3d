@@ -2,6 +2,7 @@
 	"id": "aldeano_1",
 	"name": "NPC_ALDEANO",
 	"role": "villager",
+	"minor": true,
 	"lines": {"greet": "ALDEANO_1_GREET"},
 	"look": {
 		"class": "villager",

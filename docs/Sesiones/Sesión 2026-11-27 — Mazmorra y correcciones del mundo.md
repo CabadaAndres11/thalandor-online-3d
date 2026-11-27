@@ -39,3 +39,6 @@ Capuchas según la referencia (`hood_v2.mjs`), casco del ogro más pequeño, pal
 
 ## Entorno
 Tests en dos niveles (`tests/slow`, `--all`), JSON de datos compactos y planes terminados archivados en `docs/Archivo`, para gastar menos tiempo y tokens. CLAUDE.md recoge el flujo nuevo.
+
+## Quinta tanda
+Pociones en su botón con iconos nuevos; mercader con varias rarezas; palacio (antorchas de pared, escalera a la cripta, armería con modelos reales y lanza, ropa de corte, nobles que hablan), capital (torres, sin pozo, interiores alternos, vecinos, niños y otras razas, PNJ menores sin nombre ni punto en el mapa) y textos de misiones más grandes. Pendiente: plan del árbol de talentos estilo PoE.

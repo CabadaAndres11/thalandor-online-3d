@@ -69,3 +69,27 @@ func test_cow_walker_draws_a_piece() -> void:
 	assert_null(cow.rig)
 	g.move_walkers(4.0)
 	assert_eq(g.walker_near(cow.position), "", "a cow does not greet")
+
+
+func test_a_walker_that_talks_shows_the_prompt_in_reach() -> void:
+	var g := GameSession.new()
+	add_child_autofree(g)
+	var z := ZoneLayout.from_dict("t", {"size": [20, 20], "npcs": [], "walkers": [{"npc": "noble_1", "route": [[3, 3], [3, 3]]}]})
+	g.place_walkers(z)
+	g.move_walkers(0.0)
+	var a := g.walker_avatar(0)
+	g.update_talk_prompts(a.position + Vector3(1, 0, 0))
+	assert_true(a.prompt_visible())
+	g.update_talk_prompts(a.position + Vector3(9, 0, 0))
+	assert_false(a.prompt_visible())
+
+
+func test_townsfolk_have_no_name_over_their_head() -> void:
+	var vendor := NpcAvatar.new()
+	vendor.setup("vendedor_1", Vector3.ZERO, 0.0)
+	var noble := NpcAvatar.new()
+	noble.setup("noble_1", Vector3.ZERO, 0.0)
+	assert_false(vendor.name_visible())
+	assert_true(noble.name_visible())
+	vendor.free()
+	noble.free()

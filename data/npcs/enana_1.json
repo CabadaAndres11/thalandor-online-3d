@@ -1,0 +1,23 @@
+{
+	"id": "enana_1",
+	"name": "NPC_ENANA",
+	"role": "villager",
+	"minor": true,
+	"lines": {"greet": "NPC_ENANA_1_GREET"},
+	"look": {
+		"class": "villager",
+		"appearance": {
+			"race": "dwarf",
+			"body": "female",
+			"skin": "skin_5",
+			"eyes": "amber",
+			"hair_style": "hair_braids",
+			"hair_color": "red",
+			"beard": "none"
+		},
+		"primary": "#3a4a3a",
+		"secondary": "#c0a060",
+		"trousers": "#3a2e24",
+		"weapons": []
+	}
+}

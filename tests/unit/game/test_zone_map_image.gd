@@ -35,3 +35,10 @@ func test_band_drawn_as_forest() -> void:
 	var img := ZoneMapImage.make(z)
 	var c: Color = img.get_pixel(2 * ZoneMapImage.PX + 1, 2 * ZoneMapImage.PX + 1)
 	assert_almost_eq(c.g, ZoneMapImage.TREE.g, 0.05)
+
+
+func test_townsfolk_and_vendors_are_not_marked() -> void:
+	var z := ZoneLayout.load_id("capital")
+	var labels := ZoneMapImage.markers(z, null).filter(func(m: Dictionary) -> bool: return m.kind == "npc").map(func(m: Dictionary) -> String: return str(m.label))
+	assert_false(labels.has(tr("NPC_VENDEDOR")), "no vendor dots")
+	assert_true(labels.has(tr("NPC_MAESE_CORWIN")), "the ones with a role are still marked")

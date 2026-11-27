@@ -6,6 +6,7 @@ actualizado: 2026-11-27
 
 # 15. Decisiones abiertas **[Abierto]**
 
+- **Árbol de talentos ampliado estilo PoE** con rutas recomendadas por clase: plan propio, pendiente de spec (pedido el 2026-11-27).
 - Requisitos exactos del **cambio de clase** ([[04 Personajes y progresión|§4.9]]).
 - **Ritmo de la curva** a partir del nivel 50 (horas por nivel).
 - Mejoras de clase del **segundo rango** (nivel 100) en adelante.

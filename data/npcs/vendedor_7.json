@@ -2,6 +2,7 @@
 	"id": "vendedor_7",
 	"name": "NPC_VENDEDOR",
 	"role": "villager",
+	"minor": true,
 	"lines": {"greet": "NPC_VENDEDOR_GREET"},
 	"look": {
 		"class": "villager",

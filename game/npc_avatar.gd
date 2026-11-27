@@ -5,6 +5,9 @@ extends Node3D
 
 const NAME_HEIGHT := 2.25
 const NAME_COLOR := Color("#ffd27a")
+## A child NPC (look "child": true): this share of an adult's height, the head scaled up.
+const CHILD_HEIGHT := 0.6
+const CHILD_HEAD := [1.35, 1.35, 1.35]
 
 var rig: HumanRig
 var npc_id: String = ""
@@ -27,6 +30,7 @@ func setup(id: String, at: Vector3, facing: float) -> void:
 		rig.set_pose_now(str(data.pose)) # the wounded lie (Plan 8.3d)
 	_name = tr(str(data.get("name", id)))
 	_label = _text(_name, NAME_HEIGHT, 40, NAME_COLOR)
+	_label.visible = not bool(data.get("minor", false)) # townsfolk and vendors go nameless (2026-11-27)
 	_prompt = _text(tr("UI_HELP_PROMPT" if str(data.get("pose", "")) == "lie" else "UI_TALK_PROMPT"), NAME_HEIGHT + 0.3, 32, Color.WHITE)
 	_prompt.visible = false
 	_mark = _text("", NAME_HEIGHT + 0.75, 72, Color("#ffcc33"))
@@ -43,6 +47,11 @@ static func look_of(look: Dictionary) -> Dictionary:
 	for key: String in ["primary", "secondary", "trousers"]:
 		if look.has(key):
 			out[key] = Color(str(look[key]))
+	if bool(look.get("child", false)): # a child (2026-11-27): small, with a bigger head for its size
+		out["race_height"] = float(out.get("race_height", 1.0)) * CHILD_HEIGHT
+		var rs: Dictionary = (out.get("race_scale", {}) as Dictionary).duplicate()
+		rs["head"] = CHILD_HEAD
+		out["race_scale"] = rs
 	# "pieces": the character's own outfit (Plan 8.3e: Mira), worn instead of its class's clothes.
 	if look.has("pieces"):
 		var own: Array = look.pieces
@@ -90,6 +99,10 @@ func prompt_text() -> String:
 
 func display_name() -> String:
 	return _name
+
+
+func name_visible() -> bool:
+	return _label != null and _label.visible
 
 
 func set_prompt_visible(on: bool) -> void:

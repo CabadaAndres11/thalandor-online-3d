@@ -1,0 +1,23 @@
+{
+	"id": "lagarta_1",
+	"name": "NPC_MUJER_LAGARTO",
+	"role": "villager",
+	"minor": true,
+	"lines": {"greet": "NPC_LAGARTA_1_GREET"},
+	"look": {
+		"class": "villager",
+		"appearance": {
+			"race": "lizard",
+			"body": "female",
+			"skin": "lizard_sand",
+			"eyes": "reptile",
+			"hair_style": "crest_spikes",
+			"hair_color": "black",
+			"beard": "none"
+		},
+		"primary": "#7a5a2a",
+		"secondary": "#d0c090",
+		"trousers": "#3a2e24",
+		"weapons": []
+	}
+}

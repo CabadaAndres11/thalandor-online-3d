@@ -22,11 +22,13 @@ func test_near() -> void:
 	assert_false(Merchant.near(f.world, p))
 
 
-func test_stock_four_usable_commons() -> void:
+func test_stock_six_usable_items_of_mixed_rarity() -> void:
 	var s := Merchant.stock(f.world, p)
-	assert_eq(s.size(), 4)
+	assert_eq(s.size(), 6)
+	var rarities := s.map(func(it: Item) -> String: return it.rarity)
+	assert_eq(rarities.slice(0, 5), ["common", "common", "common", "uncommon", "uncommon"])
+	assert_true(rarities[5] in ["rare", "epic"], "the last one is rare, now and then epic")
 	for it: Item in s:
-		assert_eq(it.rarity, "common")
 		assert_eq(it.level, 10)
 		assert_true(db.can_use("mage", it.base_id), it.base_id)
 
@@ -55,7 +57,7 @@ func test_buy_item() -> void:
 	assert_true(Merchant.buy(f.world, p, 1))
 	assert_eq(p.inventory.gold, 0)
 	assert_eq(p.inventory.bag[0].uid, wanted.uid)
-	assert_eq(Merchant.stock(f.world, p).size(), 3, "sold out")
+	assert_eq(Merchant.stock(f.world, p).size(), 5, "sold out")
 
 
 func test_buy_not_enough_gold() -> void:

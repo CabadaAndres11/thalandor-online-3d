@@ -169,12 +169,12 @@ func test_merchant_open_and_buy() -> void:
 	_send(a, Protocol.item_action("merchant_open", []))
 	var stock := _msgs(a, Protocol.Msg.MERCHANT_STOCK)
 	assert_eq(stock.size(), 1)
-	assert_eq((stock[0].items as Array).size(), 4)
+	assert_eq((stock[0].items as Array).size(), 6)
 	_send(a, Protocol.item_action("buy", [-1]))
 	assert_eq(p.inventory.potion_count("health"), 1)
 	_send(a, Protocol.item_action("buy", [0]))
 	var after := _msgs(a, Protocol.Msg.MERCHANT_STOCK)
-	assert_eq((after[-1].items as Array).size(), 3)
+	assert_eq((after[-1].items as Array).size(), 5)
 
 
 func test_client_mirrors_inventory_and_gear() -> void:
@@ -216,7 +216,7 @@ func test_merchant_stock_sent_within_the_trade_margin() -> void:
 	_send(a, Protocol.item_action("buy", [0]))
 	var after := _msgs(a, Protocol.Msg.MERCHANT_STOCK)
 	assert_eq(after.size(), 1, "the bought item leaves the list")
-	assert_eq((after[-1].items as Array).size(), 3)
+	assert_eq((after[-1].items as Array).size(), 5)
 
 
 func test_second_sale_sells_the_item_the_client_sees() -> void:

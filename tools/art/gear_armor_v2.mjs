@@ -688,10 +688,102 @@ function miraBoot() {
   return s;
 }
 
+// Court clothes of the palace's nobles (2026-11-27), in their own colours (P and S tints): a
+// gown with a fitted bodice, puffed sleeves and a full skirt to the floor for the ladies; a
+// doublet with gold buttons, a sash and a short shoulder cape for the lords; tall boots.
+const NOBLE = { b: P, d: SHADE(P), l: LIGHT(P), trim: C.GOLD, acc: C.GOLD_L, gem: C.GEM, rune: null };
+
+function nobleBodice(bust) {
+  const s = ARMOR.chest("cloth", 2, NOBLE);
+  if (bust) {
+    const b = new Shape();
+    for (const x of [-4.5, 3.5]) ellipsoid(b, [x, 17.0, 7.4], [3.8, 3.3, 3.0], P);
+    for (const v of b.cells.values()) s.put(v[0], v[1], v[2], v[1] <= 15 ? SHADE(P) : P);
+  }
+  recolor(s, (x, y, z) => y >= 22 && y <= 23 && z >= 2, C.GOLD); // the neckline
+  recolor(s, (x, y, z) => z >= 3 && Math.abs(x + 0.5) <= 0.5 && y <= 21, S); // the front lacing
+  recolor(s, (x, y) => y <= 1, C.GOLD); // the waist
+  return s;
+}
+
+function nobleGownSkirt() {
+  const s = new Shape();
+  const top = 6, bottom = -44;
+  for (let y = top; y >= bottom; y--) {
+    const k = (top - y) / (top - bottom);
+    const rx = 11 + k * 8, rz = 8 + k * 6.5;
+    for (let x = -21; x <= 20; x++) for (let z = -16; z <= 16; z++) {
+      const d = ((x + 0.5) / rx) ** 2 + ((z + 0.5) / rz) ** 2;
+      if (d <= 1 && d >= ((rx - 1.7) / rx) ** 2) s.put(x, y, z, P);
+    }
+  }
+  without(s, BODY.hips);
+  finish(s, NOBLE, 311);
+  recolor(s, (x, y, z) => y < top - 3 && Math.sin(Math.atan2(z + 0.5, x + 0.5) * 11) > 0.65, SHADE(P)); // the folds
+  recolor(s, (x, y) => y <= bottom + 2, S); // a hem in the second colour
+  recolor(s, (x, y) => y === bottom + 3, C.GOLD);
+  recolor(s, (x, y, z) => z >= 7 && Math.abs(x + 0.5) <= 2.5 && y < top - 2, S); // the front panel
+  return s;
+}
+
+function nobleSleeve() {
+  const s = shellOn(BODY.arm, 1, P, (x, y) => y >= -18);
+  ellipsoid(s, [-0.5, -2, -0.5], [5.2, 5, 5.2], P); // the puff at the shoulder
+  without(s, BODY.arm);
+  finish(s, NOBLE, 313);
+  recolor(s, (x, y) => y === -6 || y === -5, C.GOLD);
+  for (let a = 0; a < 8; a++) recolor(s, (x, y, z) => y > -6 && Math.round(Math.atan2(z + 0.5, x + 0.5) * 4 / Math.PI) === a - 4 && a % 2 === 0, S); // slashes showing the lining
+  return s;
+}
+
+function nobleCuff() {
+  const s = shellOn(BODY.fore, 1, P, (x, y) => y >= -18);
+  without(s, BODY.fore);
+  finish(s, NOBLE, 315);
+  recolor(s, (x, y) => y <= -16, C.WHITE); // lace at the wrist
+  return s;
+}
+
+function nobleDoublet() {
+  const s = nobleBodice(false);
+  for (let y = 3; y <= 20; y += 3) onFront(s, -1, y, C.GOLD_L); // the buttons
+  recolor(s, (x, y, z) => z >= 1 && Math.abs((x + 0.5) * 0.9 - (y - 12)) <= 1.3, S); // the sash, shoulder to hip
+  return s;
+}
+
+function nobleCape() {
+  const s = new Shape();
+  for (let y = 26; y >= 6; y--) {
+    const half = 11 + Math.min(3, Math.floor((26 - y) / 6));
+    for (let x = -half - 1; x <= half; x++) {
+      const bz = backZ(BODY.torso, x, Math.min(y, 26)) ?? -7;
+      s.put(x, y, Math.min(bz, -7) - 1, y <= 7 ? C.GOLD : S).put(x, y, Math.min(bz, -7), P);
+    }
+  }
+  return without(s, BODY.torso);
+}
+
+function nobleBoot() {
+  const s = shellOn(BODY.shin, 1, C.BLACK_LEATHER, (x, y) => y <= 0 && y >= -26);
+  without(s, BODY.shin);
+  finish(s, { b: C.BLACK_LEATHER, d: C.BLACK_LEATHER_D, l: C.LEATHER_D }, 317);
+  recolor(s, (x, y) => y === 0, C.GOLD);
+  return s;
+}
+
 export function npcOutfitsV2() {
   const palette = PALETTE;
   const out = {};
   const add = (name, shape, part) => { out[name] = { shape, part, palette, like: "assassin_chest_t2" }; };
+  add("noble_gown", nobleBodice(true), "torso");
+  add("noble_gown_skirt", nobleGownSkirt(), "hips");
+  add("noble_doublet", nobleDoublet(), "torso");
+  add("noble_cape", nobleCape(), "torso");
+  for (const side of ["left", "right"]) {
+    add(`noble_sleeve_${side[0]}`, nobleSleeve(), `arm_${side}`);
+    add(`noble_cuff_${side[0]}`, nobleCuff(), `forearm_${side}`);
+    add(`noble_boot_${side[0]}`, nobleBoot(), `shin_${side}`);
+  }
   add("mira_cloak", miraCloak(), "torso");
   add("mira_hood", miraHood(), "torso");
   add("mira_chest", miraChest(), "torso");

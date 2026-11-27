@@ -633,12 +633,45 @@ func _add_torches(cells: Array) -> void:
 	root.name = "Torches"
 	add_child(root)
 	for cell: Variant in cells:
+		if cell is Dictionary and (cell as Dictionary).has("wall"):
+			_add_wall_torch(root, cell)
+			continue
 		if not (cell is Array and cell.size() >= 2):
 			continue
 		var torch := Torch.new()
 		torch.position = Vector3(float(cell[0]) + 0.5, layout.height_at(float(cell[0]) + 0.5, float(cell[1]) + 0.5), float(cell[1]) + 0.5)
 		root.add_child(torch)
 		torches.append(torch)
+
+
+## Where a wall torch's flame burns over its bracket (the wall_torch piece): this far out
+## from the wall and this high.
+const WALL_TORCH_OUT := 0.25
+const WALL_TORCH_HEIGHT := 2.15
+
+
+## A torch on a wall (2026-11-27, the palace): {"at": [x, z], "wall": rot}, the cell in front
+## of the wall and the piece's turn (it faces +Z at 0). The bracket is the wall_torch piece;
+## the light and flame are a Torch's, its standing model hidden.
+func _add_wall_torch(root: Node3D, spec: Dictionary) -> void:
+	var at := ZoneLayout._v2i(spec.get("at", [0, 0]))
+	var rot := int(spec.get("wall", 0))
+	var p := {"id": "wall_torch", "at": at, "rot": rot}
+	var mesh := VoxMesher.cached(str(layout.piece_def("wall_torch").get("vox", "")), {})
+	if mesh != null:
+		var mi := MeshInstance3D.new()
+		mi.mesh = mesh
+		mi.transform = piece_transform(p)
+		root.add_child(mi)
+	var facing := Vector2(0, 1).rotated(deg_to_rad(float(rot))) # into the room
+	var torch := Torch.new()
+	torch.model.visible = false
+	torch.light.position.y = WALL_TORCH_HEIGHT
+	torch.flame.position.y = WALL_TORCH_HEIGHT - 0.05
+	var spot := Vector2(at.x + 0.5, at.y + 0.5) - facing * (0.5 - WALL_TORCH_OUT)
+	torch.position = Vector3(spot.x, ground_at(p), spot.y)
+	root.add_child(torch)
+	torches.append(torch)
 
 
 func _apply_lighting() -> void:

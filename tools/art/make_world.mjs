@@ -8,8 +8,10 @@
 import fs from "node:fs";
 import { formatJson } from "../json_format.mjs";
 import { fileURLToPath } from "node:url";
-import { write, Shape, GLOW } from "./vox.mjs";
+import { write, Shape, GLOW, SHADE, LIGHT, TEX_D, TEX_L, TINT_PRIMARY, TINT_SECONDARY } from "./vox.mjs";
 import { ellipsoid, capsule, cylinder, roundBox, carve, noise3 } from "./sculpt.mjs";
+import { armorV2 } from "./gear_armor_v2.mjs";
+import { gearWeaponsV2 } from "./gear_weapons_v2.mjs";
 
 export const CELL = 20; // voxels per metre-cell
 const BASE_H = 24; // voxels under this height block the cell (1.2 m)
@@ -459,52 +461,86 @@ function warriorStatue(lunge) {
     s.box(13, 69, 34, 26, 71, 37, GRANITE_D); // the guard
     capsule(s, [19.5, 71, 36], [19.5, 110, 46], 2.2, 1.2, GRANITE_L); // the blade, up and forward
   }
-  // The head under a crested helm.
+  // The head under a crested helm, on a neck.
   const hz = lunge ? 28 : 20;
+  capsule(s, [19.5, lunge ? 74 : 76, lunge ? 25 : 19.5], [19.5, 86, hz], 3.6, 3.4, GRANITE);
   ellipsoid(s, [19.5, 88, hz], [5.5, 6.5, 5.5], GRANITE);
   s.box(14, 86, hz + 4, 25, 87, hz + 5, GRANITE_D); // the visor slit
   for (let k = 0; k < 9; k++) s.box(19, 94 - Math.round(Math.abs(k - 3) * 0.7), hz + 4 - k, 20, 97, hz + 4 - k, GRANITE_D); // the crest
   return paint(s, GRANITE, [GRANITE, GRANITE_D, GRANITE_L], lunge ? 151 : 149);
 }
 
-// The crypt's gate and stairwell (see worldPieces): 120 voxels wide (x), 80 deep (z).
-function stairwellGate(open) {
-  const g = new Shape();
-  const W = 120;
-  g.box(0, -52, 60, W - 1, 63, 79, MARBLE); // the outer wall behind the stairs
-  for (const x0 of [0, 100]) g.box(x0, -52, 20, x0 + 19, 63, 59, MARBLE); // the stairwell's sides
-  g.box(0, 0, 0, W - 1, 63, 19, MARBLE); // the front wall
-  for (let y = 8; y < 60; y += 10) g.box(0, y, 0, W - 1, y, 0, MARBLE_D); // the courses, front
-  // The doorway: straight sides and a round arch, 4 m wide and 2.7 m high.
-  carve(g, (t) => {
-    roundBox(t, [20, 0, 0], [99, 40, 19], 0, 1);
-    ellipsoid(t, [59.5, 40, 9.5], [40, 14, 30], 1);
+// The rig's joints (head, torso, arms...), in character voxels from the feet.
+const RIG = JSON.parse(fs.readFileSync(new URL("../../assets/characters/vox_v2/human_v2.json", import.meta.url))).parts;
+let _armor = null, _weapons = null;
+const armor = () => (_armor ??= armorV2());
+const weapons = () => (_weapons ??= gearWeaponsV2());
+// A tint (P or S) of the gear as a fixed colour, with its shade, light and texture tones.
+function tintColors(tint, hex) {
+  const mix = (f) => "#" + hex.slice(1).match(/../g).map((h) => Math.max(0, Math.min(255, Math.round(parseInt(h, 16) * f))).toString(16).padStart(2, "0")).join("");
+  return { [tint]: hex, [SHADE(tint)]: mix(0.7), [LIGHT(tint)]: mix(1.25), [TEX_D(tint)]: mix(0.88), [TEX_L(tint)]: mix(1.1) };
+}
+const CLASS_COLORS = Object.fromEntries(JSON.parse(fs.readFileSync(new URL("../../data/characters/classes.json", import.meta.url))).map((c) => [c.id, [c.primary, c.secondary]]));
+const CHAR_SCALE = 0.18; // a character voxel (1.8 cm) in world voxels of 10 cm
+
+// A class's armour set at a tier on a stand: every piece at its joint, as worn, on a wooden
+// post with a cross-bar and a round plinth; the set's colours and the class's tints.
+function gearStand(cls, t) {
+  const s = new Shape();
+  const C1 = 27; // the centre of the 1 m cell in character voxels (55 to the metre)
+  cylinder(s, [C1, 0, C1], [C1, 3, C1], 13, 83); // the plinth (gear wood, dark)
+  s.box(C1 - 1, 4, C1 - 5, C1, 80, C1 - 4, 82).box(C1 - 15, 73, C1 - 5, C1 + 14, 75, C1 - 4, 82); // post and bar, behind the body
+  let palette = null;
+  for (const [id, p] of Object.entries(armor())) {
+    if (!id.startsWith(`${cls}_`) || !id.includes(`_t${t}`) || id.includes("lizard") || !RIG[p.part]) continue;
+    palette ??= p.palette;
+    const pv = RIG[p.part].pivot;
+    for (const [x, y, z, i] of p.shape.cells.values()) s.put(x + pv[0] + C1, y + pv[1] + 4, z + pv[2] + C1, i);
+  }
+  const [pri, sec] = CLASS_COLORS[cls];
+  return { shape: s, scale: CHAR_SCALE, palette: { ...palette, ...tintColors(TINT_PRIMARY, pri), ...tintColors(TINT_SECONDARY, sec) } };
+}
+
+// A 2 m wooden rack with weapons standing in it, points up (a held weapon's grip runs
+// along +Z; upright ones, staves and bows, are left out).
+function weaponRack(ids) {
+  const s = new Shape();
+  const W = 110, Z = 27;
+  s.box(0, 0, Z - 6, W, 3, Z + 5, 83).box(0, 52, Z - 6, W, 54, Z - 5, 82).box(0, 24, Z - 6, W, 25, Z - 5, 82); // base and bars
+  for (const x of [0, W - 2]) s.box(x, 0, Z - 6, x + 2, 70, Z - 5, 82);
+  let palette = null;
+  ids.forEach((id, k) => {
+    const w = weapons()[id];
+    if (!w) return;
+    palette ??= w.palette;
+    let minY = Infinity;
+    for (const [, , z] of w.shape.cells.values()) minY = Math.min(minY, z);
+    const x0 = 9 + k * 18;
+    for (const [x, y, z, i] of w.shape.cells.values()) s.put(x0 + x, z - minY + 4, Z - y - 4, i); // the grip's +Z points up
   });
-  for (const v of g.cells.values()) { // a dark stone frame round the arch
-    const [x, y, z] = v;
-    if (z <= 19 && x >= 16 && x <= 103 && y <= 58 && (Math.hypot((x - 59.5) / 44, Math.max(0, y - 40) / 18) <= 1 || y <= 40)) v[3] = STONE_D;
+  return { shape: s, scale: CHAR_SCALE, palette };
+}
+
+// The stairs down (see worldPieces): 4 cells wide (x 0..79), the opening 4 deep (z 0..79,
+// going down to the north, -Z), ten steps from the floor to 2.5 m below.
+function stairsDown(closed) {
+  const g = new Shape();
+  for (let k = 0; k < 10; k++) {
+    const z1 = 79 - k * 8, top = -5 * (k + 1);
+    g.box(0, top - 6, z1 - 7, 79, top, z1, k % 2 ? MARBLE_D : MARBLE); // a slab: below it nothing shows
+    g.box(0, top, z1, 79, top, z1, MARBLE_L); // the nosing catches the light
   }
-  // Cornice and gold as on the palace walls, on every wall top.
-  for (const [x0, z0, x1, z1] of [[0, 0, W - 1, 19], [0, 60, W - 1, 79], [0, 20, 19, 59], [100, 20, W - 1, 59]]) {
-    g.box(x0, 60, z0, x1, 63, z1, MARBLE_L).box(x0, 64, z0, x1, 66, z1, ROYAL_GOLD);
+  g.box(0, -52, 0, 79, -50, 3, DARKNESS);
+  for (const x of [-4, 80]) g.box(x, -52, 0, x + 3, 6, 79, MARBLE_D); // the side walls and kerb
+  g.box(-4, -52, -4, 83, 6, -1, MARBLE_D); // the far wall
+  for (const x of [-4, 80]) g.box(x, 6, 0, x + 3, 7, 79, ROYAL_GOLD);
+  g.box(-4, 6, -4, 83, 7, -1, ROYAL_GOLD);
+  for (let y = -52; y < -20; y++) g.box(0, y, 0, 79, y, 0, DARKNESS); // the dark down there
+  if (closed) { // posts and a chain across the top step
+    for (const x of [-2, 81]) g.box(x - 1, 7, 74, x + 1, 26, 76, IRON);
+    for (let x = 0; x < 80; x++) g.put(x, 22 - Math.round(Math.sin((Math.PI * x) / 80) * 6), 75, x % 3 ? IRON_L : IRON);
   }
-  // The portcullis: iron bars across the arch; raised when the crypt is open.
-  const bottom = open ? 44 : 0;
-  for (let x = 22; x < 98; x += 5) for (let y = bottom; y <= 53; y++) {
-    if (Math.hypot((x - 59.5) / 40, Math.max(0, y - 40) / 14) <= 1) g.put(x, y, 9, IRON).put(x + 1, y, 9, IRON).put(x, y, 10, IRON);
-  }
-  if (!open) for (const y of [12, 26, 38]) g.box(20, y, 9, 99, y + 1, 10, IRON_L);
-  // The stairs down, eight steps of 0.3 m, into the dark.
-  for (let k = 0; k < 8; k++) {
-    const z0 = 20 + k * 5, top = -6 * (k + 1);
-    g.box(20, -52, z0, 99, top, z0 + 4, k % 2 ? STONE : STONE_D);
-    g.box(20, top, z0, 99, top, z0, STONE_L); // the nosing catches the light
-  }
-  g.box(20, -52, 55, 99, -48, 59, DARKNESS); // the bottom, lost in the dark
-  for (let y = -52; y < -20; y++) for (const x of [20, 99]) g.box(x, y, 20, x, y, 59, DARKNESS); // the walls' foot in shadow
-  // Two torches in brackets on the stairwell's sides.
-  for (const x of [21, 97]) g.box(x, 14, 30, x + 1, 30, 31, WOOD_D).box(x - 1, 31, 29, x + 2, 33, 32, GLOW);
-  return paint(g, MARBLE, [MARBLE, MARBLE_D, MARBLE_L], 131);
+  return g;
 }
 
 export function worldPieces() {
@@ -620,6 +656,15 @@ export function worldPieces() {
   for (const v of [...cityGate.cells.values()]) if (v[3] === 0) cityGate.cells.delete(`${v[0]},${v[1]},${v[2]}`);
   cityGate.box(42, 86, 2, 57, 99, 3, ROYAL).box(48, 90, 1, 51, 95, 1, ROYAL_GOLD);
   add("city_gate", paint(cityGate, CSTONE, [CSTONE, CSTONE_D], 93), { footprint: [[0, 0], [4, 0]] });
+  // A corner tower of the city wall (2026-11-27): 2 × 2 m, as high as the gate's towers, closing
+  // the corners where the walls meet.
+  const tower = new Shape();
+  tower.box(0, 0, 0, 39, 100, 39, CSTONE);
+  for (let x = 0; x < 40; x += 8) for (const z of [0, 35]) tower.box(x, 101, z, x + 4, 108, z + 4, CSTONE);
+  for (let z = 8; z < 35; z += 8) for (const x of [0, 35]) tower.box(x, 101, z, x + 4, 108, z + 4, CSTONE);
+  for (let y = 10; y < 100; y += 12) tower.box(0, y, 0, 39, y, 39, CSTONE_D);
+  tower.box(-1, 96, -1, 40, 100, 40, CSTONE_D);
+  add("city_tower", paint(tower, CSTONE, [CSTONE, CSTONE_D], 155), { footprint: [[0, 0], [1, 0], [0, 1], [1, 1]] });
   // A two-storey stone house of the capital, walkable like the village's.
   addHouse("house_city", houseParts(7, 6, (f) => { table(f, 2, 2, 2); shelf(f, 5, 1); chest(f, 5, 3); }, { stone: true, tall: true, planks: true }));
   // Two more interiors so the capital's houses differ: a home with a hearth, and a bedroom.
@@ -704,13 +749,6 @@ export function worldPieces() {
   desk.box(24, 22, 6, 29, 25, 11, RED).box(24, 25, 6, 29, 26, 11, ROYAL_GOLD); // a closed one
   desk.box(31, 22, 9, 32, 27, 10, PLASTER).box(31, 28, 9, 32, 29, 10, GLOW); // a candle
   add("reading_desk", desk, { footprint: [[0, 0], [1, 0]] });
-  // The crypt's way down (2026-11-27): a gate in a marble wall as high as the palace's, 6 m
-  // wide, and behind it a walled stairwell going down 2.5 m into the dark. Front wall at
-  // voxel z 0..19 (the cell the gate stands in), stairs z 20..59, the back wall z 60..79.
-  const fp = [];
-  for (let cx = 0; cx < 6; cx++) for (let cz = 0; cz < 4; cz++) if (cz > 0 || cx === 0 || cx === 5) fp.push([cx, cz]);
-  add("dungeon_gate_closed", stairwellGate(false), { footprint: fp });
-  add("dungeon_gate_open", stairwellGate(true), { footprint: fp });
   // The archive: a bookshelf seen from both sides, a reading table, a chair and books dropped on the floor.
   const dshelf = new Shape();
   for (const [x, y, z, i] of shelf2.cells.values()) { dshelf.put(x, y, 9 - z, i); dshelf.put(x, y, 10 + z, i); }
@@ -731,25 +769,23 @@ export function worldPieces() {
   }
   books.box(14, 0, 3, 17, 0, 9, PLASTER_D).box(14, 0, 3, 14, 1, 9, WOOD_D); // a scroll unrolled
   add("books_floor", books, { footprint: [] });
-  // The armoury (only seen): a weapon rack with swords, spears and axes, and an armour stand.
-  const rack = new Shape();
-  rack.box(0, 0, 2, 39, 2, 7, WOOD_D).box(0, 40, 2, 39, 42, 3, WOOD).box(0, 20, 2, 39, 21, 3, WOOD);
-  for (const x of [0, 38]) rack.box(x, 0, 2, x + 1, 50, 3, WOOD);
-  for (let x = 4; x < 38; x += 5) {
-    const kind = (x / 5) % 3 | 0;
-    if (kind === 0) rack.box(x, 3, 4, x, 46, 4, IRON_L).box(x - 2, 10, 4, x + 2, 11, 5, ROYAL_GOLD).box(x, 3, 4, x, 9, 5, WOOD_D); // a sword
-    else if (kind === 1) { rack.box(x, 3, 4, x, 58, 4, WOOD); rack.box(x - 1, 58, 4, x + 1, 64, 4, IRON_L); } // a spear
-    else { rack.box(x, 3, 4, x, 44, 4, WOOD); rack.box(x - 4, 38, 4, x, 45, 5, IRON_L); } // an axe
+  // The armoury (only seen, 2026-11-27): the game's own armour sets on stands and its own
+  // weapons on racks, at the characters' voxel size (scale 0.18: 1.8 cm voxels).
+  for (const [cls, t] of [["warrior", 1], ["warrior", 3], ["cleric", 2], ["archer", 2], ["assassin", 3], ["mage", 2]]) {
+    out[`armor_stand_${cls}_t${t}`] = { ...gearStand(cls, t), footprint: [[0, 0]] };
   }
-  add("weapon_rack", paint(rack, WOOD, [WOOD, WOOD_D], 145), { footprint: [[0, 0], [1, 0]] });
-  const stand = new Shape();
-  stand.box(4, 0, 4, 15, 2, 15, WOOD_D).box(9, 3, 9, 10, 30, 10, WOOD);
-  ellipsoid(stand, [9.5, 40, 9.5], [7, 9, 5], IRON_L); // the breastplate
-  ellipsoid(stand, [4, 47, 9.5], [3.5, 3, 4], IRON); ellipsoid(stand, [15, 47, 9.5], [3.5, 3, 4], IRON); // pauldrons
-  ellipsoid(stand, [9.5, 56, 9.5], [4, 5, 4], IRON); // the helm
-  stand.box(8, 55, 13, 11, 56, 14, COAL); // its visor
-  stand.box(5, 33, 14, 14, 33, 14, ROYAL).box(9, 36, 14, 10, 46, 14, ROYAL_GOLD); // a tabard's trim
-  add("armor_stand", paint(stand, IRON_L, [IRON_L, IRON], 147), { footprint: [[0, 0]] });
+  out["weapon_rack_a"] = { ...weaponRack(["w_sword_t1", "w_spear_t1", "w_axe_t1", "w_mace_t2", "w_spear_t2", "w_greatsword_t1"]), footprint: [[0, 0], [1, 0]] };
+  out["weapon_rack_b"] = { ...weaponRack(["w_spear_t3", "w_greataxe_t2", "w_sword_t3", "w_hammer_t1", "w_spear_t1", "w_short_sword_t2"]), footprint: [[0, 0], [1, 0]] };
+  // A torch on a wall (ZoneView: torches {"at", "wall"}): a plate, an arm and a cup at 2.1 m,
+  // 0.25 m out; the flame and its light are the Torch's.
+  const wtorch = new Shape();
+  wtorch.box(7, 30, 0, 12, 46, 1, IRON).box(9, 36, 2, 10, 37, 4, IRON).box(6, 38, 2, 13, 41, 8, IRON);
+  wtorch.box(7, 41, 3, 12, 41, 7, COAL).box(8, 42, 4, 11, 43, 6, GLOW).box(9, 33, 1, 10, 33, 1, IRON_L);
+  add("wall_torch", paint(wtorch, IRON, [IRON, IRON_L], 153), { footprint: [] });
+  // The crypt's way down (2026-11-27): stairs going down into the floor, 4 m wide, to the
+  // north, with a low marble kerb round the opening; the closed one has a chain across.
+  add("stairs_down", stairsDown(false), { footprint: [], flat: true }); // drawn from the floor, not from the pit under it
+  add("stairs_down_closed", stairsDown(true), { footprint: [], flat: true });
   // Plan 8.3f: the palace in marble and gardens: a wall block, a hedge and the palace seen from the city.
   const pwall = new Shape();
   pwall.box(0, 0, 0, 39, 64, 19, MARBLE).box(0, 60, 0, 39, 63, 19, MARBLE_L).box(0, 64, 0, 39, 66, 19, ROYAL_GOLD);
@@ -994,7 +1030,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
         shadow: "medium", range: 90 };
       continue;
     }
-    write(`${outDir}/${id}.vox`, p.shape.size(), p.shape.voxels(), PALETTE);
+    write(`${outDir}/${id}.vox`, p.shape.size(), p.shape.voxels(), p.palette ?? PALETTE);
     const small = SMALL_PIECES.includes(id) || DECOR.includes(id);
     table[id] = { vox: `res://assets/world/${id}.vox`, scale: p.scale ?? 0.5, offset: p.shape.min(), footprint: p.footprint, ...(p.deck ? { deck: p.deck } : {}), ...(p.flat ? { flat: true } : {}),
       shadow: small ? "never" : "medium", range: DECOR.includes(id) ? 30 : (small ? 55 : 90) };

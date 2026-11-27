@@ -27,7 +27,7 @@ actualizado: 2026-11-27
 - **Iconos:** el icono de cada pieza es una **miniatura renderizada de su propio modelo** (generada al importar o al arrancar).
 - **Inventario:** 30 casillas (ventana I). Clic derecho para equipar o usar; el tooltip compara con lo equipado. **No se puede vender ni tirar fuera de un mercader.**
 - **Oro:** se obtiene de monstruos, misiones y ventas. Se gasta en el mercader (pociones, objetos y reparaciones), reinicio de talentos, cambio de mejora y cambio de clase.
-- **Mercaderes:** en la capital. Venden pociones y objetos comunes, compran al 25 % del valor y reparan.
+- **Mercaderes:** en la capital. Venden pociones y seis objetos (tres comunes, dos poco comunes y uno raro que a veces sale épico; `merchant.stock` en `loot.json`), compran al 25 % del valor y reparan.
 - **Durabilidad:** cada pieza equipada pierde un 10 % al morir (no al quedar derribado). A 0 no da estadísticas.
 - **Pociones:** vida (Q) y recurso (R), con el 35 % y una recarga compartida de 30 s. Desde el 2026-11-27 no ocupan hueco en la bolsa: se guardan en su botón, que muestra cuántas quedan, sin límite. Los personajes antiguos las pasan de la bolsa al botón al cargarse. Iconos pintados en `assets/icons/items/`.
 - **Alijo:** almacén compartido entre los personajes del mismo jugador, en la capital.
