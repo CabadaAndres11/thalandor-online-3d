@@ -118,6 +118,9 @@ func _column(u: Dictionary, abilities: AbilityDB) -> Control:
 	col.add_child(_text(tr("UPGRADE_PASSIVES"), 14, HoloTheme.SECTION))
 	for id: Variant in u.get("passives", []):
 		col.add_child(_ability_line(abilities, str(id)))
+	var kit := _kit_names(abilities, u)
+	if kit != "":
+		col.add_child(_text(tr("UPGRADE_KIT") % kit, 13, Color(1, 1, 1, 0.85)))
 	var ev: Dictionary = u.get("evolves", {})
 	if not ev.is_empty():
 		col.add_child(_text(tr("UPGRADE_EVOLUTION"), 14, HoloTheme.SECTION))
@@ -127,6 +130,15 @@ func _column(u: Dictionary, abilities: AbilityDB) -> Control:
 			line += ": " + tr(str(ev.desc))
 		col.add_child(_text(line, 13, Color(1, 1, 1, 0.85)))
 	return col
+
+
+## Names of the upgrade's variants of the base kit ("" = the kit stays as it is).
+static func _kit_names(abilities: AbilityDB, u: Dictionary) -> String:
+	var names: Array = []
+	for a: Dictionary in abilities.class_abilities(str(u.get("class", ""))):
+		if AbilityDB.is_variant(a) and str(a.get("upgrade", "")) == str(u.get("id", "")) and a.get("kind") != "passive":
+			names.append(TranslationServer.translate(str(a.get("name", a.id))))
+	return ", ".join(names)
 
 
 func _ability_line(abilities: AbilityDB, id: String) -> Label:

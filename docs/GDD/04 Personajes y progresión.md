@@ -65,6 +65,7 @@ Desde la 0.7.0 la armadura va **por clase**: cada clase lleva solo su propio jue
 ## 4.4 Mejoras de clase cada 50 niveles **[Implementado]** (0.6.0, [[D-013 Mejoras del nivel 50 revisadas]]) (sustituyen a las especializaciones del prototipo)
 - **Cada 50 niveles** (50, 100, 150…) se alcanza un **rango de clase** y se elige **una mejora entre 2 o 3** (el Mago tiene 3).
 - **Cada mejora aporta:** 2 habilidades activas nuevas, 2 pasivas y la **evolución de una habilidad base** (por ejemplo, el Tajo del Guerrero pasa a golpear dos veces).
+- **Variantes del kit base** (0.17.1, [[D-021 Kit elemental del mago y Detonar toxinas del Venenero|D-021]]): una mejora puede sustituir habilidades base por variantes propias (`upgrade` + `replaces` en los datos). El hueco de la barra no cambia y lanza la variante; al reiniciar la mejora vuelve la base. Lo usa el mago para pasar su kit a su elemento.
 - **Las mejoras se acumulan:** al nivel 100 se elige otra mejora de un segundo rango, cuyas opciones dependen de la elegida al 50 (árbol de evolución de la clase).
 - **Cambiar de mejora:** posible en la capital (instructor de clase) pagando oro, fuera de combate. Hasta entonces (0.13.0) la mejora del nivel 50 es **definitiva**.
 - **Primer rango (nivel 50):** definido en el **anexo A**. Los rangos siguientes se diseñarán a medida que haya contenido para esos niveles.

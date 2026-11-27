@@ -132,3 +132,10 @@ func test_assassin_with_an_upgrade_fits_1280x720() -> void:
 	var r := win.panel_rect()
 	assert_true(Rect2(0, 0, 1280, 720).encloses(r), "panel %s" % r)
 	assert_eq(win.active_ids().size(), 8, "7 base actives and the 1 of the upgrade")
+
+
+func test_shows_the_upgrades_variants() -> void:
+	win.show_for("mage", abilities.default_bar("mage", 50, "pyromancer"), abilities, 50, "pyromancer")
+	assert_true(win.card_text("mage_frost_nova").contains(tr("AB_MAGE_FIRE_NOVA")), win.card_text("mage_frost_nova"))
+	assert_true("mage_piercing_cold_fire" in win.passive_ids())
+	assert_false("mage_piercing_cold" in win.passive_ids(), "the base passive is replaced")

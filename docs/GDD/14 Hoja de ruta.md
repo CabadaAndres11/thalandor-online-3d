@@ -36,7 +36,7 @@ La demo es el **prólogo y el arco 1** completos, con las zonas que hagan falta,
 | 17 | **Contenido y equilibrio de la demo:** colocar los objetos únicos y secretos, ajustar la progresión hasta el nivel 60 | Llena y equilibra todo lo anterior |
 
 Notas:
-- Los ajustes de kit del Venenero y del mago están decididos ([[D-021 Kit elemental del mago y Detonar toxinas del Venenero|D-021]]), sin plan asignado.
+- Los ajustes de kit del Venenero y del mago (D-021) se hicieron en el Plan 8.3h (0.17.1).
 - La prueba de red entre casas se superó con WebRTC ([[D-020 WebRTC como red definitiva]]).
 
 ---

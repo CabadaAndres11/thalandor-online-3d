@@ -135,7 +135,7 @@ func show_for(class_id: String, p_bar: Array, abilities: AbilityDB, level: int =
 	_upgrade = upgrade
 	_actives = abilities.actives(class_id, upgrade)
 	_passives = abilities.class_abilities(class_id).filter(
-		func(a: Dictionary) -> bool: return a.get("kind") == "passive" and AbilityDB.upgrade_ok(a, upgrade)).map(
+		func(a: Dictionary) -> bool: return a.get("kind") == "passive" and AbilityDB.upgrade_ok(a, upgrade) 			and (AbilityDB.is_variant(a) or abilities.variant_for(str(a.id), upgrade).is_empty())).map(
 		func(a: Dictionary) -> String: return a.id)
 	_cards.clear()
 	for row: VBoxContainer in [_attack_row, _active_row, _passive_row]:
@@ -252,7 +252,7 @@ func _list(col: VBoxContainer, title: String) -> VBoxContainer:
 
 
 func _card(id: String) -> Button:
-	var a := _abilities.get_ability(id)
+	var a := _shown(id)
 	var b := Button.new()
 	b.custom_minimum_size = ROW
 	b.icon = _icon(id)
@@ -275,10 +275,15 @@ func _card(id: String) -> Button:
 	return b
 
 
+## The ability as this player casts it: its upgrade's variant and evolution (Plan 8.3h).
+func _shown(id: String) -> Dictionary:
+	return _abilities.resolved(id, _upgrade)
+
+
 func _icon(id: String) -> Texture2D:
 	if _abilities == null or not _abilities.has(id):
 		return null
-	var path := CombatHud.ICON_DIR % str(_abilities.get_ability(id).get("icon", ""))
+	var path := CombatHud.ICON_DIR % str(_shown(id).get("icon", ""))
 	return load(path) if ResourceLoader.exists(path) else null
 
 
@@ -287,7 +292,7 @@ func _show_description(id: String) -> void:
 		_name_label.text = ""
 		_desc.text = ""
 		return
-	var a := _abilities.get_ability(id)
+	var a := _shown(id)
 	var title := "%s — %s" % [tr(str(a.get("name", id))), tr("ABILITIES_LEVEL") % int(a.get("level", 1))]
 	if id in _attacks:
 		title += " · " + tr("HUD_KEY_LMB" if a.get("kind") == "basic" else "HUD_KEY_RMB")
@@ -304,4 +309,4 @@ func _refresh() -> void:
 		var slot: Button = _slots[i]
 		var id := str(_bar[i]) if i < _bar.size() else ""
 		slot.icon = _icon(id)
-		slot.tooltip_text = tr(str(_abilities.get_ability(id).get("name", ""))) if id != "" and _abilities.has(id) else ""
+		slot.tooltip_text = tr(str(_shown(id).get("name", ""))) if id != "" and _abilities.has(id) else ""

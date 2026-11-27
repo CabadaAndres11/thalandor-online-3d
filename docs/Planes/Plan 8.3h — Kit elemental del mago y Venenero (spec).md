@@ -1,6 +1,6 @@
 ---
 tags: [plan, spec]
-estado: diseñado
+estado: implementado
 actualizado: 2026-11-27
 ---
 

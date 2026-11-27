@@ -677,6 +677,8 @@ func _on_upgrade_confirmed(id: String) -> void:
 func _on_upgrade_changed(id: int, upgrade: String) -> void:
 	if game == null or game.client == null:
 		return
+	if id == game.client.my_id:
+		combat_hud.bind(game.client, game.client.bar, abilities) # the slots show the upgrade's variants
 	if upgrade != "":
 		var who: String = game.client.roster[id].name if game.client.roster.has(id) else "?"
 		var name := tr(str(UpgradeDB.load_default().upgrade(upgrade).get("name", upgrade)))

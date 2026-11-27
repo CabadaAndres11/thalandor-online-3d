@@ -201,12 +201,22 @@ func _init() -> void:
 	add_child(_boss)
 
 
+## This player's class upgrade: the slots show its variants (Plan 8.3h).
+var _upgrade: String = ""
+
+
+## The ability as this player casts it (its upgrade's variant, if any).
+func _shown(id: String) -> Dictionary:
+	return _abilities.resolved(id, _upgrade) if _abilities != null and _abilities.has(id) else {}
+
+
 func bind(client: ClientSession, bar: Array, abilities: AbilityDB) -> void:
 	InputSetup.ensure_actions() # the slots show the icons of the keys bound to their actions
 	if _client != null and _client.combat_event.is_connected(_on_combat_event):
 		_client.combat_event.disconnect(_on_combat_event)
 	_client = client
 	_abilities = abilities
+	_upgrade = str((client.roster.get(client.my_id, {}) as Dictionary).get("upgrade", client.progress.upgrade))
 	_client.combat_event.connect(_on_combat_event)
 	_slot_ids = [abilities.kind_of(client.class_id, "basic"), abilities.kind_of(client.class_id, "secondary")]
 	for i in AbilityDB.BAR_SIZE:
@@ -221,7 +231,7 @@ func bind(client: ClientSession, bar: Array, abilities: AbilityDB) -> void:
 	for i in SLOTS:
 		var s: Dictionary = _slots[i]
 		var id := _slot_ids[i]
-		var icon := "dodge" if id == "dodge" else str(abilities.get_ability(id).get("icon", "")) if abilities.has(id) else ""
+		var icon := "dodge" if id == "dodge" else str(_shown(id).get("icon", ""))
 		(s.icon as TextureRect).texture = load(ICON_DIR % icon) if icon != "" and ResourceLoader.exists(ICON_DIR % icon) else null
 		(s.key as Label).text = keys[i]
 		(s.key as Label).visible = not actions.has(i)
@@ -354,7 +364,7 @@ func _on_combat_event(ev: Array) -> void:
 			var cid := str(ev[2]) if ev.size() > 2 else ""
 			_cast_start = _clock
 			_cast_total = maxf(float(ev[3]) if ev.size() > 3 else 0.0, 0.01)
-			_cast_label.text = tr(str(_abilities.get_ability(cid).get("name", cid))) if _abilities.has(cid) else ""
+			_cast_label.text = tr(str(_abilities.get_ability(cid).get("name", cid))) if _abilities.has(cid) else "" # the channel carries the variant's own id
 			var col := CombatFX.ELEMENT_COLORS.get(CombatFX.element_of(_abilities.get_ability(cid).get("effects", [])), Color("#c07bff")) as Color
 			_cast.add_theme_stylebox_override("fill", _fill(col))
 			_cast.visible = true
@@ -426,6 +436,11 @@ func slot_count() -> int:
 
 func slot_ability(i: int) -> String:
 	return _slot_ids[i]
+
+
+func slot_icon(i: int) -> String:
+	var t := (_slots[i].icon as TextureRect).texture
+	return t.resource_path if t != null else ""
 
 
 func slot_key(i: int) -> String:

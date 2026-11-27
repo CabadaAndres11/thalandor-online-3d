@@ -50,5 +50,11 @@ func test_fits_1280x720_with_three_options() -> void:
 
 func test_texts_are_translated() -> void:
 	for key: String in ["UPGRADE_TITLE", "UPGRADE_WARNING", "UPGRADE_CONFIRM", "UPGRADE_ACTIVES", "UPGRADE_PASSIVES",
-			"UPGRADE_EVOLUTION", "CHAT_UPGRADE_HINT", "CHAT_UPGRADE_CHOSEN"]:
+			"UPGRADE_EVOLUTION", "UPGRADE_KIT", "CHAT_UPGRADE_HINT", "CHAT_UPGRADE_CHOSEN"]:
 		assert_ne(tr(key), key, key)
+
+
+func test_lists_the_kit_changes() -> void:
+	var ups := UpgradeDB.load_default()
+	assert_true(UpgradeWindow._kit_names(abilities, ups.upgrade("pyromancer")).contains(tr("AB_MAGE_FIRE_BOLT")))
+	assert_eq(UpgradeWindow._kit_names(abilities, ups.upgrade("shadow")), "", "the assassin's kit stays")

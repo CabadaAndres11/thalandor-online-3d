@@ -38,7 +38,7 @@ Se elige una de las dos al llegar al nivel 50 (ver [[04 Personajes y progresión
 | Mejora | Activas | Pasivas | Evoluciona |
 |---|---|---|---|
 | **Sombra** | Golpe sombrío (teletransporte + golpe crítico) | Asesino nato (+daño a objetivos por debajo del 30 %); Velo (+tiempo de sigilo) | Eviscerar devuelve energía por punto de combo |
-| **Venenero** | Nube tóxica (área persistente); Contagio (el veneno salta a enemigos cercanos al morir) | Toxicología (el veneno se acumula hasta 10); Sangre corrupta (los envenenados hacen −10 % daño) | Cuchillada aplica veneno siempre |
+| **Venenero** | Nube tóxica (área persistente); Detonar toxinas (un golpe por carga de veneno del objetivo) | Contagio (el veneno salta a enemigos cercanos al morir); Toxicología (el veneno se acumula hasta 10); Sangre corrupta (los envenenados hacen −10 % daño) | Cuchillada aplica veneno siempre |
 
 ## Rangos siguientes (nivel 100+)
 _Por diseñar._
@@ -68,7 +68,7 @@ Generados de `data/characters/classes.json` y `data/abilities/assassin.json`; so
 Hasta el Plan 4 todos los personajes son nivel 1: las activas se pueden poner en la barra (ventana K) aunque sean de nivel superior, y las pasivas aún no se activan.
 
 ## Notas y cambios
-- **[Diseñado]** Venenero: Contagio pasa a pasiva y gana la activa Detonar toxinas ([[D-021 Kit elemental del mago y Detonar toxinas del Venenero|D-021]]).
+- **[Implementado 0.17.1]** Venenero: Contagio pasa a pasiva (gancho `poison_spreads_on_death`, 6 m) y gana la activa **Detonar toxinas** (30 de energía, 12 s, 12 m; un golpe de 6 + 0,5 × PA por carga de veneno, que se consumen; sin veneno no se lanza) ([[D-021 Kit elemental del mago y Detonar toxinas del Venenero|D-021]]).
 
 ---
 ← [[00 Índice del GDD|Índice del GDD]] · Clases: [[Guerrero]] · [[Clérigo]] · [[Mago]] · [[Arquero]] · [[Asesino]]

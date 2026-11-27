@@ -324,3 +324,11 @@ func test_potions_fit_the_screen() -> void:
 	hud.advance(0.0)
 	await wait_process_frames(2)
 	assert_true(Rect2(Vector2.ZERO, SCREEN).encloses(hud.potion_rect()), "%s" % hud.potion_rect())
+
+
+func test_slots_show_the_upgrades_variants() -> void:
+	var c := _client("mage")
+	c.roster[1] = {"upgrade": "pyromancer"}
+	var hud := _hud(c)
+	assert_eq(hud.slot_ability(0), "mage_missile", "the slot keeps the base id")
+	assert_true(hud.slot_icon(0).ends_with("fire_bolt.png"), hud.slot_icon(0))

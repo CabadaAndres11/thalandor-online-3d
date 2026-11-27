@@ -1392,3 +1392,4 @@ AB_MAGE_ARCANE_BOLT,Descarga arcana
 AB_MAGE_ARCANE_BOLT_DESC,Una descarga arcana que ralentiza al enemigo un 50 % durante 4 s.
 AB_MAGE_PIERCING_COLD_FIRE_DESC,+20 % de daño a enemigos ardiendo.
 AB_MAGE_PIERCING_COLD_ARCANE_DESC,+20 % de daño a enemigos inmovilizados.
+UPGRADE_KIT,"Tu kit cambia: %s."
