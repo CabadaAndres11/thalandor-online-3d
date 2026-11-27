@@ -3,186 +3,32 @@
 	"skippable": true,
 	"stage": "here",
 	"actors": {
-		"c0": {
-			"npc": "ciudadano_1",
-			"at": [
-				44,
-				58
-			],
-			"facing": 45
-		},
-		"c1": {
-			"npc": "ciudadana_1",
-			"at": [
-				52,
-				58
-			],
-			"facing": 315
-		},
-		"c2": {
-			"npc": "ciudadano_2",
-			"at": [
-				42,
-				60
-			],
-			"facing": 72
-		},
-		"c3": {
-			"npc": "ciudadana_2",
-			"at": [
-				54,
-				60
-			],
-			"facing": 288
-		},
-		"c4": {
-			"npc": "ciudadano_3",
-			"at": [
-				45,
-				55
-			],
-			"facing": 23
-		},
-		"c5": {
-			"npc": "ciudadana_3",
-			"at": [
-				51,
-				55
-			],
-			"facing": 337
-		},
-		"c6": {
-			"npc": "ciudadano_4",
-			"at": [
-				43,
-				52
-			],
-			"facing": 27
-		},
-		"c7": {
-			"npc": "ciudadana_4",
-			"at": [
-				53,
-				52
-			],
-			"facing": 333
-		},
-		"guardia": {
-			"npc": "guardia_ciudad",
-			"at": [
-				48,
-				58
-			],
-			"facing": 0
-		},
-		"yo": {
-			"player": true,
-			"at": [
-				48,
-				64
-			],
-			"facing": 180
-		}
+		"c0": {"npc": "ciudadano_1", "at": [44, 58], "facing": 45},
+		"c1": {"npc": "ciudadana_1", "at": [52, 58], "facing": 315},
+		"c2": {"npc": "ciudadano_2", "at": [42, 60], "facing": 72},
+		"c3": {"npc": "ciudadana_2", "at": [54, 60], "facing": 288},
+		"c4": {"npc": "ciudadano_3", "at": [45, 55], "facing": 23},
+		"c5": {"npc": "ciudadana_3", "at": [51, 55], "facing": 337},
+		"c6": {"npc": "ciudadano_4", "at": [43, 52], "facing": 27},
+		"c7": {"npc": "ciudadana_4", "at": [53, 52], "facing": 333},
+		"guardia": {"npc": "guardia_ciudad", "at": [48, 58], "facing": 0},
+		"yo": {"player": true, "at": [48, 64], "facing": 180}
 	},
 	"tracks": [
 		[
-			{
-				"camera": {
-					"at": [
-						48,
-						6,
-						72
-					],
-					"look": [
-						48,
-						1,
-						58
-					],
-					"fov": 48
-				},
-				"time": 0
-			},
-			{
-				"camera": {
-					"at": [
-						45,
-						3,
-						66
-					],
-					"look": [
-						48,
-						1.6,
-						57
-					]
-				},
-				"time": 16,
-				"ease": "in_out"
-			}
+			{"camera": {"at": [48, 6, 72], "look": [48, 1, 58], "fov": 48}, "time": 0},
+			{"camera": {"at": [45, 3, 66], "look": [48, 1.6, 57]}, "time": 16, "ease": "in_out"}
 		],
 		[
-			{
-				"fade": "in",
-				"time": 1
-			},
-			{
-				"line": [
-					"ciudadano_1",
-					"SCN_P_LLEGADA_1"
-				],
-				"time": 2.2
-			},
-			{
-				"line": [
-					"ciudadana_1",
-					"SCN_P_LLEGADA_2"
-				],
-				"time": 1.8
-			},
-			{
-				"line": [
-					"ciudadano_2",
-					"SCN_P_LLEGADA_3"
-				],
-				"time": 2.4
-			},
-			{
-				"line": [
-					"player",
-					"SCN_P_LLEGADA_4"
-				],
-				"time": 2.4
-			},
-			{
-				"line": [
-					"guardia_ciudad",
-					"SCN_P_LLEGADA_5"
-				],
-				"time": 4
-			},
-			{
-				"line": [
-					"guardia_ciudad",
-					"SCN_P_LLEGADA_6"
-				],
-				"time": 3.2
-			},
-			{
-				"fade": "out",
-				"time": 1
-			}
+			{"fade": "in", "time": 1},
+			{"line": ["ciudadano_1", "SCN_P_LLEGADA_1"], "time": 2.2},
+			{"line": ["ciudadana_1", "SCN_P_LLEGADA_2"], "time": 1.8},
+			{"line": ["ciudadano_2", "SCN_P_LLEGADA_3"], "time": 2.4},
+			{"line": ["player", "SCN_P_LLEGADA_4"], "time": 2.4},
+			{"line": ["guardia_ciudad", "SCN_P_LLEGADA_5"], "time": 4},
+			{"line": ["guardia_ciudad", "SCN_P_LLEGADA_6"], "time": 3.2},
+			{"fade": "out", "time": 1}
 		],
-		[
-			{
-				"wait": "",
-				"time": 6
-			},
-			{
-				"pose": [
-					"c1",
-					"point"
-				],
-				"time": 0.1
-			}
-		]
+		[{"wait": "", "time": 6}, {"pose": ["c1", "point"], "time": 0.1}]
 	]
 }

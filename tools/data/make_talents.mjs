@@ -3,6 +3,7 @@
 import { writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { formatJson } from '../json_format.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
@@ -121,6 +122,6 @@ SPOKES.forEach((s, i) => {
 });
 
 const out = { start: 'start', directions: DIRECTIONS, nodes };
-writeFileSync(join(ROOT, 'data', 'talents.json'), JSON.stringify(out, null, 1) + '\n');
+writeFileSync(join(ROOT, 'data', 'talents.json'), formatJson(out));
 const ring = (r) => Object.values(nodes).filter((n) => n.ring === r).length;
 console.log(`talents.json: ${Object.keys(nodes).length} nodes (ring 1: ${ring(1)}, ring 2: ${ring(2)})`);

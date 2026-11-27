@@ -3,22 +3,10 @@
 	"nodes": {
 		"start": {
 			"lines": [
-				[
-					"panadero",
-					"DLG_P_PANADERO_RECADO_1"
-				],
-				[
-					"panadero",
-					"DLG_P_PANADERO_RECADO_2"
-				],
-				[
-					"player",
-					"DLG_P_PANADERO_RECADO_3"
-				],
-				[
-					"panadero",
-					"DLG_P_PANADERO_RECADO_4"
-				]
+				["panadero", "DLG_P_PANADERO_RECADO_1"],
+				["panadero", "DLG_P_PANADERO_RECADO_2"],
+				["player", "DLG_P_PANADERO_RECADO_3"],
+				["panadero", "DLG_P_PANADERO_RECADO_4"]
 			]
 		}
 	}

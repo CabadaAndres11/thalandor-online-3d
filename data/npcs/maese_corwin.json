@@ -2,9 +2,7 @@
 	"id": "maese_corwin",
 	"name": "NPC_MAESE_CORWIN",
 	"role": "class_trainer",
-	"lines": {
-		"greet": "NPC_MAESE_CORWIN_GREET"
-	},
+	"lines": {"greet": "NPC_MAESE_CORWIN_GREET"},
 	"look": {
 		"class": "warrior",
 		"appearance": {
@@ -19,8 +17,6 @@
 		"primary": "#4a4a52",
 		"secondary": "#b0a080",
 		"trousers": "#2a2a30",
-		"weapons": [
-			"weapon_sword"
-		]
+		"weapons": ["weapon_sword"]
 	}
 }

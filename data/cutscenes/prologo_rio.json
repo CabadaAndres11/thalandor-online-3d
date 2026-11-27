@@ -3,103 +3,22 @@
 	"skippable": true,
 	"stage": "here",
 	"actors": {
-		"s1": {
-			"npc": "soldado_reino",
-			"at": [
-				36,
-				102
-			],
-			"facing": 0
-		},
-		"s2": {
-			"npc": "soldado_reino",
-			"at": [
-				40,
-				102
-			],
-			"facing": 0
-		},
-		"yo": {
-			"player": true,
-			"at": [
-				38,
-				103
-			],
-			"facing": 0
-		}
+		"s1": {"npc": "soldado_reino", "at": [36, 102], "facing": 0},
+		"s2": {"npc": "soldado_reino", "at": [40, 102], "facing": 0},
+		"yo": {"player": true, "at": [38, 103], "facing": 0}
 	},
 	"tracks": [
 		[
-			{
-				"camera": {
-					"at": [
-						41,
-						3,
-						92
-					],
-					"look": [
-						38,
-						0.5,
-						106
-					],
-					"fov": 46
-				},
-				"time": 0
-			},
-			{
-				"camera": {
-					"at": [
-						40,
-						2.4,
-						95
-					],
-					"look": [
-						38,
-						0.8,
-						106
-					]
-				},
-				"time": 12,
-				"ease": "in_out"
-			}
+			{"camera": {"at": [41, 3, 92], "look": [38, 0.5, 106], "fov": 46}, "time": 0},
+			{"camera": {"at": [40, 2.4, 95], "look": [38, 0.8, 106]}, "time": 12, "ease": "in_out"}
 		],
 		[
-			{
-				"fade": "in",
-				"time": 0.8
-			},
-			{
-				"line": [
-					"soldado_reino",
-					"SCN_P_RIO_1"
-				],
-				"time": 2.6
-			},
-			{
-				"line": [
-					"soldado_reino",
-					"SCN_P_RIO_2"
-				],
-				"time": 3.6
-			},
-			{
-				"line": [
-					"player",
-					"SCN_P_RIO_3"
-				],
-				"time": 3
-			},
-			{
-				"line": [
-					"soldado_reino",
-					"SCN_P_RIO_4"
-				],
-				"time": 3.4
-			},
-			{
-				"fade": "out",
-				"time": 0.8
-			}
+			{"fade": "in", "time": 0.8},
+			{"line": ["soldado_reino", "SCN_P_RIO_1"], "time": 2.6},
+			{"line": ["soldado_reino", "SCN_P_RIO_2"], "time": 3.6},
+			{"line": ["player", "SCN_P_RIO_3"], "time": 3},
+			{"line": ["soldado_reino", "SCN_P_RIO_4"], "time": 3.4},
+			{"fade": "out", "time": 0.8}
 		]
 	]
 }

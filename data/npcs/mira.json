@@ -2,9 +2,7 @@
 	"id": "mira",
 	"name": "NPC_MIRA",
 	"role": "villager",
-	"lines": {
-		"greet": "MIRA_GREET"
-	},
+	"lines": {"greet": "MIRA_GREET"},
 	"look": {
 		"class": "villager",
 		"appearance": {

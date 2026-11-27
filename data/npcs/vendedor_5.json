@@ -2,19 +2,10 @@
 	"id": "vendedor_5",
 	"name": "NPC_VENDEDOR",
 	"role": "villager",
-	"lines": {
-		"greet": "NPC_VENDEDOR_GREET"
-	},
+	"lines": {"greet": "NPC_VENDEDOR_GREET"},
 	"look": {
 		"class": "villager",
-		"appearance": {
-			"body": "male",
-			"skin": "skin_6",
-			"eyes": "blue",
-			"hair_style": "bald",
-			"hair_color": "dark_brown",
-			"beard": "none"
-		},
+		"appearance": {"body": "male", "skin": "skin_6", "eyes": "blue", "hair_style": "bald", "hair_color": "dark_brown", "beard": "none"},
 		"primary": "#2e8a6a",
 		"secondary": "#d8c9a0",
 		"trousers": "#3a2f24",

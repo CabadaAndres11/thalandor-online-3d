@@ -2,19 +2,10 @@
 	"id": "anciana_cantora",
 	"name": "NPC_ANCIANA_CANTORA",
 	"role": "villager",
-	"lines": {
-		"greet": "ANCIANA_CANTORA_GREET"
-	},
+	"lines": {"greet": "ANCIANA_CANTORA_GREET"},
 	"look": {
 		"class": "villager",
-		"appearance": {
-			"body": "female",
-			"skin": "skin_2",
-			"eyes": "grey",
-			"hair_style": "hair_bun",
-			"hair_color": "white",
-			"beard": "none"
-		},
+		"appearance": {"body": "female", "skin": "skin_2", "eyes": "grey", "hair_style": "hair_bun", "hair_color": "white", "beard": "none"},
 		"primary": "#5a4a6e",
 		"secondary": "#c9b48a",
 		"trousers": "#3a3030",

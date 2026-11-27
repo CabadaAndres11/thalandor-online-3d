@@ -5,6 +5,7 @@
 // see make_humans.mjs); `origin` turns frame voxels into voxels from the part's pivot.
 // Tinted pieces use the tint's shade and light tones for folds and highlights.
 import fs from "node:fs";
+import { formatJson } from "../json_format.mjs";
 import { write, Shape, SHADE, LIGHT, TINT_HAIR, TINT_PRIMARY, TINT_SECONDARY, GLOW } from "./vox.mjs";
 
 const H = TINT_HAIR, P = TINT_PRIMARY, S = TINT_SECONDARY;
@@ -1134,5 +1135,5 @@ for (const [name, def] of Object.entries(PIECES)) {
     hides: def.hides ?? [],
   };
 }
-fs.writeFileSync(jsonPath, JSON.stringify(table, null, "\t") + "\n");
+fs.writeFileSync(jsonPath, formatJson(table));
 console.log(`wrote ${Object.keys(table).length} pieces and ${jsonPath}`);

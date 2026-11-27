@@ -6,12 +6,7 @@
 	"scale": 1,
 	"radius": 0.4,
 	"speed": 4.4,
-	"stats": {
-		"max_hp": 60,
-		"armor": 8,
-		"attack_power": 9,
-		"crit_chance": 0.05
-	},
+	"stats": {"max_hp": 60, "armor": 8, "attack_power": 9, "crit_chance": 0.05},
 	"aggro_range": 7,
 	"leash_range": 20,
 	"attack_range": 1.6,
@@ -19,9 +14,7 @@
 	"pack": true,
 	"pack_group": "bandits",
 	"pack_radius": 10,
-	"abilities": [
-		"bandit_slash"
-	],
+	"abilities": ["bandit_slash"],
 	"look": {
 		"skin": "#d9a27a",
 		"eyes": "#3a2a1a",
@@ -29,10 +22,6 @@
 		"primary": "#5a4632",
 		"secondary": "#8a7a5a",
 		"trousers": "#3a2e24",
-		"pieces": [
-			"outfit_villager",
-			"hood_archer",
-			"weapon_sword"
-		]
+		"pieces": ["outfit_villager", "hood_archer", "weapon_sword"]
 	}
 }

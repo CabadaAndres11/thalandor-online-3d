@@ -3,22 +3,10 @@
 	"nodes": {
 		"start": {
 			"lines": [
-				[
-					"caravanero",
-					"DLG_P4_CARAVANERO_DESPUES_1"
-				],
-				[
-					"caravanero",
-					"DLG_P4_CARAVANERO_DESPUES_2"
-				],
-				[
-					"player",
-					"DLG_P4_CARAVANERO_DESPUES_3"
-				],
-				[
-					"caravanero",
-					"DLG_P4_CARAVANERO_DESPUES_4"
-				]
+				["caravanero", "DLG_P4_CARAVANERO_DESPUES_1"],
+				["caravanero", "DLG_P4_CARAVANERO_DESPUES_2"],
+				["player", "DLG_P4_CARAVANERO_DESPUES_3"],
+				["caravanero", "DLG_P4_CARAVANERO_DESPUES_4"]
 			]
 		}
 	}

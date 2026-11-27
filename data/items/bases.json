@@ -1,611 +1,112 @@
 {
-	"tiers": {
-		"1": [
-			1,
-			19
-		],
-		"2": [
-			20,
-			39
-		],
-		"3": [
-			40,
-			9999
-		]
-	},
+	"tiers": {"1": [1, 19], "2": [20, 39], "3": [40, 9999]},
 	"templates": {
 		"cloth_head": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.15
-			},
-			{
-				"stat": "intellect",
-				"per_level": 0.3
-			},
-			{
-				"stat": "spirit",
-				"per_level": 0.24
-			}
+			{"stat": "armor_add", "base": 1, "per_level": 0.15},
+			{"stat": "intellect", "per_level": 0.3},
+			{"stat": "spirit", "per_level": 0.24}
 		],
 		"cloth_shoulders": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.125
-			},
-			{
-				"stat": "intellect",
-				"per_level": 0.25
-			},
-			{
-				"stat": "spirit",
-				"per_level": 0.2
-			}
+			{"stat": "armor_add", "base": 1, "per_level": 0.125},
+			{"stat": "intellect", "per_level": 0.25},
+			{"stat": "spirit", "per_level": 0.2}
 		],
-		"cloth_chest": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.25
-			},
-			{
-				"stat": "intellect",
-				"per_level": 0.5
-			},
-			{
-				"stat": "spirit",
-				"per_level": 0.4
-			}
-		],
-		"cloth_hands": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.1
-			},
-			{
-				"stat": "intellect",
-				"per_level": 0.2
-			},
-			{
-				"stat": "spirit",
-				"per_level": 0.16
-			}
-		],
-		"cloth_legs": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.2
-			},
-			{
-				"stat": "intellect",
-				"per_level": 0.4
-			},
-			{
-				"stat": "spirit",
-				"per_level": 0.32
-			}
-		],
-		"cloth_feet": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.1
-			},
-			{
-				"stat": "intellect",
-				"per_level": 0.2
-			},
-			{
-				"stat": "spirit",
-				"per_level": 0.16
-			}
-		],
-		"leather_head": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.3
-			},
-			{
-				"stat": "agility",
-				"per_level": 0.3
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.24
-			}
-		],
-		"leather_shoulders": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.25
-			},
-			{
-				"stat": "agility",
-				"per_level": 0.25
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.2
-			}
-		],
-		"leather_chest": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.5
-			},
-			{
-				"stat": "agility",
-				"per_level": 0.5
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.4
-			}
-		],
-		"leather_hands": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.2
-			},
-			{
-				"stat": "agility",
-				"per_level": 0.2
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.16
-			}
-		],
-		"leather_legs": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.4
-			},
-			{
-				"stat": "agility",
-				"per_level": 0.4
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.32
-			}
-		],
-		"leather_feet": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.2
-			},
-			{
-				"stat": "agility",
-				"per_level": 0.2
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.16
-			}
-		],
+		"cloth_chest": [{"stat": "armor_add", "base": 1, "per_level": 0.25}, {"stat": "intellect", "per_level": 0.5}, {"stat": "spirit", "per_level": 0.4}],
+		"cloth_hands": [{"stat": "armor_add", "base": 1, "per_level": 0.1}, {"stat": "intellect", "per_level": 0.2}, {"stat": "spirit", "per_level": 0.16}],
+		"cloth_legs": [{"stat": "armor_add", "base": 1, "per_level": 0.2}, {"stat": "intellect", "per_level": 0.4}, {"stat": "spirit", "per_level": 0.32}],
+		"cloth_feet": [{"stat": "armor_add", "base": 1, "per_level": 0.1}, {"stat": "intellect", "per_level": 0.2}, {"stat": "spirit", "per_level": 0.16}],
+		"leather_head": [{"stat": "armor_add", "base": 1, "per_level": 0.3}, {"stat": "agility", "per_level": 0.3}, {"stat": "stamina", "per_level": 0.24}],
+		"leather_shoulders": [{"stat": "armor_add", "base": 1, "per_level": 0.25}, {"stat": "agility", "per_level": 0.25}, {"stat": "stamina", "per_level": 0.2}],
+		"leather_chest": [{"stat": "armor_add", "base": 1, "per_level": 0.5}, {"stat": "agility", "per_level": 0.5}, {"stat": "stamina", "per_level": 0.4}],
+		"leather_hands": [{"stat": "armor_add", "base": 1, "per_level": 0.2}, {"stat": "agility", "per_level": 0.2}, {"stat": "stamina", "per_level": 0.16}],
+		"leather_legs": [{"stat": "armor_add", "base": 1, "per_level": 0.4}, {"stat": "agility", "per_level": 0.4}, {"stat": "stamina", "per_level": 0.32}],
+		"leather_feet": [{"stat": "armor_add", "base": 1, "per_level": 0.2}, {"stat": "agility", "per_level": 0.2}, {"stat": "stamina", "per_level": 0.16}],
 		"mail_head": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.48
-			},
-			{
-				"stat": "agility",
-				"per_level": 0.3
-			},
-			{
-				"stat": "strength",
-				"per_level": 0.15
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.18
-			}
+			{"stat": "armor_add", "base": 1, "per_level": 0.48},
+			{"stat": "agility", "per_level": 0.3},
+			{"stat": "strength", "per_level": 0.15},
+			{"stat": "stamina", "per_level": 0.18}
 		],
 		"mail_shoulders": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.4
-			},
-			{
-				"stat": "agility",
-				"per_level": 0.25
-			},
-			{
-				"stat": "strength",
-				"per_level": 0.125
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.15
-			}
+			{"stat": "armor_add", "base": 1, "per_level": 0.4},
+			{"stat": "agility", "per_level": 0.25},
+			{"stat": "strength", "per_level": 0.125},
+			{"stat": "stamina", "per_level": 0.15}
 		],
 		"mail_chest": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.8
-			},
-			{
-				"stat": "agility",
-				"per_level": 0.5
-			},
-			{
-				"stat": "strength",
-				"per_level": 0.25
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.3
-			}
+			{"stat": "armor_add", "base": 1, "per_level": 0.8},
+			{"stat": "agility", "per_level": 0.5},
+			{"stat": "strength", "per_level": 0.25},
+			{"stat": "stamina", "per_level": 0.3}
 		],
 		"mail_hands": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.32
-			},
-			{
-				"stat": "agility",
-				"per_level": 0.2
-			},
-			{
-				"stat": "strength",
-				"per_level": 0.1
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.12
-			}
+			{"stat": "armor_add", "base": 1, "per_level": 0.32},
+			{"stat": "agility", "per_level": 0.2},
+			{"stat": "strength", "per_level": 0.1},
+			{"stat": "stamina", "per_level": 0.12}
 		],
 		"mail_legs": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.64
-			},
-			{
-				"stat": "agility",
-				"per_level": 0.4
-			},
-			{
-				"stat": "strength",
-				"per_level": 0.2
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.24
-			}
+			{"stat": "armor_add", "base": 1, "per_level": 0.64},
+			{"stat": "agility", "per_level": 0.4},
+			{"stat": "strength", "per_level": 0.2},
+			{"stat": "stamina", "per_level": 0.24}
 		],
 		"mail_feet": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.32
-			},
-			{
-				"stat": "agility",
-				"per_level": 0.2
-			},
-			{
-				"stat": "strength",
-				"per_level": 0.1
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.12
-			}
+			{"stat": "armor_add", "base": 1, "per_level": 0.32},
+			{"stat": "agility", "per_level": 0.2},
+			{"stat": "strength", "per_level": 0.1},
+			{"stat": "stamina", "per_level": 0.12}
 		],
 		"plate_head": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.72
-			},
-			{
-				"stat": "strength",
-				"per_level": 0.3
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.24
-			}
+			{"stat": "armor_add", "base": 1, "per_level": 0.72},
+			{"stat": "strength", "per_level": 0.3},
+			{"stat": "stamina", "per_level": 0.24}
 		],
-		"plate_shoulders": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.6
-			},
-			{
-				"stat": "strength",
-				"per_level": 0.25
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.2
-			}
-		],
-		"plate_chest": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 1.2
-			},
-			{
-				"stat": "strength",
-				"per_level": 0.5
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.4
-			}
-		],
+		"plate_shoulders": [{"stat": "armor_add", "base": 1, "per_level": 0.6}, {"stat": "strength", "per_level": 0.25}, {"stat": "stamina", "per_level": 0.2}],
+		"plate_chest": [{"stat": "armor_add", "base": 1, "per_level": 1.2}, {"stat": "strength", "per_level": 0.5}, {"stat": "stamina", "per_level": 0.4}],
 		"plate_hands": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.48
-			},
-			{
-				"stat": "strength",
-				"per_level": 0.2
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.16
-			}
+			{"stat": "armor_add", "base": 1, "per_level": 0.48},
+			{"stat": "strength", "per_level": 0.2},
+			{"stat": "stamina", "per_level": 0.16}
 		],
 		"plate_legs": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.96
-			},
-			{
-				"stat": "strength",
-				"per_level": 0.4
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.32
-			}
+			{"stat": "armor_add", "base": 1, "per_level": 0.96},
+			{"stat": "strength", "per_level": 0.4},
+			{"stat": "stamina", "per_level": 0.32}
 		],
 		"plate_feet": [
-			{
-				"stat": "armor_add",
-				"base": 1,
-				"per_level": 0.48
-			},
-			{
-				"stat": "strength",
-				"per_level": 0.2
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.16
-			}
+			{"stat": "armor_add", "base": 1, "per_level": 0.48},
+			{"stat": "strength", "per_level": 0.2},
+			{"stat": "stamina", "per_level": 0.16}
 		],
-		"greatsword": [
-			{
-				"stat": "attack_power_add",
-				"base": 4,
-				"per_level": 2
-			},
-			{
-				"stat": "strength",
-				"per_level": 0.3
-			}
-		],
-		"great_axe": [
-			{
-				"stat": "attack_power_add",
-				"base": 5,
-				"per_level": 2.2
-			}
-		],
+		"greatsword": [{"stat": "attack_power_add", "base": 4, "per_level": 2}, {"stat": "strength", "per_level": 0.3}],
+		"great_axe": [{"stat": "attack_power_add", "base": 5, "per_level": 2.2}],
 		"warhammer": [
-			{
-				"stat": "attack_power_add",
-				"base": 3,
-				"per_level": 1.2
-			},
-			{
-				"stat": "spell_power_add",
-				"base": 3,
-				"per_level": 1.2
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.2
-			}
+			{"stat": "attack_power_add", "base": 3, "per_level": 1.2},
+			{"stat": "spell_power_add", "base": 3, "per_level": 1.2},
+			{"stat": "stamina", "per_level": 0.2}
 		],
-		"halberd": [
-			{
-				"stat": "attack_power_add",
-				"base": 4,
-				"per_level": 2
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.3
-			}
-		],
-		"staff": [
-			{
-				"stat": "spell_power_add",
-				"base": 4,
-				"per_level": 2.2
-			},
-			{
-				"stat": "intellect",
-				"per_level": 0.3
-			}
-		],
-		"bow": [
-			{
-				"stat": "attack_power_add",
-				"base": 4,
-				"per_level": 1.9
-			},
-			{
-				"stat": "agility",
-				"per_level": 0.3
-			}
-		],
-		"crossbow": [
-			{
-				"stat": "attack_power_add",
-				"base": 5,
-				"per_level": 2.1
-			},
-			{
-				"stat": "agility",
-				"per_level": 0.2
-			}
-		],
-		"sword": [
-			{
-				"stat": "attack_power_add",
-				"base": 4,
-				"per_level": 2
-			},
-			{
-				"stat": "strength",
-				"per_level": 0.3
-			}
-		],
-		"axe": [
-			{
-				"stat": "attack_power_add",
-				"base": 5,
-				"per_level": 2.2
-			}
-		],
-		"mace": [
-			{
-				"stat": "attack_power_add",
-				"base": 3,
-				"per_level": 1.2
-			},
-			{
-				"stat": "spell_power_add",
-				"base": 3,
-				"per_level": 1.2
-			}
-		],
-		"short_sword": [
-			{
-				"stat": "attack_power_add",
-				"base": 3,
-				"per_level": 1.9
-			},
-			{
-				"stat": "agility",
-				"per_level": 0.3
-			}
-		],
-		"dagger": [
-			{
-				"stat": "attack_power_add",
-				"base": 3,
-				"per_level": 1.8
-			},
-			{
-				"stat": "agility",
-				"per_level": 0.35
-			}
-		],
-		"wand": [
-			{
-				"stat": "spell_power_add",
-				"base": 3,
-				"per_level": 1.7
-			},
-			{
-				"stat": "intellect",
-				"per_level": 0.25
-			}
-		],
-		"scepter": [
-			{
-				"stat": "spell_power_add",
-				"base": 3,
-				"per_level": 1.5
-			},
-			{
-				"stat": "spirit",
-				"per_level": 0.3
-			}
-		],
+		"halberd": [{"stat": "attack_power_add", "base": 4, "per_level": 2}, {"stat": "stamina", "per_level": 0.3}],
+		"staff": [{"stat": "spell_power_add", "base": 4, "per_level": 2.2}, {"stat": "intellect", "per_level": 0.3}],
+		"bow": [{"stat": "attack_power_add", "base": 4, "per_level": 1.9}, {"stat": "agility", "per_level": 0.3}],
+		"crossbow": [{"stat": "attack_power_add", "base": 5, "per_level": 2.1}, {"stat": "agility", "per_level": 0.2}],
+		"sword": [{"stat": "attack_power_add", "base": 4, "per_level": 2}, {"stat": "strength", "per_level": 0.3}],
+		"axe": [{"stat": "attack_power_add", "base": 5, "per_level": 2.2}],
+		"mace": [{"stat": "attack_power_add", "base": 3, "per_level": 1.2}, {"stat": "spell_power_add", "base": 3, "per_level": 1.2}],
+		"short_sword": [{"stat": "attack_power_add", "base": 3, "per_level": 1.9}, {"stat": "agility", "per_level": 0.3}],
+		"dagger": [{"stat": "attack_power_add", "base": 3, "per_level": 1.8}, {"stat": "agility", "per_level": 0.35}],
+		"wand": [{"stat": "spell_power_add", "base": 3, "per_level": 1.7}, {"stat": "intellect", "per_level": 0.25}],
+		"scepter": [{"stat": "spell_power_add", "base": 3, "per_level": 1.5}, {"stat": "spirit", "per_level": 0.3}],
 		"shield": [
-			{
-				"stat": "armor_add",
-				"base": 2,
-				"per_level": 0.8
-			},
-			{
-				"stat": "block_add",
-				"per_level": 0.001
-			},
-			{
-				"stat": "stamina",
-				"per_level": 0.25
-			}
+			{"stat": "armor_add", "base": 2, "per_level": 0.8},
+			{"stat": "block_add", "per_level": 0.001},
+			{"stat": "stamina", "per_level": 0.25}
 		],
-		"orb": [
-			{
-				"stat": "spell_power_add",
-				"base": 2,
-				"per_level": 0.8
-			},
-			{
-				"stat": "intellect",
-				"per_level": 0.25
-			}
-		],
-		"tome": [
-			{
-				"stat": "spell_power_add",
-				"base": 2,
-				"per_level": 0.8
-			},
-			{
-				"stat": "spirit",
-				"per_level": 0.25
-			}
-		],
-		"neck": [
-			{
-				"stat": "stamina",
-				"per_level": 0.2
-			}
-		],
-		"ring": [
-			{
-				"stat": "stamina",
-				"per_level": 0.2
-			}
-		],
-		"wood_sword": [
-			{
-				"stat": "attack_power_add",
-				"base": 1,
-				"per_level": 0.5
-			}
-		],
+		"orb": [{"stat": "spell_power_add", "base": 2, "per_level": 0.8}, {"stat": "intellect", "per_level": 0.25}],
+		"tome": [{"stat": "spell_power_add", "base": 2, "per_level": 0.8}, {"stat": "spirit", "per_level": 0.25}],
+		"neck": [{"stat": "stamina", "per_level": 0.2}],
+		"ring": [{"stat": "stamina", "per_level": 0.2}],
+		"wood_sword": [{"stat": "attack_power_add", "base": 1, "per_level": 0.5}],
 		"potion": []
 	},
 	"bases": {
@@ -615,9 +116,7 @@
 			"class": "warrior",
 			"tier": 1,
 			"template": "plate_head",
-			"look": [
-				"warrior_head_t1"
-			],
+			"look": ["warrior_head_t1"],
 			"name": "ITEM_WARRIOR_HEAD_T1"
 		},
 		"warrior_shoulders_t1": {
@@ -626,10 +125,7 @@
 			"class": "warrior",
 			"tier": 1,
 			"template": "plate_shoulders",
-			"look": [
-				"warrior_shoulders_t1_l",
-				"warrior_shoulders_t1_r"
-			],
+			"look": ["warrior_shoulders_t1_l", "warrior_shoulders_t1_r"],
 			"name": "ITEM_WARRIOR_SHOULDERS_T1"
 		},
 		"warrior_chest_t1": {
@@ -638,10 +134,7 @@
 			"class": "warrior",
 			"tier": 1,
 			"template": "plate_chest",
-			"look": [
-				"warrior_chest_t1",
-				"warrior_chest_t1_skirt"
-			],
+			"look": ["warrior_chest_t1", "warrior_chest_t1_skirt"],
 			"name": "ITEM_WARRIOR_CHEST_T1"
 		},
 		"warrior_hands_t1": {
@@ -650,12 +143,7 @@
 			"class": "warrior",
 			"tier": 1,
 			"template": "plate_hands",
-			"look": [
-				"warrior_hands_t1_l",
-				"warrior_hands_t1_cuff_l",
-				"warrior_hands_t1_r",
-				"warrior_hands_t1_cuff_r"
-			],
+			"look": ["warrior_hands_t1_l", "warrior_hands_t1_cuff_l", "warrior_hands_t1_r", "warrior_hands_t1_cuff_r"],
 			"name": "ITEM_WARRIOR_HANDS_T1"
 		},
 		"warrior_legs_t1": {
@@ -664,10 +152,7 @@
 			"class": "warrior",
 			"tier": 1,
 			"template": "plate_legs",
-			"look": [
-				"warrior_legs_t1_l",
-				"warrior_legs_t1_r"
-			],
+			"look": ["warrior_legs_t1_l", "warrior_legs_t1_r"],
 			"name": "ITEM_WARRIOR_LEGS_T1"
 		},
 		"warrior_feet_t1": {
@@ -676,10 +161,7 @@
 			"class": "warrior",
 			"tier": 1,
 			"template": "plate_feet",
-			"look": [
-				"warrior_feet_t1_l",
-				"warrior_feet_t1_r"
-			],
+			"look": ["warrior_feet_t1_l", "warrior_feet_t1_r"],
 			"name": "ITEM_WARRIOR_FEET_T1"
 		},
 		"cleric_head_t1": {
@@ -688,9 +170,7 @@
 			"class": "cleric",
 			"tier": 1,
 			"template": "cloth_head",
-			"look": [
-				"cleric_head_t1"
-			],
+			"look": ["cleric_head_t1"],
 			"name": "ITEM_CLERIC_HEAD_T1"
 		},
 		"cleric_shoulders_t1": {
@@ -699,10 +179,7 @@
 			"class": "cleric",
 			"tier": 1,
 			"template": "cloth_shoulders",
-			"look": [
-				"cleric_shoulders_t1_l",
-				"cleric_shoulders_t1_r"
-			],
+			"look": ["cleric_shoulders_t1_l", "cleric_shoulders_t1_r"],
 			"name": "ITEM_CLERIC_SHOULDERS_T1"
 		},
 		"cleric_chest_t1": {
@@ -711,10 +188,7 @@
 			"class": "cleric",
 			"tier": 1,
 			"template": "cloth_chest",
-			"look": [
-				"cleric_chest_t1",
-				"cleric_chest_t1_skirt"
-			],
+			"look": ["cleric_chest_t1", "cleric_chest_t1_skirt"],
 			"name": "ITEM_CLERIC_CHEST_T1"
 		},
 		"cleric_hands_t1": {
@@ -723,12 +197,7 @@
 			"class": "cleric",
 			"tier": 1,
 			"template": "cloth_hands",
-			"look": [
-				"cleric_hands_t1_l",
-				"cleric_hands_t1_cuff_l",
-				"cleric_hands_t1_r",
-				"cleric_hands_t1_cuff_r"
-			],
+			"look": ["cleric_hands_t1_l", "cleric_hands_t1_cuff_l", "cleric_hands_t1_r", "cleric_hands_t1_cuff_r"],
 			"name": "ITEM_CLERIC_HANDS_T1"
 		},
 		"cleric_legs_t1": {
@@ -737,10 +206,7 @@
 			"class": "cleric",
 			"tier": 1,
 			"template": "cloth_legs",
-			"look": [
-				"cleric_legs_t1_l",
-				"cleric_legs_t1_r"
-			],
+			"look": ["cleric_legs_t1_l", "cleric_legs_t1_r"],
 			"name": "ITEM_CLERIC_LEGS_T1"
 		},
 		"cleric_feet_t1": {
@@ -749,10 +215,7 @@
 			"class": "cleric",
 			"tier": 1,
 			"template": "cloth_feet",
-			"look": [
-				"cleric_feet_t1_l",
-				"cleric_feet_t1_r"
-			],
+			"look": ["cleric_feet_t1_l", "cleric_feet_t1_r"],
 			"name": "ITEM_CLERIC_FEET_T1"
 		},
 		"mage_head_t1": {
@@ -761,9 +224,7 @@
 			"class": "mage",
 			"tier": 1,
 			"template": "cloth_head",
-			"look": [
-				"mage_head_t1"
-			],
+			"look": ["mage_head_t1"],
 			"name": "ITEM_MAGE_HEAD_T1"
 		},
 		"mage_shoulders_t1": {
@@ -772,10 +233,7 @@
 			"class": "mage",
 			"tier": 1,
 			"template": "cloth_shoulders",
-			"look": [
-				"mage_shoulders_t1_l",
-				"mage_shoulders_t1_r"
-			],
+			"look": ["mage_shoulders_t1_l", "mage_shoulders_t1_r"],
 			"name": "ITEM_MAGE_SHOULDERS_T1"
 		},
 		"mage_chest_t1": {
@@ -800,12 +258,7 @@
 			"class": "mage",
 			"tier": 1,
 			"template": "cloth_hands",
-			"look": [
-				"mage_hands_t1_l",
-				"mage_hands_t1_cuff_l",
-				"mage_hands_t1_r",
-				"mage_hands_t1_cuff_r"
-			],
+			"look": ["mage_hands_t1_l", "mage_hands_t1_cuff_l", "mage_hands_t1_r", "mage_hands_t1_cuff_r"],
 			"name": "ITEM_MAGE_HANDS_T1"
 		},
 		"mage_legs_t1": {
@@ -814,10 +267,7 @@
 			"class": "mage",
 			"tier": 1,
 			"template": "cloth_legs",
-			"look": [
-				"mage_legs_t1_l",
-				"mage_legs_t1_r"
-			],
+			"look": ["mage_legs_t1_l", "mage_legs_t1_r"],
 			"name": "ITEM_MAGE_LEGS_T1"
 		},
 		"mage_feet_t1": {
@@ -826,10 +276,7 @@
 			"class": "mage",
 			"tier": 1,
 			"template": "cloth_feet",
-			"look": [
-				"mage_feet_t1_l",
-				"mage_feet_t1_r"
-			],
+			"look": ["mage_feet_t1_l", "mage_feet_t1_r"],
 			"name": "ITEM_MAGE_FEET_T1"
 		},
 		"archer_head_t1": {
@@ -838,9 +285,7 @@
 			"class": "archer",
 			"tier": 1,
 			"template": "mail_head",
-			"look": [
-				"archer_head_t1"
-			],
+			"look": ["archer_head_t1"],
 			"name": "ITEM_ARCHER_HEAD_T1"
 		},
 		"archer_shoulders_t1": {
@@ -849,10 +294,7 @@
 			"class": "archer",
 			"tier": 1,
 			"template": "mail_shoulders",
-			"look": [
-				"archer_shoulders_t1_l",
-				"archer_shoulders_t1_r"
-			],
+			"look": ["archer_shoulders_t1_l", "archer_shoulders_t1_r"],
 			"name": "ITEM_ARCHER_SHOULDERS_T1"
 		},
 		"archer_chest_t1": {
@@ -861,10 +303,7 @@
 			"class": "archer",
 			"tier": 1,
 			"template": "mail_chest",
-			"look": [
-				"archer_chest_t1",
-				"archer_chest_t1_skirt"
-			],
+			"look": ["archer_chest_t1", "archer_chest_t1_skirt"],
 			"name": "ITEM_ARCHER_CHEST_T1"
 		},
 		"archer_hands_t1": {
@@ -873,12 +312,7 @@
 			"class": "archer",
 			"tier": 1,
 			"template": "mail_hands",
-			"look": [
-				"archer_hands_t1_l",
-				"archer_hands_t1_cuff_l",
-				"archer_hands_t1_r",
-				"archer_hands_t1_cuff_r"
-			],
+			"look": ["archer_hands_t1_l", "archer_hands_t1_cuff_l", "archer_hands_t1_r", "archer_hands_t1_cuff_r"],
 			"name": "ITEM_ARCHER_HANDS_T1"
 		},
 		"archer_legs_t1": {
@@ -887,10 +321,7 @@
 			"class": "archer",
 			"tier": 1,
 			"template": "mail_legs",
-			"look": [
-				"archer_legs_t1_l",
-				"archer_legs_t1_r"
-			],
+			"look": ["archer_legs_t1_l", "archer_legs_t1_r"],
 			"name": "ITEM_ARCHER_LEGS_T1"
 		},
 		"archer_feet_t1": {
@@ -899,10 +330,7 @@
 			"class": "archer",
 			"tier": 1,
 			"template": "mail_feet",
-			"look": [
-				"archer_feet_t1_l",
-				"archer_feet_t1_r"
-			],
+			"look": ["archer_feet_t1_l", "archer_feet_t1_r"],
 			"name": "ITEM_ARCHER_FEET_T1"
 		},
 		"assassin_head_t1": {
@@ -911,9 +339,7 @@
 			"class": "assassin",
 			"tier": 1,
 			"template": "leather_head",
-			"look": [
-				"assassin_head_t1"
-			],
+			"look": ["assassin_head_t1"],
 			"name": "ITEM_ASSASSIN_HEAD_T1"
 		},
 		"assassin_shoulders_t1": {
@@ -922,10 +348,7 @@
 			"class": "assassin",
 			"tier": 1,
 			"template": "leather_shoulders",
-			"look": [
-				"assassin_shoulders_t1_l",
-				"assassin_shoulders_t1_r"
-			],
+			"look": ["assassin_shoulders_t1_l", "assassin_shoulders_t1_r"],
 			"name": "ITEM_ASSASSIN_SHOULDERS_T1"
 		},
 		"assassin_chest_t1": {
@@ -934,10 +357,7 @@
 			"class": "assassin",
 			"tier": 1,
 			"template": "leather_chest",
-			"look": [
-				"assassin_chest_t1",
-				"assassin_chest_t1_skirt"
-			],
+			"look": ["assassin_chest_t1", "assassin_chest_t1_skirt"],
 			"name": "ITEM_ASSASSIN_CHEST_T1"
 		},
 		"assassin_hands_t1": {
@@ -946,12 +366,7 @@
 			"class": "assassin",
 			"tier": 1,
 			"template": "leather_hands",
-			"look": [
-				"assassin_hands_t1_l",
-				"assassin_hands_t1_cuff_l",
-				"assassin_hands_t1_r",
-				"assassin_hands_t1_cuff_r"
-			],
+			"look": ["assassin_hands_t1_l", "assassin_hands_t1_cuff_l", "assassin_hands_t1_r", "assassin_hands_t1_cuff_r"],
 			"name": "ITEM_ASSASSIN_HANDS_T1"
 		},
 		"assassin_legs_t1": {
@@ -960,10 +375,7 @@
 			"class": "assassin",
 			"tier": 1,
 			"template": "leather_legs",
-			"look": [
-				"assassin_legs_t1_l",
-				"assassin_legs_t1_r"
-			],
+			"look": ["assassin_legs_t1_l", "assassin_legs_t1_r"],
 			"name": "ITEM_ASSASSIN_LEGS_T1"
 		},
 		"assassin_feet_t1": {
@@ -972,10 +384,7 @@
 			"class": "assassin",
 			"tier": 1,
 			"template": "leather_feet",
-			"look": [
-				"assassin_feet_t1_l",
-				"assassin_feet_t1_r"
-			],
+			"look": ["assassin_feet_t1_l", "assassin_feet_t1_r"],
 			"name": "ITEM_ASSASSIN_FEET_T1"
 		},
 		"greatsword_t1": {
@@ -983,199 +392,43 @@
 			"kind": "greatsword",
 			"tier": 1,
 			"template": "greatsword",
-			"look": [
-				"w_greatsword_t1"
-			],
+			"look": ["w_greatsword_t1"],
 			"name": "ITEM_GREATSWORD_T1"
 		},
-		"great_axe_t1": {
-			"slot": "main",
-			"kind": "great_axe",
-			"tier": 1,
-			"template": "great_axe",
-			"look": [
-				"w_great_axe_t1"
-			],
-			"name": "ITEM_GREAT_AXE_T1"
-		},
-		"warhammer_t1": {
-			"slot": "main",
-			"kind": "warhammer",
-			"tier": 1,
-			"template": "warhammer",
-			"look": [
-				"w_warhammer_t1"
-			],
-			"name": "ITEM_WARHAMMER_T1"
-		},
-		"halberd_t1": {
-			"slot": "main",
-			"kind": "halberd",
-			"tier": 1,
-			"template": "halberd",
-			"look": [
-				"w_halberd_t1"
-			],
-			"name": "ITEM_HALBERD_T1"
-		},
-		"staff_t1": {
-			"slot": "main",
-			"kind": "staff",
-			"tier": 1,
-			"template": "staff",
-			"look": [
-				"w_staff_t1"
-			],
-			"name": "ITEM_STAFF_T1"
-		},
-		"bow_t1": {
-			"slot": "main",
-			"kind": "bow",
-			"tier": 1,
-			"template": "bow",
-			"look": [
-				"w_bow_t1"
-			],
-			"name": "ITEM_BOW_T1"
-		},
-		"crossbow_t1": {
-			"slot": "main",
-			"kind": "crossbow",
-			"tier": 1,
-			"template": "crossbow",
-			"look": [
-				"w_crossbow_t1"
-			],
-			"name": "ITEM_CROSSBOW_T1"
-		},
-		"sword_t1": {
-			"slot": "main",
-			"kind": "sword",
-			"tier": 1,
-			"template": "sword",
-			"look": [
-				"w_sword_t1"
-			],
-			"name": "ITEM_SWORD_T1"
-		},
-		"axe_t1": {
-			"slot": "main",
-			"kind": "axe",
-			"tier": 1,
-			"template": "axe",
-			"look": [
-				"w_axe_t1"
-			],
-			"name": "ITEM_AXE_T1"
-		},
-		"mace_t1": {
-			"slot": "main",
-			"kind": "mace",
-			"tier": 1,
-			"template": "mace",
-			"look": [
-				"w_mace_t1"
-			],
-			"name": "ITEM_MACE_T1"
-		},
+		"great_axe_t1": {"slot": "main", "kind": "great_axe", "tier": 1, "template": "great_axe", "look": ["w_great_axe_t1"], "name": "ITEM_GREAT_AXE_T1"},
+		"warhammer_t1": {"slot": "main", "kind": "warhammer", "tier": 1, "template": "warhammer", "look": ["w_warhammer_t1"], "name": "ITEM_WARHAMMER_T1"},
+		"halberd_t1": {"slot": "main", "kind": "halberd", "tier": 1, "template": "halberd", "look": ["w_halberd_t1"], "name": "ITEM_HALBERD_T1"},
+		"staff_t1": {"slot": "main", "kind": "staff", "tier": 1, "template": "staff", "look": ["w_staff_t1"], "name": "ITEM_STAFF_T1"},
+		"bow_t1": {"slot": "main", "kind": "bow", "tier": 1, "template": "bow", "look": ["w_bow_t1"], "name": "ITEM_BOW_T1"},
+		"crossbow_t1": {"slot": "main", "kind": "crossbow", "tier": 1, "template": "crossbow", "look": ["w_crossbow_t1"], "name": "ITEM_CROSSBOW_T1"},
+		"sword_t1": {"slot": "main", "kind": "sword", "tier": 1, "template": "sword", "look": ["w_sword_t1"], "name": "ITEM_SWORD_T1"},
+		"axe_t1": {"slot": "main", "kind": "axe", "tier": 1, "template": "axe", "look": ["w_axe_t1"], "name": "ITEM_AXE_T1"},
+		"mace_t1": {"slot": "main", "kind": "mace", "tier": 1, "template": "mace", "look": ["w_mace_t1"], "name": "ITEM_MACE_T1"},
 		"short_sword_t1": {
 			"slot": "main",
 			"kind": "short_sword",
 			"tier": 1,
 			"template": "short_sword",
-			"look": [
-				"w_short_sword_t1"
-			],
+			"look": ["w_short_sword_t1"],
 			"name": "ITEM_SHORT_SWORD_T1",
-			"look_offhand": [
-				"w_short_sword_t1_left"
-			]
+			"look_offhand": ["w_short_sword_t1_left"]
 		},
 		"dagger_t1": {
 			"slot": "main",
 			"kind": "dagger",
 			"tier": 1,
 			"template": "dagger",
-			"look": [
-				"w_dagger_t1"
-			],
+			"look": ["w_dagger_t1"],
 			"name": "ITEM_DAGGER_T1",
-			"look_offhand": [
-				"w_dagger_t1_left"
-			]
+			"look_offhand": ["w_dagger_t1_left"]
 		},
-		"wand_t1": {
-			"slot": "main",
-			"kind": "wand",
-			"tier": 1,
-			"template": "wand",
-			"look": [
-				"w_wand_t1"
-			],
-			"name": "ITEM_WAND_T1"
-		},
-		"scepter_t1": {
-			"slot": "main",
-			"kind": "scepter",
-			"tier": 1,
-			"template": "scepter",
-			"look": [
-				"w_scepter_t1"
-			],
-			"name": "ITEM_SCEPTER_T1"
-		},
-		"shield_t1": {
-			"slot": "offhand",
-			"kind": "shield",
-			"tier": 1,
-			"template": "shield",
-			"look": [
-				"w_shield_t1"
-			],
-			"name": "ITEM_SHIELD_T1"
-		},
-		"orb_t1": {
-			"slot": "offhand",
-			"kind": "orb",
-			"tier": 1,
-			"template": "orb",
-			"look": [
-				"w_orb_t1"
-			],
-			"name": "ITEM_ORB_T1"
-		},
-		"tome_t1": {
-			"slot": "offhand",
-			"kind": "tome",
-			"tier": 1,
-			"template": "tome",
-			"look": [
-				"w_tome_t1"
-			],
-			"name": "ITEM_TOME_T1"
-		},
-		"neck_t1": {
-			"slot": "neck",
-			"kind": "jewelry",
-			"tier": 1,
-			"template": "neck",
-			"look": [],
-			"model": [
-				"jewel_neck_t1"
-			],
-			"name": "ITEM_NECK_T1"
-		},
-		"ring_t1": {
-			"slot": "ring",
-			"kind": "jewelry",
-			"tier": 1,
-			"template": "ring",
-			"look": [],
-			"model": [
-				"jewel_ring_t1"
-			],
-			"name": "ITEM_RING_T1"
-		},
+		"wand_t1": {"slot": "main", "kind": "wand", "tier": 1, "template": "wand", "look": ["w_wand_t1"], "name": "ITEM_WAND_T1"},
+		"scepter_t1": {"slot": "main", "kind": "scepter", "tier": 1, "template": "scepter", "look": ["w_scepter_t1"], "name": "ITEM_SCEPTER_T1"},
+		"shield_t1": {"slot": "offhand", "kind": "shield", "tier": 1, "template": "shield", "look": ["w_shield_t1"], "name": "ITEM_SHIELD_T1"},
+		"orb_t1": {"slot": "offhand", "kind": "orb", "tier": 1, "template": "orb", "look": ["w_orb_t1"], "name": "ITEM_ORB_T1"},
+		"tome_t1": {"slot": "offhand", "kind": "tome", "tier": 1, "template": "tome", "look": ["w_tome_t1"], "name": "ITEM_TOME_T1"},
+		"neck_t1": {"slot": "neck", "kind": "jewelry", "tier": 1, "template": "neck", "look": [], "model": ["jewel_neck_t1"], "name": "ITEM_NECK_T1"},
+		"ring_t1": {"slot": "ring", "kind": "jewelry", "tier": 1, "template": "ring", "look": [], "model": ["jewel_ring_t1"], "name": "ITEM_RING_T1"},
 		"wood_sword": {
 			"slot": "main",
 			"kind": "wood_sword",
@@ -1183,9 +436,7 @@
 			"min_level": 1,
 			"max_level": 9999,
 			"template": "wood_sword",
-			"look": [
-				"weapon_wood_sword"
-			],
+			"look": ["weapon_wood_sword"],
 			"name": "ITEM_WOOD_SWORD"
 		},
 		"potion_health": {
@@ -1236,9 +487,7 @@
 			"class": "warrior",
 			"tier": 2,
 			"template": "plate_head",
-			"look": [
-				"warrior_head_t2"
-			],
+			"look": ["warrior_head_t2"],
 			"name": "ITEM_WARRIOR_HEAD_T2"
 		},
 		"warrior_shoulders_t2": {
@@ -1247,10 +496,7 @@
 			"class": "warrior",
 			"tier": 2,
 			"template": "plate_shoulders",
-			"look": [
-				"warrior_shoulders_t2_l",
-				"warrior_shoulders_t2_r"
-			],
+			"look": ["warrior_shoulders_t2_l", "warrior_shoulders_t2_r"],
 			"name": "ITEM_WARRIOR_SHOULDERS_T2"
 		},
 		"warrior_chest_t2": {
@@ -1259,11 +505,7 @@
 			"class": "warrior",
 			"tier": 2,
 			"template": "plate_chest",
-			"look": [
-				"warrior_chest_t2",
-				"warrior_chest_t2_skirt",
-				"warrior_chest_t2_cape"
-			],
+			"look": ["warrior_chest_t2", "warrior_chest_t2_skirt", "warrior_chest_t2_cape"],
 			"name": "ITEM_WARRIOR_CHEST_T2"
 		},
 		"warrior_hands_t2": {
@@ -1272,12 +514,7 @@
 			"class": "warrior",
 			"tier": 2,
 			"template": "plate_hands",
-			"look": [
-				"warrior_hands_t2_l",
-				"warrior_hands_t2_cuff_l",
-				"warrior_hands_t2_r",
-				"warrior_hands_t2_cuff_r"
-			],
+			"look": ["warrior_hands_t2_l", "warrior_hands_t2_cuff_l", "warrior_hands_t2_r", "warrior_hands_t2_cuff_r"],
 			"name": "ITEM_WARRIOR_HANDS_T2"
 		},
 		"warrior_legs_t2": {
@@ -1286,10 +523,7 @@
 			"class": "warrior",
 			"tier": 2,
 			"template": "plate_legs",
-			"look": [
-				"warrior_legs_t2_l",
-				"warrior_legs_t2_r"
-			],
+			"look": ["warrior_legs_t2_l", "warrior_legs_t2_r"],
 			"name": "ITEM_WARRIOR_LEGS_T2"
 		},
 		"warrior_feet_t2": {
@@ -1298,10 +532,7 @@
 			"class": "warrior",
 			"tier": 2,
 			"template": "plate_feet",
-			"look": [
-				"warrior_feet_t2_l",
-				"warrior_feet_t2_r"
-			],
+			"look": ["warrior_feet_t2_l", "warrior_feet_t2_r"],
 			"name": "ITEM_WARRIOR_FEET_T2"
 		},
 		"cleric_head_t2": {
@@ -1310,9 +541,7 @@
 			"class": "cleric",
 			"tier": 2,
 			"template": "cloth_head",
-			"look": [
-				"cleric_head_t2"
-			],
+			"look": ["cleric_head_t2"],
 			"name": "ITEM_CLERIC_HEAD_T2"
 		},
 		"cleric_shoulders_t2": {
@@ -1321,10 +550,7 @@
 			"class": "cleric",
 			"tier": 2,
 			"template": "cloth_shoulders",
-			"look": [
-				"cleric_shoulders_t2_l",
-				"cleric_shoulders_t2_r"
-			],
+			"look": ["cleric_shoulders_t2_l", "cleric_shoulders_t2_r"],
 			"name": "ITEM_CLERIC_SHOULDERS_T2"
 		},
 		"cleric_chest_t2": {
@@ -1333,11 +559,7 @@
 			"class": "cleric",
 			"tier": 2,
 			"template": "cloth_chest",
-			"look": [
-				"cleric_chest_t2",
-				"cleric_chest_t2_skirt",
-				"cleric_chest_t2_cape"
-			],
+			"look": ["cleric_chest_t2", "cleric_chest_t2_skirt", "cleric_chest_t2_cape"],
 			"name": "ITEM_CLERIC_CHEST_T2"
 		},
 		"cleric_hands_t2": {
@@ -1346,12 +568,7 @@
 			"class": "cleric",
 			"tier": 2,
 			"template": "cloth_hands",
-			"look": [
-				"cleric_hands_t2_l",
-				"cleric_hands_t2_cuff_l",
-				"cleric_hands_t2_r",
-				"cleric_hands_t2_cuff_r"
-			],
+			"look": ["cleric_hands_t2_l", "cleric_hands_t2_cuff_l", "cleric_hands_t2_r", "cleric_hands_t2_cuff_r"],
 			"name": "ITEM_CLERIC_HANDS_T2"
 		},
 		"cleric_legs_t2": {
@@ -1360,10 +577,7 @@
 			"class": "cleric",
 			"tier": 2,
 			"template": "cloth_legs",
-			"look": [
-				"cleric_legs_t2_l",
-				"cleric_legs_t2_r"
-			],
+			"look": ["cleric_legs_t2_l", "cleric_legs_t2_r"],
 			"name": "ITEM_CLERIC_LEGS_T2"
 		},
 		"cleric_feet_t2": {
@@ -1372,10 +586,7 @@
 			"class": "cleric",
 			"tier": 2,
 			"template": "cloth_feet",
-			"look": [
-				"cleric_feet_t2_l",
-				"cleric_feet_t2_r"
-			],
+			"look": ["cleric_feet_t2_l", "cleric_feet_t2_r"],
 			"name": "ITEM_CLERIC_FEET_T2"
 		},
 		"mage_head_t2": {
@@ -1384,9 +595,7 @@
 			"class": "mage",
 			"tier": 2,
 			"template": "cloth_head",
-			"look": [
-				"mage_head_t2"
-			],
+			"look": ["mage_head_t2"],
 			"name": "ITEM_MAGE_HEAD_T2"
 		},
 		"mage_shoulders_t2": {
@@ -1395,10 +604,7 @@
 			"class": "mage",
 			"tier": 2,
 			"template": "cloth_shoulders",
-			"look": [
-				"mage_shoulders_t2_l",
-				"mage_shoulders_t2_r"
-			],
+			"look": ["mage_shoulders_t2_l", "mage_shoulders_t2_r"],
 			"name": "ITEM_MAGE_SHOULDERS_T2"
 		},
 		"mage_chest_t2": {
@@ -1424,12 +630,7 @@
 			"class": "mage",
 			"tier": 2,
 			"template": "cloth_hands",
-			"look": [
-				"mage_hands_t2_l",
-				"mage_hands_t2_cuff_l",
-				"mage_hands_t2_r",
-				"mage_hands_t2_cuff_r"
-			],
+			"look": ["mage_hands_t2_l", "mage_hands_t2_cuff_l", "mage_hands_t2_r", "mage_hands_t2_cuff_r"],
 			"name": "ITEM_MAGE_HANDS_T2"
 		},
 		"mage_legs_t2": {
@@ -1438,10 +639,7 @@
 			"class": "mage",
 			"tier": 2,
 			"template": "cloth_legs",
-			"look": [
-				"mage_legs_t2_l",
-				"mage_legs_t2_r"
-			],
+			"look": ["mage_legs_t2_l", "mage_legs_t2_r"],
 			"name": "ITEM_MAGE_LEGS_T2"
 		},
 		"mage_feet_t2": {
@@ -1450,10 +648,7 @@
 			"class": "mage",
 			"tier": 2,
 			"template": "cloth_feet",
-			"look": [
-				"mage_feet_t2_l",
-				"mage_feet_t2_r"
-			],
+			"look": ["mage_feet_t2_l", "mage_feet_t2_r"],
 			"name": "ITEM_MAGE_FEET_T2"
 		},
 		"archer_head_t2": {
@@ -1462,9 +657,7 @@
 			"class": "archer",
 			"tier": 2,
 			"template": "mail_head",
-			"look": [
-				"archer_head_t2"
-			],
+			"look": ["archer_head_t2"],
 			"name": "ITEM_ARCHER_HEAD_T2"
 		},
 		"archer_shoulders_t2": {
@@ -1473,10 +666,7 @@
 			"class": "archer",
 			"tier": 2,
 			"template": "mail_shoulders",
-			"look": [
-				"archer_shoulders_t2_l",
-				"archer_shoulders_t2_r"
-			],
+			"look": ["archer_shoulders_t2_l", "archer_shoulders_t2_r"],
 			"name": "ITEM_ARCHER_SHOULDERS_T2"
 		},
 		"archer_chest_t2": {
@@ -1485,10 +675,7 @@
 			"class": "archer",
 			"tier": 2,
 			"template": "mail_chest",
-			"look": [
-				"archer_chest_t2",
-				"archer_chest_t2_skirt"
-			],
+			"look": ["archer_chest_t2", "archer_chest_t2_skirt"],
 			"name": "ITEM_ARCHER_CHEST_T2"
 		},
 		"archer_hands_t2": {
@@ -1497,12 +684,7 @@
 			"class": "archer",
 			"tier": 2,
 			"template": "mail_hands",
-			"look": [
-				"archer_hands_t2_l",
-				"archer_hands_t2_cuff_l",
-				"archer_hands_t2_r",
-				"archer_hands_t2_cuff_r"
-			],
+			"look": ["archer_hands_t2_l", "archer_hands_t2_cuff_l", "archer_hands_t2_r", "archer_hands_t2_cuff_r"],
 			"name": "ITEM_ARCHER_HANDS_T2"
 		},
 		"archer_legs_t2": {
@@ -1511,10 +693,7 @@
 			"class": "archer",
 			"tier": 2,
 			"template": "mail_legs",
-			"look": [
-				"archer_legs_t2_l",
-				"archer_legs_t2_r"
-			],
+			"look": ["archer_legs_t2_l", "archer_legs_t2_r"],
 			"name": "ITEM_ARCHER_LEGS_T2"
 		},
 		"archer_feet_t2": {
@@ -1523,10 +702,7 @@
 			"class": "archer",
 			"tier": 2,
 			"template": "mail_feet",
-			"look": [
-				"archer_feet_t2_l",
-				"archer_feet_t2_r"
-			],
+			"look": ["archer_feet_t2_l", "archer_feet_t2_r"],
 			"name": "ITEM_ARCHER_FEET_T2"
 		},
 		"assassin_head_t2": {
@@ -1535,9 +711,7 @@
 			"class": "assassin",
 			"tier": 2,
 			"template": "leather_head",
-			"look": [
-				"assassin_head_t2"
-			],
+			"look": ["assassin_head_t2"],
 			"name": "ITEM_ASSASSIN_HEAD_T2"
 		},
 		"assassin_shoulders_t2": {
@@ -1546,10 +720,7 @@
 			"class": "assassin",
 			"tier": 2,
 			"template": "leather_shoulders",
-			"look": [
-				"assassin_shoulders_t2_l",
-				"assassin_shoulders_t2_r"
-			],
+			"look": ["assassin_shoulders_t2_l", "assassin_shoulders_t2_r"],
 			"name": "ITEM_ASSASSIN_SHOULDERS_T2"
 		},
 		"assassin_chest_t2": {
@@ -1558,11 +729,7 @@
 			"class": "assassin",
 			"tier": 2,
 			"template": "leather_chest",
-			"look": [
-				"assassin_chest_t2",
-				"assassin_chest_t2_skirt",
-				"assassin_chest_t2_cape"
-			],
+			"look": ["assassin_chest_t2", "assassin_chest_t2_skirt", "assassin_chest_t2_cape"],
 			"name": "ITEM_ASSASSIN_CHEST_T2"
 		},
 		"assassin_hands_t2": {
@@ -1571,12 +738,7 @@
 			"class": "assassin",
 			"tier": 2,
 			"template": "leather_hands",
-			"look": [
-				"assassin_hands_t2_l",
-				"assassin_hands_t2_cuff_l",
-				"assassin_hands_t2_r",
-				"assassin_hands_t2_cuff_r"
-			],
+			"look": ["assassin_hands_t2_l", "assassin_hands_t2_cuff_l", "assassin_hands_t2_r", "assassin_hands_t2_cuff_r"],
 			"name": "ITEM_ASSASSIN_HANDS_T2"
 		},
 		"assassin_legs_t2": {
@@ -1585,10 +747,7 @@
 			"class": "assassin",
 			"tier": 2,
 			"template": "leather_legs",
-			"look": [
-				"assassin_legs_t2_l",
-				"assassin_legs_t2_r"
-			],
+			"look": ["assassin_legs_t2_l", "assassin_legs_t2_r"],
 			"name": "ITEM_ASSASSIN_LEGS_T2"
 		},
 		"assassin_feet_t2": {
@@ -1597,10 +756,7 @@
 			"class": "assassin",
 			"tier": 2,
 			"template": "leather_feet",
-			"look": [
-				"assassin_feet_t2_l",
-				"assassin_feet_t2_r"
-			],
+			"look": ["assassin_feet_t2_l", "assassin_feet_t2_r"],
 			"name": "ITEM_ASSASSIN_FEET_T2"
 		},
 		"greatsword_t2": {
@@ -1608,208 +764,50 @@
 			"kind": "greatsword",
 			"tier": 2,
 			"template": "greatsword",
-			"look": [
-				"w_greatsword_t2"
-			],
+			"look": ["w_greatsword_t2"],
 			"name": "ITEM_GREATSWORD_T2"
 		},
-		"great_axe_t2": {
-			"slot": "main",
-			"kind": "great_axe",
-			"tier": 2,
-			"template": "great_axe",
-			"look": [
-				"w_great_axe_t2"
-			],
-			"name": "ITEM_GREAT_AXE_T2"
-		},
-		"warhammer_t2": {
-			"slot": "main",
-			"kind": "warhammer",
-			"tier": 2,
-			"template": "warhammer",
-			"look": [
-				"w_warhammer_t2"
-			],
-			"name": "ITEM_WARHAMMER_T2"
-		},
-		"halberd_t2": {
-			"slot": "main",
-			"kind": "halberd",
-			"tier": 2,
-			"template": "halberd",
-			"look": [
-				"w_halberd_t2"
-			],
-			"name": "ITEM_HALBERD_T2"
-		},
-		"staff_t2": {
-			"slot": "main",
-			"kind": "staff",
-			"tier": 2,
-			"template": "staff",
-			"look": [
-				"w_staff_t2"
-			],
-			"name": "ITEM_STAFF_T2"
-		},
-		"bow_t2": {
-			"slot": "main",
-			"kind": "bow",
-			"tier": 2,
-			"template": "bow",
-			"look": [
-				"w_bow_t2"
-			],
-			"name": "ITEM_BOW_T2"
-		},
-		"crossbow_t2": {
-			"slot": "main",
-			"kind": "crossbow",
-			"tier": 2,
-			"template": "crossbow",
-			"look": [
-				"w_crossbow_t2"
-			],
-			"name": "ITEM_CROSSBOW_T2"
-		},
-		"sword_t2": {
-			"slot": "main",
-			"kind": "sword",
-			"tier": 2,
-			"template": "sword",
-			"look": [
-				"w_sword_t2"
-			],
-			"name": "ITEM_SWORD_T2"
-		},
-		"axe_t2": {
-			"slot": "main",
-			"kind": "axe",
-			"tier": 2,
-			"template": "axe",
-			"look": [
-				"w_axe_t2"
-			],
-			"name": "ITEM_AXE_T2"
-		},
-		"mace_t2": {
-			"slot": "main",
-			"kind": "mace",
-			"tier": 2,
-			"template": "mace",
-			"look": [
-				"w_mace_t2"
-			],
-			"name": "ITEM_MACE_T2"
-		},
+		"great_axe_t2": {"slot": "main", "kind": "great_axe", "tier": 2, "template": "great_axe", "look": ["w_great_axe_t2"], "name": "ITEM_GREAT_AXE_T2"},
+		"warhammer_t2": {"slot": "main", "kind": "warhammer", "tier": 2, "template": "warhammer", "look": ["w_warhammer_t2"], "name": "ITEM_WARHAMMER_T2"},
+		"halberd_t2": {"slot": "main", "kind": "halberd", "tier": 2, "template": "halberd", "look": ["w_halberd_t2"], "name": "ITEM_HALBERD_T2"},
+		"staff_t2": {"slot": "main", "kind": "staff", "tier": 2, "template": "staff", "look": ["w_staff_t2"], "name": "ITEM_STAFF_T2"},
+		"bow_t2": {"slot": "main", "kind": "bow", "tier": 2, "template": "bow", "look": ["w_bow_t2"], "name": "ITEM_BOW_T2"},
+		"crossbow_t2": {"slot": "main", "kind": "crossbow", "tier": 2, "template": "crossbow", "look": ["w_crossbow_t2"], "name": "ITEM_CROSSBOW_T2"},
+		"sword_t2": {"slot": "main", "kind": "sword", "tier": 2, "template": "sword", "look": ["w_sword_t2"], "name": "ITEM_SWORD_T2"},
+		"axe_t2": {"slot": "main", "kind": "axe", "tier": 2, "template": "axe", "look": ["w_axe_t2"], "name": "ITEM_AXE_T2"},
+		"mace_t2": {"slot": "main", "kind": "mace", "tier": 2, "template": "mace", "look": ["w_mace_t2"], "name": "ITEM_MACE_T2"},
 		"short_sword_t2": {
 			"slot": "main",
 			"kind": "short_sword",
 			"tier": 2,
 			"template": "short_sword",
-			"look": [
-				"w_short_sword_t2"
-			],
+			"look": ["w_short_sword_t2"],
 			"name": "ITEM_SHORT_SWORD_T2",
-			"look_offhand": [
-				"w_short_sword_t2_left"
-			]
+			"look_offhand": ["w_short_sword_t2_left"]
 		},
 		"dagger_t2": {
 			"slot": "main",
 			"kind": "dagger",
 			"tier": 2,
 			"template": "dagger",
-			"look": [
-				"w_dagger_t2"
-			],
+			"look": ["w_dagger_t2"],
 			"name": "ITEM_DAGGER_T2",
-			"look_offhand": [
-				"w_dagger_t2_left"
-			]
+			"look_offhand": ["w_dagger_t2_left"]
 		},
-		"wand_t2": {
-			"slot": "main",
-			"kind": "wand",
-			"tier": 2,
-			"template": "wand",
-			"look": [
-				"w_wand_t2"
-			],
-			"name": "ITEM_WAND_T2"
-		},
-		"scepter_t2": {
-			"slot": "main",
-			"kind": "scepter",
-			"tier": 2,
-			"template": "scepter",
-			"look": [
-				"w_scepter_t2"
-			],
-			"name": "ITEM_SCEPTER_T2"
-		},
-		"shield_t2": {
-			"slot": "offhand",
-			"kind": "shield",
-			"tier": 2,
-			"template": "shield",
-			"look": [
-				"w_shield_t2"
-			],
-			"name": "ITEM_SHIELD_T2"
-		},
-		"orb_t2": {
-			"slot": "offhand",
-			"kind": "orb",
-			"tier": 2,
-			"template": "orb",
-			"look": [
-				"w_orb_t2"
-			],
-			"name": "ITEM_ORB_T2"
-		},
-		"tome_t2": {
-			"slot": "offhand",
-			"kind": "tome",
-			"tier": 2,
-			"template": "tome",
-			"look": [
-				"w_tome_t2"
-			],
-			"name": "ITEM_TOME_T2"
-		},
-		"neck_t2": {
-			"slot": "neck",
-			"kind": "jewelry",
-			"tier": 2,
-			"template": "neck",
-			"look": [],
-			"model": [
-				"jewel_neck_t2"
-			],
-			"name": "ITEM_NECK_T2"
-		},
-		"ring_t2": {
-			"slot": "ring",
-			"kind": "jewelry",
-			"tier": 2,
-			"template": "ring",
-			"look": [],
-			"model": [
-				"jewel_ring_t2"
-			],
-			"name": "ITEM_RING_T2"
-		},
+		"wand_t2": {"slot": "main", "kind": "wand", "tier": 2, "template": "wand", "look": ["w_wand_t2"], "name": "ITEM_WAND_T2"},
+		"scepter_t2": {"slot": "main", "kind": "scepter", "tier": 2, "template": "scepter", "look": ["w_scepter_t2"], "name": "ITEM_SCEPTER_T2"},
+		"shield_t2": {"slot": "offhand", "kind": "shield", "tier": 2, "template": "shield", "look": ["w_shield_t2"], "name": "ITEM_SHIELD_T2"},
+		"orb_t2": {"slot": "offhand", "kind": "orb", "tier": 2, "template": "orb", "look": ["w_orb_t2"], "name": "ITEM_ORB_T2"},
+		"tome_t2": {"slot": "offhand", "kind": "tome", "tier": 2, "template": "tome", "look": ["w_tome_t2"], "name": "ITEM_TOME_T2"},
+		"neck_t2": {"slot": "neck", "kind": "jewelry", "tier": 2, "template": "neck", "look": [], "model": ["jewel_neck_t2"], "name": "ITEM_NECK_T2"},
+		"ring_t2": {"slot": "ring", "kind": "jewelry", "tier": 2, "template": "ring", "look": [], "model": ["jewel_ring_t2"], "name": "ITEM_RING_T2"},
 		"warrior_head_t3": {
 			"slot": "head",
 			"kind": "plate",
 			"class": "warrior",
 			"tier": 3,
 			"template": "plate_head",
-			"look": [
-				"warrior_head_t3"
-			],
+			"look": ["warrior_head_t3"],
 			"name": "ITEM_WARRIOR_HEAD_T3"
 		},
 		"warrior_shoulders_t3": {
@@ -1818,10 +816,7 @@
 			"class": "warrior",
 			"tier": 3,
 			"template": "plate_shoulders",
-			"look": [
-				"warrior_shoulders_t3_l",
-				"warrior_shoulders_t3_r"
-			],
+			"look": ["warrior_shoulders_t3_l", "warrior_shoulders_t3_r"],
 			"name": "ITEM_WARRIOR_SHOULDERS_T3"
 		},
 		"warrior_chest_t3": {
@@ -1831,11 +826,7 @@
 			"tier": 3,
 			"template": "plate_chest",
 			"aura": "#ff7a2a",
-			"look": [
-				"warrior_chest_t3",
-				"warrior_chest_t3_skirt",
-				"warrior_chest_t3_cape"
-			],
+			"look": ["warrior_chest_t3", "warrior_chest_t3_skirt", "warrior_chest_t3_cape"],
 			"name": "ITEM_WARRIOR_CHEST_T3"
 		},
 		"warrior_hands_t3": {
@@ -1844,12 +835,7 @@
 			"class": "warrior",
 			"tier": 3,
 			"template": "plate_hands",
-			"look": [
-				"warrior_hands_t3_l",
-				"warrior_hands_t3_cuff_l",
-				"warrior_hands_t3_r",
-				"warrior_hands_t3_cuff_r"
-			],
+			"look": ["warrior_hands_t3_l", "warrior_hands_t3_cuff_l", "warrior_hands_t3_r", "warrior_hands_t3_cuff_r"],
 			"name": "ITEM_WARRIOR_HANDS_T3"
 		},
 		"warrior_legs_t3": {
@@ -1858,10 +844,7 @@
 			"class": "warrior",
 			"tier": 3,
 			"template": "plate_legs",
-			"look": [
-				"warrior_legs_t3_l",
-				"warrior_legs_t3_r"
-			],
+			"look": ["warrior_legs_t3_l", "warrior_legs_t3_r"],
 			"name": "ITEM_WARRIOR_LEGS_T3"
 		},
 		"warrior_feet_t3": {
@@ -1870,10 +853,7 @@
 			"class": "warrior",
 			"tier": 3,
 			"template": "plate_feet",
-			"look": [
-				"warrior_feet_t3_l",
-				"warrior_feet_t3_r"
-			],
+			"look": ["warrior_feet_t3_l", "warrior_feet_t3_r"],
 			"name": "ITEM_WARRIOR_FEET_T3"
 		},
 		"cleric_head_t3": {
@@ -1882,10 +862,7 @@
 			"class": "cleric",
 			"tier": 3,
 			"template": "cloth_head",
-			"look": [
-				"cleric_head_t3",
-				"cleric_head_t3_halo"
-			],
+			"look": ["cleric_head_t3", "cleric_head_t3_halo"],
 			"name": "ITEM_CLERIC_HEAD_T3"
 		},
 		"cleric_shoulders_t3": {
@@ -1894,12 +871,7 @@
 			"class": "cleric",
 			"tier": 3,
 			"template": "cloth_shoulders",
-			"look": [
-				"cleric_shoulders_t3_l",
-				"cleric_shoulders_t3_r",
-				"cleric_shoulders_t3_rays_l",
-				"cleric_shoulders_t3_rays_r"
-			],
+			"look": ["cleric_shoulders_t3_l", "cleric_shoulders_t3_r", "cleric_shoulders_t3_rays_l", "cleric_shoulders_t3_rays_r"],
 			"name": "ITEM_CLERIC_SHOULDERS_T3"
 		},
 		"cleric_chest_t3": {
@@ -1909,11 +881,7 @@
 			"tier": 3,
 			"template": "cloth_chest",
 			"aura": "#fff1b0",
-			"look": [
-				"cleric_chest_t3",
-				"cleric_chest_t3_skirt",
-				"cleric_chest_t3_cape"
-			],
+			"look": ["cleric_chest_t3", "cleric_chest_t3_skirt", "cleric_chest_t3_cape"],
 			"name": "ITEM_CLERIC_CHEST_T3"
 		},
 		"cleric_hands_t3": {
@@ -1922,12 +890,7 @@
 			"class": "cleric",
 			"tier": 3,
 			"template": "cloth_hands",
-			"look": [
-				"cleric_hands_t3_l",
-				"cleric_hands_t3_cuff_l",
-				"cleric_hands_t3_r",
-				"cleric_hands_t3_cuff_r"
-			],
+			"look": ["cleric_hands_t3_l", "cleric_hands_t3_cuff_l", "cleric_hands_t3_r", "cleric_hands_t3_cuff_r"],
 			"name": "ITEM_CLERIC_HANDS_T3"
 		},
 		"cleric_legs_t3": {
@@ -1936,10 +899,7 @@
 			"class": "cleric",
 			"tier": 3,
 			"template": "cloth_legs",
-			"look": [
-				"cleric_legs_t3_l",
-				"cleric_legs_t3_r"
-			],
+			"look": ["cleric_legs_t3_l", "cleric_legs_t3_r"],
 			"name": "ITEM_CLERIC_LEGS_T3"
 		},
 		"cleric_feet_t3": {
@@ -1948,10 +908,7 @@
 			"class": "cleric",
 			"tier": 3,
 			"template": "cloth_feet",
-			"look": [
-				"cleric_feet_t3_l",
-				"cleric_feet_t3_r"
-			],
+			"look": ["cleric_feet_t3_l", "cleric_feet_t3_r"],
 			"name": "ITEM_CLERIC_FEET_T3"
 		},
 		"mage_head_t3": {
@@ -1960,10 +917,7 @@
 			"class": "mage",
 			"tier": 3,
 			"template": "cloth_head",
-			"look": [
-				"mage_head_t3",
-				"mage_head_t3_runes"
-			],
+			"look": ["mage_head_t3", "mage_head_t3_runes"],
 			"name": "ITEM_MAGE_HEAD_T3"
 		},
 		"mage_shoulders_t3": {
@@ -1972,12 +926,7 @@
 			"class": "mage",
 			"tier": 3,
 			"template": "cloth_shoulders",
-			"look": [
-				"mage_shoulders_t3_l",
-				"mage_shoulders_t3_r",
-				"mage_shoulders_t3_shards_l",
-				"mage_shoulders_t3_shards_r"
-			],
+			"look": ["mage_shoulders_t3_l", "mage_shoulders_t3_r", "mage_shoulders_t3_shards_l", "mage_shoulders_t3_shards_r"],
 			"name": "ITEM_MAGE_SHOULDERS_T3"
 		},
 		"mage_chest_t3": {
@@ -2004,12 +953,7 @@
 			"class": "mage",
 			"tier": 3,
 			"template": "cloth_hands",
-			"look": [
-				"mage_hands_t3_l",
-				"mage_hands_t3_cuff_l",
-				"mage_hands_t3_r",
-				"mage_hands_t3_cuff_r"
-			],
+			"look": ["mage_hands_t3_l", "mage_hands_t3_cuff_l", "mage_hands_t3_r", "mage_hands_t3_cuff_r"],
 			"name": "ITEM_MAGE_HANDS_T3"
 		},
 		"mage_legs_t3": {
@@ -2018,10 +962,7 @@
 			"class": "mage",
 			"tier": 3,
 			"template": "cloth_legs",
-			"look": [
-				"mage_legs_t3_l",
-				"mage_legs_t3_r"
-			],
+			"look": ["mage_legs_t3_l", "mage_legs_t3_r"],
 			"name": "ITEM_MAGE_LEGS_T3"
 		},
 		"mage_feet_t3": {
@@ -2030,10 +971,7 @@
 			"class": "mage",
 			"tier": 3,
 			"template": "cloth_feet",
-			"look": [
-				"mage_feet_t3_l",
-				"mage_feet_t3_r"
-			],
+			"look": ["mage_feet_t3_l", "mage_feet_t3_r"],
 			"name": "ITEM_MAGE_FEET_T3"
 		},
 		"archer_head_t3": {
@@ -2042,10 +980,7 @@
 			"class": "archer",
 			"tier": 3,
 			"template": "mail_head",
-			"look": [
-				"archer_head_t3",
-				"archer_head_t3_leaves"
-			],
+			"look": ["archer_head_t3", "archer_head_t3_leaves"],
 			"name": "ITEM_ARCHER_HEAD_T3"
 		},
 		"archer_shoulders_t3": {
@@ -2054,10 +989,7 @@
 			"class": "archer",
 			"tier": 3,
 			"template": "mail_shoulders",
-			"look": [
-				"archer_shoulders_t3_l",
-				"archer_shoulders_t3_r"
-			],
+			"look": ["archer_shoulders_t3_l", "archer_shoulders_t3_r"],
 			"name": "ITEM_ARCHER_SHOULDERS_T3"
 		},
 		"archer_chest_t3": {
@@ -2067,11 +999,7 @@
 			"tier": 3,
 			"template": "mail_chest",
 			"aura": "#6dffb0",
-			"look": [
-				"archer_chest_t3",
-				"archer_chest_t3_skirt",
-				"archer_chest_t3_cape"
-			],
+			"look": ["archer_chest_t3", "archer_chest_t3_skirt", "archer_chest_t3_cape"],
 			"name": "ITEM_ARCHER_CHEST_T3"
 		},
 		"archer_hands_t3": {
@@ -2080,12 +1008,7 @@
 			"class": "archer",
 			"tier": 3,
 			"template": "mail_hands",
-			"look": [
-				"archer_hands_t3_l",
-				"archer_hands_t3_cuff_l",
-				"archer_hands_t3_r",
-				"archer_hands_t3_cuff_r"
-			],
+			"look": ["archer_hands_t3_l", "archer_hands_t3_cuff_l", "archer_hands_t3_r", "archer_hands_t3_cuff_r"],
 			"name": "ITEM_ARCHER_HANDS_T3"
 		},
 		"archer_legs_t3": {
@@ -2094,10 +1017,7 @@
 			"class": "archer",
 			"tier": 3,
 			"template": "mail_legs",
-			"look": [
-				"archer_legs_t3_l",
-				"archer_legs_t3_r"
-			],
+			"look": ["archer_legs_t3_l", "archer_legs_t3_r"],
 			"name": "ITEM_ARCHER_LEGS_T3"
 		},
 		"archer_feet_t3": {
@@ -2106,10 +1026,7 @@
 			"class": "archer",
 			"tier": 3,
 			"template": "mail_feet",
-			"look": [
-				"archer_feet_t3_l",
-				"archer_feet_t3_r"
-			],
+			"look": ["archer_feet_t3_l", "archer_feet_t3_r"],
 			"name": "ITEM_ARCHER_FEET_T3"
 		},
 		"assassin_head_t3": {
@@ -2118,9 +1035,7 @@
 			"class": "assassin",
 			"tier": 3,
 			"template": "leather_head",
-			"look": [
-				"assassin_head_t3"
-			],
+			"look": ["assassin_head_t3"],
 			"name": "ITEM_ASSASSIN_HEAD_T3"
 		},
 		"assassin_shoulders_t3": {
@@ -2129,10 +1044,7 @@
 			"class": "assassin",
 			"tier": 3,
 			"template": "leather_shoulders",
-			"look": [
-				"assassin_shoulders_t3_l",
-				"assassin_shoulders_t3_r"
-			],
+			"look": ["assassin_shoulders_t3_l", "assassin_shoulders_t3_r"],
 			"name": "ITEM_ASSASSIN_SHOULDERS_T3"
 		},
 		"assassin_chest_t3": {
@@ -2142,11 +1054,7 @@
 			"tier": 3,
 			"template": "leather_chest",
 			"aura": "#ff3355",
-			"look": [
-				"assassin_chest_t3",
-				"assassin_chest_t3_skirt",
-				"assassin_chest_t3_cape"
-			],
+			"look": ["assassin_chest_t3", "assassin_chest_t3_skirt", "assassin_chest_t3_cape"],
 			"name": "ITEM_ASSASSIN_CHEST_T3"
 		},
 		"assassin_hands_t3": {
@@ -2155,12 +1063,7 @@
 			"class": "assassin",
 			"tier": 3,
 			"template": "leather_hands",
-			"look": [
-				"assassin_hands_t3_l",
-				"assassin_hands_t3_cuff_l",
-				"assassin_hands_t3_r",
-				"assassin_hands_t3_cuff_r"
-			],
+			"look": ["assassin_hands_t3_l", "assassin_hands_t3_cuff_l", "assassin_hands_t3_r", "assassin_hands_t3_cuff_r"],
 			"name": "ITEM_ASSASSIN_HANDS_T3"
 		},
 		"assassin_legs_t3": {
@@ -2169,10 +1072,7 @@
 			"class": "assassin",
 			"tier": 3,
 			"template": "leather_legs",
-			"look": [
-				"assassin_legs_t3_l",
-				"assassin_legs_t3_r"
-			],
+			"look": ["assassin_legs_t3_l", "assassin_legs_t3_r"],
 			"name": "ITEM_ASSASSIN_LEGS_T3"
 		},
 		"assassin_feet_t3": {
@@ -2181,10 +1081,7 @@
 			"class": "assassin",
 			"tier": 3,
 			"template": "leather_feet",
-			"look": [
-				"assassin_feet_t3_l",
-				"assassin_feet_t3_r"
-			],
+			"look": ["assassin_feet_t3_l", "assassin_feet_t3_r"],
 			"name": "ITEM_ASSASSIN_FEET_T3"
 		},
 		"greatsword_t3": {
@@ -2192,225 +1089,56 @@
 			"kind": "greatsword",
 			"tier": 3,
 			"template": "greatsword",
-			"look": [
-				"w_greatsword_t3"
-			],
+			"look": ["w_greatsword_t3"],
 			"name": "ITEM_GREATSWORD_T3"
 		},
-		"great_axe_t3": {
-			"slot": "main",
-			"kind": "great_axe",
-			"tier": 3,
-			"template": "great_axe",
-			"look": [
-				"w_great_axe_t3"
-			],
-			"name": "ITEM_GREAT_AXE_T3"
-		},
-		"warhammer_t3": {
-			"slot": "main",
-			"kind": "warhammer",
-			"tier": 3,
-			"template": "warhammer",
-			"look": [
-				"w_warhammer_t3"
-			],
-			"name": "ITEM_WARHAMMER_T3"
-		},
-		"halberd_t3": {
-			"slot": "main",
-			"kind": "halberd",
-			"tier": 3,
-			"template": "halberd",
-			"look": [
-				"w_halberd_t3"
-			],
-			"name": "ITEM_HALBERD_T3"
-		},
-		"staff_t3": {
-			"slot": "main",
-			"kind": "staff",
-			"tier": 3,
-			"template": "staff",
-			"look": [
-				"w_staff_t3"
-			],
-			"name": "ITEM_STAFF_T3"
-		},
-		"bow_t3": {
-			"slot": "main",
-			"kind": "bow",
-			"tier": 3,
-			"template": "bow",
-			"look": [
-				"w_bow_t3"
-			],
-			"name": "ITEM_BOW_T3"
-		},
-		"crossbow_t3": {
-			"slot": "main",
-			"kind": "crossbow",
-			"tier": 3,
-			"template": "crossbow",
-			"look": [
-				"w_crossbow_t3"
-			],
-			"name": "ITEM_CROSSBOW_T3"
-		},
-		"sword_t3": {
-			"slot": "main",
-			"kind": "sword",
-			"tier": 3,
-			"template": "sword",
-			"look": [
-				"w_sword_t3"
-			],
-			"name": "ITEM_SWORD_T3"
-		},
-		"axe_t3": {
-			"slot": "main",
-			"kind": "axe",
-			"tier": 3,
-			"template": "axe",
-			"look": [
-				"w_axe_t3"
-			],
-			"name": "ITEM_AXE_T3"
-		},
-		"mace_t3": {
-			"slot": "main",
-			"kind": "mace",
-			"tier": 3,
-			"template": "mace",
-			"look": [
-				"w_mace_t3"
-			],
-			"name": "ITEM_MACE_T3"
-		},
+		"great_axe_t3": {"slot": "main", "kind": "great_axe", "tier": 3, "template": "great_axe", "look": ["w_great_axe_t3"], "name": "ITEM_GREAT_AXE_T3"},
+		"warhammer_t3": {"slot": "main", "kind": "warhammer", "tier": 3, "template": "warhammer", "look": ["w_warhammer_t3"], "name": "ITEM_WARHAMMER_T3"},
+		"halberd_t3": {"slot": "main", "kind": "halberd", "tier": 3, "template": "halberd", "look": ["w_halberd_t3"], "name": "ITEM_HALBERD_T3"},
+		"staff_t3": {"slot": "main", "kind": "staff", "tier": 3, "template": "staff", "look": ["w_staff_t3"], "name": "ITEM_STAFF_T3"},
+		"bow_t3": {"slot": "main", "kind": "bow", "tier": 3, "template": "bow", "look": ["w_bow_t3"], "name": "ITEM_BOW_T3"},
+		"crossbow_t3": {"slot": "main", "kind": "crossbow", "tier": 3, "template": "crossbow", "look": ["w_crossbow_t3"], "name": "ITEM_CROSSBOW_T3"},
+		"sword_t3": {"slot": "main", "kind": "sword", "tier": 3, "template": "sword", "look": ["w_sword_t3"], "name": "ITEM_SWORD_T3"},
+		"axe_t3": {"slot": "main", "kind": "axe", "tier": 3, "template": "axe", "look": ["w_axe_t3"], "name": "ITEM_AXE_T3"},
+		"mace_t3": {"slot": "main", "kind": "mace", "tier": 3, "template": "mace", "look": ["w_mace_t3"], "name": "ITEM_MACE_T3"},
 		"short_sword_t3": {
 			"slot": "main",
 			"kind": "short_sword",
 			"tier": 3,
 			"template": "short_sword",
-			"look": [
-				"w_short_sword_t3"
-			],
+			"look": ["w_short_sword_t3"],
 			"name": "ITEM_SHORT_SWORD_T3",
-			"look_offhand": [
-				"w_short_sword_t3_left"
-			]
+			"look_offhand": ["w_short_sword_t3_left"]
 		},
 		"dagger_t3": {
 			"slot": "main",
 			"kind": "dagger",
 			"tier": 3,
 			"template": "dagger",
-			"look": [
-				"w_dagger_t3"
-			],
+			"look": ["w_dagger_t3"],
 			"name": "ITEM_DAGGER_T3",
-			"look_offhand": [
-				"w_dagger_t3_left"
-			]
+			"look_offhand": ["w_dagger_t3_left"]
 		},
-		"wand_t3": {
-			"slot": "main",
-			"kind": "wand",
-			"tier": 3,
-			"template": "wand",
-			"look": [
-				"w_wand_t3"
-			],
-			"name": "ITEM_WAND_T3"
-		},
-		"scepter_t3": {
-			"slot": "main",
-			"kind": "scepter",
-			"tier": 3,
-			"template": "scepter",
-			"look": [
-				"w_scepter_t3"
-			],
-			"name": "ITEM_SCEPTER_T3"
-		},
-		"shield_t3": {
-			"slot": "offhand",
-			"kind": "shield",
-			"tier": 3,
-			"template": "shield",
-			"look": [
-				"w_shield_t3"
-			],
-			"name": "ITEM_SHIELD_T3"
-		},
-		"orb_t3": {
-			"slot": "offhand",
-			"kind": "orb",
-			"tier": 3,
-			"template": "orb",
-			"look": [
-				"w_orb_t3"
-			],
-			"name": "ITEM_ORB_T3"
-		},
-		"tome_t3": {
-			"slot": "offhand",
-			"kind": "tome",
-			"tier": 3,
-			"template": "tome",
-			"look": [
-				"w_tome_t3"
-			],
-			"name": "ITEM_TOME_T3"
-		},
-		"neck_t3": {
-			"slot": "neck",
-			"kind": "jewelry",
-			"tier": 3,
-			"template": "neck",
-			"look": [],
-			"model": [
-				"jewel_neck_t3"
-			],
-			"name": "ITEM_NECK_T3"
-		},
-		"ring_t3": {
-			"slot": "ring",
-			"kind": "jewelry",
-			"tier": 3,
-			"template": "ring",
-			"look": [],
-			"model": [
-				"jewel_ring_t3"
-			],
-			"name": "ITEM_RING_T3"
-		},
+		"wand_t3": {"slot": "main", "kind": "wand", "tier": 3, "template": "wand", "look": ["w_wand_t3"], "name": "ITEM_WAND_T3"},
+		"scepter_t3": {"slot": "main", "kind": "scepter", "tier": 3, "template": "scepter", "look": ["w_scepter_t3"], "name": "ITEM_SCEPTER_T3"},
+		"shield_t3": {"slot": "offhand", "kind": "shield", "tier": 3, "template": "shield", "look": ["w_shield_t3"], "name": "ITEM_SHIELD_T3"},
+		"orb_t3": {"slot": "offhand", "kind": "orb", "tier": 3, "template": "orb", "look": ["w_orb_t3"], "name": "ITEM_ORB_T3"},
+		"tome_t3": {"slot": "offhand", "kind": "tome", "tier": 3, "template": "tome", "look": ["w_tome_t3"], "name": "ITEM_TOME_T3"},
+		"neck_t3": {"slot": "neck", "kind": "jewelry", "tier": 3, "template": "neck", "look": [], "model": ["jewel_neck_t3"], "name": "ITEM_NECK_T3"},
+		"ring_t3": {"slot": "ring", "kind": "jewelry", "tier": 3, "template": "ring", "look": [], "model": ["jewel_ring_t3"], "name": "ITEM_RING_T3"},
 		"unique_acolyte": {
 			"slot": "main",
 			"kind": "scepter",
 			"unique_of": "cult_acolyte",
 			"stats": [
-				{
-					"stat": "spell_power_add",
-					"base": 8,
-					"per_level": 2.4
-				},
-				{
-					"stat": "spirit",
-					"per_level": 0.5
-				},
-				{
-					"stat": "healing_done_pct",
-					"base": 0.04,
-					"per_level": 0.0006
-				}
+				{"stat": "spell_power_add", "base": 8, "per_level": 2.4},
+				{"stat": "spirit", "per_level": 0.5},
+				{"stat": "healing_done_pct", "base": 0.04, "per_level": 0.0006}
 			],
 			"tier": 0,
 			"min_level": 1,
 			"max_level": 9999,
-			"look": [
-				"w_unique_acolyte"
-			],
+			"look": ["w_unique_acolyte"],
 			"name": "ITEM_UNIQUE_ACOLYTE"
 		},
 		"unique_vaelthar": {
@@ -2418,27 +1146,14 @@
 			"kind": "staff",
 			"unique_of": "vaelthar",
 			"stats": [
-				{
-					"stat": "spell_power_add",
-					"base": 8,
-					"per_level": 2.8
-				},
-				{
-					"stat": "intellect",
-					"per_level": 0.55
-				},
-				{
-					"stat": "crit_add",
-					"base": 0.01,
-					"per_level": 0.0006
-				}
+				{"stat": "spell_power_add", "base": 8, "per_level": 2.8},
+				{"stat": "intellect", "per_level": 0.55},
+				{"stat": "crit_add", "base": 0.01, "per_level": 0.0006}
 			],
 			"tier": 0,
 			"min_level": 1,
 			"max_level": 9999,
-			"look": [
-				"w_unique_vaelthar"
-			],
+			"look": ["w_unique_vaelthar"],
 			"name": "ITEM_UNIQUE_VAELTHAR"
 		},
 		"unique_nhazar": {
@@ -2446,27 +1161,14 @@
 			"kind": "greatsword",
 			"unique_of": "nhazar",
 			"stats": [
-				{
-					"stat": "attack_power_add",
-					"base": 8,
-					"per_level": 2.6
-				},
-				{
-					"stat": "strength",
-					"per_level": 0.5
-				},
-				{
-					"stat": "lifesteal_add",
-					"base": 0.01,
-					"per_level": 0.0004
-				}
+				{"stat": "attack_power_add", "base": 8, "per_level": 2.6},
+				{"stat": "strength", "per_level": 0.5},
+				{"stat": "lifesteal_add", "base": 0.01, "per_level": 0.0004}
 			],
 			"tier": 0,
 			"min_level": 1,
 			"max_level": 9999,
-			"look": [
-				"w_unique_nhazar"
-			],
+			"look": ["w_unique_nhazar"],
 			"name": "ITEM_UNIQUE_NHAZAR"
 		},
 		"q_pala_horno": {

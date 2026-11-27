@@ -5,7 +5,7 @@ RPG de acción 3D vóxel con cámara isométrica para jugar online con hasta 4 a
 ## Documentación: bóveda de Obsidian en `docs/`
 - **El GDD vive en `docs/GDD/`**, una nota por apartado (`00 Índice del GDD.md`) y una por clase (`docs/GDD/Clases/`). Es un documento vivo: actualiza el apartado afectado, su estado ([Diseñado], [En curso], [Implementado], [Abierto]) y `docs/GDD/Registro de cambios.md` cuando algo cambie o se implemente.
 - **Decisiones:** cada decisión importante va en `docs/Decisiones/` (plantilla `docs/Plantillas/Decisión.md`) y se enlaza en `Índice de decisiones.md`. Lo pendiente está en `docs/GDD/15 Decisiones abiertas.md`.
-- **Planes:** la spec y el plan de cada plan van en `docs/Planes/` (plantilla `Spec de plan.md`); actualiza la tabla de `docs/Planes/Planes.md`.
+- **Planes:** la spec y el plan del plan en curso van en `docs/Planes/` (plantilla `Spec de plan.md`); actualiza la tabla de `docs/Planes/Planes.md`. Al terminar un plan, sus notas pasan a `docs/Archivo/Planes/`. No leas el archivo salvo que haga falta.
 - **Sesiones:** al cerrar una sesión de trabajo, añade un resumen en `docs/Sesiones/` (plantilla `Sesión.md`).
 - **Formato Obsidian:** enlaces internos `[[Nombre de nota]]`, propiedades YAML al inicio (`tags`, `estado`, `actualizado`). No muevas ni renombres notas sin actualizar sus enlaces.
 
@@ -20,3 +20,8 @@ RPG de acción 3D vóxel con cámara isométrica para jugar online con hasta 4 a
 8. **Idioma:** textos del juego y documentación en español (textos del juego en archivos de datos); código y commits en inglés.
 9. **Contenido como datos** en `data/`; añadir contenido no debe requerir tocar las reglas en `sim/`.
 10. **Repositorio público** en GitHub; commits con el email personal del usuario.
+
+## Flujo de trabajo (ahorrar tiempo y tokens)
+- **Tests en tres niveles:** mientras se trabaja, solo los scripts de lo que se toca (`./run_tests.sh res://tests/.../test_x.gd`, segundos); antes de cada commit, la suite rápida (`./run_tests.sh`, ~2 min: `tests/unit` y `tests/integration`); la completa (`./run_tests.sh --all`, ~5,5 min, añade `tests/slow`) solo antes de publicar y en CI, en segundo plano. Los tests de más de ~5 s van en `tests/slow/`.
+- **JSON de datos compactos:** un objeto por línea si cabe (`node tools/json_format.mjs <archivos>`); los generadores escriben así con `formatJson`.
+- **Leer poco:** buscar con grep y leer solo el tramo necesario de los archivos grandes (zonas, tablas de piezas, `make_world.mjs`); no releer notas del GDD enteras para añadir una línea.

@@ -2,19 +2,10 @@
 	"id": "lord_maren",
 	"name": "NPC_LORD_MAREN",
 	"role": "villager",
-	"lines": {
-		"greet": "NPC_LORD_MAREN_GREET"
-	},
+	"lines": {"greet": "NPC_LORD_MAREN_GREET"},
 	"look": {
 		"class": "villager",
-		"appearance": {
-			"body": "male",
-			"skin": "skin_1",
-			"eyes": "dark",
-			"hair_style": "hair_ponytail",
-			"hair_color": "black",
-			"beard": "goatee"
-		},
+		"appearance": {"body": "male", "skin": "skin_1", "eyes": "dark", "hair_style": "hair_ponytail", "hair_color": "black", "beard": "goatee"},
 		"primary": "#4a2a3a",
 		"secondary": "#a08a5a",
 		"trousers": "#1e1a1e",

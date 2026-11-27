@@ -3,185 +3,33 @@
 	"skippable": true,
 	"stage": "here",
 	"actors": {
-		"brann": {
-			"npc": "brann",
-			"at": [
-				48,
-				48
-			],
-			"facing": 0
-		},
-		"mira": {
-			"npc": "mira",
-			"at": [
-				47,
-				51
-			],
-			"facing": 162
-		},
-		"yo": {
-			"player": true,
-			"at": [
-				49,
-				51
-			],
-			"facing": 198
-		}
+		"brann": {"npc": "brann", "at": [48, 48], "facing": 0},
+		"mira": {"npc": "mira", "at": [47, 51], "facing": 162},
+		"yo": {"player": true, "at": [49, 51], "facing": 198}
 	},
 	"tracks": [
 		[
-			{
-				"camera": {
-					"at": [
-						44,
-						3.4,
-						56
-					],
-					"look": [
-						48.5,
-						1.2,
-						49.5
-					],
-					"fov": 44
-				},
-				"time": 0
-			},
-			{
-				"camera": {
-					"at": [
-						45.5,
-						2.8,
-						54
-					],
-					"look": [
-						48.5,
-						1.4,
-						49.5
-					]
-				},
-				"time": 16,
-				"ease": "in_out"
-			},
-			{
-				"camera": {
-					"at": [
-						47,
-						2.2,
-						52.5
-					],
-					"look": [
-						48.5,
-						1.5,
-						48.5
-					]
-				},
-				"time": 12,
-				"ease": "in_out"
-			}
+			{"camera": {"at": [44, 3.4, 56], "look": [48.5, 1.2, 49.5], "fov": 44}, "time": 0},
+			{"camera": {"at": [45.5, 2.8, 54], "look": [48.5, 1.4, 49.5]}, "time": 16, "ease": "in_out"},
+			{"camera": {"at": [47, 2.2, 52.5], "look": [48.5, 1.5, 48.5]}, "time": 12, "ease": "in_out"}
 		],
 		[
-			{
-				"fade": "in",
-				"time": 1
-			},
-			{
-				"line": [
-					"brann",
-					"SCN_P_FIESTA_1"
-				],
-				"time": 4.2
-			},
-			{
-				"line": [
-					"mira",
-					"SCN_P_FIESTA_2"
-				],
-				"time": 2.6
-			},
-			{
-				"line": [
-					"brann",
-					"SCN_P_FIESTA_3"
-				],
-				"time": 3.6
-			},
-			{
-				"line": [
-					"brann",
-					"SCN_P_FIESTA_4"
-				],
-				"time": 3.4
-			},
-			{
-				"line": [
-					"mira",
-					"SCN_P_FIESTA_5"
-				],
-				"time": 2
-			},
-			{
-				"wait": "",
-				"time": 1.2
-			},
-			{
-				"pose": [
-					"brann",
-					"point"
-				],
-				"time": 0.1
-			},
-			{
-				"line": [
-					"brann",
-					"SCN_P_FIESTA_6"
-				],
-				"time": 2.2
-			},
-			{
-				"line": [
-					"player",
-					"SCN_P_FIESTA_7"
-				],
-				"time": 2.2
-			},
-			{
-				"line": [
-					"brann",
-					"SCN_P_FIESTA_8"
-				],
-				"time": 2.8
-			},
-			{
-				"line": [
-					"brann",
-					"SCN_P_FIESTA_9"
-				],
-				"time": 2.4
-			},
-			{
-				"shake": "",
-				"time": 0.6
-			},
-			{
-				"line": [
-					"",
-					"SCN_P_FIESTA_10"
-				],
-				"time": 3
-			},
-			{
-				"fade": "out",
-				"time": 1.2
-			}
+			{"fade": "in", "time": 1},
+			{"line": ["brann", "SCN_P_FIESTA_1"], "time": 4.2},
+			{"line": ["mira", "SCN_P_FIESTA_2"], "time": 2.6},
+			{"line": ["brann", "SCN_P_FIESTA_3"], "time": 3.6},
+			{"line": ["brann", "SCN_P_FIESTA_4"], "time": 3.4},
+			{"line": ["mira", "SCN_P_FIESTA_5"], "time": 2},
+			{"wait": "", "time": 1.2},
+			{"pose": ["brann", "point"], "time": 0.1},
+			{"line": ["brann", "SCN_P_FIESTA_6"], "time": 2.2},
+			{"line": ["player", "SCN_P_FIESTA_7"], "time": 2.2},
+			{"line": ["brann", "SCN_P_FIESTA_8"], "time": 2.8},
+			{"line": ["brann", "SCN_P_FIESTA_9"], "time": 2.4},
+			{"shake": "", "time": 0.6},
+			{"line": ["", "SCN_P_FIESTA_10"], "time": 3},
+			{"fade": "out", "time": 1.2}
 		],
-		[
-			{
-				"wait": "",
-				"time": 30
-			},
-			{
-				"ambience": "noche_fuego"
-			}
-		]
+		[{"wait": "", "time": 30}, {"ambience": "noche_fuego"}]
 	]
 }

@@ -3,167 +3,29 @@
 	"skippable": true,
 	"stage": "here",
 	"actors": {
-		"yo": {
-			"player": true,
-			"at": [
-				80,
-				33
-			],
-			"facing": 0
-		},
-		"caravanero": {
-			"npc": "caravanero",
-			"at": [
-				74,
-				33
-			],
-			"facing": 90
-		},
-		"jefe": {
-			"monster": "bandit_chief",
-			"at": [
-				80,
-				22
-			],
-			"facing": 0
-		},
-		"b1": {
-			"monster": "bandit",
-			"at": [
-				77,
-				22
-			],
-			"facing": 0
-		},
-		"b2": {
-			"monster": "bandit",
-			"at": [
-				83,
-				22
-			],
-			"facing": 0
-		},
-		"arquero": {
-			"monster": "bandit_archer",
-			"at": [
-				85,
-				19
-			],
-			"facing": 0
-		}
+		"yo": {"player": true, "at": [80, 33], "facing": 0},
+		"caravanero": {"npc": "caravanero", "at": [74, 33], "facing": 90},
+		"jefe": {"monster": "bandit_chief", "at": [80, 22], "facing": 0},
+		"b1": {"monster": "bandit", "at": [77, 22], "facing": 0},
+		"b2": {"monster": "bandit", "at": [83, 22], "facing": 0},
+		"arquero": {"monster": "bandit_archer", "at": [85, 19], "facing": 0}
 	},
 	"tracks": [
 		[
-			{
-				"camera": {
-					"at": [
-						72,
-						5,
-						40
-					],
-					"look": [
-						80,
-						1,
-						28
-					],
-					"fov": 46
-				},
-				"time": 0
-			},
-			{
-				"camera": {
-					"at": [
-						74,
-						3.5,
-						37
-					],
-					"look": [
-						80,
-						1.4,
-						27
-					]
-				},
-				"time": 14,
-				"ease": "in_out"
-			}
+			{"camera": {"at": [72, 5, 40], "look": [80, 1, 28], "fov": 46}, "time": 0},
+			{"camera": {"at": [74, 3.5, 37], "look": [80, 1.4, 27]}, "time": 14, "ease": "in_out"}
 		],
 		[
-			{
-				"fade": "in",
-				"time": 0.8
-			},
-			{
-				"wait": "",
-				"time": 2.6
-			},
-			{
-				"line": [
-					"bandit_chief",
-					"SCN_P_EMBOSCADA_1"
-				],
-				"time": 3.4
-			},
-			{
-				"line": [
-					"caravanero",
-					"SCN_P_EMBOSCADA_2"
-				],
-				"time": 2.8
-			},
-			{
-				"line": [
-					"player",
-					"SCN_P_EMBOSCADA_3"
-				],
-				"time": 3.2
-			},
-			{
-				"line": [
-					"bandit_chief",
-					"SCN_P_EMBOSCADA_4"
-				],
-				"time": 2.8
-			},
-			{
-				"fade": "out",
-				"time": 0.8
-			}
+			{"fade": "in", "time": 0.8},
+			{"wait": "", "time": 2.6},
+			{"line": ["bandit_chief", "SCN_P_EMBOSCADA_1"], "time": 3.4},
+			{"line": ["caravanero", "SCN_P_EMBOSCADA_2"], "time": 2.8},
+			{"line": ["player", "SCN_P_EMBOSCADA_3"], "time": 3.2},
+			{"line": ["bandit_chief", "SCN_P_EMBOSCADA_4"], "time": 2.8},
+			{"fade": "out", "time": 0.8}
 		],
-		[
-			{
-				"move": "jefe",
-				"to": [
-					[
-						80,
-						27
-					]
-				],
-				"speed": 2.5
-			}
-		],
-		[
-			{
-				"move": "b1",
-				"to": [
-					[
-						77,
-						27
-					]
-				],
-				"speed": 2.5
-			}
-		],
-		[
-			{
-				"move": "b2",
-				"to": [
-					[
-						83,
-						27
-					]
-				],
-				"speed": 2.5
-			}
-		]
+		[{"move": "jefe", "to": [[80, 27]], "speed": 2.5}],
+		[{"move": "b1", "to": [[77, 27]], "speed": 2.5}],
+		[{"move": "b2", "to": [[83, 27]], "speed": 2.5}]
 	]
 }

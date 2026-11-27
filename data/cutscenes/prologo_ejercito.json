@@ -3,151 +3,27 @@
 	"skippable": true,
 	"stage": "here",
 	"actors": {
-		"verrin": {
-			"npc": "verrin",
-			"at": [
-				88,
-				48
-			],
-			"facing": 270
-		},
-		"s1": {
-			"npc": "soldado_reino",
-			"at": [
-				90,
-				47
-			],
-			"facing": 270
-		},
-		"s2": {
-			"npc": "soldado_reino",
-			"at": [
-				90,
-				49
-			],
-			"facing": 270
-		},
-		"yo": {
-			"player": true,
-			"at": [
-				66,
-				48
-			],
-			"facing": 90
-		}
+		"verrin": {"npc": "verrin", "at": [88, 48], "facing": 270},
+		"s1": {"npc": "soldado_reino", "at": [90, 47], "facing": 270},
+		"s2": {"npc": "soldado_reino", "at": [90, 49], "facing": 270},
+		"yo": {"player": true, "at": [66, 48], "facing": 90}
 	},
 	"tracks": [
 		[
-			{
-				"camera": {
-					"at": [
-						58,
-						4,
-						53
-					],
-					"look": [
-						76,
-						1,
-						48
-					],
-					"fov": 46
-				},
-				"time": 0
-			},
-			{
-				"camera": {
-					"at": [
-						62,
-						3,
-						49.5
-					],
-					"look": [
-						71,
-						1.4,
-						48
-					]
-				},
-				"time": 14,
-				"ease": "in_out"
-			}
+			{"camera": {"at": [58, 4, 53], "look": [76, 1, 48], "fov": 46}, "time": 0},
+			{"camera": {"at": [62, 3, 49.5], "look": [71, 1.4, 48]}, "time": 14, "ease": "in_out"}
 		],
 		[
-			{
-				"fade": "in",
-				"time": 1
-			},
-			{
-				"wait": "",
-				"time": 4
-			},
-			{
-				"line": [
-					"verrin",
-					"SCN_P_EJERCITO_1"
-				],
-				"time": 2.6
-			},
-			{
-				"line": [
-					"verrin",
-					"SCN_P_EJERCITO_2"
-				],
-				"time": 3.6
-			},
-			{
-				"line": [
-					"player",
-					"SCN_P_EJERCITO_3"
-				],
-				"time": 2.2
-			},
-			{
-				"line": [
-					"verrin",
-					"SCN_P_EJERCITO_4"
-				],
-				"time": 3.6
-			},
-			{
-				"fade": "out",
-				"time": 1
-			}
+			{"fade": "in", "time": 1},
+			{"wait": "", "time": 4},
+			{"line": ["verrin", "SCN_P_EJERCITO_1"], "time": 2.6},
+			{"line": ["verrin", "SCN_P_EJERCITO_2"], "time": 3.6},
+			{"line": ["player", "SCN_P_EJERCITO_3"], "time": 2.2},
+			{"line": ["verrin", "SCN_P_EJERCITO_4"], "time": 3.6},
+			{"fade": "out", "time": 1}
 		],
-		[
-			{
-				"move": "verrin",
-				"to": [
-					[
-						70,
-						48
-					]
-				],
-				"speed": 3
-			}
-		],
-		[
-			{
-				"move": "s1",
-				"to": [
-					[
-						74,
-						47
-					]
-				],
-				"speed": 3
-			}
-		],
-		[
-			{
-				"move": "s2",
-				"to": [
-					[
-						74,
-						49
-					]
-				],
-				"speed": 3
-			}
-		]
+		[{"move": "verrin", "to": [[70, 48]], "speed": 3}],
+		[{"move": "s1", "to": [[74, 47]], "speed": 3}],
+		[{"move": "s2", "to": [[74, 49]], "speed": 3}]
 	]
 }

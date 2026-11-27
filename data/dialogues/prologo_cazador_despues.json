@@ -1,17 +1,4 @@
 {
 	"id": "prologo_cazador_despues",
-	"nodes": {
-		"start": {
-			"lines": [
-				[
-					"cazador",
-					"DLG_P_CAZADOR_DESPUES_1"
-				],
-				[
-					"cazador",
-					"DLG_P_CAZADOR_DESPUES_2"
-				]
-			]
-		}
-	}
+	"nodes": {"start": {"lines": [["cazador", "DLG_P_CAZADOR_DESPUES_1"], ["cazador", "DLG_P_CAZADOR_DESPUES_2"]]}}
 }

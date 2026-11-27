@@ -2,19 +2,10 @@
 	"id": "oriel",
 	"name": "NPC_ORIEL",
 	"role": "villager",
-	"lines": {
-		"greet": "NPC_ORIEL_GREET"
-	},
+	"lines": {"greet": "NPC_ORIEL_GREET"},
 	"look": {
 		"class": "mage",
-		"appearance": {
-			"body": "female",
-			"skin": "skin_3",
-			"eyes": "blue",
-			"hair_style": "hair_long",
-			"hair_color": "ash_blond",
-			"beard": "none"
-		},
+		"appearance": {"body": "female", "skin": "skin_3", "eyes": "blue", "hair_style": "hair_long", "hair_color": "ash_blond", "beard": "none"},
 		"primary": "#3a4a6a",
 		"secondary": "#c9b48a",
 		"trousers": "#2a2630",

@@ -6,6 +6,7 @@
 // Each piece is drawn with its origin at the corner of its cell (0, 0): voxel x 0..19 is
 // cell 0. Godot axes (Y up). Trees stand on the centre of their cell.
 import fs from "node:fs";
+import { formatJson } from "../json_format.mjs";
 import { fileURLToPath } from "node:url";
 import { write, Shape, GLOW } from "./vox.mjs";
 import { ellipsoid, capsule, cylinder, roundBox, carve, noise3 } from "./sculpt.mjs";
@@ -998,6 +999,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     table[id] = { vox: `res://assets/world/${id}.vox`, scale: p.scale ?? 0.5, offset: p.shape.min(), footprint: p.footprint, ...(p.deck ? { deck: p.deck } : {}), ...(p.flat ? { flat: true } : {}),
       shadow: small ? "never" : "medium", range: DECOR.includes(id) ? 30 : (small ? 55 : 90) };
   }
-  fs.writeFileSync(jsonPath, JSON.stringify(table, null, "\t") + "\n");
+  fs.writeFileSync(jsonPath, formatJson(table));
   console.log(`wrote ${Object.keys(table).length} world pieces and ${jsonPath}`);
 }

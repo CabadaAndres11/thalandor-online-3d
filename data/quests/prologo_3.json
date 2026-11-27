@@ -6,148 +6,49 @@
 	"auto": true,
 	"giver": "",
 	"turn_in": "",
-	"requires": {
-		"quests": [
-			"prologo_2"
-		]
-	},
+	"requires": {"quests": ["prologo_2"]},
 	"steps": [
 		{
 			"text": "QUEST_P3_S1",
 			"objectives": [
-				{
-					"type": "interact",
-					"zone": "aldea",
-					"point": "herido_1",
-					"label": "QUEST_P3_O_HERIDO1"
-				},
-				{
-					"type": "interact",
-					"zone": "aldea",
-					"point": "herido_2",
-					"label": "QUEST_P3_O_HERIDO2"
-				},
-				{
-					"type": "interact",
-					"zone": "aldea",
-					"point": "escombros_1",
-					"label": "QUEST_P3_O_ESCOMBROS"
-				},
-				{
-					"type": "talk",
-					"npc": "panadero",
-					"dialogue": "prologo_panadero_despues"
-				},
-				{
-					"type": "talk",
-					"npc": "cazador",
-					"dialogue": "prologo_cazador_despues"
-				}
+				{"type": "interact", "zone": "aldea", "point": "herido_1", "label": "QUEST_P3_O_HERIDO1"},
+				{"type": "interact", "zone": "aldea", "point": "herido_2", "label": "QUEST_P3_O_HERIDO2"},
+				{"type": "interact", "zone": "aldea", "point": "escombros_1", "label": "QUEST_P3_O_ESCOMBROS"},
+				{"type": "talk", "npc": "panadero", "dialogue": "prologo_panadero_despues"},
+				{"type": "talk", "npc": "cazador", "dialogue": "prologo_cazador_despues"}
 			],
-			"on_done": {
-				"scene": "prologo_ejercito"
-			}
+			"on_done": {"scene": "prologo_ejercito"}
 		},
 		{
 			"text": "QUEST_P3_S2",
-			"objectives": [
-				{
-					"type": "scene",
-					"scene": "prologo_ejercito"
-				},
-				{
-					"type": "talk",
-					"npc": "verrin",
-					"dialogue": "prologo_verrin_explica"
-				}
-			]
+			"objectives": [{"type": "scene", "scene": "prologo_ejercito"}, {"type": "talk", "npc": "verrin", "dialogue": "prologo_verrin_explica"}]
 		},
 		{
 			"text": "QUEST_P3_S3",
 			"objectives": [
-				{
-					"type": "reach",
-					"zone": "bosque",
-					"point": "campamento",
-					"label": "QUEST_P3_O_CAMPAMENTO"
-				},
-				{
-					"type": "interact",
-					"zone": "bosque",
-					"point": "mascara",
-					"label": "QUEST_P3_O_MASCARA"
-				}
+				{"type": "reach", "zone": "bosque", "point": "campamento", "label": "QUEST_P3_O_CAMPAMENTO"},
+				{"type": "interact", "zone": "bosque", "point": "mascara", "label": "QUEST_P3_O_MASCARA"}
 			],
-			"on_done": {
-				"give": [
-					[
-						"q_mascara_culto",
-						1
-					]
-				]
-			}
+			"on_done": {"give": [["q_mascara_culto", 1]]}
 		},
 		{
 			"text": "QUEST_P3_S4",
 			"objectives": [
-				{
-					"type": "interact",
-					"zone": "bosque",
-					"point": "huellas_carro",
-					"label": "QUEST_P3_O_HUELLAS"
-				},
-				{
-					"type": "reach",
-					"zone": "bosque",
-					"point": "rio",
-					"label": "QUEST_P3_O_RIO"
-				}
+				{"type": "interact", "zone": "bosque", "point": "huellas_carro", "label": "QUEST_P3_O_HUELLAS"},
+				{"type": "reach", "zone": "bosque", "point": "rio", "label": "QUEST_P3_O_RIO"}
 			],
-			"on_done": {
-				"scene": "prologo_rio"
-			}
+			"on_done": {"scene": "prologo_rio"}
 		},
 		{
 			"text": "QUEST_P3_S5",
-			"objectives": [
-				{
-					"type": "scene",
-					"scene": "prologo_rio"
-				},
-				{
-					"type": "talk",
-					"npc": "anciana_cantora",
-					"dialogue": "prologo_anciana_nombre"
-				}
-			],
-			"on_done": {
-				"scene": "prologo_nombre",
-				"flags": [
-					"apodo"
-				]
-			}
+			"objectives": [{"type": "scene", "scene": "prologo_rio"}, {"type": "talk", "npc": "anciana_cantora", "dialogue": "prologo_anciana_nombre"}],
+			"on_done": {"scene": "prologo_nombre", "flags": ["apodo"]}
 		},
 		{
 			"text": "QUEST_P3_S6",
-			"objectives": [
-				{
-					"type": "scene",
-					"scene": "prologo_nombre"
-				},
-				{
-					"type": "talk",
-					"npc": "verrin",
-					"dialogue": "prologo_verrin_capital"
-				}
-			]
+			"objectives": [{"type": "scene", "scene": "prologo_nombre"}, {"type": "talk", "npc": "verrin", "dialogue": "prologo_verrin_capital"}]
 		}
 	],
-	"on_done": {
-		"flags": [
-			"prologo_3_hecho"
-		]
-	},
-	"rewards": {
-		"levels": 1
-	}
+	"on_done": {"flags": ["prologo_3_hecho"]},
+	"rewards": {"levels": 1}
 }

@@ -2,19 +2,10 @@
 	"id": "panadero",
 	"name": "NPC_PANADERO",
 	"role": "villager",
-	"lines": {
-		"greet": "PANADERO_GREET"
-	},
+	"lines": {"greet": "PANADERO_GREET"},
 	"look": {
 		"class": "villager",
-		"appearance": {
-			"body": "male",
-			"skin": "skin_3",
-			"eyes": "brown",
-			"hair_style": "bald",
-			"hair_color": "brown",
-			"beard": "mustache"
-		},
+		"appearance": {"body": "male", "skin": "skin_3", "eyes": "brown", "hair_style": "bald", "hair_color": "brown", "beard": "mustache"},
 		"primary": "#e8e0cc",
 		"secondary": "#b89060",
 		"trousers": "#4a3a2a",

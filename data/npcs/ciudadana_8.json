@@ -2,19 +2,10 @@
 	"id": "ciudadana_8",
 	"name": "NPC_CIUDADANA",
 	"role": "villager",
-	"lines": {
-		"greet": "NPC_CIUDADANA_1_GREET"
-	},
+	"lines": {"greet": "NPC_CIUDADANA_1_GREET"},
 	"look": {
 		"class": "villager",
-		"appearance": {
-			"body": "female",
-			"skin": "skin_4",
-			"eyes": "amber",
-			"hair_style": "hair_loose",
-			"hair_color": "auburn",
-			"beard": "none"
-		},
+		"appearance": {"body": "female", "skin": "skin_4", "eyes": "amber", "hair_style": "hair_loose", "hair_color": "auburn", "beard": "none"},
 		"primary": "#8a5a3a",
 		"secondary": "#d8c9a0",
 		"trousers": "#2e2a26",

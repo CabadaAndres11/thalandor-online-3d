@@ -3,128 +3,24 @@
 	"skippable": true,
 	"stage": "here",
 	"actors": {
-		"rey": {
-			"npc": "rey",
-			"at": [
-				19,
-				4
-			],
-			"facing": 0
-		},
-		"guardia": {
-			"npc": "guardia_palacio",
-			"at": [
-				12,
-				27
-			],
-			"facing": 0
-		},
-		"yo": {
-			"player": true,
-			"at": [
-				13,
-				30
-			],
-			"facing": 270
-		}
+		"rey": {"npc": "rey", "at": [19, 4], "facing": 0},
+		"guardia": {"npc": "guardia_palacio", "at": [12, 27], "facing": 0},
+		"yo": {"player": true, "at": [13, 30], "facing": 270}
 	},
 	"tracks": [
 		[
-			{
-				"camera": {
-					"at": [
-						17,
-						4.5,
-						24
-					],
-					"look": [
-						8,
-						1.5,
-						33
-					],
-					"fov": 48
-				},
-				"time": 0
-			},
-			{
-				"camera": {
-					"at": [
-						11,
-						3.2,
-						31
-					],
-					"look": [
-						3,
-						1.2,
-						40
-					]
-				},
-				"time": 12,
-				"ease": "in_out"
-			}
+			{"camera": {"at": [17, 4.5, 24], "look": [8, 1.5, 33], "fov": 48}, "time": 0},
+			{"camera": {"at": [11, 3.2, 31], "look": [3, 1.2, 40]}, "time": 12, "ease": "in_out"}
 		],
 		[
-			{
-				"fade": "in",
-				"time": 1
-			},
-			{
-				"line": [
-					"rey",
-					"SCN_P_DESCENSO_1"
-				],
-				"time": 3.4
-			},
-			{
-				"wait": "",
-				"time": 3
-			},
-			{
-				"shake": "",
-				"time": 0.6
-			},
-			{
-				"line": [
-					"",
-					"SCN_P_DESCENSO_2"
-				],
-				"time": 4
-			},
-			{
-				"line": [
-					"player",
-					"SCN_P_DESCENSO_3"
-				],
-				"time": 2.6
-			},
-			{
-				"fade": "out",
-				"time": 1.2
-			}
+			{"fade": "in", "time": 1},
+			{"line": ["rey", "SCN_P_DESCENSO_1"], "time": 3.4},
+			{"wait": "", "time": 3},
+			{"shake": "", "time": 0.6},
+			{"line": ["", "SCN_P_DESCENSO_2"], "time": 4},
+			{"line": ["player", "SCN_P_DESCENSO_3"], "time": 2.6},
+			{"fade": "out", "time": 1.2}
 		],
-		[
-			{
-				"wait": "",
-				"time": 2
-			},
-			{
-				"move": "guardia",
-				"to": [
-					[
-						10,
-						29
-					],
-					[
-						7,
-						33
-					],
-					[
-						6,
-						34
-					]
-				],
-				"speed": 2.5
-			}
-		]
+		[{"wait": "", "time": 2}, {"move": "guardia", "to": [[10, 29], [7, 33], [6, 34]], "speed": 2.5}]
 	]
 }

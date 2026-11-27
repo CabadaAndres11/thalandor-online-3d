@@ -1,11 +1,40 @@
 [
-	{"id": "sharpshooter", "class": "archer", "name": "UP_SHARPSHOOTER", "desc": "UP_SHARPSHOOTER_DESC",
-	 "actives": ["archer_aimed_shot", "archer_burst"], "passives": ["archer_weak_point", "archer_patience"],
-	 "evolves": {"ability": "archer_shot", "desc": "UP_SHARPSHOOTER_EVO",
-		"set": {"charge": {"max_s": 1.5, "min_ratio": 0.2, "cost": 15, "damage_mult": 2.2, "range_mult": 1.5, "pierce_hits": 3, "pierce_ratio": 0.8}}}},
-	{"id": "hunter", "class": "archer", "name": "UP_HUNTER", "desc": "UP_HUNTER_DESC",
-	 "actives": ["archer_multishot", "archer_companion"], "passives": ["archer_trapper", "archer_survivor"],
-	 "look": {"weapons": ["weapon_crossbow"]},
-	 "evolves": {"ability": "archer_net", "desc": "UP_HUNTER_EVO",
-		"effects": [{"type": "area", "at": "cursor", "radius": 3, "delay_s": 0, "telegraph": false, "statuses": [{"kind": "root", "duration_s": 3}]}]}}
+	{
+		"id": "sharpshooter",
+		"class": "archer",
+		"name": "UP_SHARPSHOOTER",
+		"desc": "UP_SHARPSHOOTER_DESC",
+		"actives": ["archer_aimed_shot", "archer_burst"],
+		"passives": ["archer_weak_point", "archer_patience"],
+		"evolves": {
+			"ability": "archer_shot",
+			"desc": "UP_SHARPSHOOTER_EVO",
+			"set": {
+				"charge": {"max_s": 1.5, "min_ratio": 0.2, "cost": 15, "damage_mult": 2.2, "range_mult": 1.5, "pierce_hits": 3, "pierce_ratio": 0.8}
+			}
+		}
+	},
+	{
+		"id": "hunter",
+		"class": "archer",
+		"name": "UP_HUNTER",
+		"desc": "UP_HUNTER_DESC",
+		"actives": ["archer_multishot", "archer_companion"],
+		"passives": ["archer_trapper", "archer_survivor"],
+		"look": {"weapons": ["weapon_crossbow"]},
+		"evolves": {
+			"ability": "archer_net",
+			"desc": "UP_HUNTER_EVO",
+			"effects": [
+				{
+					"type": "area",
+					"at": "cursor",
+					"radius": 3,
+					"delay_s": 0,
+					"telegraph": false,
+					"statuses": [{"kind": "root", "duration_s": 3}]
+				}
+			]
+		}
+	}
 ]

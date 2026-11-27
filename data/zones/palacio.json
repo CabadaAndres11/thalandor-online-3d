@@ -1,2539 +1,325 @@
 {
 	"name": "ZONE_PALACIO",
-	"size": [
-		40,
-		56
-	],
+	"size": [40, 56],
 	"ambience": "palacio",
 	"margin": "palace",
 	"safe": true,
-	"levels": [
-		1,
-		1
-	],
-	"terrain": {
-		"base": "marble",
-		"areas": []
-	},
+	"levels": [1, 1],
+	"terrain": {"base": "marble", "areas": []},
 	"pieces": [
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				55
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				2,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				2,
-				55
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				4,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				4,
-				55
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				6,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				6,
-				55
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				8,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				8,
-				55
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				10,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				10,
-				55
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				12,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				12,
-				55
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				14,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				14,
-				55
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				16,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				16,
-				55
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				18,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				20,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				22,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				22,
-				55
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				24,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				24,
-				55
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				26,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				26,
-				55
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				28,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				28,
-				55
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				55
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				32,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				32,
-				55
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				34,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				34,
-				55
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				36,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				36,
-				55
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				38,
-				0
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				38,
-				55
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				1
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				1
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				3
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				3
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				5
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				5
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				7
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				7
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				9
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				9
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				11
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				11
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				13
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				13
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				15
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				15
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				17
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				17
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				19
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				19
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				21
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				21
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				23
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				23
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				25
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				25
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				27
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				27
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				29
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				29
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				31
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				31
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				33
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				33
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				35
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				35
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				37
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				39
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				41
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				43
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				43
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				45
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				45
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				47
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				47
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				49
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				49
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				51
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				51
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				0,
-				53
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				39,
-				53
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				1
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				3
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				5
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				7
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				11
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				13
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				15
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				17
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				19
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				21
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				23
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				25
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				27
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				31
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				33
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				35
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				37
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				39
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				41
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				43
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				45
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				47
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				49
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				51
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				9,
-				53
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				1
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				3
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				5
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				7
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				11
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				13
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				15
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				17
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				19
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				21
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				23
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				25
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				27
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				31
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				33
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				35
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				37
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				39
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				41
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				43
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				45
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				47
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				49
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				51
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				30,
-				53
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				1,
-				21
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				3,
-				21
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				5,
-				21
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				7,
-				21
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				31,
-				21
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				33,
-				21
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				35,
-				21
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				37,
-				21
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_column",
-			"at": [
-				13,
-				14
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_column",
-			"at": [
-				26,
-				14
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_column",
-			"at": [
-				13,
-				22
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_column",
-			"at": [
-				26,
-				22
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_column",
-			"at": [
-				13,
-				30
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_column",
-			"at": [
-				26,
-				30
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_column",
-			"at": [
-				13,
-				38
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_column",
-			"at": [
-				26,
-				38
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_column",
-			"at": [
-				13,
-				46
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_column",
-			"at": [
-				26,
-				46
-			],
-			"rot": 0
-		},
-		{
-			"id": "throne",
-			"at": [
-				19,
-				1
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				19,
-				3
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				19,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				19,
-				14
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				19,
-				18
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				19,
-				22
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				19,
-				26
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				19,
-				30
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				19,
-				34
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				19,
-				38
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				19,
-				42
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				19,
-				46
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_carpet",
-			"at": [
-				19,
-				50
-			],
-			"rot": 0
-		},
-		{
-			"id": "brazier",
-			"at": [
-				16,
-				2
-			],
-			"rot": 0
-		},
-		{
-			"id": "brazier",
-			"at": [
-				23,
-				2
-			],
-			"rot": 0
-		},
-		{
-			"id": "brazier",
-			"at": [
-				14,
-				26
-			],
-			"rot": 0
-		},
-		{
-			"id": "brazier",
-			"at": [
-				25,
-				26
-			],
-			"rot": 0
-		},
-		{
-			"id": "brazier",
-			"at": [
-				14,
-				50
-			],
-			"rot": 0
-		},
-		{
-			"id": "brazier",
-			"at": [
-				25,
-				50
-			],
-			"rot": 0
-		},
-		{
-			"id": "kingdom_banner",
-			"at": [
-				11,
-				4
-			],
-			"rot": 0
-		},
-		{
-			"id": "kingdom_banner",
-			"at": [
-				28,
-				4
-			],
-			"rot": 0
-		},
-		{
-			"id": "statue_warrior_a",
-			"at": [
-				11,
-				18
-			],
-			"rot": 270
-		},
-		{
-			"id": "statue_warrior_b",
-			"at": [
-				28,
-				17
-			],
-			"rot": 90
-		},
-		{
-			"id": "statue_warrior_b",
-			"at": [
-				11,
-				26
-			],
-			"rot": 270
-		},
-		{
-			"id": "statue_warrior_a",
-			"at": [
-				28,
-				25
-			],
-			"rot": 90
-		},
-		{
-			"id": "statue_warrior_a",
-			"at": [
-				11,
-				34
-			],
-			"rot": 270
-		},
-		{
-			"id": "statue_warrior_b",
-			"at": [
-				28,
-				33
-			],
-			"rot": 90
-		},
-		{
-			"id": "statue_warrior_b",
-			"at": [
-				11,
-				42
-			],
-			"rot": 270
-		},
-		{
-			"id": "statue_warrior_a",
-			"at": [
-				28,
-				41
-			],
-			"rot": 90
-		},
-		{
-			"id": "weapon_rack",
-			"at": [
-				1,
-				1
-			],
-			"rot": 0
-		},
-		{
-			"id": "weapon_rack",
-			"at": [
-				3,
-				1
-			],
-			"rot": 0
-		},
-		{
-			"id": "weapon_rack",
-			"at": [
-				5,
-				1
-			],
-			"rot": 0
-		},
-		{
-			"id": "weapon_rack",
-			"at": [
-				7,
-				1
-			],
-			"rot": 0
-		},
-		{
-			"id": "weapon_rack",
-			"at": [
-				2,
-				19
-			],
-			"rot": 180
-		},
-		{
-			"id": "weapon_rack",
-			"at": [
-				4,
-				19
-			],
-			"rot": 180
-		},
-		{
-			"id": "weapon_rack",
-			"at": [
-				6,
-				19
-			],
-			"rot": 180
-		},
-		{
-			"id": "weapon_rack",
-			"at": [
-				8,
-				19
-			],
-			"rot": 180
-		},
-		{
-			"id": "armor_stand",
-			"at": [
-				1,
-				5
-			],
-			"rot": 270
-		},
-		{
-			"id": "armor_stand",
-			"at": [
-				1,
-				8
-			],
-			"rot": 270
-		},
-		{
-			"id": "armor_stand",
-			"at": [
-				1,
-				11
-			],
-			"rot": 270
-		},
-		{
-			"id": "armor_stand",
-			"at": [
-				1,
-				14
-			],
-			"rot": 270
-		},
-		{
-			"id": "armor_stand",
-			"at": [
-				5,
-				6
-			],
-			"rot": 0
-		},
-		{
-			"id": "armor_stand",
-			"at": [
-				5,
-				12
-			],
-			"rot": 0
-		},
-		{
-			"id": "crates",
-			"at": [
-				6,
-				15
-			],
-			"rot": 0
-		},
-		{
-			"id": "brazier",
-			"at": [
-				7,
-				28
-			],
-			"rot": 0
-		},
-		{
-			"id": "brazier",
-			"at": [
-				7,
-				51
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_block",
-			"at": [
-				3,
-				22
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				3,
-				23
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				3,
-				25
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				3,
-				27
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				3,
-				29
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				3,
-				31
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				3,
-				33
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				3,
-				35
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				3,
-				43
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				3,
-				45
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				3,
-				47
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				3,
-				49
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				3,
-				51
-			],
-			"rot": 90
-		},
-		{
-			"id": "palace_wall",
-			"at": [
-				3,
-				53
-			],
-			"rot": 90
-		},
-		{
-			"id": "reading_desk",
-			"at": [
-				32,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "reading_desk",
-			"at": [
-				34,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "reading_desk",
-			"at": [
-				36,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "chair",
-			"at": [
-				32,
-				9
-			],
-			"rot": 0
-		},
-		{
-			"id": "chair",
-			"at": [
-				32,
-				11
-			],
-			"rot": 180
-		},
-		{
-			"id": "chair",
-			"at": [
-				33,
-				9
-			],
-			"rot": 0
-		},
-		{
-			"id": "chair",
-			"at": [
-				33,
-				11
-			],
-			"rot": 180
-		},
-		{
-			"id": "chair",
-			"at": [
-				34,
-				9
-			],
-			"rot": 0
-		},
-		{
-			"id": "chair",
-			"at": [
-				34,
-				11
-			],
-			"rot": 180
-		},
-		{
-			"id": "chair",
-			"at": [
-				35,
-				9
-			],
-			"rot": 0
-		},
-		{
-			"id": "chair",
-			"at": [
-				35,
-				11
-			],
-			"rot": 180
-		},
-		{
-			"id": "chair",
-			"at": [
-				36,
-				9
-			],
-			"rot": 0
-		},
-		{
-			"id": "chair",
-			"at": [
-				36,
-				11
-			],
-			"rot": 180
-		},
-		{
-			"id": "chair",
-			"at": [
-				37,
-				9
-			],
-			"rot": 0
-		},
-		{
-			"id": "chair",
-			"at": [
-				37,
-				11
-			],
-			"rot": 180
-		},
-		{
-			"id": "kingdom_banner",
-			"at": [
-				34,
-				1
-			],
-			"rot": 0
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				31,
-				1
-			],
-			"rot": 0
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				36,
-				1
-			],
-			"rot": 0
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				38,
-				23
-			],
-			"rot": 90
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				38,
-				25
-			],
-			"rot": 90
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				38,
-				27
-			],
-			"rot": 90
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				38,
-				29
-			],
-			"rot": 90
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				38,
-				31
-			],
-			"rot": 90
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				38,
-				33
-			],
-			"rot": 90
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				38,
-				35
-			],
-			"rot": 90
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				38,
-				37
-			],
-			"rot": 90
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				38,
-				39
-			],
-			"rot": 90
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				38,
-				41
-			],
-			"rot": 90
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				38,
-				43
-			],
-			"rot": 90
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				38,
-				45
-			],
-			"rot": 90
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				38,
-				47
-			],
-			"rot": 90
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				38,
-				49
-			],
-			"rot": 90
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				38,
-				51
-			],
-			"rot": 90
-		},
-		{
-			"id": "bookshelf",
-			"at": [
-				38,
-				53
-			],
-			"rot": 90
-		},
-		{
-			"id": "bookshelf_double",
-			"at": [
-				32,
-				25
-			],
-			"rot": 0
-		},
-		{
-			"id": "bookshelf_double",
-			"at": [
-				34,
-				25
-			],
-			"rot": 0
-		},
-		{
-			"id": "bookshelf_double",
-			"at": [
-				32,
-				28
-			],
-			"rot": 0
-		},
-		{
-			"id": "bookshelf_double",
-			"at": [
-				34,
-				28
-			],
-			"rot": 0
-		},
-		{
-			"id": "bookshelf_double",
-			"at": [
-				32,
-				31
-			],
-			"rot": 0
-		},
-		{
-			"id": "bookshelf_double",
-			"at": [
-				34,
-				31
-			],
-			"rot": 0
-		},
-		{
-			"id": "bookshelf_double",
-			"at": [
-				32,
-				34
-			],
-			"rot": 0
-		},
-		{
-			"id": "bookshelf_double",
-			"at": [
-				34,
-				34
-			],
-			"rot": 0
-		},
-		{
-			"id": "reading_desk",
-			"at": [
-				32,
-				40
-			],
-			"rot": 0
-		},
-		{
-			"id": "chair",
-			"at": [
-				32,
-				41
-			],
-			"rot": 180
-		},
-		{
-			"id": "chair",
-			"at": [
-				33,
-				39
-			],
-			"rot": 0
-		},
-		{
-			"id": "reading_desk",
-			"at": [
-				32,
-				46
-			],
-			"rot": 0
-		},
-		{
-			"id": "chair",
-			"at": [
-				32,
-				47
-			],
-			"rot": 180
-		},
-		{
-			"id": "chair",
-			"at": [
-				33,
-				45
-			],
-			"rot": 0
-		},
-		{
-			"id": "reading_desk",
-			"at": [
-				35,
-				43
-			],
-			"rot": 0
-		},
-		{
-			"id": "chair",
-			"at": [
-				35,
-				44
-			],
-			"rot": 180
-		},
-		{
-			"id": "chair",
-			"at": [
-				36,
-				42
-			],
-			"rot": 0
-		},
-		{
-			"id": "reading_desk",
-			"at": [
-				35,
-				49
-			],
-			"rot": 0
-		},
-		{
-			"id": "chair",
-			"at": [
-				35,
-				50
-			],
-			"rot": 180
-		},
-		{
-			"id": "chair",
-			"at": [
-				36,
-				48
-			],
-			"rot": 0
-		},
-		{
-			"id": "books_floor",
-			"at": [
-				31,
-				26
-			],
-			"rot": 0
-		},
-		{
-			"id": "books_floor",
-			"at": [
-				36,
-				29
-			],
-			"rot": 0
-		},
-		{
-			"id": "books_floor",
-			"at": [
-				31,
-				33
-			],
-			"rot": 0
-		},
-		{
-			"id": "books_floor",
-			"at": [
-				33,
-				37
-			],
-			"rot": 0
-		},
-		{
-			"id": "books_floor",
-			"at": [
-				36,
-				38
-			],
-			"rot": 0
-		},
-		{
-			"id": "books_floor",
-			"at": [
-				31,
-				44
-			],
-			"rot": 0
-		},
-		{
-			"id": "books_floor",
-			"at": [
-				34,
-				52
-			],
-			"rot": 0
-		},
-		{
-			"id": "books_floor",
-			"at": [
-				37,
-				46
-			],
-			"rot": 0
-		}
+		{"id": "palace_wall", "at": [0, 0], "rot": 0},
+		{"id": "palace_wall", "at": [0, 55], "rot": 0},
+		{"id": "palace_wall", "at": [2, 0], "rot": 0},
+		{"id": "palace_wall", "at": [2, 55], "rot": 0},
+		{"id": "palace_wall", "at": [4, 0], "rot": 0},
+		{"id": "palace_wall", "at": [4, 55], "rot": 0},
+		{"id": "palace_wall", "at": [6, 0], "rot": 0},
+		{"id": "palace_wall", "at": [6, 55], "rot": 0},
+		{"id": "palace_wall", "at": [8, 0], "rot": 0},
+		{"id": "palace_wall", "at": [8, 55], "rot": 0},
+		{"id": "palace_wall", "at": [10, 0], "rot": 0},
+		{"id": "palace_wall", "at": [10, 55], "rot": 0},
+		{"id": "palace_wall", "at": [12, 0], "rot": 0},
+		{"id": "palace_wall", "at": [12, 55], "rot": 0},
+		{"id": "palace_wall", "at": [14, 0], "rot": 0},
+		{"id": "palace_wall", "at": [14, 55], "rot": 0},
+		{"id": "palace_wall", "at": [16, 0], "rot": 0},
+		{"id": "palace_wall", "at": [16, 55], "rot": 0},
+		{"id": "palace_wall", "at": [18, 0], "rot": 0},
+		{"id": "palace_wall", "at": [20, 0], "rot": 0},
+		{"id": "palace_wall", "at": [22, 0], "rot": 0},
+		{"id": "palace_wall", "at": [22, 55], "rot": 0},
+		{"id": "palace_wall", "at": [24, 0], "rot": 0},
+		{"id": "palace_wall", "at": [24, 55], "rot": 0},
+		{"id": "palace_wall", "at": [26, 0], "rot": 0},
+		{"id": "palace_wall", "at": [26, 55], "rot": 0},
+		{"id": "palace_wall", "at": [28, 0], "rot": 0},
+		{"id": "palace_wall", "at": [28, 55], "rot": 0},
+		{"id": "palace_wall", "at": [30, 0], "rot": 0},
+		{"id": "palace_wall", "at": [30, 55], "rot": 0},
+		{"id": "palace_wall", "at": [32, 0], "rot": 0},
+		{"id": "palace_wall", "at": [32, 55], "rot": 0},
+		{"id": "palace_wall", "at": [34, 0], "rot": 0},
+		{"id": "palace_wall", "at": [34, 55], "rot": 0},
+		{"id": "palace_wall", "at": [36, 0], "rot": 0},
+		{"id": "palace_wall", "at": [36, 55], "rot": 0},
+		{"id": "palace_wall", "at": [38, 0], "rot": 0},
+		{"id": "palace_wall", "at": [38, 55], "rot": 0},
+		{"id": "palace_wall", "at": [0, 1], "rot": 90},
+		{"id": "palace_wall", "at": [39, 1], "rot": 90},
+		{"id": "palace_wall", "at": [0, 3], "rot": 90},
+		{"id": "palace_wall", "at": [39, 3], "rot": 90},
+		{"id": "palace_wall", "at": [0, 5], "rot": 90},
+		{"id": "palace_wall", "at": [39, 5], "rot": 90},
+		{"id": "palace_wall", "at": [0, 7], "rot": 90},
+		{"id": "palace_wall", "at": [39, 7], "rot": 90},
+		{"id": "palace_wall", "at": [0, 9], "rot": 90},
+		{"id": "palace_wall", "at": [39, 9], "rot": 90},
+		{"id": "palace_wall", "at": [0, 11], "rot": 90},
+		{"id": "palace_wall", "at": [39, 11], "rot": 90},
+		{"id": "palace_wall", "at": [0, 13], "rot": 90},
+		{"id": "palace_wall", "at": [39, 13], "rot": 90},
+		{"id": "palace_wall", "at": [0, 15], "rot": 90},
+		{"id": "palace_wall", "at": [39, 15], "rot": 90},
+		{"id": "palace_wall", "at": [0, 17], "rot": 90},
+		{"id": "palace_wall", "at": [39, 17], "rot": 90},
+		{"id": "palace_wall", "at": [0, 19], "rot": 90},
+		{"id": "palace_wall", "at": [39, 19], "rot": 90},
+		{"id": "palace_wall", "at": [0, 21], "rot": 90},
+		{"id": "palace_wall", "at": [39, 21], "rot": 90},
+		{"id": "palace_wall", "at": [0, 23], "rot": 90},
+		{"id": "palace_wall", "at": [39, 23], "rot": 90},
+		{"id": "palace_wall", "at": [0, 25], "rot": 90},
+		{"id": "palace_wall", "at": [39, 25], "rot": 90},
+		{"id": "palace_wall", "at": [0, 27], "rot": 90},
+		{"id": "palace_wall", "at": [39, 27], "rot": 90},
+		{"id": "palace_wall", "at": [0, 29], "rot": 90},
+		{"id": "palace_wall", "at": [39, 29], "rot": 90},
+		{"id": "palace_wall", "at": [0, 31], "rot": 90},
+		{"id": "palace_wall", "at": [39, 31], "rot": 90},
+		{"id": "palace_wall", "at": [0, 33], "rot": 90},
+		{"id": "palace_wall", "at": [39, 33], "rot": 90},
+		{"id": "palace_wall", "at": [0, 35], "rot": 90},
+		{"id": "palace_wall", "at": [39, 35], "rot": 90},
+		{"id": "palace_wall", "at": [39, 37], "rot": 90},
+		{"id": "palace_wall", "at": [39, 39], "rot": 90},
+		{"id": "palace_wall", "at": [39, 41], "rot": 90},
+		{"id": "palace_wall", "at": [0, 43], "rot": 90},
+		{"id": "palace_wall", "at": [39, 43], "rot": 90},
+		{"id": "palace_wall", "at": [0, 45], "rot": 90},
+		{"id": "palace_wall", "at": [39, 45], "rot": 90},
+		{"id": "palace_wall", "at": [0, 47], "rot": 90},
+		{"id": "palace_wall", "at": [39, 47], "rot": 90},
+		{"id": "palace_wall", "at": [0, 49], "rot": 90},
+		{"id": "palace_wall", "at": [39, 49], "rot": 90},
+		{"id": "palace_wall", "at": [0, 51], "rot": 90},
+		{"id": "palace_wall", "at": [39, 51], "rot": 90},
+		{"id": "palace_wall", "at": [0, 53], "rot": 90},
+		{"id": "palace_wall", "at": [39, 53], "rot": 90},
+		{"id": "palace_wall", "at": [9, 1], "rot": 90},
+		{"id": "palace_wall", "at": [9, 3], "rot": 90},
+		{"id": "palace_wall", "at": [9, 5], "rot": 90},
+		{"id": "palace_wall", "at": [9, 7], "rot": 90},
+		{"id": "palace_wall", "at": [9, 11], "rot": 90},
+		{"id": "palace_wall", "at": [9, 13], "rot": 90},
+		{"id": "palace_wall", "at": [9, 15], "rot": 90},
+		{"id": "palace_wall", "at": [9, 17], "rot": 90},
+		{"id": "palace_wall", "at": [9, 19], "rot": 90},
+		{"id": "palace_wall", "at": [9, 21], "rot": 90},
+		{"id": "palace_wall", "at": [9, 23], "rot": 90},
+		{"id": "palace_wall", "at": [9, 25], "rot": 90},
+		{"id": "palace_wall", "at": [9, 27], "rot": 90},
+		{"id": "palace_wall", "at": [9, 31], "rot": 90},
+		{"id": "palace_wall", "at": [9, 33], "rot": 90},
+		{"id": "palace_wall", "at": [9, 35], "rot": 90},
+		{"id": "palace_wall", "at": [9, 37], "rot": 90},
+		{"id": "palace_wall", "at": [9, 39], "rot": 90},
+		{"id": "palace_wall", "at": [9, 41], "rot": 90},
+		{"id": "palace_wall", "at": [9, 43], "rot": 90},
+		{"id": "palace_wall", "at": [9, 45], "rot": 90},
+		{"id": "palace_wall", "at": [9, 47], "rot": 90},
+		{"id": "palace_wall", "at": [9, 49], "rot": 90},
+		{"id": "palace_wall", "at": [9, 51], "rot": 90},
+		{"id": "palace_wall", "at": [9, 53], "rot": 90},
+		{"id": "palace_wall", "at": [30, 1], "rot": 90},
+		{"id": "palace_wall", "at": [30, 3], "rot": 90},
+		{"id": "palace_wall", "at": [30, 5], "rot": 90},
+		{"id": "palace_wall", "at": [30, 7], "rot": 90},
+		{"id": "palace_wall", "at": [30, 11], "rot": 90},
+		{"id": "palace_wall", "at": [30, 13], "rot": 90},
+		{"id": "palace_wall", "at": [30, 15], "rot": 90},
+		{"id": "palace_wall", "at": [30, 17], "rot": 90},
+		{"id": "palace_wall", "at": [30, 19], "rot": 90},
+		{"id": "palace_wall", "at": [30, 21], "rot": 90},
+		{"id": "palace_wall", "at": [30, 23], "rot": 90},
+		{"id": "palace_wall", "at": [30, 25], "rot": 90},
+		{"id": "palace_wall", "at": [30, 27], "rot": 90},
+		{"id": "palace_wall", "at": [30, 31], "rot": 90},
+		{"id": "palace_wall", "at": [30, 33], "rot": 90},
+		{"id": "palace_wall", "at": [30, 35], "rot": 90},
+		{"id": "palace_wall", "at": [30, 37], "rot": 90},
+		{"id": "palace_wall", "at": [30, 39], "rot": 90},
+		{"id": "palace_wall", "at": [30, 41], "rot": 90},
+		{"id": "palace_wall", "at": [30, 43], "rot": 90},
+		{"id": "palace_wall", "at": [30, 45], "rot": 90},
+		{"id": "palace_wall", "at": [30, 47], "rot": 90},
+		{"id": "palace_wall", "at": [30, 49], "rot": 90},
+		{"id": "palace_wall", "at": [30, 51], "rot": 90},
+		{"id": "palace_wall", "at": [30, 53], "rot": 90},
+		{"id": "palace_wall", "at": [1, 21], "rot": 0},
+		{"id": "palace_wall", "at": [3, 21], "rot": 0},
+		{"id": "palace_wall", "at": [5, 21], "rot": 0},
+		{"id": "palace_wall", "at": [7, 21], "rot": 0},
+		{"id": "palace_wall", "at": [31, 21], "rot": 0},
+		{"id": "palace_wall", "at": [33, 21], "rot": 0},
+		{"id": "palace_wall", "at": [35, 21], "rot": 0},
+		{"id": "palace_wall", "at": [37, 21], "rot": 0},
+		{"id": "palace_column", "at": [13, 14], "rot": 0},
+		{"id": "palace_column", "at": [26, 14], "rot": 0},
+		{"id": "palace_column", "at": [13, 22], "rot": 0},
+		{"id": "palace_column", "at": [26, 22], "rot": 0},
+		{"id": "palace_column", "at": [13, 30], "rot": 0},
+		{"id": "palace_column", "at": [26, 30], "rot": 0},
+		{"id": "palace_column", "at": [13, 38], "rot": 0},
+		{"id": "palace_column", "at": [26, 38], "rot": 0},
+		{"id": "palace_column", "at": [13, 46], "rot": 0},
+		{"id": "palace_column", "at": [26, 46], "rot": 0},
+		{"id": "throne", "at": [19, 1], "rot": 0},
+		{"id": "palace_carpet", "at": [19, 3], "rot": 0},
+		{"id": "palace_carpet", "at": [19, 10], "rot": 0},
+		{"id": "palace_carpet", "at": [19, 14], "rot": 0},
+		{"id": "palace_carpet", "at": [19, 18], "rot": 0},
+		{"id": "palace_carpet", "at": [19, 22], "rot": 0},
+		{"id": "palace_carpet", "at": [19, 26], "rot": 0},
+		{"id": "palace_carpet", "at": [19, 30], "rot": 0},
+		{"id": "palace_carpet", "at": [19, 34], "rot": 0},
+		{"id": "palace_carpet", "at": [19, 38], "rot": 0},
+		{"id": "palace_carpet", "at": [19, 42], "rot": 0},
+		{"id": "palace_carpet", "at": [19, 46], "rot": 0},
+		{"id": "palace_carpet", "at": [19, 50], "rot": 0},
+		{"id": "brazier", "at": [16, 2], "rot": 0},
+		{"id": "brazier", "at": [23, 2], "rot": 0},
+		{"id": "brazier", "at": [14, 26], "rot": 0},
+		{"id": "brazier", "at": [25, 26], "rot": 0},
+		{"id": "brazier", "at": [14, 50], "rot": 0},
+		{"id": "brazier", "at": [25, 50], "rot": 0},
+		{"id": "kingdom_banner", "at": [11, 4], "rot": 0},
+		{"id": "kingdom_banner", "at": [28, 4], "rot": 0},
+		{"id": "statue_warrior_a", "at": [11, 18], "rot": 270},
+		{"id": "statue_warrior_b", "at": [28, 17], "rot": 90},
+		{"id": "statue_warrior_b", "at": [11, 26], "rot": 270},
+		{"id": "statue_warrior_a", "at": [28, 25], "rot": 90},
+		{"id": "statue_warrior_a", "at": [11, 34], "rot": 270},
+		{"id": "statue_warrior_b", "at": [28, 33], "rot": 90},
+		{"id": "statue_warrior_b", "at": [11, 42], "rot": 270},
+		{"id": "statue_warrior_a", "at": [28, 41], "rot": 90},
+		{"id": "weapon_rack", "at": [1, 1], "rot": 0},
+		{"id": "weapon_rack", "at": [3, 1], "rot": 0},
+		{"id": "weapon_rack", "at": [5, 1], "rot": 0},
+		{"id": "weapon_rack", "at": [7, 1], "rot": 0},
+		{"id": "weapon_rack", "at": [2, 19], "rot": 180},
+		{"id": "weapon_rack", "at": [4, 19], "rot": 180},
+		{"id": "weapon_rack", "at": [6, 19], "rot": 180},
+		{"id": "weapon_rack", "at": [8, 19], "rot": 180},
+		{"id": "armor_stand", "at": [1, 5], "rot": 270},
+		{"id": "armor_stand", "at": [1, 8], "rot": 270},
+		{"id": "armor_stand", "at": [1, 11], "rot": 270},
+		{"id": "armor_stand", "at": [1, 14], "rot": 270},
+		{"id": "armor_stand", "at": [5, 6], "rot": 0},
+		{"id": "armor_stand", "at": [5, 12], "rot": 0},
+		{"id": "crates", "at": [6, 15], "rot": 0},
+		{"id": "brazier", "at": [7, 28], "rot": 0},
+		{"id": "brazier", "at": [7, 51], "rot": 0},
+		{"id": "palace_block", "at": [3, 22], "rot": 0},
+		{"id": "palace_wall", "at": [3, 23], "rot": 90},
+		{"id": "palace_wall", "at": [3, 25], "rot": 90},
+		{"id": "palace_wall", "at": [3, 27], "rot": 90},
+		{"id": "palace_wall", "at": [3, 29], "rot": 90},
+		{"id": "palace_wall", "at": [3, 31], "rot": 90},
+		{"id": "palace_wall", "at": [3, 33], "rot": 90},
+		{"id": "palace_wall", "at": [3, 35], "rot": 90},
+		{"id": "palace_wall", "at": [3, 43], "rot": 90},
+		{"id": "palace_wall", "at": [3, 45], "rot": 90},
+		{"id": "palace_wall", "at": [3, 47], "rot": 90},
+		{"id": "palace_wall", "at": [3, 49], "rot": 90},
+		{"id": "palace_wall", "at": [3, 51], "rot": 90},
+		{"id": "palace_wall", "at": [3, 53], "rot": 90},
+		{"id": "reading_desk", "at": [32, 10], "rot": 0},
+		{"id": "reading_desk", "at": [34, 10], "rot": 0},
+		{"id": "reading_desk", "at": [36, 10], "rot": 0},
+		{"id": "chair", "at": [32, 9], "rot": 0},
+		{"id": "chair", "at": [32, 11], "rot": 180},
+		{"id": "chair", "at": [33, 9], "rot": 0},
+		{"id": "chair", "at": [33, 11], "rot": 180},
+		{"id": "chair", "at": [34, 9], "rot": 0},
+		{"id": "chair", "at": [34, 11], "rot": 180},
+		{"id": "chair", "at": [35, 9], "rot": 0},
+		{"id": "chair", "at": [35, 11], "rot": 180},
+		{"id": "chair", "at": [36, 9], "rot": 0},
+		{"id": "chair", "at": [36, 11], "rot": 180},
+		{"id": "chair", "at": [37, 9], "rot": 0},
+		{"id": "chair", "at": [37, 11], "rot": 180},
+		{"id": "kingdom_banner", "at": [34, 1], "rot": 0},
+		{"id": "bookshelf", "at": [31, 1], "rot": 0},
+		{"id": "bookshelf", "at": [36, 1], "rot": 0},
+		{"id": "bookshelf", "at": [38, 23], "rot": 90},
+		{"id": "bookshelf", "at": [38, 25], "rot": 90},
+		{"id": "bookshelf", "at": [38, 27], "rot": 90},
+		{"id": "bookshelf", "at": [38, 29], "rot": 90},
+		{"id": "bookshelf", "at": [38, 31], "rot": 90},
+		{"id": "bookshelf", "at": [38, 33], "rot": 90},
+		{"id": "bookshelf", "at": [38, 35], "rot": 90},
+		{"id": "bookshelf", "at": [38, 37], "rot": 90},
+		{"id": "bookshelf", "at": [38, 39], "rot": 90},
+		{"id": "bookshelf", "at": [38, 41], "rot": 90},
+		{"id": "bookshelf", "at": [38, 43], "rot": 90},
+		{"id": "bookshelf", "at": [38, 45], "rot": 90},
+		{"id": "bookshelf", "at": [38, 47], "rot": 90},
+		{"id": "bookshelf", "at": [38, 49], "rot": 90},
+		{"id": "bookshelf", "at": [38, 51], "rot": 90},
+		{"id": "bookshelf", "at": [38, 53], "rot": 90},
+		{"id": "bookshelf_double", "at": [32, 25], "rot": 0},
+		{"id": "bookshelf_double", "at": [34, 25], "rot": 0},
+		{"id": "bookshelf_double", "at": [32, 28], "rot": 0},
+		{"id": "bookshelf_double", "at": [34, 28], "rot": 0},
+		{"id": "bookshelf_double", "at": [32, 31], "rot": 0},
+		{"id": "bookshelf_double", "at": [34, 31], "rot": 0},
+		{"id": "bookshelf_double", "at": [32, 34], "rot": 0},
+		{"id": "bookshelf_double", "at": [34, 34], "rot": 0},
+		{"id": "reading_desk", "at": [32, 40], "rot": 0},
+		{"id": "chair", "at": [32, 41], "rot": 180},
+		{"id": "chair", "at": [33, 39], "rot": 0},
+		{"id": "reading_desk", "at": [32, 46], "rot": 0},
+		{"id": "chair", "at": [32, 47], "rot": 180},
+		{"id": "chair", "at": [33, 45], "rot": 0},
+		{"id": "reading_desk", "at": [35, 43], "rot": 0},
+		{"id": "chair", "at": [35, 44], "rot": 180},
+		{"id": "chair", "at": [36, 42], "rot": 0},
+		{"id": "reading_desk", "at": [35, 49], "rot": 0},
+		{"id": "chair", "at": [35, 50], "rot": 180},
+		{"id": "chair", "at": [36, 48], "rot": 0},
+		{"id": "books_floor", "at": [31, 26], "rot": 0},
+		{"id": "books_floor", "at": [36, 29], "rot": 0},
+		{"id": "books_floor", "at": [31, 33], "rot": 0},
+		{"id": "books_floor", "at": [33, 37], "rot": 0},
+		{"id": "books_floor", "at": [36, 38], "rot": 0},
+		{"id": "books_floor", "at": [31, 44], "rot": 0},
+		{"id": "books_floor", "at": [34, 52], "rot": 0},
+		{"id": "books_floor", "at": [37, 46], "rot": 0}
 	],
 	"npcs": [
-		{
-			"id": "rey",
-			"at": [
-				19,
-				3
-			],
-			"facing": 0
-		},
-		{
-			"id": "lord_maren",
-			"at": [
-				23,
-				8
-			],
-			"facing": 270
-		},
-		{
-			"id": "guardia_palacio",
-			"at": [
-				17,
-				52
-			],
-			"facing": 0
-		},
-		{
-			"id": "oriel",
-			"at": [
-				33,
-				51
-			],
-			"facing": 180
-		},
-		{
-			"id": "guardia_cripta_1",
-			"at": [
-				5,
-				36
-			],
-			"facing": 90
-		},
-		{
-			"id": "guardia_cripta_2",
-			"at": [
-				5,
-				43
-			],
-			"facing": 90
-		}
+		{"id": "rey", "at": [19, 3], "facing": 0},
+		{"id": "lord_maren", "at": [23, 8], "facing": 270},
+		{"id": "guardia_palacio", "at": [17, 52], "facing": 0},
+		{"id": "oriel", "at": [33, 51], "facing": 180},
+		{"id": "guardia_cripta_1", "at": [5, 36], "facing": 90},
+		{"id": "guardia_cripta_2", "at": [5, 43], "facing": 90}
 	],
-	"entries": {
-		"default": [
-			19,
-			50
-		],
-		"from_capital": [
-			19,
-			50
-		],
-		"from_cripta": [
-			6,
-			40
-		]
-	},
-	"respawn": [
-		19,
-		49
-	],
+	"entries": {"default": [19, 50], "from_capital": [19, 50], "from_cripta": [6, 40]},
+	"respawn": [19, 49],
 	"exits": [
+		{"area": [18, 55, 3, 1], "to": "capital", "entry": "from_palacio"},
 		{
-			"area": [
-				18,
-				55,
-				3,
-				1
-			],
-			"to": "capital",
-			"entry": "from_palacio"
-		},
-		{
-			"area": [
-				4,
-				38,
-				1,
-				4
-			],
+			"area": [4, 38, 1, 4],
 			"to": "cripta_prueba",
 			"entry": "default",
-			"requires": {
-				"flags": [
-					"cripta_abierta"
-				]
-			},
-			"gate": {
-				"closed": "dungeon_gate_closed",
-				"open": "dungeon_gate_open",
-				"at": [
-					3,
-					37
-				],
-				"rot": 90
-			}
+			"requires": {"flags": ["cripta_abierta"]},
+			"gate": {"closed": "dungeon_gate_closed", "open": "dungeon_gate_open", "at": [3, 37], "rot": 90}
 		}
 	],
 	"hordes": [],
-	"quest_points": [
-		{
-			"id": "salon_trono",
-			"at": [
-				19,
-				16
-			],
-			"radius": 4
-		}
-	],
-	"torches": [
-		[
-			16,
-			2
-		],
-		[
-			23,
-			2
-		],
-		[
-			14,
-			26
-		],
-		[
-			25,
-			26
-		],
-		[
-			14,
-			50
-		],
-		[
-			25,
-			50
-		],
-		[
-			7,
-			28
-		],
-		[
-			7,
-			51
-		],
-		[
-			4,
-			10
-		],
-		[
-			34,
-			14
-		],
-		[
-			34,
-			38
-		],
-		[
-			34,
-			50
-		]
-	],
+	"quest_points": [{"id": "salon_trono", "at": [19, 16], "radius": 4}],
+	"torches": [[16, 2], [23, 2], [14, 26], [25, 26], [14, 50], [25, 50], [7, 28], [7, 51], [4, 10], [34, 14], [34, 38], [34, 50]],
 	"relief": [
-		{
-			"kind": "plateau",
-			"area": [
-				15,
-				1,
-				10,
-				6
-			],
-			"height": 1.5,
-			"slope": 3.2
-		},
-		{
-			"kind": "plateau",
-			"area": [
-				1,
-				38,
-				2,
-				4
-			],
-			"height": -2.5,
-			"slope": 0
-		}
+		{"kind": "plateau", "area": [15, 1, 10, 6], "height": 1.5, "slope": 3.2},
+		{"kind": "plateau", "area": [1, 38, 2, 4], "height": -2.5, "slope": 0}
 	],
 	"walkers": [
-		{
-			"npc": "noble_1",
-			"route": [
-				[
-					15,
-					48
-				],
-				[
-					15,
-					12
-				]
-			],
-			"speed": 0.9,
-			"pause_s": 6,
-			"loop": false
-		},
-		{
-			"npc": "noble_2",
-			"route": [
-				[
-					16,
-					48
-				],
-				[
-					16,
-					12
-				]
-			],
-			"speed": 0.9,
-			"pause_s": 6,
-			"loop": false
-		},
-		{
-			"npc": "noble_3",
-			"route": [
-				[
-					24,
-					12
-				],
-				[
-					24,
-					48
-				]
-			],
-			"speed": 0.8,
-			"pause_s": 8,
-			"loop": false
-		},
-		{
-			"npc": "noble_4",
-			"route": [
-				[
-					23,
-					12
-				],
-				[
-					23,
-					48
-				]
-			],
-			"speed": 0.8,
-			"pause_s": 8,
-			"loop": false
-		},
-		{
-			"npc": "noble_5",
-			"route": [
-				[
-					32,
-					5
-				],
-				[
-					37,
-					5
-				]
-			],
-			"speed": 0.7,
-			"pause_s": 10,
-			"loop": false
-		},
-		{
-			"npc": "noble_6",
-			"route": [
-				[
-					32,
-					6
-				],
-				[
-					37,
-					6
-				]
-			],
-			"speed": 0.7,
-			"pause_s": 10,
-			"loop": false
-		}
+		{"npc": "noble_1", "route": [[15, 48], [15, 12]], "speed": 0.9, "pause_s": 6, "loop": false},
+		{"npc": "noble_2", "route": [[16, 48], [16, 12]], "speed": 0.9, "pause_s": 6, "loop": false},
+		{"npc": "noble_3", "route": [[24, 12], [24, 48]], "speed": 0.8, "pause_s": 8, "loop": false},
+		{"npc": "noble_4", "route": [[23, 12], [23, 48]], "speed": 0.8, "pause_s": 8, "loop": false},
+		{"npc": "noble_5", "route": [[32, 5], [37, 5]], "speed": 0.7, "pause_s": 10, "loop": false},
+		{"npc": "noble_6", "route": [[32, 6], [37, 6]], "speed": 0.7, "pause_s": 10, "loop": false}
 	]
 }

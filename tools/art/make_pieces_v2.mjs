@@ -5,6 +5,7 @@
 // part in), so its table offset is just the shape's lowest corner. Same ids, parts, tags
 // and hides as the v1 table (data/characters/pieces.json), which the table copies.
 import fs from "node:fs";
+import { formatJson } from "../json_format.mjs";
 import { fileURLToPath } from "node:url";
 import { write, Shape, TEX_D, TEX_L, TINT_HAIR, TINT_SKIN, TINT_PRIMARY, SHADE, LIGHT } from "./vox.mjs";
 import { ellipsoid, capsule, roundBox, carve, shadeByFacing, shellAround, noise3 } from "./sculpt.mjs";
@@ -386,6 +387,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       hides: v1[id]?.hides ?? p.hides ?? [],
     };
   }
-  fs.writeFileSync(jsonPath, JSON.stringify(table, null, "\t") + "\n");
+  fs.writeFileSync(jsonPath, formatJson(table));
   console.log(`wrote ${Object.keys(table).length} v2 pieces and ${jsonPath}`);
 }

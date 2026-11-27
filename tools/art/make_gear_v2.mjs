@@ -5,6 +5,7 @@
 // piece is drawn in its part's pivot frame, so its offset is the shape's lowest corner.
 // bases.json keeps the looks' ids; jewelry (never worn) is named by its bases' "model".
 import fs from "node:fs";
+import { formatJson } from "../json_format.mjs";
 import { fileURLToPath } from "node:url";
 import { write } from "./vox.mjs";
 import { armorV2, npcOutfitsV2, BODY } from "./gear_armor_v2.mjs";
@@ -47,6 +48,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       hides: v1[p.like ?? id]?.hides ?? [],
     };
   }
-  fs.writeFileSync(jsonPath, JSON.stringify(table, null, "\t") + "\n");
+  fs.writeFileSync(jsonPath, formatJson(table));
   console.log(`wrote ${Object.keys(table).length} v2 gear pieces and ${jsonPath}`);
 }

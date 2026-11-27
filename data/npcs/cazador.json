@@ -2,24 +2,13 @@
 	"id": "cazador",
 	"name": "NPC_CAZADOR",
 	"role": "villager",
-	"lines": {
-		"greet": "CAZADOR_GREET"
-	},
+	"lines": {"greet": "CAZADOR_GREET"},
 	"look": {
 		"class": "archer",
-		"appearance": {
-			"body": "male",
-			"skin": "skin_4",
-			"eyes": "amber",
-			"hair_style": "hair_shaggy",
-			"hair_color": "dark_brown",
-			"beard": "short"
-		},
+		"appearance": {"body": "male", "skin": "skin_4", "eyes": "amber", "hair_style": "hair_shaggy", "hair_color": "dark_brown", "beard": "short"},
 		"primary": "#4f5a32",
 		"secondary": "#7a5a3a",
 		"trousers": "#3a2e24",
-		"weapons": [
-			"weapon_bow"
-		]
+		"weapons": ["weapon_bow"]
 	}
 }

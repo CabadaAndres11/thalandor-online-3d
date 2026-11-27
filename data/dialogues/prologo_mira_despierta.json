@@ -3,22 +3,10 @@
 	"nodes": {
 		"start": {
 			"lines": [
-				[
-					"mira",
-					"DLG_P_MIRA_DESPIERTA_1"
-				],
-				[
-					"player",
-					"DLG_P_MIRA_DESPIERTA_2"
-				],
-				[
-					"mira",
-					"DLG_P_MIRA_DESPIERTA_3"
-				],
-				[
-					"mira",
-					"DLG_P_MIRA_DESPIERTA_4"
-				]
+				["mira", "DLG_P_MIRA_DESPIERTA_1"],
+				["player", "DLG_P_MIRA_DESPIERTA_2"],
+				["mira", "DLG_P_MIRA_DESPIERTA_3"],
+				["mira", "DLG_P_MIRA_DESPIERTA_4"]
 			]
 		}
 	}

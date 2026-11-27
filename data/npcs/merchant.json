@@ -5,14 +5,7 @@
 	"lines": {},
 	"look": {
 		"class": "villager",
-		"appearance": {
-			"body": "male",
-			"skin": "skin_2",
-			"eyes": "brown",
-			"hair_style": "short",
-			"hair_color": "brown",
-			"beard": "none"
-		},
+		"appearance": {"body": "male", "skin": "skin_2", "eyes": "brown", "hair_style": "short", "hair_color": "brown", "beard": "none"},
 		"primary": "#7a5a2e",
 		"secondary": "#c9a14a",
 		"trousers": "#3d2f22",

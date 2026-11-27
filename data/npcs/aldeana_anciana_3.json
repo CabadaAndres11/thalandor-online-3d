@@ -2,19 +2,10 @@
 	"id": "aldeana_anciana_3",
 	"name": "NPC_ALDEANA_ANCIANA",
 	"role": "villager",
-	"lines": {
-		"greet": "ALDEANA_ANCIANA_3_GREET"
-	},
+	"lines": {"greet": "ALDEANA_ANCIANA_3_GREET"},
 	"look": {
 		"class": "villager",
-		"appearance": {
-			"body": "female",
-			"skin": "skin_6",
-			"eyes": "dark",
-			"hair_style": "hair_long",
-			"hair_color": "grey",
-			"beard": "none"
-		},
+		"appearance": {"body": "female", "skin": "skin_6", "eyes": "dark", "hair_style": "hair_long", "hair_color": "grey", "beard": "none"},
 		"primary": "#6a4a62",
 		"secondary": "#b8a890",
 		"trousers": "#33282a",

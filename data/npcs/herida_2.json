@@ -3,19 +3,10 @@
 	"name": "NPC_HERIDA_2",
 	"role": "villager",
 	"pose": "lie",
-	"lines": {
-		"greet": "NPC_HERIDA_2_GREET"
-	},
+	"lines": {"greet": "NPC_HERIDA_2_GREET"},
 	"look": {
 		"class": "villager",
-		"appearance": {
-			"body": "female",
-			"skin": "skin_2",
-			"eyes": "green",
-			"hair_style": "hair_bun",
-			"hair_color": "chestnut",
-			"beard": "none"
-		},
+		"appearance": {"body": "female", "skin": "skin_2", "eyes": "green", "hair_style": "hair_bun", "hair_color": "chestnut", "beard": "none"},
 		"primary": "#8a7a5a",
 		"secondary": "#eeeae0",
 		"trousers": "#4a3a2a",

@@ -9,6 +9,7 @@
 // Three tiers: 1 plain, 2 trimmed and riveted, 3 gilded with glowing runes and bigger
 // silhouettes. Cloth and leather sets take the wearer's colors (primary and secondary tints).
 import fs from "node:fs";
+import { formatJson } from "../json_format.mjs";
 import { write, Shape, SHADE, LIGHT, TINT_PRIMARY, TINT_SECONDARY, GLOW } from "./vox.mjs";
 
 import { P, S, C, PALETTE, BOX, mats, TIER_COLORS, tierPalette, CLASS_SETS, cmats, wmats } from "./gear_style.mjs";
@@ -785,7 +786,7 @@ for (const [id, u] of Object.entries(UNIQUES)) {
   looks[id] = { look: [`w_${id}`] };
 }
 
-fs.writeFileSync(jsonPath, JSON.stringify(table, null, "\t") + "\n");
+fs.writeFileSync(jsonPath, formatJson(table));
 
 // Every base of a tier that has models gets them; others keep what they have.
 const bases = JSON.parse(fs.readFileSync(basesPath, "utf8"));
@@ -797,5 +798,5 @@ for (const [id, l] of Object.entries(looks)) {
   else delete bases.bases[id].look_offhand;
   set++;
 }
-fs.writeFileSync(basesPath, JSON.stringify(bases, null, "\t") + "\n");
+fs.writeFileSync(basesPath, formatJson(bases));
 console.log(`wrote ${Object.keys(table).length} gear pieces; looks set on ${set} bases`);

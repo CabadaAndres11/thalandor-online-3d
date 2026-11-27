@@ -3,30 +3,12 @@
 	"nodes": {
 		"start": {
 			"lines": [
-				[
-					"verrin",
-					"DLG_P_VERRIN_EXPLICA_1"
-				],
-				[
-					"verrin",
-					"DLG_P_VERRIN_EXPLICA_2"
-				],
-				[
-					"player",
-					"DLG_P_VERRIN_EXPLICA_3"
-				],
-				[
-					"verrin",
-					"DLG_P_VERRIN_EXPLICA_4"
-				],
-				[
-					"player",
-					"DLG_P_VERRIN_EXPLICA_5"
-				],
-				[
-					"verrin",
-					"DLG_P_VERRIN_EXPLICA_6"
-				]
+				["verrin", "DLG_P_VERRIN_EXPLICA_1"],
+				["verrin", "DLG_P_VERRIN_EXPLICA_2"],
+				["player", "DLG_P_VERRIN_EXPLICA_3"],
+				["verrin", "DLG_P_VERRIN_EXPLICA_4"],
+				["player", "DLG_P_VERRIN_EXPLICA_5"],
+				["verrin", "DLG_P_VERRIN_EXPLICA_6"]
 			]
 		}
 	}

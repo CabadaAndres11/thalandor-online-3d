@@ -6,12 +6,7 @@
 	"scale": 1.15,
 	"radius": 0.5,
 	"speed": 4,
-	"stats": {
-		"max_hp": 180,
-		"armor": 20,
-		"attack_power": 14,
-		"crit_chance": 0.08
-	},
+	"stats": {"max_hp": 180, "armor": 20, "attack_power": 14, "crit_chance": 0.08},
 	"aggro_range": 8,
 	"leash_range": 22,
 	"attack_range": 2.2,
@@ -19,10 +14,7 @@
 	"pack": true,
 	"pack_group": "bandits",
 	"pack_radius": 10,
-	"abilities": [
-		"bandit_chief_smash",
-		"bandit_chief_chop"
-	],
+	"abilities": ["bandit_chief_smash", "bandit_chief_chop"],
 	"look": {
 		"skin": "#d9a27a",
 		"eyes": "#3a2a1a",
@@ -30,26 +22,7 @@
 		"primary": "#6a3a2a",
 		"secondary": "#a08a5a",
 		"trousers": "#2e2620",
-		"pieces": [
-			"outfit_warrior",
-			"weapon_mace"
-		],
-		"body_scale": {
-			"torso": [
-				1.15,
-				1,
-				1.1
-			],
-			"arm": [
-				1.15,
-				1,
-				1.15
-			],
-			"leg": [
-				1.1,
-				1,
-				1.1
-			]
-		}
+		"pieces": ["outfit_warrior", "weapon_mace"],
+		"body_scale": {"torso": [1.15, 1, 1.1], "arm": [1.15, 1, 1.15], "leg": [1.1, 1, 1.1]}
 	}
 }

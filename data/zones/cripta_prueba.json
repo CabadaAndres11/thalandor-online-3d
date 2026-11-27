@@ -1,797 +1,110 @@
 {
 	"name": "ZONE_CRIPTA_PRUEBA",
-	"size": [
-		48,
-		64
-	],
+	"size": [48, 64],
 	"ambience": "mazmorra_noche",
 	"margin": "rock",
-	"levels": [
-		10,
-		60
-	],
+	"levels": [10, 60],
 	"instanced": true,
-	"terrain": {
-		"base": "crypt",
-		"areas": []
-	},
+	"terrain": {"base": "crypt", "areas": []},
 	"pieces": [
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				0
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				0
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				2
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				2
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				4
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				4
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				6
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				6
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				8
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				8
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				10
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				10
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				12
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				12
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				14
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				14
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				16
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				16
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				18
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				18
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				20
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				20
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				22
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				22
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				24
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				24
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				26
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				26
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				28
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				28
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				30
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				30
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				32
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				32
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				34
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				34
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				36
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				36
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				38
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				38
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				40
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				40
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				42
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				42
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				44
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				44
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				46
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				46
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				48
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				48
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				50
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				50
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				52
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				52
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				54
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				54
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				56
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				56
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				58
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				58
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				60
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				60
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				4,
-				62
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				44,
-				62
-			],
-			"rot": 90
-		},
-		{
-			"id": "crypt_pillar",
-			"at": [
-				19,
-				8
-			],
-			"rot": 0
-		},
-		{
-			"id": "crypt_pillar",
-			"at": [
-				29,
-				8
-			],
-			"rot": 0
-		},
-		{
-			"id": "crypt_pillar",
-			"at": [
-				19,
-				14
-			],
-			"rot": 0
-		},
-		{
-			"id": "crypt_pillar",
-			"at": [
-				29,
-				14
-			],
-			"rot": 0
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				6,
-				35
-			],
-			"rot": 0
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				8,
-				35
-			],
-			"rot": 0
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				10,
-				35
-			],
-			"rot": 0
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				12,
-				35
-			],
-			"rot": 0
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				14,
-				35
-			],
-			"rot": 0
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				16,
-				35
-			],
-			"rot": 0
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				18,
-				35
-			],
-			"rot": 0
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				28,
-				35
-			],
-			"rot": 0
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				30,
-				35
-			],
-			"rot": 0
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				32,
-				35
-			],
-			"rot": 0
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				34,
-				35
-			],
-			"rot": 0
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				36,
-				35
-			],
-			"rot": 0
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				38,
-				35
-			],
-			"rot": 0
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				40,
-				35
-			],
-			"rot": 0
-		},
-		{
-			"id": "crypt_wall",
-			"at": [
-				42,
-				35
-			],
-			"rot": 0
-		}
+		{"id": "crypt_wall", "at": [4, 0], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 0], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 2], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 2], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 4], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 4], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 6], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 6], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 8], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 8], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 10], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 10], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 12], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 12], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 14], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 14], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 16], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 16], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 18], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 18], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 20], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 20], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 22], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 22], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 24], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 24], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 26], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 26], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 28], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 28], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 30], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 30], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 32], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 32], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 34], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 34], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 36], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 36], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 38], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 38], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 40], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 40], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 42], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 42], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 44], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 44], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 46], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 46], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 48], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 48], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 50], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 50], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 52], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 52], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 54], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 54], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 56], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 56], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 58], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 58], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 60], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 60], "rot": 90},
+		{"id": "crypt_wall", "at": [4, 62], "rot": 90},
+		{"id": "crypt_wall", "at": [44, 62], "rot": 90},
+		{"id": "crypt_pillar", "at": [19, 8], "rot": 0},
+		{"id": "crypt_pillar", "at": [29, 8], "rot": 0},
+		{"id": "crypt_pillar", "at": [19, 14], "rot": 0},
+		{"id": "crypt_pillar", "at": [29, 14], "rot": 0},
+		{"id": "crypt_wall", "at": [6, 35], "rot": 0},
+		{"id": "crypt_wall", "at": [8, 35], "rot": 0},
+		{"id": "crypt_wall", "at": [10, 35], "rot": 0},
+		{"id": "crypt_wall", "at": [12, 35], "rot": 0},
+		{"id": "crypt_wall", "at": [14, 35], "rot": 0},
+		{"id": "crypt_wall", "at": [16, 35], "rot": 0},
+		{"id": "crypt_wall", "at": [18, 35], "rot": 0},
+		{"id": "crypt_wall", "at": [28, 35], "rot": 0},
+		{"id": "crypt_wall", "at": [30, 35], "rot": 0},
+		{"id": "crypt_wall", "at": [32, 35], "rot": 0},
+		{"id": "crypt_wall", "at": [34, 35], "rot": 0},
+		{"id": "crypt_wall", "at": [36, 35], "rot": 0},
+		{"id": "crypt_wall", "at": [38, 35], "rot": 0},
+		{"id": "crypt_wall", "at": [40, 35], "rot": 0},
+		{"id": "crypt_wall", "at": [42, 35], "rot": 0}
 	],
-	"entries": {
-		"default": [
-			24,
-			4
-		]
-	},
-	"respawn": [
-		24,
-		5
-	],
-	"exits": [
-		{
-			"area": [
-				22,
-				0,
-				4,
-				2
-			],
-			"to": "palacio",
-			"entry": "from_cripta"
-		}
-	],
+	"entries": {"default": [24, 4]},
+	"respawn": [24, 5],
+	"exits": [{"area": [22, 0, 4, 2], "to": "palacio", "entry": "from_cripta"}],
 	"hordes": [
+		{"area": [8, 20, 32, 12], "monsters": [["cultist", 3], ["cult_archer", 1]], "levels": [10, 12], "count": 8, "respawn": false},
 		{
-			"area": [
-				8,
-				20,
-				32,
-				12
-			],
-			"monsters": [
-				[
-					"cultist",
-					3
-				],
-				[
-					"cult_archer",
-					1
-				]
-			],
-			"levels": [
-				10,
-				12
-			],
-			"count": 8,
-			"respawn": false
-		},
-		{
-			"area": [
-				8,
-				38,
-				32,
-				12
-			],
-			"monsters": [
-				[
-					"cultist",
-					2
-				],
-				[
-					"cult_inquisitor",
-					1
-				]
-			],
-			"levels": [
-				10,
-				12
-			],
+			"area": [8, 38, 32, 12],
+			"monsters": [["cultist", 2], ["cult_inquisitor", 1]],
+			"levels": [10, 12],
 			"count": 8,
 			"elite_chance": 0.15,
 			"respawn": false
 		}
 	],
-	"spawns": [
-		{
-			"type": "cult_acolyte",
-			"at": [
-				24,
-				58
-			],
-			"count": 1,
-			"radius": 0,
-			"respawn_s": 300,
-			"elite_chance": 0,
-			"respawn": false
-		}
-	],
-	"torches": [
-		[
-			20,
-			10
-		],
-		[
-			28,
-			10
-		],
-		[
-			10,
-			34
-		],
-		[
-			38,
-			34
-		],
-		[
-			20,
-			54
-		],
-		[
-			28,
-			54
-		]
-	]
+	"spawns": [{"type": "cult_acolyte", "at": [24, 58], "count": 1, "radius": 0, "respawn_s": 300, "elite_chance": 0, "respawn": false}],
+	"torches": [[20, 10], [28, 10], [10, 34], [38, 34], [20, 54], [28, 54]]
 }

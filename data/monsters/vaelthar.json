@@ -1,9 +1,20 @@
 {
-	"id": "vaelthar", "name": "MON_VAELTHAR", "model": "humanoid:vaelthar", "tint": "#1c1b1f", "scale": 2.2,
-	"radius": 1.0, "speed": 3.2, "hover": 0.7, "hide_parts": ["leg_left", "leg_right", "shin_left", "shin_right", "forearm_left", "forearm_right", "hand_left", "hand_right"],
+	"id": "vaelthar",
+	"name": "MON_VAELTHAR",
+	"model": "humanoid:vaelthar",
+	"tint": "#1c1b1f",
+	"scale": 2.2,
+	"radius": 1,
+	"speed": 3.2,
+	"hover": 0.7,
+	"hide_parts": ["leg_left", "leg_right", "shin_left", "shin_right", "forearm_left", "forearm_right", "hand_left", "hand_right"],
 	"stats": {"max_hp": 6000, "armor": 60, "attack_power": 32, "crit_chance": 0.08},
-	"aggro_range": 12, "leash_range": 30, "attack_range": 3.2,
-	"behavior": "boss", "boss": true, "abilities": ["vaelthar_lash"],
+	"aggro_range": 12,
+	"leash_range": 30,
+	"attack_range": 3.2,
+	"behavior": "boss",
+	"boss": true,
+	"abilities": ["vaelthar_lash"],
 	"specials": [
 		{"ability": "vaelthar_halo", "from_phase": 2, "max_range": 6, "at": "self"},
 		{"ability": "vaelthar_embrace", "from_phase": 1, "min_range": 3, "max_range": 13},
@@ -13,9 +24,20 @@
 	"phase_abilities": {"3": "vaelthar_fervor"},
 	"summon": {"type": "cultist", "count": 4, "every_s": 25, "from_phase": 3, "max_alive": 8},
 	"look": {
-		"skin": "#c4b2a0", "eyes": "#ffbf3a", "hair": "#77717d",
-		"primary": "#1c1b1f", "secondary": "#b8995a", "trousers": "#121114",
+		"skin": "#c4b2a0",
+		"eyes": "#ffbf3a",
+		"hair": "#77717d",
+		"primary": "#1c1b1f",
+		"secondary": "#b8995a",
+		"trousers": "#121114",
 		"body_scale": {"torso": [1.15, 1, 1.1], "arm": [1.15, 1, 1.15], "leg": [1.1, 1, 1.1]},
-		"pieces": ["vaelthar_robe", "vaelthar_mane", "vaelthar_sleeve_left", "vaelthar_sleeve_right", "vaelthar_tentacles_left", "vaelthar_tentacles_right"]
+		"pieces": [
+			"vaelthar_robe",
+			"vaelthar_mane",
+			"vaelthar_sleeve_left",
+			"vaelthar_sleeve_right",
+			"vaelthar_tentacles_left",
+			"vaelthar_tentacles_right"
+		]
 	}
 }

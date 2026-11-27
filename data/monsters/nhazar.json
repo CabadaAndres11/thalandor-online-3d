@@ -1,9 +1,21 @@
 {
-	"id": "nhazar", "name": "MON_NHAZAR", "model": "humanoid:nhazar", "tint": "#1c1b1f", "scale": 1.5, "bar_height": 5.6,
-	"radius": 1.0, "speed": 3.0, "hover": 0.8, "hide_parts": ["leg_left", "leg_right", "shin_left", "shin_right"],
+	"id": "nhazar",
+	"name": "MON_NHAZAR",
+	"model": "humanoid:nhazar",
+	"tint": "#1c1b1f",
+	"scale": 1.5,
+	"bar_height": 5.6,
+	"radius": 1,
+	"speed": 3,
+	"hover": 0.8,
+	"hide_parts": ["leg_left", "leg_right", "shin_left", "shin_right"],
 	"stats": {"max_hp": 7500, "armor": 55, "attack_power": 34, "crit_chance": 0.08},
-	"aggro_range": 12, "leash_range": 30, "attack_range": 3.6,
-	"behavior": "boss", "boss": true, "abilities": ["nhazar_chain"],
+	"aggro_range": 12,
+	"leash_range": 30,
+	"attack_range": 3.6,
+	"behavior": "boss",
+	"boss": true,
+	"abilities": ["nhazar_chain"],
 	"specials": [
 		{"ability": "nhazar_howl", "from_phase": 2, "max_range": 6, "at": "self"},
 		{"ability": "nhazar_chant", "from_phase": 3, "max_range": 8, "at": "self"},
@@ -16,9 +28,23 @@
 	"phase_abilities": {"3": "nhazar_choir"},
 	"summon": {"type": "cult_archer", "count": 3, "every_s": 22, "from_phase": 3, "max_alive": 6},
 	"look": {
-		"skin": "#a49c96", "eyes": "#09080a", "hair": "#09080a",
-		"primary": "#1c1b1f", "secondary": "#b8995a", "trousers": "#121114",
-		"body_scale": {"torso": [1.1, 1, 1.1], "arm": [1.1, 1, 1.1], "leg": [1.0, 1, 1.0]},
-		"pieces": ["acolyte_robe", "nhazar_collar", "nhazar_head", "acolyte_sleeve_left", "acolyte_sleeve_right", "acolyte_cuff_left", "acolyte_cuff_right", "nhazar_chains_left", "nhazar_chains_right"]
+		"skin": "#a49c96",
+		"eyes": "#09080a",
+		"hair": "#09080a",
+		"primary": "#1c1b1f",
+		"secondary": "#b8995a",
+		"trousers": "#121114",
+		"body_scale": {"torso": [1.1, 1, 1.1], "arm": [1.1, 1, 1.1], "leg": [1, 1, 1]},
+		"pieces": [
+			"acolyte_robe",
+			"nhazar_collar",
+			"nhazar_head",
+			"acolyte_sleeve_left",
+			"acolyte_sleeve_right",
+			"acolyte_cuff_left",
+			"acolyte_cuff_right",
+			"nhazar_chains_left",
+			"nhazar_chains_right"
+		]
 	}
 }

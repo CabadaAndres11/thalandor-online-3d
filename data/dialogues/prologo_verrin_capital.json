@@ -1,21 +1,4 @@
 {
 	"id": "prologo_verrin_capital",
-	"nodes": {
-		"start": {
-			"lines": [
-				[
-					"verrin",
-					"DLG_P_VERRIN_CAPITAL_1"
-				],
-				[
-					"verrin",
-					"DLG_P_VERRIN_CAPITAL_2"
-				],
-				[
-					"player",
-					"DLG_P_VERRIN_CAPITAL_3"
-				]
-			]
-		}
-	}
+	"nodes": {"start": {"lines": [["verrin", "DLG_P_VERRIN_CAPITAL_1"], ["verrin", "DLG_P_VERRIN_CAPITAL_2"], ["player", "DLG_P_VERRIN_CAPITAL_3"]]}}
 }

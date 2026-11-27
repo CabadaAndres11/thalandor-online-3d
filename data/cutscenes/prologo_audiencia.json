@@ -3,203 +3,34 @@
 	"skippable": true,
 	"stage": "here",
 	"actors": {
-		"rey": {
-			"npc": "rey",
-			"at": [
-				19,
-				4
-			],
-			"facing": 0
-		},
-		"oriel": {
-			"npc": "oriel",
-			"at": [
-				16,
-				11
-			],
-			"facing": 37
-		},
-		"maren": {
-			"npc": "lord_maren",
-			"at": [
-				23,
-				11
-			],
-			"facing": 315
-		},
-		"yo": {
-			"player": true,
-			"at": [
-				19,
-				15
-			],
-			"facing": 180
-		}
+		"rey": {"npc": "rey", "at": [19, 4], "facing": 0},
+		"oriel": {"npc": "oriel", "at": [16, 11], "facing": 37},
+		"maren": {"npc": "lord_maren", "at": [23, 11], "facing": 315},
+		"yo": {"player": true, "at": [19, 15], "facing": 180}
 	},
 	"tracks": [
 		[
-			{
-				"camera": {
-					"at": [
-						19.5,
-						4,
-						22
-					],
-					"look": [
-						20,
-						2.6,
-						5
-					],
-					"fov": 46
-				},
-				"time": 0
-			},
-			{
-				"camera": {
-					"at": [
-						15,
-						3.4,
-						16
-					],
-					"look": [
-						21,
-						2.4,
-						6
-					]
-				},
-				"time": 22,
-				"ease": "in_out"
-			},
-			{
-				"camera": {
-					"at": [
-						24,
-						3.4,
-						16
-					],
-					"look": [
-						18,
-						2.4,
-						6
-					]
-				},
-				"time": 22,
-				"ease": "in_out"
-			}
+			{"camera": {"at": [19.5, 4, 22], "look": [20, 2.6, 5], "fov": 46}, "time": 0},
+			{"camera": {"at": [15, 3.4, 16], "look": [21, 2.4, 6]}, "time": 22, "ease": "in_out"},
+			{"camera": {"at": [24, 3.4, 16], "look": [18, 2.4, 6]}, "time": 22, "ease": "in_out"}
 		],
 		[
-			{
-				"fade": "in",
-				"time": 1
-			},
-			{
-				"line": [
-					"rey",
-					"SCN_P_AUDIENCIA_1"
-				],
-				"time": 4.2
-			},
-			{
-				"line": [
-					"oriel",
-					"SCN_P_AUDIENCIA_2"
-				],
-				"time": 4.6
-			},
-			{
-				"line": [
-					"oriel",
-					"SCN_P_AUDIENCIA_3"
-				],
-				"time": 4.6
-			},
-			{
-				"line": [
-					"player",
-					"SCN_P_AUDIENCIA_4"
-				],
-				"time": 2.2
-			},
-			{
-				"line": [
-					"oriel",
-					"SCN_P_AUDIENCIA_5"
-				],
-				"time": 5
-			},
-			{
-				"line": [
-					"oriel",
-					"SCN_P_AUDIENCIA_6"
-				],
-				"time": 2.6
-			},
-			{
-				"line": [
-					"lord_maren",
-					"SCN_P_AUDIENCIA_7"
-				],
-				"time": 4.4
-			},
-			{
-				"line": [
-					"lord_maren",
-					"SCN_P_AUDIENCIA_8"
-				],
-				"time": 3.2
-			},
-			{
-				"line": [
-					"player",
-					"SCN_P_AUDIENCIA_9"
-				],
-				"time": 3.2
-			},
-			{
-				"line": [
-					"oriel",
-					"SCN_P_AUDIENCIA_10"
-				],
-				"time": 4.2
-			},
-			{
-				"line": [
-					"oriel",
-					"SCN_P_AUDIENCIA_11"
-				],
-				"time": 3.6
-			},
-			{
-				"line": [
-					"lord_maren",
-					"SCN_P_AUDIENCIA_12"
-				],
-				"time": 3
-			},
-			{
-				"line": [
-					"rey",
-					"SCN_P_AUDIENCIA_13"
-				],
-				"time": 3.6
-			},
-			{
-				"fade": "out",
-				"time": 1
-			}
+			{"fade": "in", "time": 1},
+			{"line": ["rey", "SCN_P_AUDIENCIA_1"], "time": 4.2},
+			{"line": ["oriel", "SCN_P_AUDIENCIA_2"], "time": 4.6},
+			{"line": ["oriel", "SCN_P_AUDIENCIA_3"], "time": 4.6},
+			{"line": ["player", "SCN_P_AUDIENCIA_4"], "time": 2.2},
+			{"line": ["oriel", "SCN_P_AUDIENCIA_5"], "time": 5},
+			{"line": ["oriel", "SCN_P_AUDIENCIA_6"], "time": 2.6},
+			{"line": ["lord_maren", "SCN_P_AUDIENCIA_7"], "time": 4.4},
+			{"line": ["lord_maren", "SCN_P_AUDIENCIA_8"], "time": 3.2},
+			{"line": ["player", "SCN_P_AUDIENCIA_9"], "time": 3.2},
+			{"line": ["oriel", "SCN_P_AUDIENCIA_10"], "time": 4.2},
+			{"line": ["oriel", "SCN_P_AUDIENCIA_11"], "time": 3.6},
+			{"line": ["lord_maren", "SCN_P_AUDIENCIA_12"], "time": 3},
+			{"line": ["rey", "SCN_P_AUDIENCIA_13"], "time": 3.6},
+			{"fade": "out", "time": 1}
 		],
-		[
-			{
-				"wait": "",
-				"time": 6
-			},
-			{
-				"pose": [
-					"oriel",
-					"point"
-				],
-				"time": 0.1
-			}
-		]
+		[{"wait": "", "time": 6}, {"pose": ["oriel", "point"], "time": 0.1}]
 	]
 }

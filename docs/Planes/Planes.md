@@ -1,11 +1,11 @@
 ---
 tags: [plan, indice]
-actualizado: 2026-11-23
+actualizado: 2026-11-27
 ---
 
 # Planes de desarrollo
 
-Cada plan de la [[14 Hoja de ruta]] tiene aquí su **spec** (diseño acordado) y su **plan de implementación**. Los escribe Claude al empezar cada plan; tú los revisas antes de que empiece a programar.
+Cada plan de la [[14 Hoja de ruta]] tiene su **spec** (diseño acordado) y su **plan de implementación**. Los escribe Claude al empezar cada plan; tú los revisas antes de que empiece a programar. El plan en curso va en esta carpeta; al terminarlo, sus notas pasan a `docs/Archivo/Planes` ([[Archivo]]).
 
 | Plan | Spec | Plan | Estado |
 |---|---|---|---|

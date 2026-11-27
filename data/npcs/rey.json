@@ -2,19 +2,10 @@
 	"id": "rey",
 	"name": "NPC_REY",
 	"role": "villager",
-	"lines": {
-		"greet": "NPC_REY_GREET"
-	},
+	"lines": {"greet": "NPC_REY_GREET"},
 	"look": {
 		"class": "villager",
-		"appearance": {
-			"body": "male",
-			"skin": "skin_2",
-			"eyes": "grey",
-			"hair_style": "swept",
-			"hair_color": "silver",
-			"beard": "full"
-		},
+		"appearance": {"body": "male", "skin": "skin_2", "eyes": "grey", "hair_style": "swept", "hair_color": "silver", "beard": "full"},
 		"primary": "#2f4f8f",
 		"secondary": "#d4a62a",
 		"trousers": "#22202a",

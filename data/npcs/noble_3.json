@@ -2,19 +2,10 @@
 	"id": "noble_3",
 	"name": "NPC_NOBLE_3",
 	"role": "villager",
-	"lines": {
-		"greet": "NPC_NOBLE_3_GREET"
-	},
+	"lines": {"greet": "NPC_NOBLE_3_GREET"},
 	"look": {
 		"class": "villager",
-		"appearance": {
-			"body": "male",
-			"skin": "skin_3",
-			"eyes": "brown",
-			"hair_style": "short",
-			"hair_color": "dark_brown",
-			"beard": "mustache"
-		},
+		"appearance": {"body": "male", "skin": "skin_3", "eyes": "brown", "hair_style": "short", "hair_color": "dark_brown", "beard": "mustache"},
 		"primary": "#2a4a5a",
 		"secondary": "#c9a64a",
 		"trousers": "#1e1a1e",

@@ -3,500 +3,72 @@
 	"skippable": true,
 	"stage": "here",
 	"actors": {
-		"heraldo": {
-			"monster": "heraldo",
-			"at": [
-				48,
-				44
-			],
-			"facing": 0
-		},
-		"mira": {
-			"npc": "mira",
-			"at": [
-				47,
-				47
-			],
-			"facing": 180
-		},
-		"c1": {
-			"monster": "cultist",
-			"at": [
-				46,
-				47
-			],
-			"facing": 90
-		},
-		"c2": {
-			"monster": "cultist",
-			"at": [
-				49,
-				47
-			],
-			"facing": 270
-		},
-		"yo": {
-			"player": true,
-			"at": [
-				44,
-				51
-			],
-			"facing": 143
-		},
-		"v1": {
-			"npc": "aldeano_1",
-			"at": [
-				42,
-				50
-			],
-			"facing": 90
-		},
-		"c3": {
-			"monster": "cultist",
-			"at": [
-				43,
-				50
-			],
-			"facing": 270
-		},
-		"v2": {
-			"npc": "aldeano_anciano_3",
-			"at": [
-				53,
-				50
-			],
-			"facing": 270
-		},
-		"c4": {
-			"monster": "cultist",
-			"at": [
-				52,
-				50
-			],
-			"facing": 90
-		}
+		"heraldo": {"monster": "heraldo", "at": [48, 44], "facing": 0},
+		"mira": {"npc": "mira", "at": [47, 47], "facing": 180},
+		"c1": {"monster": "cultist", "at": [46, 47], "facing": 90},
+		"c2": {"monster": "cultist", "at": [49, 47], "facing": 270},
+		"yo": {"player": true, "at": [44, 51], "facing": 143},
+		"v1": {"npc": "aldeano_1", "at": [42, 50], "facing": 90},
+		"c3": {"monster": "cultist", "at": [43, 50], "facing": 270},
+		"v2": {"npc": "aldeano_anciano_3", "at": [53, 50], "facing": 270},
+		"c4": {"monster": "cultist", "at": [52, 50], "facing": 90}
 	},
 	"tracks": [
 		[
-			{
-				"camera": {
-					"at": [
-						40,
-						5,
-						56
-					],
-					"look": [
-						47,
-						1,
-						46
-					],
-					"fov": 44
-				},
-				"time": 0
-			},
-			{
-				"camera": {
-					"at": [
-						43,
-						3.2,
-						53
-					],
-					"look": [
-						47.5,
-						1.6,
-						45.5
-					]
-				},
-				"time": 12,
-				"ease": "in_out"
-			},
-			{
-				"camera": {
-					"at": [
-						47,
-						7,
-						52
-					],
-					"look": [
-						48,
-						1,
-						30
-					]
-				},
-				"time": 8,
-				"ease": "in_out"
-			}
+			{"camera": {"at": [40, 5, 56], "look": [47, 1, 46], "fov": 44}, "time": 0},
+			{"camera": {"at": [43, 3.2, 53], "look": [47.5, 1.6, 45.5]}, "time": 12, "ease": "in_out"},
+			{"camera": {"at": [47, 7, 52], "look": [48, 1, 30]}, "time": 8, "ease": "in_out"}
 		],
 		[
-			{
-				"fade": "in",
-				"time": 0.8
-			},
-			{
-				"line": [
-					"",
-					"SCN_P_SECUESTRO_0"
-				],
-				"time": 4.4
-			},
-			{
-				"fx": "fire",
-				"at": [
-					44,
-					40
-				]
-			},
-			{
-				"fx": "smoke",
-				"at": [
-					52,
-					38
-				]
-			},
-			{
-				"line": [
-					"heraldo",
-					"SCN_P_SECUESTRO_1"
-				],
-				"time": 4
-			},
-			{
-				"line": [
-					"heraldo",
-					"SCN_P_SECUESTRO_2"
-				],
-				"time": 3
-			},
-			{
-				"line": [
-					"mira",
-					"SCN_P_SECUESTRO_3"
-				],
-				"time": 1.8
-			},
-			{
-				"line": [
-					"player",
-					"SCN_P_SECUESTRO_4"
-				],
-				"time": 1.6
-			},
-			{
-				"wait": "",
-				"time": 3
-			},
-			{
-				"line": [
-					"player",
-					"SCN_P_SECUESTRO_5"
-				],
-				"time": 2
-			},
-			{
-				"fade": "out",
-				"time": 0.8
-			}
+			{"fade": "in", "time": 0.8},
+			{"line": ["", "SCN_P_SECUESTRO_0"], "time": 4.4},
+			{"fx": "fire", "at": [44, 40]},
+			{"fx": "smoke", "at": [52, 38]},
+			{"line": ["heraldo", "SCN_P_SECUESTRO_1"], "time": 4},
+			{"line": ["heraldo", "SCN_P_SECUESTRO_2"], "time": 3},
+			{"line": ["mira", "SCN_P_SECUESTRO_3"], "time": 1.8},
+			{"line": ["player", "SCN_P_SECUESTRO_4"], "time": 1.6},
+			{"wait": "", "time": 3},
+			{"line": ["player", "SCN_P_SECUESTRO_5"], "time": 2},
+			{"fade": "out", "time": 0.8}
+		],
+		[{"wait": "", "time": 15.200000000000001}, {"move": "mira", "to": [[48, 38], [48, 24]], "speed": 3.2}, {"hide": "mira"}],
+		[{"wait": "", "time": 15.200000000000001}, {"move": "c1", "to": [[47, 38], [47, 24]], "speed": 3.2}, {"hide": "c1"}],
+		[{"wait": "", "time": 15.200000000000001}, {"move": "c2", "to": [[49, 38], [49, 24]], "speed": 3.2}, {"hide": "c2"}],
+		[{"wait": "", "time": 12.4}, {"move": "heraldo", "to": [[48, 36], [48, 20]], "speed": 3.6}, {"hide": "heraldo"}],
+		[
+			{"pose": ["v1", "melee"], "time": 0.8},
+			{"pose": ["v1", "melee"], "time": 0.8},
+			{"pose": ["v1", "melee"], "time": 0.8},
+			{"pose": ["v1", "melee"], "time": 0.8},
+			{"pose": ["v1", "melee"], "time": 0.8},
+			{"pose": ["v1", "melee"], "time": 0.8}
 		],
 		[
-			{
-				"wait": "",
-				"time": 15.200000000000001
-			},
-			{
-				"move": "mira",
-				"to": [
-					[
-						48,
-						38
-					],
-					[
-						48,
-						24
-					]
-				],
-				"speed": 3.2
-			},
-			{
-				"hide": "mira"
-			}
+			{"pose": ["c3", "melee"], "time": 0.8},
+			{"pose": ["c3", "melee"], "time": 0.8},
+			{"pose": ["c3", "melee"], "time": 0.8},
+			{"pose": ["c3", "melee"], "time": 0.8},
+			{"pose": ["c3", "melee"], "time": 0.8},
+			{"pose": ["c3", "melee"], "time": 0.8}
 		],
 		[
-			{
-				"wait": "",
-				"time": 15.200000000000001
-			},
-			{
-				"move": "c1",
-				"to": [
-					[
-						47,
-						38
-					],
-					[
-						47,
-						24
-					]
-				],
-				"speed": 3.2
-			},
-			{
-				"hide": "c1"
-			}
+			{"pose": ["v2", "melee"], "time": 0.8},
+			{"pose": ["v2", "melee"], "time": 0.8},
+			{"pose": ["v2", "melee"], "time": 0.8},
+			{"pose": ["v2", "melee"], "time": 0.8},
+			{"pose": ["v2", "melee"], "time": 0.8},
+			{"pose": ["v2", "melee"], "time": 0.8}
 		],
 		[
-			{
-				"wait": "",
-				"time": 15.200000000000001
-			},
-			{
-				"move": "c2",
-				"to": [
-					[
-						49,
-						38
-					],
-					[
-						49,
-						24
-					]
-				],
-				"speed": 3.2
-			},
-			{
-				"hide": "c2"
-			}
+			{"pose": ["c4", "melee"], "time": 0.8},
+			{"pose": ["c4", "melee"], "time": 0.8},
+			{"pose": ["c4", "melee"], "time": 0.8},
+			{"pose": ["c4", "melee"], "time": 0.8},
+			{"pose": ["c4", "melee"], "time": 0.8},
+			{"pose": ["c4", "melee"], "time": 0.8}
 		],
-		[
-			{
-				"wait": "",
-				"time": 12.4
-			},
-			{
-				"move": "heraldo",
-				"to": [
-					[
-						48,
-						36
-					],
-					[
-						48,
-						20
-					]
-				],
-				"speed": 3.6
-			},
-			{
-				"hide": "heraldo"
-			}
-		],
-		[
-			{
-				"pose": [
-					"v1",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"v1",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"v1",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"v1",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"v1",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"v1",
-					"melee"
-				],
-				"time": 0.8
-			}
-		],
-		[
-			{
-				"pose": [
-					"c3",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"c3",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"c3",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"c3",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"c3",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"c3",
-					"melee"
-				],
-				"time": 0.8
-			}
-		],
-		[
-			{
-				"pose": [
-					"v2",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"v2",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"v2",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"v2",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"v2",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"v2",
-					"melee"
-				],
-				"time": 0.8
-			}
-		],
-		[
-			{
-				"pose": [
-					"c4",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"c4",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"c4",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"c4",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"c4",
-					"melee"
-				],
-				"time": 0.8
-			},
-			{
-				"pose": [
-					"c4",
-					"melee"
-				],
-				"time": 0.8
-			}
-		],
-		[
-			{
-				"shake": "",
-				"time": 0.4
-			},
-			{
-				"wait": "",
-				"time": 2
-			},
-			{
-				"shake": "",
-				"time": 0.4
-			}
-		],
-		[
-			{
-				"wait": "",
-				"time": 5
-			},
-			{
-				"hide": "c3"
-			},
-			{
-				"hide": "c4"
-			},
-			{
-				"pose": [
-					"v1",
-					"kneel"
-				],
-				"time": 0.1
-			}
-		]
+		[{"shake": "", "time": 0.4}, {"wait": "", "time": 2}, {"shake": "", "time": 0.4}],
+		[{"wait": "", "time": 5}, {"hide": "c3"}, {"hide": "c4"}, {"pose": ["v1", "kneel"], "time": 0.1}]
 	]
 }

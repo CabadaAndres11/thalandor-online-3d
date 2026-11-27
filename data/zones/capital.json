@@ -1,2140 +1,249 @@
 {
 	"name": "ZONE_CAPITAL",
-	"size": [
-		96,
-		80
-	],
+	"size": [96, 80],
 	"ambience": "exterior_dia",
 	"margin": "city",
 	"safe": true,
-	"levels": [
-		1,
-		1
-	],
-	"terrain": {
-		"base": "cobble",
-		"areas": [
-			{
-				"kind": "stone",
-				"area": [
-					28,
-					28,
-					40,
-					24
-				]
-			}
-		]
-	},
-	"paths": [
-		{
-			"points": [
-				[
-					48,
-					79
-				],
-				[
-					48,
-					11
-				]
-			],
-			"width": 3,
-			"terrain": "cobble"
-		},
-		{
-			"points": [
-				[
-					12,
-					40
-				],
-				[
-					84,
-					40
-				]
-			],
-			"width": 3,
-			"terrain": "cobble"
-		}
-	],
+	"levels": [1, 1],
+	"terrain": {"base": "cobble", "areas": [{"kind": "stone", "area": [28, 28, 40, 24]}]},
+	"paths": [{"points": [[48, 79], [48, 11]], "width": 3, "terrain": "cobble"}, {"points": [[12, 40], [84, 40]], "width": 3, "terrain": "cobble"}],
 	"pieces": [
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				12,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				12,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				14,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				14,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				16,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				16,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				18,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				18,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				20,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				20,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				22,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				22,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				24,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				24,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				26,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				26,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				28,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				28,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				30,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				30,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				32,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				32,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				34,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				34,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				36,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				36,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				38,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				38,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				40,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				40,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				42,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				42,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				44,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				44,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				12
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				12
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				14
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				14
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				16
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				16
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				18
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				18
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				20
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				20
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				22
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				22
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				24
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				24
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				26
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				26
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				28
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				28
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				30
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				30
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				32
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				32
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				34
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				34
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				36
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				36
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				38
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				38
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				40
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				40
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				42
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				42
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				44
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				44
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				46
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				46
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				48
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				48
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				50
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				50
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				52
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				52
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				54
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				54
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				56
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				56
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				58
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				58
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				60
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				60
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				62
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				62
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				64
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				64
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				10,
-				66
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				66
-			],
-			"rot": 90
-		},
-		{
-			"id": "city_gate",
-			"at": [
-				46,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_gate",
-			"at": [
-				46,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "fountain",
-			"at": [
-				47,
-				39
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_lamp",
-			"at": [
-				46,
-				16
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_lamp",
-			"at": [
-				50,
-				16
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_lamp",
-			"at": [
-				46,
-				26
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_lamp",
-			"at": [
-				50,
-				26
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_lamp",
-			"at": [
-				46,
-				50
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_lamp",
-			"at": [
-				50,
-				50
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_lamp",
-			"at": [
-				46,
-				60
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_lamp",
-			"at": [
-				50,
-				60
-			],
-			"rot": 0
-		},
-		{
-			"id": "kingdom_banner",
-			"at": [
-				44,
-				13
-			],
-			"rot": 0
-		},
-		{
-			"id": "kingdom_banner",
-			"at": [
-				52,
-				13
-			],
-			"rot": 0
-		},
-		{
-			"id": "crates",
-			"at": [
-				36,
-				46
-			],
-			"rot": 0
-		},
-		{
-			"id": "well",
-			"at": [
-				30,
-				40
-			],
-			"rot": 0
-		},
-		{
-			"id": "house_city",
-			"at": [
-				12,
-				18
-			],
-			"rot": 270
-		},
-		{
-			"id": "house_city",
-			"at": [
-				21,
-				18
-			],
-			"rot": 270
-		},
-		{
-			"id": "house_city",
-			"at": [
-				30,
-				18
-			],
-			"rot": 270
-		},
-		{
-			"id": "house_city_b",
-			"at": [
-				59,
-				12
-			],
-			"rot": 90
-		},
-		{
-			"id": "house_city_b",
-			"at": [
-				67,
-				12
-			],
-			"rot": 90
-		},
-		{
-			"id": "house_city",
-			"at": [
-				82,
-				12
-			],
-			"rot": 90
-		},
-		{
-			"id": "house_city",
-			"at": [
-				12,
-				26
-			],
-			"rot": 270
-		},
-		{
-			"id": "house_city",
-			"at": [
-				21,
-				26
-			],
-			"rot": 270
-		},
-		{
-			"id": "house_city",
-			"at": [
-				30,
-				26
-			],
-			"rot": 270
-		},
-		{
-			"id": "house_city_b",
-			"at": [
-				59,
-				20
-			],
-			"rot": 90
-		},
-		{
-			"id": "house_city_b",
-			"at": [
-				67,
-				20
-			],
-			"rot": 90
-		},
-		{
-			"id": "house_city",
-			"at": [
-				82,
-				20
-			],
-			"rot": 90
-		},
-		{
-			"id": "house_city",
-			"at": [
-				12,
-				34
-			],
-			"rot": 270
-		},
-		{
-			"id": "house_city_c",
-			"at": [
-				82,
-				28
-			],
-			"rot": 90
-		},
-		{
-			"id": "house_city_c",
-			"at": [
-				18,
-				57
-			],
-			"rot": 180
-		},
-		{
-			"id": "house_city_b",
-			"at": [
-				83,
-				57
-			],
-			"rot": 180
-		},
-		{
-			"id": "house_city_b",
-			"at": [
-				18,
-				65
-			],
-			"rot": 180
-		},
-		{
-			"id": "house_city_b",
-			"at": [
-				27,
-				65
-			],
-			"rot": 180
-		},
-		{
-			"id": "house_city_b",
-			"at": [
-				36,
-				65
-			],
-			"rot": 180
-		},
-		{
-			"id": "house_city_c",
-			"at": [
-				60,
-				65
-			],
-			"rot": 180
-		},
-		{
-			"id": "house_city_c",
-			"at": [
-				68,
-				65
-			],
-			"rot": 180
-		},
-		{
-			"id": "house_city_b",
-			"at": [
-				83,
-				65
-			],
-			"rot": 180
-		},
-		{
-			"id": "city_lamp",
-			"at": [
-				22,
-				38
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_lamp",
-			"at": [
-				34,
-				38
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_lamp",
-			"at": [
-				62,
-				38
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_lamp",
-			"at": [
-				74,
-				38
-			],
-			"rot": 0
-		},
-		{
-			"id": "palace_facade",
-			"at": [
-				38,
-				2
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				51,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				53,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				55,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				57,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				59,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				61,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				63,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				65,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				67,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				69,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				71,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				73,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				75,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				77,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				79,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				81,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				83,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				10
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				51,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				53,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				55,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				57,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				59,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				61,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				63,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				65,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				67,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				69,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				71,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				73,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				75,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				77,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				79,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				81,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				83,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "city_wall",
-			"at": [
-				85,
-				68
-			],
-			"rot": 0
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				30,
-				30
-			],
-			"rot": 0
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				33,
-				30
-			],
-			"rot": 0
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				36,
-				30
-			],
-			"rot": 0
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				39,
-				30
-			],
-			"rot": 0
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				54,
-				30
-			],
-			"rot": 0
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				57,
-				30
-			],
-			"rot": 0
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				60,
-				30
-			],
-			"rot": 0
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				63,
-				30
-			],
-			"rot": 0
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				31,
-				49
-			],
-			"rot": 180
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				34,
-				49
-			],
-			"rot": 180
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				37,
-				49
-			],
-			"rot": 180
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				40,
-				49
-			],
-			"rot": 180
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				55,
-				49
-			],
-			"rot": 180
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				58,
-				49
-			],
-			"rot": 180
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				61,
-				49
-			],
-			"rot": 180
-		},
-		{
-			"id": "market_stall",
-			"at": [
-				64,
-				49
-			],
-			"rot": 180
-		}
+		{"id": "city_wall", "at": [10, 68], "rot": 0},
+		{"id": "city_wall", "at": [10, 10], "rot": 0},
+		{"id": "city_wall", "at": [12, 68], "rot": 0},
+		{"id": "city_wall", "at": [12, 10], "rot": 0},
+		{"id": "city_wall", "at": [14, 68], "rot": 0},
+		{"id": "city_wall", "at": [14, 10], "rot": 0},
+		{"id": "city_wall", "at": [16, 68], "rot": 0},
+		{"id": "city_wall", "at": [16, 10], "rot": 0},
+		{"id": "city_wall", "at": [18, 68], "rot": 0},
+		{"id": "city_wall", "at": [18, 10], "rot": 0},
+		{"id": "city_wall", "at": [20, 68], "rot": 0},
+		{"id": "city_wall", "at": [20, 10], "rot": 0},
+		{"id": "city_wall", "at": [22, 68], "rot": 0},
+		{"id": "city_wall", "at": [22, 10], "rot": 0},
+		{"id": "city_wall", "at": [24, 68], "rot": 0},
+		{"id": "city_wall", "at": [24, 10], "rot": 0},
+		{"id": "city_wall", "at": [26, 68], "rot": 0},
+		{"id": "city_wall", "at": [26, 10], "rot": 0},
+		{"id": "city_wall", "at": [28, 68], "rot": 0},
+		{"id": "city_wall", "at": [28, 10], "rot": 0},
+		{"id": "city_wall", "at": [30, 68], "rot": 0},
+		{"id": "city_wall", "at": [30, 10], "rot": 0},
+		{"id": "city_wall", "at": [32, 68], "rot": 0},
+		{"id": "city_wall", "at": [32, 10], "rot": 0},
+		{"id": "city_wall", "at": [34, 68], "rot": 0},
+		{"id": "city_wall", "at": [34, 10], "rot": 0},
+		{"id": "city_wall", "at": [36, 68], "rot": 0},
+		{"id": "city_wall", "at": [36, 10], "rot": 0},
+		{"id": "city_wall", "at": [38, 68], "rot": 0},
+		{"id": "city_wall", "at": [38, 10], "rot": 0},
+		{"id": "city_wall", "at": [40, 68], "rot": 0},
+		{"id": "city_wall", "at": [40, 10], "rot": 0},
+		{"id": "city_wall", "at": [42, 68], "rot": 0},
+		{"id": "city_wall", "at": [42, 10], "rot": 0},
+		{"id": "city_wall", "at": [44, 68], "rot": 0},
+		{"id": "city_wall", "at": [44, 10], "rot": 0},
+		{"id": "city_wall", "at": [10, 12], "rot": 90},
+		{"id": "city_wall", "at": [85, 12], "rot": 90},
+		{"id": "city_wall", "at": [10, 14], "rot": 90},
+		{"id": "city_wall", "at": [85, 14], "rot": 90},
+		{"id": "city_wall", "at": [10, 16], "rot": 90},
+		{"id": "city_wall", "at": [85, 16], "rot": 90},
+		{"id": "city_wall", "at": [10, 18], "rot": 90},
+		{"id": "city_wall", "at": [85, 18], "rot": 90},
+		{"id": "city_wall", "at": [10, 20], "rot": 90},
+		{"id": "city_wall", "at": [85, 20], "rot": 90},
+		{"id": "city_wall", "at": [10, 22], "rot": 90},
+		{"id": "city_wall", "at": [85, 22], "rot": 90},
+		{"id": "city_wall", "at": [10, 24], "rot": 90},
+		{"id": "city_wall", "at": [85, 24], "rot": 90},
+		{"id": "city_wall", "at": [10, 26], "rot": 90},
+		{"id": "city_wall", "at": [85, 26], "rot": 90},
+		{"id": "city_wall", "at": [10, 28], "rot": 90},
+		{"id": "city_wall", "at": [85, 28], "rot": 90},
+		{"id": "city_wall", "at": [10, 30], "rot": 90},
+		{"id": "city_wall", "at": [85, 30], "rot": 90},
+		{"id": "city_wall", "at": [10, 32], "rot": 90},
+		{"id": "city_wall", "at": [85, 32], "rot": 90},
+		{"id": "city_wall", "at": [10, 34], "rot": 90},
+		{"id": "city_wall", "at": [85, 34], "rot": 90},
+		{"id": "city_wall", "at": [10, 36], "rot": 90},
+		{"id": "city_wall", "at": [85, 36], "rot": 90},
+		{"id": "city_wall", "at": [10, 38], "rot": 90},
+		{"id": "city_wall", "at": [85, 38], "rot": 90},
+		{"id": "city_wall", "at": [10, 40], "rot": 90},
+		{"id": "city_wall", "at": [85, 40], "rot": 90},
+		{"id": "city_wall", "at": [10, 42], "rot": 90},
+		{"id": "city_wall", "at": [85, 42], "rot": 90},
+		{"id": "city_wall", "at": [10, 44], "rot": 90},
+		{"id": "city_wall", "at": [85, 44], "rot": 90},
+		{"id": "city_wall", "at": [10, 46], "rot": 90},
+		{"id": "city_wall", "at": [85, 46], "rot": 90},
+		{"id": "city_wall", "at": [10, 48], "rot": 90},
+		{"id": "city_wall", "at": [85, 48], "rot": 90},
+		{"id": "city_wall", "at": [10, 50], "rot": 90},
+		{"id": "city_wall", "at": [85, 50], "rot": 90},
+		{"id": "city_wall", "at": [10, 52], "rot": 90},
+		{"id": "city_wall", "at": [85, 52], "rot": 90},
+		{"id": "city_wall", "at": [10, 54], "rot": 90},
+		{"id": "city_wall", "at": [85, 54], "rot": 90},
+		{"id": "city_wall", "at": [10, 56], "rot": 90},
+		{"id": "city_wall", "at": [85, 56], "rot": 90},
+		{"id": "city_wall", "at": [10, 58], "rot": 90},
+		{"id": "city_wall", "at": [85, 58], "rot": 90},
+		{"id": "city_wall", "at": [10, 60], "rot": 90},
+		{"id": "city_wall", "at": [85, 60], "rot": 90},
+		{"id": "city_wall", "at": [10, 62], "rot": 90},
+		{"id": "city_wall", "at": [85, 62], "rot": 90},
+		{"id": "city_wall", "at": [10, 64], "rot": 90},
+		{"id": "city_wall", "at": [85, 64], "rot": 90},
+		{"id": "city_wall", "at": [10, 66], "rot": 90},
+		{"id": "city_wall", "at": [85, 66], "rot": 90},
+		{"id": "city_gate", "at": [46, 68], "rot": 0},
+		{"id": "city_gate", "at": [46, 10], "rot": 0},
+		{"id": "fountain", "at": [47, 39], "rot": 0},
+		{"id": "city_lamp", "at": [46, 16], "rot": 0},
+		{"id": "city_lamp", "at": [50, 16], "rot": 0},
+		{"id": "city_lamp", "at": [46, 26], "rot": 0},
+		{"id": "city_lamp", "at": [50, 26], "rot": 0},
+		{"id": "city_lamp", "at": [46, 50], "rot": 0},
+		{"id": "city_lamp", "at": [50, 50], "rot": 0},
+		{"id": "city_lamp", "at": [46, 60], "rot": 0},
+		{"id": "city_lamp", "at": [50, 60], "rot": 0},
+		{"id": "kingdom_banner", "at": [44, 13], "rot": 0},
+		{"id": "kingdom_banner", "at": [52, 13], "rot": 0},
+		{"id": "crates", "at": [36, 46], "rot": 0},
+		{"id": "well", "at": [30, 40], "rot": 0},
+		{"id": "house_city", "at": [12, 18], "rot": 270},
+		{"id": "house_city", "at": [21, 18], "rot": 270},
+		{"id": "house_city", "at": [30, 18], "rot": 270},
+		{"id": "house_city_b", "at": [59, 12], "rot": 90},
+		{"id": "house_city_b", "at": [67, 12], "rot": 90},
+		{"id": "house_city", "at": [82, 12], "rot": 90},
+		{"id": "house_city", "at": [12, 26], "rot": 270},
+		{"id": "house_city", "at": [21, 26], "rot": 270},
+		{"id": "house_city", "at": [30, 26], "rot": 270},
+		{"id": "house_city_b", "at": [59, 20], "rot": 90},
+		{"id": "house_city_b", "at": [67, 20], "rot": 90},
+		{"id": "house_city", "at": [82, 20], "rot": 90},
+		{"id": "house_city", "at": [12, 34], "rot": 270},
+		{"id": "house_city_c", "at": [82, 28], "rot": 90},
+		{"id": "house_city_c", "at": [18, 57], "rot": 180},
+		{"id": "house_city_b", "at": [83, 57], "rot": 180},
+		{"id": "house_city_b", "at": [18, 65], "rot": 180},
+		{"id": "house_city_b", "at": [27, 65], "rot": 180},
+		{"id": "house_city_b", "at": [36, 65], "rot": 180},
+		{"id": "house_city_c", "at": [60, 65], "rot": 180},
+		{"id": "house_city_c", "at": [68, 65], "rot": 180},
+		{"id": "house_city_b", "at": [83, 65], "rot": 180},
+		{"id": "city_lamp", "at": [22, 38], "rot": 0},
+		{"id": "city_lamp", "at": [34, 38], "rot": 0},
+		{"id": "city_lamp", "at": [62, 38], "rot": 0},
+		{"id": "city_lamp", "at": [74, 38], "rot": 0},
+		{"id": "palace_facade", "at": [38, 2], "rot": 0},
+		{"id": "city_wall", "at": [51, 10], "rot": 0},
+		{"id": "city_wall", "at": [53, 10], "rot": 0},
+		{"id": "city_wall", "at": [55, 10], "rot": 0},
+		{"id": "city_wall", "at": [57, 10], "rot": 0},
+		{"id": "city_wall", "at": [59, 10], "rot": 0},
+		{"id": "city_wall", "at": [61, 10], "rot": 0},
+		{"id": "city_wall", "at": [63, 10], "rot": 0},
+		{"id": "city_wall", "at": [65, 10], "rot": 0},
+		{"id": "city_wall", "at": [67, 10], "rot": 0},
+		{"id": "city_wall", "at": [69, 10], "rot": 0},
+		{"id": "city_wall", "at": [71, 10], "rot": 0},
+		{"id": "city_wall", "at": [73, 10], "rot": 0},
+		{"id": "city_wall", "at": [75, 10], "rot": 0},
+		{"id": "city_wall", "at": [77, 10], "rot": 0},
+		{"id": "city_wall", "at": [79, 10], "rot": 0},
+		{"id": "city_wall", "at": [81, 10], "rot": 0},
+		{"id": "city_wall", "at": [83, 10], "rot": 0},
+		{"id": "city_wall", "at": [85, 10], "rot": 0},
+		{"id": "city_wall", "at": [51, 68], "rot": 0},
+		{"id": "city_wall", "at": [53, 68], "rot": 0},
+		{"id": "city_wall", "at": [55, 68], "rot": 0},
+		{"id": "city_wall", "at": [57, 68], "rot": 0},
+		{"id": "city_wall", "at": [59, 68], "rot": 0},
+		{"id": "city_wall", "at": [61, 68], "rot": 0},
+		{"id": "city_wall", "at": [63, 68], "rot": 0},
+		{"id": "city_wall", "at": [65, 68], "rot": 0},
+		{"id": "city_wall", "at": [67, 68], "rot": 0},
+		{"id": "city_wall", "at": [69, 68], "rot": 0},
+		{"id": "city_wall", "at": [71, 68], "rot": 0},
+		{"id": "city_wall", "at": [73, 68], "rot": 0},
+		{"id": "city_wall", "at": [75, 68], "rot": 0},
+		{"id": "city_wall", "at": [77, 68], "rot": 0},
+		{"id": "city_wall", "at": [79, 68], "rot": 0},
+		{"id": "city_wall", "at": [81, 68], "rot": 0},
+		{"id": "city_wall", "at": [83, 68], "rot": 0},
+		{"id": "city_wall", "at": [85, 68], "rot": 0},
+		{"id": "market_stall", "at": [30, 30], "rot": 0},
+		{"id": "market_stall", "at": [33, 30], "rot": 0},
+		{"id": "market_stall", "at": [36, 30], "rot": 0},
+		{"id": "market_stall", "at": [39, 30], "rot": 0},
+		{"id": "market_stall", "at": [54, 30], "rot": 0},
+		{"id": "market_stall", "at": [57, 30], "rot": 0},
+		{"id": "market_stall", "at": [60, 30], "rot": 0},
+		{"id": "market_stall", "at": [63, 30], "rot": 0},
+		{"id": "market_stall", "at": [31, 49], "rot": 180},
+		{"id": "market_stall", "at": [34, 49], "rot": 180},
+		{"id": "market_stall", "at": [37, 49], "rot": 180},
+		{"id": "market_stall", "at": [40, 49], "rot": 180},
+		{"id": "market_stall", "at": [55, 49], "rot": 180},
+		{"id": "market_stall", "at": [58, 49], "rot": 180},
+		{"id": "market_stall", "at": [61, 49], "rot": 180},
+		{"id": "market_stall", "at": [64, 49], "rot": 180}
 	],
 	"npcs": [
-		{
-			"id": "merchant",
-			"at": [
-				42,
-				44
-			],
-			"facing": 90
-		},
-		{
-			"id": "maese_corwin",
-			"at": [
-				58,
-				44
-			],
-			"facing": 270
-		},
-		{
-			"id": "guardia_ciudad",
-			"at": [
-				45,
-				65
-			],
-			"facing": 0
-		},
-		{
-			"id": "vendedor_1",
-			"at": [
-				30,
-				29
-			],
-			"facing": 0
-		},
-		{
-			"id": "vendedor_2",
-			"at": [
-				33,
-				29
-			],
-			"facing": 0
-		},
-		{
-			"id": "vendedor_3",
-			"at": [
-				36,
-				29
-			],
-			"facing": 0
-		},
-		{
-			"id": "vendedor_4",
-			"at": [
-				39,
-				29
-			],
-			"facing": 0
-		},
-		{
-			"id": "vendedor_5",
-			"at": [
-				54,
-				29
-			],
-			"facing": 0
-		},
-		{
-			"id": "vendedor_6",
-			"at": [
-				57,
-				29
-			],
-			"facing": 0
-		},
-		{
-			"id": "vendedor_7",
-			"at": [
-				60,
-				29
-			],
-			"facing": 0
-		},
-		{
-			"id": "vendedor_8",
-			"at": [
-				63,
-				29
-			],
-			"facing": 0
-		},
-		{
-			"id": "vendedor_9",
-			"at": [
-				30,
-				50
-			],
-			"facing": 180
-		},
-		{
-			"id": "vendedor_10",
-			"at": [
-				33,
-				50
-			],
-			"facing": 180
-		},
-		{
-			"id": "vendedor_11",
-			"at": [
-				36,
-				50
-			],
-			"facing": 180
-		},
-		{
-			"id": "vendedor_12",
-			"at": [
-				39,
-				50
-			],
-			"facing": 180
-		},
-		{
-			"id": "vendedor_13",
-			"at": [
-				54,
-				50
-			],
-			"facing": 180
-		},
-		{
-			"id": "vendedor_14",
-			"at": [
-				57,
-				50
-			],
-			"facing": 180
-		},
-		{
-			"id": "vendedor_15",
-			"at": [
-				60,
-				50
-			],
-			"facing": 180
-		},
-		{
-			"id": "vendedor_16",
-			"at": [
-				63,
-				50
-			],
-			"facing": 180
-		}
+		{"id": "merchant", "at": [42, 44], "facing": 90},
+		{"id": "maese_corwin", "at": [58, 44], "facing": 270},
+		{"id": "guardia_ciudad", "at": [45, 65], "facing": 0},
+		{"id": "vendedor_1", "at": [30, 29], "facing": 0},
+		{"id": "vendedor_2", "at": [33, 29], "facing": 0},
+		{"id": "vendedor_3", "at": [36, 29], "facing": 0},
+		{"id": "vendedor_4", "at": [39, 29], "facing": 0},
+		{"id": "vendedor_5", "at": [54, 29], "facing": 0},
+		{"id": "vendedor_6", "at": [57, 29], "facing": 0},
+		{"id": "vendedor_7", "at": [60, 29], "facing": 0},
+		{"id": "vendedor_8", "at": [63, 29], "facing": 0},
+		{"id": "vendedor_9", "at": [30, 50], "facing": 180},
+		{"id": "vendedor_10", "at": [33, 50], "facing": 180},
+		{"id": "vendedor_11", "at": [36, 50], "facing": 180},
+		{"id": "vendedor_12", "at": [39, 50], "facing": 180},
+		{"id": "vendedor_13", "at": [54, 50], "facing": 180},
+		{"id": "vendedor_14", "at": [57, 50], "facing": 180},
+		{"id": "vendedor_15", "at": [60, 50], "facing": 180},
+		{"id": "vendedor_16", "at": [63, 50], "facing": 180}
 	],
 	"walkers": [
-		{
-			"npc": "ciudadano_1",
-			"route": [
-				[
-					44,
-					30
-				],
-				[
-					44,
-					48
-				],
-				[
-					53,
-					48
-				],
-				[
-					53,
-					30
-				]
-			],
-			"speed": 1.1,
-			"pause_s": 3,
-			"loop": true
-		},
-		{
-			"npc": "ciudadana_1",
-			"route": [
-				[
-					34,
-					42
-				],
-				[
-					62,
-					42
-				]
-			],
-			"speed": 0.9,
-			"pause_s": 4,
-			"loop": true
-		},
-		{
-			"npc": "ciudadano_2",
-			"route": [
-				[
-					52,
-					62
-				],
-				[
-					52,
-					52
-				],
-				[
-					64,
-					52
-				]
-			],
-			"speed": 1.2,
-			"pause_s": 3,
-			"loop": true
-		},
-		{
-			"npc": "ciudadana_2",
-			"route": [
-				[
-					40,
-					54
-				],
-				[
-					40,
-					62
-				],
-				[
-					44,
-					62
-				]
-			],
-			"speed": 0.8,
-			"pause_s": 5,
-			"loop": true
-		},
-		{
-			"npc": "ciudadano_3",
-			"route": [
-				[
-					35,
-					38
-				],
-				[
-					35,
-					31
-				],
-				[
-					42,
-					31
-				]
-			],
-			"speed": 1,
-			"pause_s": 4,
-			"loop": false
-		},
-		{
-			"npc": "ciudadana_3",
-			"route": [
-				[
-					62,
-					34
-				],
-				[
-					66,
-					34
-				],
-				[
-					66,
-					42
-				]
-			],
-			"speed": 0.9,
-			"pause_s": 4,
-			"loop": true
-		},
-		{
-			"npc": "ciudadano_4",
-			"route": [
-				[
-					52,
-					20
-				],
-				[
-					52,
-					28
-				],
-				[
-					58,
-					28
-				]
-			],
-			"speed": 0.7,
-			"pause_s": 6,
-			"loop": true
-		},
-		{
-			"npc": "ciudadana_4",
-			"route": [
-				[
-					44,
-					18
-				],
-				[
-					44,
-					24
-				],
-				[
-					40,
-					24
-				]
-			],
-			"speed": 1,
-			"pause_s": 3,
-			"loop": true
-		},
-		{
-			"npc": "guardia_ciudad",
-			"route": [
-				[
-					47,
-					14
-				],
-				[
-					47,
-					62
-				]
-			],
-			"speed": 1.2,
-			"pause_s": 4,
-			"loop": true
-		},
-		{
-			"npc": "ciudadano_5",
-			"route": [
-				[
-					14,
-					40
-				],
-				[
-					27,
-					40
-				]
-			],
-			"speed": 1,
-			"pause_s": 5,
-			"loop": true
-		},
-		{
-			"npc": "ciudadana_5",
-			"route": [
-				[
-					34,
-					41
-				],
-				[
-					44,
-					41
-				]
-			],
-			"speed": 0.9,
-			"pause_s": 3,
-			"loop": true
-		},
-		{
-			"npc": "ciudadano_6",
-			"route": [
-				[
-					52,
-					40
-				],
-				[
-					66,
-					40
-				]
-			],
-			"speed": 1.1,
-			"pause_s": 5,
-			"loop": true
-		},
-		{
-			"npc": "ciudadana_6",
-			"route": [
-				[
-					70,
-					41
-				],
-				[
-					82,
-					41
-				]
-			],
-			"speed": 0.8,
-			"pause_s": 4,
-			"loop": true
-		},
-		{
-			"npc": "ciudadano_7",
-			"route": [
-				[
-					48,
-					14
-				],
-				[
-					48,
-					34
-				]
-			],
-			"speed": 1,
-			"pause_s": 5,
-			"loop": true
-		},
-		{
-			"npc": "ciudadana_7",
-			"route": [
-				[
-					49,
-					44
-				],
-				[
-					49,
-					64
-				]
-			],
-			"speed": 0.9,
-			"pause_s": 4,
-			"loop": true
-		},
-		{
-			"npc": "ciudadano_8",
-			"route": [
-				[
-					40,
-					36
-				],
-				[
-					46,
-					33
-				],
-				[
-					46,
-					44
-				]
-			],
-			"speed": 1,
-			"pause_s": 4,
-			"loop": true
-		},
-		{
-			"npc": "ciudadana_8",
-			"route": [
-				[
-					56,
-					44
-				],
-				[
-					66,
-					44
-				],
-				[
-					66,
-					36
-				]
-			],
-			"speed": 0.8,
-			"pause_s": 4,
-			"loop": true
-		},
-		{
-			"npc": "ciudadano_9",
-			"route": [
-				[
-					34,
-					32
-				],
-				[
-					44,
-					32
-				]
-			],
-			"speed": 0.9,
-			"pause_s": 4,
-			"loop": true
-		},
-		{
-			"npc": "ciudadana_9",
-			"route": [
-				[
-					58,
-					32
-				],
-				[
-					66,
-					32
-				]
-			],
-			"speed": 0.7,
-			"pause_s": 6,
-			"loop": true
-		},
-		{
-			"npc": "ciudadano_10",
-			"route": [
-				[
-					16,
-					41
-				],
-				[
-					26,
-					41
-				]
-			],
-			"speed": 1.1,
-			"pause_s": 4,
-			"loop": true
-		},
-		{
-			"npc": "ciudadana_10",
-			"route": [
-				[
-					72,
-					39
-				],
-				[
-					80,
-					39
-				]
-			],
-			"speed": 1,
-			"pause_s": 3,
-			"loop": true
-		}
+		{"npc": "ciudadano_1", "route": [[44, 30], [44, 48], [53, 48], [53, 30]], "speed": 1.1, "pause_s": 3, "loop": true},
+		{"npc": "ciudadana_1", "route": [[34, 42], [62, 42]], "speed": 0.9, "pause_s": 4, "loop": true},
+		{"npc": "ciudadano_2", "route": [[52, 62], [52, 52], [64, 52]], "speed": 1.2, "pause_s": 3, "loop": true},
+		{"npc": "ciudadana_2", "route": [[40, 54], [40, 62], [44, 62]], "speed": 0.8, "pause_s": 5, "loop": true},
+		{"npc": "ciudadano_3", "route": [[35, 38], [35, 31], [42, 31]], "speed": 1, "pause_s": 4, "loop": false},
+		{"npc": "ciudadana_3", "route": [[62, 34], [66, 34], [66, 42]], "speed": 0.9, "pause_s": 4, "loop": true},
+		{"npc": "ciudadano_4", "route": [[52, 20], [52, 28], [58, 28]], "speed": 0.7, "pause_s": 6, "loop": true},
+		{"npc": "ciudadana_4", "route": [[44, 18], [44, 24], [40, 24]], "speed": 1, "pause_s": 3, "loop": true},
+		{"npc": "guardia_ciudad", "route": [[47, 14], [47, 62]], "speed": 1.2, "pause_s": 4, "loop": true},
+		{"npc": "ciudadano_5", "route": [[14, 40], [27, 40]], "speed": 1, "pause_s": 5, "loop": true},
+		{"npc": "ciudadana_5", "route": [[34, 41], [44, 41]], "speed": 0.9, "pause_s": 3, "loop": true},
+		{"npc": "ciudadano_6", "route": [[52, 40], [66, 40]], "speed": 1.1, "pause_s": 5, "loop": true},
+		{"npc": "ciudadana_6", "route": [[70, 41], [82, 41]], "speed": 0.8, "pause_s": 4, "loop": true},
+		{"npc": "ciudadano_7", "route": [[48, 14], [48, 34]], "speed": 1, "pause_s": 5, "loop": true},
+		{"npc": "ciudadana_7", "route": [[49, 44], [49, 64]], "speed": 0.9, "pause_s": 4, "loop": true},
+		{"npc": "ciudadano_8", "route": [[40, 36], [46, 33], [46, 44]], "speed": 1, "pause_s": 4, "loop": true},
+		{"npc": "ciudadana_8", "route": [[56, 44], [66, 44], [66, 36]], "speed": 0.8, "pause_s": 4, "loop": true},
+		{"npc": "ciudadano_9", "route": [[34, 32], [44, 32]], "speed": 0.9, "pause_s": 4, "loop": true},
+		{"npc": "ciudadana_9", "route": [[58, 32], [66, 32]], "speed": 0.7, "pause_s": 6, "loop": true},
+		{"npc": "ciudadano_10", "route": [[16, 41], [26, 41]], "speed": 1.1, "pause_s": 4, "loop": true},
+		{"npc": "ciudadana_10", "route": [[72, 39], [80, 39]], "speed": 1, "pause_s": 3, "loop": true}
 	],
-	"entries": {
-		"default": [
-			48,
-			64
-		],
-		"from_camino": [
-			48,
-			64
-		],
-		"from_palacio": [
-			48,
-			14
-		]
-	},
-	"respawn": [
-		48,
-		62
-	],
-	"exits": [
-		{
-			"area": [
-				47,
-				68,
-				3,
-				2
-			],
-			"to": "camino",
-			"entry": "from_capital"
-		},
-		{
-			"area": [
-				47,
-				10,
-				3,
-				2
-			],
-			"to": "palacio",
-			"entry": "from_capital"
-		}
-	],
+	"entries": {"default": [48, 64], "from_camino": [48, 64], "from_palacio": [48, 14]},
+	"respawn": [48, 62],
+	"exits": [{"area": [47, 68, 3, 2], "to": "camino", "entry": "from_capital"}, {"area": [47, 10, 3, 2], "to": "palacio", "entry": "from_capital"}],
 	"hordes": [],
-	"quest_points": [
-		{
-			"id": "puerta_capital",
-			"at": [
-				48,
-				63
-			],
-			"radius": 3
-		}
-	],
+	"quest_points": [{"id": "puerta_capital", "at": [48, 63], "radius": 3}],
 	"torches": [],
-	"margin_skip": [
-		[
-			34,
-			0,
-			28,
-			10
-		]
-	]
+	"margin_skip": [[34, 0, 28, 10]]
 }

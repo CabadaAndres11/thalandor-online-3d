@@ -39,7 +39,7 @@ Estado de cada apartado: **[Diseñado]** acordado sin implementar · **[En curso
 - [[Anexo C — Árbol de talentos]]
 - [[Registro de cambios]]
 
-> El GDD original en un solo archivo está en [[Referencia/GDD completo (v2.0)|Referencia]] como copia de la versión 2.0.
+> El GDD original en un solo archivo está en [[Archivo/Referencia/GDD completo (v2.0)|Archivo]] como copia de la versión 2.0.
 
 ---
 ← [[00 Inicio|Inicio]]

@@ -2,19 +2,10 @@
 	"id": "ciudadano_9",
 	"name": "NPC_CIUDADANO",
 	"role": "villager",
-	"lines": {
-		"greet": "NPC_CIUDADANO_2_GREET"
-	},
+	"lines": {"greet": "NPC_CIUDADANO_2_GREET"},
 	"look": {
 		"class": "villager",
-		"appearance": {
-			"body": "male",
-			"skin": "skin_2",
-			"eyes": "blue",
-			"hair_style": "bald",
-			"hair_color": "grey",
-			"beard": "stubble"
-		},
+		"appearance": {"body": "male", "skin": "skin_2", "eyes": "blue", "hair_style": "bald", "hair_color": "grey", "beard": "stubble"},
 		"primary": "#5a7a3a",
 		"secondary": "#c8b898",
 		"trousers": "#33291f",

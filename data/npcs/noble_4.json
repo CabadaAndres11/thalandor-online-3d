@@ -2,19 +2,10 @@
 	"id": "noble_4",
 	"name": "NPC_NOBLE_4",
 	"role": "villager",
-	"lines": {
-		"greet": "NPC_NOBLE_4_GREET"
-	},
+	"lines": {"greet": "NPC_NOBLE_4_GREET"},
 	"look": {
 		"class": "villager",
-		"appearance": {
-			"body": "female",
-			"skin": "skin_1",
-			"eyes": "blue",
-			"hair_style": "hair_long",
-			"hair_color": "blond",
-			"beard": "none"
-		},
+		"appearance": {"body": "female", "skin": "skin_1", "eyes": "blue", "hair_style": "hair_long", "hair_color": "blond", "beard": "none"},
 		"primary": "#4a2a5a",
 		"secondary": "#e0d0a0",
 		"trousers": "#1e1a1e",

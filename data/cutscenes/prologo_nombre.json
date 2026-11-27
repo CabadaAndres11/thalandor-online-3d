@@ -3,148 +3,28 @@
 	"skippable": true,
 	"stage": "here",
 	"actors": {
-		"anciana": {
-			"npc": "anciana_cantora",
-			"at": [
-				19,
-				45
-			],
-			"facing": 90
-		},
-		"yo": {
-			"player": true,
-			"at": [
-				21,
-				45
-			],
-			"facing": 270
-		},
-		"v1": {
-			"npc": "aldeano_anciano_1",
-			"at": [
-				20,
-				47
-			],
-			"facing": 0
-		},
-		"v2": {
-			"npc": "aldeana_anciana_1",
-			"at": [
-				22,
-				47
-			],
-			"facing": 0
-		},
-		"v3": {
-			"npc": "panadero",
-			"at": [
-				18,
-				47
-			],
-			"facing": 0
-		},
-		"v4": {
-			"npc": "cazador",
-			"at": [
-				23,
-				43
-			],
-			"facing": 270
-		}
+		"anciana": {"npc": "anciana_cantora", "at": [19, 45], "facing": 90},
+		"yo": {"player": true, "at": [21, 45], "facing": 270},
+		"v1": {"npc": "aldeano_anciano_1", "at": [20, 47], "facing": 0},
+		"v2": {"npc": "aldeana_anciana_1", "at": [22, 47], "facing": 0},
+		"v3": {"npc": "panadero", "at": [18, 47], "facing": 0},
+		"v4": {"npc": "cazador", "at": [23, 43], "facing": 270}
 	},
 	"tracks": [
 		[
-			{
-				"camera": {
-					"at": [
-						20,
-						4,
-						52
-					],
-					"look": [
-						20,
-						1.2,
-						45
-					],
-					"fov": 46
-				},
-				"time": 0
-			},
-			{
-				"camera": {
-					"at": [
-						20,
-						2.6,
-						49
-					],
-					"look": [
-						20,
-						1.5,
-						45
-					]
-				},
-				"time": 16,
-				"ease": "in_out"
-			}
+			{"camera": {"at": [20, 4, 52], "look": [20, 1.2, 45], "fov": 46}, "time": 0},
+			{"camera": {"at": [20, 2.6, 49], "look": [20, 1.5, 45]}, "time": 16, "ease": "in_out"}
 		],
 		[
-			{
-				"fade": "in",
-				"time": 1
-			},
-			{
-				"line": [
-					"anciana_cantora",
-					"SCN_P_NOMBRE_1"
-				],
-				"time": 3.4
-			},
-			{
-				"line": [
-					"player",
-					"SCN_P_NOMBRE_2"
-				],
-				"time": 3.2
-			},
-			{
-				"line": [
-					"anciana_cantora",
-					"SCN_P_NOMBRE_3"
-				],
-				"time": 4.6
-			},
-			{
-				"line": [
-					"anciana_cantora",
-					"SCN_P_NOMBRE_4"
-				],
-				"time": 3
-			},
-			{
-				"line": [
-					"aldeano_anciano_1",
-					"SCN_P_NOMBRE_5"
-				],
-				"time": 1.8
-			},
-			{
-				"line": [
-					"aldeana_anciana_1",
-					"SCN_P_NOMBRE_6"
-				],
-				"time": 1.8
-			},
-			{
-				"line": [
-					"panadero",
-					"SCN_P_NOMBRE_7"
-				],
-				"time": 1.8
-			},
-			{
-				"fade": "out",
-				"time": 1.2
-			}
+			{"fade": "in", "time": 1},
+			{"line": ["anciana_cantora", "SCN_P_NOMBRE_1"], "time": 3.4},
+			{"line": ["player", "SCN_P_NOMBRE_2"], "time": 3.2},
+			{"line": ["anciana_cantora", "SCN_P_NOMBRE_3"], "time": 4.6},
+			{"line": ["anciana_cantora", "SCN_P_NOMBRE_4"], "time": 3},
+			{"line": ["aldeano_anciano_1", "SCN_P_NOMBRE_5"], "time": 1.8},
+			{"line": ["aldeana_anciana_1", "SCN_P_NOMBRE_6"], "time": 1.8},
+			{"line": ["panadero", "SCN_P_NOMBRE_7"], "time": 1.8},
+			{"fade": "out", "time": 1.2}
 		]
 	]
 }

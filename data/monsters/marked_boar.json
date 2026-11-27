@@ -1,8 +1,16 @@
 {
-	"id": "marked_boar", "name": "MON_MARKED_BOAR", "model": "rig:marked_boar", "tint": "#6b4630", "scale": 0.9,
-	"radius": 0.6, "speed": 4.0,
+	"id": "marked_boar",
+	"name": "MON_MARKED_BOAR",
+	"model": "rig:marked_boar",
+	"tint": "#6b4630",
+	"scale": 0.9,
+	"radius": 0.6,
+	"speed": 4,
 	"stats": {"max_hp": 110, "armor": 15, "attack_power": 12, "crit_chance": 0.05},
-	"aggro_range": 8, "leash_range": 22, "attack_range": 1.6,
-	"behavior": "charger", "abilities": ["marked_boar_gore"],
+	"aggro_range": 8,
+	"leash_range": 22,
+	"attack_range": 1.6,
+	"behavior": "charger",
+	"abilities": ["marked_boar_gore"],
 	"charge": {"ability": "marked_boar_charge", "min_range": 3, "max_range": 8}
 }

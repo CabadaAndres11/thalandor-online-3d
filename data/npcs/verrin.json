@@ -2,9 +2,7 @@
 	"id": "verrin",
 	"name": "NPC_VERRIN",
 	"role": "villager",
-	"lines": {
-		"greet": "VERRIN_GREET"
-	},
+	"lines": {"greet": "VERRIN_GREET"},
 	"look": {
 		"class": "warrior",
 		"appearance": {
@@ -19,8 +17,6 @@
 		"primary": "#2f4f8f",
 		"secondary": "#d4a62a",
 		"trousers": "#2a2a33",
-		"weapons": [
-			"weapon_sword"
-		]
+		"weapons": ["weapon_sword"]
 	}
 }

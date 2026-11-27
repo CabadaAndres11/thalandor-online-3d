@@ -2,24 +2,13 @@
 	"id": "guardia_cripta_1",
 	"name": "NPC_GUARDIA_CRIPTA_1",
 	"role": "villager",
-	"lines": {
-		"greet": "NPC_GUARDIA_CRIPTA_1_GREET"
-	},
+	"lines": {"greet": "NPC_GUARDIA_CRIPTA_1_GREET"},
 	"look": {
 		"class": "warrior",
-		"appearance": {
-			"body": "male",
-			"skin": "skin_3",
-			"eyes": "brown",
-			"hair_style": "short",
-			"hair_color": "black",
-			"beard": "none"
-		},
+		"appearance": {"body": "male", "skin": "skin_3", "eyes": "brown", "hair_style": "short", "hair_color": "black", "beard": "none"},
 		"primary": "#2f4f8f",
 		"secondary": "#d4a62a",
 		"trousers": "#1e1a1e",
-		"weapons": [
-			"weapon_sword"
-		]
+		"weapons": ["weapon_sword"]
 	}
 }

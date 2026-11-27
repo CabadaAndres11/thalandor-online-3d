@@ -1,5 +1,5 @@
 extends SceneTree
-## Second game process for tests/integration/test_two_processes.gd. Boots the real main
+## Second game process for tests/slow/test_two_processes.gd. Boots the real main
 ## scene headless, joins with the group code (like "Unirse a un amigo"), walks right,
 ## chats, then reports what it sees as JSON in user://<out> and leaves.
 ## User args: --code=ABCD-EFGH --out=<file name> --name=<player> [--lag=<ms> --loss=<pct>]

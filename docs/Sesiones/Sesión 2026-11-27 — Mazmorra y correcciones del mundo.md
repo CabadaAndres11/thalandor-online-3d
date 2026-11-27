@@ -36,3 +36,6 @@ Casco del ogro, sin barbas para ogros, bosque (sin cripta antigua ni franja de a
 
 ## Cuarta tanda
 Capuchas según la referencia (`hood_v2.mjs`), casco del ogro más pequeño, palacio rehecho (estrado con escalones, estatuas gigantes de granito, reja enrasada con escalera detrás, archivo, armería, sala del consejo, nobles en parejas), Oriel en el archivo y sin Archivista real, saludos de PNJ en la ventana de diálogo, escenas de audiencia y descenso reajustadas. Se trabajó en el worktree `acolito-cultista-enemy-3966a7` (el de la rama original no se podía escribir desde la sesión).
+
+## Entorno
+Tests en dos niveles (`tests/slow`, `--all`), JSON de datos compactos y planes terminados archivados en `docs/Archivo`, para gastar menos tiempo y tokens. CLAUDE.md recoge el flujo nuevo.

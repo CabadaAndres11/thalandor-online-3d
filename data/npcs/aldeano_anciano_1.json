@@ -2,19 +2,10 @@
 	"id": "aldeano_anciano_1",
 	"name": "NPC_ALDEANO_ANCIANO",
 	"role": "villager",
-	"lines": {
-		"greet": "ALDEANO_ANCIANO_1_GREET"
-	},
+	"lines": {"greet": "ALDEANO_ANCIANO_1_GREET"},
 	"look": {
 		"class": "villager",
-		"appearance": {
-			"body": "male",
-			"skin": "skin_2",
-			"eyes": "brown",
-			"hair_style": "short",
-			"hair_color": "grey",
-			"beard": "full"
-		},
+		"appearance": {"body": "male", "skin": "skin_2", "eyes": "brown", "hair_style": "short", "hair_color": "grey", "beard": "full"},
 		"primary": "#6b5a40",
 		"secondary": "#a89878",
 		"trousers": "#3d2f22",

@@ -1,21 +1,4 @@
 {
 	"id": "prologo4_oriel_mascara",
-	"nodes": {
-		"start": {
-			"lines": [
-				[
-					"player",
-					"DLG_P4_ORIEL_MASCARA_1"
-				],
-				[
-					"oriel",
-					"DLG_P4_ORIEL_MASCARA_2"
-				],
-				[
-					"oriel",
-					"DLG_P4_ORIEL_MASCARA_3"
-				]
-			]
-		}
-	}
+	"nodes": {"start": {"lines": [["player", "DLG_P4_ORIEL_MASCARA_1"], ["oriel", "DLG_P4_ORIEL_MASCARA_2"], ["oriel", "DLG_P4_ORIEL_MASCARA_3"]]}}
 }

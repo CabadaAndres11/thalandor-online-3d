@@ -2,122 +2,23 @@
 	"id": "prologo_brann",
 	"skippable": true,
 	"stage": "here",
-	"actors": {
-		"brann": {
-			"npc": "brann",
-			"at": [
-				85,
-				48
-			],
-			"facing": 270,
-			"pose": "lie"
-		},
-		"yo": {
-			"player": true,
-			"at": [
-				83,
-				48
-			],
-			"facing": 90
-		}
-	},
+	"actors": {"brann": {"npc": "brann", "at": [85, 48], "facing": 270, "pose": "lie"}, "yo": {"player": true, "at": [83, 48], "facing": 90}},
 	"tracks": [
 		[
-			{
-				"camera": {
-					"at": [
-						80,
-						3,
-						52
-					],
-					"look": [
-						84.5,
-						0.6,
-						48.5
-					],
-					"fov": 44
-				},
-				"time": 0
-			},
-			{
-				"camera": {
-					"at": [
-						81.5,
-						2.2,
-						50.5
-					],
-					"look": [
-						84.5,
-						0.8,
-						48.5
-					]
-				},
-				"time": 18,
-				"ease": "in_out"
-			}
+			{"camera": {"at": [80, 3, 52], "look": [84.5, 0.6, 48.5], "fov": 44}, "time": 0},
+			{"camera": {"at": [81.5, 2.2, 50.5], "look": [84.5, 0.8, 48.5]}, "time": 18, "ease": "in_out"}
 		],
 		[
-			{
-				"fx": "blood",
-				"at": [
-					85,
-					48
-				]
-			},
-			{
-				"fade": "in",
-				"time": 1
-			},
-			{
-				"pose": [
-					"yo",
-					"kneel"
-				],
-				"time": 1
-			},
-			{
-				"line": [
-					"player",
-					"SCN_P_BRANN_1"
-				],
-				"time": 2.6
-			},
-			{
-				"line": [
-					"brann",
-					"SCN_P_BRANN_2"
-				],
-				"time": 3.2
-			},
-			{
-				"line": [
-					"brann",
-					"SCN_P_BRANN_3"
-				],
-				"time": 3.2
-			},
-			{
-				"line": [
-					"brann",
-					"SCN_P_BRANN_4"
-				],
-				"time": 2.6
-			},
-			{
-				"wait": "",
-				"time": 1.6
-			},
-			{
-				"line": [
-					"",
-					"SCN_P_BRANN_5"
-				],
-				"time": 4.2
-			},
-			{
-				"fade": "out",
-				"time": 1.4
-			}
+			{"fx": "blood", "at": [85, 48]},
+			{"fade": "in", "time": 1},
+			{"pose": ["yo", "kneel"], "time": 1},
+			{"line": ["player", "SCN_P_BRANN_1"], "time": 2.6},
+			{"line": ["brann", "SCN_P_BRANN_2"], "time": 3.2},
+			{"line": ["brann", "SCN_P_BRANN_3"], "time": 3.2},
+			{"line": ["brann", "SCN_P_BRANN_4"], "time": 2.6},
+			{"wait": "", "time": 1.6},
+			{"line": ["", "SCN_P_BRANN_5"], "time": 4.2},
+			{"fade": "out", "time": 1.4}
 		]
 	]
 }
