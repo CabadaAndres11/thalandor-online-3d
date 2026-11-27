@@ -446,7 +446,7 @@ func _toggle_window(w: Control) -> void:
 		character_window:
 			_show_character()
 		talents_window:
-			talents_window.show_for(game.client.progress, TalentDB.load_default(), game.client.balance)
+			talents_window.show_for(game.client.progress, TalentDB.load_default(), game.client.balance, game.client.class_id)
 		quest_journal:
 			quest_journal.show_for(game.client.quests, QuestDB.load_default(), ItemDB.load_default(), game.client.inventory)
 		map_window:
@@ -748,7 +748,7 @@ func _on_progress_changed() -> void:
 	if character_window.visible:
 		_show_character()
 	if talents_window.visible:
-		talents_window.show_for(c.progress, TalentDB.load_default(), c.balance)
+		talents_window.show_for(c.progress, TalentDB.load_default(), c.balance, c.class_id)
 	if abilities_window.visible:
 		abilities_window.show_for(c.class_id, c.bar, abilities, c.progress.level, c.progress.upgrade)
 	if _playing == null:

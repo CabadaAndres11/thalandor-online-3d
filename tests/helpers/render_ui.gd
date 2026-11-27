@@ -73,7 +73,7 @@ func _process(_delta: float) -> bool:
 		Xp.set_level(w, me, 35)
 		for a: String in ["agility", "agility", "stamina", "strength"]:
 			ProgressRequests.spend_attribute(w, me, a)
-		for id: String in ["r1_0", "r2_0", "r3_0", "r1_6", "r2_12", "r1_8"]:
+		for id: String in TalentDB.load_default().route("archer").slice(0, 25):
 			ProgressRequests.buy_talent(w, me, id)
 	elif _frames == 345:
 		_main._show_character()
@@ -81,8 +81,8 @@ func _process(_delta: float) -> bool:
 		_save("ui_character")
 		_main.character_window.visible = false
 		var c := _main.game.client
-		_main.talents_window.show_for(c.progress, TalentDB.load_default(), c.balance)
-		_main.talents_window.select("r4_0")
+		_main.talents_window.show_for(c.progress, TalentDB.load_default(), c.balance, c.class_id)
+		_main.talents_window.hover_at(_main.talents_window.node_screen_position(TalentDB.load_default().route("archer")[25]))
 	elif _frames == 405:
 		_save("ui_talents")
 		_main.talents_window.visible = false

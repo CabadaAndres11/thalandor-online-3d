@@ -418,7 +418,7 @@ STAT_THREAT_PCT,%s amenaza
 STAT_RESOURCE_REGEN_PCT,%s regeneración de recurso
 TALENTS_TITLE,Talentos
 TALENTS_POINTS,Puntos de talento: %d
-TALENTS_HINT,Pulsa un nodo para verlo. T o Esc para cerrar
+TALENTS_HINT,"Rueda: zoom · Arrastrar: mover · Clic: comprar o ver un nodo · T o Esc para cerrar"
 TALENT_BUY,Comprar
 TALENT_NONE,Elige un nodo del árbol
 TALENT_DIR_MIGHT,Poderío
@@ -430,11 +430,9 @@ TALENT_KIND_START,Inicio
 TALENT_KIND_MINOR,Nodo
 TALENT_KIND_NOTABLE,Nodo notable
 TALENT_KIND_KEYSTONE,Nodo culminante
-TALENT_RING_OUTER,Anillo exterior
 TALENT_STATE_OWNED,Comprado
 TALENT_STATE_AVAILABLE,Disponible
 TALENT_STATE_LOCKED,Bloqueado: compra antes un nodo vecino
-TALENT_STATE_RING_LOCKED,Bloqueado: el anillo exterior necesita una mejora de clase
 MASTERIES_TITLE,Maestrías
 MASTERIES_HINT,Compra todos los nodos de una dirección y cada punto extra mejora su maestría.
 MASTERY_RANK,Rango %d
@@ -1355,3 +1353,7 @@ NPC_VECINO_2_GREET,"Treinta años en esta casa y aún cruje la escalera."
 NPC_VECINA_2_GREET,"Mis hijos andan por la plaza. Si los ves, mándalos a casa."
 NPC_VECINO_3_GREET,"Leo un poco cada tarde. La ciudad se calma al caer el sol."
 NPC_VECINA_3_GREET,"Ya no salgo mucho. Las rodillas, ¿sabes?"
+UI_TALENTS_POINTS,"Puntos libres: %d · Comprados: %d / %d"
+UI_TALENTS_ROUTE,Ruta recomendada
+UI_TALENTS_RESET,"Reinicio con Maese Corwin: %d de oro"
+UI_TALENTS_ROUTE_STEP,Paso %d de la ruta

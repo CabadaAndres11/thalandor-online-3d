@@ -1,34 +1,54 @@
 class_name TalentsWindow
 extends Control
-## Talent window (T): the circular tree (drawn, no scrolling), a panel with the selected
-## node and a Buy button, and the masteries of the directions whose nodes are all bought.
+## Talent window (T, Plan 8.3g): full screen and holographic. The ring tree is drawn on a
+## canvas you zoom (wheel) and drag; each node is its stat's icon in a frame that says what
+## kind it is; the class's recommended route is marked in gold; the node under the mouse
+## shows its detail. A click on a node you can buy buys it, any other click selects it.
 ## It only reports `talent_bought` and `mastery_bought`; the host validates.
 
 signal talent_bought(id: String)
 signal mastery_bought(dir: String)
 
-const CANVAS := 520.0
-const NODE_RADIUS := {"start": 11.0, "minor": 7.0, "notable": 10.0, "keystone": 12.0}
-const STATE_COLORS := {
-	"owned": HoloTheme.SECTION, "available": Color("#6fd08c"), "locked": Color("#4a4a55"), "ring_locked": Color("#2c2c36"),
-}
+const MARGIN := 20.0
+## Pixels per unit of the tree's coordinates at zoom 1 (ring 7 sits at 0.91).
+const UNIT_PX := 285.0
+const ZOOM_MIN := 0.5
+const ZOOM_MAX := 2.5
+## A press and release closer than this is a click; farther, a drag.
+const CLICK_SLOP := 4.0
+const ICON_DIR := "res://assets/icons/talents/"
+const NODE_RADIUS := {"start": 12.0, "minor": 11.0, "notable": 16.0, "keystone": 22.0}
+const DIR_COLORS := {"might": Color("#e0564f"), "celerity": Color("#e8c547"), "vitality": Color("#4fc46a"),
+	"bastion": Color("#5f8fe0"), "arcane": Color("#b46ae0")}
 const DIR_KEYS := {"might": "TALENT_DIR_MIGHT", "celerity": "TALENT_DIR_CELERITY", "vitality": "TALENT_DIR_VITALITY",
 	"bastion": "TALENT_DIR_BASTION", "arcane": "TALENT_DIR_ARCANE"}
+const ROUTE_COLOR := Color("#ffd27a")
+const OWNED_COLOR := Color("#7ff3ff")
 
 var buy_button: Button
 
 var _panel: PanelContainer
 var _canvas: TalentCanvas
 var _points_label: Label
+var _reset_label: Label
+var _route_check: CheckBox
+var _detail: PanelContainer
 var _title: Label
 var _kind: Label
 var _desc: Label
-var _mastery_box: VBoxContainer
+var _mastery_box: HBoxContainer
 var _mastery_rows: Dictionary = {} # dir -> {"rank": Label, "button": Button}
 var _progress: PlayerProgress
 var _db: TalentDB
 var _balance: Balance
+var _route: Array = []
+var _route_index: Dictionary = {} # id -> step (1-based)
 var _selected: String = ""
+var _hover: String = ""
+var _icons: Dictionary = {} # icon name -> Texture2D or null
+var _zoom := 1.0
+var _pan := Vector2.ZERO
+var _press: Variant = null # where the left button went down (Vector2) or null
 
 
 func _init() -> void:
@@ -36,111 +56,120 @@ func _init() -> void:
 	mouse_filter = MOUSE_FILTER_STOP
 	set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	var dim := ColorRect.new()
-	dim.color = Color(0, 0, 0, 0.35)
+	dim.color = Color(0, 0, 0, 0.45)
 	dim.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	dim.mouse_filter = MOUSE_FILTER_IGNORE
 	add_child(dim)
-	var center := CenterContainer.new()
-	center.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
-	add_child(center)
 	_panel = PanelContainer.new()
 	_panel.add_theme_stylebox_override("panel", HoloTheme.panel_style(14))
 	HoloTheme.add_shine(_panel)
-	center.add_child(_panel)
+	_panel.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	for side: Side in [SIDE_LEFT, SIDE_TOP]:
+		_panel.set_offset(side, MARGIN)
+	for side: Side in [SIDE_RIGHT, SIDE_BOTTOM]:
+		_panel.set_offset(side, -MARGIN)
+	add_child(_panel)
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 6)
 	_panel.add_child(box)
 
 	var header := HBoxContainer.new()
+	header.add_theme_constant_override("separation", 18)
 	box.add_child(header)
 	var title := Label.new()
 	title.text = tr("TALENTS_TITLE")
 	title.add_theme_font_size_override("font_size", 26)
-	title.size_flags_horizontal = SIZE_EXPAND_FILL
 	header.add_child(title)
 	_points_label = Label.new()
 	_points_label.add_theme_color_override("font_color", HoloTheme.ACCENT)
+	_points_label.size_flags_horizontal = SIZE_EXPAND_FILL
 	header.add_child(_points_label)
+	_route_check = CheckBox.new()
+	_route_check.text = tr("UI_TALENTS_ROUTE")
+	_route_check.button_pressed = true
+	_route_check.toggled.connect(func(_on: bool) -> void: _canvas.queue_redraw())
+	header.add_child(_route_check)
+	_reset_label = Label.new()
+	_reset_label.modulate = Color(1, 1, 1, 0.7)
+	_reset_label.add_theme_font_size_override("font_size", 14)
+	header.add_child(_reset_label)
 	var close := Button.new()
 	close.text = tr("BTN_CLOSE")
 	close.pressed.connect(func() -> void: visible = false)
 	header.add_child(close)
 
-	var body := HBoxContainer.new()
-	body.add_theme_constant_override("separation", 16)
-	box.add_child(body)
 	_canvas = TalentCanvas.new()
 	_canvas.window = self
-	_canvas.custom_minimum_size = Vector2(CANVAS, CANVAS)
-	body.add_child(_canvas)
+	_canvas.size_flags_vertical = SIZE_EXPAND_FILL
+	_canvas.clip_contents = true
+	box.add_child(_canvas)
 
-	var side := VBoxContainer.new()
-	side.custom_minimum_size = Vector2(320, 0)
-	side.add_theme_constant_override("separation", 6)
-	body.add_child(side)
-	_title = Label.new()
-	_title.add_theme_font_size_override("font_size", 20)
-	_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	side.add_child(_title)
-	_kind = Label.new()
-	_kind.modulate = Color(1, 1, 1, 0.7)
-	_kind.add_theme_font_size_override("font_size", 14)
-	side.add_child(_kind)
-	_desc = Label.new()
-	_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_desc.custom_minimum_size = Vector2(320, 110)
-	_desc.vertical_alignment = VERTICAL_ALIGNMENT_TOP
-	side.add_child(_desc)
-	buy_button = Button.new()
-	buy_button.text = tr("TALENT_BUY")
-	buy_button.custom_minimum_size = Vector2(160, 36)
-	buy_button.pressed.connect(press_buy)
-	side.add_child(buy_button)
-
-	_mastery_box = VBoxContainer.new()
-	_mastery_box.add_theme_constant_override("separation", 3)
-	side.add_child(_mastery_box)
-	var mt := Label.new()
-	mt.text = tr("MASTERIES_TITLE")
-	mt.modulate = HoloTheme.SECTION
-	_mastery_box.add_child(mt)
-	var mh := Label.new()
-	mh.text = tr("MASTERIES_HINT")
-	mh.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	mh.custom_minimum_size.x = 320
-	mh.add_theme_font_size_override("font_size", 13)
-	mh.modulate = Color(1, 1, 1, 0.7)
-	_mastery_box.add_child(mh)
-	for dir: String in DIR_KEYS:
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 8)
-		_mastery_box.add_child(row)
-		var name_label := Label.new()
-		name_label.text = tr(DIR_KEYS[dir])
-		name_label.custom_minimum_size.x = 120
-		row.add_child(name_label)
-		var rank := Label.new()
-		rank.custom_minimum_size.x = 90
-		row.add_child(rank)
-		var b := Button.new()
-		b.text = tr("MASTERY_BUY")
-		b.custom_minimum_size = Vector2(48, 0)
-		b.pressed.connect(press_mastery.bind(dir))
-		row.add_child(b)
-		_mastery_rows[dir] = {"rank": rank, "button": b}
-
+	var footer := HBoxContainer.new()
+	footer.add_theme_constant_override("separation", 14)
+	box.add_child(footer)
 	var hint := Label.new()
 	hint.text = tr("TALENTS_HINT")
 	hint.add_theme_font_size_override("font_size", 13)
 	hint.modulate = Color(1, 1, 1, 0.7)
-	box.add_child(hint)
+	hint.size_flags_horizontal = SIZE_EXPAND_FILL
+	footer.add_child(hint)
+	_mastery_box = HBoxContainer.new()
+	_mastery_box.add_theme_constant_override("separation", 10)
+	footer.add_child(_mastery_box)
+	var mt := Label.new()
+	mt.text = tr("MASTERIES_TITLE")
+	mt.modulate = HoloTheme.SECTION
+	mt.tooltip_text = tr("MASTERIES_HINT")
+	mt.mouse_filter = MOUSE_FILTER_PASS
+	_mastery_box.add_child(mt)
+	for dir: String in DIR_KEYS:
+		var rank := Label.new()
+		rank.add_theme_color_override("font_color", DIR_COLORS[dir])
+		_mastery_box.add_child(rank)
+		var b := Button.new()
+		b.text = tr("MASTERY_BUY")
+		b.pressed.connect(press_mastery.bind(dir))
+		_mastery_box.add_child(b)
+		_mastery_rows[dir] = {"rank": rank, "button": b}
+
+	# The detail of the hovered (or selected) node, floating beside it.
+	_detail = PanelContainer.new()
+	_detail.add_theme_stylebox_override("panel", HoloTheme.panel_style(10))
+	_detail.mouse_filter = MOUSE_FILTER_IGNORE
+	_detail.visible = false
+	add_child(_detail)
+	var dbox := VBoxContainer.new()
+	dbox.custom_minimum_size.x = 260
+	_detail.add_child(dbox)
+	_title = Label.new()
+	_title.add_theme_font_size_override("font_size", 18)
+	dbox.add_child(_title)
+	_kind = Label.new()
+	_kind.modulate = Color(1, 1, 1, 0.7)
+	_kind.add_theme_font_size_override("font_size", 13)
+	dbox.add_child(_kind)
+	_desc = Label.new()
+	_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_desc.custom_minimum_size.x = 260
+	_desc.add_theme_font_size_override("font_size", 15)
+	dbox.add_child(_desc)
+	buy_button = Button.new() # kept for the keyboard: buys the selected node
+	buy_button.text = tr("TALENT_BUY")
+	buy_button.visible = false
+	buy_button.pressed.connect(press_buy)
+	add_child(buy_button)
 
 
-## Fills the window with this progress and opens it (keeps the selected node).
-func show_for(progress: PlayerProgress, db: TalentDB, balance: Balance) -> void:
+## Fills the window with this progress and opens it; `class_id` picks the route shown.
+func show_for(progress: PlayerProgress, db: TalentDB, balance: Balance, class_id: String = "") -> void:
 	_progress = progress
 	_db = db
 	_balance = balance
-	if _selected == "" or not db.has(_selected):
+	_route = db.route(class_id)
+	_route_index.clear()
+	for i in _route.size():
+		_route_index[_route[i]] = i + 1
+	if _selected != "" and not db.has(_selected):
 		_selected = ""
 	refresh()
 	visible = true
@@ -150,14 +179,16 @@ func show_for(progress: PlayerProgress, db: TalentDB, balance: Balance) -> void:
 func refresh() -> void:
 	if _progress == null:
 		return
-	var free := Talents.points(_progress.level) - Talents.spent(_progress)
-	_points_label.text = tr("TALENTS_POINTS") % free
+	var spent := Talents.spent(_progress)
+	var free := Talents.points(_progress.level) - spent
+	_points_label.text = tr("UI_TALENTS_POINTS") % [free, _progress.talents.size(), _db.ids().size() - 1]
+	if _balance != null:
+		_reset_label.text = tr("UI_TALENTS_RESET") % ProgressRequests.reset_cost(_progress.level, _balance)
 	for dir: String in _mastery_rows:
-		var rank := int(_progress.masteries.get(dir, 0))
-		(_mastery_rows[dir].rank as Label).text = tr("MASTERY_RANK") % rank
+		(_mastery_rows[dir].rank as Label).text = "%s %d" % [tr(DIR_KEYS[dir]), int(_progress.masteries.get(dir, 0))]
 		(_mastery_rows[dir].button as Button).disabled = not Talents.can_buy_mastery(_progress, dir, _db)
 	_mastery_box.visible = masteries_visible()
-	_show_selected()
+	_show_detail(_hover if _hover != "" else _selected)
 	_canvas.queue_redraw()
 
 
@@ -165,7 +196,7 @@ func select(id: String) -> void:
 	if _db == null or not _db.has(id):
 		return
 	_selected = id
-	_show_selected()
+	_show_detail(id)
 	_canvas.queue_redraw()
 
 
@@ -173,15 +204,11 @@ func selected() -> String:
 	return _selected
 
 
-## "owned", "available" (touches the start or a bought node), "ring_locked" (outer ring
-## without an upgrade) or "locked".
+## "owned", "available" (touches the start or a bought node) or "locked".
 func node_state(id: String) -> String:
 	if _progress.talents.has(id):
 		return "owned"
-	var node := _db.node(id)
-	if int(node.get("ring", 1)) == 2 and _progress.upgrade == "":
-		return "ring_locked"
-	for other: String in node.get("links", []):
+	for other: String in _db.node(id).get("links", []):
 		if other == _db.start_id() or _progress.talents.has(other):
 			return "available"
 	return "locked"
@@ -196,11 +223,11 @@ func points_text() -> String:
 
 
 func buy_enabled() -> bool:
-	return not buy_button.disabled
+	return _selected != "" and Talents.can_buy(_progress, _selected, _db)
 
 
 func press_buy() -> void:
-	if _selected != "" and Talents.can_buy(_progress, _selected, _db):
+	if buy_enabled():
 		talent_bought.emit(_selected)
 
 
@@ -227,44 +254,137 @@ func panel_rect() -> Rect2:
 	return _panel.get_global_rect()
 
 
-## Where a node is drawn, in the window's global coordinates.
+func canvas_rect() -> Rect2:
+	return _canvas.get_global_rect()
+
+
+func detail_rect() -> Rect2:
+	return _detail.get_global_rect()
+
+
+## Where a node is drawn, in global coordinates.
 func node_screen_position(id: String) -> Vector2:
 	return _canvas.get_global_rect().position + _canvas.node_position(id)
 
 
-## A click at a global point on the canvas (what a mouse click does).
+func zoom() -> float:
+	return _zoom
+
+
+func zoom_to(z: float) -> void:
+	_zoom = clampf(z, ZOOM_MIN, ZOOM_MAX)
+	_canvas.queue_redraw()
+
+
+func pan_by(delta: Vector2) -> void:
+	_pan += delta
+	_canvas.queue_redraw()
+
+
+func set_route_visible(on: bool) -> void:
+	_route_check.button_pressed = on
+
+
+func route_visible() -> bool:
+	return _route_check.button_pressed
+
+
+## The step of a node on the class's route (1-based), 0 when it is not on it.
+func route_step(id: String) -> int:
+	return int(_route_index.get(id, 0))
+
+
+## The icon of a stat (assets/icons/talents/<name>.png), or null when there is none.
+func icon_texture(icon_name: String) -> Texture2D:
+	if not _icons.has(icon_name):
+		var path := ICON_DIR + icon_name + ".png"
+		_icons[icon_name] = load(path) if icon_name != "" and ResourceLoader.exists(path) else null
+	return _icons[icon_name]
+
+
+## A click at a global point (what a mouse click does): buys a node you can buy, else selects.
 func click_at(global_point: Vector2) -> void:
-	_canvas.pick(global_point - _canvas.get_global_rect().position)
-
-
-func _show_selected() -> void:
-	if _selected == "" or _db == null:
-		_title.text = tr("TALENT_NONE")
-		_kind.text = ""
-		_desc.text = ""
-		buy_button.disabled = true
+	var id := _canvas.pick(global_point - _canvas.get_global_rect().position)
+	if id == "":
 		return
-	var node := _db.node(_selected)
+	select(id)
+	if id != _db.start_id() and Talents.can_buy(_progress, id, _db):
+		talent_bought.emit(id)
+
+
+## The left button down at a global point; release_at decides between a click and a drag.
+func press_at(global_point: Vector2) -> void:
+	_press = global_point
+
+
+func release_at(global_point: Vector2) -> void:
+	if _press == null:
+		return
+	var from: Vector2 = _press
+	_press = null
+	if from.distance_to(global_point) <= CLICK_SLOP:
+		click_at(global_point)
+	else:
+		pan_by(global_point - from)
+
+
+## The mouse over a global point: the node there shows its detail.
+func hover_at(global_point: Vector2) -> void:
+	var id := _canvas.pick(global_point - _canvas.get_global_rect().position)
+	if id != _hover:
+		_hover = id
+		_show_detail(id if id != "" else _selected)
+		_canvas.queue_redraw()
+
+
+func _show_detail(id: String) -> void:
+	if id == "" or _db == null or not _db.has(id):
+		_detail.visible = false
+		_desc.text = ""
+		return
+	var node := _db.node(id)
 	_title.text = node_title(node)
-	var kind := "TALENT_KIND_" + str(node.get("kind", "minor")).to_upper()
-	_kind.text = tr(kind) + (" · " + tr("TALENT_RING_OUTER") if int(node.get("ring", 1)) == 2 else "")
-	var state := node_state(_selected)
-	_desc.text = StatText.describe_all(node.get("mods", [])) + "\n\n" + tr("TALENT_STATE_" + state.to_upper())
-	buy_button.disabled = not Talents.can_buy(_progress, _selected, _db)
+	_kind.text = tr("TALENT_KIND_" + str(node.get("kind", "minor")).to_upper())
+	var lines: Array = []
+	if not (node.get("mods", []) as Array).is_empty():
+		lines.append(StatText.describe_all(node.get("mods", [])))
+	if id != _db.start_id():
+		lines.append(tr("TALENT_STATE_" + node_state(id).to_upper()))
+	if route_step(id) > 0 and route_visible():
+		lines.append(tr("UI_TALENTS_ROUTE_STEP") % route_step(id))
+	_desc.text = "\n".join(lines)
+	_detail.visible = true
+	_detail.reset_size()
+	_place_detail(id)
 
 
-## "Poderío", or "Poderío / Celeridad" for the hybrid spokes.
+## Puts the detail beside its node, kept inside the window (again whenever the tree moves).
+func _place_detail(id: String) -> void:
+	if not _detail.visible or id == "" or _db == null or not _db.has(id):
+		return
+	var at := node_screen_position(id) + Vector2(24, -12)
+	var sz := _detail.get_combined_minimum_size()
+	var screen := get_global_rect()
+	if at.x + sz.x > screen.end.x - 4:
+		at.x = node_screen_position(id).x - 24 - sz.x
+	at.x = clampf(at.x, screen.position.x + 4, screen.end.x - sz.x - 4)
+	at.y = clampf(at.y, screen.position.y + 4, screen.end.y - sz.y - 4)
+	_detail.global_position = at
+
+
+## "Poderío", or "Poderío / Celeridad" for the nodes where two directions mix.
 static func node_title(node: Dictionary) -> String:
 	var dir := str(node.get("dir", ""))
 	if dir == "":
 		return TranslationServer.translate("TALENT_KIND_START")
-	var parts: Array = []
-	for part: String in dir.split("_"):
-		parts.append(TranslationServer.translate(DIR_KEYS.get(part, "")))
+	var parts: Array = [TranslationServer.translate(DIR_KEYS.get(dir, ""))]
+	var mix := str(node.get("mix", ""))
+	if mix != "":
+		parts.append(TranslationServer.translate(DIR_KEYS.get(mix, "")))
 	return " / ".join(parts)
 
 
-## The drawn circle: links, nodes by state and the selection ring. Clicks pick a node.
+## The drawn tree: links, the route, nodes as icons in frames by kind and state.
 class TalentCanvas extends Control:
 	var window: TalentsWindow
 
@@ -275,45 +395,106 @@ class TalentCanvas extends Control:
 
 	func node_position(id: String) -> Vector2:
 		var n := window._db.node(id)
-		var radius := CANVAS / 2.0 - 16.0
-		return Vector2(CANVAS, CANVAS) / 2.0 + Vector2(float(n.get("x", 0.0)), float(n.get("y", 0.0))) * radius
+		return size / 2.0 + window._pan + Vector2(float(n.get("x", 0.0)), float(n.get("y", 0.0))) * UNIT_PX * window._zoom
 
 
-	func pick(point: Vector2) -> void:
+	func radius_of(id: String) -> float:
+		return float(NODE_RADIUS.get(str(window._db.node(id).get("kind", "minor")), 11.0)) * window._zoom
+
+
+	## The node at a point (local), or "".
+	func pick(point: Vector2) -> String:
+		if window._db == null:
+			return ""
 		var best := ""
-		var best_d := 16.0
+		var best_d := INF
 		for id: String in window._db.ids():
 			var d := node_position(id).distance_to(point)
-			if d < best_d:
+			if d <= maxf(radius_of(id), 8.0) + 2.0 and d < best_d:
 				best = id
 				best_d = d
-		if best != "":
-			window.select(best)
+		return best
 
 
 	func _gui_input(event: InputEvent) -> void:
-		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			pick((event as InputEventMouseButton).position)
+		var origin := get_global_rect().position
+		if event is InputEventMouseButton:
+			var mb := event as InputEventMouseButton
+			if mb.button_index == MOUSE_BUTTON_LEFT:
+				if mb.pressed:
+					window.press_at(origin + mb.position)
+				else:
+					window.release_at(origin + mb.position)
+			elif mb.pressed and mb.button_index == MOUSE_BUTTON_WHEEL_UP:
+				window.zoom_to(window._zoom * 1.12)
+			elif mb.pressed and mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				window.zoom_to(window._zoom / 1.12)
+		elif event is InputEventMouseMotion:
+			var mm := event as InputEventMouseMotion
+			if window._press != null and (mm.button_mask & MOUSE_BUTTON_MASK_LEFT) != 0:
+				var from: Vector2 = window._press
+				if from.distance_to(origin + mm.position) > CLICK_SLOP:
+					window.pan_by(origin + mm.position - from)
+					window._press = origin + mm.position
+			window.hover_at(origin + mm.position)
 
 
 	func _draw() -> void:
 		if window == null or window._db == null or window._progress == null:
 			return
 		var db := window._db
-		draw_arc(Vector2(CANVAS, CANVAS) / 2.0, CANVAS / 2.0 - 8.0, 0.0, TAU, 96, Color(0.25, 0.22, 0.14, 0.5), 1.0)
+		var owned := window._progress.talents
+		var line := Color(HoloTheme.SECTION, 0.35)
 		for id: String in db.ids():
 			var a := node_position(id)
 			for other: String in db.node(id).get("links", []):
 				if other > id:
-					var both := window._progress.talents.has(id) or id == db.start_id()
-					both = both and (window._progress.talents.has(other) or other == db.start_id())
-					draw_line(a, node_position(other), Color("#b79a45") if both else Color(0.3, 0.3, 0.35, 0.8), 2.0 if both else 1.0)
+					var lit := (owned.has(id) or id == db.start_id()) and (owned.has(other) or other == db.start_id())
+					draw_line(a, node_position(other), OWNED_COLOR if lit else line, 2.0 if lit else 1.0)
+		if window.route_visible() and not window._route.is_empty():
+			var prev := db.start_id()
+			for i in window._route.size():
+				var id: String = window._route[i]
+				var linked := (db.node(id).get("links", []) as Array).has(prev)
+				if linked:
+					draw_dashed_line(node_position(prev), node_position(id), ROUTE_COLOR, 2.0, 5.0)
+				prev = id
+		var font := get_theme_default_font()
 		for id: String in db.ids():
-			var n := db.node(id)
-			var state := "owned" if id == db.start_id() else window.node_state(id)
-			var r: float = NODE_RADIUS.get(str(n.get("kind", "minor")), 7.0)
-			var p := node_position(id)
-			draw_circle(p, r, STATE_COLORS[state])
-			draw_arc(p, r, 0.0, TAU, 20, Color(0, 0, 0, 0.6), 1.5)
-			if id == window._selected:
-				draw_arc(p, r + 4.0, 0.0, TAU, 24, Color.WHITE, 2.0)
+			_draw_node(id, font)
+		window._place_detail(window._hover if window._hover != "" else window._selected)
+
+
+	func _draw_node(id: String, font: Font) -> void:
+		var n := window._db.node(id)
+		var p := node_position(id)
+		var r := radius_of(id)
+		var kind := str(n.get("kind", "minor"))
+		var dir_color: Color = DIR_COLORS.get(str(n.get("dir", "")), HoloTheme.SECTION)
+		var state := "owned" if id == window._db.start_id() else window.node_state(id)
+		var tint := Color.WHITE if state != "locked" else Color(0.4, 0.4, 0.45)
+		if kind == "keystone":
+			draw_circle(p, r + 6.0 * window._zoom, Color(dir_color, 0.25)) # the halo
+		var tex := window.icon_texture(str(n.get("icon", "")))
+		if tex != null:
+			var pts := PackedVector2Array()
+			var uvs := PackedVector2Array()
+			for k in 24:
+				var a := TAU * k / 24.0
+				pts.append(p + Vector2(cos(a), sin(a)) * r)
+				uvs.append(Vector2(0.5 + cos(a) * 0.5, 0.5 + sin(a) * 0.5))
+			draw_polygon(pts, PackedColorArray([tint]), uvs, tex)
+		else:
+			draw_circle(p, r, Color(dir_color, 0.9) * tint) # no icon: the direction's colour
+		var frame := OWNED_COLOR if state == "owned" else (Color(1, 1, 1, 0.9) if state == "available" else Color(0.45, 0.5, 0.6, 0.8))
+		var width := {"minor": 2.0, "notable": 3.0, "keystone": 4.0, "start": 3.0}.get(kind, 2.0) as float
+		draw_arc(p, r, 0.0, TAU, 32, frame, width)
+		if kind == "notable":
+			for k in 4: # four ticks round a notable's frame
+				var a := TAU * k / 4.0 + PI / 4.0
+				draw_line(p + Vector2(cos(a), sin(a)) * r, p + Vector2(cos(a), sin(a)) * (r + 5.0 * window._zoom), frame, 2.0)
+		if id == window._selected or id == window._hover:
+			draw_arc(p, r + 4.0, 0.0, TAU, 32, Color.WHITE, 2.0)
+		var step := window.route_step(id)
+		if window.route_visible() and step > 0 and (step == 1 or step % 5 == 0):
+			draw_string(font, p + Vector2(r + 2.0, -r), str(step), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, ROUTE_COLOR)
