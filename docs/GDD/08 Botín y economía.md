@@ -4,7 +4,7 @@ estado: implementado
 actualizado: 2026-11-27
 ---
 
-# 8. Botín, objetos y economía **[Implementado]** (0.7.0, [[Plan 5 — Objetos (spec)|Plan 5]]; alijo e intercambio pendientes)
+# 8. Botín, objetos y economía **[Implementado]** (0.7.0, Plan 5; alijo e intercambio pendientes)
 
 - **Botín personal:** cada jugador cercano tiene su propia tirada al morir un monstruo. Los objetos caen sueltos en el suelo, con un haz de luz y su nombre del color de su rareza, y solo los ve su dueño. Se recogen pasando por encima y desaparecen a los 2 minutos.
 - **Qué cae:** oro casi siempre; objetos el 12 % de las veces en monstruos normales; el élite suelta 1 seguro y a veces 2; pociones a veces. El 75 % de los objetos es usable por la clase de quien lo recibe.

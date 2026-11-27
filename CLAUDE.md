@@ -3,10 +3,9 @@
 RPG de acción 3D vóxel con cámara isométrica para jugar online con hasta 4 amigos. Desarrollo desde cero; el prototipo 2D (`D:\RPG`, repo `CabadaAndres11/thalandor-online`) es solo referencia de reglas y fórmulas.
 
 ## Documentación: bóveda de Obsidian en `docs/`
-- **El GDD vive en `docs/GDD/`**, una nota por apartado (`00 Índice del GDD.md`) y una por clase (`docs/GDD/Clases/`). Es un documento vivo: actualiza el apartado afectado, su estado ([Diseñado], [En curso], [Implementado], [Abierto]) y `docs/GDD/Registro de cambios.md` cuando algo cambie o se implemente.
+- **El GDD vive en `docs/GDD/`**, una nota por apartado (`00 Índice del GDD.md`) y una por clase (`docs/GDD/Clases/`). Es un documento vivo: actualiza el apartado afectado, su estado ([Diseñado], [En curso], [Implementado], [Abierto]) y, al publicar una versión, añade su línea en `docs/GDD/Registro de cambios.md`.
 - **Decisiones:** cada decisión importante va en `docs/Decisiones/` (plantilla `docs/Plantillas/Decisión.md`) y se enlaza en `Índice de decisiones.md`. Lo pendiente está en `docs/GDD/15 Decisiones abiertas.md`.
-- **Planes:** la spec y el plan del plan en curso van en `docs/Planes/` (plantilla `Spec de plan.md`); actualiza la tabla de `docs/Planes/Planes.md`. Al terminar un plan, sus notas pasan a `docs/Archivo/Planes/`. No leas el archivo salvo que haga falta.
-- **Sesiones:** al cerrar una sesión de trabajo, añade un resumen en `docs/Sesiones/` (plantilla `Sesión.md`).
+- **Planes:** la spec y el plan del plan en curso van en `docs/Planes/` (plantilla `Spec de plan.md`); actualiza la tabla de `docs/Planes/Planes.md`. Al publicarse un plan, sus notas se borran (quedan en el historial de git).
 - **Formato Obsidian:** enlaces internos `[[Nombre de nota]]`, propiedades YAML al inicio (`tags`, `estado`, `actualizado`). No muevas ni renombres notas sin actualizar sus enlaces.
 
 ## Normas del proyecto

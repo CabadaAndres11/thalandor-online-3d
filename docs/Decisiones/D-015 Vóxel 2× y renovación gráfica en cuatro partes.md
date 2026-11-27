@@ -25,7 +25,7 @@ El Plan 6 quiere dejar atrás el aspecto infantil ([[Estilo gráfico objetivo (P
 ## Afecta a
 - [[14 Hoja de ruta]]
 - [[11 Arte y audio]]
-- [[Plan 6.1 — Iluminación, ambientes y opciones (spec)]]
+- Plan 6.1 — Iluminación, ambientes y opciones (spec)
 
 ---
 ← [[Índice de decisiones]]

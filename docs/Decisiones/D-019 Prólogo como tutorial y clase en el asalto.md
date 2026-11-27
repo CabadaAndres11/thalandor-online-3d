@@ -35,7 +35,7 @@ El Plan 8.3 monta el prólogo del [[Guion]] sobre el motor de la 0.12.0. Brann m
 - [[06 Mundo]]
 - [[07 Misiones]]
 - [[10 Guardado]]
-- [[Plan 8.3a — Prólogo en la aldea (spec)]]
+- Plan 8.3a — Prólogo en la aldea (spec)
 
 ---
 ← [[Índice de decisiones]]

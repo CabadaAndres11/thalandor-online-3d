@@ -32,7 +32,7 @@ La 8.2 hace el motor de la historia: misiones, diálogos y escenas. El [[Guion]]
 - [[07 Misiones]]
 - [[09 Interfaz]]
 - [[10 Guardado]]
-- [[Plan 8.2 — Misiones, diálogos y escenas (spec)]]
+- Plan 8.2 — Misiones, diálogos y escenas (spec)
 
 ---
 ← [[Índice de decisiones]]

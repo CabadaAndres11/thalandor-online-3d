@@ -34,7 +34,7 @@ El Plan 8 lleva el juego de la arena de pruebas a un mundo con historia. El guio
 - [[07 Misiones]]
 - [[04 Personajes y progresión]]
 - [[14 Hoja de ruta]]
-- [[Plan 8.1 — Zonas y mundo (spec)]]
+- Plan 8.1 — Zonas y mundo (spec)
 
 ---
 ← [[Índice de decisiones]]

@@ -30,7 +30,7 @@ Reglas generales en [[04 Personajes y progresión]].
 | 25 | Evasión mortal | Pasiva | Tras esquivar, el siguiente golpe genera 2 puntos de combo. |
 | 35 | Oportunista | Pasiva | +10 % de daño a objetivos aturdidos o inmovilizados. |
 
-**Kit rehecho en el [[Plan 4 — Progresión (spec)|Plan 4]] [Implementado]:** más daño (Lanzar cuchillo, Desgarro, Aluvión) y sin Evasión. La tabla de abajo ya es la nueva.
+**Kit rehecho en el Plan 4 [Implementado]:** más daño (Lanzar cuchillo, Desgarro, Aluvión) y sin Evasión. La tabla de abajo ya es la nueva.
 
 ## Mejoras de clase del nivel 50
 Se elige una de las dos al llegar al nivel 50 (ver [[04 Personajes y progresión|§4.4]]). **[Implementado]**: Desvanecer eliminado (hacía lo mismo que Sigilo); antes: 0 energía/60 s (sin tiempo global, 8 s de sigilo también en combate, +30 % de velocidad 3 s); Golpe sombrío 40/15 s (12 m, 20 + 1,6 × PA con crítico seguro, 2 de combo); Nube tóxica 35/20 s (4 m, 8 pulsos, una acumulación de veneno por pulso); Contagio 25/25 s (marca 10 s: al morir envenenado, su veneno salta a 6 m). Eviscerar evolucionado devuelve 8 de energía por punto de combo; Cuchillada evolucionada siempre envenena.

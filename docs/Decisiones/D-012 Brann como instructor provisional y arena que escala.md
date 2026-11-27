@@ -24,7 +24,7 @@ Permite probar toda la progresión ya, sin esperar a las misiones. Que solo deci
 ## Afecta a
 - [[04 Personajes y progresión]]
 - [[06 Mundo]]
-- [[Plan 4 — Progresión (spec)]]
+- Plan 4 — Progresión (spec)
 
 ---
 ← [[Índice de decisiones]]

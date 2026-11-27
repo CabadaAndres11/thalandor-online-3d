@@ -28,7 +28,7 @@ Que cada personaje se reconozca de un vistazo por su clase y que subir de tramo 
 ## Afecta a
 - [[08 Botín y economía]]
 - [[04 Personajes y progresión]]
-- [[Plan 5 — Objetos (spec)]]
+- Plan 5 — Objetos (spec)
 
 ---
 ← [[Índice de decisiones]]

@@ -27,7 +27,7 @@ Desde la 0.2.0 los personajes usaban el modelo y las animaciones de Kenney Block
 
 ## Afecta a
 - [[11 Arte y audio]]
-- [[Plan 3.2 — Vóxel propio, bestiario del prólogo y clase con Brann (spec)]]
+- Plan 3.2 — Vóxel propio, bestiario del prólogo y clase con Brann (spec)
 
 ---
 ← [[Índice de decisiones]]

@@ -21,7 +21,7 @@ Es el modelo probado en el prototipo 2D, da control total sobre predicción y re
 
 ## Afecta a
 - [[02 Arquitectura técnica]]
-- [[Plan 1 — Fundaciones y red (spec)]]
+- Plan 1 — Fundaciones y red (spec)
 
 ---
 ← [[Índice de decisiones]]

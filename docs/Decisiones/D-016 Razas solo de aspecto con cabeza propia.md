@@ -29,7 +29,7 @@ El Plan 7 añade razas seleccionables. Faltaba decidir cuáles, si dan bonificac
 ## Afecta a
 - [[04 Personajes y progresión]]
 - [[11 Arte y audio]]
-- [[Plan 7 — Identidad y creación de personaje (spec)]]
+- Plan 7 — Identidad y creación de personaje (spec)
 
 ---
 ← [[Índice de decisiones]]

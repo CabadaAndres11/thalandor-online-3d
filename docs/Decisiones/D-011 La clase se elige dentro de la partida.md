@@ -22,7 +22,7 @@ Ata la clase a la historia desde el primer momento y prepara el terreno para las
 
 ## Afecta a
 - [[04 Personajes y progresión]]
-- [[Plan 3.2 — Vóxel propio, bestiario del prólogo y clase con Brann (spec)]]
+- Plan 3.2 — Vóxel propio, bestiario del prólogo y clase con Brann (spec)
 
 ---
 ← [[Índice de decisiones]]
