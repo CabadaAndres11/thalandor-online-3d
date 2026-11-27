@@ -99,16 +99,15 @@ func test_cast_uses_the_evolution() -> void:
 	assert_eq(p.cooldowns["w_hit"], f.world.tick + f.world.ticks(2.0))
 
 
-func test_reset_upgrade_clears_upgrade_and_ring2() -> void:
+func test_reset_upgrade_clears_upgrade_and_keeps_talents() -> void:
 	var p := _hero(60)
 	ProgressRequests.choose_upgrade(f.world, p, "berserker", true)
-	for id: String in ["might_1", "might_2", "might_3", "might_4", "might_key", "might_5"]:
+	for id: String in ["r1_0", "r2_0", "r3_0", "r4_0", "r5_0", "r6_0"]:
 		assert_true(ProgressRequests.buy_talent(f.world, p, id), id)
 	ProgressRequests.clear_upgrade(f.world, p)
 	Progression.rebuild(p, f.world)
 	assert_eq(p.progress.upgrade, "")
-	assert_does_not_have(p.progress.talents, "might_5")
-	assert_has(p.progress.talents, "might_key")
+	assert_has(p.progress.talents, "r6_0", "talents never depend on the upgrade (Plan 8.3g)")
 	assert_false(p.passives.any(func(m: Dictionary) -> bool: return m.get("stat") == "armor_pct" and m.get("value") == 0.5), "the upgrade passives are gone")
 
 

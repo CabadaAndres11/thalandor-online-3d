@@ -1,8 +1,8 @@
 class_name Talents
 extends RefCounted
 ## Talent and mastery rules: one point per level above 1, spent on nodes of the tree that
-## touch the start or a bought node (ring 2 needs a class upgrade) or on masteries of a
-## direction whose nodes are all bought.
+## touch the start or a bought node (every ring is open from the start, Plan 8.3g) or on
+## masteries of a direction whose nodes are all bought.
 
 
 static func points(level: int) -> int:
@@ -20,10 +20,7 @@ static func spent(pr: PlayerProgress) -> int:
 static func can_buy(pr: PlayerProgress, id: String, db: TalentDB) -> bool:
 	if not db.has(id) or id == db.start_id() or pr.talents.has(id) or spent(pr) >= points(pr.level):
 		return false
-	var node := db.node(id)
-	if int(node.get("ring", 1)) == 2 and pr.upgrade == "":
-		return false
-	for other: String in node.get("links", []):
+	for other: String in db.node(id).get("links", []):
 		if other == db.start_id() or pr.talents.has(other):
 			return true
 	return false
@@ -36,14 +33,10 @@ static func buy(pr: PlayerProgress, id: String, db: TalentDB) -> bool:
 	return true
 
 
-## Every node of a direction that can be bought now (ring 2 only with an upgrade) is owned.
-## `ring1_only`: the outer ring is not asked for (a mastery bought before the upgrade stays legal).
-static func direction_complete(pr: PlayerProgress, dir: String, db: TalentDB, ring1_only: bool = false) -> bool:
+## Every node of a direction (its "dir") is owned.
+static func direction_complete(pr: PlayerProgress, dir: String, db: TalentDB) -> bool:
 	for id: String in db.ids():
-		var node := db.node(id)
-		if str(node.get("dir", "")) != dir:
-			continue
-		if int(node.get("ring", 1)) == 2 and (pr.upgrade == "" or ring1_only):
+		if str(db.node(id).get("dir", "")) != dir:
 			continue
 		if not pr.talents.has(id):
 			return false
@@ -62,16 +55,14 @@ static func buy_mastery(pr: PlayerProgress, dir: String, db: TalentDB) -> bool:
 
 
 ## Whether the bought nodes and masteries are a legal state: real distinct nodes, within
-## the points, all reachable from the start through bought nodes, ring 2 only with an
-## upgrade, and masteries only in directions that are complete.
+## the points, all reachable from the start through bought nodes, and masteries only in
+## directions that are complete.
 static func valid(pr: PlayerProgress, db: TalentDB) -> bool:
 	if spent(pr) > points(pr.level):
 		return false
 	var seen := {}
 	for id: Variant in pr.talents:
 		if not id is String or not db.has(id) or id == db.start_id() or seen.has(id):
-			return false
-		if int(db.node(id).get("ring", 1)) == 2 and pr.upgrade == "":
 			return false
 		seen[id] = true
 	var reached := {db.start_id(): true}
@@ -87,13 +78,13 @@ static func valid(pr: PlayerProgress, db: TalentDB) -> bool:
 	for dir: Variant in pr.masteries:
 		if not dir is String or not dir in db.directions() or int(pr.masteries[dir]) < 0:
 			return false
-		if int(pr.masteries[dir]) > 0 and not direction_complete(pr, dir, db, true):
+		if int(pr.masteries[dir]) > 0 and not direction_complete(pr, dir, db):
 			return false
 	return true
 
 
-## Drops the bought nodes that no longer reach the start through bought nodes (after the
-## outer ring left with an upgrade reset). Their points go back to the player.
+## Drops the bought nodes that no longer reach the start through bought nodes. Their points
+## go back to the player.
 static func prune_orphans(pr: PlayerProgress, db: TalentDB) -> void:
 	var reached := {db.start_id(): true}
 	var queue: Array = [db.start_id()]

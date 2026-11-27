@@ -17,7 +17,7 @@ func _progress(level: int, spent_attrs: bool, talents: bool) -> PlayerProgress:
 	if spent_attrs:
 		pr.attributes["strength"] = 1
 	if talents:
-		pr.talents.append("might_1")
+		pr.talents.append("r1_0")
 	return pr
 
 

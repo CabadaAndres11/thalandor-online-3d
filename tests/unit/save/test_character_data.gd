@@ -110,7 +110,7 @@ func test_progress_roundtrip() -> void:
 	c.progress.level = 33
 	c.progress.xp = 1234
 	c.progress.attributes["agility"] = 9
-	c.progress.talents = ["might_1", "might_2"]
+	c.progress.talents = ["r1_0", "r2_0"]
 	c.progress.masteries = {"might": 2}
 	c.progress.upgrade = "berserker"
 	var back := CharacterData.from_dict(JSON.parse_string(JSON.stringify(c.to_dict())), catalog)
@@ -165,7 +165,7 @@ func test_v3_gets_starter() -> void:
 	kit.sort()
 	assert_eq(_worn(c), kit)
 	assert_eq(c.progress.level, 12)
-	assert_eq(c.progress.talents, ["might_1"])
+	assert_eq(c.progress.talents, [], "the old tree's talents are given back (v8)")
 	assert_eq(c.inventory.gold, 0)
 	for it: Item in c.inventory.equipment.values():
 		assert_eq([it.level, it.rarity, it.durability], [1, "common", 100])
@@ -243,3 +243,16 @@ func test_new_character_starts_in_the_village_without_tutorial() -> void:
 	var c := CharacterData.new()
 	assert_eq(c.place.zone, "aldea")
 	assert_false(c.tutorial_done)
+
+
+## Plan 8.3g: the talent tree changed, so a version 7 character loses its talents and
+## masteries and keeps every point to spend again.
+func test_version_7_loses_talents_and_keeps_points() -> void:
+	var d := {"version": 7, "id": "c7", "name": "Ana", "class_id": "warrior", "appearance": {}, "bar": [],
+		"progress": {"level": 20, "talents": ["might_1", "might_2", "might_3"], "masteries": {"might": 2}}}
+	var c := CharacterData.from_dict(d, catalog)
+	assert_eq(c.to_dict().version, 8)
+	assert_eq(c.progress.talents, [])
+	assert_eq(c.progress.masteries, {})
+	assert_eq(c.progress.level, 20)
+	assert_eq(Talents.spent(c.progress), 0)

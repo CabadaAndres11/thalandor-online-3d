@@ -4,7 +4,7 @@ extends RefCounted
 ## Files are versioned; from_dict() migrates old versions and sanitizes everything
 ## (a file may be old, hand-edited or imported from elsewhere).
 
-const VERSION := 7
+const VERSION := 8
 ## Older characters are set aside by CharacterStore: the story starts again (Plan 8.3a).
 const MIN_VERSION := 7
 
@@ -114,5 +114,9 @@ static func migrate(d: Dictionary) -> Dictionary:
 		# Version 5 had no quests (Plan 8.2).
 		m["quests"] = {}
 	# Version 7 (Plan 8.3a) changes nothing in the file: it marks characters made for the prologue.
+	if version < 8 and m.get("progress") is Dictionary:
+		# Version 7 had the old talent circle (Plan 8.3g): its talents and masteries are given back.
+		(m["progress"] as Dictionary)["talents"] = []
+		(m["progress"] as Dictionary)["masteries"] = {}
 	m["version"] = VERSION
 	return m

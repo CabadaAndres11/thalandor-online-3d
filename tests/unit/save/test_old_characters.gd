@@ -36,8 +36,9 @@ func _old(id: String, version := 6) -> String:
 	return path
 
 
-func test_version_is_7() -> void:
-	assert_eq(CharacterData.VERSION, 7)
+func test_version_is_8_and_7_still_loads() -> void:
+	assert_eq(CharacterData.VERSION, 8)
+	assert_eq(CharacterData.MIN_VERSION, 7, "version 7 loads, it only loses its talents (Plan 8.3g)")
 
 
 func test_v6_moved_to_antiguos() -> void:

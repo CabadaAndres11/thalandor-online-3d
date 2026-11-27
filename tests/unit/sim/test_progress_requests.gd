@@ -49,27 +49,43 @@ func test_spend_allowed_in_combat() -> void:
 
 func test_buy_talent_accepted() -> void:
 	var p := _hero(5)
-	var armor := p.stats.armor
-	assert_true(ProgressRequests.buy_talent(f.world, p, "bastion_1"))
-	assert_eq(p.progress.talents, ["bastion_1"])
-	assert_gt(p.stats.armor, armor)
+	var hp := p.stats.max_hp
+	assert_true(ProgressRequests.buy_talent(f.world, p, "r1_6"))
+	assert_eq(p.progress.talents, ["r1_6"])
+	assert_gt(p.stats.max_hp, hp)
 	assert_true(p.progress_dirty)
 
 
 func test_buy_talent_rejections() -> void:
 	var p := _hero(5)
-	assert_false(ProgressRequests.buy_talent(f.world, p, "bastion_3"), "unlinked")
+	assert_false(ProgressRequests.buy_talent(f.world, p, "r3_18"), "unlinked")
 	assert_false(ProgressRequests.buy_talent(f.world, p, "nope"))
 	var dead := _hero(5)
 	dead.life = CombatEntity.DEAD
-	assert_false(ProgressRequests.buy_talent(f.world, dead, "bastion_1"))
+	assert_false(ProgressRequests.buy_talent(f.world, dead, "r1_6"))
 	assert_eq(p.progress.talents, [])
 	assert_false(p.progress_dirty)
 
 
+## Every node of a direction, in an order where each touches the start or an earlier one.
+func _direction(dir: String) -> Array:
+	var out: Array = []
+	var have := {db.start_id(): true}
+	var grew := true
+	while grew:
+		grew = false
+		for id: String in db.ids():
+			if not have.has(id) and str(db.node(id).dir) == dir and (db.node(id).links as Array).any(func(n: String) -> bool: return have.has(n)):
+				have[id] = true
+				out.append(id)
+				grew = true
+	return out
+
+
 func test_buy_mastery() -> void:
-	var p := _hero(10)
-	for id: String in ["might_1", "might_2", "might_3", "might_4", "might_key"]:
+	var might := _direction("might")
+	var p := _hero(might.size() + 2)
+	for id: String in might:
 		assert_true(ProgressRequests.buy_talent(f.world, p, id))
 	assert_true(ProgressRequests.buy_mastery(f.world, p, "might"))
 	assert_eq(p.progress.masteries.might, 1)
@@ -84,7 +100,7 @@ func test_reset_attributes_and_talents() -> void:
 	var p := _hero(10)
 	p.inventory.gold = 10000 # resets cost gold (Plan 8.3b)
 	ProgressRequests.spend_attribute(f.world, p, "strength")
-	ProgressRequests.buy_talent(f.world, p, "might_1")
+	ProgressRequests.buy_talent(f.world, p, "r1_0")
 	p.progress_dirty = false
 	assert_true(ProgressRequests.reset(f.world, p, "attributes", true))
 	assert_eq(p.progress.attributes.strength, 0)
@@ -108,14 +124,16 @@ func test_reset_rejections() -> void:
 	assert_eq(p.progress.attributes.strength, 1)
 
 
-func test_clearing_the_upgrade_drops_ring2() -> void:
+## Plan 8.3g: talents never depend on the upgrade.
+func test_clearing_the_upgrade_keeps_talents() -> void:
 	var p := _hero(60)
 	p.progress.upgrade = "berserker"
-	for id: String in ["might_1", "might_2", "might_3", "might_4", "might_key", "might_5", "might_6"]:
+	var ids := ["r1_0", "r2_0", "r3_0", "r4_0", "r5_0", "r6_0", "r7_0"]
+	for id: String in ids:
 		assert_true(ProgressRequests.buy_talent(f.world, p, id), id)
 	ProgressRequests.clear_upgrade(f.world, p)
 	assert_eq(p.progress.upgrade, "")
-	assert_eq(p.progress.talents, ["might_1", "might_2", "might_3", "might_4", "might_key"])
+	assert_eq(p.progress.talents, ids)
 
 
 # --- Sanitizing -------------------------------------------------------------------------
@@ -125,11 +143,11 @@ func _san(d: Dictionary, class_id := "warrior") -> PlayerProgress:
 
 
 func test_sanitize_keeps_a_good_progress() -> void:
-	var pr := _san({"level": 12, "xp": 50, "attributes": {"strength": 20, "stamina": 35}, "talents": ["might_1", "might_2"]})
+	var pr := _san({"level": 12, "xp": 50, "attributes": {"strength": 20, "stamina": 35}, "talents": ["r1_0", "r2_0"]})
 	assert_eq(pr.level, 12)
 	assert_eq(pr.xp, 50)
 	assert_eq(pr.attributes.strength, 20)
-	assert_eq(pr.talents, ["might_1", "might_2"])
+	assert_eq(pr.talents, ["r1_0", "r2_0"])
 
 
 func test_sanitize_too_many_attribute_points() -> void:
@@ -140,10 +158,10 @@ func test_sanitize_too_many_attribute_points() -> void:
 
 
 func test_sanitize_orphan_talents() -> void:
-	var pr := _san({"level": 20, "talents": ["might_3"], "masteries": {"might": 2}})
+	var pr := _san({"level": 20, "talents": ["r3_0"], "masteries": {"might": 2}})
 	assert_eq(pr.talents, [])
 	assert_eq(pr.masteries, {})
-	pr = _san({"level": 3, "talents": ["might_1", "might_2", "might_3"]})
+	pr = _san({"level": 3, "talents": ["r1_0", "r2_0", "r3_0"]})
 	assert_eq(pr.talents, [], "more than the points")
 
 
@@ -175,10 +193,9 @@ func test_sanitize_xp_over_level() -> void:
 	assert_eq(pr.xp, 99)
 
 
-func test_sanitize_ring2_talents_without_upgrade() -> void:
-	var ids := ["might_1", "might_2", "might_3", "might_4", "might_key", "might_5"]
-	var pr := _san({"level": 30, "talents": ids})
-	assert_eq(pr.talents, [], "ring 2 needs an upgrade")
+func test_sanitize_keeps_outer_rings_without_upgrade() -> void:
+	var ids := ["r1_0", "r2_0", "r3_0", "r4_0", "r5_0", "r6_0", "r7_0"]
+	assert_eq(_san({"level": 30, "talents": ids}).talents, ids)
 
 
 func test_sanitize_returns_a_copy() -> void:
@@ -190,21 +207,16 @@ func test_sanitize_returns_a_copy() -> void:
 
 func test_sanitize_keeps_masteries_after_choosing_an_upgrade() -> void:
 	f.world.upgrades = UpgradeDB.from_list([{"id": "berserker", "class": "warrior"}])
-	var ids := ["might_1", "might_2", "might_3", "might_4", "might_key"]
-	var pr := _san({"level": 60, "upgrade": "berserker", "talents": ids, "masteries": {"might": 1}})
+	var ids := _direction("might")
+	var pr := _san({"level": ids.size() + 2, "upgrade": "berserker", "talents": ids, "masteries": {"might": 1}})
 	assert_eq(pr.talents, ids)
 	assert_eq(pr.masteries, {"might": 1})
 
 
-func test_clearing_the_upgrade_prunes_nodes_left_without_a_path() -> void:
-	var p := _hero(60)
-	p.progress.upgrade = "berserker"
-	for id: String in ["might_1", "might_2", "might_3", "might_4", "might_key", "might_5", "might_celerity_5", "might_celerity_4"]:
-		assert_true(ProgressRequests.buy_talent(f.world, p, id), id)
-	ProgressRequests.clear_upgrade(f.world, p)
-	assert_true(Talents.valid(p.progress, db), "what is left is a legal tree")
-	assert_does_not_have(p.progress.talents, "might_celerity_4")
-	assert_eq(Talents.spent(p.progress), 5)
+func test_sanitize_drops_ids_of_the_old_tree() -> void:
+	var pr := _san({"level": 30, "talents": ["might_1", "might_2"], "masteries": {"might": 1}})
+	assert_eq(pr.talents, [])
+	assert_eq(pr.masteries, {})
 
 
 func test_upgrade_is_final() -> void:

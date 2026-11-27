@@ -337,10 +337,10 @@ func test_spending_and_buying_from_the_windows() -> void:
 	Xp.set_level(main.game.host.world, _host_player(), 5)
 	await wait_physics_frames(3)
 	main.character_window.attribute_spent.emit("stamina")
-	main.talents_window.talent_bought.emit("might_1")
+	main.talents_window.talent_bought.emit("r1_0")
 	await wait_physics_frames(4)
 	assert_eq(main.game.client.progress.attributes.stamina, 1)
-	assert_eq(main.game.client.progress.talents, ["might_1"])
+	assert_eq(main.game.client.progress.talents, ["r1_0"])
 
 
 func test_open_windows_refresh_when_progress_changes() -> void:

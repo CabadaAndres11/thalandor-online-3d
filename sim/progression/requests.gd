@@ -76,17 +76,14 @@ static func reset(world: SimWorld, p: PlayerState, what: String, near_trainer: b
 	return _accept(world, p)
 
 
-## Removes the upgrade and the ring 2 nodes that depended on it.
+## Removes the upgrade (talents never depend on it, Plan 8.3g).
 static func clear_upgrade(world: SimWorld, p: PlayerState) -> void:
 	Combat.dismiss_summons(world, p.id) # the hunter wolf leaves with the upgrade
 	# A channelled or repeating ability of the upgrade stops at once.
 	for pc: PendingCast in world.pending_casts.duplicate():
 		if pc.caster_id == p.id:
 			Combat.cancel_cast(world, pc)
-	var db := TalentDB.load_default()
 	p.progress.upgrade = ""
-	p.progress.talents = p.progress.talents.filter(func(id: String) -> bool: return int(db.node(id).get("ring", 1)) != 2)
-	Talents.prune_orphans(p.progress, db)
 
 
 ## A sanitized copy of a progress that came from outside (a saved character in HELLO):

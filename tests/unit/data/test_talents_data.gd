@@ -7,10 +7,20 @@ func before_each() -> void:
 	db = TalentDB.load_default()
 
 
-func test_66_nodes() -> void:
-	assert_eq(db.count(1), 46)
-	assert_eq(db.count(2), 20)
-	assert_eq(db.ids().size(), 66)
+## Plan 8.3g: seven closed rings of 10, 20 ... 70 nodes around the start.
+func test_tree_is_281_nodes_in_7_rings() -> void:
+	assert_eq(db.ids().size(), 281)
+	assert_eq(db.rings(), 7)
+	for r in range(1, 8):
+		assert_eq(db.count(r), 10 * r, "ring %d" % r)
+
+
+func test_every_class_has_a_route() -> void:
+	for c: String in ["warrior", "cleric", "mage", "archer", "assassin"]:
+		var route: Array = db.route(c)
+		assert_eq(route.size(), 100, c)
+		assert_true(db.node(route[0]).links.has(db.start_id()), c + " starts next to the centre")
+	assert_eq(db.route("nope"), [])
 
 
 func test_links_symmetric() -> void:
@@ -29,16 +39,14 @@ func test_graph_connected() -> void:
 			if not seen.has(n):
 				seen[n] = true
 				queue.append(n)
-	assert_eq(seen.size(), 66)
+	assert_eq(seen.size(), db.ids().size())
 
 
-func test_five_keystones_per_ring_on_pure_spokes() -> void:
-	for ring in [1, 2]:
+func test_keystones_on_rings_4_and_7() -> void:
+	for ring in [4, 7]:
 		var keys := db.ids().filter(func(id: String) -> bool:
 			return db.node(id).kind == "keystone" and int(db.node(id).ring) == ring)
 		assert_eq(keys.size(), 5, "ring %d" % ring)
-		for k: String in keys:
-			assert_true(db.directions().has(db.node(k).dir), k + " sits on a pure spoke")
 
 
 func test_every_mod_is_a_known_stat() -> void:
@@ -57,31 +65,11 @@ func test_positions_inside_unit_circle() -> void:
 
 
 func test_ids_and_kinds() -> void:
-	assert_eq(db.node("might_1").kind, "minor")
-	assert_eq(db.node("might_3").kind, "notable")
-	assert_eq(db.node("might_key").kind, "keystone")
-	assert_eq(db.node("might_6").kind, "keystone")
-	assert_eq(db.node("might_celerity_3").kind, "notable")
-	assert_eq(int(db.node("might_celerity_5").ring), 2)
 	assert_eq(db.node("start").kind, "start")
-
-
-func test_hybrid_is_sixty_percent_of_each_main_bonus() -> void:
-	var m1: Variant = db.node("might_1").mods[0]
-	var c1: Variant = db.node("celerity_1").mods[0]
-	var h: Variant = db.node("might_celerity_1").mods
-	assert_eq(h.size(), 2)
-	assert_eq(h[0].stat, m1.stat)
-	assert_almost_eq(float(h[0].value), float(m1.value) * 0.6, 0.0001)
-	assert_eq(h[1].stat, c1.stat)
-	assert_almost_eq(float(h[1].value), float(c1.value) * 0.6, 0.0001)
-	var n3: Variant = db.node("might_celerity_3").mods
-	assert_almost_eq(float(n3[0].value), float(db.node("might_3").mods[0].value), 0.0001, "the notable keeps 100 %")
-
-
-func test_ring2_is_one_and_a_half_times() -> void:
-	var a: Variant = db.node("bastion_1").mods[0]
-	var b: Variant = db.node("bastion_5").mods[0]
-	assert_almost_eq(float(b.value), float(a.value) * 1.5, 0.0001)
-	var k: Variant = db.node("bastion_key").mods[0]
-	assert_almost_eq(float(db.node("bastion_6").mods[0].value), float(k.value) * 1.5, 0.0001)
+	assert_eq(db.node("r1_0").kind, "minor")
+	assert_eq(db.node("r2_2").kind, "notable")
+	assert_eq(db.node("r4_0").kind, "keystone")
+	assert_eq(db.node("r1_0").dir, "might")
+	assert_eq(db.node("r1_6").dir, "bastion")
+	assert_eq(db.node("r1_0").icon, "crit") # might's pool cycles from the ring and index
+	assert_eq(db.node("r7_0").kind, "keystone")

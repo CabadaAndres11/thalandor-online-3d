@@ -23,6 +23,25 @@ func _buy_all(pr: PlayerProgress, ids: Array) -> void:
 		assert_true(Talents.buy(pr, id, db), "buy " + id)
 
 
+## The nodes of a direction in an order where each touches the start or an earlier one.
+func _direction_in_order(dir: String) -> Array:
+	var out: Array = []
+	var have := {db.start_id(): true}
+	var grew := true
+	while grew:
+		grew = false
+		for id: String in db.ids():
+			if have.has(id) or str(db.node(id).get("dir", "")) != dir:
+				continue
+			for n: String in db.node(id).links:
+				if have.has(n):
+					have[id] = true
+					out.append(id)
+					grew = true
+					break
+	return out
+
+
 func test_points_by_level() -> void:
 	assert_eq(Talents.points(1), 0)
 	assert_eq(Talents.points(11), 10)
@@ -30,65 +49,52 @@ func test_points_by_level() -> void:
 
 
 func test_buy_needs_link() -> void:
-	var pr := _pr(20)
-	assert_false(Talents.can_buy(pr, "might_2", db), "not linked to the start")
-	assert_true(Talents.buy(pr, "might_1", db))
-	assert_true(Talents.can_buy(pr, "might_2", db))
-	assert_true(Talents.can_buy(pr, "celerity_1", db), "start links every spoke")
-	assert_false(Talents.can_buy(pr, "nonsense", db))
+	var pr := _pr(5)
+	assert_false(Talents.can_buy(pr, "r2_0", db), "not linked to the start")
+	assert_true(Talents.buy(pr, "r1_0", db))
+	assert_true(Talents.can_buy(pr, "r2_0", db))
 	assert_false(Talents.can_buy(pr, "start", db))
+	assert_false(Talents.can_buy(pr, "nope", db))
 
 
 func test_buy_needs_point() -> void:
 	var pr := _pr(2)
-	assert_true(Talents.buy(pr, "might_1", db))
-	assert_false(Talents.buy(pr, "might_2", db))
-	assert_eq(pr.talents, ["might_1"])
+	assert_true(Talents.buy(pr, "r1_0", db))
+	assert_false(Talents.buy(pr, "r1_1", db))
+	assert_eq(pr.talents, ["r1_0"])
 
 
 func test_cannot_buy_twice() -> void:
 	var pr := _pr(5)
-	assert_true(Talents.buy(pr, "might_1", db))
-	assert_false(Talents.buy(pr, "might_1", db))
-	assert_eq(pr.talents.size(), 1)
+	assert_true(Talents.buy(pr, "r1_0", db))
+	assert_false(Talents.buy(pr, "r1_0", db))
 
 
-func test_ring2_needs_upgrade() -> void:
-	var order := ["might_1", "might_2", "might_3", "might_4", "might_key"]
-	var pr := _pr(30)
-	_buy_all(pr, order)
-	assert_false(Talents.can_buy(pr, "might_5", db))
-	pr.upgrade = "berserker"
-	assert_true(Talents.can_buy(pr, "might_5", db))
-	assert_true(Talents.buy(pr, "might_5", db))
-	assert_true(Talents.buy(pr, "might_6", db))
+## Plan 8.3g: every ring is open from the start, with or without a class upgrade.
+func test_outer_ring_needs_no_upgrade() -> void:
+	var pr := _pr(300)
+	_buy_all(pr, ["r1_0", "r2_0", "r3_0", "r4_0", "r5_0", "r6_0", "r7_0"])
+	assert_eq(pr.upgrade, "")
+	assert_true(Talents.valid(pr, db))
 
 
-func test_mastery_only_when_all_bought() -> void:
-	var pr := _pr(30)
-	assert_false(Talents.can_buy_mastery(pr, "might", db))
-	_buy_all(pr, ["might_1", "might_2", "might_3", "might_4"])
-	assert_false(Talents.can_buy_mastery(pr, "might", db), "the keystone is missing")
-	_buy_all(pr, ["might_key"])
-	assert_true(Talents.can_buy_mastery(pr, "might", db))
-	assert_true(Talents.buy_mastery(pr, "might", db))
-	assert_eq(pr.masteries.might, 1)
-	assert_false(Talents.can_buy_mastery(pr, "celerity", db))
-	assert_false(Talents.can_buy_mastery(pr, "nope", db))
-	# with an upgrade, ring 2 becomes available and must be bought too
-	pr.upgrade = "berserker"
-	assert_false(Talents.can_buy_mastery(pr, "might", db))
-	_buy_all(pr, ["might_5", "might_6"])
-	assert_true(Talents.can_buy_mastery(pr, "might", db))
+func test_mastery_after_owning_a_whole_direction() -> void:
+	var pr := _pr(300)
+	var arcane := _direction_in_order("arcane")
+	_buy_all(pr, arcane.slice(0, arcane.size() - 1))
+	assert_false(Talents.can_buy_mastery(pr, "arcane", db), "one node left")
+	_buy_all(pr, [arcane[-1]])
+	assert_true(Talents.can_buy_mastery(pr, "arcane", db))
+	assert_true(Talents.buy_mastery(pr, "arcane", db))
+	assert_true(Talents.valid(pr, db))
 
 
 func test_mastery_needs_a_point() -> void:
-	var pr := _pr(7)
-	_buy_all(pr, ["might_1", "might_2", "might_3", "might_4", "might_key"])
-	assert_eq(Talents.spent(pr), 5)
+	var might := _direction_in_order("might")
+	var pr := _pr(might.size() + 2) # one point left over
+	_buy_all(pr, might)
 	assert_true(Talents.buy_mastery(pr, "might", db))
 	assert_false(Talents.buy_mastery(pr, "might", db))
-	assert_eq(Talents.spent(pr), 6)
 
 
 func test_mastery_diminishing() -> void:
@@ -104,24 +110,19 @@ func test_mastery_diminishing() -> void:
 
 func test_valid_rejects_orphan_node() -> void:
 	var pr := _pr(20)
-	pr.talents = ["might_3"]
+	pr.talents = ["r3_0"]
 	assert_false(Talents.valid(pr, db))
-	pr.talents = ["might_1", "might_2"]
+	pr.talents = ["r1_0", "r2_0"]
 	assert_true(Talents.valid(pr, db))
-	pr.talents = ["might_1", "might_1"]
+	pr.talents = ["r1_0", "r1_0"]
 	assert_false(Talents.valid(pr, db), "repeated")
 	pr.talents = ["start"]
 	assert_false(Talents.valid(pr, db))
-	pr.talents = ["nope"]
-	assert_false(Talents.valid(pr, db))
+	pr.talents = ["might_1"]
+	assert_false(Talents.valid(pr, db), "an id of the old tree")
 	pr = _pr(2)
-	pr.talents = ["might_1", "might_2", "might_3"]
+	pr.talents = ["r1_0", "r2_0", "r3_0"]
 	assert_false(Talents.valid(pr, db), "more than the points")
-	pr = _pr(30)
-	pr.talents = ["might_1", "might_2", "might_3", "might_4", "might_key", "might_5"]
-	assert_false(Talents.valid(pr, db), "ring 2 without upgrade")
-	pr.upgrade = "berserker"
-	assert_true(Talents.valid(pr, db))
 
 
 func test_mods_reach_stats() -> void:
@@ -130,38 +131,24 @@ func test_mods_reach_stats() -> void:
 	p.progress.level = 5
 	Progression.rebuild(p, f.world)
 	var before := p.stats.max_hp
-	assert_true(Talents.buy(p.progress, "bastion_1", db))
-	assert_true(Talents.buy(p.progress, "bastion_2", db))
+	assert_true(Talents.buy(p.progress, "r1_6", db)) # bastion, ring 1: +3 % max health
+	assert_true(Talents.buy(p.progress, "r2_12", db)) # bastion, ring 2: block (only with a shield)
 	Progression.rebuild(p, f.world)
 	assert_almost_eq(p.stats.max_hp, before * 1.03, 0.001)
-	assert_gt(p.stats.armor, 40.0)
+	assert_true(Talents.mods(p.progress, db, b).any(func(m: Dictionary) -> bool: return m.stat == "block_add"))
 
 
 func test_reset_returns_points() -> void:
 	var pr := _pr(10)
-	_buy_all(pr, ["might_1", "might_2", "might_3", "might_4", "might_key"])
-	Talents.buy_mastery(pr, "might", db)
+	_buy_all(pr, ["r1_0", "r2_0", "r3_0"])
 	Talents.reset(pr)
 	assert_eq(pr.talents, [])
 	assert_eq(pr.masteries, {})
 	assert_eq(Talents.spent(pr), 0)
 
 
-func test_masteries_stay_valid_when_an_upgrade_is_chosen() -> void:
-	var pr := _pr(60)
-	_buy_all(pr, ["might_1", "might_2", "might_3", "might_4", "might_key"])
-	assert_true(Talents.buy_mastery(pr, "might", db))
-	pr.upgrade = "berserker"
-	assert_true(Talents.valid(pr, db), "the ring 2 nodes of the direction are not owed for a mastery already bought")
-	assert_false(Talents.can_buy_mastery(pr, "might", db), "buying more does need the whole direction")
-
-
 func test_prune_orphans_drops_what_lost_its_way_to_the_start() -> void:
-	var pr := _pr(60, "berserker")
-	_buy_all(pr, ["might_1", "might_2", "might_3", "might_4", "might_key", "might_5", "might_celerity_5", "might_celerity_4"])
-	pr.upgrade = ""
-	pr.talents = pr.talents.filter(func(id: String) -> bool: return int(db.node(id).ring) != 2)
-	assert_false(Talents.valid(pr, db))
+	var pr := _pr(30)
+	pr.talents = ["r1_0", "r2_0", "r3_0", "r5_0"]
 	Talents.prune_orphans(pr, db)
-	assert_eq(pr.talents, ["might_1", "might_2", "might_3", "might_4", "might_key"])
-	assert_true(Talents.valid(pr, db))
+	assert_eq(pr.talents, ["r1_0", "r2_0", "r3_0"])

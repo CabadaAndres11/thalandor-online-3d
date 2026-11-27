@@ -54,7 +54,7 @@ func _kill_cultist(at := Vector3(21, 0, 21)) -> void:
 
 
 func test_hello_progress_sanitized_and_echoed() -> void:
-	var a := _guest("Ana", {"level": 5, "xp": 10, "attributes": {"strength": 999}, "talents": ["might_3"]})
+	var a := _guest("Ana", {"level": 5, "xp": 10, "attributes": {"strength": 999}, "talents": ["r3_0"]})
 	var got := _msgs(a, Protocol.Msg.PROGRESS)
 	assert_eq(got.size(), 1)
 	var pr := PlayerProgress.from_dict(got[0].progress)
@@ -125,21 +125,32 @@ func test_spend_attribute_roundtrip() -> void:
 
 
 func test_buy_talent_and_mastery_roundtrip() -> void:
-	var a := _guest("Ana", {"level": 12})
+	var db := TalentDB.load_default()
+	var might: Array = [] # every might node, each next to the start or an earlier one
+	var have := {db.start_id(): true}
+	var grew := true
+	while grew:
+		grew = false
+		for id: String in db.ids():
+			if not have.has(id) and str(db.node(id).dir) == "might" and (db.node(id).links as Array).any(func(n: String) -> bool: return have.has(n)):
+				have[id] = true
+				might.append(id)
+				grew = true
+	var a := _guest("Ana", {"level": might.size() + 2})
 	_msgs(a, Protocol.Msg.PROGRESS)
-	for id: String in ["might_1", "might_2", "might_3", "might_4", "might_key"]:
+	for id: String in might:
 		_send(a, Protocol.buy_talent(id))
 	_send(a, Protocol.buy_mastery("might"))
 	var got := _msgs(a, Protocol.Msg.PROGRESS)
 	var pr := PlayerProgress.from_dict(got[got.size() - 1].progress)
-	assert_eq(pr.talents.size(), 5)
-	assert_eq(pr.masteries.might, 1)
+	assert_eq(pr.talents.size(), might.size())
+	assert_eq(pr.masteries.get("might", 0), 1)
 
 
 func test_buy_talent_rejected_keeps_state() -> void:
 	var a := _guest("Ana", {"level": 5})
 	_msgs(a, Protocol.Msg.PROGRESS)
-	_send(a, Protocol.buy_talent("might_3"))
+	_send(a, Protocol.buy_talent("r3_0"))
 	_send(a, Protocol.spend_attribute("luck"))
 	_send(a, Protocol.buy_mastery("might"))
 	assert_eq(_msgs(a, Protocol.Msg.PROGRESS).size(), 0)

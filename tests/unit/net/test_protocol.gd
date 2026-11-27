@@ -199,7 +199,7 @@ func test_version_is_9() -> void:
 
 func test_progress_requests_roundtrip() -> void:
 	assert_eq(Protocol.decode(Protocol.spend_attribute("strength")), {"type": Protocol.Msg.SPEND_ATTRIBUTE, "attr": "strength"})
-	assert_eq(Protocol.decode(Protocol.buy_talent("might_1")), {"type": Protocol.Msg.BUY_TALENT, "id": "might_1"})
+	assert_eq(Protocol.decode(Protocol.buy_talent("r1_0")), {"type": Protocol.Msg.BUY_TALENT, "id": "r1_0"})
 	assert_eq(Protocol.decode(Protocol.buy_mastery("might")), {"type": Protocol.Msg.BUY_MASTERY, "dir": "might"})
 	assert_eq(Protocol.decode(Protocol.reset("talents")), {"type": Protocol.Msg.RESET, "what": "talents"})
 	assert_eq(Protocol.decode(Protocol.set_arena_level(12)), {"type": Protocol.Msg.SET_ARENA_LEVEL, "level": 12})
