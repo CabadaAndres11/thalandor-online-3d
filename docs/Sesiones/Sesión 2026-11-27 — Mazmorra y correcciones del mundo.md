@@ -48,3 +48,6 @@ Spec y plan acordados con el usuario (anillos conectados, todo disponible, ruta 
 
 ## Sexta tanda
 Capuchas sin frontal ni sombra en la cara, escalera de la cripta entrando desde el norte y sin parpadeo, nuevos aspectos de Verrin y del rey (piezas `verrin_*` y `king_*` en `gear_armor_v2.mjs`).
+
+## Séptima tanda
+Ojo del casco (C), «Abandonar grupo», capuchas abiertas por abajo, el asesino cambia el arma peor, el enemigo del tutorial pasa a «Acólito».

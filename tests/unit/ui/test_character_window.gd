@@ -143,3 +143,19 @@ func test_the_holo_theme_brings_its_font() -> void:
 	var theme := Theme.new()
 	HoloTheme.apply(theme)
 	assert_not_null(theme.default_font)
+
+
+## 2026-11-27: the eye shows whether the helmet is drawn and asks to toggle it.
+func test_eye_toggles_the_helmet() -> void:
+	var inv := Inventory.new()
+	inv.equipment["head"] = ItemRoll.new_item("warrior_head_t1", 1)
+	var pr := PlayerProgress.from_dict({"level": 5})
+	win.show_for("Ana", "warrior", pr, Progression.preview_stats("warrior", pr, balance), balance, {}, inv)
+	assert_false(win.head_hidden())
+	watch_signals(win)
+	win.press_eye()
+	assert_signal_emitted(win, "head_visibility_toggled")
+	inv.hide_head = true # the host answers
+	win.show_for("Ana", "warrior", pr, Progression.preview_stats("warrior", pr, balance), balance, {}, inv)
+	assert_true(win.head_hidden())
+	assert_true(win.eye_button.tooltip_text != "")

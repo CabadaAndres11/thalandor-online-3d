@@ -18,6 +18,8 @@ var bag: Array = []
 var equipment: Dictionary = {}
 ## Potions are not in the bag (2026-11-27): they wait on their button, base id -> count, no limit.
 var potions: Dictionary = {}
+## The worn helmet is not drawn (the eye in the character window, 2026-11-27); its stats still count.
+var hide_head: bool = false
 
 
 func _init() -> void:
@@ -127,6 +129,11 @@ func slot_for(item: Item, class_id: String, db: ItemDB, target: String = "") -> 
 			var off_ok := bool(db.weapon_type(item.base_id).get("offhand", false)) and _class_offhand(class_id, db).has(str(b.kind))
 			if off_ok and (target == "offhand" or (target == "" and equipment.has("main") and not equipment.has("offhand") \
 					and db.hands(equipment.main.base_id) == 1)):
+				return "offhand"
+			# Both hands full: the new weapon takes the place of the worse one (2026-11-27).
+			if off_ok and target == "" and equipment.has("main") and equipment.has("offhand") \
+					and db.hands(equipment.main.base_id) == 1 \
+					and ItemRoll.value(equipment.offhand, db) < ItemRoll.value(equipment.main, db):
 				return "offhand"
 			return "main" if target in ["", "main"] else ""
 	return slot if target in ["", slot] else ""
@@ -241,7 +248,7 @@ func wear_starter(class_id: String, db: ItemDB) -> void:
 
 ## Base ids of the 8 visible slots ("" when empty).
 func visible_bases() -> Array:
-	return VISIBLE.map(func(s: String) -> String: return equipment[s].base_id if equipment.has(s) else "")
+	return VISIBLE.map(func(s: String) -> String: return equipment[s].base_id if equipment.has(s) and not (s == "head" and hide_head) else "")
 
 
 func to_dict() -> Dictionary:
@@ -249,7 +256,7 @@ func to_dict() -> Dictionary:
 	for s: String in equipment:
 		eq[s] = equipment[s].to_dict()
 	return {"gold": gold, "bag": bag.map(func(it: Variant) -> Variant: return it.to_dict() if it != null else null), "equipment": eq,
-		"potions": potions.duplicate()}
+		"potions": potions.duplicate(), "hide_head": hide_head}
 
 
 ## Compact form for the network: {g: gold, b: [item wire or null], e: {slot: item wire}, p: {potion base: count}}.
@@ -257,7 +264,7 @@ func to_wire() -> Dictionary:
 	var eq := {}
 	for s: String in equipment:
 		eq[s] = equipment[s].to_wire()
-	return {"g": gold, "b": bag.map(func(it: Variant) -> Variant: return it.to_wire() if it != null else null), "e": eq, "p": potions.duplicate()}
+	return {"g": gold, "b": bag.map(func(it: Variant) -> Variant: return it.to_wire() if it != null else null), "e": eq, "p": potions.duplicate(), "h": hide_head}
 
 
 ## Reads a wire inventory with the same sanitizing as from_dict.
@@ -272,7 +279,7 @@ static func from_wire(v: Variant, class_id: String, level: int, db: ItemDB) -> I
 			eq[s] = Item.wire_to_dict((raw_eq as Dictionary)[s])
 	var raw_bag: Variant = d.get("b", [])
 	var bag_dicts: Array = (raw_bag as Array).map(func(x: Variant) -> Variant: return Item.wire_to_dict(x)) if raw_bag is Array else []
-	return from_dict({"gold": d.get("g", 0), "bag": bag_dicts, "equipment": eq, "potions": d.get("p", {})}, class_id, level, db)
+	return from_dict({"gold": d.get("g", 0), "bag": bag_dicts, "equipment": eq, "potions": d.get("p", {}), "hide_head": d.get("h", false)}, class_id, level, db)
 
 
 ## The host's inventory exactly as sent (for its owner's client): every item in its slot and
@@ -297,6 +304,7 @@ static func from_wire_exact(v: Variant, db: ItemDB) -> Inventory:
 			if it != null and str(s) in SLOTS:
 				inv.equipment[str(s)] = it
 	inv._read_potions(d.get("p", {}), db)
+	inv.hide_head = d.get("h", false) is bool and bool(d.get("h", false))
 	return inv
 
 
@@ -323,6 +331,7 @@ static func from_dict(v: Variant, class_id: String, level: int, db: ItemDB) -> I
 	var uids := {}
 	var loose: Array = []
 	inv._read_potions(d.get("potions", {}), db)
+	inv.hide_head = d.get("hide_head", false) is bool and bool(d.get("hide_head", false))
 	var raw_bag: Variant = d.get("bag", [])
 	if raw_bag is Array:
 		# Every item keeps its slot: the client and the host must agree on the indexes the

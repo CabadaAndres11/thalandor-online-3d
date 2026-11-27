@@ -70,8 +70,9 @@ const onFace = (x, y, z) => z >= 1 && y <= 13 && y >= -1 && x >= -6 && x <= 5;
 const HEADS = {
   // A deep hood under a gold circlet with a sun on the brow; tier 3 a tall mitre.
   cleric(t, m) {
-    const s = deepHood(BODY.head, BODY.torso, m.b, m.d, { seed: 101 + t });
+    const s = deepHood(BODY.head, BODY.torso, m.b, m.d, { seed: 101 }); // one cut for every tier
     finish(s, m, 101 + t);
+    if (t >= 2) for (let x = -6; x <= 5; x++) onFront(s, x, 15, m.acc); // a raised circlet over the brow
     recolor(s, (x, y, z, i) => onBrimTop(x, y, z) && i !== m.d, m.acc); // circlet
     gem(s, -1, 15, (frontZ(s, -1, 15) ?? 9) + 1, m);
     if (t >= 2) recolor(s, (x, y, z, i) => z >= 6 && (x === -9 || x === 8) && y >= 0 && y <= 13 && i !== m.d, m.trim);
@@ -117,7 +118,7 @@ const HEADS = {
   archer(t, m) {
     const hood = m.hood ?? P;
     const hm = { ...m, b: hood, d: SHADE(hood) === SHADE(P) && hood === P ? SHADE(P) : m.d, l: hood === P ? LIGHT(P) : m.l };
-    const s = deepHood(BODY.head, BODY.torso, hood, hm.d, { seed: 121 + t });
+    const s = deepHood(BODY.head, BODY.torso, hood, hm.d, { seed: 121 });
     for (let k = 0; k < 4 + 2 * t; k++) ellipsoid(s, [-0.5, 16 - k, -10 - k * 0.8], [2.6 - k * 0.12, 2.2, 1.8], hood); // the point
     without(s, BODY.head);
     finish(s, hm, 121 + t);
@@ -130,7 +131,7 @@ const HEADS = {
   },
   // A deep hood and a mask over the lower face; tier 2 a band, tier 3 small horns and glowing trim.
   assassin(t, m) {
-    const hood = deepHood(BODY.head, BODY.torso, m.b, m.d, { seed: 131 + t });
+    const hood = deepHood(BODY.head, BODY.torso, m.b, m.d, { seed: 131 });
     const mask = shellOn(BODY.head, 1, m.d, (x, y, z) => y >= -1 && y <= 6 && z >= -2);
     const s = merge(hood, mask);
     finish(s, m, 131 + t);

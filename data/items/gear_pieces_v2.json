@@ -39,7 +39,7 @@
 	"cleric_head_t1": {
 		"file": "res://assets/items/vox_v2/cleric_head_t1.vox",
 		"part": "head",
-		"offset": [-14, -24, -10],
+		"offset": [-13, -18, -10],
 		"tag": "gear",
 		"hides": ["hair", "hair_cap"]
 	},
@@ -123,7 +123,7 @@
 	"archer_head_t1": {
 		"file": "res://assets/items/vox_v2/archer_head_t1.vox",
 		"part": "head",
-		"offset": [-14, -24, -15],
+		"offset": [-13, -18, -15],
 		"tag": "gear",
 		"hides": ["hair", "hair_cap"]
 	},
@@ -154,7 +154,7 @@
 	"assassin_head_t1": {
 		"file": "res://assets/items/vox_v2/assassin_head_t1.vox",
 		"part": "head",
-		"offset": [-14, -24, -10],
+		"offset": [-13, -18, -10],
 		"tag": "gear",
 		"hides": ["hair", "hair_cap"]
 	},
@@ -242,7 +242,7 @@
 	"cleric_head_t2": {
 		"file": "res://assets/items/vox_v2/cleric_head_t2.vox",
 		"part": "head",
-		"offset": [-14, -24, -10],
+		"offset": [-13, -18, -10],
 		"tag": "gear",
 		"hides": ["hair", "hair_cap"]
 	},
@@ -328,7 +328,7 @@
 	"archer_head_t2": {
 		"file": "res://assets/items/vox_v2/archer_head_t2.vox",
 		"part": "head",
-		"offset": [-14, -24, -17],
+		"offset": [-13, -18, -17],
 		"tag": "gear",
 		"hides": ["hair", "hair_cap"]
 	},
@@ -359,7 +359,7 @@
 	"assassin_head_t2": {
 		"file": "res://assets/items/vox_v2/assassin_head_t2.vox",
 		"part": "head",
-		"offset": [-14, -24, -10],
+		"offset": [-13, -18, -10],
 		"tag": "gear",
 		"hides": ["hair", "hair_cap"]
 	},
@@ -454,7 +454,7 @@
 	"cleric_head_t3": {
 		"file": "res://assets/items/vox_v2/cleric_head_t3.vox",
 		"part": "head",
-		"offset": [-14, -24, -10],
+		"offset": [-13, -18, -10],
 		"tag": "gear",
 		"hides": ["hair", "hair_cap"]
 	},
@@ -570,7 +570,7 @@
 	"archer_head_t3": {
 		"file": "res://assets/items/vox_v2/archer_head_t3.vox",
 		"part": "head",
-		"offset": [-14, -24, -18],
+		"offset": [-13, -18, -18],
 		"tag": "gear",
 		"hides": ["hair", "hair_cap"]
 	},
@@ -609,7 +609,7 @@
 	"assassin_head_t3": {
 		"file": "res://assets/items/vox_v2/assassin_head_t3.vox",
 		"part": "head",
-		"offset": [-14, -24, -10],
+		"offset": [-13, -18, -10],
 		"tag": "gear",
 		"hides": ["hair", "hair_cap"]
 	},

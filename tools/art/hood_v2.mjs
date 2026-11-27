@@ -1,7 +1,7 @@
 // The deep hood of every class (after the user's reference, 2026-11-27): a roomy cowl that
 // rises to a soft peak, a brim standing out past the face so the face sits in its shadow,
-// a dark lining round the opening and cloth falling over the shoulders, the back and the
-// sides of the chest down to a stepped, uneven hem. Drawn in the head pivot frame; the
+// a dark lining round the opening and cloth lying on the shoulders, the back and the sides
+// of the chest down to a stepped, uneven hem; open below, over the tunic (no solid locks). Drawn in the head pivot frame; the
 // caller colours it (its own tones and trims) after. Pure geometry: one colour plus the
 // lining's.
 import { Shape } from "./vox.mjs";
@@ -41,24 +41,17 @@ export function deepHood(head, torso, idx, lining, opts = {}) {
     const reach = 6 - Math.round(1.5 * outside(x, y)) + Math.floor(noise3(x >> 1, y >> 1, 0, seed) * 2);
     for (let z = 2; z <= reach; z++) put(x, y, z, idx);
   }
-  // Locks of cloth falling from the sides of the hood past the shoulders, of uneven length.
-  for (let x = -12; x <= 11; x++) {
-    if (Math.abs(x + 0.5) < 8.5) continue;
-    for (let z = -7; z <= 6; z++) {
-      const len = 4 + Math.floor(noise3(x >> 1, 0, z >> 1, seed + 3) * 4) * 3; // 4..13 voxels below the jaw
-      for (let y = -2; y >= -2 - len; y--) if (!torso.cells.has(`${x},${y - TORSO_TO_HEAD},${z}`)) put(x, y, z, idx);
-    }
-  }
   if (opts.drape !== false) {
-    // The cloth over the shoulders and the back (torso frame), open over the chest.
+    // The cloth lies flat on the shoulders and the upper back (one voxel, torso frame), open
+    // over the chest; it ends in ragged points, never in a straight edge, so it melts into
+    // the tunic under it (2026-11-27).
     const open = (x, y, z) => z >= 1 && Math.abs(x + 0.5) <= 5.5 && y <= 27; // the throat stays open
-    const cloth = shellAround(torso, 2, idx, (x, y, z) => y >= 2 && y <= 27 && !open(x, y, z));
+    const cloth = shellAround(torso, 1, idx, (x, y, z) => y >= 6 && y <= 27 && !open(x, y, z));
     for (const [x, y, z] of cloth.cells.values()) {
-      // The hem: long at the back and in the two front lappets beside the chest, short over
-      // the arms, in uneven steps of two voxels.
       const lappet = z >= 1 && Math.abs(x + 0.5) <= 9.5;
-      const base = z < 0 ? 4 : lappet ? 6 : 16;
-      const hem = base + 2 * Math.floor(noise3(x >> 1, 0, z >> 1, seed + 7) * 3);
+      const base = z < 0 ? 10 : lappet ? 12 : 18;
+      const strip = Math.floor((x + 40) / 3); // ragged points three voxels wide
+      const hem = base + 2 * Math.floor(noise3(strip, 0, z >> 2, seed + 7) * 5);
       if (y >= hem) put(x, y + TORSO_TO_HEAD, z, idx);
     }
   }

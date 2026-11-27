@@ -930,6 +930,9 @@ func _on_item_action(rec: Dictionary, action: String, args: Array) -> void:
 		"sort":
 			p.inventory.sort_bag(w.items)
 			p.inventory_dirty = true
+		"toggle_head": # show or hide the worn helmet (everyone sees the change)
+			p.inventory.hide_head = not p.inventory.hide_head
+			p.inventory_dirty = true
 
 
 func _send_stock(id: int, p: PlayerState) -> void:

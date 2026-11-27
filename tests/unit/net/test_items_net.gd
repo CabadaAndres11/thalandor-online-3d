@@ -245,3 +245,19 @@ func test_host_sort_action() -> void:
 	_send(a, Protocol.item_action("sort", []))
 	assert_eq(p.inventory.bag[0].base_id, "warrior_chest_t1")
 	assert_eq(_msgs(a, Protocol.Msg.INVENTORY).size(), 1)
+
+
+func test_toggling_the_head_hides_the_helmet_for_everyone() -> void:
+	var a := _guest("Ana", null, "warrior")
+	var b := _guest("Bea")
+	var p: PlayerState = host.world.players[1]
+	p.inventory.equipment["head"] = ItemRoll.new_item("warrior_head_t1", 1)
+	p.inventory_dirty = true
+	host.tick() # everyone sees the helmet first
+	_all(a)
+	_all(b)
+	_send(a, Protocol.item_action("toggle_head", []))
+	var gear := _msgs(b, Protocol.Msg.PLAYER_GEAR)
+	assert_eq(gear.size(), 1)
+	assert_eq(gear[0].gear[Inventory.VISIBLE.find("head")], "")
+	assert_true(p.inventory.hide_head)

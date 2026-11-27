@@ -126,6 +126,26 @@ func test_daggers_fill_main_then_offhand() -> void:
 	assert_eq(inv.equipment.offhand.base_id, "dagger_t1")
 
 
+## 2026-11-27: with a weapon in each hand, a third one takes the place of the worse of them.
+func test_new_dagger_replaces_the_worse_hand() -> void:
+	var good := _it("dagger_t1")
+	good.rarity = "epic"
+	inv.equipment["main"] = good
+	inv.equipment["offhand"] = _it("dagger_t1") # common: the worse one
+	var fresh := _it("dagger_t1")
+	fresh.rarity = "rare"
+	inv.add(fresh, db)
+	assert_true(inv.equip(0, "assassin", 1, db))
+	assert_same(inv.equipment.main, good, "the better dagger stays")
+	assert_same(inv.equipment.offhand, fresh)
+	inv.equipment["offhand"].rarity = "legendary"
+	var other := _it("dagger_t1")
+	other.rarity = "uncommon"
+	inv.add(other, db)
+	assert_true(inv.equip(inv.bag.find(other), "assassin", 1, db))
+	assert_same(inv.equipment.main, other, "now the main hand was the worse")
+
+
 func test_rings() -> void:
 	inv.add(_it("ring_t1"), db)
 	inv.add(_it("ring_t1"), db)
@@ -286,3 +306,15 @@ func test_sort_keeps_equipment() -> void:
 	inv.sort_bag(db)
 	assert_same(inv.equipment["main"], worn)
 	assert_eq(inv.bag[0].level, 3)
+
+
+## 2026-11-27: the eye in the character window hides the worn helmet from everyone, and it is kept.
+func test_hidden_head_is_not_shown_and_is_saved() -> void:
+	inv.equipment["head"] = _it("warrior_head_t1")
+	assert_eq(inv.visible_bases()[Inventory.VISIBLE.find("head")], "warrior_head_t1")
+	inv.hide_head = true
+	assert_eq(inv.visible_bases()[Inventory.VISIBLE.find("head")], "", "hidden")
+	assert_true(inv.equipment.has("head"), "still worn: its stats count")
+	assert_true(Inventory.from_dict(inv.to_dict(), "warrior", 1, db).hide_head)
+	assert_true(Inventory.from_wire(inv.to_wire(), "warrior", 1, db).hide_head)
+	assert_true(Inventory.from_wire_exact(inv.to_wire(), db).hide_head)

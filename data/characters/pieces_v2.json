@@ -84,7 +84,7 @@
 	"hood_archer": {
 		"file": "res://assets/characters/pieces_v2/hood_archer.vox",
 		"part": "head",
-		"offset": [-14, -24, -14],
+		"offset": [-13, -18, -14],
 		"tag": "headgear",
 		"hides": ["hair", "hair_cap"]
 	},

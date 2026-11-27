@@ -90,7 +90,7 @@ func _process(_delta: float) -> bool:
 		DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("user://render"))
 		var path := "user://render/%s.png" % _name.replace(":", "_").replace(",", "_").replace("@", "_")
 		if _name.trim_suffix("_close") in ["gear", "weapons"]:
-			path = "user://render/%s%s_t%d_%s.png" % [_name, ("_" + _race) if _race != "" else "", _tier, str(int(_rot)) if _name == "gear" else str(_page)]
+			path = "user://render/%s%s_t%d_%s.png" % [_name, ("_" + _race) if _race != "" else "", _tier, str(int(_rot)) if _name.begins_with("gear") else str(_page)]
 		root.get_texture().get_image().save_png(path)
 		print("saved ", ProjectSettings.globalize_path(path))
 		return true

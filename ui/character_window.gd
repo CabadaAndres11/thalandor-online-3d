@@ -8,6 +8,8 @@ extends Control
 signal attribute_spent(attr: String)
 ## Right click on a worn item: take it off (the host checks there is room).
 signal unequip_requested(slot: String)
+## The eye on the model: show or hide the worn helmet (the host answers with the inventory).
+signal head_visibility_toggled()
 
 const SLOTS_LEFT := ["head", "shoulders", "chest", "hands", "legs", "feet"]
 const SLOTS_RIGHT := ["main", "offhand", "neck", "ring_1", "ring_2"]
@@ -26,6 +28,7 @@ var _free: int = 0
 var _rows: Array = []
 var _recommended: Array = []
 var _preview: CharacterPreview
+var eye_button: EyeButton
 var _preview_key: String = ""
 var _slot_boxes: Dictionary = {} # slot id -> ItemSlot
 var _center: CenterContainer
@@ -74,6 +77,10 @@ func _init() -> void:
 	_preview.turning = false
 	_preview.custom_minimum_size = PREVIEW_SIZE
 	model.add_child(_preview)
+	eye_button = EyeButton.new()
+	eye_button.position = Vector2(6, 6)
+	eye_button.pressed.connect(press_eye)
+	_preview.add_child(eye_button)
 	model.add_child(_slot_column(SLOTS_RIGHT))
 
 	var left := VBoxContainer.new()
@@ -174,6 +181,9 @@ func show_for(char_name: String, class_id: String, progress: PlayerProgress, sta
 		value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		_stats_grid.add_child(value)
 	var gear: Array = inventory.visible_bases() if inventory != null else []
+	eye_button.hidden_head = inventory != null and inventory.hide_head
+	eye_button.tooltip_text = tr("CHAR_HELM_SHOW" if eye_button.hidden_head else "CHAR_HELM_HIDE")
+	eye_button.queue_redraw()
 	for id: String in _slot_boxes:
 		var slot: ItemSlot = _slot_boxes[id]
 		slot.class_id = class_id
@@ -291,3 +301,36 @@ func has_model() -> bool:
 
 func panel_rect() -> Rect2:
 	return _panel.get_global_rect()
+
+
+func press_eye() -> void:
+	head_visibility_toggled.emit()
+
+
+func head_hidden() -> bool:
+	return eye_button.hidden_head
+
+
+## A small round button with an eye drawn on it, crossed out while the helmet is hidden.
+class EyeButton extends Button:
+	var hidden_head := false
+
+	func _init() -> void:
+		custom_minimum_size = Vector2(34, 34)
+		flat = false
+		focus_mode = FOCUS_NONE
+
+	func _draw() -> void:
+		var c := size / 2.0
+		var col := Color("#bff6ff") if not hidden_head else Color(1, 1, 1, 0.45)
+		var pts := PackedVector2Array()
+		for k in 25: # the outline of an eye: two arcs
+			var a := PI * k / 24.0
+			pts.append(c + Vector2(-cos(a) * 11.0, -sin(a) * 6.5))
+		for k in 25:
+			var a := PI * k / 24.0
+			pts.append(c + Vector2(cos(a) * 11.0, sin(a) * 6.5))
+		draw_polyline(pts, col, 2.0, true)
+		draw_circle(c, 3.5, col)
+		if hidden_head:
+			draw_line(c + Vector2(-11, 9), c + Vector2(11, -9), Color("#ff7a7a"), 2.5, true)

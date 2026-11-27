@@ -10,6 +10,8 @@ signal open_group_requested()
 signal options_requested()
 ## Join a friend's group with this code (Plan 8.1.1: no longer from the character list).
 signal join_requested(code: String)
+## Leave the online group and go on playing alone (2026-11-27).
+signal leave_group_requested()
 
 var open_group_button: Button
 var code_label: Label
@@ -18,6 +20,8 @@ var options_button: Button
 var join_code_edit: LineEdit
 var quit_button: Button
 var join_button: Button
+var leave_group_button: Button
+var _guest := false
 var _locked: bool = false
 var _hint: Label
 var _code: String = ""
@@ -91,6 +95,12 @@ func _init() -> void:
 	join_row.add_child(join_button)
 	_refresh_join()
 
+	leave_group_button = Button.new()
+	leave_group_button.text = tr("MENU_LEAVE_GROUP")
+	leave_group_button.visible = false
+	leave_group_button.pressed.connect(func() -> void: leave_group_requested.emit())
+	box.add_child(leave_group_button)
+
 	options_button = Button.new()
 	options_button.text = tr("MENU_OPTIONS")
 	options_button.pressed.connect(func() -> void: options_requested.emit())
@@ -129,6 +139,8 @@ func lock_hint() -> String:
 
 ## Hosts can open their group; guests see a hint instead.
 func set_can_open_group(can: bool) -> void:
+	_guest = not can
+	_refresh_leave()
 	open_group_button.visible = can and _code == ""
 	_hint.visible = not can or _code != ""
 	_hint.text = tr("MENU_CODE_HINT") if can else tr("MENU_GUEST_HINT")
@@ -144,6 +156,7 @@ func show_code(code: String) -> void:
 	_hint.text = tr("MENU_CODE_HINT")
 	_hint.visible = true
 	_refresh_join()
+	_refresh_leave()
 
 
 ## While a WebRTC group is opening: the button waits with "Abriendo grupo…".
@@ -163,7 +176,9 @@ func reset() -> void:
 	code_label.visible = false
 	copy_button.visible = false
 	visible = false
+	_guest = false
 	_refresh_join()
+	_refresh_leave()
 
 
 ## Joining needs a code, the tutorial done and no group of one's own open.
@@ -180,3 +195,8 @@ func _on_join() -> void:
 func _on_copy() -> void:
 	DisplayServer.clipboard_set(_code)
 	copy_button.text = tr("BTN_COPIED")
+
+
+## A guest in someone's group, or a host whose group is open, may leave it.
+func _refresh_leave() -> void:
+	leave_group_button.visible = _guest or _code != ""

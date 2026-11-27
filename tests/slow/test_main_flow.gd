@@ -941,3 +941,15 @@ func test_a_greeting_opens_the_dialogue_window_not_the_chat() -> void:
 	assert_eq(main.dialogue_window.shown_text(), tr("NPC_NOBLE_1_GREET"))
 	assert_eq(main.chat.visible_lines().size(), before, "nothing is written in the chat")
 	assert_eq(str(main._talk.kind), "greet")
+
+
+func test_leaving_the_group_goes_on_alone() -> void:
+	var c: CharacterData = main.store.create("Lyra", "warrior", {})
+	main._on_select_play(c.id)
+	await wait_physics_frames(5)
+	var id: String = main._playing.id
+	main._on_leave_group()
+	await wait_physics_frames(5)
+	assert_true(main.in_game(), "still playing")
+	assert_eq(main._playing.id, id, "the same character")
+	assert_true(main.game.is_hosting(), "alone, as its own host")

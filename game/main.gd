@@ -215,6 +215,7 @@ func _ready() -> void:
 	character_window.theme = theme
 	character_window.attribute_spent.connect(_on_attribute_spent)
 	character_window.unequip_requested.connect(func(slot: String) -> void: _request_item("unequip", [slot]))
+	character_window.head_visibility_toggled.connect(func() -> void: _request_item("toggle_head", []))
 	_ui.add_child(character_window)
 	inventory_window = InventoryWindow.new()
 	inventory_window.theme = theme
@@ -288,6 +289,7 @@ func _ready() -> void:
 	pause_menu.open_group_requested.connect(_on_open_group)
 	pause_menu.join_requested.connect(_on_pause_join)
 	pause_menu.options_requested.connect(_show_options)
+	pause_menu.leave_group_requested.connect(_on_leave_group)
 	_ui.add_child(pause_menu)
 
 	options_window = OptionsWindow.new()
@@ -958,6 +960,16 @@ func _on_select_join(id: String, code: String) -> void:
 
 ## Joining a friend from the pause menu (Plan 8.1.1): the solo game ends (its character
 ## saved) and the same character joins the friend's group.
+## "Abandonar grupo" (2026-11-27): the group is left (a host closes it) and the same
+## character goes on alone, saved where it was.
+func _on_leave_group() -> void:
+	if _playing == null:
+		return
+	var id := _playing.id
+	_leave_game()
+	_on_select_play(id)
+
+
 func _on_pause_join(code: String) -> void:
 	if _playing == null or not _playing.tutorial_done:
 		return
