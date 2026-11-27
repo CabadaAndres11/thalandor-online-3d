@@ -364,7 +364,7 @@ func test_areas_leave_no_glowing_disc_under_them() -> void:
 	assert_eq(fx.find_children("*", "MeshInstance3D", false, false).size(), 0)
 	fx.handle(["area", 62, Vector3(8, 0, 8), 3.0, "mage_blizzard", 5, 1.0, []])
 	var cylinders := fx.find_children("*", "MeshInstance3D", true, false).filter(func(n: Node) -> bool: return (n as MeshInstance3D).mesh is CylinderMesh)
-	assert_eq(cylinders.size(), 1, "only the ice disc of its mark")
+	assert_eq(cylinders.size(), 0, "ice stakes instead of a blue disc (Plan 8.3h)")
 
 
 func test_an_ice_field_does_not_restart_on_every_pulse() -> void:
@@ -573,3 +573,48 @@ func test_consecration_adds_golden_flames() -> void:
 	assert_not_null(fx.mark_node(32).find_child("HolyFlames", true, false))
 	fx.handle(["area", 33, Vector3(16, 0, 6), 5.0, "cleric_healing_circle", 5, 1.0])
 	assert_null(fx.mark_node(33).find_child("HolyFlames", true, false))
+
+
+func test_frost_areas_raise_ice_stakes_not_a_whirlwind() -> void:
+	fx.handle(["area", 70, Vector3(8, 0, 8), 2.5, "mage_glacial_burst", 0, 0.0, []])
+	var mark := fx.mark_node(70)
+	assert_not_null(mark)
+	assert_gt(mark.find_children("*", "MeshInstance3D", true, false).size(), 5, "a field of stakes")
+	assert_eq(mark.find_children("*", "CPUParticles3D", true, false).size(), 0, "no blizzard snow")
+
+
+func test_frost_nova_looks_like_frost() -> void:
+	assert_eq(CombatFX.fx_element(AbilityDB.load_default().get_ability("mage_frost_nova")), "frost")
+
+
+func test_fireball_and_arcane_orb_fly_bigger() -> void:
+	fx.handle(["projectile", 80, 1, "mage_fireball", Vector3(2, 0, 2), Vector2(1, 0), 16.0, 22.0])
+	fx.handle(["projectile", 81, 1, "mage_arcane_orb", Vector3(2, 0, 2), Vector2(1, 0), 16.0, 22.0])
+	fx.handle(["projectile", 82, 1, "mage_missile", Vector3(2, 0, 2), Vector2(1, 0), 16.0, 22.0])
+	assert_gt(fx.projectile_node(80).scale.x, 2.0)
+	assert_gt(fx.projectile_node(81).scale.x, 2.0)
+	assert_eq(fx.projectile_node(82).scale.x, 1.0)
+
+
+func test_ice_shard_flies_and_arcane_bolt_skims_the_ground() -> void:
+	fx.handle(["projectile", 83, 1, "mage_ice_shard", Vector3(2, 0, 2), Vector2(1, 0), 22.0, 22.0])
+	fx.handle(["projectile", 84, 1, "mage_arcane_bolt", Vector3(2, 0, 2), Vector2(1, 0), 20.0, 22.0])
+	assert_gt(fx.projectile_node(83).get_child_count(), 1, "a flying crystal, not just mist")
+	fx.advance(0.3)
+	assert_eq(fx.decor_count(), 0, "no spikes along the ice shard's path")
+	assert_lt(fx.projectile_node(84).position.y, 0.5, "along the floor")
+
+
+func test_ice_comet_falls_from_the_sky() -> void:
+	fx.handle(["projectile", 85, 1, "mage_ice_comet", Vector3(2, 0, 2), Vector2(1, 0), 16.0, 22.0])
+	fx.advance(0.05)
+	var high := fx.projectile_node(85).position.y
+	fx.advance(0.6)
+	assert_gt(high, 5.0, "it starts high")
+	assert_lt(fx.projectile_node(85).position.y, high, "and comes down")
+
+
+func test_meteor_is_as_big_as_its_area() -> void:
+	fx.handle(["telegraph", 86, Vector3(8, 0, 8), 5.0, 100000, "mage_meteor"])
+	var rocks := fx.find_children("*", "MeshInstance3D", true, false).filter(func(n: Node) -> bool: return (n as Node3D).scale.x > 5.0)
+	assert_eq(rocks.size(), 1)

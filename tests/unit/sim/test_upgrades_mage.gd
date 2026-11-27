@@ -234,7 +234,9 @@ func test_arcane_laser_lasts_and_follows_the_cursor() -> void:
 	assert_true(Combat.try_cast(f.world, p, "mage_arcane_laser", Vector3(10, 0, 20)))
 	assert_eq(p.resource, p.stats.max_resource - 60.0)
 	assert_true(Combat.channeling(f.world, p.id), "it is a long channel")
-	f.run(1.0)
+	f.run(0.9)
+	assert_eq(_lost(a), 0.0, "1 s of cast time first (Plan 8.3h)")
+	f.run(1.1)
 	var one := 6.0 + 0.4 * p.stats.spell_power
 	assert_gt(_lost(a), one * 3.0, "several pulses already")
 	assert_eq(side.hp, 50000.0, "it points where the cursor was")
@@ -245,7 +247,7 @@ func test_arcane_laser_lasts_and_follows_the_cursor() -> void:
 	assert_gt(_lost(side), one * 3.0, "and follows the cursor")
 	assert_eq(off.hp, 50000.0)
 	f.run(2.5)
-	assert_false(Combat.channeling(f.world, p.id), "about 4 s in all")
+	assert_false(Combat.channeling(f.world, p.id), "about 5 s in all with the cast")
 	assert_eq(p.cooldowns["mage_arcane_laser"], t0 + f.world.ticks(20.0))
 
 
@@ -254,7 +256,7 @@ func test_arcane_laser_stops_when_the_mage_moves() -> void:
 	var foe := _foe(2000, Vector3(10, 0, 14))
 	p.aim = Vector3(10, 0, 20)
 	assert_true(Combat.try_cast(f.world, p, "mage_arcane_laser", Vector3(10, 0, 20)))
-	f.run(0.6)
+	f.run(1.6)
 	p.position += Vector3(1, 0, 0)
 	var lost := 50000.0 - foe.hp
 	f.run(2.0)

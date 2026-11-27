@@ -32,6 +32,8 @@ const NUMBER_RISE := 1.2
 const FLASH_TIME := 0.2
 const HEAD_HEIGHT := 2.0
 const SPIKE_SPACING := 0.8
+## How high a falling comet (fx_flight "sky") starts above its path.
+const SKY_HEIGHT := 9.0
 const SNOW_COOLDOWN_MS := 1800 # snow over an entity at most this often
 const BEAM_HOLD_S := 0.35 # a beam stays until the next pulse of the channel (or this long)
 const MARK_LINGER := 0.3 # how long a mark outlasts its last pulse
@@ -125,7 +127,7 @@ func handle(ev: Array) -> void:
 		"telegraph":
 			_add_telegraph(ev)
 			if ev.size() > 5 and _fx_style(str(ev[5])) == "meteor":
-				_meteor_fall(ev[2], maxf(float(int(ev[4]) - int(_tick_now.call())) / float(_tick_rate), 0.1))
+				_meteor_fall(ev[2], maxf(float(int(ev[4]) - int(_tick_now.call())) / float(_tick_rate), 0.1), float(ev[3]))
 		"level_up":
 			level_up(int(ev[1]), int(ev[2]))
 		"area":
@@ -218,11 +220,13 @@ func advance(dt: float) -> void:
 			_remove_projectile(pid)
 		else:
 			(p.node as Node3D).position = p.from + p.dir * travelled
+			if p.get("flight") == "sky": # a comet: it drops out of the sky onto its path
+				(p.node as Node3D).position.y += SKY_HEIGHT * exp(-travelled / 2.5)
 			if p.spin != null:
 				(p.spin as Node3D).rotation.x += dt * 22.0
 			if p.get("spin_z") != null:
 				(p.spin_z as Node3D).rotation.z += dt * 9.0
-			if p.element == "frost":
+			if p.element == "frost" and p.get("flight", "") == "":
 				while travelled >= p.next_spike and p.next_spike < p.range:
 					_ice_spikes_at(p, p.next_spike)
 					p.next_spike += SPIKE_SPACING
@@ -430,6 +434,9 @@ func _add_projectile(ev: Array) -> void:
 	var element := _element_of_ability(str(ev[3]))
 	var node := Node3D.new()
 	var model := _projectile_model(str(ev[3]))
+	var ab: Dictionary = _abilities.get_ability(str(ev[3])) if _abilities != null and _abilities.has(str(ev[3])) else {}
+	# fx_flight: "air" (frost flies like other bolts), "ground" (skims the floor), "sky" (falls from above)
+	var flight := str(ab.get("fx_flight", ""))
 	var spin: Node3D = null
 	if element == "" and model != "":
 		var shape := _voxel("proj_" + model, func() -> Dictionary: return VoxelFx.arrow() if model == "arrow" else VoxelFx.knife(), false, 1.0, 0.07)
@@ -449,7 +456,7 @@ func _add_projectile(ev: Array) -> void:
 		bolt.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		node.add_child(bolt)
 		node.add_child(_trail(color))
-	elif element == "frost":
+	elif element == "frost" and flight == "":
 		node.add_child(_trail(color, true)) # no bolt: a mist, and the spikes come out of the ground
 	else:
 		var body := _voxel("body_" + element, func() -> Dictionary: return VoxelFx.body_for(element, color), true, 1.0)
@@ -462,13 +469,16 @@ func _add_projectile(ev: Array) -> void:
 		light.omni_range = 4.0
 		node.add_child(light)
 		node.add_child(_trail(color, true))
-	var start := from + Vector3(0, 1.1, 0)
+	var start := from + Vector3(0, 0.3 if flight == "ground" else 1.1, 0)
 	node.position = start
+	var size := float(ab.get("fx_scale", 2.6 if flight == "sky" else 1.0))
+	if not is_equal_approx(size, 1.0):
+		node.scale = Vector3.ONE * size
 	add_child(node)
 	if dir2.length() > 0.001:
 		node.rotation.y = atan2(dir2.x, dir2.y)
 	_projectiles[pid] = {"node": node, "from": start, "dir": Vector3(dir2.x, 0, dir2.y),
-		"speed": float(ev[6]), "range": float(ev[7]), "t": 0.0, "element": element, "color": color, "next_spike": 0.6, "spin": spin,
+		"speed": float(ev[6]), "range": float(ev[7]), "t": 0.0, "element": element, "color": color, "next_spike": 0.6, "spin": spin, "flight": flight,
 		"spin_z": node.find_child("HolyCross", false, false)}
 
 
@@ -967,11 +977,13 @@ func _explosion(pos: Vector3, color: Color, element: String, scale_k: float = 1.
 
 
 ## A meteor that falls out of the sky onto `pos` and arrives when the area goes off.
-func _meteor_fall(pos: Vector3, seconds: float) -> void:
+func _meteor_fall(pos: Vector3, seconds: float, radius: float = 0.0) -> void:
 	var rock := _voxel("meteor", func() -> Dictionary: return VoxelFx.meteor(), false, 1.0, 0.16)
-	var from := pos + Vector3(7, 22, 7)
+	var from := pos + Vector3(7, 22, 7) * maxf(1.0, radius / 3.0)
 	rock.position = from
 	rock.basis = Basis.looking_at(-(pos - from).normalized(), Vector3.UP) # its tail trails behind
+	if radius > 0.0: # as big as the area it lands on (its head is 4 cubes of 0.16 m)
+		rock.scale = Vector3.ONE * maxf(1.0, radius / 0.64)
 	var d := _add_decor(rock, seconds, 0.0, Vector3.ONE, 0.0)
 	d.fall = {"from": from, "to": pos + Vector3(0, 0.5, 0)}
 	var light := OmniLight3D.new()
@@ -1114,16 +1126,41 @@ func _ground_mark(area_id: int, pos: Vector3, radius: float, element: String, st
 			holder.add_child(flames)
 			entry = _add_decor(holder, life, 0.2, Vector3.ONE, 0.7, 0.9, true)
 		_:
-			# A field of ice that stays put (no growing from nothing) with an icy whirlwind turning
-			# in the middle and snow swirling around it.
-			var ice := _disc(radius, VoxelFx.ICE, 0.3)
-			holder.add_child(ice)
+			# Ice stakes out of the ground over the area (they stay still); the blizzard adds an
+			# icy whirlwind turning in the middle and snow swirling around it.
+			if _fx_style(ability_id) != "blizzard":
+				holder.add_child(_stake_field(radius))
+				entry = _add_decor(holder, life, 0.18, Vector3.ONE, 0.6, 1.0, false, 0.0)
+				_marks[area_id] = entry
+				return
+			var stakes := Node3D.new() # apart from the whirlwind, which turns: the stakes stay still
+			stakes.position = holder.position
+			stakes.add_child(_stake_field(radius))
+			_add_decor(stakes, life, 0.0, Vector3.ONE, 0.7, 1.0, false, 0.0)
 			var funnel_r := clampf(radius * 0.55, 0.8, 3.2)
 			var funnel := _voxel("tornado_%s" % r, func() -> Dictionary: return VoxelFx.ice_tornado(funnel_r, 4.2, 0.16), false, 0.8, 0.16)
 			holder.add_child(funnel)
 			holder.add_child(_storm_snow(radius))
 			entry = _add_decor(holder, life, 0.0, Vector3.ONE, 0.7, 1.0, false, 1.8)
 	_marks[area_id] = entry
+
+
+## Ice stakes standing out of the ground, scattered over a circle (they do not move).
+func _stake_field(radius: float) -> Node3D:
+	var field := Node3D.new()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = int(radius * 100.0)
+	var count := clampi(int(radius * radius * 2.2), 6, 60)
+	for i in count:
+		var a := rng.randf() * TAU
+		var d := sqrt(rng.randf()) * radius
+		var h := 6 + rng.randi() % 9
+		var spike := _voxel("spike_%d" % h, func() -> Dictionary: return VoxelFx.ice_spike(h), false, 0.95, 0.12)
+		spike.position = Vector3(cos(a) * d, 0, sin(a) * d)
+		spike.rotation.y = rng.randf() * TAU
+		spike.rotation.z = rng.randf_range(-0.25, 0.25)
+		field.add_child(spike)
+	return field
 
 
 ## Flakes whipped around and upward over a whole area: the blizzard's air.

@@ -75,6 +75,7 @@
 		"gcd": true,
 		"range": 4,
 		"anim": "cast",
+		"fx_element": "frost",
 		"effects": [
 			{
 				"type": "area",
@@ -116,6 +117,7 @@
 		"gcd": true,
 		"range": 22,
 		"anim": "cast",
+		"fx_scale": 2.2,
 		"effects": [
 			{
 				"type": "projectile",
@@ -247,6 +249,7 @@
 		"gcd": true,
 		"range": 20,
 		"anim": "cast",
+		"fx_style": "blizzard",
 		"effects": [
 			{
 				"type": "area",
@@ -330,7 +333,7 @@
 	},
 	{
 		"id": "mage_arcane_laser",
-		"repeat": {"times": 16, "interval_s": 0.25, "channel": true, "follow_aim": true},
+		"repeat": {"times": 16, "delay_s": 1, "interval_s": 0.25, "channel": true, "cast": true, "follow_aim": true},
 		"class": "mage",
 		"upgrade": "arcanist",
 		"name": "AB_MAGE_ARCANE_LASER",
@@ -448,6 +451,7 @@
 		"gcd": false,
 		"range": 22,
 		"anim": "cast",
+		"fx_flight": "air",
 		"effects": [
 			{
 				"type": "projectile",
@@ -669,6 +673,7 @@
 		"gcd": true,
 		"range": 22,
 		"anim": "cast",
+		"fx_flight": "sky",
 		"effects": [
 			{
 				"type": "projectile",
@@ -701,6 +706,7 @@
 		"gcd": true,
 		"range": 22,
 		"anim": "cast",
+		"fx_scale": 2.2,
 		"effects": [
 			{
 				"type": "projectile",
@@ -757,6 +763,7 @@
 		"gcd": true,
 		"range": 22,
 		"anim": "cast",
+		"fx_flight": "ground",
 		"effects": [
 			{
 				"type": "projectile",
