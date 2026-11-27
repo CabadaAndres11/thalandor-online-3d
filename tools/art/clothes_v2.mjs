@@ -188,7 +188,7 @@ function hatMage() {
 
 // The deep hood of the reference (hood_v2.mjs) with the ranger's point at the back.
 function hoodArcher() {
-  const s = deepHood(HEAD, TORSO, P, HOOD_IN, { seed: 31 });
+  const s = deepHood(HEAD, TORSO, P, SHADE(P), { seed: 31 });
   for (let k = 0; k < 5; k++) ellipsoid(s, [-0.5, 16 - k, -10 - k * 0.8], [2.6 - k * 0.12, 2.2, 1.8], P); // the point
   paint(without(s, HEAD), [P], 31);
   return s;

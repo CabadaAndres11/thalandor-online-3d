@@ -23,20 +23,22 @@ export function deepHood(head, torso, idx, lining, opts = {}) {
   const seed = opts.seed ?? 1;
   const s = new Shape();
   const put = (x, y, z, i) => { if (!head.cells.has(`${x},${y},${z}`)) s.put(x, y, z, i); };
+  // Nothing in front of the chin and the neck: the face and the throat stay open (2026-11-27).
+  const throat = (x, y, z) => z >= 0 && y < HOLE.y0 && Math.abs(x + 0.5) <= 7.5;
   // The cowl: three voxels over the head, open at the face.
-  for (const [x, y, z, i] of shellAround(head, 3, idx, (x, y, z) => !(z >= 0 && inHole(x, y)) && y >= -3).cells.values()) put(x, y, z, i);
+  for (const [x, y, z, i] of shellAround(head, 3, idx, (x, y, z) => !(z >= 0 && inHole(x, y)) && !throat(x, y, z) && y >= -3).cells.values()) put(x, y, z, i);
   // The bulk: the cloth stands well off the head, wider than it, to a soft peak leaning back.
   const bulk = new Shape();
   ellipsoid(bulk, [-0.5, 9, -1.5], [10.5, 10, 9.5], idx);
   ellipsoid(bulk, [-0.5, 17, -3], [7.5, 4.5, 7], idx);
-  for (const [x, y, z, i] of bulk.cells.values()) if (!(z >= 0 && inHole(x, y)) && y >= -3) put(x, y, z, i);
-  // The brim: an arch round the face standing out past the nose, sloping back from its
-  // edge (a funnel the face sits in), the front edge stepped and uneven.
+  for (const [x, y, z, i] of bulk.cells.values()) if (!(z >= 0 && inHole(x, y)) && !throat(x, y, z) && y >= -3) put(x, y, z, i);
+  // The brim: an arch round the face, level with the brow so it shades nothing below it,
+  // sloping back from its edge, the front edge stepped and uneven.
   for (let x = -11; x <= 10; x++) for (let y = -6; y <= 19; y++) {
     if (inHole(x, y)) continue;
     if (y < HOLE.y0 && Math.abs(x + 0.5) <= 6.5) continue; // no shelf under the chin
     if (((x + 0.5) / 11) ** 2 + ((y - 7) / 12.5) ** 2 > 1) continue; // the arch's outline
-    const reach = 9 - Math.round(1.5 * outside(x, y)) + Math.floor(noise3(x >> 1, y >> 1, 0, seed) * 2.5);
+    const reach = 6 - Math.round(1.5 * outside(x, y)) + Math.floor(noise3(x >> 1, y >> 1, 0, seed) * 2);
     for (let z = 2; z <= reach; z++) put(x, y, z, idx);
   }
   // Locks of cloth falling from the sides of the hood past the shoulders, of uneven length.
@@ -49,7 +51,7 @@ export function deepHood(head, torso, idx, lining, opts = {}) {
   }
   if (opts.drape !== false) {
     // The cloth over the shoulders and the back (torso frame), open over the chest.
-    const open = (x, y, z) => z >= 1 && Math.abs(x + 0.5) <= 5.5 && y <= 25;
+    const open = (x, y, z) => z >= 1 && Math.abs(x + 0.5) <= 5.5 && y <= 27; // the throat stays open
     const cloth = shellAround(torso, 2, idx, (x, y, z) => y >= 2 && y <= 27 && !open(x, y, z));
     for (const [x, y, z] of cloth.cells.values()) {
       // The hem: long at the back and in the two front lappets beside the chest, short over
@@ -63,7 +65,7 @@ export function deepHood(head, torso, idx, lining, opts = {}) {
   // The lining: the cloth round the opening, seen inside the brim, is dark.
   for (const v of s.cells.values()) {
     const [x, y, z] = v;
-    if (z >= 1 && x >= HOLE.x0 - 1 && x <= HOLE.x1 + 1 && y >= HOLE.y0 - 1 && y <= HOLE.y1 + 1) v[3] = lining;
+    if (z >= 1 && x >= HOLE.x0 - 1 && x <= HOLE.x1 + 1 && y >= HOLE.y0 && y <= HOLE.y1 + 1) v[3] = lining;
   }
   return s;
 }

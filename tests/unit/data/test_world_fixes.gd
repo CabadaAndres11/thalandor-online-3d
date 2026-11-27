@@ -83,7 +83,7 @@ func test_palace_dungeon_entrance_has_no_sign_and_guards() -> void:
 		assert_ne(str(m.to), "cripta_prueba", "no sign at the dungeon gate")
 	var guards := z.npcs.filter(func(n: Dictionary) -> bool: return str(n.id).begins_with("guardia_cripta_"))
 	assert_eq(guards.size(), 2)
-	assert_lt(z.height_at(4.5, 38.5), -1.0, "the stairs go down")
+	assert_lt(z.height_at(4.5, 39.5), -1.0, "the stairs go down")
 
 
 ## The centre of a placed piece's footprint, in cell coordinates (cell x spans x..x+1).
@@ -164,11 +164,17 @@ func test_palace_crypt_is_reached_down_stairs_without_walls() -> void:
 	var e: Dictionary = z.exits.filter(func(x: Dictionary) -> bool: return x.to == "cripta_prueba")[0]
 	assert_eq([e.gate.closed, e.gate.open], ["stairs_down_closed", "stairs_down"])
 	# The stairs' pit goes down 2.5 m; the floor round it stays level.
-	assert_eq(z.height_at(4.5, 38.5), -2.5)
-	assert_eq([z.height_at(4.5, 42.5), z.height_at(1.5, 38.5), z.height_at(8.5, 38.5)], [0.0, 0.0, 0.0])
+	assert_eq(z.height_at(4.5, 39.5), -2.5)
+	assert_eq([z.height_at(4.5, 36.5), z.height_at(1.5, 39.5), z.height_at(8.5, 39.5)], [0.0, 0.0, 0.0])
+	# Entered from the north, the side the room's door is on: no walking round it (2026-11-27).
+	var exit_area: Rect2i = e.area
+	assert_eq(exit_area, Rect2i(3, 36, 4, 1))
 	var map := z.collision()
 	for x in range(3, 7):
-		assert_false(map.is_solid(Vector2i(x, 42)), "the way down is free at x %d" % x)
+		assert_false(map.is_solid(Vector2i(x, 36)), "the way down is free at x %d" % x)
+	for g: Dictionary in z.npcs.filter(func(n: Dictionary) -> bool: return str(n.id).begins_with("guardia_cripta_")):
+		assert_eq(int(g.at[1]), 36, "the guards stand at the top of the stairs")
+		assert_eq(int(g.facing), 180, "facing north, toward who comes")
 	# No wall left in the crypt room besides the outer ones and the hall's.
 	for p: Dictionary in z.pieces:
 		if p.id == "palace_wall" and p.rot == 90:

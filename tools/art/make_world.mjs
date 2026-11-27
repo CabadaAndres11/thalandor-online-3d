@@ -521,24 +521,27 @@ function weaponRack(ids) {
   return { shape: s, scale: CHAR_SCALE, palette };
 }
 
-// The stairs down (see worldPieces): 4 cells wide (x 0..79), the opening 4 deep (z 0..79,
-// going down to the north, -Z), ten steps from the floor to 2.5 m below.
+// The stairs down (see worldPieces): 4 cells wide (x 0..79) and 4 deep (z 0..79), entered
+// from the north (-Z) and going down to the south, ten steps to 2.5 m below. The walls stand
+// a voxel inside the pit, so they never share a face with the ground's own pit walls (that
+// flickered, 2026-11-27).
 function stairsDown(closed) {
   const g = new Shape();
   for (let k = 0; k < 10; k++) {
-    const z1 = 79 - k * 8, top = -5 * (k + 1);
-    g.box(0, top - 6, z1 - 7, 79, top, z1, k % 2 ? MARBLE_D : MARBLE); // a slab: below it nothing shows
-    g.box(0, top, z1, 79, top, z1, MARBLE_L); // the nosing catches the light
+    const z0 = k * 8, top = -5 * (k + 1);
+    g.box(4, top - 6, z0, 75, top, z0 + 7, k % 2 ? MARBLE_D : MARBLE); // a slab: below it nothing shows
+    g.box(4, top, z0, 75, top, z0, MARBLE_L); // the nosing catches the light
   }
-  g.box(0, -52, 0, 79, -50, 3, DARKNESS);
-  for (const x of [-4, 80]) g.box(x, -52, 0, x + 3, 6, 79, MARBLE_D); // the side walls and kerb
-  g.box(-4, -52, -4, 83, 6, -1, MARBLE_D); // the far wall
-  for (const x of [-4, 80]) g.box(x, 6, 0, x + 3, 7, 79, ROYAL_GOLD);
-  g.box(-4, 6, -4, 83, 7, -1, ROYAL_GOLD);
-  for (let y = -52; y < -20; y++) g.box(0, y, 0, 79, y, 0, DARKNESS); // the dark down there
+  for (const x of [1, 76]) g.box(x, -52, 1, x + 2, -1, 78, MARBLE_D); // the side walls
+  g.box(1, -52, 76, 78, -1, 78, MARBLE_D); // the far wall
+  g.box(4, -52, 72, 75, -50, 75, DARKNESS); // the bottom, lost in the dark
+  for (let y = -52; y < -24; y++) g.box(4, y, 75, 75, y, 75, DARKNESS);
+  // A low marble kerb with a gold top round the sides and the far end, on the floor.
+  for (const x of [-4, 80]) g.box(x, 0, 0, x + 3, 6, 83, MARBLE_D).box(x, 7, 0, x + 3, 7, 83, ROYAL_GOLD);
+  g.box(-4, 0, 80, 83, 6, 83, MARBLE_D).box(-4, 7, 80, 83, 7, 83, ROYAL_GOLD);
   if (closed) { // posts and a chain across the top step
-    for (const x of [-2, 81]) g.box(x - 1, 7, 74, x + 1, 26, 76, IRON);
-    for (let x = 0; x < 80; x++) g.put(x, 22 - Math.round(Math.sin((Math.PI * x) / 80) * 6), 75, x % 3 ? IRON_L : IRON);
+    for (const x of [-2, 81]) g.box(x - 1, 7, 3, x + 1, 26, 5, IRON);
+    for (let x = 0; x < 80; x++) g.put(x, 22 - Math.round(Math.sin((Math.PI * x) / 80) * 6), 4, x % 3 ? IRON_L : IRON);
   }
   return g;
 }

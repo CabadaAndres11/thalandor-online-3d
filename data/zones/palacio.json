@@ -274,19 +274,19 @@
 		{"id": "lord_maren", "at": [23, 8], "facing": 270},
 		{"id": "guardia_palacio", "at": [17, 52], "facing": 0},
 		{"id": "oriel", "at": [33, 51], "facing": 180},
-		{"id": "guardia_cripta_1", "at": [2, 42], "facing": 0},
-		{"id": "guardia_cripta_2", "at": [7, 42], "facing": 0}
+		{"id": "guardia_cripta_1", "at": [2, 36], "facing": 180},
+		{"id": "guardia_cripta_2", "at": [7, 36], "facing": 180}
 	],
-	"entries": {"default": [19, 50], "from_capital": [19, 50], "from_cripta": [5, 44]},
+	"entries": {"default": [19, 50], "from_capital": [19, 50], "from_cripta": [5, 34]},
 	"respawn": [19, 49],
 	"exits": [
 		{"area": [18, 55, 3, 1], "to": "capital", "entry": "from_palacio"},
 		{
-			"area": [3, 42, 4, 1],
+			"area": [3, 36, 4, 1],
 			"to": "cripta_prueba",
 			"entry": "default",
 			"requires": {"flags": ["cripta_abierta"]},
-			"gate": {"closed": "stairs_down_closed", "open": "stairs_down", "at": [3, 37], "rot": 0}
+			"gate": {"closed": "stairs_down_closed", "open": "stairs_down", "at": [3, 38], "rot": 0}
 		}
 	],
 	"hordes": [],
@@ -307,6 +307,8 @@
 		{"at": [1, 28], "wall": 270},
 		{"at": [1, 50], "wall": 270},
 		{"at": [4, 22], "wall": 0},
+		{"at": [1, 40], "wall": 270},
+		{"at": [8, 40], "wall": 90},
 		{"at": [38, 7], "wall": 90},
 		{"at": [38, 15], "wall": 90},
 		{"at": [32, 22], "wall": 0},
@@ -316,7 +318,7 @@
 	],
 	"relief": [
 		{"kind": "plateau", "area": [15, 1, 10, 6], "height": 1.5, "slope": 3.2},
-		{"kind": "plateau", "area": [3, 37, 4, 4], "height": -2.5, "slope": 0}
+		{"kind": "plateau", "area": [3, 38, 4, 4], "height": -2.5, "slope": 0}
 	],
 	"walkers": [
 		{"npc": "noble_1", "route": [[15, 48], [15, 12]], "speed": 0.9, "pause_s": 6, "loop": false},

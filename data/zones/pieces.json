@@ -681,7 +681,7 @@
 	"stairs_down": {
 		"vox": "res://assets/world/stairs_down.vox",
 		"scale": 0.5,
-		"offset": [-4, -56, -4],
+		"offset": [-4, -56, 0],
 		"footprint": [],
 		"flat": true,
 		"shadow": "medium",
@@ -690,7 +690,7 @@
 	"stairs_down_closed": {
 		"vox": "res://assets/world/stairs_down_closed.vox",
 		"scale": 0.5,
-		"offset": [-4, -56, -4],
+		"offset": [-4, -56, 0],
 		"footprint": [],
 		"flat": true,
 		"shadow": "medium",

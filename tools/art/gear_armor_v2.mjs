@@ -70,11 +70,11 @@ const onFace = (x, y, z) => z >= 1 && y <= 13 && y >= -1 && x >= -6 && x <= 5;
 const HEADS = {
   // A deep hood under a gold circlet with a sun on the brow; tier 3 a tall mitre.
   cleric(t, m) {
-    const s = deepHood(BODY.head, BODY.torso, m.b, C.EBONY_D, { seed: 101 + t });
+    const s = deepHood(BODY.head, BODY.torso, m.b, m.d, { seed: 101 + t });
     finish(s, m, 101 + t);
-    recolor(s, (x, y, z, i) => onBrimTop(x, y, z) && i !== C.EBONY_D, m.acc); // circlet
+    recolor(s, (x, y, z, i) => onBrimTop(x, y, z) && i !== m.d, m.acc); // circlet
     gem(s, -1, 15, (frontZ(s, -1, 15) ?? 9) + 1, m);
-    if (t >= 2) recolor(s, (x, y, z, i) => z >= 6 && (x === -9 || x === 8) && y >= 0 && y <= 13 && i !== C.EBONY_D, m.trim);
+    if (t >= 2) recolor(s, (x, y, z, i) => z >= 6 && (x === -9 || x === 8) && y >= 0 && y <= 13 && i !== m.d, m.trim);
     if (t >= 3) {
       const mitre = new Shape();
       for (let k = 0; k <= 13; k++) {
@@ -117,11 +117,11 @@ const HEADS = {
   archer(t, m) {
     const hood = m.hood ?? P;
     const hm = { ...m, b: hood, d: SHADE(hood) === SHADE(P) && hood === P ? SHADE(P) : m.d, l: hood === P ? LIGHT(P) : m.l };
-    const s = deepHood(BODY.head, BODY.torso, hood, C.EBONY_D, { seed: 121 + t });
+    const s = deepHood(BODY.head, BODY.torso, hood, hm.d, { seed: 121 + t });
     for (let k = 0; k < 4 + 2 * t; k++) ellipsoid(s, [-0.5, 16 - k, -10 - k * 0.8], [2.6 - k * 0.12, 2.2, 1.8], hood); // the point
     without(s, BODY.head);
     finish(s, hm, 121 + t);
-    if (t >= 2) { recolor(s, (x, y, z, i) => y === 14 && z >= 6 && i !== C.EBONY_D, C.LEATHER); onFront(s, -1, 14, m.acc), onFront(s, 0, 14, m.acc); }
+    if (t >= 2) { recolor(s, (x, y, z, i) => y === 14 && z >= 6 && i !== m.d, C.LEATHER); onFront(s, -1, 14, m.acc), onFront(s, 0, 14, m.acc); }
     if (t >= 3) {
       for (let k = 0; k < 12; k++) s.put(10 + (k > 8 ? 1 : 0), 13 + k, -2 - (k >> 2), k > 8 ? C.WHITE : S); // a feather
       onFront(s, 4, 15, m.rune), onFront(s, -5, 15, m.rune);
@@ -130,12 +130,12 @@ const HEADS = {
   },
   // A deep hood and a mask over the lower face; tier 2 a band, tier 3 small horns and glowing trim.
   assassin(t, m) {
-    const hood = deepHood(BODY.head, BODY.torso, m.b, C.EBONY_D, { seed: 131 + t });
+    const hood = deepHood(BODY.head, BODY.torso, m.b, m.d, { seed: 131 + t });
     const mask = shellOn(BODY.head, 1, m.d, (x, y, z) => y >= -1 && y <= 6 && z >= -2);
     const s = merge(hood, mask);
     finish(s, m, 131 + t);
     recolor(s, (x, y, z, i) => y === 6 && z >= 1 && i === m.d, m.trim); // mask edge
-    if (t >= 2) recolor(s, (x, y, z, i) => y === 15 && z >= 6 && i !== C.EBONY_D, m.trim);
+    if (t >= 2) recolor(s, (x, y, z, i) => y === 15 && z >= 6 && i !== m.d, m.trim);
     if (t >= 3) {
       for (const dir of [-1, 1]) capsule(s, [dir > 0 ? 5 : -6, 18, -2], [dir > 0 ? 9 : -10, 24, -4], 1.3, 0.5, m.acc); // horns
       for (const x of [-9, 8]) onFront(s, x, 9, m.rune);
