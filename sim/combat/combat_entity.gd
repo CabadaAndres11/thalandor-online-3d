@@ -52,6 +52,8 @@ var basic_count: int = 0
 var last_target_id: int = 0
 ## Fraction of the damage a shield absorbs that goes back to the attacker (Represalia).
 var shield_reflect: float = 0.0
+## A status given to whoever hits the bearer in melee while the shield lasts (Escudo de llamas).
+var shield_on_melee: Dictionary = {}
 ## Last tick the entity moved, and where it was then (Paciencia: damage when still).
 var still_since: int = 0
 var last_pos: Vector2 = Vector2.INF

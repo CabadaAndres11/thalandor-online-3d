@@ -56,6 +56,9 @@ func resolved(id: String, upgrade: String, upgrades: UpgradeDB = null) -> Dictio
 	var a := get_ability(id)
 	if a.is_empty() or upgrade == "":
 		return a
+	var variant := variant_for(id, upgrade)
+	if not variant.is_empty():
+		a = variant
 	var u := (upgrades if upgrades != null else UpgradeDB.load_default()).upgrade(upgrade)
 	var ev: Dictionary = u.get("evolves", {})
 	if str(ev.get("ability", "")) != id:
@@ -67,6 +70,24 @@ func resolved(id: String, upgrade: String, upgrades: UpgradeDB = null) -> Dictio
 	if ev.has("effects"):
 		out["effects"] = (ev.effects as Array).duplicate(true)
 	return out
+
+
+## The variant of a base ability for this upgrade (Plan 8.3h): an ability with
+## "upgrade": <upgrade> and "replaces": <id> (the pyromancer's Saeta de fuego replaces
+## Proyectil arcano). {} when there is none.
+func variant_for(id: String, upgrade: String) -> Dictionary:
+	if upgrade == "":
+		return {}
+	for vid: String in _order:
+		var v: Dictionary = _by_id[vid]
+		if str(v.get("replaces", "")) == id and str(v.get("upgrade", "")) == upgrade:
+			return v
+	return {}
+
+
+## Whether an ability is an upgrade's variant of another one (not listed on its own).
+static func is_variant(a: Dictionary) -> bool:
+	return str(a.get("replaces", "")) != ""
 
 
 func has(id: String) -> bool:
@@ -89,7 +110,7 @@ const BAR_SIZE := 9
 ## Id of the class's ability of this kind ("basic" or "secondary"), or "".
 func kind_of(class_id: String, kind: String) -> String:
 	for a: Dictionary in class_abilities(class_id):
-		if a.get("kind") == kind:
+		if a.get("kind") == kind and not is_variant(a):
 			return a.id
 	return ""
 
@@ -105,7 +126,7 @@ static func upgrade_ok(a: Dictionary, upgrade: String) -> bool:
 ## lowest level first (file order on ties).
 func actives(class_id: String, upgrade: String = "") -> Array:
 	var list := class_abilities(class_id).filter(func(a: Dictionary) -> bool:
-		return a.get("kind") == "active" and upgrade_ok(a, upgrade))
+		return a.get("kind") == "active" and upgrade_ok(a, upgrade) and not is_variant(a))
 	var indexed: Array = []
 	for i in list.size():
 		indexed.append([int(list[i].get("level", 1)), i, list[i].id])
@@ -165,6 +186,12 @@ func validate(check_texts: bool = true) -> Array[String]:
 		if not a.get("kind") in KINDS:
 			errors.append("%s: unknown kind %s" % [id, a.get("kind")])
 		var effects: Variant = a.get("effects")
+		if is_variant(a):
+			var base := get_ability(str(a.replaces))
+			if base.is_empty() or base.get("kind") != a.get("kind") or str(base.get("class", "")) != str(a.get("class", "")) 					or str(base.get("upgrade", "")) != "" or str(a.get("upgrade", "")) == "":
+				errors.append("%s: must replace a base ability of its class and kind, for an upgrade" % id)
+			elif str(variant_for(str(a.replaces), str(a.upgrade)).get("id", "")) != id:
+				errors.append("%s: a second variant of %s for %s" % [id, a.replaces, a.upgrade])
 		if a.get("kind") != "passive" and (not effects is Array or (effects as Array).is_empty()):
 			errors.append("%s: no effects" % id)
 		elif effects is Array:

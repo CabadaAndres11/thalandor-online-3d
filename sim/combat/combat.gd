@@ -215,6 +215,7 @@ static func deal(world: SimWorld, source: CombatEntity, target: CombatEntity, ef
 		elif r.amount > 0.0 and r.absorbed >= r.amount:
 			_blocked(target)
 		_reflect(world, attacker, target, r.absorbed)
+		_melee_retaliation(world, attacker, target, effect)
 		var steal := source.stats.lifesteal + float(spec.get("lifesteal_pct", 0.0))
 		if steal > 0.0 and r.amount > 0.0 and attacker.is_alive():
 			heal(world, attacker, attacker, r.amount * steal)
@@ -265,6 +266,14 @@ static func _reflect(world: SimWorld, attacker: CombatEntity, target: CombatEnti
 	world.current_source = target.id
 	Damage.apply(attacker, r, world)
 	world.emit(["hit", attacker.id, amount, false, target.id])
+
+
+## Escudo de llamas / Armadura de hielo: a melee hit on a shielded bearer gives the
+## attacker the shield's status.
+static func _melee_retaliation(world: SimWorld, attacker: CombatEntity, target: CombatEntity, effect: Dictionary) -> void:
+	if effect.get("type") != "melee_arc" or target.shield_on_melee.is_empty() or target.shield <= 0.0 or world.tick >= target.shield_end 			or attacker == target or attacker.team == target.team or not attacker.is_alive():
+		return
+	apply_status(world, target, attacker, target.shield_on_melee)
 
 
 ## A hit avoided (dodge roll, evasion or invulnerability): Bloqueo experto and
@@ -423,17 +432,19 @@ static func _on_kill_hooks(world: SimWorld, dead: CombatEntity) -> void:
 			heal(world, killer, killer, killer.stats.max_hp * float(h.heal_pct))
 
 
-## Contagio: an enemy that dies with the "contagion" status passes its poison to the
-## enemies within the status magnitude (meters) of it.
+## Contagio: an enemy that dies with the "contagion" status (or poisoned by someone with
+## the poison_spreads_on_death hook) passes its poison to the enemies within the radius.
 static func _spread_contagion(world: SimWorld, dead: CombatEntity) -> void:
-	var radius := dead.status_magnitude("contagion")
-	if radius <= 0.0:
-		return
 	var poison: StatusEffect = null
 	for s: StatusEffect in dead.statuses:
 		if s.kind == "poison":
 			poison = s
 	if poison == null:
+		return
+	var radius := dead.status_magnitude("contagion")
+	if radius <= 0.0: # Contagio as a passive: the poisoner spreads its poison (Plan 8.3h)
+		radius = float(Passives.has_hook(world.entity(poison.source_id), "poison_spreads_on_death").get("radius", 0.0))
+	if radius <= 0.0:
 		return
 	for o: CombatEntity in world.entities():
 		if o == dead or o.team != dead.team or not o.is_alive():

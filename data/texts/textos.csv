@@ -593,7 +593,9 @@ AB_ASSASSIN_VEIL_DESC,"+50 % de duración del sigilo."
 AB_ASSASSIN_TOXIC_CLOUD,Nube tóxica
 AB_ASSASSIN_TOXIC_CLOUD_DESC,"Una nube de 4 m en el cursor durante 8 s que aplica una acumulación de veneno cada segundo."
 AB_ASSASSIN_CONTAGION,Contagio
-AB_ASSASSIN_CONTAGION_DESC,"Marca a un enemigo 10 s: si muere envenenado, su veneno salta a los enemigos a 6 m."
+AB_ASSASSIN_CONTAGION_DESC,"Cuando un enemigo que has envenenado muere, su veneno salta a los enemigos a 6 m."
+AB_ASSASSIN_DETONATE,Detonar toxinas
+AB_ASSASSIN_DETONATE_DESC,"Consume todas las cargas de veneno del enemigo bajo el cursor y le da un golpe por cada una."
 AB_ASSASSIN_TOXICOLOGY,Toxicología
 AB_ASSASSIN_TOXICOLOGY_DESC,"El veneno se acumula hasta 10 veces."
 AB_ASSASSIN_CORRUPT_BLOOD,Sangre corrupta
@@ -1360,3 +1362,33 @@ UI_TALENTS_ON_ROUTE,Parte de la ruta recomendada
 CHAR_HELM_HIDE,Ocultar el casco
 CHAR_HELM_SHOW,Mostrar el casco
 MENU_LEAVE_GROUP,Abandonar grupo
+AB_MAGE_FIRE_BOLT,Saeta de fuego
+AB_MAGE_FIRE_BOLT_DESC,Saeta de fuego rápida.
+AB_MAGE_ICE_SHARD,Esquirla de hielo
+AB_MAGE_ICE_SHARD_DESC,Esquirla de hielo rápida.
+AB_MAGE_ERUPTION,Erupción
+AB_MAGE_ERUPTION_DESC,"Área pequeña de fuego en el cursor, con un breve retardo."
+AB_MAGE_GLACIAL_BURST,Estallido glacial
+AB_MAGE_GLACIAL_BURST_DESC,"Área pequeña de hielo en el cursor, con un breve retardo."
+AB_MAGE_FLAME_STEP,Paso de llamas
+AB_MAGE_FLAME_STEP_DESC,Te desvaneces entre llamas y apareces un poco más allá hacia el cursor.
+AB_MAGE_FROST_STEP,Paso helado
+AB_MAGE_FROST_STEP_DESC,Te deshaces en escarcha y apareces un poco más allá hacia el cursor.
+AB_MAGE_FIRE_NOVA,Nova ígnea
+AB_MAGE_FIRE_NOVA_DESC,"Aturde 1,5 s a los enemigos a 4 m a tu alrededor con una onda de fuego."
+AB_MAGE_ARCANE_NOVA,Nova arcana
+AB_MAGE_ARCANE_NOVA_DESC,Inmoviliza 2 s a los enemigos a 4 m a tu alrededor.
+AB_MAGE_FLAME_SHIELD,Escudo de llamas
+AB_MAGE_FLAME_SHIELD_DESC,"Un escudo que absorbe daño durante 8 s; quien te golpea cuerpo a cuerpo arde."
+AB_MAGE_ICE_ARMOR,Armadura de hielo
+AB_MAGE_ICE_ARMOR_DESC,"Un escudo que absorbe daño durante 8 s; quien te golpea cuerpo a cuerpo se ralentiza un 30 %."
+AB_MAGE_ICE_COMET,Cometa de hielo
+AB_MAGE_ICE_COMET_DESC,"Un cometa de hielo que explota al impactar, daña a todos a 2,5 m y los ralentiza un 30 %."
+AB_MAGE_ARCANE_ORB,Orbe arcano
+AB_MAGE_ARCANE_ORB_DESC,"Un orbe arcano que explota al impactar y daña a todos a 2,5 m."
+AB_MAGE_FIRE_LANCE,Lanza de fuego
+AB_MAGE_FIRE_LANCE_DESC,Una lanza de fuego que deja al enemigo ardiendo durante 4 s.
+AB_MAGE_ARCANE_BOLT,Descarga arcana
+AB_MAGE_ARCANE_BOLT_DESC,Una descarga arcana que ralentiza al enemigo un 50 % durante 4 s.
+AB_MAGE_PIERCING_COLD_FIRE_DESC,+20 % de daño a enemigos ardiendo.
+AB_MAGE_PIERCING_COLD_ARCANE_DESC,+20 % de daño a enemigos inmovilizados.

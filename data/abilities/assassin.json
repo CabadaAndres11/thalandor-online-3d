@@ -256,20 +256,31 @@
 		]
 	},
 	{
+		"id": "assassin_detonate",
+		"class": "assassin",
+		"upgrade": "venomancer",
+		"name": "AB_ASSASSIN_DETONATE",
+		"desc": "AB_ASSASSIN_DETONATE_DESC",
+		"icon": "detonate_toxins",
+		"kind": "active",
+		"level": 50,
+		"cost": 30,
+		"cooldown_s": 12,
+		"gcd": true,
+		"range": 12,
+		"anim": "cast",
+		"effects": [{"type": "detonate", "status": "poison", "damage": {"base": 6, "coef": 0.5, "kind": "physical"}}]
+	},
+	{
 		"id": "assassin_contagion",
 		"class": "assassin",
 		"upgrade": "venomancer",
 		"name": "AB_ASSASSIN_CONTAGION",
 		"desc": "AB_ASSASSIN_CONTAGION_DESC",
 		"icon": "contagion",
-		"kind": "active",
+		"kind": "passive",
 		"level": 50,
-		"cost": 25,
-		"cooldown_s": 25,
-		"gcd": true,
-		"range": 12,
-		"anim": "cast",
-		"effects": [{"type": "status", "target": "enemy", "statuses": [{"kind": "contagion", "duration_s": 10, "magnitude": 6}]}]
+		"passive": [{"type": "hook", "hook": "poison_spreads_on_death", "radius": 6}]
 	},
 	{
 		"id": "assassin_toxicology",

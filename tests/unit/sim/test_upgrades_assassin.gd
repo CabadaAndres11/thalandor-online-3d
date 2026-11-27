@@ -104,29 +104,56 @@ func test_toxic_cloud() -> void:
 	assert_eq(f.world.pending_areas.size(), 0)
 
 
-func test_contagion() -> void:
+func test_contagion_is_a_passive() -> void:
 	var p := _hero("venomancer")
+	assert_eq(str(f.world.abilities.get_ability("assassin_contagion").kind), "passive")
+	assert_false("assassin_contagion" in f.world.abilities.actives("assassin", "venomancer"))
 	var foe := _foe(2000, Vector3(10, 0, 20), 50.0)
 	var near := _foe(2001, Vector3(14, 0, 20))
 	var far := _foe(2002, Vector3(25, 0, 20))
 	Combat.apply_status(f.world, p, foe, {"kind": "poison", "duration_s": 6, "magnitude": 2, "every_s": 1, "stacks": 3, "max_stacks": 5})
-	assert_true(Combat.try_cast(f.world, p, "assassin_contagion", foe.position))
-	assert_eq(p.resource, p.stats.max_resource - 25.0)
-	assert_eq(p.cooldowns["assassin_contagion"], f.world.tick + f.world.ticks(25.0))
-	assert_eq(foe.status_magnitude("contagion"), 6.0)
 	Combat.deal(f.world, p, foe, {"damage": {"base": 999, "coef": 0, "kind": "magic", "can_crit": false}}, {})
 	assert_false(foe.is_alive())
-	assert_eq(near.status_stacks("poison"), 3, "6 m: its poison jumped")
+	assert_eq(near.status_stacks("poison"), 3, "6 m: its poison jumped, no active needed")
 	assert_false(far.has_status("poison"))
 
 
-func test_contagion_without_poison_spreads_nothing() -> void:
-	var p := _hero("venomancer")
+func test_contagion_needs_the_venomancers_poison() -> void:
+	var p := _hero("shadow")
 	var foe := _foe(2000, Vector3(10, 0, 20), 50.0)
 	var near := _foe(2001, Vector3(14, 0, 20))
-	assert_true(Combat.try_cast(f.world, p, "assassin_contagion", foe.position))
+	Combat.apply_status(f.world, p, foe, {"kind": "poison", "duration_s": 6, "magnitude": 2, "every_s": 1, "stacks": 3, "max_stacks": 5})
 	Combat.deal(f.world, p, foe, {"damage": {"base": 999, "coef": 0, "kind": "magic", "can_crit": false}}, {})
-	assert_false(near.has_status("poison"))
+	assert_false(near.has_status("poison"), "the shadow's poison does not spread")
+
+
+func test_detonate_hits_once_per_stack() -> void:
+	var p := _hero("venomancer")
+	var foe := _foe(2000, Vector3(10, 0, 18))
+	Combat.apply_status(f.world, p, foe, {"kind": "poison", "duration_s": 6, "magnitude": 2, "every_s": 1, "stacks": 4, "max_stacks": 5})
+	var hp := foe.hp
+	f.log.clear()
+	f.world.events.clear()
+	assert_true(Combat.try_cast(f.world, p, "assassin_detonate", foe.position))
+	assert_eq(p.resource, p.stats.max_resource - 30.0)
+	assert_eq(p.cooldowns["assassin_detonate"], f.world.tick + f.world.ticks(12.0))
+	var hits := f.events_of("hit").filter(func(ev: Array) -> bool: return ev[1] == foe.id)
+	assert_eq(hits.size(), 4, "one hit per stack")
+	assert_false(foe.has_status("poison"), "the poison is used up")
+	assert_lt(foe.hp, hp)
+
+
+func test_detonate_needs_poison() -> void:
+	var p := _hero("venomancer")
+	var foe := _foe(2000, Vector3(10, 0, 18))
+	assert_false(Combat.try_cast(f.world, p, "assassin_detonate", foe.position), "nothing to detonate")
+	assert_eq(p.resource, p.stats.max_resource)
+
+
+func test_an_old_bar_loses_the_contagion_active() -> void:
+	var bar := f.world.abilities.sanitize_bar("assassin", ["assassin_stab", "assassin_contagion"], 50, "venomancer")
+	assert_false("assassin_contagion" in bar)
+	assert_true("assassin_detonate" in f.world.abilities.unlocked("assassin", 50, "venomancer"))
 
 
 func test_toxicology() -> void:
@@ -177,7 +204,7 @@ func test_each_upgrade_is_complete_with_texts_and_icons() -> void:
 	for id: String in ["shadow", "venomancer"]:
 		var u := f.world.upgrades.upgrade(id)
 		assert_eq(u.actives.size(), 1 if id == "shadow" else 2)
-		assert_eq(u.passives.size(), 2)
+		assert_eq(u.passives.size(), 2 if id == "shadow" else 3)
 		assert_false(u.evolves.is_empty())
 		for aid: String in u.actives + u.passives:
 			var a := f.world.abilities.get_ability(aid)

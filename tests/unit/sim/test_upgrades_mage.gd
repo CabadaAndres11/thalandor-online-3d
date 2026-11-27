@@ -95,7 +95,8 @@ func test_combustion() -> void:
 	var plain: float = Damage.roll(p, foe, spec, f.world).amount
 	foe.add_status(StatusEffect.make("burn", f.world.tick + 300, 1.0, 0, 1, 30), 1)
 	var burning: float = Damage.roll(p, foe, spec, f.world).amount
-	assert_almost_eq(burning / plain, 1.1, 0.001)
+	# Combustión (+10 %) and the pyromancer's Frío penetrante (+20 % to the burning, Plan 8.3h)
+	assert_almost_eq(burning / plain, 1.1 * 1.2, 0.001)
 
 
 func test_phoenix() -> void:

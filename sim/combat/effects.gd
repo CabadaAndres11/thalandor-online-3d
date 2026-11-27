@@ -25,15 +25,17 @@ extends RefCounted
 ##   charge     {distance, width, windup_s, speed, damage, statuses?}  (warns a line
 ##               toward the cursor, then runs along it hitting everyone in the line)
 ##   beam       {range, width, damage, statuses?}  (an instant line hit toward the cursor)
+##   detonate   {status, damage}  (the enemy under the cursor, which must have the status:
+##               one hit per stack of it, then the status is gone; Detonar toxinas)
 ##   summon     {monster, duration_s, max}  (an allied monster of data/monsters that follows and
 ##               fights for the caster; it gives no experience and dies with its owner)
 ## Extras: area {heal?: {base, coef}, follow_caster?}; projectile {count?, spread_deg?,
-## explode.leave?: {area effect}}; shield {reflect_pct?}; heal {bounce?: {count, radius, pct}};
+## explode.leave?: {area effect}}; shield {reflect_pct?, on_melee_hit?: status}; heal {bounce?: {count, radius, pct}};
 ## damage {execute?: {below_pct, mult}, lifesteal_pct?, school?}; ability {refund_on_kill?}.
 ## damage = {base, coef, kind: "physical"|"magic", can_crit, element?, school?}.
 
 const TYPES := ["melee_arc", "projectile", "area", "dash", "blink", "heal", "shield",
-	"status", "trap", "stealth", "cleanse", "revive", "taunt", "charge", "beam", "summon"]
+	"status", "trap", "stealth", "cleanse", "revive", "taunt", "charge", "beam", "summon", "detonate"]
 const TARGET_PICK_RADIUS := 1.5
 
 
@@ -44,7 +46,7 @@ static func needs_target(effect: Dictionary) -> bool:
 			return str(effect.get("to", "")) == "behind_target"
 		"status":
 			return str(effect.get("target", "")) == "enemy"
-		"revive":
+		"revive", "detonate":
 			return true
 	return false
 
@@ -64,7 +66,10 @@ static func find_target(world: SimWorld, caster: CombatEntity, effect: Dictionar
 				best = o
 				best_d = d
 		return best
-	return enemy_near(world, caster, aim, float(effect.get("distance", effect.get("range", ability.get("range", 10.0)))))
+	var found := enemy_near(world, caster, aim, float(effect.get("distance", effect.get("range", ability.get("range", 10.0)))))
+	if effect.get("type") == "detonate" and found != null and found.status_stacks(str(effect.get("status", ""))) <= 0:
+		return null # nothing to detonate
+	return found
 
 
 static func apply(world: SimWorld, caster: CombatEntity, ability: Dictionary, effect: Dictionary, ctx: Dictionary) -> void:
@@ -106,6 +111,8 @@ static func apply(world: SimWorld, caster: CombatEntity, ability: Dictionary, ef
 			_beam(world, caster, ability, effect, ctx.aim)
 		"summon":
 			_summon(world, caster, effect)
+		"detonate":
+			_detonate(world, caster, ability, effect, ctx.get("target"))
 		_:
 			push_error("Effects: unknown effect %s in %s" % [effect.get("type"), ability.get("id")])
 
@@ -445,6 +452,7 @@ static func _shield(world: SimWorld, caster: CombatEntity, effect: Dictionary, a
 	t.shield = maxf(t.shield, _amount(caster, effect.get("amount", {})))
 	t.shield_end = world.tick + world.ticks(float(effect.get("duration_s", 5.0)))
 	t.shield_reflect = float(effect.get("reflect_pct", 0.0))
+	t.shield_on_melee = (effect.get("on_melee_hit", {}) as Dictionary).duplicate()
 	world.emit(["status", t.id, "shield", t.shield_end])
 
 
@@ -498,3 +506,16 @@ static func _bounce_heal(world: SimWorld, caster: CombatEntity, from: CombatEnti
 		return a.hp / maxf(a.stats.max_hp, 1.0) < b.hp / maxf(b.stats.max_hp, 1.0))
 	for o: CombatEntity in others.slice(0, int(bounce.get("count", 1))):
 		Combat.heal(world, caster, o, amount * float(bounce.get("pct", 0.5)))
+
+
+## Detonar toxinas: one hit per stack of the status on the target, then the status goes.
+static func _detonate(world: SimWorld, caster: CombatEntity, ability: Dictionary, effect: Dictionary, target: CombatEntity) -> void:
+	if target == null or not target.is_alive():
+		return
+	var kind := str(effect.get("status", "poison"))
+	var stacks := target.status_stacks(kind)
+	target.remove_status(kind)
+	world.emit(["status_end", target.id, kind])
+	var hit := {"type": "detonate", "damage": effect.get("damage", {})}
+	for i in stacks:
+		Combat.deal(world, caster, target, hit, ability)

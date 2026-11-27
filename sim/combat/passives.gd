@@ -18,7 +18,7 @@ extends RefCounted
 ##               slow_adds_attack_slow {pct}, freeze_reduces_cooldowns {seconds, max?}, stationary_damage
 ##               {seconds, pct}, traps_rearm {times}, bonus_vs_low_hp {below_pct, pct},
 ##               stealth_duration_pct {pct}, poison_max_stacks {max}, poisoned_deal_less {pct},
-##               finisher_refund_per_combo {amount}. (poison spreading on death is the "contagion"
+##               finisher_refund_per_combo {amount}, poison_spreads_on_death {radius}. (poison spreading on death is the "contagion"
 ##               status: its magnitude is the radius in meters.) Internal recharges live in
 ##               entity.cooldowns["hook:<name>"].
 ## Hooks are read where their rule lives (Resources, Damage, Combat, Effects, ClassRules).
@@ -55,7 +55,7 @@ const BACK_HALF_ANGLE := 60.0
 static func collect(db: AbilityDB, class_id: String, level: int, upgrade: String = "") -> Array:
 	var out: Array = []
 	for a: Dictionary in db.class_abilities(class_id):
-		if a.get("kind") == "passive" and int(a.get("level", 1)) <= level and AbilityDB.upgrade_ok(a, upgrade):
+		if a.get("kind") == "passive" and int(a.get("level", 1)) <= level and AbilityDB.upgrade_ok(a, upgrade) 				and (AbilityDB.is_variant(a) or db.variant_for(str(a.id), upgrade).is_empty()):
 			for m: Variant in a.get("passive", []):
 				if m is Dictionary:
 					out.append(m)
