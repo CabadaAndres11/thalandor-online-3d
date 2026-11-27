@@ -22,3 +22,4 @@ Una línea por versión publicada. El detalle de cada cambio está en el histori
 | 0.11.3 | 2026-11-23 | Planes 8.1 a 8.1.3: zonas, mundo, pantallas de carga y nombres del mundo. |
 | 0.13.0 | 2026-11-26 | Planes 8.2 y 8.3a: misiones, diálogos y escenas; el prólogo como tutorial; iconos pintados de habilidades. |
 | 0.17.0 | 2026-11-27 | Planes 8.3b a 8.3g: camino y capital, relieve y aldea nueva, cuerpos de hombre y mujer, árbol de talentos en anillos; misión de la cripta, palacio y capital rehechos, pociones en su botón y siete tandas de correcciones. |
+| 0.17.1 | 2026-11-27 | Plan 8.3h: kit elemental del mago (variantes por mejora), Contagio pasiva y Detonar toxinas del Venenero, efectos de los hechizos rehechos y correcciones del prólogo; comandos de prueba /mejora y /escena. |

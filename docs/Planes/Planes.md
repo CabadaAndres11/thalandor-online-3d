@@ -39,7 +39,7 @@ Cada plan de la [[14 Hoja de ruta]] tiene su **spec** (diseño acordado) y su **
 | 8.3d · Relieve, aldea nueva y correcciones | Hecho (0.15.0, sin publicar) |
 | 8.3e · Cuerpos de hombre y mujer | Publicado (0.17.0) |
 | 8.3g · Árbol de talentos en anillos | Publicado (0.17.0) |
-| 8.3h · Kit elemental del mago y Venenero ([[Plan 8.3h — Kit elemental del mago y Venenero (spec)\|spec]]) | Hecho (0.17.1, sin publicar) |
+| 8.3h · Kit elemental del mago y Venenero | Publicado (0.17.1) |
 | 9 · Misiones secundarias y bestiario ampliado | Pendiente |
 | 10 · Secretos: clases, habilidades ocultas y títulos | Pendiente |
 | 11 · Oficios y materiales | Pendiente |

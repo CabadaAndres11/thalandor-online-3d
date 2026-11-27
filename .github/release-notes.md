@@ -7,6 +7,13 @@
 3. **Aviso de Windows (SmartScreen):** el juego no está firmado. Pulsa **Más información → Ejecutar de todas formas**.
 4. Pulsa **Jugar**. Se abre **Tus personajes**: crea uno con **Crear** (nombre, raza y aspecto). Empiezas como **aldeano** en el prólogo, que es el tutorial: la clase se elige durante el asalto a la aldea.
 
+### Novedades de la 0.17.1: kit elemental del mago y correcciones del prólogo
+- **Mago:** al elegir mejora, todo su kit pasa a su elemento. El Piromante lanza Saeta de fuego, Erupción, Nova ígnea (aturde), Escudo de llamas y Lanza de fuego; el Criomante, Esquirla de hielo, Estallido glacial, Armadura de hielo y Cometa de hielo (cae del cielo en el cursor); el Arcano, Nova arcana (inmoviliza), Orbe arcano y Descarga arcana (viaja por el suelo). Frío penetrante cuenta enemigos ardiendo o inmovilizados según la mejora.
+- **Efectos:** meteoro del tamaño de su área, Bola de fuego y Orbe arcano más grandes, estacas de hielo en las áreas de escarcha y en la Ventisca, Lanza de fuego larga y rápida; el Láser arcano tiene 1 s de lanzamiento (barra dorada) y sigue al ratón sin tirones.
+- **Venenero:** Contagio pasa a pasiva y gana **Detonar toxinas**: un golpe por cada carga de veneno del objetivo.
+- **Prólogo:** la escena del despertar ya no se queda en negro; un cultista se lleva a Mira; cámaras de las escenas sin casas delante; sin «E Hablar» durante las escenas; muñeco de práctica fuera de la herrería; Mira con mangas marrones y mirando a la calle; el mapa marca todos los objetivos a la vez; corral cerrado, sabuesos que no reaparecen y postes de la fiesta que no frenan.
+- **Todo el grupo tiene que usar la misma versión.**
+
 ### Novedades de la 0.17.0: talentos, cripta y palacio
 - **Árbol de talentos nuevo:** 281 nodos en siete anillos, todos disponibles desde el principio a partir del centro, con iconos para cada estadística (esquiva, robo de vida, enfriamiento, curación…) y nodos clave en los anillos 4 y 7. Cada clase tiene una **ruta recomendada** marcada en dorado. La ventana se arrastra y se acerca con la rueda. **Los talentos guardados se reinician** (recuperas todos los puntos).
 - **La cripta:** misión de mazmorra con cultistas, inquisidores y un acólito jefe; se baja por la escalera del palacio.
