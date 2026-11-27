@@ -7,7 +7,6 @@ actualizado: 2026-11-27
 # 15. Decisiones abiertas **[Abierto]**
 
 - **Repositorio privado:** se hará al llegar a la beta (pedido el 2026-11-27); hasta entonces sigue público para que los amigos descarguen las versiones y la CI no gaste minutos.
-- **Ajustes de los sets del mago y del asesino** (pedido el 2026-11-27): qué cambia, ya que el Plan 12 quita los sets.
 - **Cambio de clase:** si entra en la demo y con qué requisitos ([[04 Personajes y progresión|§4.9]]).
 - **Ritmo de la curva** a partir del nivel 50 (horas por nivel).
 - Mejoras de clase del **segundo rango** (nivel 100) en adelante.

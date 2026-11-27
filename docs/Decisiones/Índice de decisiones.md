@@ -30,6 +30,7 @@ Cada decisión importante tiene su nota (plantilla **Decisión**). Las pendiente
 - [[D-018 Misiones en el anfitrión con objetivos fijos y marcas]]
 - [[D-019 Prólogo como tutorial y clase en el asalto]]
 - [[D-020 WebRTC como red definitiva]]
+- [[D-021 Kit elemental del mago y Detonar toxinas del Venenero]]
 
 ---
 ← [[00 Inicio|Inicio]]

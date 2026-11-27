@@ -68,7 +68,7 @@ Generados de `data/characters/classes.json` y `data/abilities/assassin.json`; so
 Hasta el Plan 4 todos los personajes son nivel 1: las activas se pueden poner en la barra (ventana K) aunque sean de nivel superior, y las pasivas aún no se activan.
 
 ## Notas y cambios
-- 
+- **[Diseñado]** Venenero: Contagio pasa a pasiva y gana la activa Detonar toxinas ([[D-021 Kit elemental del mago y Detonar toxinas del Venenero|D-021]]).
 
 ---
 ← [[00 Índice del GDD|Índice del GDD]] · Clases: [[Guerrero]] · [[Clérigo]] · [[Mago]] · [[Arquero]] · [[Asesino]]
