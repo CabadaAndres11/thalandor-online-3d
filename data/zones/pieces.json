@@ -869,6 +869,7 @@
 	},
 	"garland": {
 		"vox": "res://assets/world/garland.vox",
+		"walkable": true,
 		"scale": 0.5,
 		"offset": [8, 0, 9],
 		"footprint": [[0, 0], [2, 0]],

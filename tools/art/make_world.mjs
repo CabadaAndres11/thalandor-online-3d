@@ -870,7 +870,7 @@ export function worldPieces() {
     garland.put(x, y, 9, WOOD_D);
     if ((x - 11) % 5 === 0) for (let h = 1; h <= 5; h++) for (let w = -2 + Math.ceil(h / 2); w <= 2 - Math.ceil(h / 2) + 1; w++) garland.put(x + w, y - h, 9, FLAGS[((x - 11) / 5) % 4]);
   }
-  add("garland", paint(garland, WOOD, [WOOD, WOOD_D], 61), { footprint: [[0, 0], [2, 0]] });
+  add("garland", paint(garland, WOOD, [WOOD, WOOD_D], 61), { footprint: [[0, 0], [2, 0]], walkable: true });
   // A post with an arm and a lantern hanging from it.
   const lantern = new Shape();
   lantern.box(6, 0, 6, 13, 2, 13, STONE).box(8, 3, 8, 11, 52, 11, WOOD).box(8, 50, 8, 22, 52, 11, WOOD);
@@ -1035,7 +1035,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     }
     write(`${outDir}/${id}.vox`, p.shape.size(), p.shape.voxels(), p.palette ?? PALETTE);
     const small = SMALL_PIECES.includes(id) || DECOR.includes(id);
-    table[id] = { vox: `res://assets/world/${id}.vox`, scale: p.scale ?? 0.5, offset: p.shape.min(), footprint: p.footprint, ...(p.deck ? { deck: p.deck } : {}), ...(p.flat ? { flat: true } : {}),
+    table[id] = { vox: `res://assets/world/${id}.vox`, scale: p.scale ?? 0.5, offset: p.shape.min(), footprint: p.footprint, ...(p.deck ? { deck: p.deck } : {}), ...(p.flat ? { flat: true } : {}), ...(p.walkable ? { walkable: true } : {}),
       shadow: small ? "never" : "medium", range: DECOR.includes(id) ? 30 : (small ? 55 : 90) };
   }
   fs.writeFileSync(jsonPath, formatJson(table));

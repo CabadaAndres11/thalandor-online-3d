@@ -286,6 +286,8 @@ func collision() -> CollisionMap:
 	map.npcs = npcs.duplicate(true)
 	map.quest_points = quest_points.duplicate(true)
 	for p: Dictionary in pieces:
+		if bool(piece_def(str(p.id)).get("walkable", false)):
+			continue # thin posts (the festival garlands): a whole blocked cell stops you short of them
 		for c: Vector2i in footprint(p.id, p.at, p.rot):
 			map.set_solid(c, true)
 	for e: Dictionary in exits: # a gate the story opens is only drawn, but its walls stand either way

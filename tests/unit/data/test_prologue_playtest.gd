@@ -63,3 +63,11 @@ func test_north_hounds_do_not_come_back() -> void:
 	var z := ZoneLayout.load_variant("aldea", "asalto")
 	for h: Dictionary in z.hordes:
 		assert_false(bool(h.get("respawn", true)), str(h.monsters))
+
+
+func test_garland_posts_do_not_stop_you_short() -> void:
+	var z := ZoneLayout.load_variant("aldea", "vispera")
+	var map := z.collision()
+	for p: Dictionary in z.pieces:
+		if p.id == "garland":
+			assert_false(map.is_solid(Vector2i(p.at)), "walk up to the post")
