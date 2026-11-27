@@ -10,7 +10,7 @@ estado: aceptada
 El Plan 8 lleva el juego de la arena de pruebas a un mundo con historia. El guion del usuario (*Guión del juego de rol – Historia por misiones*) define el prólogo y los arcos. El GDD hablaba de cuatro zonas hasta el nivel 60 que el guion no recoge.
 
 ## Decisión
-- **La demo:** el **prólogo y el arco 1** completos (misiones 1–14): aldea, bosque camino de la capital, capital y cripta bajo el palacio. Termina al salir de la capital rumbo al volcán, **hacia el nivel 50 o algo más** (sin tope), para que se vean las mejoras de clase.
+- **La demo:** el **prólogo y el arco 1** completos (misiones 1–14): con **las zonas que hagan falta** (seguramente más de cuatro). Termina al salir de la capital rumbo al volcán, **hacia el nivel 60** siguiendo una progresión natural entre misiones, misiones secundarias, hordas y mazmorras; es una referencia, no un tope (revisado el 2026-11-27).
 - **Cada jugador vive su momento de la historia.** Los mapas no cambian con ella; lo que cambia es de cada jugador (PNJ, objetivos, luz).
 - **La clase se elige antes del asalto**, y **no se juega en grupo hasta terminarlo** (el tutorial).
 - **Se sube de nivel sobre todo matando hordas y en mazmorras.** Una misión da 1–2 niveles al completarse, más sus enemigos. Es norma del juego, no solo de la demo.

@@ -29,7 +29,7 @@ actualizado: 2026-11-27
 El continente es **Velmora**; el reino, **Valdrenn**, con capital en **Sumerhold**. La aldea del prólogo es **Aelhest** y el bosque camino de la capital, **Eldarra** («Bosque de Eldarra»). La cripta del sello del arco 1 es la **Cripta de Sumerhold**. En pantallas de carga, carteles, mapa y textos se usa el **nombre completo**: «Aldea de Aelhest», «Bosque de Eldarra», «Sumerhold, Capital del Reino», «Cripta de Sumerhold».
 
 ## 6.2 Contenido de la demo **[En curso]** (Plan 8, según el guion)
-La demo cubre el **prólogo y el arco 1** (misiones 1–14) y termina hacia el **nivel 50** al salir de la capital rumbo al volcán.
+La demo cubre el **prólogo y el arco 1** (misiones 1–14) y termina hacia el **nivel 60** (referencia, no tope), con las zonas que hagan falta, al salir de la capital rumbo al volcán.
 
 | Zona | Niveles | Contenido |
 |---|---|---|

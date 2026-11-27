@@ -27,9 +27,8 @@ Busca la sensación de un MMO clásico (personajes persistentes, clases con role
 
 ## 1.3 Alcance de la primera versión jugable (demo)
 - **5 clases** con kit base y pasivas de clase, y la **primera mejora de clase (nivel 50)** con sus 2 opciones por clase.
-- Niveles **1–60** con contenido (el sistema no tiene tope; la demo tiene contenido hasta ahí).
+- El **prólogo y el arco 1** completos del [[Guion]], con las zonas que hagan falta (seguramente más de cuatro), y una progresión natural que acaba **hacia el nivel 60** (referencia, no tope: el sistema no tiene nivel máximo) ([[D-017 Mundo por zonas, hordas y demo del prólogo y arco 1|D-017]]).
 - Atributos repartibles, árbol de talentos circular y equipo visible en el personaje.
-- Capital y 4 zonas de nivel, cada una con su mazmorra y jefe.
 - Multijugador online hasta 4 jugadores, guardado local y exportación de personajes.
 
 **Fuera del alcance de la demo:** intercambio entre jugadores, soporte para mando, cambio de clase (diseñado, ver [[04 Personajes y progresión|§4.9]]), mejoras de clase a partir del nivel 100, chat de voz (se usa Discord).
