@@ -7,6 +7,18 @@
 3. **Aviso de Windows (SmartScreen):** el juego no está firmado. Pulsa **Más información → Ejecutar de todas formas**.
 4. Pulsa **Jugar**. Se abre **Tus personajes**: crea uno con **Crear** (nombre, raza y aspecto). Empiezas como **aldeano** en el prólogo, que es el tutorial: la clase se elige durante el asalto a la aldea.
 
+### Novedades de la 0.17.0: talentos, cripta y palacio
+- **Árbol de talentos nuevo:** 281 nodos en siete anillos, todos disponibles desde el principio a partir del centro, con iconos para cada estadística (esquiva, robo de vida, enfriamiento, curación…) y nodos clave en los anillos 4 y 7. Cada clase tiene una **ruta recomendada** marcada en dorado. La ventana se arrastra y se acerca con la rueda. **Los talentos guardados se reinician** (recuperas todos los puntos).
+- **La cripta:** misión de mazmorra con cultistas, inquisidores y un acólito jefe; se baja por la escalera del palacio.
+- **El palacio, rehecho:** trono sobre un estrado con escalones, alfombra centrada, estatuas gigantes de granito, archivo, armería, sala del consejo, antorchas de pared y nobles con ropa de corte que pasean por parejas.
+- **La capital:** torres en las esquinas, casas con gente dentro, niños y PNJ de otras razas; los PNJ sin importancia ya no muestran nombre ni punto en el mapa; el mercader vende objetos de varias rarezas.
+- **Aspectos nuevos** para Verrin y el rey; capuchas profundas, abiertas por abajo y unidas a la túnica; casco del ogro más pequeño.
+- **Pociones en su botón:** ya no ocupan hueco en la bolsa; Q y R muestran cuántas quedan, sin límite. Iconos nuevos.
+- **Ojo en la ventana C** para mostrar u ocultar el casco (lo ven todos; sus estadísticas siguen contando).
+- **Abandonar grupo** en el menú de pausa: sigues jugando solo con el mismo personaje.
+- El asesino con dos armas cambia **la peor** al equipar una nueva. Los saludos de los PNJ salen en la ventana de diálogo. El enemigo del tutorial es ahora un **Acólito**.
+- **Todo el grupo tiene que usar la misma versión.**
+
 ### Novedades de la 0.16.0: hombre y mujer
 - El tipo de cuerpo es ahora **Hombre** o **Mujer** (antes Esbelto y Robusto). La mujer tiene **cara propia** (rasgos más finos, pestañas y labios), hombros y brazos más finos y su pecho; bajo una armadura de pecho manda la armadura.
 - Tus personajes guardados pasan solos: los esbeltos son mujeres y los robustos, hombres.
